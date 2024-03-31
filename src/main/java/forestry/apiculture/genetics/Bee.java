@@ -405,7 +405,7 @@ public class Bee extends IndividualLiving implements IBee {
 		toolTip.add(genome.getActiveAllele(BeeChromosomes.FLOWER_PROVIDER).getProvider().getDescription(), ChatFormatting.GRAY);
 
 		if (genome.getActiveValue(BeeChromosomes.NEVER_SLEEPS)) {
-			toolTip.text(GenericRatings.rateActivityTime(true, false)).style(ChatFormatting.RED);
+			toolTip.add(GenericRatings.rateActivityTime(true, false)).style(ChatFormatting.RED);
 		}
 
 		if (genome.getActiveValue(BeeChromosomes.TOLERATES_RAIN)) {

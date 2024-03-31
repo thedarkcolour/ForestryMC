@@ -14,7 +14,10 @@ public interface IClientModuleHandler extends ISidedModuleHandler {
 	default void handleSprites(TextureStitchEvent.Post event) {
 	}
 
-	default void bakeModels(ModelBakeEvent event) {
+	default void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+	}
+
+	default void bakeModels(ModelEvent.BakingCompleted event) {
 	}
 
 	default void registerReloadListeners(RegisterClientReloadListenersEvent event) {

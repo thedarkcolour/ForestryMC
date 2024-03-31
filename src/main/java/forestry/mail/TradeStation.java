@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -221,7 +222,7 @@ public class TradeStation extends SavedData implements ITradeStation, IInventory
 
 		// Prepare the letter
 		ILetter mail = new Letter(this.address, letter.getSender());
-		mail.setText(Translator.translateToLocal("for.gui.mail.order.attached"));
+		mail.setText(Component.translatable("for.gui.mail.order.attached").getString());
 		for (int i = 0; i < ordersToFillCount; i++) {
 			mail.addAttachment(inventory.getItem(SLOT_TRADEGOOD).copy());
 		}
@@ -283,9 +284,9 @@ public class TradeStation extends SavedData implements ITradeStation, IInventory
 
 			String orderFilledMessage;
 			if (ordersToFillCount == 1) {
-				orderFilledMessage = Translator.translateToLocal("for.gui.mail.order.filled.one");
+				orderFilledMessage = Component.translatable("for.gui.mail.order.filled.one").getString();
 			} else {
-				orderFilledMessage = Translator.translateToLocal("for.gui.mail.order.filled.multiple");
+				orderFilledMessage = Component.translatable("for.gui.mail.order.filled.multiple").getString();
 				orderFilledMessage = orderFilledMessage.replace("%COUNT", Integer.toString(ordersToFillCount));
 			}
 

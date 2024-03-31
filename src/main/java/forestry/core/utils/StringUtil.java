@@ -40,14 +40,6 @@ public class StringUtil {
 		return source + delim + appendix;
 	}
 
-	public static String readableBoolean(boolean flag, String trueStr, String falseStr) {
-		if (flag) {
-			return trueStr;
-		} else {
-			return falseStr;
-		}
-	}
-
 	public static String floatAsPercent(float val) {
 		return (int) (val * 100) + " %";
 	}

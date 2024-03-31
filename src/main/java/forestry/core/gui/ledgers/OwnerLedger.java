@@ -53,7 +53,7 @@ public class OwnerLedger extends Ledger {
 
 		// Draw description
 		if (isFullyOpened()) {
-			drawHeader(transform, Translator.translateToLocal("for.gui.owner"), x + 22, y + 8);
+			drawHeader(transform, Component.translatable("for.gui.owner"), x + 22, y + 8);
 			drawText(transform, PlayerUtil.getOwnerName(owner), x + 22, y + 20);
 		}
 	}

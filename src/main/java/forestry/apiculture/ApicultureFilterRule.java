@@ -1,5 +1,6 @@
 package forestry.apiculture;
 
+import forestry.apiculture.genetics.BeeHelper;
 import net.minecraft.world.item.ItemStack;
 
 import genetics.api.individual.IIndividual;

@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -41,7 +42,7 @@ public abstract class PlayerUtil {
 
 	public static String getOwnerName(@Nullable GameProfile profile) {
 		if (profile == null) {
-			return Translator.translateToLocal("for.gui.derelict");
+			return Component.translatable("for.gui.derelict").getString();
 		} else {
 			return profile.getName();
 		}

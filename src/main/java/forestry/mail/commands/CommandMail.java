@@ -14,6 +14,7 @@ package forestry.mail.commands;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Style;
@@ -61,7 +62,7 @@ public class CommandMail {
 			return 1;
 		}
 
-		private static String makeTradeListEntry(ITradeStationInfo info) {
+		private static Component makeTradeListEntry(ITradeStationInfo info) {
 			ChatFormatting formatting = info.getState().isOk() ? ChatFormatting.GREEN : ChatFormatting.RED;
 
 			String tradegood = "[ ? ]";
@@ -76,7 +77,7 @@ public class CommandMail {
 				}
 			}
 
-			return String.format("%s%-12s | %-20s | %s", formatting, info.getAddress().getName(), tradegood, demand);
+			return Component.literal(String.format("%s%-12s | %-20s | %s", formatting, info.getAddress().getName(), tradegood, demand));
 		}
 	}
 

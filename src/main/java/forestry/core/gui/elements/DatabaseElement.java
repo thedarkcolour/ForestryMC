@@ -57,7 +57,7 @@ public class DatabaseElement extends ContainerElement {
 		return individual.getGenome();
 	}
 
-	public void addFertilityLine(String chromosomeName, IChromosomeType chromosome, int texOffset) {
+	public void addFertilityLine(Component chromosomeName, IChromosomeType chromosome, int texOffset) {
 		IGenome genome = getGenome();
 		IAllele activeAllele = genome.getActiveAllele(chromosome);
 		IAllele inactiveAllele = genome.getInactiveAllele(chromosome);
@@ -81,7 +81,7 @@ public class DatabaseElement extends ContainerElement {
 		if (!(allele instanceof IAlleleValue)) {
 			return;
 		}
-		addLine("  " + Translator.translateToLocal("for.gui.tolerance"), GuiElementFactory.INSTANCE.createToleranceInfo((IAlleleValue<EnumTolerance>) allele));
+		addLine(Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiElementFactory.INSTANCE.createToleranceInfo((IAlleleValue<EnumTolerance>) allele));
 	}
 
 	public void addMutation(int x, int y, int width, int height, IMutation mutation, IAllele species, IBreedingTracker breedingTracker) {
@@ -100,11 +100,11 @@ public class DatabaseElement extends ContainerElement {
 		add(element);
 	}
 
-	public void addLine(String firstText, String secondText, boolean dominant) {
+	public void addLine(Component firstText, Component secondText, boolean dominant) {
 		addLine(firstText, secondText, GuiElementFactory.INSTANCE.guiStyle, GuiElementFactory.INSTANCE.getStateStyle(dominant));
 	}
 
-	public void addLine(String leftText, Function<Boolean, String> toText, boolean dominant) {
+	public void addLine(Component leftText, Function<Boolean, Component> toText, boolean dominant) {
 		if (mode == DatabaseMode.BOTH) {
 			addLine(leftText, toText.apply(true), toText.apply(false), dominant, dominant);
 		} else {
@@ -119,7 +119,7 @@ public class DatabaseElement extends ContainerElement {
 			GuiElementFactory.INSTANCE.getStateStyle(individual.getGenome().getInactiveAllele(chromosome).isDominant()));
 	}*/
 
-	public void addLine(String leftText, Function<Boolean, String> toText, IChromosomeType chromosome) {
+	public void addLine(Component leftText, Function<Boolean, Component> toText, IChromosomeType chromosome) {
 		IGenome genome = getGenome();
 		IAllele activeAllele = genome.getActiveAllele(chromosome);
 		IAllele inactiveAllele = genome.getInactiveAllele(chromosome);
@@ -132,37 +132,37 @@ public class DatabaseElement extends ContainerElement {
 		}
 	}
 
-	public void addLine(String firstText, String secondText, String thirdText, boolean secondDominant, boolean thirdDominant) {
+	public void addLine(Component firstText, Component secondText, Component thirdText, boolean secondDominant, boolean thirdDominant) {
 		// todo: why aren't we rendering this?
 		Todos.todo();
 	}
 
-	public final void addLine(String chromosomeName, IChromosomeType chromosome) {
-		addLine(chromosomeName, (allele, b) -> allele.getDisplayName().getString(), chromosome);
+	public final void addLine(Component chromosomeName, IChromosomeType chromosome) {
+		addLine(chromosomeName, (allele, b) -> allele.getDisplayName(), chromosome);
 	}
 
-	public void addLine(String firstText, String secondText, Style firstStyle, Style secondStyle) {
+	public void addLine(Component firstText, Component secondText, Style firstStyle, Style secondStyle) {
 		ContainerElement first = addSplitText(preferredSize.width, firstText, firstStyle);
 		ContainerElement second = addSplitText(preferredSize.width, secondText, secondStyle);
 		addLine(first, second);
 	}
 
-	private ContainerElement addSplitText(int width, String text, Style style) {
+	private ContainerElement addSplitText(int width, Component text, Style style) {
 		Font fontRenderer = Minecraft.getInstance().font;
 		ContainerElement vertical = GuiElementFactory.vertical(width, 0);
-		for (FormattedCharSequence splitText : fontRenderer.split(Component.literal(text), width)) {
+		for (FormattedCharSequence splitText : fontRenderer.split(text, width)) {
 			vertical.label(splitText).setStyle(style);
 		}
 		return vertical;
 	}
 
-	private void addLine(String chromosomeName, GuiElement right) {
+	private void addLine(Component chromosomeName, GuiElement right) {
 		int center = preferredSize.width / 2;
 		GuiElement first = addSplitText(center, chromosomeName, GuiElementFactory.INSTANCE.guiStyle);
 		addLine(first, right);
 	}
 
-	private void addLine(String chromosomeName, GuiElement second, GuiElement third) {
+	private void addLine(Component chromosomeName, GuiElement second, GuiElement third) {
 		int center = preferredSize.width / 2;
 		GuiElement first = addSplitText(center, chromosomeName, GuiElementFactory.INSTANCE.guiStyle);
 		addLine(first, second, third);
@@ -189,16 +189,16 @@ public class DatabaseElement extends ContainerElement {
 		second.setXPosition(secondColumn);
 	}
 
-	public <A extends IAllele> void addLine(String chromosomeName, BiFunction<A, Boolean, String> toText, IChromosomeType chromosome) {
+	public <A extends IAllele> void addLine(Component chromosomeName, BiFunction<A, Boolean, Component> toText, IChromosomeType chromosome) {
 		addAlleleRow(chromosomeName, toText, chromosome, null);
 	}
 
-	public <A extends IAllele> void addLine(String chromosomeName, BiFunction<A, Boolean, String> toText, IChromosomeType chromosome, boolean dominant) {
+	public <A extends IAllele> void addLine(Component chromosomeName, BiFunction<A, Boolean, Component> toText, IChromosomeType chromosome, boolean dominant) {
 		addAlleleRow(chromosomeName, toText, chromosome, dominant);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <A extends IAllele> void addAlleleRow(String chromosomeName, BiFunction<A, Boolean, String> toString, IChromosomeType chromosome, @Nullable Boolean dominant) {
+	private <A extends IAllele> void addAlleleRow(Component chromosomeName, BiFunction<A, Boolean, Component> toString, IChromosomeType chromosome, @Nullable Boolean dominant) {
 		IGenome genome = getGenome();
 		A activeAllele = (A) genome.getActiveAllele(chromosome);
 		A inactiveAllele = (A) genome.getInactiveAllele(chromosome);

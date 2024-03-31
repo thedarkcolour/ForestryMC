@@ -15,6 +15,7 @@ import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
 
+import genetics.Genetics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
@@ -128,8 +129,9 @@ import net.minecraftforge.registries.RegisterEvent;
  *
  * @author SirSengir
  */
-@Mod("forestry")
+@Mod(Forestry.ID)
 public class Forestry {
+    public static final String ID = "forestry";
 
 	public Forestry() {
 		ForestryAPI.errorStateRegistry = new ErrorStateRegistry();
@@ -155,8 +157,10 @@ public class Forestry {
 		MinecraftForge.EVENT_BUS.register(this);
 		Proxies.render = DistExecutor.safeRunForDist(() -> ProxyRenderClient::new, () -> ProxyRender::new);
 		Proxies.common = DistExecutor.safeRunForDist(() -> ProxyClient::new, () -> ProxyCommon::new);
+        // Modules must be set up before Genetics API
+        ModuleManager.getModuleHandler().runSetup();
+        Genetics.initGenetics(modEventBus);
 
-		ModuleManager.getModuleHandler().runSetup();
 		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new Client(modEventBus, networkHandler)::run);
 		modEventBus.addListener(EventPriority.NORMAL, false, FMLCommonSetupEvent.class, evt -> networkHandler.serverPacketHandler());
 	}
@@ -289,17 +293,17 @@ public class Forestry {
 		@SubscribeEvent
 		public static void register(RegisterEvent event) {
 			event.register(Registry.RECIPE_SERIALIZER_REGISTRY, helper -> {
-				helper.register(ICarpenterRecipe.TYPE.toString(), new CarpenterRecipe.Serializer());
-				helper.register(ICentrifugeRecipe.TYPE.toString(), new CentrifugeRecipe.Serializer());
-				helper.register(IFabricatorRecipe.TYPE.toString(), new FabricatorRecipe.Serializer());
-				helper.register(IFabricatorSmeltingRecipe.TYPE.toString(), new FabricatorSmeltingRecipe.Serializer());
-				helper.register(IFermenterRecipe.TYPE.toString(), new FermenterRecipe.Serializer());
-				helper.register(IHygroregulatorRecipe.TYPE.toString(), new HygroregulatorRecipe.Serializer());
-				helper.register(IMoistenerRecipe.TYPE.toString(), new MoistenerRecipe.Serializer());
-				helper.register(ISqueezerRecipe.TYPE.toString(), new SqueezerRecipe.Serializer());
-				helper.register(ISqueezerContainerRecipe.TYPE.toString(), new SqueezerContainerRecipe.Serializer());
-				helper.register(IStillRecipe.TYPE.toString(), new StillRecipe.Serializer());
-				helper.register(ISolderRecipe.TYPE.toString(), new CircuitRecipe.Serializer());
+				helper.register(new ResourceLocation(ICarpenterRecipe.TYPE.toString()), new CarpenterRecipe.Serializer());
+				helper.register(new ResourceLocation(ICentrifugeRecipe.TYPE.toString()), new CentrifugeRecipe.Serializer());
+				helper.register(new ResourceLocation(IFabricatorRecipe.TYPE.toString()), new FabricatorRecipe.Serializer());
+				helper.register(new ResourceLocation(IFabricatorSmeltingRecipe.TYPE.toString()), new FabricatorSmeltingRecipe.Serializer());
+				helper.register(new ResourceLocation(IFermenterRecipe.TYPE.toString()), new FermenterRecipe.Serializer());
+				helper.register(new ResourceLocation(IHygroregulatorRecipe.TYPE.toString()), new HygroregulatorRecipe.Serializer());
+				helper.register(new ResourceLocation(IMoistenerRecipe.TYPE.toString()), new MoistenerRecipe.Serializer());
+				helper.register(new ResourceLocation(ISqueezerRecipe.TYPE.toString()), new SqueezerRecipe.Serializer());
+				helper.register(new ResourceLocation(ISqueezerContainerRecipe.TYPE.toString()), new SqueezerContainerRecipe.Serializer());
+				helper.register(new ResourceLocation(IStillRecipe.TYPE.toString()), new StillRecipe.Serializer());
+				helper.register(new ResourceLocation(ISolderRecipe.TYPE.toString()), new CircuitRecipe.Serializer());
 			});
 
 			event.register(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, helper -> {

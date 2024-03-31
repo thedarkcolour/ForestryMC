@@ -1,5 +1,6 @@
 package forestry.lepidopterology;
 
+import forestry.api.lepidopterology.genetics.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
@@ -10,10 +11,6 @@ import com.mojang.authlib.GameProfile;
 import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IResearchHandler;
 import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
-import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.config.Constants;
 import forestry.core.genetics.root.IResearchPlugin;
 import forestry.core.genetics.root.ResearchHandler;
@@ -116,6 +113,6 @@ public class ButterflyPlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		ButterflyManager.butterflyRoot = ButterflyManager.butterflyRootDefinition.get();
+		ButterflyManager.butterflyRoot = instance.<IButterflyRoot>getRoot(ButterflyRoot.UID).get();
 	}
 }

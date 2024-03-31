@@ -122,12 +122,12 @@ public class GuiHabitatFormer extends GuiForestryTitled<ContainerHabitatFormer> 
 	@Override
 	protected void renderBg(PoseStack transform, float partialTicks, int mouseX, int mouseY) {
 		super.renderBg(transform, partialTicks, mouseX, mouseY);
-		drawCenteredString(transform, Translator.translateToLocal("for.gui.habitat_former.climate.temperature"), imageWidth / 2, 23);
-		drawCenteredString(transform, Translator.translateToLocal("for.gui.habitat_former.climate.humidity"), imageWidth / 2, 47);
+		drawCenteredString(transform, Component.translatable("for.gui.habitat_former.climate.temperature"), imageWidth / 2, 23);
+		drawCenteredString(transform, Component.translatable("for.gui.habitat_former.climate.humidity"), imageWidth / 2, 47);
 	}
 
-	private void drawCenteredString(PoseStack transform, String text, int x, int y) {
-		minecraft.font.drawShadow(transform, text, leftPos + (float) (x - (double) minecraft.font.width(text) / 2), (float) topPos + y, 16777215);
+	private void drawCenteredString(PoseStack transform, Component text, int x, int y) {
+		font.drawShadow(transform, text, leftPos + (float) (x - (double) font.width(text) / 2), (float) topPos + y, 16777215);
 	}
 
 	public void setClimate(ClimateType type, String text) {

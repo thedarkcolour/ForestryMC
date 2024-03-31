@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
+import forestry.api.arboriculture.genetics.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -13,10 +14,6 @@ import net.minecraft.world.item.Items;
 
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
-import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.IResearchHandler;
@@ -58,8 +55,6 @@ import genetics.api.root.translator.IItemTranslator;
 
 @GeneticPlugin(modId = Constants.MOD_ID)
 public class TreePlugin implements IGeneticPlugin {
-	public static final IRootDefinition<TreeRoot> ROOT = GeneticsAPI.apiInstance.getRoot(TreeRoot.UID);
-
 	@Override
 	public void registerClassifications(IClassificationRegistry registry) {
 		TreeBranchDefinition.registerBranches(registry);
@@ -170,7 +165,7 @@ public class TreePlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		TreeManager.treeRoot = TreeManager.treeRootDefinition.get();
+		TreeManager.treeRoot = instance.<ITreeRoot>getRoot(TreeRoot.UID).get();
 
 		// Modes
 		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.easy);

@@ -63,10 +63,10 @@ public class ErrorLedger extends Ledger {
 		// Write description if fully opened
 		if (isFullyOpened()) {
 			//TODO textcomponent
-			y += drawHeader(transform, getTooltip().getString(), xHeader, y);
+			y += drawHeader(transform, getTooltip(), xHeader, y);
 			y += 4;
 
-			String helpString = Translator.translateToLocal(state.getUnlocalizedHelp());
+			Component helpString = Component.translatable(state.getUnlocalizedHelp());
 			drawSplitText(transform, helpString, xBody, y, maxTextWidth);
 		}
 	}

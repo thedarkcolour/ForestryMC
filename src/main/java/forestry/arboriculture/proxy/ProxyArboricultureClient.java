@@ -12,22 +12,17 @@ package forestry.arboriculture.proxy;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.FoliageColor;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import forestry.api.arboriculture.genetics.IAlleleFruit;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.arboriculture.models.ModelDecorativeLeaves;
@@ -80,6 +75,7 @@ public class ProxyArboricultureClient extends ProxyArboriculture implements ICli
 		}
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public void setupClient(FMLClientSetupEvent event) {
 		// fruit overlays require CUTOUT_MIPPED, even in Fast graphics
@@ -90,10 +86,10 @@ public class ProxyArboricultureClient extends ProxyArboriculture implements ICli
 		ItemBlockRenderTypes.setRenderLayer(ArboricultureBlocks.SAPLING_GE.block(), RenderType.cutout());
 		ArboricultureBlocks.DOORS.getBlocks().forEach((block) -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent()));
 
-		AlleleUtils.forEach(TreeChromosomes.SPECIES, (treeSpecies) -> {
-			ForgeModelBakery.addSpecialModel(treeSpecies.getBlockModel());
-			ForgeModelBakery.addSpecialModel(treeSpecies.getItemModel());
-		});
+		//AlleleUtils.forEach(TreeChromosomes.SPECIES, (treeSpecies) -> {
+		//	ForgeModelBakery.addSpecialModel(treeSpecies.getBlockModel());
+		//	ForgeModelBakery.addSpecialModel(treeSpecies.getItemModel());
+		//});
 	}
 
 	@Override

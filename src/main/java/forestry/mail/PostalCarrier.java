@@ -11,6 +11,7 @@
 package forestry.mail;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -47,9 +48,10 @@ public class PostalCarrier implements IPostalCarrier {
 		return type;
 	}
 
+	// todo this is unused, delete?
 	@Override
 	public String getName() {
-		return Translator.translateToLocal("for.gui.addressee." + type);
+		return Component.translatable("for.gui.addressee." + type).getString();
 	}
 
 	@Override

@@ -6,13 +6,13 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -31,8 +31,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 
@@ -101,7 +99,7 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 		}
 
 		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData) {
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
 			IAlleleTreeSpecies species = extraData.get(TileSapling.TREE_SPECIES);
 			if (species == null) {
 				species = TreeDefinition.Oak.getSpecies();
@@ -111,7 +109,7 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 
 		@Override
 		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-			return getQuads(state, side, rand, ModelData.EMPTY);
+			return getQuads(state, side, rand, ModelData.EMPTY, null);
 		}
 
 		@Override

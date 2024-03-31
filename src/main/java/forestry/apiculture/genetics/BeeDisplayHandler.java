@@ -122,7 +122,7 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 		public void addTooltip(ToolTip toolTip, IGenome genome, IBee individual) {
 			Boolean value = getActiveValue(genome);
 			if (value) {
-				toolTip.text(GenericRatings.rateActivityTime(true, false)).style(ChatFormatting.RED);
+				toolTip.add(GenericRatings.rateActivityTime(true, false)).style(ChatFormatting.RED);
 			}
 		}
 	},

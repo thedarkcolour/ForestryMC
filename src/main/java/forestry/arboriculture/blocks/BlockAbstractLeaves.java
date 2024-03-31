@@ -31,8 +31,6 @@ import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.blocks.IColoredBlock;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 /**
  * Parent class for shared behavior between {@link BlockDefaultLeaves} and {@link BlockForestryLeaves}
  */

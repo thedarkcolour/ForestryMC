@@ -65,8 +65,8 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 	protected void renderBg(PoseStack transform, float partialTicks, int mouseY, int mouseX) {
 		super.renderBg(transform, partialTicks, mouseY, mouseX);
 
-		int offset = (138 - getFontRenderer().width(Translator.translateToLocal("for.gui.imprinter"))) / 2;
-		getFontRenderer().draw(transform, Translator.translateToLocal("for.gui.imprinter"), startX + 8 + offset, startY + 16, ColourProperties.INSTANCE.get("gui.screen"));
+		int offset = (138 - getFontRenderer().width(Component.translatable("for.gui.imprinter"))) / 2;
+		getFontRenderer().draw(transform, Component.translatable("for.gui.imprinter"), startX + 8 + offset, startY + 16, ColourProperties.INSTANCE.get("gui.screen"));
 
 		IAlleleBeeSpecies primary = itemInventory.getPrimary();
 		drawBeeSpeciesIcon(primary, startX + 12, startY + 32);
@@ -76,7 +76,7 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 		drawBeeSpeciesIcon(secondary, startX + 12, startY + 52);
 		getFontRenderer().draw(transform, secondary.getDisplayName().getString(), startX + 32, startY + 56, ColourProperties.INSTANCE.get("gui.screen"));
 
-		String youCheater = Translator.translateToLocal("for.gui.imprinter.cheater");
+		Component youCheater = Component.translatable("for.gui.imprinter.cheater");
 		offset = (138 - getFontRenderer().width(youCheater)) / 2;
 		getFontRenderer().draw(transform, youCheater, startX + 8 + offset, startY + 76, ColourProperties.INSTANCE.get("gui.screen"));
 

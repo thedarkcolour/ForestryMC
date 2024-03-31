@@ -26,7 +26,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonParseException;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -50,8 +52,7 @@ import com.mojang.datafixers.util.Pair;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
+import net.minecraftforge.client.model.SeparateTransformsModel;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
@@ -105,8 +106,8 @@ public class ButterflyItemModel extends AbstractBakedModel {
 			float scale = 1F / 16F;
 			float sizeValue = size.getValue();
 			String identifier = species.getRegistryName().getPath();
-			ModelState transform = new SimpleModelState(getTransformations(sizeValue));//-0.03125F, 0.25F - sizeValue * 0.37F, -0.03125F + sizeValue * scale, sizeValue * 1.4F
-			bakedModel = new PerspectiveMapWrapper(new TRSRBakedModel(subModels.get(identifier), 0, 0, 0, 1), transform);
+			ModelState transform = new SimpleModelState(Transformation.identity()/*getTransformations(sizeValue)*/);//-0.03125F, 0.25F - sizeValue * 0.37F, -0.03125F + sizeValue * scale, sizeValue * 1.4F
+			bakedModel = new SeparateTransformsModel.Baked(false, true, false, ResourceUtil.getMissingTexture(), ItemOverrides.EMPTY, new TRSRBakedModel(subModels.get(identifier), 0, 0, 0, 1), ImmutableMap.of());
 			cache.put(Pair.of(identifier, sizeValue), bakedModel);
 			return bakedModel;
 		}

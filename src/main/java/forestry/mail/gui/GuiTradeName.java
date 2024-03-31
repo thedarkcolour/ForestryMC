@@ -79,7 +79,7 @@ public class GuiTradeName extends GuiForestry<ContainerTradeName> {
 	protected void renderBg(PoseStack transform, float partialTicks, int var3, int var2) {
 		super.renderBg(transform, partialTicks, var3, var2);
 
-		String prompt = Translator.translateToLocal("for.gui.mail.nametrader");
+		Component prompt = Component.translatable("for.gui.mail.nametrader");
 		textLayout.startPage(transform);
 		textLayout.newLine();
 		textLayout.drawCenteredLine(transform, prompt, 0, ColourProperties.INSTANCE.get("gui.mail.text"));

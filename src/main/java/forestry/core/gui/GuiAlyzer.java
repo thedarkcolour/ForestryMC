@@ -107,20 +107,20 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		}
 	}
 
-	public final void drawRow(PoseStack transform, String text0, String text1, String text2, IIndividual individual, IChromosomeType chromosome) {
+	public final void drawRow(PoseStack transform, Component text0, Component text1, Component text2, IIndividual individual, IChromosomeType chromosome) {
 		textLayout.drawRow(transform, text0, text1, text2, ColourProperties.INSTANCE.get("gui.screen"), getColorCoding(individual.getGenome().getActiveAllele(chromosome).isDominant()),
 				getColorCoding(individual.getGenome().getInactiveAllele(chromosome).isDominant()));
 	}
 
-	public final void drawChromosomeRow(PoseStack transform, String chromosomeName, IIndividual individual, IChromosomeType chromosome) {
+	public final void drawChromosomeRow(PoseStack transform, Component chromosomeName, IIndividual individual, IChromosomeType chromosome) {
 		IAllele active = individual.getGenome().getActiveAllele(chromosome);
 		IAllele inactive = individual.getGenome().getInactiveAllele(chromosome);
-		textLayout.drawRow(transform, chromosomeName, active.getDisplayName().getString(), inactive.getDisplayName().getString(),
+		textLayout.drawRow(transform, chromosomeName, active.getDisplayName(), inactive.getDisplayName(),
 				ColourProperties.INSTANCE.get("gui.screen"), getColorCoding(active.isDominant()),
 				getColorCoding(inactive.isDominant()));
 	}
 
-	public final void drawSpeciesRow(PoseStack transform, String text0, IIndividual individual, IChromosomeType chromosome, IOrganismType type) {
+	public final void drawSpeciesRow(PoseStack transform, Component text0, IIndividual individual, IChromosomeType chromosome, IOrganismType type) {
 		IAlleleForestrySpecies primary = (IAlleleForestrySpecies) individual.getGenome().getPrimary();
 		IAlleleForestrySpecies secondary = (IAlleleForestrySpecies) individual.getGenome().getSecondary();
 
@@ -142,9 +142,9 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 	}
 
 	@Nullable
-	public static String checkCustomName(String key) {
+	public static Component checkCustomName(String key) {
 		if (Translator.canTranslateToLocal(key)) {
-			return Translator.translateToLocal(key);
+			return Component.translatable(key);
 		} else {
 			return null;
 		}
@@ -221,7 +221,8 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.startPage(transform);
 
 		textLayout.newLine();
-		String title = Translator.translateToLocal("for.gui.portablealyzer").toUpperCase(Locale.ENGLISH);
+		// todo figure this out
+		Component title = Component.translatable("for.gui.portablealyzer")/*.toUpperCase(Locale.ENGLISH)*/;
 		textLayout.drawCenteredLine(transform, title, 8, 208, ColourProperties.INSTANCE.get("gui.screen"));
 		textLayout.newLine();
 
@@ -231,15 +232,15 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.newLine();
 		textLayout.newLine();
 
-		textLayout.drawLine(transform, Translator.translateToLocal("for.gui.alyzer.overview") + ":", COLUMN_0 + 4);
+		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.overview").append(":"), COLUMN_0 + 4);
 		textLayout.newLine();
-		textLayout.drawLine(transform, "I  : " + Translator.translateToLocal("for.gui.general"), COLUMN_0 + 4);
+		textLayout.drawLine(transform, Component.literal("I  : ").append(Component.translatable("for.gui.general")), COLUMN_0 + 4);
 		textLayout.newLine();
-		textLayout.drawLine(transform, "II : " + Translator.translateToLocal("for.gui.environment"), COLUMN_0 + 4);
+		textLayout.drawLine(transform, Component.literal("II : ").append(Component.translatable("for.gui.environment")), COLUMN_0 + 4);
 		textLayout.newLine();
-		textLayout.drawLine(transform, "III: " + Translator.translateToLocal("for.gui.produce"), COLUMN_0 + 4);
+		textLayout.drawLine(transform, Component.literal("III: ").append(Component.translatable("for.gui.produce")), COLUMN_0 + 4);
 		textLayout.newLine();
-		textLayout.drawLine(transform, "IV : " + Translator.translateToLocal("for.gui.evolution"), COLUMN_0 + 4);
+		textLayout.drawLine(transform, Component.literal("IV : ").append(Component.translatable("for.gui.evolution")), COLUMN_0 + 4);
 
 		textLayout.endPage(transform);
 	}
@@ -248,7 +249,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 
 		textLayout.startPage(transform);
 
-		textLayout.drawLine(transform, Translator.translateToLocal("for.gui.alyzer.classification") + ":", 12);
+		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.classification").append(":"), 12);
 		textLayout.newLine();
 
 		Stack<IClassification> hierarchy = new Stack<>();
@@ -288,9 +289,10 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.drawLine(transform, "SPECIES", 170, 0xebae85);
 
 		textLayout.newLine();
-		textLayout.drawLine(transform, Translator.translateToLocal("for.gui.alyzer.authority") + ": " + individual.getGenome().getPrimary().getAuthority(), 12);
+		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.authority").append(": ").append(individual.getGenome().getPrimary().getAuthority()), 12);
 		if (AlleleUtils.isBlacklisted(individual.getIdentifier())) {
-			String extinct = ">> " + Translator.translateToLocal("for.gui.alyzer.extinct").toUpperCase(Locale.ENGLISH) + " <<";
+			// todo
+			String extinct = ">> " + Component.translatable("for.gui.alyzer.extinct")/*.toUpperCase(Locale.ENGLISH)*/ + " <<";
 			getFontRenderer().drawShadow(transform, extinct, leftPos + 200 - getFontRenderer().width(extinct),
 					topPos + textLayout.getLineY(), ColourProperties.INSTANCE.get("gui.beealyzer.dominant"));
 		}
@@ -298,7 +300,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.newLine();
 		String description = individual.getGenome().getPrimary().getDescription().getString();
 		if (StringUtils.isBlank(description) || description.startsWith("for.description.")) {
-			textLayout.drawSplitLine(Translator.translateToLocal("for.gui.alyzer.nodescription"), 12, 200, 0x666666);
+			textLayout.drawSplitLine(Component.translatable("for.gui.alyzer.nodescription"), 12, 200, 0x666666);
 		} else {
 			String[] tokens = description.split("\\|");
 			textLayout.drawSplitLine(tokens[0], 12, 200, 0x666666);
@@ -314,7 +316,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 	@SuppressWarnings("unchecked")
 	public void drawAnalyticsPageMutations(PoseStack transform, IIndividual individual) {
 		textLayout.startPage(transform, COLUMN_0, COLUMN_1, COLUMN_2);
-		textLayout.drawLine(transform, Translator.translateToLocal("for.gui.beealyzer.mutations") + ":", COLUMN_0);
+		textLayout.drawLine(transform, Component.translatable("for.gui.beealyzer.mutations").append(":"), COLUMN_0);
 		textLayout.newLine();
 
 		//RenderHelper.enableGUIStandardItemLighting(); TODO Gui Light

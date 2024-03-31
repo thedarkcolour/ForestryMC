@@ -13,7 +13,8 @@ package forestry.core.circuits;
 
 import forestry.api.circuits.ICircuitLayout;
 import forestry.api.circuits.ICircuitSocketType;
-import forestry.core.utils.Translator;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CircuitLayout implements ICircuitLayout {
 	private final String uid;
@@ -30,13 +31,13 @@ public class CircuitLayout implements ICircuitLayout {
 	}
 
 	@Override
-	public String getName() {
-		return Translator.translateToLocal("for.circuit.layout." + this.uid);
+	public Component getName() {
+		return Component.translatable("for.circuit.layout." + this.uid);
 	}
 
 	@Override
-	public String getUsage() {
-		return Translator.translateToLocal("for.circuit.layout." + this.uid + ".usage");
+	public MutableComponent getUsage() {
+		return Component.translatable("for.circuit.layout." + this.uid + ".usage");
 	}
 
 	@Override

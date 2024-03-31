@@ -5,6 +5,9 @@
  ******************************************************************************/
 package forestry.api.circuits;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+
 public interface ICircuitLayout {
 
 	/**
@@ -15,12 +18,12 @@ public interface ICircuitLayout {
 	/**
 	 * localized name for this circuit layout
 	 */
-	String getName();
+	Component getName();
 
 	/**
 	 * localized string for how this circuit layout is used
 	 */
-	String getUsage();
+	MutableComponent getUsage();
 
 	/**
 	 * Specifies where a circuit layout is used.

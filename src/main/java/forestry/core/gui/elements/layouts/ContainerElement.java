@@ -233,23 +233,25 @@ public class ContainerElement extends GuiElement {
 	}
 
 	public LabelElement label(String text) {
-		return label(text, defaultStyle());
+		return label(Component.literal(text), defaultStyle());
 	}
 
-	public LabelElement label(String text, Style style) {
+	public LabelElement label(Component text, Style style) {
 		return label(text, Alignment.TOP_LEFT, style);
 	}
 
-	public LabelElement label(String text, Alignment align) {
+	public LabelElement label(Component text, Alignment align) {
 		return label(text, align, defaultStyle());
 	}
 
-	public LabelElement label(String text, Alignment align, Style textStyle) {
+	public LabelElement label(Component text, Alignment align, Style textStyle) {
 		return label(text, 0, 0, -1, 12, align, textStyle);
 	}
 
-	public LabelElement label(String text, int x, int y, int width, int height, Alignment align, Style textStyle) {
-		return new LabelElement.Builder(this::add, text, (element) -> element.setPos(x, y).setSize(width, height).setAlign(align)).fitText().setStyle(textStyle).create();
+	public LabelElement label(Component text, int x, int y, int width, int height, Alignment align, Style textStyle) {
+		return new LabelElement.Builder(this::add, text, element -> {
+            return element.setPos(x, y).setSize(width, height).setAlign(align);
+        }).fitText().setStyle(textStyle).create();
 	}
 
 	public ContainerElement vertical(int width, int spacing) {

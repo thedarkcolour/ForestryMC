@@ -6,6 +6,7 @@ import java.util.Optional;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -40,7 +41,7 @@ public class CommandListAlleles {
 		for (IChromosome chromosome : genome.getChromosomes()) {
 			IChromosomeType type = chromosome.getType();
 
-			CommandHelpers.sendChatMessage(context.getSource(), type.getName() + ": " + genome.getActiveAllele(type).getDisplayName().getString() + " " + genome.getInactiveAllele(type).getDisplayName().getString());
+			CommandHelpers.sendChatMessage(context.getSource(), Component.literal(type.getName() + ": ").append(genome.getActiveAllele(type).getDisplayName()).append(Component.literal(" ")).append(genome.getInactiveAllele(type).getDisplayName()));
 		}
 
 		GeneticsAPI.apiInstance.getAlleleRegistry().getRegisteredAlleles().forEach(a -> System.out.println(a.getRegistryName() + ": " + a.getDisplayName().getString()));

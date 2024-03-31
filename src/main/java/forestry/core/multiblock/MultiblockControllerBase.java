@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -490,7 +491,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	 */
 	protected void isBlockGoodForExteriorLevel(int level, Level world, BlockPos pos) throws MultiblockValidationException {
 		Block block = world.getBlockState(pos).getBlock();
-		throw new MultiblockValidationException(Translator.translateToLocalFormatted("for.multiblock.error.invalid.interior", block), pos);
+		throw new MultiblockValidationException(Component.translatable("for.multiblock.error.invalid.interior", block).getString(), pos);
 	}
 
 	/**
@@ -502,7 +503,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	 */
 	protected void isBlockGoodForInterior(Level world, BlockPos pos) throws MultiblockValidationException {
 		Block block = world.getBlockState(pos).getBlock();
-		throw new MultiblockValidationException(Translator.translateToLocalFormatted("for.multiblock.error.invalid.interior", block), pos);
+		throw new MultiblockValidationException(Component.translatable("for.multiblock.error.invalid.interior", block).getString(), pos);
 	}
 
 	@Override

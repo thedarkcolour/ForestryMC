@@ -9,6 +9,7 @@ import forestry.api.genetics.IBreedingTrackerManager;
 import forestry.api.genetics.IClimateHelper;
 import forestry.api.genetics.IGeneticRegistry;
 import forestry.api.genetics.filter.IFilterRegistry;
+import forestry.core.genetics.alleles.GeneticRegistry;
 
 /**
  * Holds a static reference to the {@link IGeneticRegistry}.

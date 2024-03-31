@@ -28,7 +28,7 @@ public class CrateItems {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCrates.class);
 
 	// TODO map of item to crate or similar?
-	public static final FeatureItem<ItemCrated> CRATE = REGISTRY.item(() -> new ItemCrated(ItemStack.EMPTY), "crate");
+	public static final FeatureItem<ItemCrated> CRATE = REGISTRY.item(() -> new ItemCrated(() -> ItemStack.EMPTY), "crate");
 
 	// Core
 	public static final FeatureItem<ItemCrated> CRATED_PEAT = register(CoreItems.PEAT, "crated_peat");
@@ -103,7 +103,8 @@ public class CrateItems {
 	public static final FeatureItem<ItemCrated> CRATED_PROPOLIS = register(ApicultureItems.PROPOLIS.get(EnumPropolis.NORMAL), "crated_propolis");
 	public static final FeatureItem<ItemCrated> CRATED_HONEYDEW = register(ApicultureItems.HONEYDEW, "crated_honeydew");
 	public static final FeatureItem<ItemCrated> CRATED_ROYAL_JELLY = register(ApicultureItems.ROYAL_JELLY, "crated_royal_jelly");
-	public static final FeatureItemGroup<ItemCrated, EnumHoneyComb> CRATED_BEE_COMBS = REGISTRY.itemGroup(comb -> new ItemCrated(ApicultureItems.BEE_COMBS.get(comb).stack()), "crated_bee_comb", EnumHoneyComb.VALUES);
+	// todo might be able to replace lambda with method reference
+	public static final FeatureItemGroup<ItemCrated, EnumHoneyComb> CRATED_BEE_COMBS = REGISTRY.itemGroup(comb -> new ItemCrated(() -> ApicultureItems.BEE_COMBS.get(comb).stack()), "crated_bee_comb", EnumHoneyComb.VALUES);
 
 	// TODO: Arboriculture crates (requires tags)
 	// ICrateRegistry crateRegistry = StorageManager.crateRegistry;
@@ -123,7 +124,7 @@ public class CrateItems {
 	}
 
 	private static FeatureItem<ItemCrated> register(ItemLike contained, String identifier) {
-		FeatureItem<ItemCrated> item = REGISTRY.item(() -> new ItemCrated(new ItemStack(contained)), identifier);
+		FeatureItem<ItemCrated> item = REGISTRY.item(() -> new ItemCrated(() -> new ItemStack(contained)), identifier);
 		CRATES.add(item);
 		return item;
 	}

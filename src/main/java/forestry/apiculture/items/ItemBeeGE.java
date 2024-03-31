@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import forestry.api.apiculture.BeeManager;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
@@ -53,7 +54,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 	@Nullable
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		return GeneticHelper.createOrganism(stack, type, BeeHelper.getRoot().getDefinition());
+		return GeneticHelper.createOrganism(stack, type, BeeManager.beeRoot.getDefinition());
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 
 	public void addCreativeItems(NonNullList<ItemStack> subItems, boolean hideSecrets) {
 		//so need to adjust init sequence
-		IBeeRoot root = BeeHelper.getRoot();
+		IBeeRoot root = BeeManager.beeRoot;
 		for (IBee bee : root.getIndividualTemplates()) {
 			// Don't show secret bees unless ordered to.
 			if (hideSecrets && bee.isSecret() && !Config.isDebug) {

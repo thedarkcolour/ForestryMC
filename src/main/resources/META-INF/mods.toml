@@ -19,21 +19,6 @@ license="GNU Lesser Public License v3"
 	Trees, bees and more.
 	'''
 
-[[mods]]
-	modId="geneticsapi"
-	version="1.0.0"
-	displayName="Genetics API"
-	description='''
-	The Genetic API providers a api to add and manage items with genetic data.
-	'''
-
-[[dependencies.forestry]]
-	modId="geneticsapi"
-	mandatory=true
-	versionRange="1.0.0"
-	ordering="BEFORE"
-	side="BOTH"
-
 [[dependencies.forestry]]
 	modId="forge"
 	mandatory=true

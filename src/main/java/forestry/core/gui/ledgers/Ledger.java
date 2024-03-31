@@ -231,26 +231,26 @@ public abstract class Ledger {
 		GuiComponent.blit(transform, x, y, manager.gui.getBlitOffset(), 16, 16, sprite);
 	}
 
-	protected int drawHeader(PoseStack transform, String string, int x, int y) {
+	protected int drawHeader(PoseStack transform, Component string, int x, int y) {
 		return drawShadowText(transform, string, x, y, fontColorHeader);
 	}
 
-	protected int drawSubheader(PoseStack transform, String string, int x, int y) {
+	protected int drawSubheader(PoseStack transform, Component string, int x, int y) {
 		return drawShadowText(transform, string, x, y, fontColorSubheader);
 	}
 
-	protected int drawShadowText(PoseStack transform, String string, int x, int y, int color) {
+	protected int drawShadowText(PoseStack transform, Component string, int x, int y, int color) {
 		return drawSplitText(transform, string, x, y, maxTextWidth, color, true);
 	}
 
-	protected int drawSplitText(PoseStack transform, String string, int x, int y, int width) {
+	protected int drawSplitText(PoseStack transform, Component string, int x, int y, int width) {
 		return drawSplitText(transform, string, x, y, width, fontColorText, false);
 	}
 
-	protected int drawSplitText(PoseStack transform, String string, int x, int y, int width, int color, boolean shadow) {
+	protected int drawSplitText(PoseStack transform, Component string, int x, int y, int width, int color, boolean shadow) {
 		int originalY = y;
 		Minecraft minecraft = Minecraft.getInstance();
-		List<FormattedCharSequence> strings = minecraft.font.split(Component.literal(string), width);
+		List<FormattedCharSequence> strings = minecraft.font.split(string, width);
 		for (FormattedCharSequence obj : strings) {
 			if (shadow) {
 				minecraft.font.drawShadow(transform, obj, x, y, color);

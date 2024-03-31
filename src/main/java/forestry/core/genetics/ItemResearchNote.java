@@ -116,11 +116,11 @@ public class ItemResearchNote extends ItemForestry {
 					return tooltips;
 				}
 
-				Component species1 = encoded.getFirstParent().getDisplayName();
-				Component species2 = encoded.getSecondParent().getDisplayName();
+				String species1 = encoded.getFirstParent().getDisplayName().getString();
+				String species2 = encoded.getSecondParent().getDisplayName().getString();
 				String mutationChanceKey = EnumMutateChance.rateChance(encoded.getBaseChance()).toString().toLowerCase(Locale.ENGLISH);
-				String mutationChance = Translator.translateToLocal("for.researchNote.chance." + mutationChanceKey);
-				Component speciesResult = encoded.getResultingSpecies().getDisplayName();
+				String mutationChance = Component.translatable("for.researchNote.chance." + mutationChanceKey).getString();
+				String speciesResult = encoded.getResultingSpecies().getDisplayName().getString();
 
 				tooltips.add(Component.translatable("for.researchNote.discovery.0"));
 				tooltips.add(Component.translatable("for.researchNote.discovery.1", species1, species2));

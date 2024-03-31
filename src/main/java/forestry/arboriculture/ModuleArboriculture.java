@@ -13,10 +13,8 @@ package forestry.arboriculture;
 import java.util.function.Consumer;
 
 import forestry.apiculture.features.ApicultureFeatures;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.DistExecutor;
@@ -27,7 +25,6 @@ import forestry.api.arboriculture.TreeManager;
 import forestry.api.core.IArmorNaturalist;
 import forestry.api.modules.ForestryModule;
 import forestry.arboriculture.commands.CommandTree;
-import forestry.arboriculture.features.ArboricultureFeatures;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.arboriculture.genetics.TreeFactory;
 import forestry.arboriculture.genetics.TreeMutationFactory;
@@ -36,7 +33,6 @@ import forestry.arboriculture.proxy.ProxyArboriculture;
 import forestry.arboriculture.proxy.ProxyArboricultureClient;
 import forestry.arboriculture.villagers.RegisterVillager;
 import forestry.core.ModuleCore;
-import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
 import forestry.core.utils.ForgeUtils;

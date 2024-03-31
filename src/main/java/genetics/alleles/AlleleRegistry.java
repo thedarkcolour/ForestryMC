@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import forestry.Forestry;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,7 +34,7 @@ public class AlleleRegistry implements IAlleleRegistry {
 	private final Map<ResourceLocation, IAllele> registry;
 	private final HashMultimap<IChromosomeType, IAllele> allelesByType = HashMultimap.create();
 	private final HashMultimap<IAllele, IChromosomeType> typesByAllele = HashMultimap.create();
-	private final ResourceLocation DEFAULT_NAME = new ResourceLocation(Genetics.MOD_ID, "default");
+	private final ResourceLocation DEFAULT_NAME = new ResourceLocation(Forestry.ID, "default");
 	private final IAllele defaultAllele = new Allele("default", false).setRegistryName(DEFAULT_NAME);
 	/*
 	 * Internal Set of all alleleHandlers, which trigger when an allele or branch is registered

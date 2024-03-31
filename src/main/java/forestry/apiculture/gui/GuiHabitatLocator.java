@@ -92,7 +92,8 @@ public class GuiHabitatLocator extends GuiForestry<ContainerHabitatLocator> {
 	protected void renderBg(PoseStack transform, float partialTicks, int mouseY, int mouseX) {
 		//super.renderBg(transform, partialTicks, mouseY, mouseX);
 
-		String str = Translator.translateToLocal("item.forestry.habitat_locator").toUpperCase(Locale.ENGLISH);
+		// todo
+		Component str = Component.translatable("item.forestry.habitat_locator")/*.toUpperCase(Locale.ENGLISH)*/;
 		getFontRenderer().draw(transform, str, startX + 8 + textLayout.getCenteredOffset(str, 138), startY + 16, ColourProperties.INSTANCE.get("gui.screen"));
 
 		// Set active according to valid biomes.

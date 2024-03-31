@@ -20,10 +20,12 @@ import net.minecraft.world.level.Level;
 
 import forestry.core.ItemGroupForestry;
 
-public class ItemAssemblyKit extends ItemForestry {
-	private final ItemStack assembled;
+import java.util.function.Supplier;
 
-	public ItemAssemblyKit(ItemStack assembled) {
+public class ItemAssemblyKit extends ItemForestry {
+	private final Supplier<ItemStack> assembled;
+
+	public ItemAssemblyKit(Supplier<ItemStack> assembled) {
 		super((new Item.Properties())
 				.stacksTo(24)
 				.tab(ItemGroupForestry.tabForestry));
@@ -35,7 +37,7 @@ public class ItemAssemblyKit extends ItemForestry {
 		ItemStack heldItem = playerIn.getItemInHand(handIn);
 		if (!worldIn.isClientSide) {
 			heldItem.shrink(1);
-			ItemEntity entity = new ItemEntity(worldIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), assembled.copy());
+			ItemEntity entity = new ItemEntity(worldIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), assembled.get());
 			worldIn.addFreshEntity(entity);
 		}
 		return InteractionResultHolder.success(heldItem);

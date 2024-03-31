@@ -1,12 +1,13 @@
 package forestry.arboriculture.genetics;
 
+import forestry.api.arboriculture.TreeManager;
+import genetics.ApiInstance;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
 import genetics.api.individual.IKaryotype;
 
 import forestry.api.arboriculture.genetics.ITreeRoot;
 import forestry.api.arboriculture.genetics.TreeChromosomes;
-import forestry.arboriculture.TreePlugin;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.arboriculture.genetics.alleles.AlleleLeafEffects;
 import forestry.core.genetics.alleles.EnumAllele;
@@ -16,11 +17,11 @@ public class TreeHelper {
 	}
 
 	public static ITreeRoot getRoot() {
-		return TreePlugin.ROOT.get();
+		return TreeManager.treeRoot;
 	}
 
 	public static IKaryotype getKaryotype() {
-		return getRoot().getKaryotype();
+		return ApiInstance.INSTANCE.<ITreeRoot>getRoot(TreeRoot.UID).get().getKaryotype();
 	}
 
 	public static IAlleleTemplateBuilder createTemplate() {

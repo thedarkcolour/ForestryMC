@@ -57,25 +57,25 @@ public class FarmLedger extends Ledger {
 			return;
 		}
 
-		y += drawHeader(transform, Translator.translateToLocal("for.gui.hydration"), xHeader, y);
+		y += drawHeader(transform, Component.translatable("for.gui.hydration"), xHeader, y);
 		y += 4;
 
-		y += drawSubheader(transform, Translator.translateToLocal("for.gui.hydr.heat") + ':', xBody, y);
+		y += drawSubheader(transform, Component.translatable("for.gui.hydr.heat").append(":"), xBody, y);
 		y += 3;
 		y += drawText(transform, StringUtil.floatAsPercent(delegate.getHydrationTempModifier()), xBody, y);
 		y += 3;
 
-		y += drawSubheader(transform, Translator.translateToLocal("for.gui.hydr.humid") + ':', xBody, y);
+		y += drawSubheader(transform, Component.translatable("for.gui.hydr.humid").append(":"), xBody, y);
 		y += 3;
 		y += drawText(transform, StringUtil.floatAsPercent(delegate.getHydrationHumidModifier()), xBody, y);
 		y += 3;
 
-		y += drawSubheader(transform, Translator.translateToLocal("for.gui.hydr.rainfall") + ':', xBody, y);
+		y += drawSubheader(transform, Component.translatable("for.gui.hydr.rainfall").append(":"), xBody, y);
 		y += 3;
 		y += drawText(transform, StringUtil.floatAsPercent(delegate.getHydrationRainfallModifier()) + " (" + delegate.getDrought() + " d)", xBody, y);
 		y += 3;
 
-		y += drawSubheader(transform, Translator.translateToLocal("for.gui.hydr.overall") + ':', xBody, y);
+		y += drawSubheader(transform, Component.translatable("for.gui.hydr.overall").append(":"), xBody, y);
 		y += 3;
 		drawText(transform, StringUtil.floatAsPercent(delegate.getHydrationModifier()), xBody, y);
 	}

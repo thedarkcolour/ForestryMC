@@ -11,16 +11,8 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 public class Translator {
 	private Translator() {}
 
-	public static String translateToLocal(String key) {
-		return Language.getInstance().getOrDefault(key);
-	}
-
 	public static boolean canTranslateToLocal(String key) {
 		return Language.getInstance().has(key);
-	}
-
-	public static String translateToLocalFormatted(String key, Object... format) {
-		return Component.translatable(key, format).getString();
 	}
 
 	public static Component tryTranslate(String optionalKey, String defaultKey) {

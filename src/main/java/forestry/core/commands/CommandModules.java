@@ -10,14 +10,6 @@
  ******************************************************************************/
 package forestry.core.commands;
 
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-
-import net.minecraft.commands.CommandRuntimeException;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.ChatFormatting;
-
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -27,14 +19,18 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.IForestryModule;
-import forestry.core.utils.Translator;
 import forestry.modules.ModuleManager;
-
 import genetics.commands.CommandHelpers;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author CovertJaguar <http://www.railcraft.info/>
@@ -54,7 +50,7 @@ public class CommandModules {
 			}
 			pluginList.append(makeListEntry(module));
 		}
-		CommandHelpers.sendChatMessage(context.getSource(), pluginList.toString());
+		CommandHelpers.sendChatMessage(context.getSource(), Component.literal(pluginList.toString()));
 
 		return 1;
 	}
@@ -134,18 +130,18 @@ public class CommandModules {
 			if (info != null) {
 				CommandSourceStack sender = context.getSource();
 
-				CommandHelpers.sendChatMessage(sender, formatting + "Module: " + info.name());
+				CommandHelpers.sendChatMessage(sender, Component.literal("Module: " + info.name()).withStyle(formatting));
 				if (!info.version().isEmpty()) {
-					CommandHelpers.sendChatMessage(sender, ChatFormatting.BLUE + "Version: " + info.version());
+					CommandHelpers.sendChatMessage(sender, Component.literal("Version: " + info.version()).withStyle(ChatFormatting.BLUE));
 				}
 				if (!info.author().isEmpty()) {
-					CommandHelpers.sendChatMessage(sender, ChatFormatting.BLUE + "Author(s): " + info.author());
+					CommandHelpers.sendChatMessage(sender, Component.literal("Author(s): " + info.author()).withStyle(ChatFormatting.BLUE));
 				}
 				if (!info.url().isEmpty()) {
-					CommandHelpers.sendChatMessage(sender, ChatFormatting.BLUE + "URL: " + info.url());
+					CommandHelpers.sendChatMessage(sender, Component.literal("URL: " + info.url()).withStyle(ChatFormatting.BLUE));
 				}
 				if (!info.unlocalizedDescription().isEmpty()) {
-					CommandHelpers.sendChatMessage(sender, Translator.translateToLocal(info.unlocalizedDescription()));
+					CommandHelpers.sendChatMessage(sender, Component.translatable(info.unlocalizedDescription()));
 				}
 
 				return 1;

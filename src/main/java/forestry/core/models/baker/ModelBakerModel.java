@@ -38,7 +38,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
 
 import forestry.core.utils.ResourceUtil;
 
@@ -171,7 +170,7 @@ public class ModelBakerModel implements BakedModel {
 
 	public void setModelState(ModelState modelState) {
 		this.modelState = modelState;
-		this.transforms = PerspectiveMapWrapper.getTransforms(modelState);
+		this.transforms = ImmutableMap.of();//PerspectiveMapWrapper.getTransforms(modelState);
 	}
 
 	public void addQuad(@Nullable Direction facing, BakedQuad quad) {
@@ -209,12 +208,11 @@ public class ModelBakerModel implements BakedModel {
 	}
 
 	@Override
-	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat) {
-		return PerspectiveMapWrapper.handlePerspective(this, transforms, cameraTransformType, mat);
-	}
-
-	@Override
-	public boolean doesHandlePerspectives() {
-		return true; //TODO: test if this is needed
+	public BakedModel applyTransform(TransformType transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
+		Transformation transformation = transforms.getOrDefault(transformType, Transformation.identity());
+		if (!transformation.isIdentity()) {
+			poseStack.pushTransformation(transformation);
+		}
+		return this;
 	}
 }

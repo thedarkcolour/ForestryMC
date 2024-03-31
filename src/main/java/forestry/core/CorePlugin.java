@@ -15,6 +15,7 @@ import genetics.api.alleles.IAlleleRegistry;
 import genetics.api.classification.IClassificationRegistry;
 import genetics.api.root.IRootManager;
 
+@SuppressWarnings("unused")
 @GeneticPlugin(modId = Constants.MOD_ID, priority = EventPriority.HIGH)
 public class CorePlugin implements IGeneticPlugin {
 	@Override

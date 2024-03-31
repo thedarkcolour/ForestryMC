@@ -10,15 +10,14 @@
  ******************************************************************************/
 package forestry.core.utils;
 
-import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
+import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -34,8 +33,9 @@ import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.SimpleModelState;
+import net.minecraftforge.jarjar.nio.util.LambdaExceptionUtils;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Util methods used at the installation of the game or at the reloading or baking of resources like models or
@@ -47,12 +47,8 @@ public class ResourceUtil {
 	private ResourceUtil() {
 	}
 
-	public static Minecraft client() {
-		return Minecraft.getInstance();
-	}
-
 	public static ResourceManager resourceManager() {
-		return client().getResourceManager();
+		return Minecraft.getInstance().getResourceManager();
 	}
 
 	public static TextureAtlasSprite getMissingTexture() {
@@ -60,7 +56,7 @@ public class ResourceUtil {
 	}
 
 	public static TextureAtlasSprite getSprite(ResourceLocation atlas, ResourceLocation sprite) {
-		return client().getTextureAtlas(atlas).apply(sprite);
+		return Minecraft.getInstance().getTextureAtlas(atlas).apply(sprite);
 	}
 
 	public static TextureAtlasSprite getBlockSprite(ResourceLocation location) {
@@ -72,21 +68,11 @@ public class ResourceUtil {
 	}
 
 	public static boolean resourceExists(ResourceLocation location) {
-		try {
-			resourceManager().getResource(location);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
+		return resourceManager().getResource(location).isPresent();
 	}
 
-	@Nullable
-	public static Resource getResource(ResourceLocation location) {
-		try {
-			return resourceManager().getResource(location);
-		} catch (IOException e) {
-			return null;
-		}
+	public static Optional<Resource> getResource(ResourceLocation location) {
+		return resourceManager().getResource(location);
 	}
 
 	/**
@@ -94,30 +80,36 @@ public class ResourceUtil {
 	 */
 	@Nullable
 	public static BakedModel getModel(ItemStack stack) {
-		ItemRenderer renderItem = client().getItemRenderer();
-		if (renderItem == null || renderItem.getItemModelShaper() == null) {
-			return null;
-		}
-		return renderItem.getItemModelShaper().getItemModel(stack);
+		ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
+        return renderItem.getItemModelShaper().getItemModel(stack.getItem());
 	}
 
 	public static SimpleModelState loadTransform(ResourceLocation location) {
-		return new SimpleModelState(PerspectiveMapWrapper.getTransforms(loadTransformFromJson(location)));
+		// todo
+		return new SimpleModelState(Transformation.identity());
 	}
 
 	private static ItemTransforms loadTransformFromJson(ResourceLocation location) {
-		try (Reader reader = getReaderForResource(location)) {
-			return BlockModel.fromStream(reader).getTransforms();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Optional<Reader> readerOptional = getReaderForResource(location);
+		if (readerOptional.isPresent()) {
+			try (Reader reader = readerOptional.get()) {
+				return BlockModel.fromStream(reader).getTransforms();
+			} catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 		return ItemTransforms.NO_TRANSFORMS;
 	}
 
-	private static Reader getReaderForResource(ResourceLocation location) throws IOException {
-		ResourceLocation file = new ResourceLocation(location.getNamespace(),
-				"models/" + location.getPath() + ".json");
-		Resource iresource = resourceManager().getResource(file);
-		return new BufferedReader(new InputStreamReader(iresource.getInputStream(), StandardCharsets.UTF_8));
+	private static Optional<Reader> getReaderForResource(ResourceLocation location) {
+		ResourceLocation file = new ResourceLocation(location.getNamespace(), "models/" + location.getPath() + ".json");
+		return resourceManager().getResource(file).map(resource -> {
+			try {
+				return new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8));
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		});
 	}
 }

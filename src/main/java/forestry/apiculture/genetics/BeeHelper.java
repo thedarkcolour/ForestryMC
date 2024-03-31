@@ -1,12 +1,13 @@
 package forestry.apiculture.genetics;
 
+import forestry.api.apiculture.BeeManager;
+import forestry.api.apiculture.genetics.IBeeRoot;
+import genetics.ApiInstance;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
 import genetics.api.individual.IKaryotype;
 
 import forestry.api.apiculture.genetics.BeeChromosomes;
-import forestry.api.apiculture.genetics.IBeeRoot;
-import forestry.apiculture.BeePlugin;
 import forestry.apiculture.genetics.alleles.AlleleEffects;
 import forestry.core.genetics.alleles.EnumAllele;
 
@@ -15,16 +16,12 @@ public class BeeHelper {
 	private BeeHelper() {
 	}
 
-	public static IBeeRoot getRoot() {
-		return BeePlugin.ROOT.get();
-	}
-
 	public static IKaryotype getKaryotype() {
-		return getRoot().getKaryotype();
+		return BeeManager.beeRoot.getKaryotype();
 	}
 
 	public static IAlleleTemplateBuilder createTemplate() {
-		return getKaryotype().createTemplate();
+		return ApiInstance.INSTANCE.<IBeeRoot>getRoot(BeeRoot.UID).get().getKaryotype().createTemplate();
 	}
 
 	public static IAlleleTemplate createDefaultTemplate(IAlleleTemplateBuilder templateBuilder) {

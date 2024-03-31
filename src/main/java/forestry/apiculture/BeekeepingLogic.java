@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 
+import forestry.apiculture.genetics.BeeHelper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;

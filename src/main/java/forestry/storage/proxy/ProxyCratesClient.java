@@ -26,14 +26,14 @@ public class ProxyCratesClient extends ProxyCrates implements IClientModuleHandl
 	}
 
 	@Override
-	public void setupClient(FMLClientSetupEvent event) {
+	public void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
 		for (EnumBackpackType backpackType : EnumBackpackType.values()) {
 			for (BackpackMode mode : BackpackMode.values()) {
-				ForgeModelBakery.addSpecialModel(backpackType.getLocation(mode));
+				event.register(backpackType.getLocation(mode));
 			}
 		}
 
-		ForgeModelBakery.addSpecialModel(new ModelResourceLocation(Constants.MOD_ID, "crate-filled", "inventory"));
+		event.register(new ModelResourceLocation(Constants.MOD_ID, "crate-filled", "inventory"));
 	}
 
 	@Override

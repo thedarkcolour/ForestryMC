@@ -51,7 +51,7 @@ public class GuiBottler extends GuiForestryTitled<ContainerBottler> {
 		}
 		transform.popPose();
 
-		String name = Translator.translateToLocal(tile.getUnlocalizedTitle());
+		Component name = Component.translatable(tile.getUnlocalizedTitle());
 		textLayout.line = 5;
 		textLayout.drawCenteredLine(transform, name, 0, ColourProperties.INSTANCE.get("gui.title"));
 		bindTexture(textureFile);

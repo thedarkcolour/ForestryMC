@@ -13,22 +13,14 @@ package forestry.core.proxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import forestry.core.blocks.MachinePropertiesTesr;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
 import forestry.core.fluids.ForestryFluids;
-import forestry.core.items.definitions.EnumContainerType;
 import forestry.core.models.ClientManager;
 import forestry.core.models.FluidContainerModel;
 import forestry.core.render.RenderAnalyzer;
@@ -50,13 +42,9 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 		return Minecraft.useFancyGraphics();
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public void setupClient(FMLClientSetupEvent event) {
-		for (EnumContainerType type : EnumContainerType.values()) {
-			ForgeModelBakery.addSpecialModel(new ModelResourceLocation("forestry:" + type.getSerializedName() + "_empty", "inventory"));
-			ForgeModelBakery.addSpecialModel(new ModelResourceLocation("forestry:" + type.getSerializedName() + "_filled", "inventory"));
-		}
-
 		CoreBlocks.BASE.getBlocks().forEach((block) -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped()));
 
 		for (ForestryFluids fluid : ForestryFluids.values()) {
@@ -71,7 +59,7 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 	}
 
 	@Override
-	public void bakeModels(ModelBakeEvent event) {
+	public void bakeModels(ModelEvent.BakingCompleted event) {
 		ClientManager.getInstance().onBakeModels(event);
 	}
 

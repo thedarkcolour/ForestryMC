@@ -20,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.core.render.TextureManagerForestry;
-import forestry.core.utils.Translator;
 
 public class HintLedger extends Ledger {
 
@@ -55,9 +54,8 @@ public class HintLedger extends Ledger {
 			return;
 		}
 
-		//TODO textcomponent
-		drawHeader(transform, Translator.translateToLocal("for.gui.didyouknow") + '?', x + 22, y + 8);
-		drawSplitText(transform, hintString.getString(), x + 12, y + 20, maxTextWidth);
+		drawHeader(transform, Component.translatable("for.gui.didyouknow").append("?"), x + 22, y + 8);
+		drawSplitText(transform, hintString, x + 12, y + 20, maxTextWidth);
 	}
 
 	@Override

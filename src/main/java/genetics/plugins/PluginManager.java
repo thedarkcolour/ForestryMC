@@ -10,7 +10,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import genetics.ApiInstance;
 import genetics.GeneticFactory;
@@ -37,17 +36,14 @@ public class PluginManager {
 	private PluginManager() {
 	}
 
-	public static void create() {
-		ImmutableSortedMap.Builder<IGeneticPlugin, ModContainer> builder = new ImmutableSortedMap.Builder<>(PLUGIN_COMPARATOR);
-		builder.putAll(PluginUtil.getPlugins());
-		plugins = builder.build();
-		for (IGeneticPlugin plugin : plugins.keySet()) {
-			FMLJavaModLoadingContext.get().getModEventBus().register(plugin);
-		}
+	public static void scanPlugins() {
+		plugins = new ImmutableSortedMap.Builder<IGeneticPlugin, ModContainer>(PLUGIN_COMPARATOR)
+			.putAll(PluginUtil.getPlugins())
+			.build();
 	}
 
 	public static void initPlugins() {
-		//
+		// Register all classifications
 		ClassificationRegistry classificationRegistry = new ClassificationRegistry();
 		ApiInstance.INSTANCE.setClassificationRegistry(classificationRegistry);
 		handlePlugins(p -> p.registerClassifications(classificationRegistry));
@@ -72,10 +68,12 @@ public class PluginManager {
 
 	private static void handlePlugins(Consumer<IGeneticPlugin> pluginConsumer) {
 		ModContainer oldContainer = ModLoadingContext.get().getActiveContainer();
-		plugins.forEach((plugin, container) -> {
+		for (Map.Entry<IGeneticPlugin, ModContainer> entry : plugins.entrySet()) {
+			IGeneticPlugin plugin = entry.getKey();
+			ModContainer container = entry.getValue();
 			ModLoadingContext.get().setActiveContainer(container);
 			pluginConsumer.accept(plugin);
-		});
+		}
 		ModLoadingContext.get().setActiveContainer(oldContainer);
 	}
 }

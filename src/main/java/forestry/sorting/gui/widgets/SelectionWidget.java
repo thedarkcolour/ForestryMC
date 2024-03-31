@@ -2,6 +2,7 @@ package forestry.sorting.gui.widgets;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -59,7 +60,7 @@ public class SelectionWidget extends Widget {
 		manager.gui.blit(transform, startX + xPos, startY + yPos, 0, 0, width, height);
 		logic.draw(transform);
 
-		manager.minecraft.font.draw(transform, Translator.translateToLocal("for.gui.filter.seletion"), startX + xPos + 12, startY + yPos + 4, manager.gui.getFontColor().get("gui.title"));
+		manager.minecraft.font.draw(transform, Component.translatable("for.gui.filter.seletion"), startX + xPos + 12, startY + yPos + 4, manager.gui.getFontColor().get("gui.title"));
 	}
 
 	@Override

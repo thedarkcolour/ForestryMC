@@ -32,13 +32,10 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.SeparateTransformsModel;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
@@ -83,7 +80,7 @@ public class CrateModel implements IUnbakedGeometry<CrateModel> {
 			return null;
 		}
 		try {
-			model = ForgeModelBakery.instance().getModel(location);
+			model = bakery.getModel(location);
 		} catch (Exception e) {
 			return null;
 		}
@@ -93,10 +90,10 @@ public class CrateModel implements IUnbakedGeometry<CrateModel> {
 	@Override
 	public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
 		if (bakedQuads.isEmpty()) {
-			BakedModel bakedModel = bakery.bake(new ModelResourceLocation(Constants.MOD_ID, "crate-filled", "inventory"), transform, spriteGetter);
+			BakedModel bakedModel = bakery.bake(new ModelResourceLocation(Constants.MOD_ID, "crate-filled", "inventory"), modelState, spriteGetter);
 			if (bakedModel != null) {
 				//Set the crate color index to 100
-				for (BakedQuad quad : bakedModel.getQuads(null, null, new Random(0L), ModelData.EMPTY)) {
+				for (BakedQuad quad : bakedModel.getQuads(null, null, new LegacyRandomSource(0), ModelData.EMPTY, null)) {
 					bakedQuads.add(new BakedQuad(quad.getVertices(), 100, quad.getDirection(), quad.getSprite(), quad.isShade()));
 				}
 			}
@@ -107,10 +104,10 @@ public class CrateModel implements IUnbakedGeometry<CrateModel> {
 		if (contentModel == null) {
 			model = new CrateBakedModel(quads, contained);
 		} else {
-			quads.addAll(contentModel.getQuads(null, null, new Random(0), ModelData.EMPTY));
+			quads.addAll(contentModel.getQuads(null, null, new LegacyRandomSource(0), ModelData.EMPTY, null));
 			model = new CrateBakedModel(quads);
 		}
-		return new PerspectiveMapWrapper(model, ClientManager.getInstance().getDefaultItemState());
+		return model;// new SeparateTransformsModel(model, ClientManager.getInstance().getDefaultItemState());
 	}
 
 	@Override
@@ -136,7 +133,8 @@ public class CrateModel implements IUnbakedGeometry<CrateModel> {
 			ResourceLocation registryName = new ResourceLocation(Constants.MOD_ID, GsonHelper.getAsString(modelContents, "variant"));
 			Item item = ForgeRegistries.ITEMS.getValue(registryName);
 			if (!(item instanceof ItemCrated crated)) {
-				return ModelLoaderRegistry.getModel(new ModelResourceLocation(new ResourceLocation(Constants.MOD_ID, CrateItems.CRATE.getIdentifier()), "inventory"), deserializationContext, modelContents);
+				throw new IllegalStateException("Tried to use crate model for item that was not ItemCrated!");
+				//return ModelLoaderRegistry.getModel(new ModelResourceLocation(new ResourceLocation(Constants.MOD_ID, CrateItems.CRATE.getIdentifier()), "inventory"), deserializationContext, modelContents);
 			}
 			return new CrateModel(crated);
 		}

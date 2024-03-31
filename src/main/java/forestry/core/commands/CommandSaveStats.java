@@ -24,6 +24,7 @@ import java.util.Date;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
@@ -47,14 +48,14 @@ import genetics.commands.CommandHelpers;
 
 public final class CommandSaveStats implements Command<CommandSourceStack> {
 
-	private static final String discoveredSymbol;
-	private static final String blacklistedSymbol;
-	private static final String notCountedSymbol;
+	private static final Component discoveredSymbol;
+	private static final Component blacklistedSymbol;
+	private static final Component notCountedSymbol;
 
 	static {
-		discoveredSymbol = Translator.translateToLocal("for.chat.command.forestry.stats.save.key.discovered.symbol");
-		blacklistedSymbol = Translator.translateToLocal("for.chat.command.forestry.stats.save.key.blacklisted.symbol");
-		notCountedSymbol = Translator.translateToLocal("for.chat.command.forestry.stats.save.key.notCounted.symbol");
+		discoveredSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.discovered.symbol");
+		blacklistedSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.blacklisted.symbol");
+		notCountedSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.notCounted.symbol");
 	}
 
 	private final IStatsSaveHelper saveHelper;
@@ -82,9 +83,9 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 		Collection<String> statistics = new ArrayList<>();
 
 		String date = DateFormat.getInstance().format(new Date());
-		statistics.add(Translator.translateToLocalFormatted(saveHelper.getUnlocalizedSaveStatsString(), player.getDisplayName(), date));
+		statistics.add(Component.translatable(saveHelper.getUnlocalizedSaveStatsString(), player.getDisplayName(), date).getString());
 		statistics.add("");
-		statistics.add(Translator.translateToLocalFormatted("for.chat.command.forestry.stats.save.mode", modeHelper.getModeName(world)));
+		statistics.add(Component.translatable("for.chat.command.forestry.stats.save.mode", modeHelper.getModeName(world)).getString());
 		statistics.add("");
 
 		IBreedingTracker tracker = saveHelper.getBreedingTracker(world, player.getGameProfile());
@@ -92,14 +93,14 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 
 		Collection<? extends IAlleleSpecies> species = saveHelper.getSpecies();
 
-		String speciesCount = Translator.translateToLocal("for.gui.speciescount");
+		String speciesCount = Component.translatable("for.gui.speciescount").getString();
 		String speciesCountLine = String.format("%s (%s):", speciesCount, species.size());
 		statistics.add(speciesCountLine);
 		statistics.add(StringUtil.line(speciesCountLine.length()));
 
-		statistics.add(discoveredSymbol + ": " + Translator.translateToLocal("for.chat.command.forestry.stats.save.key.discovered"));
-		statistics.add(blacklistedSymbol + ": " + Translator.translateToLocal("for.chat.command.forestry.stats.save.key.blacklisted"));
-		statistics.add(notCountedSymbol + ": " + Translator.translateToLocal("for.chat.command.forestry.stats.save.key.notCounted"));
+		statistics.add(discoveredSymbol + ": " + Component.translatable("for.chat.command.forestry.stats.save.key.discovered"));
+		statistics.add(blacklistedSymbol + ": " + Component.translatable("for.chat.command.forestry.stats.save.key.blacklisted"));
+		statistics.add(notCountedSymbol + ": " + Component.translatable("for.chat.command.forestry.stats.save.key.notCounted"));
 		statistics.add("");
 
 		String header = generateSpeciesListHeader();
@@ -146,7 +147,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 
 		} catch (IOException ex) {
 			CommandHelpers.sendLocalizedChatMessage(ctx.getSource(), "for.chat.command.forestry.stats.save.error3");
-			Log.error(Translator.translateToLocal("for.for.chat.command.forestry.stats.save.error3"), ex);
+			Log.error(Component.translatable("for.for.chat.command.forestry.stats.save.error3").getString(), ex);
 			return 0;
 		}
 
@@ -156,31 +157,31 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 	}
 
 	private static String generateSpeciesListHeader() {
-		String authority = Translator.translateToLocal("for.gui.alyzer.authority");
-		String species = Translator.translateToLocal("for.gui.species");
-		return speciesListEntry(discoveredSymbol, blacklistedSymbol, notCountedSymbol, "UID", species, authority);
+		Component authority = Component.translatable("for.gui.alyzer.authority");
+		Component species = Component.translatable("for.gui.species");
+		return speciesListEntry(discoveredSymbol, blacklistedSymbol, notCountedSymbol, "UID", species, authority.getString());
 	}
 
 	private static String generateSpeciesListEntry(IAlleleSpecies species, IBreedingTracker tracker) {
-		String discovered = "";
+		Component discovered = Component.empty();
 		if (tracker.isDiscovered(species)) {
 			discovered = discoveredSymbol;
 		}
 
-		String blacklisted = "";
+		Component blacklisted = Component.empty();
 		if (GeneticsAPI.apiInstance.getAlleleRegistry().isBlacklisted(species.getRegistryName())) {
 			blacklisted = blacklistedSymbol;
 		}
 
-		String notCounted = "";
+		Component notCounted = Component.empty();
 		if (!species.isDominant()) {
 			notCounted = notCountedSymbol;
 		}
 
-		return speciesListEntry(discovered, blacklisted, notCounted, species.getRegistryName().toString(), species.getDisplayName().getString(), species.getAuthority());
+		return speciesListEntry(discovered, blacklisted, notCounted, species.getRegistryName().toString(), species.getDisplayName(), species.getAuthority());
 	}
 
-	private static String speciesListEntry(String discovered, String blacklisted, String notCounted, String UID, String speciesName, String authority) {
+	private static String speciesListEntry(Component discovered, Component blacklisted, Component notCounted, String UID, Component speciesName, String authority) {
 		return String.format("[ %-2s ] [ %-2s ] [ %-2s ]\t%-40s %-20s %-20s", discovered, blacklisted, notCounted, UID, speciesName, authority);
 	}
 }

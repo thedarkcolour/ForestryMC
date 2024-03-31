@@ -96,12 +96,11 @@ public class GuiEscritoire extends GuiForestry<ContainerEscritoire> {
 
 			textLayout.newLine();
 			textLayout.newLine();
-			String format = ChatFormatting.UNDERLINE + ChatFormatting.ITALIC.toString();
-			int attemptNo = EscritoireGame.BOUNTY_MAX - tile.getGame().getBountyLevel();
-			String attemptNoString = Translator.translateToLocalFormatted("for.gui.escritoire.attempt.number", attemptNo);
-			textLayout.drawLine(transform, format + attemptNoString, 170, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
+			Component attemptNoString = Component.translatable("for.gui.escritoire.attempt.number", EscritoireGame.BOUNTY_MAX - tile.getGame().getBountyLevel())
+					.withStyle(ChatFormatting.UNDERLINE, ChatFormatting.ITALIC);
+			textLayout.drawLine(transform, attemptNoString, 170, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
 			textLayout.newLine();
-			String escritoireText = textSource.getText(tile.getGame());
+			Component escritoireText = textSource.getText(tile.getGame());
 			textLayout.drawSplitLine(escritoireText, 170, 90, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
 		}
 		textLayout.endPage(transform);

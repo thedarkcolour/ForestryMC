@@ -2,6 +2,7 @@ package forestry.lepidopterology.genetics;
 
 import java.util.function.Function;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,8 +20,6 @@ import forestry.core.genetics.GenericRatings;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
 import forestry.core.gui.elements.GuiElementFactory;
-import forestry.core.utils.StringUtil;
-import forestry.core.utils.Translator;
 
 import genetics.api.alleles.IAlleleValue;
 
@@ -42,41 +41,41 @@ public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
 		IAlleleButterflySpecies primarySpecies = butterfly.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES);
 		IAlleleButterflySpecies secondarySpecies = butterfly.getGenome().getInactiveAllele(ButterflyChromosomes.SPECIES);
 
-		database.label(Translator.translateToLocal("for.gui.database.tab." + (mode == DatabaseMode.ACTIVE ? "active" : "inactive") + "_species.name"), Alignment.TOP_CENTER, GuiElementFactory.INSTANCE.databaseTitle);
+		database.label(Component.translatable("for.gui.database.tab." + (mode == DatabaseMode.ACTIVE ? "active" : "inactive") + "_species.name"), Alignment.TOP_CENTER, GuiElementFactory.INSTANCE.databaseTitle);
 
-		database.addLine(Translator.translateToLocal("for.gui.species"), ButterflyChromosomes.SPECIES);
+		database.addLine(Component.translatable("for.gui.species"), ButterflyChromosomes.SPECIES);
 
-		database.addLine(Translator.translateToLocal("for.gui.size"), ButterflyChromosomes.SIZE);
+		database.addLine(Component.translatable("for.gui.size"), ButterflyChromosomes.SIZE);
 
-		database.addLine(Translator.translateToLocal("for.gui.lifespan"), ButterflyChromosomes.LIFESPAN);
+		database.addLine(Component.translatable("for.gui.lifespan"), ButterflyChromosomes.LIFESPAN);
 
-		database.addLine(Translator.translateToLocal("for.gui.speed"), ButterflyChromosomes.SPEED);
+		database.addLine(Component.translatable("for.gui.speed"), ButterflyChromosomes.SPEED);
 
-		database.addLine(Translator.translateToLocal("for.gui.metabolism"), (IAlleleValue<Integer> allele, Boolean a) -> GenericRatings.rateMetabolism(allele.getValue()), ButterflyChromosomes.METABOLISM);
+		database.addLine(Component.translatable("for.gui.metabolism"), (IAlleleValue<Integer> allele, Boolean a) -> GenericRatings.rateMetabolism(allele.getValue()), ButterflyChromosomes.METABOLISM);
 
-		database.addFertilityLine(Translator.translateToLocal("for.gui.fertility"), ButterflyChromosomes.FERTILITY, 8);
+		database.addFertilityLine(Component.translatable("for.gui.fertility"), ButterflyChromosomes.FERTILITY, 8);
 
-		database.addLine(Translator.translateToLocal("for.gui.flowers"), ButterflyChromosomes.FLOWER_PROVIDER);
-		database.addLine(Translator.translateToLocal("for.gui.effect"), ButterflyChromosomes.EFFECT);
+		database.addLine(Component.translatable("for.gui.flowers"), ButterflyChromosomes.FLOWER_PROVIDER);
+		database.addLine(Component.translatable("for.gui.effect"), ButterflyChromosomes.EFFECT);
 
-		Function<Boolean, String> toleranceText = a -> {
+		Function<Boolean, Component> toleranceText = a -> {
 			IAlleleForestrySpecies species = a ? primarySpecies : secondarySpecies;
-			return AlleleManager.climateHelper.toDisplay(species.getTemperature()).getContents();    //TODO ITextComponent
+			return AlleleManager.climateHelper.toDisplay(species.getTemperature());
 		};
-		database.addLine(Translator.translateToLocal("for.gui.climate"), toleranceText, ButterflyChromosomes.TEMPERATURE_TOLERANCE);
+		database.addLine(Component.translatable("for.gui.climate"), toleranceText, ButterflyChromosomes.TEMPERATURE_TOLERANCE);
 		database.addToleranceLine(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
 
-		database.addLine(Translator.translateToLocal("for.gui.humidity"), toleranceText, ButterflyChromosomes.HUMIDITY_TOLERANCE);
+		database.addLine(Component.translatable("for.gui.humidity"), toleranceText, ButterflyChromosomes.HUMIDITY_TOLERANCE);
 		database.addToleranceLine(ButterflyChromosomes.HUMIDITY_TOLERANCE);
 
-		String yes = Translator.translateToLocal("for.yes");
-		String no = Translator.translateToLocal("for.no");
+		Component yes = Component.translatable("for.yes");
+		Component no = Component.translatable("for.no");
 
 		{
-			String diurnalFirst;
-			String diurnalSecond;
-			String nocturnalFirst;
-			String nocturnalSecond;
+			Component diurnalFirst;
+			Component diurnalSecond;
+			Component nocturnalFirst;
+			Component nocturnalSecond;
 			if (butterfly.getGenome().getActiveValue(ButterflyChromosomes.NOCTURNAL)) {
 				nocturnalFirst = diurnalFirst = yes;
 			} else {
@@ -90,15 +89,21 @@ public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
 				diurnalSecond = !secondarySpecies.isNocturnal() ? yes : no;
 			}
 
-			database.addLine(Translator.translateToLocal("for.gui.diurnal"), (Boolean a) -> a ? diurnalFirst : diurnalSecond, false);
-			database.addLine(Translator.translateToLocal("for.gui.nocturnal"), (Boolean a) -> a ? nocturnalFirst : nocturnalSecond, false);
+			database.addLine(Component.translatable("for.gui.diurnal"), (Boolean a) -> a ? diurnalFirst : diurnalSecond, false);
+			database.addLine(Component.translatable("for.gui.nocturnal"), (Boolean a) -> a ? nocturnalFirst : nocturnalSecond, false);
 		}
 
-		Function<Boolean, String> flyer = active -> StringUtil.readableBoolean(active ? butterfly.getGenome().getActiveValue(ButterflyChromosomes.TOLERANT_FLYER) : butterfly.getGenome().getInactiveValue(ButterflyChromosomes.TOLERANT_FLYER), yes, no);
-		database.addLine(Translator.translateToLocal("for.gui.flyer"), flyer, ButterflyChromosomes.TOLERANT_FLYER);
+		Function<Boolean, Component> flyer = active -> {
+            boolean tolerantFlyer = active ? butterfly.getGenome().getActiveValue(ButterflyChromosomes.TOLERANT_FLYER) : butterfly.getGenome().getInactiveValue(ButterflyChromosomes.TOLERANT_FLYER);
+			return tolerantFlyer ? yes : no;
+        };
+		database.addLine(Component.translatable("for.gui.flyer"), flyer, ButterflyChromosomes.TOLERANT_FLYER);
 
-		Function<Boolean, String> fireresist = active -> StringUtil.readableBoolean(active ? butterfly.getGenome().getActiveValue(ButterflyChromosomes.FIRE_RESIST) : butterfly.getGenome().getInactiveValue(ButterflyChromosomes.FIRE_RESIST), yes, no);
-		database.addLine(Translator.translateToLocal("for.gui.fireresist"), fireresist, ButterflyChromosomes.FIRE_RESIST);
+		Function<Boolean, Component> fireResist = active -> {
+            boolean fireResistant = active ? butterfly.getGenome().getActiveValue(ButterflyChromosomes.FIRE_RESIST) : butterfly.getGenome().getInactiveValue(ButterflyChromosomes.FIRE_RESIST);
+			return fireResistant ? yes : no;
+        };
+		database.addLine(Component.translatable("for.gui.fireresist"), fireResist, ButterflyChromosomes.FIRE_RESIST);
 	}
 
 	@Override

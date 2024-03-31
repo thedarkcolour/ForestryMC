@@ -125,7 +125,7 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 	}
 
 	public GuiElement createFertilityInfo(IAlleleValue<Integer> fertilityAllele, int texOffset) {
-		String fertilityString = fertilityAllele.getValue() + " x";
+		Component fertilityString = Component.literal(fertilityAllele.getValue() + " x");
 
 		ContainerElement layout = horizontal(GuiElement.UNKNOWN_HEIGHT, 2);
 		layout.label(fertilityString, getStateStyle(fertilityAllele.isDominant()));
@@ -133,7 +133,7 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 		return layout;
 	}
 
-	public GuiElement createToleranceInfo(IAlleleValue<EnumTolerance> toleranceAllele, IAlleleForestrySpecies species, String text) {
+	public GuiElement createToleranceInfo(IAlleleValue<EnumTolerance> toleranceAllele, IAlleleForestrySpecies species, Component text) {
 		ContainerElement layout = horizontal(GuiElement.UNKNOWN_HEIGHT, 0);
 		layout.label(text, getStateStyle(species.isDominant()));
 		layout.add(createToleranceInfo(toleranceAllele));

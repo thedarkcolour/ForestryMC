@@ -34,8 +34,8 @@ public class CommandHelpers {
 	 * StringUtil.localize() is NOT a valid alternative for sendLocalizedChatMessage().
 	 * Messages will not be localized properly if you use StringUtil.localize().
 	 */
-	public static void sendChatMessage(CommandSourceStack sender, String message) {
-		sender.sendSuccess(Component.literal(message), false);
+	public static void sendChatMessage(CommandSourceStack sender, Component message) {
+		sender.sendSuccess(message, false);
 	}
 
 }

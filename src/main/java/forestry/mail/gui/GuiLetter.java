@@ -187,11 +187,11 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 			return;
 		}
 
-		minecraft.font.draw(transform, Translator.translateToLocal("for.gui.mail.pleasesend"), leftPos + x, topPos + y, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
+		minecraft.font.draw(transform, Component.translatable("for.gui.mail.pleasesend"), leftPos + x, topPos + y, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
 
 		addTradeInfoWidget(new ItemStackWidget(widgetManager, x, y + 10, container.getTradeInfo().getTradegood()));
 
-		minecraft.font.draw(transform, Translator.translateToLocal("for.gui.mail.foreveryattached"), leftPos + x, topPos + y + 28, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
+		minecraft.font.draw(transform, Component.translatable("for.gui.mail.foreveryattached"), leftPos + x, topPos + y + 28, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
 
 		for (int i = 0; i < container.getTradeInfo().getRequired().size(); i++) {
 			addTradeInfoWidget(new ItemStackWidget(widgetManager, x + i * 18, y + 38, container.getTradeInfo().getRequired().get(i)));

@@ -30,8 +30,6 @@ import forestry.core.utils.BlockUtil;
 
 import genetics.api.individual.IGenome;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForgeShearable {
 	private TreeDefinition definition;
 

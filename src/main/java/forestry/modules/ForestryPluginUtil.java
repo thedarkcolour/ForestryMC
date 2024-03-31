@@ -2,7 +2,9 @@ package forestry.modules;
 
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.IForestryModule;
+import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.modules.features.FeatureProvider;
+import genetics.ApiInstance;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;

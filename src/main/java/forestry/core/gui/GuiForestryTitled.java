@@ -30,7 +30,7 @@ public abstract class GuiForestryTitled<C extends AbstractContainerMenu> extends
 
 		textLayout.line = 6;
 		if (centeredTitle()) {
-			textLayout.drawCenteredLine(transform, title.getString(), 0, ColourProperties.INSTANCE.get("gui.title"));
+			textLayout.drawCenteredLine(transform, title, 0, ColourProperties.INSTANCE.get("gui.title"));
 		} else {
 			textLayout.drawLine(transform, title.getString(), 8, ColourProperties.INSTANCE.get("gui.title"));
 		}

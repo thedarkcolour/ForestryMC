@@ -39,7 +39,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelBakeEvent;
 
 import forestry.core.blocks.IColoredBlock;
 import forestry.core.items.definitions.IColoredItem;
@@ -48,6 +47,7 @@ import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureGroup;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureTable;
+import net.minecraftforge.client.event.ModelEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientManager {
@@ -143,9 +143,9 @@ public class ClientManager {
 		customModels.add(new ModelEntry(new ModelResourceLocation(RegistryNameFinder.getRegistryName(item), "inventory"), model));
 	}
 
-	public void onBakeModels(ModelBakeEvent event) {
+	public void onBakeModels(ModelEvent.BakingCompleted event) {
 		//register custom models
-		Map<ResourceLocation, BakedModel> registry = event.getModelRegistry();
+		Map<ResourceLocation, BakedModel> registry = event.getModels();
 		for (final BlockModelEntry entry : customBlockModels) {
 			for (BlockState state : entry.states) {
 				registry.put(BlockModelShaper.stateToModelLocation(state), entry.model);

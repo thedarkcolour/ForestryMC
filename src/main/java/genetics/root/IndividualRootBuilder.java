@@ -130,7 +130,7 @@ public class IndividualRootBuilder<I extends IIndividual> implements IIndividual
 			});
 			return components;
 		})));
-		MinecraftForge.EVENT_BUS.register(new RootEvent.CreationEvent<>(definition));
+		MinecraftForge.EVENT_BUS.post(new RootEvent.CreationEvent<>(definition));
 	}
 
 	@SuppressWarnings("unchecked")

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 import forestry.core.utils.Translator;
+import net.minecraft.network.chat.Component;
 
 public class EscritoireTextSource {
 
@@ -26,7 +27,7 @@ public class EscritoireTextSource {
 		level1, level2, level3, level4, success, failure, empty
 	}
 
-	private static final ListMultimap<Notes, String> researchNotes;
+	private static final ListMultimap<Notes, Component> researchNotes;
 	private static final Random random = new Random();
 
 	static {
@@ -35,23 +36,22 @@ public class EscritoireTextSource {
 		for (Notes notesLevel : multipleTranslationNoteLevels) {
 			for (int i = 1; i <= 10; i++) {
 				String key = "for.gui.escritoire.notes." + notesLevel + '.' + i;
-				String note = Translator.translateToLocal(key);
-				if (key.equals(note)) {
+				if (Translator.canTranslateToLocal(key)) {
 					break;
 				} else {
-					researchNotes.put(notesLevel, note);
+					researchNotes.put(notesLevel, Component.translatable(key));
 				}
 			}
 		}
-		researchNotes.put(Notes.empty, Translator.translateToLocal("for.gui.escritoire.instructions"));
+		researchNotes.put(Notes.empty, Component.translatable("for.gui.escritoire.instructions"));
 	}
 
 	@Nullable
-	private String researchNote;
+	private Component researchNote;
 	@Nullable
 	private Notes lastNoteLevel;
 
-	public String getText(EscritoireGame escritoireGame) {
+	public Component getText(EscritoireGame escritoireGame) {
 		Notes noteLevel = getNoteLevel(escritoireGame);
 		if (lastNoteLevel != noteLevel || researchNote == null) {
 			researchNote = getRandomNote(noteLevel);
@@ -61,8 +61,8 @@ public class EscritoireTextSource {
 		return researchNote;
 	}
 
-	private static String getRandomNote(Notes level) {
-		List<String> candidates = researchNotes.get(level);
+	private static Component getRandomNote(Notes level) {
+		List<Component> candidates = researchNotes.get(level);
 		int index = random.nextInt(candidates.size());
 		return candidates.get(index);
 	}

@@ -33,13 +33,13 @@ public class GuiTrader extends GuiForestry<ContainerTrader> {
 
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY) {
-		String name = Translator.translateToLocal(tile.getUnlocalizedTitle());
+		Component name = Component.translatable(tile.getUnlocalizedTitle());
 		this.minecraft.font.draw(transform, name, textLayout.getCenteredOffset(name), 6, ColourProperties.INSTANCE.get("gui.mail.text"));
 
-		String receive = Translator.translateToLocal("for.gui.mail.receive");
+		Component receive = Component.translatable("for.gui.mail.receive");
 		this.minecraft.font.draw(transform, receive, textLayout.getCenteredOffset(receive, 70) + 51, 45, ColourProperties.INSTANCE.get("gui.mail.text"));
 
-		String send = Translator.translateToLocal("for.gui.mail.send");
+		Component send = Component.translatable("for.gui.mail.send");
 		this.minecraft.font.draw(transform, send, textLayout.getCenteredOffset(send, 70) + 51, 99, ColourProperties.INSTANCE.get("gui.mail.text"));
 
 		super.renderLabels(transform, mouseX, mouseY);

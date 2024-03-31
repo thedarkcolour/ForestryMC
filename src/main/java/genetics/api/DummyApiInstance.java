@@ -57,7 +57,7 @@ public class DummyApiInstance implements IGeneticApiInstance {
 
 	@Override
 	public <R extends IIndividualRoot> IRootDefinition<R> getRoot(String rootUID) {
-		return EmptyRootDefinition.empty();
+		throw new IllegalStateException();
 	}
 
 	@Override

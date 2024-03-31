@@ -17,8 +17,9 @@ import com.google.common.collect.ImmutableList;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.math.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -32,18 +33,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 
 import net.minecraftforge.client.model.BakedModelWrapper;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
-import net.minecraftforge.client.model.pipeline.VertexTransformer;
-import net.minecraftforge.common.model.TransformationHelper;
 import org.jetbrains.annotations.NotNull;
 
 // for those wondering TRSR stands for Translation Rotation Scale Rotation
@@ -65,7 +57,7 @@ public class TRSRBakedModel extends BakedModelWrapper<BakedModel> {
 		this(original, new Transformation(new Vector3f(x, y, z),
 				null,
 				new Vector3f(scaleX, scaleY, scaleZ),
-				TransformationHelper.quatFromXYZ(new float[]{rotX, rotY, rotZ}, false)));
+				new Quaternion(rotX, rotY, rotZ, false)));
 	}
 
 	public TRSRBakedModel(BakedModel original, Transformation transform) {
@@ -85,7 +77,7 @@ public class TRSRBakedModel extends BakedModelWrapper<BakedModel> {
 		this.faceOffset = 4 + Direction.NORTH.get2DDataValue() - facing.get2DDataValue();
 
 		double r = Math.PI * (360 - facing.getOpposite().get2DDataValue() * 90) / 180d;
-		this.transformation = new Transformation(null, null, null, TransformationHelper.quatFromXYZ(new float[]{0, (float) r, 0}, false)).blockCenterToCorner();
+		this.transformation = new Transformation(null, null, null, new Quaternion(0, (float) r, 0, false)).blockCenterToCorner();
 	}
 
 	@Override
@@ -99,9 +91,9 @@ public class TRSRBakedModel extends BakedModelWrapper<BakedModel> {
 					side = Direction.from2DDataValue((side.get2DDataValue() + this.faceOffset) % 4);
 				}
 				for (BakedQuad quad : this.originalModel.getQuads(state, side, rand, data, renderType)) {
-					Transformer transformer = new Transformer(this.transformation, quad.getSprite());
-					quad.pipe(transformer);
-					builder.add(transformer.build());
+					/*Transformer transformer = new Transformer(this.transformation, quad.getSprite());
+					//quad.pipe(transformer);
+					builder.add(transformer.build());*/
 				}
 			} catch (Exception e) {
 			}
@@ -112,7 +104,7 @@ public class TRSRBakedModel extends BakedModelWrapper<BakedModel> {
 
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-		return this.getQuads(state, side, rand, ModelData.EMPTY);
+		return this.getQuads(state, side, rand, ModelData.EMPTY, null);
 	}
 
 	@Nonnull
@@ -139,7 +131,7 @@ public class TRSRBakedModel extends BakedModelWrapper<BakedModel> {
 			return new TRSRBakedModel(baked, this.model.transformation);
 		}
 	}
-
+/*
 	private static class Transformer extends VertexTransformer {
 
 		protected Matrix4f transformation;
@@ -157,7 +149,7 @@ public class TRSRBakedModel extends BakedModelWrapper<BakedModel> {
 
 		@Override
 		public void put(int element, float... data) {
-			VertexFormatElement.Usage usage = this.parent.getVertexFormat().getElements().get(element).getUsage();
+			VertexFormatElement.Usage usage = DefaultVertexFormat.BLOCK.getElements().get(element).getUsage();
 
 			// transform normals and position
 			if (usage == VertexFormatElement.Usage.POSITION && data.length >= 3) {
@@ -183,5 +175,5 @@ public class TRSRBakedModel extends BakedModelWrapper<BakedModel> {
 		public BakedQuad build() {
 			return ((BakedQuadBuilder) this.parent).build();
 		}
-	}
+	}*/
 }

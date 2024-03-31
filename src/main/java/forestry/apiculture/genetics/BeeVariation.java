@@ -1,5 +1,6 @@
 package forestry.apiculture.genetics;
 
+import forestry.api.apiculture.BeeManager;
 import net.minecraft.world.item.ItemStack;
 
 import genetics.api.alleles.IAlleleTemplate;
@@ -34,13 +35,13 @@ public abstract class BeeVariation implements IBeeDefinition {
 
 	@Override
 	public IBee createIndividual() {
-		return template.toIndividual(BeeHelper.getRoot());
+		return template.toIndividual(BeeManager.beeRoot);
 	}
 
 	@Override
 	public final ItemStack getMemberStack(EnumBeeType beeType) {
 		IBee bee = createIndividual();
-		return BeeHelper.getRoot().getTypes().createStack(bee, beeType);
+		return BeeManager.beeRoot.getTypes().createStack(bee, beeType);
 	}
 
 	@Override

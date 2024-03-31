@@ -43,15 +43,15 @@ public class PowerLedger extends Ledger {
 		int xHeader = x + 22;
 		int xBody = x + 12;
 
-		drawHeader(transform, Translator.translateToLocal("for.gui.energy"), xHeader, y + 8);
+		drawHeader(transform, Component.translatable("for.gui.energy"), xHeader, y + 8);
 
-		drawSubheader(transform, Translator.translateToLocal("for.gui.stored") + ':', xBody, y + 20);
+		drawSubheader(transform, Component.translatable("for.gui.stored").append(":"), xBody, y + 20);
 		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyManager.getEnergyStored()), xBody, y + 32);
 
-		drawSubheader(transform, Translator.translateToLocal("for.gui.maxenergy") + ':', xBody, y + 44);
+		drawSubheader(transform, Component.translatable("for.gui.maxenergy").append(":"), xBody, y + 44);
 		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyManager.getMaxEnergyStored()), xBody, y + 56);
 
-		drawSubheader(transform, Translator.translateToLocal("for.gui.maxenergyreceive") + ':', xBody, y + 68);
+		drawSubheader(transform, Component.translatable("for.gui.maxenergyreceive").append(":"), xBody, y + 68);
 		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyManager.getMaxEnergyReceived()), xBody, y + 80);
 	}
 

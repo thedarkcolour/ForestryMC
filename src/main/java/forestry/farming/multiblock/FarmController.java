@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -156,7 +157,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		}
 
 		if (!hasGearbox) {
-			throw new MultiblockValidationException(Translator.translateToLocal("for.multiblock.farm.error.needGearbox"));
+			throw new MultiblockValidationException(Component.translatable("for.multiblock.farm.error.needGearbox").getString());
 		}
 	}
 
@@ -169,14 +170,14 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	@Override
 	public void isGoodForExteriorLevel(IMultiblockComponent part, int level) throws MultiblockValidationException {
 		if (level == 2 && !(part instanceof TileFarmPlain)) {
-			throw new MultiblockValidationException(Translator.translateToLocal("for.multiblock.farm.error.needPlainBand"));
+			throw new MultiblockValidationException(Component.translatable("for.multiblock.farm.error.needPlainBand").getString());
 		}
 	}
 
 	@Override
 	public void isGoodForInterior(IMultiblockComponent part) throws MultiblockValidationException {
 		if (!(part instanceof TileFarmPlain)) {
-			throw new MultiblockValidationException(Translator.translateToLocal("for.multiblock.farm.error.needPlainInterior"));
+			throw new MultiblockValidationException(Component.translatable("for.multiblock.farm.error.needPlainInterior").getString());
 		}
 	}
 

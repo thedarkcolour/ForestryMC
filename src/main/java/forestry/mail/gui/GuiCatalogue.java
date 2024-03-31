@@ -110,11 +110,11 @@ public class GuiCatalogue extends GuiForestry<ContainerCatalogue> {
 		Font fontRenderer = Minecraft.getInstance().font;
 		fontRenderer.draw(transform, boldUnderline + tradeInfo.getAddress().getName(), x, y, ColourProperties.INSTANCE.get("gui.book"));
 
-		fontRenderer.draw(transform, String.format(Translator.translateToLocal("for.gui.mail.willtrade"), tradeInfo.getOwner().getName()), x, y + 18, ColourProperties.INSTANCE.get("gui.book"));
+		fontRenderer.draw(transform, Component.translatable("for.gui.mail.willtrade", tradeInfo.getOwner().getName()), x, y + 18, ColourProperties.INSTANCE.get("gui.book"));
 
 		addTradeInfoWidget(new ItemStackWidget(widgetManager, x - leftPos, y - topPos + 28, tradeInfo.getTradegood()));
 
-		fontRenderer.draw(transform, Translator.translateToLocal("for.gui.mail.tradefor"), x, y + 46, ColourProperties.INSTANCE.get("gui.book"));
+		fontRenderer.draw(transform, Component.translatable("for.gui.mail.tradefor"), x, y + 46, ColourProperties.INSTANCE.get("gui.book"));
 
 		for (int i = 0; i < tradeInfo.getRequired().size(); i++) {
 			ItemStack itemStack = tradeInfo.getRequired().get(i);

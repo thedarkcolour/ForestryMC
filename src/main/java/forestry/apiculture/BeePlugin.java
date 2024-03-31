@@ -1,5 +1,6 @@
 package forestry.apiculture;
 
+import forestry.api.apiculture.genetics.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
@@ -8,10 +9,6 @@ import net.minecraft.world.level.Level;
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.BeeChromosomes;
-import forestry.api.apiculture.genetics.EnumBeeType;
-import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
-import forestry.api.apiculture.genetics.IBee;
 import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IResearchHandler;
 import forestry.apiculture.features.ApicultureItems;
@@ -50,8 +47,6 @@ import genetics.api.root.components.ComponentKeys;
 
 @GeneticPlugin(modId = Constants.MOD_ID)
 public class BeePlugin implements IGeneticPlugin {
-	public static final IRootDefinition<BeeRoot> ROOT = GeneticsAPI.apiInstance.getRoot(BeeRoot.UID);
-
 	@Override
 	public void registerClassifications(IClassificationRegistry registry) {
 		IClassification hymnoptera = registry.createAndRegisterClassification(EnumClassLevel.ORDER, "hymnoptera", "Hymnoptera");
@@ -141,7 +136,7 @@ public class BeePlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		BeeManager.beeRoot = BeeManager.beeRootDefinition.get();
+		BeeManager.beeRoot = instance.<IBeeRoot>getRoot(BeeRoot.UID).get();
 
 		// Modes
 		BeeManager.beeRoot.registerBeekeepingMode(BeekeepingMode.easy);

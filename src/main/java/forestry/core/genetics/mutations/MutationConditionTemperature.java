@@ -21,7 +21,6 @@ import forestry.api.climate.IClimateProvider;
 import forestry.api.core.EnumTemperature;
 import forestry.api.genetics.IMutationCondition;
 import forestry.api.genetics.alleles.AlleleManager;
-import forestry.core.utils.Translator;
 
 public class MutationConditionTemperature implements IMutationCondition {
 
@@ -45,12 +44,11 @@ public class MutationConditionTemperature implements IMutationCondition {
 
 	@Override
 	public Component getDescription() {
-		//TODO textcomponent
-		String minString = AlleleManager.climateHelper.toDisplay(minTemperature).getString();
+		Component minString = AlleleManager.climateHelper.toDisplay(minTemperature);
 
 		if (minTemperature != maxTemperature) {
-			String maxString = AlleleManager.climateHelper.toDisplay(maxTemperature).getString();
-			return Component.literal(Translator.translateToLocal("for.mutation.condition.temperature.range").replace("%LOW", minString).replace("%HIGH", maxString));
+			Component maxString = AlleleManager.climateHelper.toDisplay(maxTemperature);
+			return Component.translatable("for.mutation.condition.temperature.range", minString, maxString);
 		} else {
 			return Component.translatable("for.mutation.condition.temperature.single", minString);
 		}

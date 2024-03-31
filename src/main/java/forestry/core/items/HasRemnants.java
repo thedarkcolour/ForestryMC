@@ -6,6 +6,9 @@ import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.Tier;
 
+import java.util.function.Supplier;
+
+// todo why is this an interface?
 public interface HasRemnants {
 
 	ItemStack getRemnants();
@@ -17,31 +20,31 @@ public interface HasRemnants {
 
 	class Pickaxe extends PickaxeItem implements HasRemnants {
 
-		private final ItemStack remnants;
+		private final Supplier<ItemStack> remnants;
 
-		public Pickaxe(Tier tier, int damageBonus, float speedModifier, Properties properties, ItemStack remnants) {
+		public Pickaxe(Tier tier, int damageBonus, float speedModifier, Properties properties, Supplier<ItemStack> remnants) {
 			super(tier, damageBonus, speedModifier, properties);
 			this.remnants = remnants;
 		}
 
 		@Override
 		public ItemStack getRemnants() {
-			return remnants;
+			return remnants.get();
 		}
 	}
 
 	class Shovel extends ShovelItem implements HasRemnants {
 
-		private final ItemStack remnants;
+		private final Supplier<ItemStack> remnants;
 
-		public Shovel(Tier tier, float damageBonus, float speedModifier, Properties properties, ItemStack remnants) {
+		public Shovel(Tier tier, float damageBonus, float speedModifier, Properties properties, Supplier<ItemStack> remnants) {
 			super(tier, damageBonus, speedModifier, properties);
 			this.remnants = remnants;
 		}
 
 		@Override
 		public ItemStack getRemnants() {
-			return remnants;
+			return remnants.get();
 		}
 	}
 }

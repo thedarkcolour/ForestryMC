@@ -41,14 +41,11 @@ public class BeeManager {
 	 */
 	public static final Map<ItemStack, Integer> inducers = new HashMap<>();
 
-	public static final IRootDefinition<IBeeRoot> beeRootDefinition = GeneticsAPI.apiInstance.getRoot("rootBees");
-
 	/**
 	 * Convenient access to AlleleManager.alleleRegistry.getSpeciesRoot("rootBees")
 	 *
 	 * @implNote Only null if the "apiculture" module is not enabled.
 	 */
-	//TODO: Move most calls to definition (more save)
 	public static IBeeRoot beeRoot;
 
 	/**

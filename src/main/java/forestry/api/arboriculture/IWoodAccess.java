@@ -6,7 +6,9 @@
 package forestry.api.arboriculture;
 
 import java.util.List;
+import java.util.function.Supplier;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,5 +29,5 @@ public interface IWoodAccess {
 
 	List<IWoodType> getRegisteredWoodTypes();
 
-	void register(IWoodType woodType, WoodBlockKind woodBlockKind, boolean fireproof, BlockState blockState, ItemStack itemStack);
+	void register(IWoodType woodType, WoodBlockKind woodBlockKind, boolean fireproof, BlockState blockState, Supplier<Item> itemStack);
 }

@@ -16,14 +16,11 @@ import forestry.api.arboriculture.genetics.ITreeRoot;
 
 public class TreeManager {
 
-	public static final IRootDefinition<ITreeRoot> treeRootDefinition = GeneticsAPI.apiInstance.getRoot("rootTrees");
-
 	/**
 	 * Convenient access to AlleleManager.alleleRegistry.getSpeciesRoot("rootTrees")
 	 *
 	 * @implNote Only null if the "arboriculture" module is not enabled.
 	 */
-	//TODO: Move most calls to definition (more save)
 	public static ITreeRoot treeRoot;
 
 	/**

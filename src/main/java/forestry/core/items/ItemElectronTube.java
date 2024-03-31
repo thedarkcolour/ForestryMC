@@ -58,8 +58,7 @@ public class ItemElectronTube extends ItemOverlay {
 		if (!circuits.isEmpty()) {
 			if (Screen.hasShiftDown()) {
 				for (ICircuitLayout circuitLayout : circuits.keys()) {
-					String circuitLayoutName = circuitLayout.getUsage();
-					list.add(Component.literal(circuitLayoutName).withStyle(ChatFormatting.WHITE, ChatFormatting.UNDERLINE));
+					list.add(circuitLayout.getUsage().withStyle(ChatFormatting.WHITE, ChatFormatting.UNDERLINE));
 					for (ICircuit circuit : circuits.get(circuitLayout)) {
 						circuit.addTooltip(list);
 					}

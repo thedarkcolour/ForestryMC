@@ -10,33 +10,33 @@
  ******************************************************************************/
 package forestry.core.genetics;
 
-import forestry.core.utils.StringUtil;
-import forestry.core.utils.Translator;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class GenericRatings {
 
-	public static String rateMetabolism(int metabolism) {
+	public static Component rateMetabolism(int metabolism) {
 		if (metabolism >= 19) {
-			return Translator.translateToLocal("forestry.allele.highest");
+			return Component.translatable("forestry.allele.highest");
 		} else if (metabolism >= 16) {
-			return Translator.translateToLocal("forestry.allele.higher");
+			return Component.translatable("forestry.allele.higher");
 		} else if (metabolism >= 13) {
-			return Translator.translateToLocal("forestry.allele.high");
+			return Component.translatable("forestry.allele.high");
 		} else if (metabolism >= 10) {
-			return Translator.translateToLocal("forestry.allele.average");
+			return Component.translatable("forestry.allele.average");
 		} else if (metabolism >= 7) {
-			return Translator.translateToLocal("forestry.allele.slow");
+			return Component.translatable("forestry.allele.slow");
 		} else if (metabolism >= 4) {
-			return Translator.translateToLocal("forestry.allele.slower");
+			return Component.translatable("forestry.allele.slower");
 		} else {
-			return Translator.translateToLocal("forestry.allele.slowest");
+			return Component.translatable("forestry.allele.slowest");
 		}
 	}
 
-	public static String rateActivityTime(boolean neverSleeps, boolean naturalNocturnal) {
-		String active = naturalNocturnal ? Translator.translateToLocal("for.gui.nocturnal") : Translator.translateToLocal("for.gui.diurnal");
+	public static Component rateActivityTime(boolean neverSleeps, boolean naturalNocturnal) {
+		MutableComponent active = naturalNocturnal ? Component.translatable("for.gui.nocturnal") : Component.translatable("for.gui.diurnal");
 		if (neverSleeps) {
-			active = StringUtil.append(", ", active, naturalNocturnal ? Translator.translateToLocal("for.gui.diurnal") : Translator.translateToLocal("for.gui.nocturnal"));
+			active.append(", ").append(naturalNocturnal ? Component.translatable("for.gui.diurnal") : Component.translatable("for.gui.nocturnal"));
 		}
 
 		return active;

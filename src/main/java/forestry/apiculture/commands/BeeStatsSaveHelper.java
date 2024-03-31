@@ -12,6 +12,7 @@ package forestry.apiculture.commands;
 
 import java.util.Collection;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
@@ -37,13 +38,13 @@ public class BeeStatsSaveHelper implements IStatsSaveHelper {
 	@Override
 	public void addExtraInfo(Collection<String> statistics, IBreedingTracker breedingTracker) {
 		IApiaristTracker tracker = (IApiaristTracker) breedingTracker;
-		String discoveredLine = Translator.translateToLocal("for.chat.command.forestry.stats.save.key.discovered") + ":";
+		String discoveredLine = Component.translatable("for.chat.command.forestry.stats.save.key.discovered").append(":").getString();
 		statistics.add(discoveredLine);
 		statistics.add(StringUtil.line(discoveredLine.length()));
 
-		String queen = Translator.translateToLocal("for.bees.grammar.queen.type");
-		String princess = Translator.translateToLocal("for.bees.grammar.princess.type");
-		String drone = Translator.translateToLocal("for.bees.grammar.drone.type");
+		String queen = Component.translatable("for.bees.grammar.queen.type").getString();
+		String princess = Component.translatable("for.bees.grammar.princess.type").getString();
+		String drone = Component.translatable("for.bees.grammar.drone.type").getString();
 		statistics.add(queen + ":\t\t" + tracker.getQueenCount());
 		statistics.add(princess + ":\t" + tracker.getPrincessCount());
 		statistics.add(drone + ":\t\t" + tracker.getDroneCount());

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -43,7 +44,7 @@ public class MutationsTab extends DatabaseTab {
 		LayoutHelper groupHelper = container.layoutHelper((x, y) -> GuiElementFactory.horizontal(16, 0, new Insets(0, 1, 0, 0)), 100, 16);
 		Collection<? extends IMutation> mutations = getValidMutations(mutationContainer.getCombinations(species));
 		if (!mutations.isEmpty()) {
-			container.label(Translator.translateToLocal("for.gui.database.mutations.further"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
+			container.label(Component.translatable("for.gui.database.mutations.further"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
 			mutations.forEach(mutation -> groupHelper.add(GuiElementFactory.INSTANCE.createMutation(0, 0, 50, 16, mutation, species, breedingTracker)));
 			groupHelper.finish(true);
 		}
@@ -51,7 +52,7 @@ public class MutationsTab extends DatabaseTab {
 		if (mutations.isEmpty()) {
 			return;
 		}
-		container.label(Translator.translateToLocal("for.gui.database.mutations.resultant"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
+		container.label(Component.translatable("for.gui.database.mutations.resultant"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
 		mutations.forEach(mutation -> groupHelper.add(GuiElementFactory.INSTANCE.createMutationResultant(0, 0, 50, 16, mutation, breedingTracker)));
 		groupHelper.finish(true);
 	}

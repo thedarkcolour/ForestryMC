@@ -13,8 +13,10 @@ public class RenderForestryItemProperties implements IClientItemExtensions {
 	// lazy has two purposes:
 	// - itemBlock.blockTypeTesr filled in after 
 	// - getEntityModels not available until later in loading
+	@SuppressWarnings("Convert2MethodRef")
 	public RenderForestryItemProperties(ItemBlockBase<?> itemBlock) {
-		this.renderItem = NonNullLazy.of(itemBlock.blockTypeTesr::initRenderItem);
+		// This must be a lambda, because method reference causes dereference of blockTypeTesr
+		this.renderItem = NonNullLazy.of(() -> itemBlock.blockTypeTesr.initRenderItem());
 	}
 
 	@Override

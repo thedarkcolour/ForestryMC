@@ -100,7 +100,7 @@ public abstract class ModelBlockDefault<B extends Block, K> implements BakedMode
 
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-		return getQuads(state, side, rand, ModelData.EMPTY);
+		return getQuads(state, side, rand, ModelData.EMPTY, null);
 	}
 
 	protected void onCreateModel(ModelBakerModel model) {

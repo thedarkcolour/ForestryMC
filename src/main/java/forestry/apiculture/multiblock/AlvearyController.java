@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import deleteme.BiomeCategory;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
@@ -175,7 +176,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 				BlockPos pos = new BlockPos(slabX, slabY, slabZ);
 				BlockState state = world.getBlockState(pos);
 				if (!state.is(BlockTags.WOODEN_SLABS)) {
-					throw new MultiblockValidationException(Translator.translateToLocal("for.multiblock.alveary.error.needSlabs"));
+					throw new MultiblockValidationException(Component.translatable("for.multiblock.alveary.error.needSlabs").getString());
 				}
 			}
 		}
@@ -191,7 +192,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 				BlockPos pos = new BlockPos(airX, airY, airZ);
 				BlockState blockState = world.getBlockState(pos);
 				if (blockState.isSolidRender(world, pos)) {
-					throw new MultiblockValidationException(Translator.translateToLocal("for.multiblock.alveary.error.needSpace"));
+					throw new MultiblockValidationException(Component.translatable("for.multiblock.alveary.error.needSpace").getString());
 				}
 			}
 		}
@@ -200,14 +201,14 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	@Override
 	protected void isGoodForExteriorLevel(IMultiblockComponent part, int level) throws MultiblockValidationException {
 		if (level == 2 && !(part instanceof TileAlvearyPlain)) {
-			throw new MultiblockValidationException(Translator.translateToLocal("for.multiblock.alveary.error.needPlainOnTop"));
+			throw new MultiblockValidationException(Component.translatable("for.multiblock.alveary.error.needPlainOnTop").getString());
 		}
 	}
 
 	@Override
 	protected void isGoodForInterior(IMultiblockComponent part) throws MultiblockValidationException {
 		if (!(part instanceof TileAlvearyPlain)) {
-			throw new MultiblockValidationException(Translator.translateToLocal("for.multiblock.alveary.error.needPlainInterior"));
+			throw new MultiblockValidationException(Component.translatable("for.multiblock.alveary.error.needPlainInterior").getString());
 		}
 	}
 

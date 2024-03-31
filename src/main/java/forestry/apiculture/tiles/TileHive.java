@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import forestry.apiculture.genetics.BeeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -170,7 +171,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 			if (block instanceof BlockBeeHive) {
 				IHiveRegistry.HiveType hiveType = ((BlockBeeHive) block).getType();
 				String speciesUid = hiveType.getSpeciesUid();
-				return GeneticHelper.genomeFromTemplate(speciesUid, BeeManager.beeRootDefinition);
+				return GeneticHelper.genomeFromTemplate(speciesUid, BeeManager.beeRoot.getDefinition());
 			}
 		}
 		return null;
