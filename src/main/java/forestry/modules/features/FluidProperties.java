@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.data.loading.DatagenModLoader;
 
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
@@ -44,7 +45,7 @@ public class FluidProperties {
 	}
 
 	public boolean resourceExists(ResourceLocation location) {
-		if (FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
+		if (FMLEnvironment.dist == Dist.DEDICATED_SERVER || DatagenModLoader.isRunningDataGen()) {
 			return true;
 		}
         return Minecraft.getInstance().getResourceManager().getResource(location).isPresent();

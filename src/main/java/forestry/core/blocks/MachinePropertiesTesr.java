@@ -54,8 +54,7 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 	@OnlyIn(Dist.CLIENT)
 	public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		if (renderer != null) {
-			// TODO add missing model layers
-			//event.registerBlockEntityRenderer(getTeType(), (ctx) -> new RenderForestryTile<>(renderer.create(ctx.bakeLayer(modelLayer))));
+			event.registerBlockEntityRenderer(getTeType(), (ctx) -> new RenderForestryTile<>(renderer.create(ctx.bakeLayer(modelLayer))));
 		}
 	}
 

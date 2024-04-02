@@ -3,6 +3,8 @@ package forestry.core.data;
 import java.util.Map;
 
 import deleteme.RegistryNameFinder;
+import genetics.Log;
+
 import forestry.core.config.Constants;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.BlockItem;
@@ -21,6 +23,8 @@ import forestry.arboriculture.blocks.BlockForestrySlab;
 import forestry.arboriculture.blocks.BlockForestryStairs;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.modules.features.FeatureBlock;
+
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -146,5 +150,15 @@ public class WoodItemModelProvider extends ItemModelProvider {
 
 	private void addDoor(BlockItem item, IWoodType type) {
 		singleTexture(RegistryNameFinder.getRegistryName(item).getPath(), mcLoc("item/generated"), "layer0", new ResourceLocation(getLocation(type, WoodBlockKind.DOOR)));
+	}
+
+	@Override
+	public ItemModelBuilder withExistingParent(String name, ResourceLocation parent) {
+		try {
+			return super.withExistingParent(name, parent);
+		} catch (IllegalStateException exception) {
+			Log.warning("Failed to generate model: {}", exception.getLocalizedMessage());
+			return null;
+		}
 	}
 }

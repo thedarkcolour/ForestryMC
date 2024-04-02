@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -31,8 +30,6 @@ import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
-import forestry.core.utils.StringUtil;
-import forestry.core.utils.Translator;
 
 import genetics.api.GeneticHelper;
 import genetics.api.alleles.IAlleleValue;
@@ -213,7 +210,8 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 				if (!bee.isNatural()) {
 					displayTextKey = "for.bees.stock.ignoble";
 				}
-				textLayout.drawCenteredLine(transform, Component.translatable(displayTextKey), ((GuiAlyzer) gui).getGuiLeft() + 8, 208, guiAlyzer.getFontColor().get("gui.beealyzer.binomial"));
+				Component displayText = Component.translatable(displayTextKey);
+				textLayout.drawCenteredLine(transform, displayText, 8, 208, guiAlyzer.getFontColor().get("gui.beealyzer.binomial"));
 			}
 
 			if (bee.getGeneration() >= 0) {
@@ -245,9 +243,11 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 
 			textLayout.newLine();
 
+			int guiLeft = ((GuiAlyzer) gui).getGuiLeft();
+			int guiTop = ((GuiAlyzer) gui).getGuiTop();
 			int x = GuiAlyzer.COLUMN_0;
 			for (ItemStack stack : bee.getProduceList()) {
-				widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), stack));
+				widgetManager.add(new ItemStackWidget(widgetManager, guiLeft + x, guiTop + textLayout.getLineY(), stack));
 
 				x += 18;
 				if (x > 148) {
@@ -266,7 +266,7 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 
 			x = GuiAlyzer.COLUMN_0;
 			for (ItemStack stack : bee.getSpecialtyList()) {
-				widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), stack));
+				widgetManager.add(new ItemStackWidget(widgetManager, guiLeft + x, guiTop + textLayout.getLineY(), stack));
 
 				x += 18;
 				if (x > 148) {
