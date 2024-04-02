@@ -28,7 +28,7 @@ public class ContainerAlvearyHygroregulator extends ContainerLiquidTanks<TileAlv
 	}
 
 	public ContainerAlvearyHygroregulator(int windowId, Inventory playerInventory, TileAlvearyHygroregulator tile) {
-		super(windowId, ApicultureContainers.ALVEARY_HYGROREGULATOR.containerType(), playerInventory, tile, 8, 84);
+		super(windowId, ApicultureContainers.ALVEARY_HYGROREGULATOR.menuType(), playerInventory, tile, 8, 84);
 
 		this.addSlot(new SlotLiquidIn(tile, InventoryHygroregulator.SLOT_INPUT, 56, 38));
 	}

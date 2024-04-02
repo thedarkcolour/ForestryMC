@@ -21,8 +21,6 @@ import net.minecraft.world.level.block.NetherWartBlock;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-
 import net.minecraftforge.fml.DistExecutor;
 
 import forestry.api.circuits.ChipsetManager;
@@ -49,16 +47,9 @@ import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.FARMING, name = "Farming", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.farming.description")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.FARMING, name = "Farming", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.farming.description")
 public class ModuleFarming extends BlankForestryModule {
-
-	@SuppressWarnings("NullableProblems")
-	public static ProxyFarming proxy;
-
-	public ModuleFarming() {
-		proxy = DistExecutor.runForDist(() -> ProxyFarmingClient::new, () -> ProxyFarming::new);
-	}
-
+	private static final ProxyFarming PROXY = DistExecutor.runForDist(() -> ProxyFarmingClient::new, () -> ProxyFarming::new);
 
 	@Override
 	public void setupAPI() {
@@ -73,12 +64,11 @@ public class ModuleFarming extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(FarmingContainers.FARM.containerType(), GuiFarm::new);
+		MenuScreens.register(FarmingContainers.FARM.menuType(), GuiFarm::new);
 	}
 
 	@Override
 	public void preInit() {
-		MinecraftForge.EVENT_BUS.register(this);
 		IFarmRegistry registry = ForestryAPI.farmRegistry;
 		registry.registerFarmables(ForestryFarmIdentifier.ARBOREAL, new FarmableSapling(
 				new ItemStack(Blocks.OAK_SAPLING),
@@ -146,17 +136,12 @@ public class ModuleFarming extends BlankForestryModule {
 	}
 
 	@Override
-	public void registerObjects() {
-
-	}
-
-	@Override
 	public void registerRecipes() {
 		FarmDefinition.registerCircuits();
 	}
 
 	@Override
 	public ISidedModuleHandler getModuleHandler() {
-		return proxy;
+		return PROXY;
 	}
 }

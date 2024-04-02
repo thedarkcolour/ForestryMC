@@ -8,11 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import forestry.modules.features.StackOption;
 
 public interface IItemProvider<I extends Item> {
-	boolean hasItem();
-
-	@Nullable
-	I getItem();
-
 	I item();
 
 	default ItemStack stack() {
@@ -20,10 +15,7 @@ public interface IItemProvider<I extends Item> {
 	}
 
 	default ItemStack stack(int amount) {
-		if (hasItem()) {
-			return new ItemStack(item(), amount);
-		}
-		throw new IllegalStateException("This feature has no item to create a stack for.");
+		return new ItemStack(item(), amount);
 	}
 
 	default ItemStack stack(StackOption... options) {
@@ -39,6 +31,6 @@ public interface IItemProvider<I extends Item> {
 	}
 
 	default boolean itemEqual(Item item) {
-		return hasItem() && item() == item;
+		return item() == item;
 	}
 }

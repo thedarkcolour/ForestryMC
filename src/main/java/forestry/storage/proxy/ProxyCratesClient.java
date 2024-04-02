@@ -7,6 +7,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import forestry.api.storage.EnumBackpackType;
@@ -20,11 +22,6 @@ import forestry.storage.models.CrateModel;
 @SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
 public class ProxyCratesClient extends ProxyCrates implements IClientModuleHandler {
-
-	public ProxyCratesClient() {
-		ForgeUtils.registerSubscriber(this);
-	}
-
 	@Override
 	public void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
 		for (EnumBackpackType backpackType : EnumBackpackType.values()) {

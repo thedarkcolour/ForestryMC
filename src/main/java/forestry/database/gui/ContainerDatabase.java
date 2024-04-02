@@ -24,7 +24,7 @@ public class ContainerDatabase extends ContainerAnalyzerProvider<TileDatabase> {
 	}
 
 	public ContainerDatabase(int windowId, Inventory playerInventory, TileDatabase tileForestry) {
-		super(windowId, DatabaseContainers.DATABASE.containerType(), playerInventory, tileForestry, 29, 120);
+		super(windowId, DatabaseContainers.DATABASE.menuType(), playerInventory, tileForestry, 29, 120);
 
 		addInventory(this, tileForestry);
 	}

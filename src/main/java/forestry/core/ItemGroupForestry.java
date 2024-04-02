@@ -34,8 +34,6 @@ import forestry.lepidopterology.genetics.Butterfly;
 import forestry.lepidopterology.genetics.ButterflyDefinition;
 import forestry.modules.features.FeatureProvider;
 
-//Provides no features but needs to be loaded
-@FeatureProvider
 public class ItemGroupForestry extends CreativeModeTab {
 
 	static {

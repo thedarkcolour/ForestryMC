@@ -33,7 +33,7 @@ public class ContainerAlveary extends ContainerTile<TileAlveary> {
 	}
 
 	public ContainerAlveary(int windowid, Inventory playerInv, TileAlveary tile) {
-		super(windowid, ApicultureContainers.ALVEARY.containerType(), playerInv, tile, 8, 108);
+		super(windowid, ApicultureContainers.ALVEARY.menuType(), playerInv, tile, 8, 108);
 		ContainerBeeHelper.addSlots(this, tile, false);
 
 		tile.getBeekeepingLogic().clearCachedValues();

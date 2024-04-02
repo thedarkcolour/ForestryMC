@@ -36,17 +36,12 @@ import forestry.modules.features.FeatureFluid;
 import forestry.modules.features.FluidProperties;
 
 public class BlockForestryFluid extends LiquidBlock {
-
-	private final FeatureFluid feature;
 	private final boolean flammable;
 	private final int flammability;
 	private final Color color;
 
 	public BlockForestryFluid(FeatureFluid feature) {
-		super(feature::fluid, Block.Properties.of(feature.fluid().getFluidType().getTemperature() > 505 ? Material.LAVA : Material.WATER)
-				.noCollission()
-				.strength(100.0F).noLootTable());
-		this.feature = feature;
+		super(feature::fluid, Block.Properties.of(feature.properties().temperature > 505 ? Material.LAVA : Material.WATER).noCollission().strength(100.0F).noLootTable());
 		FluidProperties properties = feature.properties();
 		this.flammability = properties.flammability;
 		this.flammable = properties.flammable;

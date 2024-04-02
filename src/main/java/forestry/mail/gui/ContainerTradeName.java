@@ -28,7 +28,7 @@ public class ContainerTradeName extends ContainerTile<TileTrader> {
 	}
 
 	public ContainerTradeName(int windowId, Inventory inv, TileTrader tile) {
-		super(windowId, MailContainers.TRADE_NAME.containerType(), tile);
+		super(windowId, MailContainers.TRADE_NAME.menuType(), tile);
 	}
 
 	public IMailAddress getAddress() {

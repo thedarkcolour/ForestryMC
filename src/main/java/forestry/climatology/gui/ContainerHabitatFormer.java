@@ -57,7 +57,7 @@ public class ContainerHabitatFormer extends ContainerTile<TileHabitatFormer> imp
 	}
 
 	public ContainerHabitatFormer(int windowId, Inventory playerInventory, TileHabitatFormer tile) {
-		super(windowId, ClimatologyContainers.HABITAT_FORMER.containerType(), playerInventory, tile, 8, 151);
+		super(windowId, ClimatologyContainers.HABITAT_FORMER.menuType(), playerInventory, tile, 8, 151);
 
 		this.helper = new ContainerLiquidTanksHelper<>(tile);
 		this.addSlot(new SlotLiquidIn(tile, InventoryHabitatFormer.SLOT_INPUT, 129, 38));

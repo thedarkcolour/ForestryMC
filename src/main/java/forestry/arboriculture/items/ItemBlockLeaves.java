@@ -63,7 +63,7 @@ public class ItemBlockLeaves extends ItemBlockForestry<BlockAbstractLeaves> impl
 	@OnlyIn(Dist.CLIENT)
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
 		if (itemStack.getTag() == null) {
-			return ModuleArboriculture.proxy.getFoliageColorDefault();
+			return ModuleArboriculture.PROXY.getFoliageColorDefault();
 		}
 
 		TileLeaves tileLeaves = new TileLeaves(BlockPos.ZERO, getBlock().defaultBlockState());

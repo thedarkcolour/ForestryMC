@@ -8,6 +8,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
@@ -26,9 +28,14 @@ import net.minecraftforge.network.IContainerFactory;
 import forestry.api.core.IBlockSubtype;
 import forestry.api.core.IItemSubtype;
 import forestry.api.storage.EnumBackpackType;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegisterEvent;
 
 public interface IFeatureRegistry {
+
+	String getModId();
+
+	<V> DeferredRegister<V> getRegistry(ResourceKey<? extends Registry<V>> registryKey);
 
 	<B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, String identifier);
 
@@ -58,7 +65,7 @@ public interface IFeatureRegistry {
 
 	<T extends BlockEntity> FeatureTileType<T> tile(BlockEntityType.BlockEntitySupplier<T> constuctor, String identifier, Supplier<Collection<? extends Block>> validBlocks);
 
-	<C extends AbstractContainerMenu> FeatureContainerType<C> container(IContainerFactory<C> factory, String identifier);
+	<C extends AbstractContainerMenu> FeatureMenuType<C> container(IContainerFactory<C> factory, String identifier);
 
 	<E extends Entity> FeatureEntityType<E> entity(EntityType.EntityFactory<E> factory, MobCategory classification, String identifier);
 
@@ -68,11 +75,11 @@ public interface IFeatureRegistry {
 
 	FeatureFluid.Builder fluid(String identifier);
 
-	void addRegistryListener(FeatureType type, Consumer<RegisterEvent> listener);
+	void addRegistryListener(ResourceKey<? extends Registry<?>> type, Consumer<RegisterEvent> listener);
 
 	<F extends IModFeature> F register(F feature);
 
 	Collection<IModFeature> getFeatures();
 
-	Collection<IModFeature> getFeatures(FeatureType type);
+	Collection<IModFeature> getFeatures(ResourceKey<? extends Registry<?>> type);
 }

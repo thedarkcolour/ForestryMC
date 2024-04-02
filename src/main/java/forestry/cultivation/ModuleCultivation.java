@@ -22,7 +22,7 @@ import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.CULTIVATION, name = "Cultivation", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.cultivation.description")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.CULTIVATION, name = "Cultivation", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.cultivation.description")
 public class ModuleCultivation extends BlankForestryModule {
 
 	@SuppressWarnings("NullableProblems")
@@ -35,7 +35,7 @@ public class ModuleCultivation extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(CultivationContainers.PLANTER.containerType(), GuiPlanter::new);
+		MenuScreens.register(CultivationContainers.PLANTER.menuType(), GuiPlanter::new);
 	}
 
 	@Override

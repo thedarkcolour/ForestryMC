@@ -36,7 +36,7 @@ public class ContainerMoistener extends ContainerLiquidTanks<TileMoistener> impl
 	}
 
 	public ContainerMoistener(int windowId, Inventory player, TileMoistener tile) {
-		super(windowId, FactoryContainers.MOISTENER.containerType(), player, tile, 8, 84);
+		super(windowId, FactoryContainers.MOISTENER.menuType(), player, tile, 8, 84);
 		addDataSlots(new SimpleContainerData(4));
 
 		// Stash

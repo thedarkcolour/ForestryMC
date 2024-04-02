@@ -46,7 +46,7 @@ public class RegisterVillager {
 	public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, Constants.MOD_ID);
 	public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, Constants.MOD_ID);
 
-	public static final RegistryObject<PoiType> POI_TREE_CHEST = POINTS_OF_INTEREST.register("tree_chest", () -> new PoiType(Set.copyOf(ArboricultureBlocks.TREE_CHEST.getBlock().getStateDefinition().getPossibleStates()), 1, 1));
+	public static final RegistryObject<PoiType> POI_TREE_CHEST = POINTS_OF_INTEREST.register("tree_chest", () -> new PoiType(Set.copyOf(ArboricultureBlocks.TREE_CHEST.block().getStateDefinition().getPossibleStates()), 1, 1));
 	public static final RegistryObject<VillagerProfession> PROF_BEEKEEPER = PROFESSIONS.register(ARBORIST.getPath(), () -> new VillagerProfession(ARBORIST.toString(), e -> e.is(POI_TREE_CHEST.getKey()), e -> e.is(POI_TREE_CHEST.getKey()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_FISHERMAN));
 
 	public static void villagerTrades(VillagerTradesEvent event) {
@@ -56,7 +56,7 @@ public class RegisterVillager {
 
 			event.getTrades().get(2).add(new GivePlanksForEmeralds(new VillagerTrade.PriceInterval(1, 4), new VillagerTrade.PriceInterval(10, 32), 8, 6, 0F));
 			event.getTrades().get(2).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(2, 3), new VillagerTrade.PriceInterval(1, 1), EnumGermlingType.POLLEN, 6, 8, 6, 0F));
-			event.getTrades().get(2).add(new VillagerTrade.GiveItemForEmeralds(ArboricultureItems.GRAFTER_PROVEN.getItem(), new VillagerTrade.PriceInterval(1, 1), new VillagerTrade.PriceInterval(1, 4), 8, 6));
+			event.getTrades().get(2).add(new VillagerTrade.GiveItemForEmeralds(ArboricultureItems.GRAFTER_PROVEN.item(), new VillagerTrade.PriceInterval(1, 1), new VillagerTrade.PriceInterval(1, 4), 8, 6));
 
 			event.getTrades().get(3).add(new GiveLogsForEmeralds(new VillagerTrade.PriceInterval(2, 5), new VillagerTrade.PriceInterval(6, 18), 8, 2, 0F));
 

@@ -12,7 +12,7 @@ import forestry.core.config.Constants;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.CHARCOAL, name = "Charcoal", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.charcoal.description")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.CHARCOAL, name = "Charcoal", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.charcoal.description")
 public class ModuleCharcoal extends BlankForestryModule {
 
 	@Override

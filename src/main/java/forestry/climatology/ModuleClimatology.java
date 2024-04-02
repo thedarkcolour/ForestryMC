@@ -33,7 +33,7 @@ import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.CLIMATOLOGY, name = "Climatology", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.greenhouse.description")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.CLIMATOLOGY, name = "Climatology", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.greenhouse.description")
 public class ModuleClimatology extends BlankForestryModule {
 
 	private final ProxyClimatology proxy;
@@ -45,7 +45,7 @@ public class ModuleClimatology extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(ClimatologyContainers.HABITAT_FORMER.containerType(), GuiHabitatFormer::new);
+		MenuScreens.register(ClimatologyContainers.HABITAT_FORMER.menuType(), GuiHabitatFormer::new);
 	}
 
 	@Override

@@ -8,6 +8,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.InterModComms;
 
 import forestry.api.modules.IForestryModule;
@@ -18,7 +21,6 @@ import forestry.core.ItemGroupForestry;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
 import forestry.core.utils.Log;
-import forestry.modules.features.FeatureType;
 import forestry.modules.features.IModFeature;
 import forestry.modules.features.ModFeatureRegistry;
 import net.minecraftforge.registries.RegisterEvent;
@@ -27,6 +29,7 @@ import net.minecraftforge.registries.RegisterEvent;
 //TODO - most of this needs tearing up and replacing
 public class CommonModuleHandler {
 
+	// todo remove this, it's useless
 	//TODO use toposort for sorting dependancies?
 	public enum Stage {
 		SETUP, // setup API to make it functional. GameMode Configs are not yet accessible
@@ -87,21 +90,20 @@ public class CommonModuleHandler {
 		ForestryPluginUtil.loadFeatureProviders();
 	}
 
-	public void createObjects(BiPredicate<FeatureType, String> filter) {
-		registry.createObjects(filter);
-	}
-
-	public Collection<IModFeature> getFeatures(Predicate<FeatureType> filter) {
+	public Collection<IModFeature> getFeatures(ResourceKey<? extends Registry<?>> filter) {
 		return registry.getFeatures(filter);
 	}
 
 	public void registerObjects(RegisterEvent event) {
+		// only used for wood kinds
 		registry.onRegister(event);
+		// does misc object registration, not features
 		registerObjects();
 	}
 
 	private void registerObjects() {
 		for (IForestryModule module : modules) {
+			// these are not registry objects, just other data
 			module.registerObjects();
 		}
 	}
@@ -178,10 +180,6 @@ public class CommonModuleHandler {
 			Log.debug("Post-Init Complete: {}", module);
 		}
 		stage = Stage.FINISHED;
-	}
-
-	public void runRegisterBackpacksAndCrates() {
-		stage = Stage.BACKPACKS_CRATES;
 	}
 
 	public void processIMCMessages(Stream<InterModComms.IMCMessage> messages) {

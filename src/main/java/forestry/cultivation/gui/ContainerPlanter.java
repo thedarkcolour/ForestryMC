@@ -21,7 +21,7 @@ public class ContainerPlanter extends ContainerLiquidTanks<TilePlanter> {
 	}
 
 	public ContainerPlanter(int windowId, Inventory playerInventory, TilePlanter tileForestry) {
-		super(windowId, CultivationContainers.PLANTER.containerType(), playerInventory, tileForestry, 21, 110);
+		super(windowId, CultivationContainers.PLANTER.menuType(), playerInventory, tileForestry, 21, 110);
 
 		// Resources
 		for (int i = 0; i < 2; i++) {

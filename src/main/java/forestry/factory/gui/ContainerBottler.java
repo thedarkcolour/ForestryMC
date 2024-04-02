@@ -30,7 +30,7 @@ public class ContainerBottler extends ContainerLiquidTanks<TileBottler> {
 	}
 
 	public ContainerBottler(int windowId, Inventory player, TileBottler tile) {
-		super(windowId, FactoryContainers.BOTTLER.containerType(), player, tile, 8, 84);
+		super(windowId, FactoryContainers.BOTTLER.menuType(), player, tile, 8, 84);
 
 		this.addSlot(new SlotLiquidIn(tile, InventoryBottler.SLOT_INPUT_FULL_CONTAINER, 18, 7));
 		this.addSlot(new SlotOutput(tile, InventoryBottler.SLOT_EMPTYING_PROCESSING, 18, 35).setPickupWatcher(tile));

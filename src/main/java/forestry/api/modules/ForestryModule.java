@@ -17,15 +17,16 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ForestryModule {
 
-	/**
-	 * @return Unique identifier for the module, no spaces!
-	 */
-	String moduleID();
 
 	/**
 	 * @return The unique identifier of the module container.
 	 */
-	String containerID();
+	String modId();
+
+	/**
+	 * @return Unique identifier for the module, no spaces!
+	 */
+	String moduleID();
 
 	/**
 	 * @return Nice and readable module name.

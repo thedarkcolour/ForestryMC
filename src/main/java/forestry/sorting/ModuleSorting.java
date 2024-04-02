@@ -18,7 +18,7 @@ import forestry.sorting.features.SortingContainers;
 import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.network.PacketRegistrySorting;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.SORTING, name = "Sorting", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.sorting.description")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.SORTING, name = "Sorting", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.sorting.description")
 public class ModuleSorting extends BlankForestryModule {
 
 	@Override
@@ -39,7 +39,7 @@ public class ModuleSorting extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(SortingContainers.GENETIC_FILTER.containerType(), GuiGeneticFilter::new);
+		MenuScreens.register(SortingContainers.GENETIC_FILTER.menuType(), GuiGeneticFilter::new);
 	}
 
 	@Override

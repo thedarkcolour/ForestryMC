@@ -151,7 +151,7 @@ public enum ForestryFluids {
 
 	@Nullable
 	public BucketItem getBucket() {
-		return bucket != null ? bucket.getItem() : null;
+		return bucket != null ? bucket.item() : null;
 	}
 
 	public final Fluid getFluid() {

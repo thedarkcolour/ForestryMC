@@ -55,7 +55,7 @@ public class ForestryAdvancementProvider implements DataProvider {
 	}
 
 	private void build(Consumer<Advancement> consumer) {
-		ItemStack icon = new ItemStack(ApicultureItems.BEE_QUEEN.getItem());
+		ItemStack icon = new ItemStack(ApicultureItems.BEE_QUEEN.item());
 		GeneticHelper.setIndividual(icon, BeeDefinition.INDUSTRIOUS.createIndividual());
 
 		Advancement.Builder.advancement()

@@ -32,7 +32,7 @@ public class CarpenterRecipeTransferHandler implements IRecipeTransferHandler<Co
 
 	@Override
 	public Optional<MenuType<ContainerCarpenter>> getMenuType() {
-		return Optional.of(FactoryContainers.CARPENTER.containerType());
+		return Optional.of(FactoryContainers.CARPENTER.menuType());
 	}
 
 	@Override

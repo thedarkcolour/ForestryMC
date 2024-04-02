@@ -63,15 +63,9 @@ import forestry.factory.recipes.SqueezerRecipeManager;
 import forestry.factory.recipes.StillRecipeManager;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
-import net.minecraftforge.fluids.FluidType;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.FACTORY, name = "Factory", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.factory.description", lootTable = "factory")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.FACTORY, name = "Factory", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.factory.description", lootTable = "factory")
 public class ModuleFactory extends BlankForestryModule {
-
-	public ModuleFactory() {
-		ForgeUtils.registerSubscriber(this);
-	}
-
 	@Override
 	public void setupAPI() {
 		RecipeManagers.carpenterManager = machineEnabled() ? new CarpenterRecipeManager() : new DummyManagers.DummyCarpenterManager();
@@ -110,15 +104,15 @@ public class ModuleFactory extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(FactoryContainers.BOTTLER.containerType(), GuiBottler::new);
-		MenuScreens.register(FactoryContainers.CARPENTER.containerType(), GuiCarpenter::new);
-		MenuScreens.register(FactoryContainers.CENTRIFUGE.containerType(), GuiCentrifuge::new);
-		MenuScreens.register(FactoryContainers.FABRICATOR.containerType(), GuiFabricator::new);
-		MenuScreens.register(FactoryContainers.FERMENTER.containerType(), GuiFermenter::new);
-		MenuScreens.register(FactoryContainers.MOISTENER.containerType(), GuiMoistener::new);
-		MenuScreens.register(FactoryContainers.RAINTANK.containerType(), GuiRaintank::new);
-		MenuScreens.register(FactoryContainers.SQUEEZER.containerType(), GuiSqueezer::new);
-		MenuScreens.register(FactoryContainers.STILL.containerType(), GuiStill::new);
+		MenuScreens.register(FactoryContainers.BOTTLER.menuType(), GuiBottler::new);
+		MenuScreens.register(FactoryContainers.CARPENTER.menuType(), GuiCarpenter::new);
+		MenuScreens.register(FactoryContainers.CENTRIFUGE.menuType(), GuiCentrifuge::new);
+		MenuScreens.register(FactoryContainers.FABRICATOR.menuType(), GuiFabricator::new);
+		MenuScreens.register(FactoryContainers.FERMENTER.menuType(), GuiFermenter::new);
+		MenuScreens.register(FactoryContainers.MOISTENER.menuType(), GuiMoistener::new);
+		MenuScreens.register(FactoryContainers.RAINTANK.menuType(), GuiRaintank::new);
+		MenuScreens.register(FactoryContainers.SQUEEZER.menuType(), GuiSqueezer::new);
+		MenuScreens.register(FactoryContainers.STILL.menuType(), GuiStill::new);
 	}
 
 	@Override

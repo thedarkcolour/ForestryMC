@@ -184,27 +184,25 @@ public class TreeRoot extends IndividualRoot<ITree> implements ITreeRoot, IBreed
 	public boolean setFruitBlock(LevelAccessor world, IGenome genome, IAlleleFruit allele, float yield, BlockPos pos) {
 		IFruitProvider provider = allele.getProvider();
 		Direction facing = BlockUtil.getValidPodFacing(world, pos, provider.getLogTag());
+
 		if (facing != null && ArboricultureBlocks.PODS.has(allele)) {
+			BlockFruitPod fruitPod = ArboricultureBlocks.PODS.get(allele).block();
+			BlockState state = fruitPod.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, facing);
+			boolean placed = world.setBlock(pos, state, 18);
 
-			BlockFruitPod fruitPod = ArboricultureBlocks.PODS.get(allele).getBlock();
-			if (fruitPod != null) {
+			if (placed) {
+				Block block = world.getBlockState(pos).getBlock();
 
-				BlockState state = fruitPod.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, facing);
-				boolean placed = world.setBlock(pos, state, 18);
-				if (placed) {
+				if (fruitPod == block) {
+					TileFruitPod pod = TileUtil.getTile(world, pos, TileFruitPod.class);
 
-					Block block = world.getBlockState(pos).getBlock();
-					if (fruitPod == block) {
-
-						TileFruitPod pod = TileUtil.getTile(world, pos, TileFruitPod.class);
-						if (pod != null) {
-							pod.setProperties(genome, allele, yield);
-							RenderUtil.markForUpdate(pos);
-							return true;
-						} else {
-							world.setBlock(pos, Blocks.AIR.defaultBlockState(), 18);
-							return false;
-						}
+					if (pod != null) {
+						pod.setProperties(genome, allele, yield);
+						RenderUtil.markForUpdate(pos);
+						return true;
+					} else {
+						world.setBlock(pos, Blocks.AIR.defaultBlockState(), 18);
+						return false;
 					}
 				}
 			}
@@ -212,7 +210,6 @@ public class TreeRoot extends IndividualRoot<ITree> implements ITreeRoot, IBreed
 		return false;
 	}
 
-	/* BREEDING TRACKER */
 	@Override
 	public IArboristTracker getBreedingTracker(LevelAccessor world, @Nullable GameProfile player) {
 		return BreedingTrackerManager.INSTANCE.getTracker(getUID(), world, player);

@@ -51,12 +51,12 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 
 	@Override
 	public BlockEntity createTileEntity(BlockPos pos, BlockState state) {
-		return teType.get().getTileType().create(pos, state);
+		return teType.get().tileType().create(pos, state);
 	}
 
 	@Override
 	public BlockEntityType<? extends T> getTeType() {
-		return teType.get().getTileType();
+		return teType.get().tileType();
 	}
 
 	@Override

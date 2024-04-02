@@ -36,7 +36,7 @@ public class ContainerImprinter extends ContainerItemInventory<ItemInventoryImpr
 	}
 
 	public ContainerImprinter(int windowId, Inventory inventoryplayer, ItemInventoryImprinter inventory) {
-		super(windowId, inventory, inventoryplayer, 8, 103, ApicultureContainers.IMPRINTER.containerType());
+		super(windowId, inventory, inventoryplayer, 8, 103, ApicultureContainers.IMPRINTER.menuType());
 
 		// Input
 		this.addSlot(new SlotFiltered(inventory, 0, 152, 12));

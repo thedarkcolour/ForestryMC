@@ -1,20 +1,15 @@
 package forestry.api.core;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
-
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.Item;
+
+import java.util.Collection;
 
 public interface IBlockProvider<B extends Block, I extends Item> extends IItemProvider<I> {
-	boolean hasBlock();
+	B block();
 
-	@Nullable
-	B getBlock();
-
-	Block block();
-
+	// todo: why?
 	Collection<B> collect();
 
 	default boolean blockEqual(BlockState state) {
@@ -22,6 +17,6 @@ public interface IBlockProvider<B extends Block, I extends Item> extends IItemPr
 	}
 
 	default boolean blockEqual(Block block) {
-		return hasBlock() && block() == block;
+		return block() == block;
 	}
 }

@@ -8,6 +8,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -17,10 +18,8 @@ import forestry.core.utils.ForgeUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientModuleHandler extends CommonModuleHandler {
-
 	public ClientModuleHandler() {
-		super();
-		ForgeUtils.registerSubscriber(this);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override

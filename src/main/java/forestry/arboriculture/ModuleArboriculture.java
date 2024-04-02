@@ -12,8 +12,6 @@ package forestry.arboriculture;
 
 import java.util.function.Consumer;
 
-import forestry.apiculture.features.ApicultureFeatures;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -35,31 +33,22 @@ import forestry.arboriculture.villagers.RegisterVillager;
 import forestry.core.ModuleCore;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
-import forestry.core.utils.ForgeUtils;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.ARBORICULTURE, name = "Arboriculture", author = "Binnie & SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.arboriculture.description", lootTable = "arboriculture")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.ARBORICULTURE, name = "Arboriculture", author = "Binnie & SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.arboriculture.description", lootTable = "arboriculture")
 public class ModuleArboriculture extends BlankForestryModule {
 
-	@SuppressWarnings("NullableProblems")
-	//@SidedProxy(clientSide = "forestry.arboriculture.proxy.ProxyArboricultureClient", serverSide = "forestry.arboriculture.proxy.ProxyArboriculture")
-	public static ProxyArboriculture proxy;
+	public static final ProxyArboriculture PROXY = DistExecutor.safeRunForDist(() -> ProxyArboricultureClient::new, () -> ProxyArboriculture::new);
 	public static String treekeepingMode = "NORMAL";
 
 	public ModuleArboriculture() {
-		proxy = DistExecutor.safeRunForDist(() -> ProxyArboricultureClient::new, () -> ProxyArboriculture::new);
-		ForgeUtils.registerSubscriber(this);
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
 		RegisterVillager.POINTS_OF_INTEREST.register(modEventBus);
 		RegisterVillager.PROFESSIONS.register(modEventBus);
 		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
-
-		ApicultureFeatures.FEATURES.register(modEventBus);
-		ApicultureFeatures.CONFIGURED_FEATURES.register(modEventBus);
-		ApicultureFeatures.PLACED_FEATURES.register(modEventBus);
 	}
 
 	@Override
@@ -77,15 +66,13 @@ public class ModuleArboriculture extends BlankForestryModule {
 
 	@Override
 	public void preInit() {
-		MinecraftForge.EVENT_BUS.register(this);
-
 		//TODO: World Gen
 		if (TreeConfig.getSpawnRarity() > 0.0F) {
 			//MinecraftForge.TERRAIN_GEN_BUS.register(new TreeDecorator());
 		}
 
 		// Init rendering
-		proxy.initializeModels();
+		PROXY.initializeModels();
 
 		// Commands
 		ModuleCore.rootCommand.then(CommandTree.register());
@@ -177,6 +164,6 @@ public class ModuleArboriculture extends BlankForestryModule {
 
 	@Override
 	public ISidedModuleHandler getModuleHandler() {
-		return proxy;
+		return PROXY;
 	}
 }

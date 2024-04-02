@@ -181,7 +181,7 @@ public class FactoryJeiPlugin implements IModPlugin {
 		}
 
 		if (ModuleFactory.machineEnabled()) {
-			BlockFactoryPlain rainTank = FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.RAINTANK).getBlock();
+			BlockFactoryPlain rainTank = FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.RAINTANK).block();
 			JeiUtil.addDescription(registry, rainTank);
 		}
 	}

@@ -34,7 +34,7 @@ public class ContainerRaintank extends ContainerLiquidTanks<TileRaintank> {
 	}
 
 	public ContainerRaintank(int windowId, Inventory player, TileRaintank tile) {
-		super(windowId, FactoryContainers.RAINTANK.containerType(), player, tile, 8, 84);
+		super(windowId, FactoryContainers.RAINTANK.menuType(), player, tile, 8, 84);
 		addDataSlots(new SimpleContainerData(1));
 
 		this.addSlot(new SlotEmptyLiquidContainerIn(this.tile, InventoryRaintank.SLOT_RESOURCE, 116, 19));

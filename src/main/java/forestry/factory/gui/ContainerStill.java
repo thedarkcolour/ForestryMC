@@ -31,7 +31,7 @@ public class ContainerStill extends ContainerLiquidTanks<TileStill> {
 	}
 
 	public ContainerStill(int windowId, Inventory player, TileStill tile) {
-		super(windowId, FactoryContainers.STILL.containerType(), player, tile, 8, 84);
+		super(windowId, FactoryContainers.STILL.menuType(), player, tile, 8, 84);
 
 		this.addSlot(new SlotOutput(tile, InventoryStill.SLOT_PRODUCT, 150, 54));
 		this.addSlot(new SlotEmptyLiquidContainerIn(tile, InventoryStill.SLOT_RESOURCE, 150, 18));

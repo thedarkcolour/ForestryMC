@@ -31,7 +31,7 @@ public class ContainerTrader extends ContainerTile<TileTrader> {
 	}
 
 	public ContainerTrader(int windowId, Inventory inv, TileTrader tile) {
-		super(windowId, MailContainers.TRADER.containerType(), inv, tile, 33, 138);
+		super(windowId, MailContainers.TRADER.menuType(), inv, tile, 33, 138);
 
 		// Trade good
 		this.addSlot(new SlotForestry(this.tile, TradeStation.SLOT_TRADEGOOD, 78, 109).blockShift());

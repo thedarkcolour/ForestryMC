@@ -27,7 +27,7 @@ public class ContainerAlvearySwarmer extends ContainerTile<TileAlvearySwarmer> {
 	}
 
 	public ContainerAlvearySwarmer(int windowId, Inventory player, TileAlvearySwarmer tile) {
-		super(windowId, ApicultureContainers.ALVEARY_SWARMER.containerType(), player, tile, 8, 87);
+		super(windowId, ApicultureContainers.ALVEARY_SWARMER.menuType(), player, tile, 8, 87);
 
 		this.addSlot(new SlotFiltered(tile, 0, 79, 52));
 		this.addSlot(new SlotFiltered(tile, 1, 100, 39));

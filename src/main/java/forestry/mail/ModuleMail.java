@@ -36,7 +36,7 @@ import forestry.mail.network.PacketRegistryMail;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.MAIL, name = "Mail", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.mail.description")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.MAIL, name = "Mail", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.mail.description")
 public class ModuleMail extends BlankForestryModule {
 
 	@Override
@@ -49,12 +49,12 @@ public class ModuleMail extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(MailContainers.CATALOGUE.containerType(), GuiCatalogue::new);
-		MenuScreens.register(MailContainers.LETTER.containerType(), GuiLetter::new);
-		MenuScreens.register(MailContainers.MAILBOX.containerType(), GuiMailbox::new);
-		MenuScreens.register(MailContainers.STAMP_COLLECTOR.containerType(), GuiStampCollector::new);
-		MenuScreens.register(MailContainers.TRADE_NAME.containerType(), GuiTradeName::new);
-		MenuScreens.register(MailContainers.TRADER.containerType(), GuiTrader::new);
+		MenuScreens.register(MailContainers.CATALOGUE.menuType(), GuiCatalogue::new);
+		MenuScreens.register(MailContainers.LETTER.menuType(), GuiLetter::new);
+		MenuScreens.register(MailContainers.MAILBOX.menuType(), GuiMailbox::new);
+		MenuScreens.register(MailContainers.STAMP_COLLECTOR.menuType(), GuiStampCollector::new);
+		MenuScreens.register(MailContainers.TRADE_NAME.menuType(), GuiTradeName::new);
+		MenuScreens.register(MailContainers.TRADER.menuType(), GuiTrader::new);
 	}
 
 	@Override

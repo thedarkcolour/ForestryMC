@@ -152,7 +152,7 @@ public class ModuleManager implements IModuleManager {
 				if (sortedModules.keySet().containsAll(module.getDependencyUids())) {
 					iterator.remove();
 					ForestryModule info = module.getClass().getAnnotation(ForestryModule.class);
-					sortedModules.put(new ResourceLocation(info.containerID(), info.moduleID()), module);
+					sortedModules.put(new ResourceLocation(info.modId(), info.moduleID()), module);
 					changed = true;
 					break;
 				}
@@ -166,12 +166,12 @@ public class ModuleManager implements IModuleManager {
 		for (IModuleContainer container : moduleContainers.values()) {
 			Collection<IForestryModule> loadedModules = sortedModules.values().stream().filter(m -> {
 						ForestryModule info = m.getClass().getAnnotation(ForestryModule.class);
-						return info.containerID().equals(container.getID());
+						return info.modId().equals(container.getID());
 					}
 			).collect(Collectors.toList());
 			Collection<IForestryModule> unloadedModules = ModuleManager.unloadedModules.stream().filter(m -> {
 						ForestryModule info = m.getClass().getAnnotation(ForestryModule.class);
-						return info.containerID().equals(container.getID());
+						return info.modId().equals(container.getID());
 					}
 			).collect(Collectors.toList());
 			container.onConfiguredModules(loadedModules, unloadedModules);

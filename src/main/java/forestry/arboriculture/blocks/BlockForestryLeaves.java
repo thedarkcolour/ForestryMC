@@ -12,7 +12,6 @@ package forestry.arboriculture.blocks;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
@@ -183,6 +182,6 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 				}
 			}
 		}
-		return ModuleArboriculture.proxy.getFoliageColorDefault();
+		return ModuleArboriculture.PROXY.getFoliageColorDefault();
 	}
 }

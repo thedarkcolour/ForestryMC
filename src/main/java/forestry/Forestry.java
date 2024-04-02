@@ -114,7 +114,6 @@ import forestry.factory.recipes.MoistenerRecipe;
 import forestry.factory.recipes.SqueezerContainerRecipe;
 import forestry.factory.recipes.SqueezerRecipe;
 import forestry.factory.recipes.StillRecipe;
-import forestry.modules.ForestryModuleUids;
 import forestry.modules.ForestryModules;
 import forestry.modules.ModuleManager;
 import forestry.modules.features.ModFeatureRegistry;
@@ -129,10 +128,8 @@ import net.minecraftforge.registries.RegisterEvent;
  *
  * @author SirSengir
  */
-@Mod(Forestry.ID)
+@Mod(Constants.MOD_ID)
 public class Forestry {
-    public static final String ID = "forestry";
-
 	public Forestry() {
 		ForestryAPI.errorStateRegistry = new ErrorStateRegistry();
 		ClimateManager.climateRoot = ClimateRoot.getInstance();
@@ -163,6 +160,9 @@ public class Forestry {
 
 		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new Client(modEventBus, networkHandler)::run);
 		modEventBus.addListener(EventPriority.NORMAL, false, FMLCommonSetupEvent.class, evt -> networkHandler.serverPacketHandler());
+
+		// Features must be created before registry events fire
+		ModuleManager.getModuleHandler().createFeatures();
 	}
 
 	public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -265,29 +265,13 @@ public class Forestry {
 		private RegistryEvents() {
 		}
 
-		@SubscribeEvent(priority = EventPriority.HIGH)
-		public static void createFeatures(RegisterEvent event) {
-			if (event.getRegistryKey() == Registry.BLOCK_REGISTRY) {
-				return;
-			}
-
-			ModuleManager.getModuleHandler().createFeatures();
-		}
-
+		// should honestly go in Common
 		@SubscribeEvent(priority = EventPriority.LOW)
 		public static void createObjects(RegisterEvent event) {
 			if (event.getRegistryKey() == Registry.BLOCK_REGISTRY) {
+				ModuleManager.getModuleHandler().registerObjects(event);
 				return;
 			}
-
-			ModuleManager.getModuleHandler().createObjects((type, moduleID) -> !moduleID.equals(ForestryModuleUids.CRATE));
-			ModuleManager.getModuleHandler().runRegisterBackpacksAndCrates();
-			ModuleManager.getModuleHandler().createObjects((type, moduleID) -> moduleID.equals(ForestryModuleUids.CRATE));
-		}
-
-		@SubscribeEvent(priority = EventPriority.LOWEST)
-		public static void registerObjects(RegisterEvent event) {
-			ModuleManager.getModuleHandler().registerObjects(event);
 		}
 
 		@SubscribeEvent

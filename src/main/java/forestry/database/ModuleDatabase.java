@@ -14,12 +14,12 @@ import forestry.database.network.PacketRegistryDatabase;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.DATABASE, name = "Database", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.database.description")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.DATABASE, name = "Database", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.database.description")
 public class ModuleDatabase extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(DatabaseContainers.DATABASE.containerType(), GuiDatabase::new);
+		MenuScreens.register(DatabaseContainers.DATABASE.menuType(), GuiDatabase::new);
 	}
 
 	@Override

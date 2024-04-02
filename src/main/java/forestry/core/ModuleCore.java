@@ -56,7 +56,7 @@ import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.CORE, name = "Core", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.core.description", coreModule = true)
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.CORE, name = "Core", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.core.description", coreModule = true)
 public class ModuleCore extends BlankForestryModule {
 	public static final LiteralArgumentBuilder<CommandSourceStack> rootCommand = LiteralArgumentBuilder.literal("forestry");
 
@@ -89,11 +89,11 @@ public class ModuleCore extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(CoreContainers.ALYZER.containerType(), GuiAlyzer::new);
-		MenuScreens.register(CoreContainers.ANALYZER.containerType(), GuiAnalyzer::new);
-		MenuScreens.register(CoreContainers.NATURALIST_INVENTORY.containerType(), GuiNaturalistInventory::new);
-		MenuScreens.register(CoreContainers.ESCRITOIRE.containerType(), GuiEscritoire::new);
-		MenuScreens.register(CoreContainers.SOLDERING_IRON.containerType(), GuiSolderingIron::new);
+		MenuScreens.register(CoreContainers.ALYZER.menuType(), GuiAlyzer::new);
+		MenuScreens.register(CoreContainers.ANALYZER.menuType(), GuiAnalyzer::new);
+		MenuScreens.register(CoreContainers.NATURALIST_INVENTORY.menuType(), GuiNaturalistInventory::new);
+		MenuScreens.register(CoreContainers.ESCRITOIRE.menuType(), GuiEscritoire::new);
+		MenuScreens.register(CoreContainers.SOLDERING_IRON.menuType(), GuiSolderingIron::new);
 	}
 
 

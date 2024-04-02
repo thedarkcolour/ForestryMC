@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import net.minecraft.core.Registry;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -43,7 +44,6 @@ import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.modules.ModuleManager;
 import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureBlockGroup;
-import forestry.modules.features.FeatureType;
 import forestry.modules.features.IModFeature;
 
 /**
@@ -87,22 +87,22 @@ public class ForestryBlockLootTables extends BlockLoot {
 		//TODO: Hives
 
 		Set<ResourceLocation> visited = Sets.newHashSet();
-		for (IModFeature feature : ModuleManager.moduleHandler.getFeatures((type) -> type.equals(FeatureType.BLOCK))) {
-			if (!(feature instanceof FeatureBlock)) {
-				Log.error("Found feature of the type block that does not extends the \"FeatureBlock\" class.");
-				continue;
-			}
-			Block block = ((FeatureBlock<?, ?>) feature).block();
-			ResourceLocation resourcelocation = block.getLootTable();
-			if (resourcelocation != BuiltInLootTables.EMPTY && visited.add(resourcelocation)) {
-				LootTable.Builder builder = this.map.remove(resourcelocation);
+		for (IModFeature feature : ModuleManager.moduleHandler.getFeatures(Registry.BLOCK_REGISTRY)) {
+			if (feature instanceof FeatureBlock<?,?> blockFeature) {
+				Block block = blockFeature.block();
+				ResourceLocation resourcelocation = block.getLootTable();
+				if (resourcelocation != BuiltInLootTables.EMPTY && visited.add(resourcelocation)) {
+					LootTable.Builder builder = this.map.remove(resourcelocation);
 
-				if (builder == null) {
-					builder = createSingleItemTable(block);
-					//throw new IllegalStateException(String.format("Missing loottable '%s' for '%s'", resourcelocation, Registry.BLOCK.getKey(block)));
+					if (builder == null) {
+						builder = createSingleItemTable(block);
+						//throw new IllegalStateException(String.format("Missing loottable '%s' for '%s'", resourcelocation, Registry.BLOCK.getKey(block)));
+					}
+
+					consumer.accept(resourcelocation, builder);
 				}
-
-				consumer.accept(resourcelocation, builder);
+			} else {
+				throw new IllegalStateException("Found feature in BLOCK_REGISTRY that is not FeatureBlock.");
 			}
 		}
 

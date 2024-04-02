@@ -37,7 +37,7 @@ public class ContainerCarpenter extends ContainerLiquidTanks<TileCarpenter> impl
 	}
 
 	public ContainerCarpenter(int windowId, Inventory inventoryplayer, TileCarpenter tile) {
-		super(windowId, FactoryContainers.CARPENTER.containerType(), inventoryplayer, tile, 8, 136);
+		super(windowId, FactoryContainers.CARPENTER.menuType(), inventoryplayer, tile, 8, 136);
 
 		// Internal inventory
 		for (int i = 0; i < 2; i++) {

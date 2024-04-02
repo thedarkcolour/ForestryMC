@@ -33,14 +33,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.FlowerManager;
@@ -51,7 +47,6 @@ import forestry.api.genetics.flowers.IFlowerAcceptableRule;
 import forestry.api.modules.ForestryModule;
 import forestry.apiculture.commands.CommandBee;
 import forestry.apiculture.features.ApicultureContainers;
-import forestry.apiculture.features.ApicultureFeatures;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.flowers.FlowerRegistry;
 import forestry.apiculture.genetics.BeeDefinition;
@@ -70,21 +65,16 @@ import forestry.apiculture.gui.GuiHabitatLocator;
 import forestry.apiculture.gui.GuiImprinter;
 import forestry.apiculture.items.EnumHoneyComb;
 import forestry.apiculture.items.EnumPollenCluster;
-import forestry.apiculture.items.HabitatLocatorLogic;
 import forestry.apiculture.network.PacketRegistryApiculture;
-import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.proxy.ProxyApiculture;
 import forestry.apiculture.proxy.ProxyApicultureClient;
-import forestry.apiculture.villagers.RegisterVillager;
 import forestry.apiculture.worldgen.HiveDescription;
 import forestry.apiculture.worldgen.HiveGenHelper;
 import forestry.apiculture.worldgen.HiveRegistry;
 import forestry.core.ISaveEventHandler;
 import forestry.core.ModuleCore;
-import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
-import forestry.core.utils.ForgeUtils;
 import forestry.core.utils.IMCUtil;
 import forestry.core.utils.Log;
 import forestry.modules.BlankForestryModule;
@@ -93,7 +83,7 @@ import forestry.modules.ISidedModuleHandler;
 
 import genetics.api.GeneticsAPI;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.APICULTURE, name = "Apiculture", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.apiculture.description", lootTable = "apiculture")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.APICULTURE, name = "Apiculture", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.apiculture.description", lootTable = "apiculture")
 public class ModuleApiculture extends BlankForestryModule {
 
 	@Nullable
@@ -115,29 +105,11 @@ public class ModuleApiculture extends BlankForestryModule {
 
 	public static int maxFlowersSpawnedPerHive = 20;
 
-	public static ProxyApiculture proxy;
+	public static final ProxyApiculture PROXY = DistExecutor.safeRunForDist(() -> ProxyApicultureClient::new, () -> ProxyApiculture::new);
 
 	public static HiveRegistry getHiveRegistry() {
 		Preconditions.checkNotNull(hiveRegistry);
 		return hiveRegistry;
-	}
-
-	public ModuleApiculture() {
-		proxy = DistExecutor.safeRunForDist(() -> ProxyApicultureClient::new, () -> ProxyApiculture::new);
-		ForgeUtils.registerSubscriber(this);
-		MinecraftForge.EVENT_BUS.register(HabitatLocatorLogic.class);
-
-		ApicultureParticles.PARTICLE_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
-
-		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-		RegisterVillager.POINTS_OF_INTEREST.register(modEventBus);
-		RegisterVillager.PROFESSIONS.register(modEventBus);
-		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
-
-		ApicultureFeatures.FEATURES.register(modEventBus);
-		ApicultureFeatures.CONFIGURED_FEATURES.register(modEventBus);
-		ApicultureFeatures.PLACED_FEATURES.register(modEventBus);
 	}
 
 	@Override
@@ -159,20 +131,18 @@ public class ModuleApiculture extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(ApicultureContainers.ALVEARY.containerType(), GuiAlveary::new);
-		MenuScreens.register(ApicultureContainers.ALVEARY_HYGROREGULATOR.containerType(), GuiAlvearyHygroregulator::new);
-		MenuScreens.register(ApicultureContainers.ALVEARY_SIEVE.containerType(), GuiAlvearySieve::new);
-		MenuScreens.register(ApicultureContainers.ALVEARY_SWARMER.containerType(), GuiAlvearySwarmer::new);
-		MenuScreens.register(ApicultureContainers.BEE_HOUSING.containerType(), GuiBeeHousing<ContainerBeeHousing>::new);
-		MenuScreens.register(ApicultureContainers.HABITAT_LOCATOR.containerType(), GuiHabitatLocator::new);
-		MenuScreens.register(ApicultureContainers.IMPRINTER.containerType(), GuiImprinter::new);
-		MenuScreens.register(ApicultureContainers.BEEHOUSE_MINECART.containerType(), GuiBeeHousing<ContainerMinecartBeehouse>::new);
+		MenuScreens.register(ApicultureContainers.ALVEARY.menuType(), GuiAlveary::new);
+		MenuScreens.register(ApicultureContainers.ALVEARY_HYGROREGULATOR.menuType(), GuiAlvearyHygroregulator::new);
+		MenuScreens.register(ApicultureContainers.ALVEARY_SIEVE.menuType(), GuiAlvearySieve::new);
+		MenuScreens.register(ApicultureContainers.ALVEARY_SWARMER.menuType(), GuiAlvearySwarmer::new);
+		MenuScreens.register(ApicultureContainers.BEE_HOUSING.menuType(), GuiBeeHousing<ContainerBeeHousing>::new);
+		MenuScreens.register(ApicultureContainers.HABITAT_LOCATOR.menuType(), GuiHabitatLocator::new);
+		MenuScreens.register(ApicultureContainers.IMPRINTER.menuType(), GuiImprinter::new);
+		MenuScreens.register(ApicultureContainers.BEEHOUSE_MINECART.menuType(), GuiBeeHousing<ContainerMinecartBeehouse>::new);
 	}
 
 	@Override
 	public void preInit() {
-		MinecraftForge.EVENT_BUS.register(this);
-
 		// Commands
 		ModuleCore.rootCommand.then(CommandBee.register());
 
@@ -449,7 +419,7 @@ public class ModuleApiculture extends BlankForestryModule {
 
 	@Override
 	public ISidedModuleHandler getModuleHandler() {
-		return proxy;
+		return PROXY;
 	}
 
 	private static class EndFlowerAcceptableRule implements IFlowerAcceptableRule {

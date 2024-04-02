@@ -45,7 +45,7 @@ public class ContainerMinecartBeehouse extends ContainerEntity<MinecartEntityBee
 	}
 
 	public ContainerMinecartBeehouse(int windowId, Inventory player, MinecartEntityBeeHousingBase entity, boolean hasFrames, GuiBeeHousing.Icon icon) {
-		super(windowId, ApicultureContainers.BEEHOUSE_MINECART.containerType(), entity, player, 8, 108);
+		super(windowId, ApicultureContainers.BEEHOUSE_MINECART.menuType(), entity, player, 8, 108);
 		providerHelper = new ContainerAnalyzerProviderHelper(this, player);
 
 		ContainerBeeHelper.addSlots(this, entity, hasFrames);

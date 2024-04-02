@@ -75,7 +75,7 @@ public class ContainerCatalogue extends AbstractContainerMenu implements IGuiSel
 	}
 
 	public ContainerCatalogue(int windowId, Inventory inv) {
-		super(MailContainers.CATALOGUE.containerType(), windowId);
+		super(MailContainers.CATALOGUE.menuType(), windowId);
 		this.player = inv.player;
 
 		if (!player.level.isClientSide) {

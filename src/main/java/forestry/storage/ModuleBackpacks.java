@@ -25,11 +25,10 @@ import forestry.storage.features.BackpackContainers;
 import forestry.storage.gui.GuiBackpack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 
-@ForestryModule(moduleID = ForestryModuleUids.BACKPACKS, containerID = Constants.MOD_ID, name = "Backpack", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.backpacks.description", lootTable = "storage")
+@ForestryModule(moduleID = ForestryModuleUids.BACKPACKS, modId = Constants.MOD_ID, name = "Backpack", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.backpacks.description", lootTable = "storage")
 public class ModuleBackpacks extends BlankForestryModule {
 
 	public static final IBackpackInterface BACKPACK_INTERFACE = new BackpackInterface();
@@ -46,12 +45,7 @@ public class ModuleBackpacks extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(BackpackContainers.BACKPACK.containerType(), GuiBackpack::new);
-	}
-
-	@Override
-	public void preInit() {
-		MinecraftForge.EVENT_BUS.register(this);
+		MenuScreens.register(BackpackContainers.BACKPACK.menuType(), GuiBackpack::new);
 	}
 
 	@Override

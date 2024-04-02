@@ -64,7 +64,9 @@ public class AlleleFruits {
 			fruitCherry = new AlleleFruit("cherry", new FruitProviderRipening("for.fruits.cherry", PRUNES, () -> CoreItems.FRUITS.stack(EnumFruit.CHERRY, 1), 1.0f)
 				.setColours(new Color(0xff2e2e), new Color(0xc4d24a))
 				.setOverlay("berries"), true),
-			fruitDates = new AlleleFruit("dates", new FruitProviderPod("for.fruits.dates", JUNGLE, EnumPodType.DATES, () -> CoreItems.FRUITS.stack(EnumFruit.DATES, 4))),
+			fruitDates = new AlleleFruit("dates", new FruitProviderPod("for.fruits.dates", JUNGLE, EnumPodType.DATES, () -> {
+				return CoreItems.FRUITS.stack(EnumFruit.DATES, 4);
+			})),
 			fruitPapaya = new AlleleFruit("papaya", new FruitProviderPod("for.fruits.papaya", JUNGLE, EnumPodType.PAPAYA, () -> CoreItems.FRUITS.stack(EnumFruit.PAPAYA, 1))),
 			fruitLemon = new AlleleFruit("lemon", new FruitProviderRipening("for.fruits.lemon", PRUNES, () -> CoreItems.FRUITS.stack(EnumFruit.LEMON, 1), 1.0f)
 				.setColours(new Color(0xeeee00), new Color(0x99ff00))

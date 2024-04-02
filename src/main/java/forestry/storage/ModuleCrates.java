@@ -10,10 +10,10 @@ import forestry.modules.ISidedModuleHandler;
 import forestry.storage.proxy.ProxyCrates;
 import forestry.storage.proxy.ProxyCratesClient;
 
-@ForestryModule(moduleID = ForestryModuleUids.CRATE, containerID = Constants.MOD_ID, name = "Crate", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.crates.description")
+@ForestryModule(moduleID = ForestryModuleUids.CRATE, modId = Constants.MOD_ID, name = "Crate", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.crates.description")
 public class ModuleCrates extends BlankForestryModule {
 
-	private final ProxyCrates proxy = DistExecutor.runForDist(() -> ProxyCratesClient::new, () -> ProxyCrates::new);
+	private final ProxyCrates proxy = DistExecutor.safeRunForDist(() -> ProxyCratesClient::new, () -> ProxyCrates::new);
 
 	@Override
 	public ISidedModuleHandler getModuleHandler() {

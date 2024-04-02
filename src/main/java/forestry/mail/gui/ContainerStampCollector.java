@@ -29,7 +29,7 @@ public class ContainerStampCollector extends ContainerTile<TileStampCollector> {
 	}
 
 	public ContainerStampCollector(int windowId, Inventory inv, TileStampCollector tile) {
-		super(windowId, MailContainers.STAMP_COLLECTOR.containerType(), inv, tile, 8, 111);
+		super(windowId, MailContainers.STAMP_COLLECTOR.menuType(), inv, tile, 8, 111);
 
 		// Filter
 		addSlot(new SlotFiltered(tile, InventoryStampCollector.SLOT_FILTER, 80, 19));

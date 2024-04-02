@@ -16,10 +16,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 
 public class ProxyCommon {
+	// todo make sure to call this on each element in deferred register
 	public void registerItem(Item item) {
 
 	}
 
+	// todo make sure to call this on each element in deferred register, used to be in IBlockFeature.register
 	public void registerBlock(Block block) {
 
 	}

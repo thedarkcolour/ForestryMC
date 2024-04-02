@@ -39,7 +39,7 @@ public class ContainerFabricator extends ContainerLiquidTanks<TileFabricator> im
 	}
 
 	public ContainerFabricator(int windowId, Inventory playerInventory, TileFabricator tile) {
-		super(windowId, FactoryContainers.FABRICATOR.containerType(), playerInventory, tile, 8, 129);
+		super(windowId, FactoryContainers.FABRICATOR.menuType(), playerInventory, tile, 8, 129);
 		addDataSlots(new SimpleContainerData(4));
 
 		// Internal inventory

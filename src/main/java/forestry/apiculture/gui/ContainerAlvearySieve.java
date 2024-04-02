@@ -30,7 +30,7 @@ public class ContainerAlvearySieve extends ContainerTile<TileAlvearySieve> {
 	}
 
 	public ContainerAlvearySieve(int windowId, Inventory player, TileAlvearySieve tile) {
-		super(windowId, ApicultureContainers.ALVEARY_SIEVE.containerType(), player, tile, 8, 87);
+		super(windowId, ApicultureContainers.ALVEARY_SIEVE.menuType(), player, tile, 8, 87);
 
 		ISlotPickupWatcher crafter = tile.getCrafter();
 

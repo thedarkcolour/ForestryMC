@@ -30,7 +30,7 @@ public class ContainerSqueezer extends ContainerLiquidTanksSocketed<TileSqueezer
 	}
 
 	public ContainerSqueezer(int windowId, Inventory player, TileSqueezer tile) {
-		super(windowId, FactoryContainers.SQUEEZER.containerType(), player, tile, 8, 84);
+		super(windowId, FactoryContainers.SQUEEZER.menuType(), player, tile, 8, 84);
 
 		// Resource inventory
 		for (int row = 0; row < 3; row++) {

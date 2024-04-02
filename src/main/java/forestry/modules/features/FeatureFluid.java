@@ -4,40 +4,48 @@ import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.function.Supplier;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.resources.ResourceLocation;
 
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-import forestry.core.config.Constants;
 import forestry.core.fluids.BlockForestryFluid;
 import forestry.core.items.definitions.DrinkProperties;
 
-public class FeatureFluid implements IFluidFeature {
+public class FeatureFluid extends ModFeature implements IFluidFeature {
 	private final FeatureBlock<BlockForestryFluid, BlockItem> block;
 	private final FluidProperties properties;
-	private final String moduleID;
-	private final String identifier;
 	private final ForgeFlowingFluid.Properties internal;
-	@Nullable
-	private volatile FlowingFluid fluid;
-	@Nullable
-	private FlowingFluid flowing;
+
+	private final RegistryObject<? extends FlowingFluid> fluidObject;
+	private final RegistryObject<? extends FlowingFluid> flowingFluidObject;
 
 	public FeatureFluid(Builder builder) {
-		this.moduleID = builder.moduleID;
-		this.identifier = builder.identifier;
+		super(builder.moduleID, builder.registry.getModId(), builder.identifier);
 		this.block = builder.registry.block(() -> new BlockForestryFluid(this), "fluid_" + builder.identifier);
 		this.properties = new FluidProperties(builder);
-		FluidType attributes = new FluidType(FluidType.Properties.create()
-				.density(properties().density)
-				.viscosity(properties().viscosity)
-				.temperature(properties().temperature));
-		this.internal = new ForgeFlowingFluid.Properties(() -> attributes, this::getFluid, this::getFlowing).block(block::getBlock).bucket(properties().bucket);
+		RegistryObject<FluidType> attributes = builder.registry.getRegistry(ForgeRegistries.Keys.FLUID_TYPES).register(identifier, () -> new FluidType(FluidType.Properties.create()
+				.density(properties.density)
+				.viscosity(properties.viscosity)
+				.temperature(properties.temperature)));
+		DeferredRegister<Fluid> fluidRegistry = builder.registry.getRegistry(Registry.FLUID_REGISTRY);
+		this.internal = new ForgeFlowingFluid.Properties(attributes, this::fluid, this::flowing).block(block::block).bucket(properties().bucket);
+		this.fluidObject = fluidRegistry.register(identifier, () -> new ForgeFlowingFluid.Source(internal));
+		this.flowingFluidObject = fluidRegistry.register(identifier + "_flowing", () -> new ForgeFlowingFluid.Flowing(internal));
+	}
+
+	@Override
+	public ResourceKey<? extends Registry<?>> getRegistry() {
+		return Registry.FLUID_REGISTRY;
 	}
 
 	@Override
@@ -46,74 +54,18 @@ public class FeatureFluid implements IFluidFeature {
 	}
 
 	@Override
-	public void setFluid(FlowingFluid fluid) {
-		this.fluid = fluid;
+	public FlowingFluid fluid() {
+		return fluidObject.get();
 	}
 
 	@Override
-	public void setFlowing(@Nullable FlowingFluid flowing) {
-		this.flowing = flowing;
-	}
-
-	@Override
-	public Supplier<FlowingFluid> getFluidConstructor(boolean flowing) {
-		return () -> flowing ? new ForgeFlowingFluid.Flowing(internal) : new ForgeFlowingFluid.Source(internal);
-	}
-
-	@Nullable
-	@Override
-	public FlowingFluid getFluid() {
-		// im sure double-checked locking is overkill but why not
-		if (fluid == null) {
-			synchronized (this) {
-				if (fluid == null) {
-					create();
-				}
-			}
-		}
-
-		return fluid;
-	}
-
-	@Nullable
-	@Override
-	public FlowingFluid getFlowing() {
-		return flowing;
+	public FlowingFluid flowing() {
+		return flowingFluidObject.get();
 	}
 
 	@Override
 	public FluidProperties properties() {
 		return properties;
-	}
-
-	@Override
-	public boolean hasFlowing() {
-		return flowing != null;
-	}
-
-	@Override
-	public boolean hasFluid() {
-		return fluid != null;
-	}
-
-	@Override
-	public FeatureType getType() {
-		return FeatureType.FLUID;
-	}
-
-	@Override
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	@Override
-	public String getModId() {
-		return Constants.MOD_ID;
-	}
-
-	@Override
-	public String getModuleId() {
-		return moduleID;
 	}
 
 	public static class Builder {

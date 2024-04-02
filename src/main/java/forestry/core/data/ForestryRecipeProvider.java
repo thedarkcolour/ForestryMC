@@ -819,7 +819,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 	private void registerDatabaseRecipes(Consumer<FinishedRecipe> helper) {
 		//TODO create FallbackIngredient implementation
 		List<FeatureBlock<?, ?>> features = Lists.newArrayList(ApicultureBlocks.BEE_CHEST, ArboricultureBlocks.TREE_CHEST, LepidopterologyBlocks.BUTTERFLY_CHEST);
-		List<Ingredient> possibleSpecials = Lists.newArrayList(Ingredient.of(ApicultureItems.ROYAL_JELLY.getItem()), Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.PLUM).getItem()), Ingredient.of(Tags.Items.CHESTS_WOODEN));
+		List<Ingredient> possibleSpecials = Lists.newArrayList(Ingredient.of(ApicultureItems.ROYAL_JELLY.item()), Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.PLUM).item()), Ingredient.of(Tags.Items.CHESTS_WOODEN));
 		Ingredient possibleSpecial = Ingredient.merge(possibleSpecials);
 		for (FeatureBlock<?, ?> featureBlock1 : features) {
 			for (FeatureBlock<?, ?> featureBlock2 : features) {
@@ -945,7 +945,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 	private void registerFluidsRecipes(Consumer<FinishedRecipe> helper) {
 		ForestryFluids milk = ForestryFluids.MILK;
 		for (EnumContainerType containerType : EnumContainerType.values()) {
-			/*if (containerType == EnumContainerType.JAR || containerType == EnumContainerType.GLASS) {
+			/*if (menuType == EnumContainerType.JAR || menuType == EnumContainerType.GLASS) {
 				continue;
 			}*/
 			ItemStack filled = FluidsItems.getContainer(containerType, milk);
@@ -989,7 +989,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern(" # ").pattern("#Y#").pattern("XXX")
 				.unlockedBy("has_casing", has(CoreItems.STURDY_CASING))
 				.save(helper);
-		Item[] emptiedLetter = MailItems.LETTERS.getRowFeatures(ItemLetter.Size.EMPTY).stream().map(FeatureItem::getItem).toArray(Item[]::new);
+		Item[] emptiedLetter = MailItems.LETTERS.getRowFeatures(ItemLetter.Size.EMPTY).stream().map(FeatureItem::item).toArray(Item[]::new);
 		ShapedRecipeBuilder.shaped(Items.PAPER)
 				.define('#', Ingredient.of(emptiedLetter))
 				.pattern(" # ").pattern(" # ").pattern(" # ")

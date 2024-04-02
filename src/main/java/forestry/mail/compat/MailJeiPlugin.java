@@ -24,6 +24,6 @@ public class MailJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		JeiUtil.addDescription(registration, MailBlocks.BASE.get(BlockTypeMail.MAILBOX).getBlock(), MailBlocks.BASE.get(BlockTypeMail.PHILATELIST).getBlock(), MailBlocks.BASE.get(BlockTypeMail.TRADE_STATION).getBlock());
+		JeiUtil.addDescription(registration, MailBlocks.BASE.get(BlockTypeMail.MAILBOX).block(), MailBlocks.BASE.get(BlockTypeMail.PHILATELIST).block(), MailBlocks.BASE.get(BlockTypeMail.TRADE_STATION).block());
 	}
 }

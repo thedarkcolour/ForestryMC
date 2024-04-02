@@ -1,69 +1,33 @@
 package forestry.modules.features;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.function.Supplier;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import forestry.core.config.Constants;
+import net.minecraftforge.registries.RegistryObject;
 
-public class FeatureTileType<T extends BlockEntity> implements ITileTypeFeature<T> {
-	protected final String moduleID;
-	protected final String identifier;
-	private final BlockEntityType.BlockEntitySupplier<T> constructorTileEntity;
-	@Nullable
-	private BlockEntityType<T> tileType;
-	private Supplier<Collection<? extends Block>> validBlocks;
+public class FeatureTileType<T extends BlockEntity> extends ModFeature implements ITileTypeFeature<T> {
+	private final RegistryObject<BlockEntityType<T>> blockEntityObject;
 
-	public FeatureTileType(String moduleID, String identifier, BlockEntityType.BlockEntitySupplier<T> constructorTileEntity, Supplier<Collection<? extends Block>> validBlocks) {
-		this.moduleID = moduleID;
-		this.identifier = identifier;
-		this.constructorTileEntity = constructorTileEntity;
-		this.validBlocks = validBlocks;
-	}
-
-
-	@Override
-	public boolean hasTileType() {
-		return tileType != null;
-	}
-
-	@Nullable
-	@Override
-	public BlockEntityType<T> getTileType() {
-		return tileType;
+	public FeatureTileType(IFeatureRegistry registry, String moduleID, String identifier, BlockEntityType.BlockEntitySupplier<T> constructorTileEntity, Supplier<Collection<? extends Block>> validBlocks) {
+		super(moduleID, registry.getModId(), identifier);
+		this.blockEntityObject = registry.getRegistry(Registry.BLOCK_ENTITY_TYPE_REGISTRY).register(identifier, () -> {
+			return BlockEntityType.Builder.of(constructorTileEntity, validBlocks.get().toArray(Block[]::new)).build(null);
+		});
 	}
 
 	@Override
-	public String getIdentifier() {
-		return identifier;
+	public ResourceKey<? extends Registry<?>> getRegistry() {
+		return Registry.BLOCK_ENTITY_TYPE_REGISTRY;
 	}
 
 	@Override
-	public FeatureType getType() {
-		return FeatureType.TILE;
-	}
-
-	@Override
-	public String getModId() {
-		return Constants.MOD_ID;
-	}
-
-	@Override
-	public String getModuleId() {
-		return moduleID;
-	}
-
-	@Override
-	public void setTileType(BlockEntityType<T> tileType) {
-		this.tileType = tileType;
-	}
-
-	@Override
-	public BlockEntityType.Builder<T> getTileTypeConstructor() {
-		return BlockEntityType.Builder.of(constructorTileEntity, validBlocks.get().toArray(new Block[0]));
+	public BlockEntityType<T> tileType() {
+		return blockEntityObject.get();
 	}
 }

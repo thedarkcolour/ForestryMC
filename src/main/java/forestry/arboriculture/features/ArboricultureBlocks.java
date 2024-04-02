@@ -39,10 +39,10 @@ import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureBlockGroup;
 import forestry.modules.features.FeatureGroup;
 import forestry.modules.features.FeatureProvider;
-import forestry.modules.features.FeatureType;
 import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.BlockItem;
 
@@ -104,7 +104,7 @@ public class ArboricultureBlocks {
 	}
 
 	private static <B extends Block & IWoodTyped, S extends IWoodType> FeatureBlockGroup<B, S> registerWood(FeatureBlockGroup<B, S> group, WoodBlockKind kind) {
-		REGISTRY.addRegistryListener(FeatureType.ITEM, event -> WoodAccess.getInstance().registerFeatures(group, kind));
+		REGISTRY.addRegistryListener(Registry.ITEM_REGISTRY, event -> WoodAccess.getInstance().registerFeatures(group, kind));
 		return group;
 	}
 

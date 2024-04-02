@@ -32,7 +32,7 @@ public class ContainerCentrifuge extends ContainerSocketed<TileCentrifuge> {
 	}
 
 	public ContainerCentrifuge(int windowId, Inventory player, TileCentrifuge tile) {
-		super(windowId, FactoryContainers.CENTRIFUGE.containerType(), player, tile, 8, 84);
+		super(windowId, FactoryContainers.CENTRIFUGE.menuType(), player, tile, 8, 84);
 
 		// Resource
 		this.addSlot(new SlotFiltered(this.tile, 0, 16, 37));

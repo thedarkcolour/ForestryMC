@@ -11,6 +11,7 @@ import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureProvider;
 import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 
 @FeatureProvider
 public class LepidopterologyItems {
@@ -23,7 +24,7 @@ public class LepidopterologyItems {
 	public static final FeatureItem<ItemButterflyGE> CATERPILLAR_GE = REGISTRY.item(() -> new ItemButterflyGE(EnumFlutterType.CATERPILLAR), "caterpillar_ge");
 	public static final FeatureItem<ItemButterflyGE> COCOON_GE = REGISTRY.item(() -> new ItemButterflyGE(EnumFlutterType.COCOON), "cocoon_ge");
 
-	public static final FeatureItem<SpawnEggItem> BUTTERFLY_SPAWN_EGG = REGISTRY.item(() -> new SpawnEggItem(LepidopterologyEntities.BUTTERFLY.entityType(), 0x456296, 0xEF6915, (new Item.Properties()).tab(CreativeModeTab.TAB_MISC)), "butterfly_spawn_egg");
+	//public static final FeatureItem<SpawnEggItem> BUTTERFLY_SPAWN_EGG = REGISTRY.item(() -> new ForgeSpawnEggItem(() -> LepidopterologyEntities.BUTTERFLY.entityType(), 0x456296, 0xEF6915, (new Item.Properties()).tab(CreativeModeTab.TAB_MISC)), "butterfly_spawn_egg");
 
 	private LepidopterologyItems() {
 	}

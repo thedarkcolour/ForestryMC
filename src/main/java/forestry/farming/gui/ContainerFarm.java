@@ -33,7 +33,7 @@ public class ContainerFarm extends ContainerSocketed<TileFarm> {
 	}
 
 	public ContainerFarm(int windowId, Inventory playerInventory, TileFarm data) {
-		super(windowId, FarmingContainers.FARM.containerType(), playerInventory, data, 28, 138);
+		super(windowId, FarmingContainers.FARM.menuType(), playerInventory, data, 28, 138);
 
 		// Resources
 		for (int i = 0; i < 3; i++) {

@@ -29,7 +29,7 @@ public class FeatureBlockGroup<B extends Block, S extends IBlockSubtype> extends
 	}
 
 	public Collection<BlockItem> getItems() {
-		return featureByType.values().stream().filter(IBlockFeature::hasItem).map(IBlockFeature::item).collect(Collectors.toList());
+		return featureByType.values().stream().map(IBlockFeature::item).collect(Collectors.toList());
 	}
 
 	@Nullable

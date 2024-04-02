@@ -17,12 +17,10 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.DistExecutor;
@@ -33,7 +31,6 @@ import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.modules.ForestryModule;
 import forestry.core.ModuleCore;
 import forestry.core.config.Constants;
-import forestry.core.utils.ForgeUtils;
 import forestry.lepidopterology.commands.CommandButterfly;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyEntities;
@@ -49,7 +46,7 @@ import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
 
-@ForestryModule(containerID = Constants.MOD_ID, moduleID = ForestryModuleUids.LEPIDOPTEROLOGY, name = "Lepidopterology", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.lepidopterology.description")
+@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.LEPIDOPTEROLOGY, name = "Lepidopterology", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.lepidopterology.description")
 public class ModuleLepidopterology extends BlankForestryModule {
 
 	@SuppressWarnings("NullableProblems")
@@ -66,7 +63,6 @@ public class ModuleLepidopterology extends BlankForestryModule {
 
 	public ModuleLepidopterology() {
 		proxy = DistExecutor.safeRunForDist(() -> ProxyLepidopterologyClient::new, () -> ProxyLepidopterology::new);
-		ForgeUtils.registerSubscriber(this);
 
 		MinecraftForge.EVENT_BUS.addListener(ForgeEvents::onEntityTravelToDimension);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onAttributeCreate);
@@ -89,8 +85,6 @@ public class ModuleLepidopterology extends BlankForestryModule {
 
 	@Override
 	public void preInit() {
-		MinecraftForge.EVENT_BUS.register(this);
-
 		ButterflyDefinition.preInit();
 		MothDefinition.preInit();
 

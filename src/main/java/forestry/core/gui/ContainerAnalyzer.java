@@ -30,7 +30,7 @@ public class ContainerAnalyzer extends ContainerLiquidTanks<TileAnalyzer> {
 	}
 
 	public ContainerAnalyzer(int windowId, Inventory player, TileAnalyzer tile) {
-		super(windowId, CoreContainers.ANALYZER.containerType(), player, tile, 8, 94);
+		super(windowId, CoreContainers.ANALYZER.menuType(), player, tile, 8, 94);
 
 		// Input buffer
 		for (int i = 0; i < 3; i++) {

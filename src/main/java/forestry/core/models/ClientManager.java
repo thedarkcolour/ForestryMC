@@ -118,15 +118,13 @@ public class ClientManager {
 	}
 
 	public void registerModel(BakedModel model, Object feature) {
-		if (feature instanceof FeatureGroup) {
-			FeatureGroup<?, ?, ?> group = (FeatureGroup) feature;
+		if (feature instanceof FeatureGroup<?, ?, ?> group) {
 			group.getFeatures().forEach(f -> registerModel(model, f));
-		} else if (feature instanceof FeatureTable) {
-			FeatureTable<?, ?, ?, ?> group = (FeatureTable) feature;
+		} else if (feature instanceof FeatureTable<?, ?, ?, ?> group) {
 			group.getFeatures().forEach(f -> registerModel(model, f));
-		} else if (feature instanceof FeatureBlock block) {
-			registerModel(model, block.block(), block.getItem());
-		} else if (feature instanceof FeatureItem item) {
+		} else if (feature instanceof FeatureBlock<?, ?> block) {
+			registerModel(model, block.block(), block.item());
+		} else if (feature instanceof FeatureItem<?> item) {
 			registerModel(model, item.item());
 		}
 	}

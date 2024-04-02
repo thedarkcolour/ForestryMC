@@ -3,7 +3,6 @@ package forestry.arboriculture.blocks;
 import com.google.common.base.Preconditions;
 
 import java.util.Collection;
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -119,7 +118,7 @@ public class BlockWoodPile extends Block {
 				if (state.getValue(AGE) < 7) {
 					world.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), Block.UPDATE_CLIENTS);
 				} else {
-					BlockState ashState = CharcoalBlocks.ASH.with(BlockAsh.AMOUNT, Math.min(Math.round(Config.charcoalAmountBase + getCharcoalAmount(world, pos)), 63));
+					BlockState ashState = CharcoalBlocks.ASH.setValue(BlockAsh.AMOUNT, Math.min(Math.round(Config.charcoalAmountBase + getCharcoalAmount(world, pos)), 63));
 					world.setBlock(pos, ashState, Block.UPDATE_CLIENTS);
 				}
 			}

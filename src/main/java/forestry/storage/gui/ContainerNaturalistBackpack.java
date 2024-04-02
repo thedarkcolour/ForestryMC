@@ -26,7 +26,7 @@ import forestry.storage.items.ItemBackpackNaturalist;
 public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInventoryBackpackPaged> implements IGuiSelectable {
 
 	public ContainerNaturalistBackpack(int windowId, Inventory inv, ItemInventoryBackpackPaged inventory, int selectedPage) {
-		super(windowId, inventory, inv, 18, 120, BackpackContainers.NATURALIST_BACKPACK.containerType());
+		super(windowId, inventory, inv, 18, 120, BackpackContainers.NATURALIST_BACKPACK.menuType());
 
 		ContainerNaturalistInventory.addInventory(this, inventory, selectedPage);
 	}

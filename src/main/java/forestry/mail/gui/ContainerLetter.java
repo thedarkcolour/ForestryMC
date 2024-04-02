@@ -55,7 +55,7 @@ public class ContainerLetter extends ContainerItemInventory<ItemInventoryLetter>
 	}
 
 	public ContainerLetter(int windowId, Player player, ItemInventoryLetter inventory) {
-		super(windowId, inventory, player.getInventory(), 17, 145, MailContainers.LETTER.containerType());
+		super(windowId, inventory, player.getInventory(), 17, 145, MailContainers.LETTER.menuType());
 
 		// Init slots
 

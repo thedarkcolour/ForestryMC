@@ -36,7 +36,7 @@ public class FabricatorRecipeTransferHandler implements IRecipeTransferHandler<C
 
 	@Override
 	public Optional<MenuType<ContainerFabricator>> getMenuType() {
-		return Optional.of(FactoryContainers.FABRICATOR.containerType());
+		return Optional.of(FactoryContainers.FABRICATOR.menuType());
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class ContainerGeneticFilter extends ContainerTile<TileGeneticFilter> {
 	}
 
 	public ContainerGeneticFilter(int windowId, Inventory playerInventory, IFilterContainer container) {
-		super(windowId, SortingContainers.GENETIC_FILTER.containerType(), container.getTileEntity());
+		super(windowId, SortingContainers.GENETIC_FILTER.menuType(), container.getTileEntity());
 		this.container = container;
 		addInventory(playerInventory, 26, 140);
 	}

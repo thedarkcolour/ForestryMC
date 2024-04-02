@@ -1,39 +1,31 @@
 package forestry.modules.features;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
-import forestry.core.config.Constants;
+import net.minecraftforge.registries.RegistryObject;
 
-public class FeatureEntityType<T extends Entity> implements IEntityTypeFeature<T> {
-	protected final String moduleID;
-	protected final String identifier;
+public class FeatureEntityType<T extends Entity> extends ModFeature implements IEntityTypeFeature<T> {
 	protected final UnaryOperator<EntityType.Builder<T>> consumer;
 	protected final Supplier<AttributeSupplier.Builder> attributes;
 	protected final EntityType.EntityFactory<T> factory;
 	protected final MobCategory classification;
-	@Nullable
-	private EntityType<T> entityType;
+	private final RegistryObject<EntityType<T>> entityTypeObject;
 
-	public FeatureEntityType(String moduleID, String identifier, UnaryOperator<EntityType.Builder<T>> consumer, EntityType.EntityFactory<T> factory, MobCategory classification,
-		Supplier<AttributeSupplier.Builder> attributes) {
-		this.moduleID = moduleID;
-		this.identifier = identifier;
+	public FeatureEntityType(IFeatureRegistry registry, String moduleID, String identifier, UnaryOperator<EntityType.Builder<T>> consumer, EntityType.EntityFactory<T> factory, MobCategory classification, Supplier<AttributeSupplier.Builder> attributes) {
+		super(moduleID, registry.getModId(), identifier);
 		this.consumer = consumer;
 		this.factory = factory;
 		this.attributes = attributes;
 		this.classification = classification;
-	}
-
-	@Override
-	public void setEntityType(EntityType<T> entityType) {
-		this.entityType = entityType;
+		this.entityTypeObject = registry.getRegistry(Registry.ENTITY_TYPE_REGISTRY).register(identifier, () -> EntityType.Builder.of(factory, classification).build(this.modId + ":" + identifier));
 	}
 
 	@Override
@@ -42,38 +34,12 @@ public class FeatureEntityType<T extends Entity> implements IEntityTypeFeature<T
 	}
 
 	@Override
-	public EntityType.Builder<T> getEntityTypeConstructor() {
-		return consumer.apply(EntityType.Builder.of(factory, classification));
+	public EntityType<T> entityType() {
+		return entityTypeObject.get();
 	}
 
 	@Override
-	public boolean hasEntityType() {
-		return entityType != null;
-	}
-
-	@Nullable
-	@Override
-	public EntityType<T> getEntityType() {
-		return entityType;
-	}
-
-	@Override
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	@Override
-	public FeatureType getType() {
-		return FeatureType.ENTITY;
-	}
-
-	@Override
-	public String getModId() {
-		return Constants.MOD_ID;
-	}
-
-	@Override
-	public String getModuleId() {
-		return moduleID;
+	public ResourceKey<? extends Registry<?>> getRegistry() {
+		return Registry.ENTITY_TYPE_REGISTRY;
 	}
 }

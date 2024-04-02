@@ -94,7 +94,7 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 	}
 
 	private static boolean setCocoon(WorldGenLevel world, BlockPos pos, IButterfly butterfly) {
-		Block cocoonBlock = LepidopterologyBlocks.COCOON_SOLID.getBlock();
+		Block cocoonBlock = LepidopterologyBlocks.COCOON_SOLID.block();
 		boolean placed = world.setBlock(pos, cocoonBlock.defaultBlockState(), Constants.FLAG_BLOCK_SYNC);
 		if (!placed) {
 			return false;

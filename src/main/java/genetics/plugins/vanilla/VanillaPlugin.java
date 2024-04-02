@@ -1,13 +1,11 @@
 package genetics.plugins.vanilla;
 
-import forestry.Forestry;
+import forestry.core.config.Constants;
 import genetics.api.GeneticPlugin;
 import genetics.api.IGeneticPlugin;
 import genetics.api.alleles.IAlleleRegistry;
 
-import genetics.Genetics;
-
-@GeneticPlugin(modId = Forestry.ID)
+@GeneticPlugin(modId = Constants.MOD_ID)
 public class VanillaPlugin implements IGeneticPlugin {
 	@Override
 	public void registerAlleles(IAlleleRegistry registry) {

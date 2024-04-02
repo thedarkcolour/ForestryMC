@@ -1,23 +1,26 @@
 package forestry.modules.features;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import forestry.core.utils.ForgeUtils;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,8 +37,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.network.IContainerFactory;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import forestry.api.core.IBlockSubtype;
 import forestry.api.core.IItemSubtype;
@@ -43,32 +48,29 @@ import forestry.api.modules.ForestryModule;
 import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
 import forestry.core.config.Constants;
+import forestry.core.blocks.BlockBase;
 import forestry.modules.ForestryModuleUids;
 import forestry.storage.ModuleBackpacks;
-import net.minecraftforge.registries.RegisterEvent;
 
-//TODO: Sort Registries and Features
 public class ModFeatureRegistry {
-	private static final HashMap<String, ModFeatureRegistry> registries = new LinkedHashMap<>();
+	// Maps mod id to feature (needed because of Binnie)
+	private static final LinkedHashMap<String, ModFeatureRegistry> modRegistries = new LinkedHashMap<>();
 
 	public static ModFeatureRegistry get(String modId) {
-		return registries.computeIfAbsent(modId, ModFeatureRegistry::new);
+		return modRegistries.computeIfAbsent(modId, ModFeatureRegistry::new);
 	}
 
 	public static Map<String, ModFeatureRegistry> getRegistries() {
-		return registries;
+		return modRegistries;
 	}
 
 	public static IFeatureRegistry get(Class<?> clazz) {
 		ForestryModule module = clazz.getAnnotation(ForestryModule.class);
-		if (module != null) {
-			return get(module.containerID()).getRegistry(module.moduleID());
-		}
-		return get(Constants.MOD_ID).getRegistry(ForestryModuleUids.CORE);
+		return get(Constants.MOD_ID).getRegistry(module == null ? ForestryModuleUids.CORE : module.moduleID());
 	}
 
 	public IFeatureRegistry getRegistry(String moduleID) {
-		return modules.computeIfAbsent(moduleID, ModuleFeatures::new);
+		return modules.computeIfAbsent(moduleID, id -> new ModuleFeatures(modId, id));
 	}
 
 	private final HashMap<String, ModuleFeatures> modules = new LinkedHashMap<>();
@@ -78,37 +80,13 @@ public class ModFeatureRegistry {
 		this.modId = modId;
 	}
 
-	public static void fireEvent() {
-		RegisterFeatureEvent event = new RegisterFeatureEvent();
-		MinecraftForge.EVENT_BUS.post(event);
-	}
-
 	public void register(IModFeature feature) {
-		modules.computeIfAbsent(feature.getModuleId(), ModuleFeatures::new).register(feature);
+		getRegistry(feature.getModuleId()).register(feature);
 	}
 
-	public void createObjects(BiPredicate<FeatureType, String> filter) {
-		for (FeatureType type : FeatureType.values()) {
-			modules.values().forEach(features -> {
-				if (filter.test(type, features.moduleID)) {
-					features.createObjects(type);
-					MinecraftForge.EVENT_BUS.post(new FeatureCreationEvent(modId, features.moduleID, type));
-				}
-			});
-		}
-	}
-
-	public Collection<IModFeature> getFeatures(FeatureType type) {
+	public Collection<IModFeature> getFeatures(ResourceKey<? extends Registry<?>> type) {
 		return modules.values().stream()
 				.flatMap((module) -> module.getFeatures(type).stream())
-				.collect(Collectors.toSet());
-	}
-
-	public Collection<IModFeature> getFeatures(Predicate<FeatureType> filter) {
-		return Stream.of(FeatureType.values())
-				.filter(filter)
-				.flatMap((type) -> modules.values().stream()
-						.flatMap((module) -> module.getFeatures(type).stream()))
 				.collect(Collectors.toSet());
 	}
 
@@ -126,13 +104,33 @@ public class ModFeatureRegistry {
 	}
 
 	private static class ModuleFeatures implements IFeatureRegistry {
-		private final HashMap<String, IModFeature> featureById = new LinkedHashMap<>();
-		private final Multimap<FeatureType, IModFeature> featureByType = LinkedListMultimap.create();
-		private final Multimap<FeatureType, Consumer<RegisterEvent>> registryListeners = LinkedListMultimap.create();
+		private final List<IModFeature> features = new ArrayList<>();
+		private final Multimap<ResourceKey<? extends Registry<?>>, IModFeature> featureByRegistry = ArrayListMultimap.create();
+		@SuppressWarnings("rawtypes")
+		private final Map<ResourceKey, DeferredRegister> registries = new HashMap<>();
+		private final Multimap<ResourceKey<? extends Registry<?>>, Consumer<RegisterEvent>> registryListeners = LinkedListMultimap.create();
+		private final String modId;
 		private final String moduleID;
 
-		public ModuleFeatures(String moduleID) {
+		public ModuleFeatures(String modId, String moduleID) {
+			this.modId = modId;
 			this.moduleID = moduleID;
+		}
+
+		@Override
+		public String getModId() {
+			return modId;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public <V> DeferredRegister<V> getRegistry(ResourceKey<? extends Registry<V>> registryKey) {
+			return registries.computeIfAbsent(registryKey, key -> {
+				DeferredRegister<V> registry = DeferredRegister.create(key, modId);
+				// todo use different mod bus depending on registered mod?
+				registry.register(ForgeUtils.modBus());
+				return registry;
+			});
 		}
 
 		@Override
@@ -142,7 +140,7 @@ public class ModFeatureRegistry {
 
 		@Override
 		public <B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, @Nullable Function<B, I> itemConstructor, String identifier) {
-			return register(new FeatureBlock<>(moduleID, identifier, constructor, itemConstructor));
+			return register(new FeatureBlock<>(this, moduleID, identifier, constructor, itemConstructor));
 		}
 
 		@Override
@@ -162,7 +160,7 @@ public class ModFeatureRegistry {
 
 		@Override
 		public <I extends Item> FeatureItem<I> item(Supplier<I> constructor, String identifier) {
-			return register(new FeatureItem<>(moduleID, identifier, constructor));
+			return register(new FeatureItem<>(this, moduleID, identifier, constructor));
 		}
 
 		@Override
@@ -206,24 +204,24 @@ public class ModFeatureRegistry {
 		}
 
 		@Override
-		public void addRegistryListener(FeatureType type, Consumer<RegisterEvent> listener) {
+		public void addRegistryListener(ResourceKey<? extends Registry<?>> type, Consumer<RegisterEvent> listener) {
 			registryListeners.put(type, listener);
 		}
 
 		public <F extends IModFeature> F register(F feature) {
-			featureById.put(feature.getIdentifier(), feature);
-			featureByType.put(feature.getType(), feature);
+			features.add(feature);
+			featureByRegistry.put(feature.getRegistry(), feature);
 			return feature;
 		}
 
 		@Override
 		public <T extends BlockEntity> FeatureTileType<T> tile(BlockEntityType.BlockEntitySupplier<T> constructor, String identifier, Supplier<Collection<? extends Block>> validBlocks) {
-			return register(new FeatureTileType<>(moduleID, identifier, constructor, validBlocks));
+			return register(new FeatureTileType<>(this, moduleID, identifier, constructor, validBlocks));
 		}
 
 		@Override
-		public <C extends AbstractContainerMenu> FeatureContainerType<C> container(IContainerFactory<C> factory, String identifier) {
-			return register(new FeatureContainerType<>(moduleID, identifier, factory));
+		public <C extends AbstractContainerMenu> FeatureMenuType<C> container(IContainerFactory<C> factory, String identifier) {
+			return register(new FeatureMenuType<>(this, moduleID, identifier, factory));
 		}
 
 		@Override
@@ -238,49 +236,31 @@ public class ModFeatureRegistry {
 
 		@Override
 		public <E extends Entity> FeatureEntityType<E> entity(EntityType.EntityFactory<E> factory, MobCategory classification, String identifier, UnaryOperator<EntityType.Builder<E>> consumer, Supplier<AttributeSupplier.Builder> attributes) {
-			return register(new FeatureEntityType<>(moduleID, identifier, consumer, factory, classification, attributes));
-		}
-
-		public IModFeature getFeature(String identifier) {
-			return featureById.get(identifier);
+			return register(new FeatureEntityType<>(this, moduleID, identifier, consumer, factory, classification, attributes));
 		}
 
 		@Override
 		public Collection<IModFeature> getFeatures() {
-			return featureById.values();
+			return features;
 		}
 
 		@Override
-		public Collection<IModFeature> getFeatures(FeatureType type) {
-			return featureByType.get(type);
-		}
-
-		public void createObjects(FeatureType type) {
-			for (IModFeature feature : featureByType.get(type)) {
-				createObject(feature);
-			}
-		}
-
-		private void createObject(IModFeature feature) {
-			feature.create();
+		public Collection<IModFeature> getFeatures(ResourceKey<? extends Registry<?>> type) {
+			return featureByRegistry.get(type);
 		}
 
 		public void onRegister(RegisterEvent event) {
-			for (FeatureType type : FeatureType.values()) {
-				for (IModFeature feature : featureByType.get(type)) {
-					feature.register(event);
-				}
-
-                registryListeners.get(type).forEach(listener -> listener.accept(event));
-            }
-		}
-
-		@OnlyIn(Dist.CLIENT)
-		public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
-			for (IModFeature feature : featureByType.values()) {
-				feature.clientSetupRenderers(event);
+			for (Consumer<RegisterEvent> listener : registryListeners.get(event.getRegistryKey())) {
+				listener.accept(event);
 			}
 		}
 
+		public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
+			for (RegistryObject<Block> feature : getRegistry(Registry.BLOCK_REGISTRY).getEntries()) {
+				if (feature.get() instanceof BlockBase<?> block) {
+					block.clientSetupRenderers(event);
+				}
+			}
+		}
 	}
 }

@@ -1,68 +1,30 @@
 package forestry.modules.features;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
 import forestry.core.config.Constants;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
-public class FeatureItem<I extends Item> implements IItemFeature<I>, Supplier<I> {
-	private final String moduleID;
-	private final String identifier;
-	private final Supplier<I> constructor;
-	@Nullable
-	private I item;
+public class FeatureItem<I extends Item> extends ModFeature implements IItemFeature<I> {
+	private final RegistryObject<I> itemObject;
 
-	public FeatureItem(String moduleID, String identifier, Supplier<I> constructor) {
-		this.moduleID = moduleID;
-		this.identifier = identifier;
-		this.constructor = constructor;
+	public FeatureItem(IFeatureRegistry registry, String moduleID, String identifier, Supplier<I> constructor) {
+		super(moduleID, registry.getModId(), identifier);
+		this.itemObject = registry.getRegistry(Registry.ITEM_REGISTRY).register(identifier, constructor);
 	}
 
 	@Override
-	public void setItem(I item) {
-		this.item = item;
+	public ResourceKey<? extends Registry<?>> getRegistry() {
+		return Registry.ITEM_REGISTRY;
 	}
 
 	@Override
-	public boolean hasItem() {
-		return item != null;
-	}
-
-	@Nullable
-	@Override
-	public I getItem() {
-		return item;
-	}
-
-	@Override
-	public I get() {
-		return item();
-	}
-
-	@Override
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	@Override
-	public Supplier<I> getItemConstructor() {
-		return constructor;
-	}
-
-	@Override
-	public FeatureType getType() {
-		return FeatureType.ITEM;
-	}
-
-	@Override
-	public String getModId() {
-		return Constants.MOD_ID;
-	}
-
-	@Override
-	public String getModuleId() {
-		return moduleID;
+	public I item() {
+		return itemObject.get();
 	}
 }

@@ -34,10 +34,10 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 			withExistingParent(RegistryNameFinder.getRegistryName(farm).getPath(), new ResourceLocation(Constants.MOD_ID, "block/farm"));
 		}
 
-		withExistingParent(RegistryNameFinder.getRegistryName(LepidopterologyItems.CATERPILLAR_GE.getItem()).getPath(), mcLoc("item/generated"))
+		withExistingParent(RegistryNameFinder.getRegistryName(LepidopterologyItems.CATERPILLAR_GE.item()).getPath(), mcLoc("item/generated"))
 				.texture("layer0", new ResourceLocation(Constants.MOD_ID, "item/caterpillar.body2"))
 				.texture("layer1", new ResourceLocation(Constants.MOD_ID, "item/caterpillar.body"));
-		withExistingParent(RegistryNameFinder.getRegistryName(LepidopterologyItems.SERUM_GE.getItem()).getPath(), mcLoc("item/generated"))
+		withExistingParent(RegistryNameFinder.getRegistryName(LepidopterologyItems.SERUM_GE.item()).getPath(), mcLoc("item/generated"))
 				.texture("layer0", new ResourceLocation(Constants.MOD_ID, "item/liquids/jar.bottle"))
 				.texture("layer1", new ResourceLocation(Constants.MOD_ID, "item/liquids/jar.contents"));
 

@@ -36,7 +36,7 @@ public class ContainerFermenter extends ContainerLiquidTanks<TileFermenter> {
 	}
 
 	public ContainerFermenter(int windowId, Inventory player, TileFermenter tile) {
-		super(windowId, FactoryContainers.FERMENTER.containerType(), player, tile, 8, 84);
+		super(windowId, FactoryContainers.FERMENTER.menuType(), player, tile, 8, 84);
 		addDataSlots(new SimpleContainerData(4));
 
 		this.addSlot(new SlotFiltered(tile, InventoryFermenter.SLOT_RESOURCE, 85, 23));

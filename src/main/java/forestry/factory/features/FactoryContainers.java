@@ -10,7 +10,7 @@ import forestry.factory.gui.ContainerMoistener;
 import forestry.factory.gui.ContainerRaintank;
 import forestry.factory.gui.ContainerSqueezer;
 import forestry.factory.gui.ContainerStill;
-import forestry.modules.features.FeatureContainerType;
+import forestry.modules.features.FeatureMenuType;
 import forestry.modules.features.FeatureProvider;
 import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
@@ -19,13 +19,13 @@ import forestry.modules.features.ModFeatureRegistry;
 public class FactoryContainers {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleFactory.class);
 
-	public static final FeatureContainerType<ContainerBottler> BOTTLER = REGISTRY.container(ContainerBottler::fromNetwork, "bottler");
-	public static final FeatureContainerType<ContainerCarpenter> CARPENTER = REGISTRY.container(ContainerCarpenter::fromNetwork, "carpenter");
-	public static final FeatureContainerType<ContainerCentrifuge> CENTRIFUGE = REGISTRY.container(ContainerCentrifuge::fromNetwork, "centrifuge");
-	public static final FeatureContainerType<ContainerFabricator> FABRICATOR = REGISTRY.container(ContainerFabricator::fromNetwork, "fabricator");
-	public static final FeatureContainerType<ContainerFermenter> FERMENTER = REGISTRY.container(ContainerFermenter::fromNetwork, "fermenter");
-	public static final FeatureContainerType<ContainerMoistener> MOISTENER = REGISTRY.container(ContainerMoistener::fromNetwork, "moistener");
-	public static final FeatureContainerType<ContainerRaintank> RAINTANK = REGISTRY.container(ContainerRaintank::fromNetwork, "raintank");
-	public static final FeatureContainerType<ContainerSqueezer> SQUEEZER = REGISTRY.container(ContainerSqueezer::fromNetwork, "squeezer");
-	public static final FeatureContainerType<ContainerStill> STILL = REGISTRY.container(ContainerStill::fromNetwork, "still");
+	public static final FeatureMenuType<ContainerBottler> BOTTLER = REGISTRY.container(ContainerBottler::fromNetwork, "bottler");
+	public static final FeatureMenuType<ContainerCarpenter> CARPENTER = REGISTRY.container(ContainerCarpenter::fromNetwork, "carpenter");
+	public static final FeatureMenuType<ContainerCentrifuge> CENTRIFUGE = REGISTRY.container(ContainerCentrifuge::fromNetwork, "centrifuge");
+	public static final FeatureMenuType<ContainerFabricator> FABRICATOR = REGISTRY.container(ContainerFabricator::fromNetwork, "fabricator");
+	public static final FeatureMenuType<ContainerFermenter> FERMENTER = REGISTRY.container(ContainerFermenter::fromNetwork, "fermenter");
+	public static final FeatureMenuType<ContainerMoistener> MOISTENER = REGISTRY.container(ContainerMoistener::fromNetwork, "moistener");
+	public static final FeatureMenuType<ContainerRaintank> RAINTANK = REGISTRY.container(ContainerRaintank::fromNetwork, "raintank");
+	public static final FeatureMenuType<ContainerSqueezer> SQUEEZER = REGISTRY.container(ContainerSqueezer::fromNetwork, "squeezer");
+	public static final FeatureMenuType<ContainerStill> STILL = REGISTRY.container(ContainerStill::fromNetwork, "still");
 }
