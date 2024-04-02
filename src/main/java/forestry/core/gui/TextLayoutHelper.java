@@ -10,9 +10,13 @@
  ******************************************************************************/
 package forestry.core.gui;
 
+import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Transformation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -79,8 +83,8 @@ public class TextLayoutHelper {
 		drawLine(transform, text, x, defaultFontColor);
 	}
 
-	public void drawSplitLine(Component text, int x, int maxWidth) {
-		drawSplitLine(text, x, maxWidth, defaultFontColor);
+	public void drawSplitLine(PoseStack transform, Component text, int x, int maxWidth) {
+		drawSplitLine(transform, text, x, maxWidth, defaultFontColor);
 	}
 
 	public void drawCenteredLine(PoseStack transform, Component text, int x, int color) {
@@ -111,12 +115,20 @@ public class TextLayoutHelper {
 		guiForestry.getFontRenderer().draw(transform, text, guiForestry.getGuiLeft() + x, guiForestry.getGuiTop() + y + line, color);
 	}
 
-	public void drawSplitLine(String text, int x, int maxWidth, int color) {
-		drawSplitLine(Component.literal(text), x, maxWidth, color);
+	public void drawSplitLine(PoseStack transform, String text, int x, int maxWidth, int color) {
+		drawSplitLine(transform, Component.literal(text), x, maxWidth, color);
 	}
 
-	public void drawSplitLine(Component text, int x, int maxWidth, int color) {
-		guiForestry.getFontRenderer().drawWordWrap(text, guiForestry.getGuiLeft() + x, guiForestry.getGuiTop() + line, maxWidth, color);
+	public void drawSplitLine(PoseStack transform, Component text, int x, int maxWidth, int color) {
+		// Modified copy of Font.drawWordWrap that uses PoseStack
+		Font font = guiForestry.getFontRenderer();
+		float xStart = guiForestry.getGuiLeft() + x;
+		float yStart = guiForestry.getGuiTop() + line;
+
+		for (FormattedCharSequence formattedcharsequence : font.split(text, maxWidth)) {
+			font.draw(transform, formattedcharsequence, xStart, yStart, color);
+			yStart += 9;
+		}
 	}
 
 	public int getCenteredOffset(Component text) {

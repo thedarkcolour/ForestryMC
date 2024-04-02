@@ -91,19 +91,19 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		}
 	}
 
-	public final void drawSplitLine(String text, int x, int maxWidth, IIndividual individual, IChromosomeType chromosome, boolean inactive) {
+	public final void drawSplitLine(PoseStack transform, String text, int x, int maxWidth, IIndividual individual, IChromosomeType chromosome, boolean inactive) {
 		if (!inactive) {
-			textLayout.drawSplitLine(text, x, maxWidth, getColorCoding(individual.getGenome().getActiveAllele(chromosome).isDominant()));
+			textLayout.drawSplitLine(transform, text, x, maxWidth, getColorCoding(individual.getGenome().getActiveAllele(chromosome).isDominant()));
 		} else {
-			textLayout.drawSplitLine(text, x, maxWidth, getColorCoding(individual.getGenome().getInactiveAllele(chromosome).isDominant()));
+			textLayout.drawSplitLine(transform, text, x, maxWidth, getColorCoding(individual.getGenome().getInactiveAllele(chromosome).isDominant()));
 		}
 	}
 
-	public final void drawSplitLine(Component component, int x, int maxWidth, IIndividual individual, IChromosomeType chromosome, boolean inactive) {
+	public final void drawSplitLine(PoseStack transform, Component component, int x, int maxWidth, IIndividual individual, IChromosomeType chromosome, boolean inactive) {
 		if (!inactive) {
-			textLayout.drawSplitLine(component, x, maxWidth, getColorCoding(individual.getGenome().getActiveAllele(chromosome).isDominant()));
+			textLayout.drawSplitLine(transform, component, x, maxWidth, getColorCoding(individual.getGenome().getActiveAllele(chromosome).isDominant()));
 		} else {
-			textLayout.drawSplitLine(component, x, maxWidth, getColorCoding(individual.getGenome().getInactiveAllele(chromosome).isDominant()));
+			textLayout.drawSplitLine(transform, component, x, maxWidth, getColorCoding(individual.getGenome().getInactiveAllele(chromosome).isDominant()));
 		}
 	}
 
@@ -135,8 +135,8 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		Component primaryName = primary.getAlyzerName(type);
 		Component secondaryName = primary.getAlyzerName(type);
 
-		drawSplitLine(primaryName, textLayout.column1, columnwidth, individual, chromosome, false);
-		drawSplitLine(secondaryName, textLayout.column2, columnwidth, individual, chromosome, true);
+		drawSplitLine(transform, primaryName, textLayout.column1, columnwidth, individual, chromosome, false);
+		drawSplitLine(transform, secondaryName, textLayout.column2, columnwidth, individual, chromosome, true);
 
 		textLayout.newLine();
 	}
@@ -300,10 +300,10 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.newLine();
 		String description = individual.getGenome().getPrimary().getDescription().getString();
 		if (StringUtils.isBlank(description) || description.startsWith("for.description.")) {
-			textLayout.drawSplitLine(Component.translatable("for.gui.alyzer.nodescription"), 12, 200, 0x666666);
+			textLayout.drawSplitLine(transform, Component.translatable("for.gui.alyzer.nodescription"), 12, 200, 0x666666);
 		} else {
 			String[] tokens = description.split("\\|");
-			textLayout.drawSplitLine(tokens[0], 12, 200, 0x666666);
+			textLayout.drawSplitLine(transform, tokens[0], 12, 200, 0x666666);
 			if (tokens.length > 1) {
 				String signature = "- " + tokens[1];
 				getFontRenderer().drawShadow(transform, signature, leftPos + 210 - getFontRenderer().width(signature), topPos + 145 - 14, 0x99cc32);
