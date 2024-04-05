@@ -29,22 +29,21 @@ public class PacketHandlerClient {
 		PacketIdClient id = PacketIdClient.VALUES[idOrdinal];
 
 		IForestryPacketHandlerClient packetHandler = id.getPacketHandler();
+		NetworkEvent.Context ctx = event.getSource().get();
+		ctx.enqueueWork(() -> {
+			Player player = Minecraft.getInstance().player;
 
-		Player player = Minecraft.getInstance().player;
-
-		if (player == null) {
-			LOGGER.warn("the player was null, event: {}", event);
-			return;
-		}
-
-		try {
-			packetHandler.onPacketData(data, player);
-
-		} catch (IOException e) {
-			LOGGER.error("exception handling packet", e);
-			return;
-		}
-		event.getSource().get().setPacketHandled(true);
+			if (player != null) {
+				try {
+					packetHandler.onPacketData(data, player);
+				} catch (IOException e) {
+					LOGGER.error("exception handling packet", e);
+				}
+			} else {
+				LOGGER.warn("the player was null, event: {}", event);
+			}
+		});
+		ctx.setPacketHandled(true);
 	}
 
 	public static void sendPacket(IForestryPacketServer packet) {
