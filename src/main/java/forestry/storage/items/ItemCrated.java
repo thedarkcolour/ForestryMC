@@ -57,7 +57,7 @@ public class ItemCrated extends ItemForestry implements IColoredItem {
 
 			ItemStack dropStack = contained.copy();
 			dropStack.setCount(9);
-			ItemStackUtil.dropItemStackAsEntity(dropStack, worldIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), 40);
+			ItemStackUtil.dropItemStackAsEntity(dropStack, worldIn, playerIn.getX() - playerIn.getBbWidth() / 2f, playerIn.getY(), playerIn.getZ() - playerIn.getBbWidth() / 2f, 40);
 		}
 		return InteractionResultHolder.success(heldItem);
 	}
@@ -72,22 +72,6 @@ public class ItemCrated extends ItemForestry implements IColoredItem {
 			return Component.translatable("for.item.crated.grammar", containedName);
 		}
 	}
-
-	//TODO I think this needs ItemOverrides or something?
-	//	@OnlyIn(Dist.CLIENT)
-	//	@Override
-	//	public void registerModel(Item item, IModelManager manager) {
-	//		if (contained.isEmpty()) {
-	//			manager.registerItemModel(item, 0);
-	//			manager.registerItemModel(item, 1, "crate-filled");
-	//		} else {
-	//			ResourceLocation location = Preconditions.checkNotNull(getRegistryName());
-	//			ModelResourceLocation modelLocation = new ModelResourceLocation("forestry:crate-filled", location.getPath());
-	//			//			ModelLoader.setCustomModelResourceLocation(item, 0, modelLocation);
-	//			//			ModelBakery.registerItemVariants(item, modelLocation);
-	//		}
-	//	}
-
 
 	@Override
 	@OnlyIn(Dist.CLIENT)

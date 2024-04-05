@@ -229,10 +229,10 @@ public abstract class ItemStackUtil {
 			return;
 		}
 
-		float f1 = 0.7F;
-		double d = world.random.nextFloat() * f1 + (1.0F - f1) * 0.5D;
-		double d1 = world.random.nextFloat() * f1 + (1.0F - f1) * 0.5D;
-		double d2 = world.random.nextFloat() * f1 + (1.0F - f1) * 0.5D;
+		float f1 = 0.4F;
+		double d = (world.random.nextFloat() * f1 + (1.0F - f1)) * 0.5D;
+		double d1 = (world.random.nextFloat() * f1 + (1.0F - f1)) * 0.5D;
+		double d2 = (world.random.nextFloat() * f1 + (1.0F - f1)) * 0.5D;
 		ItemEntity entityitem = new ItemEntity(world, x + d, y + d1, z + d2, items);
 		entityitem.setPickUpDelay(delayForPickup);
 
