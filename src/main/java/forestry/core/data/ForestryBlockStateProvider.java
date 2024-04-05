@@ -26,6 +26,10 @@ import forestry.arboriculture.blocks.BlockForestryStairs;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
+import forestry.core.features.CoreItems;
+import forestry.cultivation.blocks.BlockPlanter;
+import forestry.cultivation.blocks.BlockTypePlanter;
+import forestry.cultivation.features.CultivationBlocks;
 import forestry.farming.blocks.BlockFarm;
 import forestry.farming.blocks.EnumFarmBlockType;
 import forestry.farming.blocks.EnumFarmMaterial;
@@ -55,7 +59,16 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 			generic3d(block);
 		}
 
-		// Ore
+		for (BlockTypePlanter farmType : BlockTypePlanter.values()) {
+			ModelFile file = models().getExistingFile(modBlock(farmType.getSerializedName()));
+			horizontalBlock(CultivationBlocks.PLANTER.get(farmType, BlockPlanter.Mode.MANUAL).block(), file);
+			horizontalBlock(CultivationBlocks.PLANTER.get(farmType, BlockPlanter.Mode.MANAGED).block(), file);
+		}
+
+		// Resources
+		simpleBlock(CoreBlocks.BOG_EARTH.block());
+		simpleBlock(CoreBlocks.HUMUS.block());
+
 		simpleBlock(CoreBlocks.APATITE_ORE.block());
 		simpleBlock(CoreBlocks.DEEPSLATE_APATITE_ORE.block());
 		simpleBlock(CoreBlocks.TIN_ORE.block());

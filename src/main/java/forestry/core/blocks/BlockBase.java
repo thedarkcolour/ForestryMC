@@ -61,7 +61,7 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	/**
 	 * use this instead of {@link net.minecraft.world.level.block.HorizontalDirectionalBlock#FACING} so the blocks rotate in a circle instead of NSWE order.
 	 */
-	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.DOWN, Direction.UP);
+	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
 
 	private final boolean hasTESR;
 	public final P blockType;
@@ -93,7 +93,6 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		super.createBlockStateDefinition(builder);
 		builder.add(FACING);
 	}
 
