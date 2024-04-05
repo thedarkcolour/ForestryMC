@@ -19,10 +19,9 @@ import forestry.core.IPickupHandler;
 import forestry.core.IResupplyHandler;
 import forestry.core.config.Constants;
 import forestry.core.data.ForestryTags;
-import forestry.core.gui.GuiNaturalistInventory;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
-import forestry.storage.features.BackpackContainers;
+import forestry.storage.features.BackpackMenuTypes;
 import forestry.storage.gui.GuiBackpack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,7 +45,7 @@ public class ModuleBackpacks extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(BackpackContainers.BACKPACK.menuType(), GuiBackpack::new);
+		MenuScreens.register(BackpackMenuTypes.BACKPACK.menuType(), GuiBackpack::new);
 	}
 
 	@Override

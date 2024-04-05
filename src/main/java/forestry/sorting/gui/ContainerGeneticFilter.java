@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import forestry.core.gui.ContainerTile;
 import forestry.core.tiles.TileUtil;
-import forestry.sorting.features.SortingContainers;
+import forestry.sorting.features.SortingMenuTypes;
 import forestry.sorting.network.packets.PacketGuiFilterUpdate;
 import forestry.sorting.tiles.IFilterContainer;
 import forestry.sorting.tiles.TileGeneticFilter;
@@ -21,7 +21,7 @@ public class ContainerGeneticFilter extends ContainerTile<TileGeneticFilter> {
 	}
 
 	public ContainerGeneticFilter(int windowId, Inventory playerInventory, IFilterContainer container) {
-		super(windowId, SortingContainers.GENETIC_FILTER.menuType(), container.getTileEntity());
+		super(windowId, SortingMenuTypes.GENETIC_FILTER.menuType(), container.getTileEntity());
 		this.container = container;
 		addInventory(playerInventory, 26, 140);
 	}

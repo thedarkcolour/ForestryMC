@@ -14,7 +14,7 @@ import net.minecraftforge.fml.DistExecutor;
 
 import forestry.api.modules.ForestryModule;
 import forestry.core.config.Constants;
-import forestry.cultivation.features.CultivationContainers;
+import forestry.cultivation.features.CultivationMenuTypes;
 import forestry.cultivation.gui.GuiPlanter;
 import forestry.cultivation.proxy.ProxyCultivation;
 import forestry.cultivation.proxy.ProxyCultivationClient;
@@ -35,7 +35,7 @@ public class ModuleCultivation extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(CultivationContainers.PLANTER.menuType(), GuiPlanter::new);
+		MenuScreens.register(CultivationMenuTypes.PLANTER.menuType(), GuiPlanter::new);
 	}
 
 	@Override

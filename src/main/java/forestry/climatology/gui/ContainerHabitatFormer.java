@@ -22,7 +22,7 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import forestry.api.climate.IClimateState;
 import forestry.api.climate.IClimateTransformer;
-import forestry.climatology.features.ClimatologyContainers;
+import forestry.climatology.features.ClimatologyMenuTypes;
 import forestry.climatology.inventory.InventoryHabitatFormer;
 import forestry.climatology.tiles.TileHabitatFormer;
 import forestry.core.climate.ClimateStateHelper;
@@ -57,7 +57,7 @@ public class ContainerHabitatFormer extends ContainerTile<TileHabitatFormer> imp
 	}
 
 	public ContainerHabitatFormer(int windowId, Inventory playerInventory, TileHabitatFormer tile) {
-		super(windowId, ClimatologyContainers.HABITAT_FORMER.menuType(), playerInventory, tile, 8, 151);
+		super(windowId, ClimatologyMenuTypes.HABITAT_FORMER.menuType(), playerInventory, tile, 8, 151);
 
 		this.helper = new ContainerLiquidTanksHelper<>(tile);
 		this.addSlot(new SlotLiquidIn(tile, InventoryHabitatFormer.SLOT_INPUT, 129, 38));

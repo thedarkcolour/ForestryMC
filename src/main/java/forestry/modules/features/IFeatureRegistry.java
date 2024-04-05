@@ -65,7 +65,7 @@ public interface IFeatureRegistry {
 
 	<T extends BlockEntity> FeatureTileType<T> tile(BlockEntityType.BlockEntitySupplier<T> constuctor, String identifier, Supplier<Collection<? extends Block>> validBlocks);
 
-	<C extends AbstractContainerMenu> FeatureMenuType<C> container(IContainerFactory<C> factory, String identifier);
+	<C extends AbstractContainerMenu> FeatureMenuType<C> menuType(IContainerFactory<C> factory, String identifier);
 
 	<E extends Entity> FeatureEntityType<E> entity(EntityType.EntityFactory<E> factory, MobCategory classification, String identifier);
 

@@ -14,7 +14,7 @@ import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
-import forestry.sorting.features.SortingContainers;
+import forestry.sorting.features.SortingMenuTypes;
 import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.network.PacketRegistrySorting;
 
@@ -39,7 +39,7 @@ public class ModuleSorting extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(SortingContainers.GENETIC_FILTER.menuType(), GuiGeneticFilter::new);
+		MenuScreens.register(SortingMenuTypes.GENETIC_FILTER.menuType(), GuiGeneticFilter::new);
 	}
 
 	@Override

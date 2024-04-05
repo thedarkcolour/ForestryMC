@@ -37,11 +37,10 @@ import forestry.core.fluids.ForestryFluids;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
 import forestry.core.network.IPacketRegistry;
-import forestry.core.utils.ForgeUtils;
 import forestry.core.utils.datastructures.DummyMap;
 import forestry.core.utils.datastructures.ItemStackMap;
 import forestry.factory.circuits.CircuitSpeedUpgrade;
-import forestry.factory.features.FactoryContainers;
+import forestry.factory.features.FactoryMenuTypes;
 import forestry.factory.gui.GuiBottler;
 import forestry.factory.gui.GuiCarpenter;
 import forestry.factory.gui.GuiCentrifuge;
@@ -104,15 +103,15 @@ public class ModuleFactory extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(FactoryContainers.BOTTLER.menuType(), GuiBottler::new);
-		MenuScreens.register(FactoryContainers.CARPENTER.menuType(), GuiCarpenter::new);
-		MenuScreens.register(FactoryContainers.CENTRIFUGE.menuType(), GuiCentrifuge::new);
-		MenuScreens.register(FactoryContainers.FABRICATOR.menuType(), GuiFabricator::new);
-		MenuScreens.register(FactoryContainers.FERMENTER.menuType(), GuiFermenter::new);
-		MenuScreens.register(FactoryContainers.MOISTENER.menuType(), GuiMoistener::new);
-		MenuScreens.register(FactoryContainers.RAINTANK.menuType(), GuiRaintank::new);
-		MenuScreens.register(FactoryContainers.SQUEEZER.menuType(), GuiSqueezer::new);
-		MenuScreens.register(FactoryContainers.STILL.menuType(), GuiStill::new);
+		MenuScreens.register(FactoryMenuTypes.BOTTLER.menuType(), GuiBottler::new);
+		MenuScreens.register(FactoryMenuTypes.CARPENTER.menuType(), GuiCarpenter::new);
+		MenuScreens.register(FactoryMenuTypes.CENTRIFUGE.menuType(), GuiCentrifuge::new);
+		MenuScreens.register(FactoryMenuTypes.FABRICATOR.menuType(), GuiFabricator::new);
+		MenuScreens.register(FactoryMenuTypes.FERMENTER.menuType(), GuiFermenter::new);
+		MenuScreens.register(FactoryMenuTypes.MOISTENER.menuType(), GuiMoistener::new);
+		MenuScreens.register(FactoryMenuTypes.RAINTANK.menuType(), GuiRaintank::new);
+		MenuScreens.register(FactoryMenuTypes.SQUEEZER.menuType(), GuiSqueezer::new);
+		MenuScreens.register(FactoryMenuTypes.STILL.menuType(), GuiStill::new);
 	}
 
 	@Override

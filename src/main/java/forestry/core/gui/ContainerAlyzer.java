@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 
-import forestry.core.features.CoreContainers;
+import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.inventory.ItemInventoryAlyzer;
 
@@ -19,7 +19,7 @@ public class ContainerAlyzer extends ContainerItemInventory<ItemInventoryAlyzer>
 	}
 
 	public ContainerAlyzer(int windowId, ItemInventoryAlyzer inventory, Player player) {
-		super(windowId, inventory, player.getInventory(), 43, 156, CoreContainers.ALYZER.menuType());
+		super(windowId, inventory, player.getInventory(), 43, 156, CoreMenuTypes.ALYZER.menuType());
 
 		final int xPosLeftSlots = 223;
 

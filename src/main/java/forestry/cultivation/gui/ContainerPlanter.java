@@ -9,7 +9,7 @@ import forestry.core.gui.slots.SlotLiquidIn;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.network.packets.PacketGuiUpdate;
 import forestry.core.tiles.TileUtil;
-import forestry.cultivation.features.CultivationContainers;
+import forestry.cultivation.features.CultivationMenuTypes;
 import forestry.cultivation.inventory.InventoryPlanter;
 import forestry.cultivation.tiles.TilePlanter;
 
@@ -21,7 +21,7 @@ public class ContainerPlanter extends ContainerLiquidTanks<TilePlanter> {
 	}
 
 	public ContainerPlanter(int windowId, Inventory playerInventory, TilePlanter tileForestry) {
-		super(windowId, CultivationContainers.PLANTER.menuType(), playerInventory, tileForestry, 21, 110);
+		super(windowId, CultivationMenuTypes.PLANTER.menuType(), playerInventory, tileForestry, 21, 110);
 
 		// Resources
 		for (int i = 0; i < 2; i++) {

@@ -8,8 +8,8 @@ import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
-public class CultivationContainers {
+public class CultivationMenuTypes {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCultivation.class);
 
-	public static final FeatureMenuType<ContainerPlanter> PLANTER = REGISTRY.container(ContainerPlanter::fromNetwork, "planter");
+	public static final FeatureMenuType<ContainerPlanter> PLANTER = REGISTRY.menuType(ContainerPlanter::fromNetwork, "planter");
 }

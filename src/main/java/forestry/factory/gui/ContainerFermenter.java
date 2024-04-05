@@ -24,7 +24,7 @@ import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.gui.slots.SlotLiquidIn;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.tiles.TileUtil;
-import forestry.factory.features.FactoryContainers;
+import forestry.factory.features.FactoryMenuTypes;
 import forestry.factory.inventory.InventoryFermenter;
 import forestry.factory.tiles.TileFermenter;
 
@@ -36,7 +36,7 @@ public class ContainerFermenter extends ContainerLiquidTanks<TileFermenter> {
 	}
 
 	public ContainerFermenter(int windowId, Inventory player, TileFermenter tile) {
-		super(windowId, FactoryContainers.FERMENTER.menuType(), player, tile, 8, 84);
+		super(windowId, FactoryMenuTypes.FERMENTER.menuType(), player, tile, 8, 84);
 		addDataSlots(new SimpleContainerData(4));
 
 		this.addSlot(new SlotFiltered(tile, InventoryFermenter.SLOT_RESOURCE, 85, 23));

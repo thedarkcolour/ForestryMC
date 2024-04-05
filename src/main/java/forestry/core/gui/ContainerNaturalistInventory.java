@@ -17,7 +17,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.network.FriendlyByteBuf;
 
-import forestry.core.features.CoreContainers;
+import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFilteredInventory;
 import forestry.core.tiles.IFilterSlotDelegate;
 import forestry.core.tiles.TileNaturalistChest;
@@ -35,7 +35,7 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 	private int maxPage;
 
 	public ContainerNaturalistInventory(int windowId, Inventory player, TileNaturalistChest tile, int page) {
-		super(windowId, CoreContainers.NATURALIST_INVENTORY.menuType(), player, tile, 18, 120);
+		super(windowId, CoreMenuTypes.NATURALIST_INVENTORY.menuType(), player, tile, 18, 120);
 
 		this.page = page;
 		this.maxPage = 5;

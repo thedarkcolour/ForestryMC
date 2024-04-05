@@ -17,7 +17,7 @@ import forestry.core.gui.ContainerTile;
 import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.tiles.TileUtil;
-import forestry.mail.features.MailContainers;
+import forestry.mail.features.MailMenuTypes;
 import forestry.mail.inventory.InventoryStampCollector;
 import forestry.mail.tiles.TileStampCollector;
 
@@ -29,7 +29,7 @@ public class ContainerStampCollector extends ContainerTile<TileStampCollector> {
 	}
 
 	public ContainerStampCollector(int windowId, Inventory inv, TileStampCollector tile) {
-		super(windowId, MailContainers.STAMP_COLLECTOR.menuType(), inv, tile, 8, 111);
+		super(windowId, MailMenuTypes.STAMP_COLLECTOR.menuType(), inv, tile, 8, 111);
 
 		// Filter
 		addSlot(new SlotFiltered(tile, InventoryStampCollector.SLOT_FILTER, 80, 19));

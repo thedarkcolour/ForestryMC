@@ -18,7 +18,7 @@ import forestry.core.gui.slots.SlotEmptyLiquidContainerIn;
 import forestry.core.gui.slots.SlotLiquidIn;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.tiles.TileUtil;
-import forestry.factory.features.FactoryContainers;
+import forestry.factory.features.FactoryMenuTypes;
 import forestry.factory.inventory.InventoryBottler;
 import forestry.factory.tiles.TileBottler;
 
@@ -30,7 +30,7 @@ public class ContainerBottler extends ContainerLiquidTanks<TileBottler> {
 	}
 
 	public ContainerBottler(int windowId, Inventory player, TileBottler tile) {
-		super(windowId, FactoryContainers.BOTTLER.menuType(), player, tile, 8, 84);
+		super(windowId, FactoryMenuTypes.BOTTLER.menuType(), player, tile, 8, 84);
 
 		this.addSlot(new SlotLiquidIn(tile, InventoryBottler.SLOT_INPUT_FULL_CONTAINER, 18, 7));
 		this.addSlot(new SlotOutput(tile, InventoryBottler.SLOT_EMPTYING_PROCESSING, 18, 35).setPickupWatcher(tile));

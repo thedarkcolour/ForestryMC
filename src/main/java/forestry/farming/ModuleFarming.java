@@ -32,7 +32,7 @@ import forestry.api.modules.ForestryModule;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
-import forestry.farming.features.FarmingContainers;
+import forestry.farming.features.FarmingMenuTypes;
 import forestry.farming.gui.GuiFarm;
 import forestry.farming.logic.ForestryFarmIdentifier;
 import forestry.farming.logic.farmables.FarmableAgingCrop;
@@ -64,7 +64,7 @@ public class ModuleFarming extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(FarmingContainers.FARM.menuType(), GuiFarm::new);
+		MenuScreens.register(FarmingMenuTypes.FARM.menuType(), GuiFarm::new);
 	}
 
 	@Override

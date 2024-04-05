@@ -36,7 +36,7 @@ import forestry.api.mail.ITradeStationInfo;
 import forestry.api.mail.PostManager;
 import forestry.core.gui.IGuiSelectable;
 import forestry.core.utils.NetworkUtil;
-import forestry.mail.features.MailContainers;
+import forestry.mail.features.MailMenuTypes;
 import forestry.mail.network.packets.PacketLetterInfoResponse;
 import net.minecraft.world.item.ItemStack;
 
@@ -75,7 +75,7 @@ public class ContainerCatalogue extends AbstractContainerMenu implements IGuiSel
 	}
 
 	public ContainerCatalogue(int windowId, Inventory inv) {
-		super(MailContainers.CATALOGUE.menuType(), windowId);
+		super(MailMenuTypes.CATALOGUE.menuType(), windowId);
 		this.player = inv.player;
 
 		if (!player.level.isClientSide) {

@@ -25,7 +25,7 @@ import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
 import forestry.mail.commands.CommandMail;
-import forestry.mail.features.MailContainers;
+import forestry.mail.features.MailMenuTypes;
 import forestry.mail.gui.GuiCatalogue;
 import forestry.mail.gui.GuiLetter;
 import forestry.mail.gui.GuiMailbox;
@@ -49,12 +49,12 @@ public class ModuleMail extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(MailContainers.CATALOGUE.menuType(), GuiCatalogue::new);
-		MenuScreens.register(MailContainers.LETTER.menuType(), GuiLetter::new);
-		MenuScreens.register(MailContainers.MAILBOX.menuType(), GuiMailbox::new);
-		MenuScreens.register(MailContainers.STAMP_COLLECTOR.menuType(), GuiStampCollector::new);
-		MenuScreens.register(MailContainers.TRADE_NAME.menuType(), GuiTradeName::new);
-		MenuScreens.register(MailContainers.TRADER.menuType(), GuiTrader::new);
+		MenuScreens.register(MailMenuTypes.CATALOGUE.menuType(), GuiCatalogue::new);
+		MenuScreens.register(MailMenuTypes.LETTER.menuType(), GuiLetter::new);
+		MenuScreens.register(MailMenuTypes.MAILBOX.menuType(), GuiMailbox::new);
+		MenuScreens.register(MailMenuTypes.STAMP_COLLECTOR.menuType(), GuiStampCollector::new);
+		MenuScreens.register(MailMenuTypes.TRADE_NAME.menuType(), GuiTradeName::new);
+		MenuScreens.register(MailMenuTypes.TRADER.menuType(), GuiTrader::new);
 	}
 
 	@Override

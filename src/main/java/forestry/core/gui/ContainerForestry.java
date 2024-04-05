@@ -18,7 +18,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -28,10 +27,6 @@ import forestry.core.network.IForestryPacketClient;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SlotUtil;
 
-//import invtweaks.api.container.ContainerSection;
-//import invtweaks.api.container.ContainerSectionCallback;
-
-//@invtweaks.api.container.ChestContainer(showButtons = false)
 public abstract class ContainerForestry extends AbstractContainerMenu {
 	public static final int PLAYER_HOTBAR_OFFSET = 27;
 	public static final int PLAYER_INV_SLOTS = PLAYER_HOTBAR_OFFSET + 9;
@@ -134,34 +129,4 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 			NetworkUtil.sendToPlayer(packet, player);
 		}
 	}
-
-	//	@SuppressWarnings("unused") // inventory tweaks
-	//	@ContainerSectionCallback
-	//	public Map<ContainerSection, List<Slot>> getContainerSections() {
-	//		ArrayListMultimap<ContainerSection, Slot> map = ArrayListMultimap.create();
-	//
-	//		for (Object object : inventorySlots) {
-	//			if (!(object instanceof Slot)) {
-	//				continue;
-	//			}
-	//			Slot slot = (Slot) object;
-	//
-	//			if (slot.inventory instanceof InventoryPlayer) {
-	//				map.put(ContainerSection.INVENTORY, slot);
-	//				if (slot.slotNumber < 9) {
-	//					map.put(ContainerSection.INVENTORY_HOTBAR, slot);
-	//				} else if (slot.slotNumber < 36) {
-	//					map.put(ContainerSection.INVENTORY_NOT_HOTBAR, slot);
-	//				} else {
-	//					map.put(ContainerSection.ARMOR, slot);
-	//				}
-	//			} else {
-	//				if (!(slot instanceof SlotForestry) || slot instanceof SlotFilteredInventory) {
-	//					map.put(ContainerSection.CHEST, slot);
-	//				}
-	//			}
-	//		}
-	//
-	//		return Multimaps.asMap(map);
-	//	}
 }

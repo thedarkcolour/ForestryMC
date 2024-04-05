@@ -17,7 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.climate.IClimateListener;
-import forestry.apiculture.features.ApicultureContainers;
+import forestry.apiculture.features.ApicultureMenuTypes;
 import forestry.apiculture.multiblock.TileAlveary;
 import forestry.core.climate.ClimateRoot;
 import forestry.core.gui.ContainerTile;
@@ -33,7 +33,7 @@ public class ContainerAlveary extends ContainerTile<TileAlveary> {
 	}
 
 	public ContainerAlveary(int windowid, Inventory playerInv, TileAlveary tile) {
-		super(windowid, ApicultureContainers.ALVEARY.menuType(), playerInv, tile, 8, 108);
+		super(windowid, ApicultureMenuTypes.ALVEARY.menuType(), playerInv, tile, 8, 108);
 		ContainerBeeHelper.addSlots(this, tile, false);
 
 		tile.getBeekeepingLogic().clearCachedValues();

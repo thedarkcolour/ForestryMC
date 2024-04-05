@@ -8,8 +8,8 @@ import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
-public class DatabaseContainers {
+public class DatabaseMenuTypes {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleDatabase.class);
 
-	public static final FeatureMenuType<ContainerDatabase> DATABASE = REGISTRY.container(ContainerDatabase::fromNetwork, "database");
+	public static final FeatureMenuType<ContainerDatabase> DATABASE = REGISTRY.menuType(ContainerDatabase::fromNetwork, "database");
 }

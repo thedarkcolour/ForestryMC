@@ -19,14 +19,14 @@ import forestry.core.config.Constants;
 import forestry.core.gui.ContainerItemInventory;
 import forestry.core.gui.ContainerNaturalistInventory;
 import forestry.core.gui.IGuiSelectable;
-import forestry.storage.features.BackpackContainers;
+import forestry.storage.features.BackpackMenuTypes;
 import forestry.storage.inventory.ItemInventoryBackpackPaged;
 import forestry.storage.items.ItemBackpackNaturalist;
 
 public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInventoryBackpackPaged> implements IGuiSelectable {
 
 	public ContainerNaturalistBackpack(int windowId, Inventory inv, ItemInventoryBackpackPaged inventory, int selectedPage) {
-		super(windowId, inventory, inv, 18, 120, BackpackContainers.NATURALIST_BACKPACK.menuType());
+		super(windowId, inventory, inv, 18, 120, BackpackMenuTypes.NATURALIST_BACKPACK.menuType());
 
 		ContainerNaturalistInventory.addInventory(this, inventory, selectedPage);
 	}

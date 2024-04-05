@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 
-import forestry.core.features.CoreContainers;
+import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.inventory.InventoryEscritoire;
@@ -34,7 +34,7 @@ public class ContainerEscritoire extends ContainerTile<TileEscritoire> implement
 	}
 
 	public ContainerEscritoire(int id, Player player, TileEscritoire tile) {
-		super(id, CoreContainers.ESCRITOIRE.menuType(), player.getInventory(), tile, 34, 153);
+		super(id, CoreMenuTypes.ESCRITOIRE.menuType(), player.getInventory(), tile, 34, 153);
 
 		// Analyze slot
 		addSlot(new SlotFiltered(this.tile, InventoryEscritoire.SLOT_ANALYZE, 97, 67).setPickupWatcher(this.tile).setStackLimit(1));

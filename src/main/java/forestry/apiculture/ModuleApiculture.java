@@ -46,7 +46,7 @@ import forestry.api.apiculture.hives.IHiveRegistry.HiveType;
 import forestry.api.genetics.flowers.IFlowerAcceptableRule;
 import forestry.api.modules.ForestryModule;
 import forestry.apiculture.commands.CommandBee;
-import forestry.apiculture.features.ApicultureContainers;
+import forestry.apiculture.features.ApicultureMenuTypes;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.flowers.FlowerRegistry;
 import forestry.apiculture.genetics.BeeDefinition;
@@ -131,14 +131,14 @@ public class ModuleApiculture extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(ApicultureContainers.ALVEARY.menuType(), GuiAlveary::new);
-		MenuScreens.register(ApicultureContainers.ALVEARY_HYGROREGULATOR.menuType(), GuiAlvearyHygroregulator::new);
-		MenuScreens.register(ApicultureContainers.ALVEARY_SIEVE.menuType(), GuiAlvearySieve::new);
-		MenuScreens.register(ApicultureContainers.ALVEARY_SWARMER.menuType(), GuiAlvearySwarmer::new);
-		MenuScreens.register(ApicultureContainers.BEE_HOUSING.menuType(), GuiBeeHousing<ContainerBeeHousing>::new);
-		MenuScreens.register(ApicultureContainers.HABITAT_LOCATOR.menuType(), GuiHabitatLocator::new);
-		MenuScreens.register(ApicultureContainers.IMPRINTER.menuType(), GuiImprinter::new);
-		MenuScreens.register(ApicultureContainers.BEEHOUSE_MINECART.menuType(), GuiBeeHousing<ContainerMinecartBeehouse>::new);
+		MenuScreens.register(ApicultureMenuTypes.ALVEARY.menuType(), GuiAlveary::new);
+		MenuScreens.register(ApicultureMenuTypes.ALVEARY_HYGROREGULATOR.menuType(), GuiAlvearyHygroregulator::new);
+		MenuScreens.register(ApicultureMenuTypes.ALVEARY_SIEVE.menuType(), GuiAlvearySieve::new);
+		MenuScreens.register(ApicultureMenuTypes.ALVEARY_SWARMER.menuType(), GuiAlvearySwarmer::new);
+		MenuScreens.register(ApicultureMenuTypes.BEE_HOUSING.menuType(), GuiBeeHousing<ContainerBeeHousing>::new);
+		MenuScreens.register(ApicultureMenuTypes.HABITAT_LOCATOR.menuType(), GuiHabitatLocator::new);
+		MenuScreens.register(ApicultureMenuTypes.IMPRINTER.menuType(), GuiImprinter::new);
+		MenuScreens.register(ApicultureMenuTypes.BEEHOUSE_MINECART.menuType(), GuiBeeHousing<ContainerMinecartBeehouse>::new);
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import forestry.core.gui.slots.SlotForestry;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.tiles.TileUtil;
 import forestry.mail.TradeStation;
-import forestry.mail.features.MailContainers;
+import forestry.mail.features.MailMenuTypes;
 import forestry.mail.tiles.TileTrader;
 
 public class ContainerTrader extends ContainerTile<TileTrader> {
@@ -31,7 +31,7 @@ public class ContainerTrader extends ContainerTile<TileTrader> {
 	}
 
 	public ContainerTrader(int windowId, Inventory inv, TileTrader tile) {
-		super(windowId, MailContainers.TRADER.menuType(), inv, tile, 33, 138);
+		super(windowId, MailMenuTypes.TRADER.menuType(), inv, tile, 33, 138);
 
 		// Trade good
 		this.addSlot(new SlotForestry(this.tile, TradeStation.SLOT_TRADEGOOD, 78, 109).blockShift());

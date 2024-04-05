@@ -21,7 +21,7 @@ import forestry.core.gui.slots.SlotLocked;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.network.packets.PacketItemStackDisplay;
 import forestry.core.tiles.TileUtil;
-import forestry.factory.features.FactoryContainers;
+import forestry.factory.features.FactoryMenuTypes;
 import forestry.factory.tiles.TileCentrifuge;
 
 public class ContainerCentrifuge extends ContainerSocketed<TileCentrifuge> {
@@ -32,7 +32,7 @@ public class ContainerCentrifuge extends ContainerSocketed<TileCentrifuge> {
 	}
 
 	public ContainerCentrifuge(int windowId, Inventory player, TileCentrifuge tile) {
-		super(windowId, FactoryContainers.CENTRIFUGE.menuType(), player, tile, 8, 84);
+		super(windowId, FactoryMenuTypes.CENTRIFUGE.menuType(), player, tile, 8, 84);
 
 		// Resource
 		this.addSlot(new SlotFiltered(this.tile, 0, 16, 37));

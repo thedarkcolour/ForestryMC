@@ -17,7 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import forestry.core.gui.ContainerItemInventory;
 import forestry.core.gui.slots.SlotFilteredInventory;
-import forestry.storage.features.BackpackContainers;
+import forestry.storage.features.BackpackMenuTypes;
 import forestry.storage.inventory.ItemInventoryBackpack;
 
 //TODO it may be simpler to split this up into two containerTypes. One for normal size and one for t2
@@ -53,7 +53,7 @@ public class ContainerBackpack extends ContainerItemInventory<ItemInventoryBackp
 	}
 
 	public ContainerBackpack(int windowID, Player player, Size size, ItemStack parent) {
-		super(windowID, new ItemInventoryBackpack(player, size.getSize(), parent), player.getInventory(), 8, 11 + size.startY + size.rows * 18, BackpackContainers.BACKPACK.menuType());
+		super(windowID, new ItemInventoryBackpack(player, size.getSize(), parent), player.getInventory(), 8, 11 + size.startY + size.rows * 18, BackpackMenuTypes.BACKPACK.menuType());
 		this.size = size;
 		// Inventory
 		for (int j = 0; j < size.rows; j++) {

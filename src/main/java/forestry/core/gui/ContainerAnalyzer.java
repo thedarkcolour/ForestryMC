@@ -13,7 +13,7 @@ package forestry.core.gui;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.FriendlyByteBuf;
 
-import forestry.core.features.CoreContainers;
+import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.gui.slots.SlotLiquidIn;
 import forestry.core.gui.slots.SlotOutput;
@@ -30,7 +30,7 @@ public class ContainerAnalyzer extends ContainerLiquidTanks<TileAnalyzer> {
 	}
 
 	public ContainerAnalyzer(int windowId, Inventory player, TileAnalyzer tile) {
-		super(windowId, CoreContainers.ANALYZER.menuType(), player, tile, 8, 94);
+		super(windowId, CoreMenuTypes.ANALYZER.menuType(), player, tile, 8, 94);
 
 		// Input buffer
 		for (int i = 0; i < 3; i++) {

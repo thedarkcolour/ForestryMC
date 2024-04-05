@@ -8,9 +8,9 @@ import forestry.sorting.ModuleSorting;
 import forestry.sorting.gui.ContainerGeneticFilter;
 
 @FeatureProvider
-public class SortingContainers {
+public class SortingMenuTypes {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleSorting.class);
 
-	public static final FeatureMenuType<ContainerGeneticFilter> GENETIC_FILTER = REGISTRY.container(ContainerGeneticFilter::fromNetwork, "genetic_filter");
+	public static final FeatureMenuType<ContainerGeneticFilter> GENETIC_FILTER = REGISTRY.menuType(ContainerGeneticFilter::fromNetwork, "genetic_filter");
 
 }

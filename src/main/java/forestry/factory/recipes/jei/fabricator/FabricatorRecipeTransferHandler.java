@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import forestry.core.recipes.jei.ForestryRecipeType;
 import forestry.core.utils.JeiUtil;
-import forestry.factory.features.FactoryContainers;
+import forestry.factory.features.FactoryMenuTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.core.NonNullList;
@@ -36,7 +36,7 @@ public class FabricatorRecipeTransferHandler implements IRecipeTransferHandler<C
 
 	@Override
 	public Optional<MenuType<ContainerFabricator>> getMenuType() {
-		return Optional.of(FactoryContainers.FABRICATOR.menuType());
+		return Optional.of(FactoryMenuTypes.FABRICATOR.menuType());
 	}
 
 	@Override

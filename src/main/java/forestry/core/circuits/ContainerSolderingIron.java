@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.circuits.ICircuitLayout;
-import forestry.core.features.CoreContainers;
+import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.ContainerItemInventory;
 import forestry.core.gui.IGuiSelectable;
 import forestry.core.gui.slots.SlotFiltered;
@@ -42,7 +42,7 @@ public class ContainerSolderingIron extends ContainerItemInventory<ItemInventory
 	}
 
 	public ContainerSolderingIron(int windowId, Player player, ItemInventorySolderingIron inventory) {
-		super(windowId, inventory, player.getInventory(), 8, 123, CoreContainers.SOLDERING_IRON.menuType());
+		super(windowId, inventory, player.getInventory(), 8, 123, CoreMenuTypes.SOLDERING_IRON.menuType());
 
 		// Input
 		this.addSlot(new SlotFiltered(inventory, 0, 152, 12));

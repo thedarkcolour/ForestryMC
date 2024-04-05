@@ -8,9 +8,9 @@ import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
-public class FarmingContainers {
+public class FarmingMenuTypes {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleFarming.class);
 
-	public static final FeatureMenuType<ContainerFarm> FARM = REGISTRY.container(ContainerFarm::fromNetwork, "farm");
+	public static final FeatureMenuType<ContainerFarm> FARM = REGISTRY.menuType(ContainerFarm::fromNetwork, "farm");
 
 }

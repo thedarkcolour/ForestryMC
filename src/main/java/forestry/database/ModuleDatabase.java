@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.modules.ForestryModule;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
-import forestry.database.features.DatabaseContainers;
+import forestry.database.features.DatabaseMenuTypes;
 import forestry.database.gui.GuiDatabase;
 import forestry.database.network.PacketRegistryDatabase;
 import forestry.modules.BlankForestryModule;
@@ -19,7 +19,7 @@ public class ModuleDatabase extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(DatabaseContainers.DATABASE.menuType(), GuiDatabase::new);
+		MenuScreens.register(DatabaseMenuTypes.DATABASE.menuType(), GuiDatabase::new);
 	}
 
 	@Override

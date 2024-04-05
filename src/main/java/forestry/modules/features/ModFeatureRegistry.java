@@ -222,7 +222,7 @@ public class ModFeatureRegistry {
 		}
 
 		@Override
-		public <C extends AbstractContainerMenu> FeatureMenuType<C> container(IContainerFactory<C> factory, String identifier) {
+		public <C extends AbstractContainerMenu> FeatureMenuType<C> menuType(IContainerFactory<C> factory, String identifier) {
 			return register(new FeatureMenuType<>(this, moduleID, identifier, factory));
 		}
 

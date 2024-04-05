@@ -22,7 +22,7 @@ import net.minecraftforge.fml.DistExecutor;
 import forestry.api.climate.IClimateListener;
 import forestry.api.climate.IClimateTransformer;
 import forestry.api.modules.ForestryModule;
-import forestry.climatology.features.ClimatologyContainers;
+import forestry.climatology.features.ClimatologyMenuTypes;
 import forestry.climatology.gui.GuiHabitatFormer;
 import forestry.climatology.network.PacketRegistryClimatology;
 import forestry.climatology.proxy.ProxyClimatology;
@@ -45,7 +45,7 @@ public class ModuleClimatology extends BlankForestryModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
-		MenuScreens.register(ClimatologyContainers.HABITAT_FORMER.menuType(), GuiHabitatFormer::new);
+		MenuScreens.register(ClimatologyMenuTypes.HABITAT_FORMER.menuType(), GuiHabitatFormer::new);
 	}
 
 	@Override

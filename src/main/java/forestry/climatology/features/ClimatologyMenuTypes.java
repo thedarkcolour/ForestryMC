@@ -9,9 +9,9 @@ import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
-public class ClimatologyContainers {
+public class ClimatologyMenuTypes {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleClimatology.class);
 
-	public static final FeatureMenuType<ContainerHabitatFormer> HABITAT_FORMER = REGISTRY.container(ContainerHabitatFormer::fromNetwork, "habitat_former");
+	public static final FeatureMenuType<ContainerHabitatFormer> HABITAT_FORMER = REGISTRY.menuType(ContainerHabitatFormer::fromNetwork, "habitat_former");
 
 }

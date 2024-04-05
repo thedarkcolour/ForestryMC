@@ -13,7 +13,7 @@ package forestry.apiculture.gui;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.FriendlyByteBuf;
 
-import forestry.apiculture.features.ApicultureContainers;
+import forestry.apiculture.features.ApicultureMenuTypes;
 import forestry.apiculture.inventory.InventoryHygroregulator;
 import forestry.apiculture.multiblock.TileAlvearyHygroregulator;
 import forestry.core.gui.ContainerLiquidTanks;
@@ -28,7 +28,7 @@ public class ContainerAlvearyHygroregulator extends ContainerLiquidTanks<TileAlv
 	}
 
 	public ContainerAlvearyHygroregulator(int windowId, Inventory playerInventory, TileAlvearyHygroregulator tile) {
-		super(windowId, ApicultureContainers.ALVEARY_HYGROREGULATOR.menuType(), playerInventory, tile, 8, 84);
+		super(windowId, ApicultureMenuTypes.ALVEARY_HYGROREGULATOR.menuType(), playerInventory, tile, 8, 84);
 
 		this.addSlot(new SlotLiquidIn(tile, InventoryHygroregulator.SLOT_INPUT, 56, 38));
 	}

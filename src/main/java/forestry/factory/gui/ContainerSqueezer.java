@@ -18,7 +18,7 @@ import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.gui.slots.SlotLiquidIn;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.tiles.TileUtil;
-import forestry.factory.features.FactoryContainers;
+import forestry.factory.features.FactoryMenuTypes;
 import forestry.factory.inventory.InventorySqueezer;
 import forestry.factory.tiles.TileSqueezer;
 
@@ -30,7 +30,7 @@ public class ContainerSqueezer extends ContainerLiquidTanksSocketed<TileSqueezer
 	}
 
 	public ContainerSqueezer(int windowId, Inventory player, TileSqueezer tile) {
-		super(windowId, FactoryContainers.SQUEEZER.menuType(), player, tile, 8, 84);
+		super(windowId, FactoryMenuTypes.SQUEEZER.menuType(), player, tile, 8, 84);
 
 		// Resource inventory
 		for (int row = 0; row < 3; row++) {

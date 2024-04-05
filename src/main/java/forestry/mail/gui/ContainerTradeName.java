@@ -17,7 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import forestry.api.mail.IMailAddress;
 import forestry.core.gui.ContainerTile;
 import forestry.core.tiles.TileUtil;
-import forestry.mail.features.MailContainers;
+import forestry.mail.features.MailMenuTypes;
 import forestry.mail.tiles.TileTrader;
 
 public class ContainerTradeName extends ContainerTile<TileTrader> {
@@ -28,7 +28,7 @@ public class ContainerTradeName extends ContainerTile<TileTrader> {
 	}
 
 	public ContainerTradeName(int windowId, Inventory inv, TileTrader tile) {
-		super(windowId, MailContainers.TRADE_NAME.menuType(), tile);
+		super(windowId, MailMenuTypes.TRADE_NAME.menuType(), tile);
 	}
 
 	public IMailAddress getAddress() {
