@@ -129,8 +129,8 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 
 		Map<ResourceLocation, ItemStack> iconStacks = ((IForestrySpeciesRoot<?>) chromosome.getRoot()).getAlyzerPlugin().getIconStacks();
 
-		GuiUtil.drawItemStack(this, iconStacks.get(primary.getRegistryName()), leftPos + textLayout.column1 + columnwidth - 20, topPos + 10);
-		GuiUtil.drawItemStack(this, iconStacks.get(secondary.getRegistryName()), leftPos + textLayout.column2 + columnwidth - 20, topPos + 10);
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(primary.getRegistryName()), leftPos + textLayout.column1 + columnwidth - 20, topPos + 10);
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(secondary.getRegistryName()), leftPos + textLayout.column2 + columnwidth - 20, topPos + 10);
 
 		Component primaryName = primary.getAlyzerName(type);
 		Component secondaryName = primary.getAlyzerName(type);

@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -35,7 +34,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.SeparateTransformsModel;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
@@ -43,9 +41,7 @@ import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import forestry.core.config.Constants;
-import forestry.core.models.ClientManager;
 import forestry.core.utils.ResourceUtil;
-import forestry.storage.features.CrateItems;
 import forestry.storage.items.ItemCrated;
 
 @OnlyIn(Dist.CLIENT)

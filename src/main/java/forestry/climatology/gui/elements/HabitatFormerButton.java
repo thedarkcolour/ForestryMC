@@ -45,6 +45,6 @@ public class HabitatFormerButton extends ButtonElement {
 	public void drawElement(PoseStack transform, int mouseX, int mouseY) {
 		super.drawElement(transform, mouseX, mouseY);
 		Font fontRenderer = Minecraft.getInstance().font;
-		GuiUtil.drawItemStack(fontRenderer, iconStack, 3, 3);
+		GuiUtil.drawItemStack(transform, fontRenderer, iconStack, 3, 3);
 	}
 }

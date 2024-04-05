@@ -42,13 +42,13 @@ public abstract class ContainerTile<T extends BlockEntity> extends ContainerFore
 	private int previousTicksPerWorkCycle = 0;
 
 	protected ContainerTile(int windowId, MenuType<?> type, Inventory playerInventory, T tile, int xInv, int yInv) {
-		super(windowId, type);
+		super(windowId, type, playerInventory.player);
 		addPlayerInventory(playerInventory, xInv, yInv);
 		this.tile = tile;
 	}
 
 	protected ContainerTile(int windowId, MenuType<?> type, T tile) {
-		super(windowId, type);
+		super(windowId, type, null);
 		this.tile = tile;
 	}
 

@@ -29,13 +29,13 @@ public class ContainerEntity<T extends Entity & Container> extends ContainerFore
 	@Nullable
 	private ImmutableSet<IErrorState> previousErrorStates;
 
-	protected ContainerEntity(int windowId, MenuType<?> type, T entity) {
-		super(windowId, type);
+	protected ContainerEntity(int windowId, MenuType<?> type, T entity, Player player) {
+		super(windowId, type, player);
 		this.entity = entity;
 	}
 
 	protected ContainerEntity(int windowId, MenuType<?> type, T entity, Inventory playerInventory, int xInv, int yInv) {
-		this(windowId, type, entity);
+		this(windowId, type, entity, playerInventory.player);
 		addPlayerInventory(playerInventory, xInv, yInv);
 	}
 

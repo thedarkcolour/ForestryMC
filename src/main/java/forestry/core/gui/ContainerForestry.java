@@ -10,6 +10,9 @@
  ******************************************************************************/
 package forestry.core.gui;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -33,9 +36,18 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 	public static final int PLAYER_HOTBAR_OFFSET = 27;
 	public static final int PLAYER_INV_SLOTS = PLAYER_HOTBAR_OFFSET + 9;
 	private int transferCount = 0; // number of items that have been shift-click-transfered during this click
+	// null on client side
+	@Nullable
+	private final ServerPlayer player;
 
-	protected ContainerForestry(int windowId, MenuType<?> type) {
+	protected ContainerForestry(int windowId, MenuType<?> type, @Nullable Player player) {
 		super(type, windowId);
+
+		if (player instanceof ServerPlayer serverPlayer) {
+			this.player = serverPlayer;
+		} else {
+			this.player = null;
+		}
 	}
 
 	protected final void addPlayerInventory(Inventory playerInventory, int xInv, int yInv) {
@@ -101,6 +113,7 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 		return getSlot(PLAYER_INV_SLOTS + slot);
 	}
 
+	// todo fix
 	@Override
 	public final ItemStack quickMoveStack(Player player, int slotIndex) {
 		if (!canAccess(player)) {
@@ -117,10 +130,9 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 	protected abstract boolean canAccess(Player player);
 
 	protected final void sendPacketToListeners(IForestryPacketClient packet) {
-		for (ContainerListener listener : containerListeners) {
-			if (listener instanceof Player) {
-				NetworkUtil.sendToPlayer(packet, (Player) listener);
-			}
+		if (player != null) {
+
+			NetworkUtil.sendToPlayer(packet, player);
 		}
 	}
 

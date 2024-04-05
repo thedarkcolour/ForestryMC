@@ -69,11 +69,11 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 		getFontRenderer().draw(transform, Component.translatable("for.gui.imprinter"), startX + 8 + offset, startY + 16, ColourProperties.INSTANCE.get("gui.screen"));
 
 		IAlleleBeeSpecies primary = itemInventory.getPrimary();
-		drawBeeSpeciesIcon(primary, startX + 12, startY + 32);
+		drawBeeSpeciesIcon(transform, primary, startX + 12, startY + 32);
 		getFontRenderer().draw(transform, primary.getDisplayName().getString(), startX + 32, startY + 36, ColourProperties.INSTANCE.get("gui.screen"));
 
 		IAlleleBeeSpecies secondary = itemInventory.getSecondary();
-		drawBeeSpeciesIcon(secondary, startX + 12, startY + 52);
+		drawBeeSpeciesIcon(transform, secondary, startX + 12, startY + 52);
 		getFontRenderer().draw(transform, secondary.getDisplayName().getString(), startX + 32, startY + 56, ColourProperties.INSTANCE.get("gui.screen"));
 
 		Component youCheater = Component.translatable("for.gui.imprinter.cheater");
@@ -82,8 +82,8 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 
 	}
 
-	private void drawBeeSpeciesIcon(IAlleleBeeSpecies bee, int x, int y) {
-		GuiUtil.drawItemStack(this, iconStacks.get(bee.getRegistryName().toString()), x, y);
+	private void drawBeeSpeciesIcon(PoseStack transform, IAlleleBeeSpecies bee, int x, int y) {
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(bee.getRegistryName().toString()), x, y);
 	}
 
 	private static int getHabitatSlotAtPosition(double i, double j) {

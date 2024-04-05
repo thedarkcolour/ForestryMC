@@ -16,6 +16,7 @@ import forestry.core.gui.Drawable;
 import forestry.core.gui.GuiUtil;
 import forestry.core.gui.elements.layouts.ContainerElement;
 import forestry.core.gui.elements.layouts.FlexLayout;
+import forestry.core.render.RenderHelper;
 import forestry.core.utils.SoundUtil;
 
 public class GeneticAnalyzerTabs extends ContainerElement {
@@ -127,7 +128,7 @@ public class GeneticAnalyzerTabs extends ContainerElement {
 			if (!displayStack.isEmpty()) {
 				//RenderHelper.enableGUIStandardItemLighting(); TODO Gui Light
 				// GlStateManager._enableRescaleNormal();
-				GuiUtil.drawItemStack(Minecraft.getInstance().font, displayStack, x + 9, 5);
+				GuiUtil.drawItemStack(transform, Minecraft.getInstance().font, displayStack, x + 9, 5);
 				// Lighting.turnOff();
 			}
 		}

@@ -78,7 +78,7 @@ public class WidgetDatabaseSlot extends Widget {
 			RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 
 			//RenderHelper.enableGUIStandardItemLighting(); TODO Gui Light
-			GuiUtil.drawItemStack(manager.gui, itemStack, startX + xPos, startY + yPos);
+			GuiUtil.drawItemStack(transform, manager.gui, itemStack, startX + xPos, startY + yPos);
 			// Lighting.turnOff();
 		}
 		if (mouseOver) {

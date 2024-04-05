@@ -56,18 +56,8 @@ public class ItemTooltipUtil {
 		if (stack.isEmpty()) {
 			return null;
 		}
-		List<Component> tooltip = stack.getTooltipLines(player, flag);
-		for (int i = 0; i < tooltip.size(); ++i) {
-			//TODO - can tis be simplified (and is it correct?)
-			Component component = tooltip.get(i);
-			if (i == 0) {
-				tooltip.set(i, ((MutableComponent) component).withStyle(stack.getRarity().color));
-			} else {
-				tooltip.set(i, ((MutableComponent) component).withStyle(ChatFormatting.GRAY));
-			}
-		}
 		ToolTip toolTip = new ToolTip();
-		toolTip.addAll(tooltip);
+		toolTip.addAll(stack.getTooltipLines(player, flag));
 		return toolTip;
 	}
 }

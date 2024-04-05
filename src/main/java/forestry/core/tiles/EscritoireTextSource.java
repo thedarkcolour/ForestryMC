@@ -36,11 +36,7 @@ public class EscritoireTextSource {
 		for (Notes notesLevel : multipleTranslationNoteLevels) {
 			for (int i = 1; i <= 10; i++) {
 				String key = "for.gui.escritoire.notes." + notesLevel + '.' + i;
-				if (Translator.canTranslateToLocal(key)) {
-					break;
-				} else {
-					researchNotes.put(notesLevel, Component.translatable(key));
-				}
+				researchNotes.put(notesLevel, Component.translatable(key));
 			}
 		}
 		researchNotes.put(Notes.empty, Component.translatable("for.gui.escritoire.instructions"));

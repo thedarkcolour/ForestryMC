@@ -51,17 +51,18 @@ public class BlockFarm extends BlockStructure implements EntityBlock {
 		}
 	}
 
+	public static BlockFarm create(EnumFarmBlockType type, EnumFarmMaterial material) {
+		if (type == EnumFarmBlockType.PLAIN) {
+			return new Plain(material);
+		} else {
+			return new BlockFarm(type, material);
+		}
+	}
+
 	public BlockFarm(EnumFarmBlockType type, EnumFarmMaterial farmMaterial) {
 		super(Block.Properties.of(Material.STONE).strength(1.0f));
 		this.type = type;
 		this.farmMaterial = farmMaterial;
-		registerDefaultState(this.getStateDefinition().any().setValue(STATE, State.PLAIN));
-	}
-
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		super.createBlockStateDefinition(builder);
-		builder.add(STATE);
 	}
 
 	@Override
@@ -91,5 +92,18 @@ public class BlockFarm extends BlockStructure implements EntityBlock {
 	@Override
 	public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
 		return getType() == EnumFarmBlockType.CONTROL;
+	}
+
+	public static class Plain extends BlockFarm {
+		public Plain(EnumFarmMaterial farmMaterial) {
+			super(EnumFarmBlockType.PLAIN, farmMaterial);
+
+			registerDefaultState(this.getStateDefinition().any().setValue(STATE, State.PLAIN));
+		}
+
+		@Override
+		protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+			builder.add(STATE);
+		}
 	}
 }

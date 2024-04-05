@@ -12,6 +12,7 @@ package forestry.core.gui;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,16 +31,19 @@ import forestry.api.core.tooltips.ToolTip;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiUtil {
-	public static void drawItemStack(GuiForestry gui, ItemStack stack, int xPos, int yPos) {
-		drawItemStack(gui.getFontRenderer(), stack, xPos, yPos);
+	public static void drawItemStack(PoseStack transform, GuiForestry<?> gui, ItemStack stack, int xPos, int yPos) {
+		drawItemStack(transform, gui.getFontRenderer(), stack, xPos, yPos);
 	}
 
-	public static void drawItemStack(Font fontRenderer, ItemStack stack, int xPos, int yPos) {
-		Font font = fontRenderer;
-
+	public static void drawItemStack(PoseStack transform, Font font, ItemStack stack, int xPos, int yPos) {
+		PoseStack itemRendererStack = RenderSystem.getModelViewStack();
+		itemRendererStack.pushPose();
+		itemRendererStack.mulPoseMatrix(transform.last().pose());
 		ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
 		itemRender.renderAndDecorateItem(stack, xPos, yPos);
 		itemRender.renderGuiItemDecorations(font, stack, xPos, yPos, null);
+		itemRendererStack.popPose();
+		RenderSystem.applyModelViewMatrix();
 	}
 
 	//TODO hopefully this is client side...
@@ -49,6 +54,7 @@ public class GuiUtil {
 				transform.translate(-gui.getGuiLeft(), -gui.getGuiTop(), 0);
 			}
 			Window window = Minecraft.getInstance().getWindow();    //TODO - more resolution stuff to check
+			gui.renderTooltip(transform, toolTips.getLines(), Optional.empty(), mouseX, mouseY);
 			//GuiUtils.drawHoveringText(transform, toolTips.getLines(), mouseX, mouseY, window.getGuiScaledWidth(), window.getGuiScaledHeight(), -1, gui.getGameInstance().font);
 			transform.popPose();
 		}

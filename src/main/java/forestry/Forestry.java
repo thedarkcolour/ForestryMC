@@ -142,7 +142,6 @@ public class Forestry {
 		moduleManager.registerContainers(new ForestryModules());
 		ModuleManager.runSetup();
 		NetworkHandler networkHandler = new NetworkHandler();
-		//				DistExecutor.runForDist(()->()-> networkHandler.clientPacketHandler(), ()->()-> networkHandler.serverPacketHandler());
 		IEventBus modEventBus = ForgeUtils.modBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::registerCapabilities);
@@ -229,7 +228,7 @@ public class Forestry {
         generator.addProvider(event.includeServer(), new WoodBlockStateProvider(generator));
         generator.addProvider(event.includeServer(), new WoodBlockModelProvider(generator, existingFileHelper));
         generator.addProvider(event.includeServer(), new WoodItemModelProvider(generator, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ForestryBlockStateProvider(generator));
+        generator.addProvider(event.includeServer(), new ForestryBlockStateProvider(generator, existingFileHelper));
         generator.addProvider(event.includeServer(), new ForestryBlockModelProvider(generator, existingFileHelper));
         generator.addProvider(event.includeServer(), new ForestryItemModelProvider(generator, existingFileHelper));
         generator.addProvider(event.includeServer(), new ForestryRecipeProvider(generator));
@@ -268,10 +267,7 @@ public class Forestry {
 		// should honestly go in Common
 		@SubscribeEvent(priority = EventPriority.LOW)
 		public static void createObjects(RegisterEvent event) {
-			if (event.getRegistryKey() == Registry.BLOCK_REGISTRY) {
-				ModuleManager.getModuleHandler().registerObjects(event);
-				return;
-			}
+			ModuleManager.getModuleHandler().registerObjects(event);
 		}
 
 		@SubscribeEvent

@@ -18,6 +18,8 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import forestry.core.blocks.IColoredBlock;
+import forestry.core.proxy.Proxies;
 import forestry.core.utils.ForgeUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -249,9 +251,20 @@ public class ModFeatureRegistry {
 			return featureByRegistry.get(type);
 		}
 
+		// this method is called at a LOW priority
 		public void onRegister(RegisterEvent event) {
 			for (Consumer<RegisterEvent> listener : registryListeners.get(event.getRegistryKey())) {
 				listener.accept(event);
+			}
+			// todo move these into the correct event (RegisterColorHandlersEvent)
+			if (event.getRegistryKey() == Registry.BLOCK_REGISTRY && featureByRegistry.containsKey(Registry.BLOCK_REGISTRY)) {
+				for (RegistryObject<Block> entry : getRegistry(Registry.BLOCK_REGISTRY).getEntries()) {
+					Proxies.common.registerBlock(entry.get());
+				}
+			} else if (event.getRegistryKey() == Registry.ITEM_REGISTRY && featureByRegistry.containsKey(Registry.ITEM_REGISTRY)) {
+				for (RegistryObject<Item> entry : getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
+					Proxies.common.registerItem(entry.get());
+				}
 			}
 		}
 

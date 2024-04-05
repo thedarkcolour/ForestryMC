@@ -116,16 +116,16 @@ public class ItemResearchNote extends ItemForestry {
 					return tooltips;
 				}
 
-				String species1 = encoded.getFirstParent().getDisplayName().getString();
-				String species2 = encoded.getSecondParent().getDisplayName().getString();
+				Component species1 = Component.literal("'").append(encoded.getFirstParent().getDisplayName()).append("'").withStyle(ChatFormatting.YELLOW);
+				Component species2 = Component.literal("'").append(encoded.getSecondParent().getDisplayName()).append("'").withStyle(ChatFormatting.YELLOW);
 				String mutationChanceKey = EnumMutateChance.rateChance(encoded.getBaseChance()).toString().toLowerCase(Locale.ENGLISH);
-				String mutationChance = Component.translatable("for.researchNote.chance." + mutationChanceKey).getString();
-				String speciesResult = encoded.getResultingSpecies().getDisplayName().getString();
+				Component mutationChance = Component.translatable("for.researchNote.chance." + mutationChanceKey).withStyle(ChatFormatting.BLUE);
+				Component speciesResult = encoded.getResultingSpecies().getDisplayName().copy().withStyle(ChatFormatting.LIGHT_PURPLE);
 
 				tooltips.add(Component.translatable("for.researchNote.discovery.0"));
-				tooltips.add(Component.translatable("for.researchNote.discovery.1", species1, species2));
-				tooltips.add(Component.translatable("for.researchNote.discovery.2", mutationChance));
-				tooltips.add(Component.translatable("for.researchNote.discovery.3", speciesResult));
+				tooltips.add(Component.translatable("for.researchNote.discovery.1", species1, species2).withStyle(ChatFormatting.GRAY));
+				tooltips.add(Component.translatable("for.researchNote.discovery.2", mutationChance).withStyle(ChatFormatting.GRAY));
+				tooltips.add(Component.translatable("for.researchNote.discovery.3", speciesResult).withStyle(ChatFormatting.GRAY));
 
 				if (!encoded.getSpecialConditions().isEmpty()) {
 					for (Component line : encoded.getSpecialConditions()) {

@@ -24,8 +24,11 @@ import forestry.api.farming.FarmDirection;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmProperties;
 import forestry.core.config.Config;
+import forestry.core.gui.GuiUtil;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
+import forestry.core.render.RenderHelper;
+import forestry.core.utils.RenderUtil;
 import forestry.farming.multiblock.IFarmControllerInternal;
 
 public class FarmLogicSlot extends Widget {
@@ -56,8 +59,7 @@ public class FarmLogicSlot extends Widget {
 		if (!getStackIndex().isEmpty()) {
 			Minecraft minecraft = Minecraft.getInstance();
 			RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-			ItemRenderer renderItem = minecraft.getItemRenderer();
-			renderItem.renderGuiItem(getStackIndex(), startX + xPos, startY + yPos);
+			GuiUtil.drawItemStack(transform, Minecraft.getInstance().font, getStackIndex(), startX + xPos, startY + yPos);
 		}
 	}
 

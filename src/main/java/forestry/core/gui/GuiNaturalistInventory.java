@@ -171,7 +171,7 @@ public class GuiNaturalistInventory extends GuiForestry<ContainerNaturalistInven
 		}
 
 		textLayout.drawLine(transform, species.getDisplayName(), x);
-		GuiUtil.drawItemStack(this, iconStack, leftPos + x + 69, topPos + textLayout.getLineY() - 2);
+		GuiUtil.drawItemStack(transform, this, iconStack, leftPos + x + 69, topPos + textLayout.getLineY() - 2);
 
 		textLayout.newLine();
 
@@ -204,7 +204,7 @@ public class GuiNaturalistInventory extends GuiForestry<ContainerNaturalistInven
 	}
 
 	private void drawMutationIcon(PoseStack transform, IMutation combination, IAlleleSpecies species, int x) {
-		GuiUtil.drawItemStack(this, iconStacks.get(combination.getPartner(species).getRegistryName().toString()), leftPos + x, topPos + textLayout.getLineY());
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(combination.getPartner(species).getRegistryName().toString()), leftPos + x, topPos + textLayout.getLineY());
 
 		int line = 48;
 		int column;

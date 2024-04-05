@@ -73,7 +73,7 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<IAllele
 		IFilterLogic logic = gui.getLogic();
 		IAlleleSpecies allele = (IAlleleSpecies) logic.getGenomeFilter(facing, index, active);
 		if (allele != null) {
-			GuiUtil.drawItemStack(manager.gui, ITEMS.getOrDefault(allele, ItemStack.EMPTY), x, y);
+			GuiUtil.drawItemStack(transform, manager.gui, ITEMS.getOrDefault(allele, ItemStack.EMPTY), x, y);
 		}
 
 		if (this.gui.selection.isSame(this)) {
@@ -101,7 +101,7 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<IAllele
 
 	@Override
 	public void draw(GuiForestry gui, IAlleleSpecies selectable, PoseStack transform, int y, int x) {
-		GuiUtil.drawItemStack(gui, ITEMS.getOrDefault(selectable, ItemStack.EMPTY), x, y);
+		GuiUtil.drawItemStack(transform, gui, ITEMS.getOrDefault(selectable, ItemStack.EMPTY), x, y);
 	}
 
 	@Override

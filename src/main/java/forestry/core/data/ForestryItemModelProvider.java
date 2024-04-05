@@ -1,23 +1,30 @@
 package forestry.core.data;
 
 import com.google.common.collect.Table;
+
 import deleteme.RegistryNameFinder;
 import deleteme.Todos;
+
+import forestry.apiculture.features.ApicultureItems;
+import forestry.apiculture.items.EnumPropolis;
 import forestry.core.config.Constants;
+import forestry.core.data.builder.FilledCrateModelBuilder;
 import forestry.core.fluids.ForestryFluids;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
 import forestry.cultivation.features.CultivationBlocks;
-import forestry.farming.features.FarmingBlocks;
 import forestry.lepidopterology.features.LepidopterologyItems;
 import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureItem;
 import forestry.storage.features.CrateItems;
 import forestry.storage.items.ItemCrated;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -30,28 +37,44 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 
 	@Override
 	protected void registerModels() {
-		for (BlockItem farm : FarmingBlocks.FARM.getItems()) {
-			withExistingParent(RegistryNameFinder.getRegistryName(farm).getPath(), new ResourceLocation(Constants.MOD_ID, "block/farm"));
-		}
-
-		withExistingParent(RegistryNameFinder.getRegistryName(LepidopterologyItems.CATERPILLAR_GE.item()).getPath(), mcLoc("item/generated"))
+		withExistingParent(LepidopterologyItems.CATERPILLAR_GE.getIdentifier(), mcLoc("item/generated"))
 				.texture("layer0", new ResourceLocation(Constants.MOD_ID, "item/caterpillar.body2"))
 				.texture("layer1", new ResourceLocation(Constants.MOD_ID, "item/caterpillar.body"));
-		withExistingParent(RegistryNameFinder.getRegistryName(LepidopterologyItems.SERUM_GE.item()).getPath(), mcLoc("item/generated"))
+		withExistingParent(LepidopterologyItems.SERUM_GE.getIdentifier(), mcLoc("item/generated"))
 				.texture("layer0", new ResourceLocation(Constants.MOD_ID, "item/liquids/jar.bottle"))
 				.texture("layer1", new ResourceLocation(Constants.MOD_ID, "item/liquids/jar.contents"));
 
 		// todo: custom loader
 		Todos.todo();
 		//	registerModel(ArboricultureItems.SAPLING, new ModelBuilder().parent("forge:item/default").loader(new ResourceLocation(Constants.MOD_ID, "sapling_ge")));
-
 		for (FeatureItem<ItemCrated> featureCrated : CrateItems.getCrates()) {
-		//	registerModel(featureCrated, new ModelBuilder()
-		//			.parent(Constants.MOD_ID + ":item/crate-filled")
-		//			.loader(CrateModel.Loader.LOCATION)
-		//			.loaderData("variant", new JsonPrimitive(featureCrated.getIdentifier()))
-		//	);
+			Item containedItem = featureCrated.get().getContained().getItem();
+			String id = featureCrated.getIdentifier();
+
+			if (ApicultureItems.BEE_COMBS.itemEqual(containedItem)) {
+				filledCrateModelLayered(id, modLoc("item/bee_combs.0"), modLoc("item/bee_combs.1"));
+			} else if (ApicultureItems.POLLEN_CLUSTER.itemEqual(containedItem)) {
+				filledCrateModelLayered(id, modLoc("item/pollen.0"), modLoc("item/pollen.1"));
+			} else {
+				ResourceLocation contained = RegistryNameFinder.getRegistryName(containedItem);
+				ResourceLocation contentsTexture;
+
+				if (containedItem instanceof BlockItem && !(containedItem instanceof ItemNameBlockItem)) {
+					contentsTexture = new ResourceLocation(contained.getNamespace(), "block/" + contained.getPath());
+				} else {
+					contentsTexture = new ResourceLocation(contained.getNamespace(), "item/" + contained.getPath());
+				}
+
+				filledCrateModel(id, contentsTexture);
+
+			}
 		}
+
+		// manual overrides
+		filledCrateModel(CrateItems.CRATED_CACTUS.getIdentifier(), mcLoc("block/cactus_side"));
+		filledCrateModel(CrateItems.CRATED_MYCELIUM.getIdentifier(), mcLoc("block/mycelium_side"));
+		filledCrateModel(CrateItems.CRATED_GRASS_BLOCK.getIdentifier(), mcLoc("block/grass_block_top"));
+		filledCrateModel(CrateItems.CRATED_PROPOLIS.getIdentifier(), modLoc("item/propolis.0"));
 
 		for (Table.Cell<BlockTypePlanter, BlockPlanter.Mode, FeatureBlock<BlockPlanter, BlockItem>> cell : CultivationBlocks.PLANTER.getFeatureByTypes().cellSet()) {
 			Block block = cell.getValue().block();
@@ -70,14 +93,20 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 			//			.loaderData("fluid", new JsonPrimitive(RegistryNameFinder.getRegistryName(fluid.getFluid()).toString()))
 			//	);
 		}
+	}
 
-		// todo: why isn't this inside block gen???
-		Todos.todo();
-		//	registerModel(CoreItems.RAW_TIN, new ModelBuilder().parent("item/generated").texture("layer0", new ResourceLocation(Constants.MOD_ID, "item/raw_tin")));
-		//	registerModel(CoreBlocks.APATITE_ORE.item(), new ModelBuilder().parent(new ResourceLocation(Constants.MOD_ID, "block/apatite_ore")));
-		//	registerModel(CoreBlocks.DEEPSLATE_APATITE_ORE.item(), new ModelBuilder().parent(new ResourceLocation(Constants.MOD_ID, "block/deepslate_apatite_ore")));
-		//	registerModel(CoreBlocks.TIN_ORE.item(), new ModelBuilder().parent(new ResourceLocation(Constants.MOD_ID, "block/tin_ore")));
-		//	registerModel(CoreBlocks.DEEPSLATE_TIN_ORE.item(), new ModelBuilder().parent(new ResourceLocation(Constants.MOD_ID, "block/deepslate_tin_ore")));
-		//	registerModel(CoreBlocks.RAW_TIN_BLOCK.item(), new ModelBuilder().parent(new ResourceLocation(Constants.MOD_ID, "block/raw_tin_block")));
+	private void filledCrateModel(String id, ResourceLocation texture) {
+		getBuilder(id)
+				.customLoader(FilledCrateModelBuilder::begin)
+				.layer1(texture)
+				.end();
+	}
+
+	private void filledCrateModelLayered(String id, ResourceLocation layer1, ResourceLocation layer2) {
+		getBuilder(id)
+				.customLoader(FilledCrateModelBuilder::begin)
+				.layer1(layer1)
+				.layer2(layer2)
+				.end();
 	}
 }

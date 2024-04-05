@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -52,7 +53,7 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 
 		if (tokenCount > 0) {
 			EscritoireGameToken[] tokens = new EscritoireGameToken[tokenCount];
-			ListTag nbttaglist = nbt.getList("GameTokens", 10);
+			ListTag nbttaglist = nbt.getList("GameTokens", Tag.TAG_LIST);
 
 			for (int j = 0; j < nbttaglist.size(); ++j) {
 				CompoundTag CompoundNBT2 = nbttaglist.getCompound(j);
@@ -89,7 +90,8 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 
 	@Nullable
 	public EscritoireGameToken getToken(int index) {
-		if (index >= tokenCount) {
+		// todo figure out why tokenCount is out of sync with gameTokens
+		if (index >= tokenCount || index >= gameTokens.size()) {
 			return null;
 		}
 		return gameTokens.get(index);

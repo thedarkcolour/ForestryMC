@@ -95,10 +95,10 @@ public class ItemCrated extends ItemForestry implements IColoredItem {
 		ItemColors colors = Minecraft.getInstance().getItemColors();
 		ItemStack contained = this.contained.get();
 
-		if (contained.isEmpty() || renderPass == 100) {
+		if (contained.isEmpty() || renderPass == 0) {
 			return -1;
 		}
 
-		return colors.getColor(contained, renderPass);
+		return colors.getColor(contained, renderPass - 1);
 	}
 }

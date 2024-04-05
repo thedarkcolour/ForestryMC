@@ -42,6 +42,8 @@ public class GameTokenWidget extends Widget {
 		super(manager, xPos, yPos);
 		this.game = game;
 		this.index = index;
+		this.width = 20;
+		this.height = 20;
 	}
 
 	@Nullable
@@ -66,22 +68,21 @@ public class GameTokenWidget extends Widget {
 
 		RenderSystem.setShaderTexture(0, manager.gui.textureFile);
 
-		//TODO not sure if this works...
 		RenderSystem.enableDepthTest();
-		// RenderSystem.color3f(colorR, colorG, colorB);
+		RenderSystem.setShaderColor(colorR, colorG, colorB, 1.0f);
 		manager.gui.blit(transform, startX + xPos, startY + yPos, 228, 0, 22, 22);
-		// RenderSystem.color3f(1.0f, 1.0f, 1.0f);
+		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		ItemStack tokenStack = HIDDEN_TOKEN;
 		if (token.isVisible()) {
 			tokenStack = token.getTokenStack();
 		}
 
-		GuiUtil.drawItemStack(manager.gui, tokenStack, startX + xPos + 3, startY + yPos + 3);
+		GuiUtil.drawItemStack(transform, manager.gui, tokenStack, startX + xPos + 3, startY + yPos + 3);
 
 		RenderSystem.disableDepthTest();
 		TextureManagerForestry.getInstance().bindGuiTextureMap();
-		for (String ident : getToken().getOverlayIcons()) {
+		for (String ident : token.getOverlayIcons()) {
 			TextureAtlasSprite icon = TextureManagerForestry.getInstance().getDefault(ident);
 			GuiComponent.blit(transform, startX + xPos + 3, startY + yPos + 3, manager.gui.getBlitOffset(), 16, 16, icon);
 		}

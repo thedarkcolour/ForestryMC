@@ -23,6 +23,7 @@ import forestry.apiculture.items.ItemSmoker;
 import forestry.apiculture.items.ItemWaxCast;
 import forestry.core.items.ItemForestry;
 import forestry.core.items.ItemOverlay;
+import forestry.modules.features.FeatureGroup;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureItemGroup;
 import forestry.modules.features.FeatureProvider;

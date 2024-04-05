@@ -216,11 +216,10 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 	}
 
 	@Override
-	public int getColorFromItemStack(ItemStack itemstack, int j) {
-
-		if (j == 0) {
+	public int getColorFromItemStack(ItemStack itemstack, int layer) {
+		if (layer == 0) {
 			return definition.getPrimaryColour();
-		} else if (j == 1) {
+		} else if (layer == 1) {
 			return definition.getSecondaryColour();
 		} else {
 			return 0xffffff;
@@ -236,7 +235,7 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 	}
 
 	public static BackpackMode getMode(ItemStack backpack) {
-		Preconditions.checkArgument(backpack.getItem() instanceof ItemBackpack, "Item must be a backpack");
+		if (!(backpack.getItem() instanceof ItemBackpack)) return BackpackMode.NEUTRAL;
 
 		int meta = backpack.getDamageValue();
 

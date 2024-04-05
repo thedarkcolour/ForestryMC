@@ -19,6 +19,7 @@ import forestry.core.IPickupHandler;
 import forestry.core.IResupplyHandler;
 import forestry.core.config.Constants;
 import forestry.core.data.ForestryTags;
+import forestry.core.gui.GuiNaturalistInventory;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.storage.features.BackpackContainers;

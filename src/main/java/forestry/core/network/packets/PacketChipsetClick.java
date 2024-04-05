@@ -44,7 +44,7 @@ public class PacketChipsetClick extends ForestryPacket implements IForestryPacke
 			int slot = data.readVarInt();
 
 			if (player.containerMenu instanceof IContainerSocketed) {
-				ItemStack itemstack = player.inventoryMenu.getCarried();
+				ItemStack itemstack = player.containerMenu.getCarried();
 				if (itemstack.getItem() instanceof ItemCircuitBoard) {
 					((IContainerSocketed) player.containerMenu).handleChipsetClickServer(slot, player, itemstack);
 				}

@@ -58,7 +58,7 @@ public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
 			ItemStack tube = itemInventory.getItem(i + 2);
 			Optional<ISolderRecipe> recipe = ChipsetManager.solderManager.getMatchingRecipe(ClientUtils.getRecipeManager(), layout, tube);
 			if (recipe.isEmpty()) {
-				description = "(" + Component.translatable("for.gui.noeffect") + ")";
+				description = "(" + Component.translatable("for.gui.noeffect").getString() + ")";
 			} else {
 				description = recipe.get().getCircuit().getDisplayName().getString();
 			}

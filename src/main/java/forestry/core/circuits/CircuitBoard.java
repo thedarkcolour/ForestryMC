@@ -84,7 +84,7 @@ public class CircuitBoard implements ICircuitBoard {
 	@OnlyIn(Dist.CLIENT)
 	public void addTooltip(List<Component> list) {
 		if (layout != null) {
-			list.add(Component.literal(layout.getUsage() + ":").withStyle(ChatFormatting.GOLD));
+			list.add(Component.literal(layout.getUsage().getString() + ":").withStyle(ChatFormatting.GOLD));
 			List<Component> extendedTooltip = new ArrayList<>();
 			for (ICircuit circuit : circuits) {
 				if (circuit != null) {

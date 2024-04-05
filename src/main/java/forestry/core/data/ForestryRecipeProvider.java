@@ -908,7 +908,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 
 	private void registerFarmingRecipes(Consumer<FinishedRecipe> helper) {
 		for (EnumFarmMaterial material : EnumFarmMaterial.values()) {
-			Item base = material.getBase().getItem();
+			Item base = material.getBase().asItem();
 			ShapedRecipeBuilder.shaped(FarmingBlocks.FARM.get(EnumFarmBlockType.PLAIN, material).block())
 					.define('#', base)
 					.define('C', CoreItems.ELECTRON_TUBES.get(EnumElectronTube.TIN))

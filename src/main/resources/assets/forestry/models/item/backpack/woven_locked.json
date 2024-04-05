@@ -1,0 +1,8 @@
+{
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "forestry:item/woven_backpack",
+      "layer1": "forestry:item/woven_backpack_outline",
+      "layer2": "forestry:item/backpack_locked"
+    }
+}

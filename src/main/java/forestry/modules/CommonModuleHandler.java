@@ -95,7 +95,7 @@ public class CommonModuleHandler {
 	}
 
 	public void registerObjects(RegisterEvent event) {
-		// only used for wood kinds
+		// used for wood kinds and block/item colors
 		registry.onRegister(event);
 		// does misc object registration, not features
 		registerObjects();

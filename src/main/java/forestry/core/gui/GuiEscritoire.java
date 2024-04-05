@@ -86,7 +86,7 @@ public class GuiEscritoire extends GuiForestry<ContainerEscritoire> {
 		super.renderBg(transform, partialTicks, mouseY, mouseX);
 
 		for (int i = 0; i <= tile.getGame().getBountyLevel() / 4; i++) {
-			GuiUtil.drawItemStack(this, LEVEL_ITEM, leftPos + 170 + i * 8, topPos + 7);
+			GuiUtil.drawItemStack(transform, this, LEVEL_ITEM, leftPos + 170 + i * 8, topPos + 7);
 		}
 
 		textLayout.startPage(transform);

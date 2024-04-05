@@ -57,17 +57,23 @@ public abstract class FeatureGroup<B extends FeatureGroup.Builder<S, ? extends F
 	}
 
 	public boolean itemEqual(ItemStack stack) {
-		return getFeatures().stream()
-			.filter(f -> f instanceof IItemProvider)
-			.map(f -> (IItemProvider) f)
-			.anyMatch(f -> f.itemEqual(stack));
+		for (F feature : this.getFeatures()) {
+			if (feature instanceof FeatureItem<?> itemFeature && itemFeature.itemEqual(stack)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public boolean itemEqual(Item item) {
-		return getFeatures().stream()
-			.filter(f -> f instanceof IItemProvider)
-			.map(f -> (IItemProvider) f)
-			.anyMatch(f -> f.itemEqual(item));
+		for (F feature : this.getFeatures()) {
+			if (feature instanceof FeatureItem<?> itemFeature && itemFeature.itemEqual(item)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public ItemStack stack(S subType) {

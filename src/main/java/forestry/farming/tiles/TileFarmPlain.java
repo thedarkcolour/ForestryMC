@@ -32,7 +32,7 @@ public class TileFarmPlain extends TileFarm {
 		// set band block meta
 		int bandY = maxCoord.getY() - 1;
 		if (getBlockPos().getY() == bandY) {
-			EnumFarmMaterial material = EnumFarmMaterial.BRICK_STONE;
+			EnumFarmMaterial material = EnumFarmMaterial.STONE_BRICK;
 			BlockState state = getBlockState();
 			Block block = state.getBlock();
 			if (block instanceof BlockFarm) {
@@ -47,7 +47,7 @@ public class TileFarmPlain extends TileFarm {
 		super.onMachineBroken();
 
 		// set band block meta back to normal
-		EnumFarmMaterial material = EnumFarmMaterial.BRICK_STONE;
+		EnumFarmMaterial material = EnumFarmMaterial.STONE_BRICK;
 		BlockState state = getBlockState();
 		Block block = state.getBlock();
 		if (block instanceof BlockFarm) {
