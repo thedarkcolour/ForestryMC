@@ -191,7 +191,7 @@ public class FactoryJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
 		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeTransferHandler(new CarpenterRecipeTransferHandler(registry.getJeiHelpers().getStackHelper(), registry.getTransferHelper()), ForestryRecipeType.CARPENTER);
+			registry.addRecipeTransferHandler(new CarpenterRecipeTransferHandler(), ForestryRecipeType.CARPENTER);
 		}
 
 		if (ModuleFactory.machineEnabled()) {
