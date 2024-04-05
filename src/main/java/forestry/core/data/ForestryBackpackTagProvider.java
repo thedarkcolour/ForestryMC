@@ -223,7 +223,5 @@ public class ForestryBackpackTagProvider extends ItemTagsProvider {
 
 		tag(ForestryTags.Items.ADVENTURER_ALLOW);
 		tag(ForestryTags.Items.ADVENTURER_REJECT);
-
-		super.addTags();
 	}
 }

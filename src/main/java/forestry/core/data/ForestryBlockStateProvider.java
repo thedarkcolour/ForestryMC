@@ -6,6 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
 
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -14,6 +16,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
 import forestry.api.arboriculture.EnumForestryWoodType;
+import forestry.api.arboriculture.EnumVanillaWoodType;
 import forestry.arboriculture.blocks.BlockForestryDoor;
 import forestry.arboriculture.blocks.BlockForestryFence;
 import forestry.arboriculture.blocks.BlockForestryFenceGate;
@@ -77,7 +80,72 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 			}
 		}
 
-		// todo vanilla wood types
+		// Vanilla fireproof wood types
+		for (EnumVanillaWoodType woodType : EnumVanillaWoodType.VALUES) {
+			// planks
+			Block planks = ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF.get(woodType).block();
+			String woodTypeName = woodType.getSerializedName();
+			String planksName = woodTypeName + "_planks";
+			ModelFile planksModel = existingMcBlock(planksName);
+			simpleBlock(planks, planksModel);
+			generic3d(planks, mcLoc(planksName));
+			// log
+			BlockForestryLog log = ArboricultureBlocks.LOGS_VANILLA_FIREPROOF.get(woodType).block();
+			String logName = woodTypeName + "_log";
+			ModelFile logModel = existingMcBlock(logName);
+			axisBlock(log, logModel, logModel);
+			generic3d(log, mcLoc(logName));
+			// wood
+			BlockForestryLog wood = ArboricultureBlocks.WOOD_VANILLA_FIREPROOF.get(woodType).block();
+			String woodName = woodTypeName + "_wood";
+			ModelFile woodModel = existingMcBlock(woodName);
+			axisBlock(wood, woodModel, woodModel);
+			generic3d(wood, mcLoc(woodName));
+			// stripped log
+			BlockForestryLog strippedLog = ArboricultureBlocks.STRIPPED_LOGS_VANILLA_FIREPROOF.get(woodType).block();
+			String strippedLogName = "stripped_" + woodTypeName + "_log";
+			ModelFile strippedLogModel = existingMcBlock(strippedLogName);
+			axisBlock(strippedLog, strippedLogModel, strippedLogModel);
+			generic3d(strippedLog, mcLoc(strippedLogName));
+			// stripped wood
+			BlockForestryLog strippedWood = ArboricultureBlocks.STRIPPED_WOOD_VANILLA_FIREPROOF.get(woodType).block();
+			String strippedWoodName = "stripped_" + woodTypeName + "_wood";
+			ModelFile strippedWoodModel = existingMcBlock(strippedWoodName);
+			axisBlock(strippedWood, strippedWoodModel, strippedWoodModel);
+			generic3d(strippedWood, mcLoc(strippedWoodName));
+			// slab
+			SlabBlock slab = ArboricultureBlocks.SLABS_VANILLA_FIREPROOF.get(woodType).block();
+			String slabName = woodTypeName + "_slab";
+			ModelFile bottomSlabModel = existingMcBlock(slabName);
+			ModelFile topSlabModel = existingMcBlock(slabName + "_top");
+			slabBlock(slab, bottomSlabModel, topSlabModel, planksModel);
+			generic3d(slab, mcLoc(slabName));
+			// stairs
+			StairBlock stairs = ArboricultureBlocks.STAIRS_VANILLA_FIREPROOF.get(woodType).block();
+			String stairsName = woodTypeName + "_stairs";
+			ModelFile stairsModel = existingMcBlock(stairsName);
+			ModelFile innerStairsModel = existingMcBlock(stairsName + "_inner");
+			ModelFile outerStairsModel = existingMcBlock(stairsName + "_outer");
+			stairsBlock(stairs, stairsModel, innerStairsModel, outerStairsModel);
+			generic3d(stairs, mcLoc(stairsName));
+			// fence
+			BlockForestryFence fence = ArboricultureBlocks.FENCES_VANILLA_FIREPROOF.get(woodType).block();
+			String fenceName = woodTypeName + "_fence";
+			ModelFile fencePostModel = existingMcBlock(fenceName + "_post");
+			ModelFile fenceSideModel = existingMcBlock(fenceName + "_side");
+			ModelFile fenceInventoryModel = existingMcBlock(fenceName + "_inventory");
+			fourWayBlock(fence, fencePostModel, fenceSideModel);
+			itemModels().withExistingParent(path(fence), fenceInventoryModel.getLocation());
+			// fence gate
+			BlockForestryFenceGate fenceGate = ArboricultureBlocks.FENCE_GATES_VANILLA_FIREPROOF.get(woodType).block();
+			String fenceGateName = woodTypeName + "_fence_gate";
+			ModelFile gateModel = existingMcBlock(fenceGateName);
+			ModelFile gateOpenModel = existingMcBlock(fenceGateName + "_open");
+			ModelFile gateWallModel = existingMcBlock(fenceGateName + "_wall");
+			ModelFile gateWallOpenModel = existingMcBlock(fenceGateName + "_wall_open");
+			fenceGateBlock(fenceGate, gateModel, gateOpenModel, gateWallModel, gateWallOpenModel);
+			generic3d(fenceGate, mcLoc(fenceGateName));
+		}
 
 		// Forestry wood types
 		for (EnumForestryWoodType woodType : EnumForestryWoodType.VALUES) {
@@ -96,9 +164,9 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 			ResourceLocation logTexture = blockTexture(log);
 
 			logLike(woodType, ArboricultureBlocks.LOGS, ArboricultureBlocks.LOGS_FIREPROOF, logTexture, withSuffix(logTexture, "_top"));
+			//logLike(woodType, ArboricultureBlocks.STRIPPED_LOGS, ArboricultureBlocks.STRIPPED_LOGS_FIREPROOF, withPrefix("stripped_", logTexture), withPrefix("stripped_", withSuffix(logTexture, "_top")));
+			//logLike(woodType, ArboricultureBlocks.STRIPPED_WOOD, ArboricultureBlocks.STRIPPED_WOOD_FIREPROOF, withPrefix("stripped_", logTexture), withPrefix("stripped_", logTexture));
 			logLike(woodType, ArboricultureBlocks.WOOD, ArboricultureBlocks.WOOD_FIREPROOF, logTexture, logTexture);
-
-			// todo: stripped, stripped wood variants
 
 			// Slab
 			BlockForestrySlab slab = ArboricultureBlocks.SLABS.get(woodType).block();
@@ -207,6 +275,14 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 
 	public void generic3d(Block block, Block otherParent) {
 		itemModels().withExistingParent(path(block), modLoc("block/" + path(otherParent)));
+	}
+
+	public void generic3d(Block block, ResourceLocation otherParentId) {
+		itemModels().withExistingParent(path(block), new ResourceLocation(otherParentId.getNamespace(), "block/" + otherParentId.getPath()));
+	}
+
+	private ModelFile existingMcBlock(String path) {
+		return models().getExistingFile(mcBlock(path));
 	}
 
 	// Everything below this line is boilerplate code adapted from https://github.com/thedarkcolour/ModKit

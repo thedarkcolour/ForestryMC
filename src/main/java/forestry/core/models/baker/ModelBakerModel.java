@@ -39,6 +39,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.arboriculture.models.ModelLeaves;
 import forestry.core.utils.ResourceUtil;
 
 @OnlyIn(Dist.CLIENT)
@@ -124,7 +125,7 @@ public class ModelBakerModel implements BakedModel {
 
 	@Override
 	public ItemTransforms getTransforms() {
-		return ItemTransforms.NO_TRANSFORMS;
+		return ModelLeaves.TRANSFORMS;
 	}
 
 	@Override
@@ -206,7 +207,7 @@ public class ModelBakerModel implements BakedModel {
 	public ModelBakerModel copy() {
 		return new ModelBakerModel(this);
 	}
-
+/*
 	@Override
 	public BakedModel applyTransform(TransformType transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
 		Transformation transformation = transforms.getOrDefault(transformType, Transformation.identity());
@@ -214,5 +215,5 @@ public class ModelBakerModel implements BakedModel {
 			poseStack.pushTransformation(transformation);
 		}
 		return this;
-	}
+	}*/
 }

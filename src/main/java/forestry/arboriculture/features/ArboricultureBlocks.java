@@ -52,9 +52,16 @@ public class ArboricultureBlocks {
 	/* WOOD */
 	public static final FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> LOGS = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, false, EnumForestryWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> LOGS_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, true, EnumForestryWoodType.VALUES);
+	public static final FeatureBlockGroup<BlockForestryLog, EnumVanillaWoodType> LOGS_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, true, EnumVanillaWoodType.VALUES);
+	// todo stripped logs
+	// todo stripped logs fireproof
+	public static final FeatureBlockGroup<BlockForestryLog, EnumVanillaWoodType> STRIPPED_LOGS_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.STRIPPED_LOG, true, EnumVanillaWoodType.VALUES);
+	// todo stripped wood
+	// todo stripped wood fireproof
+	public static final FeatureBlockGroup<BlockForestryLog, EnumVanillaWoodType> STRIPPED_WOOD_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.STRIPPED_WOOD, true, EnumVanillaWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> WOOD = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, false, EnumForestryWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> WOOD_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, true, EnumForestryWoodType.VALUES);
-	public static final FeatureBlockGroup<BlockForestryLog, EnumVanillaWoodType> LOGS_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, true, EnumVanillaWoodType.VALUES);
+	public static final FeatureBlockGroup<BlockForestryLog, EnumVanillaWoodType> WOOD_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, true, EnumVanillaWoodType.VALUES);
 
 	public static final FeatureBlockGroup<BlockForestryPlank, EnumForestryWoodType> PLANKS = woodGroup(BlockForestryPlank::new, WoodBlockKind.PLANKS, false, EnumForestryWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryPlank, EnumForestryWoodType> PLANKS_FIREPROOF = woodGroup(BlockForestryPlank::new, WoodBlockKind.PLANKS, true, EnumForestryWoodType.VALUES);
@@ -79,7 +86,7 @@ public class ArboricultureBlocks {
 	public static final FeatureBlockGroup<BlockForestryDoor, EnumForestryWoodType> DOORS = woodGroup(BlockForestryDoor::new, ItemBlockWoodDoor::new, WoodBlockKind.DOOR, false, EnumForestryWoodType.VALUES);
 
 	/* GENETICS */
-	public static final FeatureBlock<BlockSapling, BlockItem> SAPLING_GE = REGISTRY.block(BlockSapling::new, ItemBlockForestry::new, "sapling_ge");
+	public static final FeatureBlock<BlockSapling, BlockItem> SAPLING_GE = REGISTRY.block(BlockSapling::new, "sapling_ge");
 	public static final FeatureBlock<BlockForestryLeaves, ItemBlockLeaves> LEAVES = REGISTRY.block(BlockForestryLeaves::new, ItemBlockLeaves::new, "leaves");
 	public static final FeatureBlockGroup<BlockDefaultLeaves, TreeDefinition> LEAVES_DEFAULT = REGISTRY.blockGroup(BlockDefaultLeaves::new, TreeDefinition.VALUES).item(ItemBlockLeaves::new).identifier("default_leaves", FeatureGroup.IdentifierType.AFFIX).create();
 	public static final FeatureBlockGroup<BlockDefaultLeavesFruit, TreeDefinition> LEAVES_DEFAULT_FRUIT = REGISTRY.blockGroup(BlockDefaultLeavesFruit::new, TreeDefinition.VALUES).item(ItemBlockLeaves::new).identifier("default_leaves_fruit", FeatureGroup.IdentifierType.AFFIX).create();

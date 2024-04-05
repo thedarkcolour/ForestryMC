@@ -19,7 +19,12 @@ import forestry.core.models.ModelBlockCached;
 import forestry.core.models.baker.ModelBaker;
 import forestry.core.proxy.Proxies;
 import forestry.core.utils.ResourceUtil;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -31,8 +36,22 @@ import net.minecraftforge.client.model.data.ModelData;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import com.mojang.math.Vector3f;
+
 @OnlyIn(Dist.CLIENT)
 public class ModelLeaves extends ModelBlockCached<BlockForestryLeaves, ModelLeaves.Key> {
+	// copied from "minecraft:block/block.json" model
+	public static final ItemTransforms TRANSFORMS = new ItemTransforms(
+			new ItemTransform(new Vector3f(75, 45, 0), new Vector3f(0, 2.5f / 16f, 0), new Vector3f(0.375f, 0.375f, 0.375f)),
+			new ItemTransform(new Vector3f(75, 45, 0), new Vector3f(0, 2.5f / 16f, 0), new Vector3f(0.375f, 0.375f, 0.375f)),
+			new ItemTransform(new Vector3f(0, 225, 0), new Vector3f(0, 0, 0), new Vector3f(0.4f, 0.4f, 0.4f)),
+			new ItemTransform(new Vector3f(0, 45, 0), new Vector3f(0, 0, 0), new Vector3f(0.4f, 0.4f, 0.4f)),
+			ItemTransform.NO_TRANSFORM,
+			new ItemTransform(new Vector3f(30, 225, 0), new Vector3f(0, 0, 0), new Vector3f(0.625f, 0.625f, 0.625f)),
+			new ItemTransform(new Vector3f(0, 0, 0), new Vector3f(0, 3 / 16f, 0), new Vector3f(0.25f, 0.25f, 0.25f)),
+			new ItemTransform(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0.5f, 0.5f, 0.5f))
+	);
+
 	public static class Key {
 		public final TextureAtlasSprite leafSprite;
 		@Nullable
@@ -104,5 +123,10 @@ public class ModelLeaves extends ModelBlockCached<BlockForestryLeaves, ModelLeav
 
 	public ModelLeaves() {
 		super(BlockForestryLeaves.class);
+	}
+
+	@Override
+	public ItemTransforms getTransforms() {
+		return TRANSFORMS;
 	}
 }

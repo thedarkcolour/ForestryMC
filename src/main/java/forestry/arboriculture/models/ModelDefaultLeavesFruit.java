@@ -14,6 +14,7 @@ import com.google.common.base.Preconditions;
 
 import java.util.Objects;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.resources.model.BakedModel;
@@ -120,5 +121,10 @@ public class ModelDefaultLeavesFruit extends ModelBlockCached<BlockDefaultLeaves
 		blockModel = baker.bake(false);
 		onCreateModel(blockModel);
 		return blockModel;
+	}
+
+	@Override
+	public ItemTransforms getTransforms() {
+		return ModelLeaves.TRANSFORMS;
 	}
 }

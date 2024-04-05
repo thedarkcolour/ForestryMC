@@ -32,7 +32,6 @@ public final class ForestryItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void addTags() {
-		super.addTags();
 		builders.remove(ItemTags.SAPLINGS.location());
 		//builders.remove()
 		filter = new HashSet<>(this.builders.keySet());
