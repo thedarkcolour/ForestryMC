@@ -88,14 +88,7 @@ public class FilledCrateModel implements IUnbakedGeometry<FilledCrateModel> {
 			// vanilla models support layer0 to layer4; layer0 is implied to be the crate
 			for (int layer = 1; layer <= 4; ++layer) {
 				if (json.has("textures") && json.get("textures").getAsJsonObject().has("layer" + layer)) {
-					Map<Direction, BlockElementFace> faces = Map.of(
-							Direction.SOUTH, new BlockElementFace(null, layer, "layer" + layer, new BlockFaceUV(new float[]{0.0F, 0.0F, 16.0F, 16.0F}, 0)),
-							Direction.NORTH, new BlockElementFace(null, layer, "layer" + layer, new BlockFaceUV(new float[]{16.0F, 0.0F, 0.0F, 16.0F}, 0))
-					);
-					// front and back 2d faces
-					// add the element, scaled down
-					float zOffset = 0.25f;
-					elements.add(new BlockElement(new Vector3f(3f, 4f, 7.5f - zOffset), new Vector3f(11f, 12f, 8.5f + zOffset), faces, null, false));
+					elements.add(make2dElement(layer, 3f, 4f, 11f, 12f, 0.002f));
 					// add material
 					ResourceLocation contentsTexture = ResourceLocation.tryParse(GsonHelper.getAsString(GsonHelper.getAsJsonObject(json, "textures"), "layer" + layer));
 					//noinspection DataFlowIssue
@@ -109,6 +102,16 @@ public class FilledCrateModel implements IUnbakedGeometry<FilledCrateModel> {
 
 			return new FilledCrateModel(contents, materials);
 		}
+	}
+
+	public static BlockElement make2dElement(int layer, float startX, float startY, float endX, float endY, float zOffset) {
+		Map<Direction, BlockElementFace> faces = Map.of(
+				Direction.SOUTH, new BlockElementFace(null, layer, "layer" + layer, new BlockFaceUV(new float[]{0.0F, 0.0F, 16.0F, 16.0F}, 0)),
+				Direction.NORTH, new BlockElementFace(null, layer, "layer" + layer, new BlockFaceUV(new float[]{16.0F, 0.0F, 0.0F, 16.0F}, 0))
+		);
+		// front and back 2d faces
+		// add the element, scaled down
+		return new BlockElement(new Vector3f(startX, startY, 7.5f - zOffset), new Vector3f(endX, endY, 8.5f + zOffset), faces, null, false);
 	}
 
 	private static class Baked implements BakedModel {

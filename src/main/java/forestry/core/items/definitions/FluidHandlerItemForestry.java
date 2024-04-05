@@ -9,13 +9,14 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 
 import forestry.core.config.Config;
+import forestry.core.models.FluidContainerModel;
 
 /**
  * Fluid handler that consumes the container item after it was used.
  * <p>
  * This function can be disabled in the config with {@link Config#nonConsumableCapsules}.
  */
-public class FluidHandlerItemForestry extends FluidHandlerItemStackSimple.Consumable {
+public class FluidHandlerItemForestry extends FluidHandlerItemStackSimple.Consumable implements IColoredItem {
 	private final EnumContainerType containerType;
 
 	public FluidHandlerItemForestry(ItemStack container, EnumContainerType containerType) {
@@ -64,6 +65,11 @@ public class FluidHandlerItemForestry extends FluidHandlerItemStackSimple.Consum
 		} else {
 			super.setContainerToEmpty();
 		}
+	}
+
+	@Override
+	public int getColorFromItemStack(ItemStack stack, int tintIndex) {
+		return FluidContainerModel.DYNAMIC_COLOR.getColor(stack, tintIndex);
 	}
 }
 

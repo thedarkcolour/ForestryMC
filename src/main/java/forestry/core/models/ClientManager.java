@@ -53,6 +53,8 @@ import forestry.modules.features.FeatureGroup;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureTable;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.model.DynamicFluidContainerModel;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientManager {
@@ -93,12 +95,7 @@ public class ClientManager {
 	public void registerItemAndBlockColors() {
 		Minecraft minecraft = Minecraft.getInstance();
 
-		BlockColors blockColors = minecraft.getBlockColors();
-		for (IColoredBlock blockColor : blockColorList) {
-			if (blockColor instanceof Block) {
-				blockColors.register(ColoredBlockBlockColor.INSTANCE, (Block) blockColor);
-			}
-		}
+
 
 		ItemColors itemColors = minecraft.getItemColors();
 		for (IColoredItem itemColor : itemColorList) {
@@ -164,6 +161,22 @@ public class ClientManager {
 
 		for (final ModelEntry entry : customModels) {
 			registry.put(entry.modelLocation, entry.model);
+		}
+	}
+
+	public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+		for (IColoredBlock blockColor : blockColorList) {
+			if (blockColor instanceof Block tintedBlock) {
+				event.register(ClientManager.ColoredBlockBlockColor.INSTANCE, tintedBlock);
+			}
+		}
+	}
+
+	public void registerItemColors(RegisterColorHandlersEvent.Item event) {
+		for (IColoredItem itemColor : itemColorList) {
+			if (itemColor instanceof Item tintedItem) {
+				event.register(ColoredItemItemColor.INSTANCE, tintedItem);
+			}
 		}
 	}
 

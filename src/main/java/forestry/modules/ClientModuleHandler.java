@@ -7,6 +7,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -70,6 +71,16 @@ public class ClientModuleHandler extends CommonModuleHandler {
 	@SubscribeEvent
 	public void setupRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		modules.forEach(module -> actOnHandler(module, handler -> handler.setupRenderers(event)));
+	}
+
+	@SubscribeEvent
+	public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+		modules.forEach(module -> actOnHandler(module, handler -> handler.registerBlockColors(event)));
+	}
+
+	@SubscribeEvent
+	public void registerItemColors(RegisterColorHandlersEvent.Item event) {
+		modules.forEach(module -> actOnHandler(module, handler -> handler.registerItemColors(event)));
 	}
 
 	private void actOnHandler(BlankForestryModule module, Consumer<IClientModuleHandler> actor) {

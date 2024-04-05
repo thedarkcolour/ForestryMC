@@ -187,7 +187,6 @@ public class Forestry {
 		//TODO - DistExecutor
 		callSetupListeners(true);
 		ModuleManager.getModuleHandler().runPreInit();
-		Proxies.render.registerItemAndBlockColors();
 		//TODO put these here for now
 		ModuleManager.getModuleHandler().runInit();
 		callSetupListeners(false);

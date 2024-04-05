@@ -11,13 +11,18 @@
 package forestry.core.proxy;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.Block;
+
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import forestry.core.blocks.IColoredBlock;
 import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.features.CoreBlocks;
 import forestry.core.fluids.ForestryFluids;
@@ -55,8 +60,10 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 
 	@Override
 	public void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
-		event.register("fluid_container", new FluidContainerModel.Loader());
+		event.register("fluid_container", FluidContainerModel.Loader.INSTANCE);
 	}
+
+
 
 	@Override
 	public void bakeModels(ModelEvent.BakingCompleted event) {
@@ -89,10 +96,18 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 	}
 
 	@Override
-	public void registerItemAndBlockColors() {
-		ClientManager.getInstance().registerItemAndBlockColors();
+	public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+		ClientManager.getInstance().registerBlockColors(event);
+
 	}
-	
+
+	@Override
+	public void registerItemColors(RegisterColorHandlersEvent.Item event) {
+		ClientManager.getInstance().registerItemColors(event);
+
+
+	}
+
 	@Override
 	public void setupLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
 		event.registerLayerDefinition(RenderAnalyzer.MODEL_LAYER, RenderAnalyzer::createBodyLayer);

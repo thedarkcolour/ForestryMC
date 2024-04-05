@@ -1,7 +1,9 @@
 {
 	"loader": "forestry:fluid_container",
+	"parent": "forge:item/default",
 	"gui_light": "front",
-	"empty": "forestry:item/refractory_empty",
-	"filled": "forestry:item/refractory_filled",
-	"type": "refractory"
+	"textures": {
+		"base": "forestry:item/liquids/refractory.bottle",
+		"fluid": "forestry:item/liquids/refractory.contents"
+	}
 }

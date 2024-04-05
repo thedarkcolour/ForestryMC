@@ -26,8 +26,7 @@ public class ItemFruit extends ItemForestryFood {
 		LEMON,
 		PLUM,
 		DATES,
-		PAPAYA,
-		COCONUT;
+		PAPAYA;
 
 		private final String name;
 

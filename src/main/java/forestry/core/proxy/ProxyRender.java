@@ -41,7 +41,4 @@ public class ProxyRender implements ISidedModuleHandler {
 
 	public void setRenderChest(MachinePropertiesTesr<? extends TileNaturalistChest> machineProperties, String textureName) {
 	}
-
-	public void registerItemAndBlockColors() {
-	}
 }
