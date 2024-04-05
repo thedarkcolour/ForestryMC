@@ -46,7 +46,7 @@ public class PacketSolderingIronClick extends ForestryPacket implements IForestr
 				return;
 			}
 
-			ItemStack itemstack = player.inventoryMenu.getCarried();
+			ItemStack itemstack = player.containerMenu.getCarried();
 
 			((IContainerSocketed) player.containerMenu).handleSolderingIronClickServer(slot, player, itemstack);
 		}

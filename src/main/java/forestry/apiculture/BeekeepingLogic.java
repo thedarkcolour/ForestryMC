@@ -189,10 +189,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 		ItemStack queenStack = beeInventory.getQueen();
 		Optional<IOrganismType> optionalType = BeeManager.beeRoot.getTypes().getType(queenStack);
-		if (!optionalType.isPresent()) {
-			return false;
-		}
-		IOrganismType beeType = optionalType.get();
+		IOrganismType beeType = optionalType.orElse(null);
 		// check if we're breeding
 		if (beeType == EnumBeeType.PRINCESS) {
 			boolean hasDrone = BeeManager.beeRoot.isDrone(beeInventory.getDrone());

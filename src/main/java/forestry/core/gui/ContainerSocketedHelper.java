@@ -64,9 +64,9 @@ public class ContainerSocketedHelper<T extends BlockEntity & ISocketable> implem
 		toSocket.setCount(1);
 		tile.setSocket(slot, toSocket);
 
-		ItemStack stack = player.inventoryMenu.getCarried();
+		ItemStack stack = player.containerMenu.getCarried();
 		stack.shrink(1);
-		player.inventoryMenu.broadcastChanges();
+		player.containerMenu.broadcastChanges();
 
 		PacketSocketUpdate packet = new PacketSocketUpdate(tile);
 		NetworkUtil.sendToPlayer(packet, player);

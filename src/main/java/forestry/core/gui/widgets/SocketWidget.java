@@ -26,6 +26,7 @@ import forestry.api.core.tooltips.ToolTip;
 import forestry.core.circuits.ISocketable;
 import forestry.core.circuits.ISolderingIron;
 import forestry.core.circuits.ItemCircuitBoard;
+import forestry.core.gui.GuiUtil;
 import forestry.core.gui.IContainerSocketed;
 import forestry.core.utils.ItemTooltipUtil;
 
@@ -44,7 +45,7 @@ public class SocketWidget extends Widget {
 	public void draw(PoseStack transform, int startY, int startX) {
 		ItemStack socketStack = tile.getSocket(slot);
 		if (!socketStack.isEmpty()) {
-			Minecraft.getInstance().getItemRenderer().renderGuiItem(socketStack, startX + xPos, startY + yPos);
+			GuiUtil.drawItemStack(transform, Minecraft.getInstance().font, socketStack, xPos, yPos);
 		}
 	}
 

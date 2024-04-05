@@ -21,12 +21,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -40,7 +40,6 @@ import forestry.core.network.packets.PacketTankLevelUpdate;
 import forestry.core.render.EnumTankLevel;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.IRenderableTile;
-import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.NetworkUtil;
 
 /**
@@ -56,7 +55,6 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 	// tank tile updates, for blocks that show fluid levels on the outside
 	@Nullable
 	private final ILiquidTankTile tile;
-	private final List<EnumTankLevel> tankLevels = new ArrayList<>();
 
 	public TankManager() {
 		this.tile = null;
@@ -81,7 +79,6 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 		int index = tanks.indexOf(tank);
 		tank.setTankUpdateHandler(this);
 		tank.setTankIndex(index);
-		tankLevels.add(EnumTankLevel.rateTankLevel(tank));
 		return added;
 	}
 
@@ -274,13 +271,9 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 		}
 
 		int tankIndex = tank.getTankIndex();
-		EnumTankLevel tankLevel = EnumTankLevel.rateTankLevel(tank);
-		if (tankLevel != tankLevels.get(tankIndex)) {
-			tankLevels.set(tankIndex, tankLevel);
-			if (sendUpdate) {
-				PacketTankLevelUpdate tankLevelUpdate = new PacketTankLevelUpdate(tile, tankIndex, tank.getFluid());
-				NetworkUtil.sendNetworkPacket(tankLevelUpdate, tile.getCoordinates(), tile.getWorldObj());
-			}
+		if (sendUpdate) {
+			PacketTankLevelUpdate tankLevelUpdate = new PacketTankLevelUpdate(tile, tankIndex, tank.getFluid());
+			NetworkUtil.sendNetworkPacket(tankLevelUpdate, tile.getCoordinates(), tile.getWorldObj());
 		}
 	}
 
@@ -335,7 +328,7 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 
 	private static boolean tankAcceptsFluid(StandardTank tank, FluidStack fluidStack) {
 		return tank.canFill() &&
-			tank.fill(fluidStack, FluidAction.SIMULATE) > 0;
+				tank.fill(fluidStack, FluidAction.SIMULATE) > 0;
 	}
 
 	private static boolean tankCanDrain(StandardTank tank) {
@@ -348,6 +341,6 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 
 	private static boolean tankCanDrainFluid(StandardTank tank, FluidStack fluidStack) {
 		return ForestryFluids.areEqual(tank.getFluidType(), fluidStack) &&
-			tankCanDrain(tank);
+				tankCanDrain(tank);
 	}
 }

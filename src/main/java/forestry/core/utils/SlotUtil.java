@@ -38,7 +38,7 @@ public abstract class SlotUtil {
 		if (mouseButton == 2) {
 			fillPhantomSlot(slot, ItemStack.EMPTY, mouseButton);
 		} else if (mouseButton == 0 || mouseButton == 1) {
-			ItemStack stackHeld = player.inventoryMenu.getCarried();
+			ItemStack stackHeld = player.containerMenu.getCarried();
 
 			if (stackSlot.isEmpty()) {
 				if (!stackHeld.isEmpty() && slot.mayPlace(stackHeld)) {

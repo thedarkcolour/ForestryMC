@@ -81,7 +81,6 @@ public class FilledCrateModel implements IUnbakedGeometry<FilledCrateModel> {
 
 		@Override
 		public FilledCrateModel read(JsonObject json, JsonDeserializationContext ctx) {
-			Map<Direction, BlockElementFace> faces = new HashMap<>();
 			List<BlockElement> elements = new ArrayList<>();
 			Map<String, Either<Material, String>> textureMap = new HashMap<>();
 			ArrayList<Material> materials = new ArrayList<>();
@@ -89,11 +88,14 @@ public class FilledCrateModel implements IUnbakedGeometry<FilledCrateModel> {
 			// vanilla models support layer0 to layer4; layer0 is implied to be the crate
 			for (int layer = 1; layer <= 4; ++layer) {
 				if (json.has("textures") && json.get("textures").getAsJsonObject().has("layer" + layer)) {
+					Map<Direction, BlockElementFace> faces = Map.of(
+							Direction.SOUTH, new BlockElementFace(null, layer, "layer" + layer, new BlockFaceUV(new float[]{0.0F, 0.0F, 16.0F, 16.0F}, 0)),
+							Direction.NORTH, new BlockElementFace(null, layer, "layer" + layer, new BlockFaceUV(new float[]{16.0F, 0.0F, 0.0F, 16.0F}, 0))
+					);
 					// front and back 2d faces
-					faces.put(Direction.SOUTH, new BlockElementFace(null, layer, "layer" + layer, new BlockFaceUV(new float[]{0.0F, 0.0F, 16.0F, 16.0F}, 0)));
-					faces.put(Direction.NORTH, new BlockElementFace(null, layer, "layer" + layer, new BlockFaceUV(new float[]{16.0F, 0.0F, 0.0F, 16.0F}, 0)));
 					// add the element, scaled down
-					elements.add(new BlockElement(new Vector3f(3f, 4f, 7.5f - 0.1f), new Vector3f(11f, 12f, 8.5f + 0.1f), faces, null, false));
+					float zOffset = 0.25f;
+					elements.add(new BlockElement(new Vector3f(3f, 4f, 7.5f - zOffset), new Vector3f(11f, 12f, 8.5f + zOffset), faces, null, false));
 					// add material
 					ResourceLocation contentsTexture = ResourceLocation.tryParse(GsonHelper.getAsString(GsonHelper.getAsJsonObject(json, "textures"), "layer" + layer));
 					//noinspection DataFlowIssue

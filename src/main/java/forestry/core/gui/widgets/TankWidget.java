@@ -13,6 +13,7 @@ package forestry.core.gui.widgets;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
@@ -116,6 +117,7 @@ public class TankWidget extends Widget {
 				}
 
 				RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+				RenderSystem.setShader(GameRenderer::getPositionTexShader);
 				setGLColorFromInt(fluidColor);
 
 				final int xTileCount = width / 16;
@@ -146,12 +148,14 @@ public class TankWidget extends Widget {
 			// RenderSystem.enableAlphaTest();
 			RenderSystem.disableDepthTest();
 			RenderSystem.setShaderTexture(0, manager.gui.textureFile);
+			setGLColorFromInt(0xffffff);
 			manager.gui.blit(transform, startX + xPos, startY + yPos, overlayTexX, overlayTexY, 16, 60);
 			RenderSystem.enableDepthTest();
 			// RenderSystem.disableAlphaTest();
 		}
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);
+		//RenderSystem.enableBlend();
 	}
 
 	@Override
@@ -192,7 +196,7 @@ public class TankWidget extends Widget {
 	@Override
 	public void handleMouseClick(double mouseX, double mouseY, int mouseButton) {
 		Player player = manager.minecraft.player;
-		ItemStack itemstack = player.inventoryMenu.getCarried();
+		ItemStack itemstack = player.containerMenu.getCarried();
 		if (itemstack.isEmpty()) {
 			return;
 		}

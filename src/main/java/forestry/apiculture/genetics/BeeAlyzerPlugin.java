@@ -247,7 +247,7 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 			int guiTop = ((GuiAlyzer) gui).getGuiTop();
 			int x = GuiAlyzer.COLUMN_0;
 			for (ItemStack stack : bee.getProduceList()) {
-				widgetManager.add(new ItemStackWidget(widgetManager, guiLeft + x, guiTop + textLayout.getLineY(), stack));
+				widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), stack));
 
 				x += 18;
 				if (x > 148) {
@@ -266,7 +266,7 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 
 			x = GuiAlyzer.COLUMN_0;
 			for (ItemStack stack : bee.getSpecialtyList()) {
-				widgetManager.add(new ItemStackWidget(widgetManager, guiLeft + x, guiTop + textLayout.getLineY(), stack));
+				widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), stack));
 
 				x += 18;
 				if (x > 148) {
