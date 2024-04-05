@@ -52,6 +52,8 @@ public class ArboricultureBlocks {
 	/* WOOD */
 	public static final FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> LOGS = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, false, EnumForestryWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> LOGS_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, true, EnumForestryWoodType.VALUES);
+	public static final FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> WOOD = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, false, EnumForestryWoodType.VALUES);
+	public static final FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> WOOD_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, true, EnumForestryWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryLog, EnumVanillaWoodType> LOGS_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, true, EnumVanillaWoodType.VALUES);
 
 	public static final FeatureBlockGroup<BlockForestryPlank, EnumForestryWoodType> PLANKS = woodGroup(BlockForestryPlank::new, WoodBlockKind.PLANKS, false, EnumForestryWoodType.VALUES);

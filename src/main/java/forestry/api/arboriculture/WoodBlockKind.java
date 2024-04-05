@@ -10,7 +10,7 @@ import java.util.Locale;
 import net.minecraft.util.StringRepresentable;
 
 public enum WoodBlockKind implements StringRepresentable {
-	LOG, PLANKS, SLAB, FENCE, FENCE_GATE, STAIRS, DOOR;
+	LOG, WOOD, PLANKS, SLAB, FENCE, FENCE_GATE, STAIRS, DOOR;
 
 	public String getSerializedName() {
 		return super.toString().toLowerCase(Locale.ENGLISH);
