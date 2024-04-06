@@ -112,8 +112,8 @@ public class TileStill extends TilePowered implements WorldlyContainer, ILiquidT
 	}
 
 	@Override
-	public void updateServerSide() {
-		super.updateServerSide();
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
+		super.serverTick(level, pos, state);
 
 		if (updateOnInterval(20)) {
 			FluidHelper.drainContainers(tankManager, this, InventoryStill.SLOT_CAN);

@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -96,7 +97,7 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 	}
 
 	@Override
-	protected void updateServerSide() {
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
 		if (updateOnInterval(TRANSFER_DELAY)) {
 			for (Direction facing : Direction.VALUES) {
 				ItemStack stack = getItem(facing.get3DDataValue());

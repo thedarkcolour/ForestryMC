@@ -101,8 +101,8 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	protected void updateServerSide() {
-		super.updateServerSide();
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
+		super.serverTick(level, pos, state);
 		manager.getHydrationManager().updateServer();
 
 		if (updateOnInterval(20)) {

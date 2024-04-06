@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -34,7 +35,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import forestry.api.core.IErrorLogic;
@@ -114,8 +114,8 @@ public class TileFabricator extends TilePowered implements ISlotPickupWatcher, I
 
 	/* UPDATING */
 	@Override
-	public void updateServerSide() {
-		super.updateServerSide();
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
+		super.serverTick(level, pos, state);
 
 		if (!moltenTank.isFull()) {
 			trySmelting();

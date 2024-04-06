@@ -20,6 +20,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import forestry.core.blocks.BlockBase;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.blocks.IMachinePropertiesTesr;
+import forestry.core.blocks.MachineProperties;
 import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.config.Constants;
 import forestry.core.proxy.Proxies;

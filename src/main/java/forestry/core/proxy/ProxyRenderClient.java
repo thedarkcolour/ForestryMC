@@ -22,8 +22,7 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-import forestry.core.blocks.IColoredBlock;
-import forestry.core.blocks.MachinePropertiesTesr;
+import forestry.core.blocks.IMachinePropertiesTesr;
 import forestry.core.features.CoreBlocks;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.gui.elements.GuiElementFactory;
@@ -68,35 +67,33 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 		event.register("fluid_container", FluidContainerModel.Loader.INSTANCE);
 	}
 
-
-
 	@Override
 	public void bakeModels(ModelEvent.BakingCompleted event) {
 		ClientManager.getInstance().onBakeModels(event);
 	}
 
 	@Override
-	public void setRenderDefaultMachine(MachinePropertiesTesr<? extends TileBase> machineProperties, String baseTexture) {
+	public void setRenderDefaultMachine(IMachinePropertiesTesr<? extends TileBase> machineProperties, String baseTexture) {
 		machineProperties.setRenderer(RenderMachine.MODEL_LAYER, part -> new RenderMachine(part, baseTexture));
 	}
 
 	@Override
-	public void setRenderMill(MachinePropertiesTesr<? extends TileMill> machineProperties, String baseTexture) {
+	public void setRenderMill(IMachinePropertiesTesr<? extends TileMill> machineProperties, String baseTexture) {
 		machineProperties.setRenderer(RenderMill.MODEL_LAYER, part -> new RenderMill(part, baseTexture));
 	}
 
 	@Override
-	public void setRenderEscritoire(MachinePropertiesTesr<? extends TileEscritoire> machineProperties) {
+	public void setRenderEscritoire(IMachinePropertiesTesr<? extends TileEscritoire> machineProperties) {
 		machineProperties.setRenderer(RenderEscritoire.MODEL_LAYER, RenderEscritoire::new);
 	}
 
 	@Override
-	public void setRendererAnalyzer(MachinePropertiesTesr<? extends TileAnalyzer> machineProperties) {
+	public void setRendererAnalyzer(IMachinePropertiesTesr<? extends TileAnalyzer> machineProperties) {
 		machineProperties.setRenderer(RenderAnalyzer.MODEL_LAYER, RenderAnalyzer::new);
 	}
 
 	@Override
-	public void setRenderChest(MachinePropertiesTesr<? extends TileNaturalistChest> machineProperties, String textureName) {
+	public void setRenderChest(IMachinePropertiesTesr<? extends TileNaturalistChest> machineProperties, String textureName) {
 		machineProperties.setRenderer(RenderNaturalistChest.MODEL_LAYER, part -> new RenderNaturalistChest(part, textureName));
 	}
 
@@ -120,8 +117,6 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 	@Override
 	public void registerItemColors(RegisterColorHandlersEvent.Item event) {
 		ClientManager.getInstance().registerItemColors(event);
-
-
 	}
 
 	@Override

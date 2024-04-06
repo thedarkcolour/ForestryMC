@@ -118,12 +118,13 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return level.isClientSide() ? null : (level1, pos, state1, t) -> {
-			if (t instanceof TileForestry tileForestry) {
-				tileForestry.tick();
-			}
-		};
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> actualType) {
+		if (actualType == this.blockType.getMachineProperties().getTeType()) {
+			//noinspection unchecked
+			return (BlockEntityTicker<T>) (level.isClientSide ? this.blockType.getMachineProperties().getClientTicker() : this.blockType.getMachineProperties().getServerTicker());
+		} else {
+			return null;
+		}
 	}
 
 	private IMachineProperties<?> getDefinition() {

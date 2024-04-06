@@ -13,6 +13,7 @@ package forestry.core.tiles;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -98,8 +99,8 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	}
 
 	@Override
-	protected void updateServerSide() {
-		super.updateServerSide();
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
+		super.serverTick(level, pos, state);
 
 		if (updateOnInterval(20)) {
 			// Check if we have suitable items waiting in the can slot

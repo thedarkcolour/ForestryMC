@@ -29,8 +29,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -56,8 +54,9 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 
 	private IInventoryAdapter inventory = FakeInventoryAdapter.instance();
 
-	private final TickHelper tickHelper = new TickHelper();
-	private boolean needsNetworkUpdate = false;
+	// package private for ForestryTicker
+	final TickHelper tickHelper = new TickHelper();
+	boolean needsNetworkUpdate = false;
 
 	public TileForestry(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
 		super(tileEntityTypeIn, pos, state);
@@ -83,27 +82,11 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 		super.clearRemoved();
 	}
 
-	// / UPDATING
-	public final void tick() {
-		tickHelper.onTick();
-
-		if (!level.isClientSide) {
-			updateServerSide();
-		} else {
-			updateClientSide();
-		}
-
-		if (needsNetworkUpdate) {
-			needsNetworkUpdate = false;
-			sendNetworkUpdate();
-		}
+	// these are not called automatically, they must be specified in the MachineProperties
+	public void clientTick(Level level, BlockPos pos, BlockState state) {
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	protected void updateClientSide() {
-	}
-
-	protected void updateServerSide() {
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
 	}
 
 	protected final boolean updateOnInterval(int tickInterval) {
@@ -137,7 +120,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void handleUpdateTag(CompoundTag tag) {
 		super.handleUpdateTag(tag);
 		NBTUtilForestry.readStreamableFromNbt(this, tag);
@@ -156,7 +138,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void readData(PacketBufferForestry data) throws IOException {
 
 	}

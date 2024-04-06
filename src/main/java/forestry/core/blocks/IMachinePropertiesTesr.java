@@ -22,6 +22,8 @@ public interface IMachinePropertiesTesr<T extends TileForestry> extends IMachine
 
 	@Nullable
 	IForestryRendererProvider<? super T> getRenderer();
+
+	void setRenderer(ModelLayerLocation modelLayer, IForestryRendererProvider<? super T> renderer);
 	
 	@Nullable
 	ModelLayerLocation getModelLayer();

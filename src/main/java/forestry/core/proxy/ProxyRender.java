@@ -10,7 +10,7 @@
  ******************************************************************************/
 package forestry.core.proxy;
 
-import forestry.core.blocks.MachinePropertiesTesr;
+import forestry.core.blocks.IMachinePropertiesTesr;
 import forestry.core.tiles.TileAnalyzer;
 import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileEscritoire;
@@ -27,18 +27,18 @@ public class ProxyRender implements ISidedModuleHandler {
 	public void initRendering() {
 	}
 
-	public void setRenderDefaultMachine(MachinePropertiesTesr<? extends TileBase> machineProperties, String baseTexture) {
+	public void setRenderDefaultMachine(IMachinePropertiesTesr<? extends TileBase> machineProperties, String baseTexture) {
 	}
 
-	public void setRenderMill(MachinePropertiesTesr<? extends TileMill> machineProperties, String baseTexture) {
+	public void setRenderMill(IMachinePropertiesTesr<? extends TileMill> machineProperties, String baseTexture) {
 	}
 
-	public void setRenderEscritoire(MachinePropertiesTesr<? extends TileEscritoire> machineProperties) {
+	public void setRenderEscritoire(IMachinePropertiesTesr<? extends TileEscritoire> machineProperties) {
 	}
 
-	public void setRendererAnalyzer(MachinePropertiesTesr<? extends TileAnalyzer> machineProperties) {
+	public void setRendererAnalyzer(IMachinePropertiesTesr<? extends TileAnalyzer> machineProperties) {
 	}
 
-	public void setRenderChest(MachinePropertiesTesr<? extends TileNaturalistChest> machineProperties, String textureName) {
+	public void setRenderChest(IMachinePropertiesTesr<? extends TileNaturalistChest> machineProperties, String textureName) {
 	}
 }

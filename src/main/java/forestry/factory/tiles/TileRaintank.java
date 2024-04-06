@@ -34,7 +34,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -105,12 +104,10 @@ public class TileRaintank extends TileBase implements WorldlyContainer, ILiquidT
 	}
 
 	@Override
-	public void updateServerSide() {
-		Level level = Objects.requireNonNull(this.level);
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
 		if (updateOnInterval(20)) {
 			IErrorLogic errorLogic = getErrorLogic();
 
-			BlockPos pos = getBlockPos();
 			Biome biome = level.getBiome(pos).value();
 			errorLogic.setCondition(!(biome.getPrecipitation() == Biome.Precipitation.RAIN), EnumErrorCode.NO_RAIN_BIOME);
 

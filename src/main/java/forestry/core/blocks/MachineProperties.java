@@ -15,6 +15,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.BlockGetter;
 
+import forestry.core.tiles.ForestryTicker;
 import forestry.core.tiles.TileForestry;
 import forestry.modules.features.FeatureTileType;
 
@@ -25,12 +26,18 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 	private final Supplier<FeatureTileType<? extends T>> teType;
 	private final IShapeProvider shape;
 	@Nullable
+	private final ForestryTicker<? extends T> clientTicker;
+	@Nullable
+	private final ForestryTicker<? extends T> serverTicker;
+	@Nullable
 	private Block block;
 
-	public MachineProperties(Supplier<FeatureTileType<? extends T>> teType, String name, IShapeProvider shape) {
+	public MachineProperties(Supplier<FeatureTileType<? extends T>> teType, String name, IShapeProvider shape, @Nullable ForestryTicker<? extends T> clientTicker, @Nullable ForestryTicker<? extends T> serverTicker) {
 		this.teType = teType;
 		this.name = name;
 		this.shape = shape;
+		this.clientTicker = clientTicker;
+		this.serverTicker = serverTicker;
 	}
 
 	@Override
@@ -54,6 +61,18 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 		return teType.get().tileType().create(pos, state);
 	}
 
+	@Nullable
+	@Override
+	public ForestryTicker<? extends T> getClientTicker() {
+		return clientTicker;
+	}
+
+	@Nullable
+	@Override
+	public ForestryTicker<? extends T> getServerTicker() {
+		return serverTicker;
+	}
+
 	@Override
 	public BlockEntityType<? extends T> getTeType() {
 		return teType.get().tileType();
@@ -70,6 +89,10 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 		@Nullable
 		protected String name;
 		protected IShapeProvider shape = FULL_CUBE;
+		@Nullable
+		protected ForestryTicker<? extends T> clientTicker = null;
+		@Nullable
+		protected ForestryTicker<? extends T> serverTicker = null;
 
 		public Builder(Supplier<FeatureTileType<? extends T>> type, String name) {
 			this.type = type;
@@ -107,11 +130,23 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 			return (B) this;
 		}
 
+		public B setClientTicker(@Nullable ForestryTicker<? extends T> clientTicker) {
+			this.clientTicker = clientTicker;
+			//noinspection unchecked
+			return (B) this;
+		}
+
+		public B setServerTicker(@Nullable ForestryTicker<? extends T> serverTicker) {
+			this.serverTicker = serverTicker;
+			//noinspection unchecked
+			return (B) this;
+		}
+
 		public MachineProperties<T> create() {
 			Preconditions.checkNotNull(type);
 			Preconditions.checkNotNull(name);
 			Preconditions.checkNotNull(shape);
-			return new MachineProperties<>(type, name, shape);
+			return new MachineProperties<>(type, name, shape, clientTicker, serverTicker);
 		}
 	}
 }

@@ -12,6 +12,7 @@ package forestry.core.tiles;
 
 import java.io.IOException;
 
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +23,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -52,6 +54,10 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 	}
 
 	public void increaseNumPlayersUsing() {
+		if (numPlayersUsing == 0) {
+			playLidSound(level, SoundEvents.CHEST_OPEN);
+		}
+
 		numPlayersUsing++;
 		setNeedsNetworkUpdate();
 	}
@@ -61,29 +67,17 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 		if (numPlayersUsing < 0) {
 			numPlayersUsing = 0;
 		}
+		if (numPlayersUsing == 0) {
+			playLidSound(level, SoundEvents.CHEST_CLOSE);
+		}
 		setNeedsNetworkUpdate();
 	}
 
 	@Override
-	protected void updateClientSide() {
-		updates();
-	}
-
-	@Override
-	protected void updateServerSide() {
-		updates();
-	}
-
-	private void updates() {
+	public void clientTick(Level level, BlockPos pos, BlockState state) {
 		prevLidAngle = lidAngle;
 
-		if (numPlayersUsing > 0 && lidAngle == 0.0F) {
-			playLidSound(SoundEvents.CHEST_OPEN);
-		}
-
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
-			float oldAngle = lidAngle;
-
 			if (numPlayersUsing > 0) {
 				lidAngle += lidAngleVariationPerTick;
 			} else {
@@ -91,15 +85,11 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 			}
 
 			lidAngle = Math.max(Math.min(lidAngle, 1), 0);
-
-			if (lidAngle < 0.5F && oldAngle >= 0.5F) {
-				playLidSound(SoundEvents.CHEST_CLOSE);
-			}
 		}
 	}
 
-	private void playLidSound(SoundEvent sound) {
-		this.level.playSound(null, getBlockPos(), sound, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
+	private void playLidSound(Level level, SoundEvent sound) {
+		level.playSound(null, getBlockPos(), sound, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
 	}
 
 	@Override

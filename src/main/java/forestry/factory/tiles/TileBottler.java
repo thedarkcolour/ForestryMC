@@ -109,8 +109,8 @@ public class TileBottler extends TilePowered implements WorldlyContainer, ILiqui
 	}
 
 	@Override
-	public void updateServerSide() {
-		super.updateServerSide();
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
+		super.serverTick(level, pos, state);
 
 		if (updateOnInterval(20)) {
 			ItemStack leftProcessingStack = getItem(InventoryBottler.SLOT_EMPTYING_PROCESSING);

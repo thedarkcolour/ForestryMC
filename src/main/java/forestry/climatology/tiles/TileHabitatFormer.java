@@ -89,8 +89,8 @@ public class TileHabitatFormer extends TilePowered implements IClimateHousing, I
 	}
 
 	@Override
-	protected void updateServerSide() {
-		super.updateServerSide();
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
+		super.serverTick(level, pos, state);
 		transformer.update();
 		if (updateOnInterval(20)) {
 			// Check if we have suitable items waiting in the item slot

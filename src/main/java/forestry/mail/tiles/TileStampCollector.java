@@ -17,6 +17,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.mail.IStamps;
@@ -35,7 +36,7 @@ public class TileStampCollector extends TileBase implements Container {
 	}
 
 	@Override
-	public void updateServerSide() {
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
 		if (!updateOnInterval(20)) {
 			return;
 		}

@@ -15,6 +15,7 @@ import com.google.common.base.Preconditions;
 import java.io.IOException;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -121,7 +122,7 @@ public class TileTrader extends TileBase implements IOwnedTile {
 	 * Once it is able to send letters, it should display other error states.
 	 */
 	@Override
-	public void updateServerSide() {
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
 
 		if (!isLinked() || !updateOnInterval(10)) {
 			return;

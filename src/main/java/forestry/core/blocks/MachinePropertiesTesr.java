@@ -16,13 +16,13 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import forestry.core.config.Constants;
 import forestry.core.render.IForestryRendererProvider;
 import forestry.core.render.RenderForestryTile;
+import forestry.core.tiles.ForestryTicker;
 import forestry.core.tiles.TileForestry;
 import forestry.modules.features.FeatureTileType;
 
 public class MachinePropertiesTesr<T extends TileForestry> extends MachineProperties<T> implements IMachinePropertiesTesr<T> {
 
 	private final ResourceLocation particleTexture;
-	private final boolean isFullCube;
 
 	@Nullable
 	@OnlyIn(Dist.CLIENT)
@@ -32,10 +32,9 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 	@OnlyIn(Dist.CLIENT)
 	private IForestryRendererProvider<? super T> renderer;
 
-	public MachinePropertiesTesr(Supplier<FeatureTileType<? extends T>> teType, String name, IShapeProvider shape, ResourceLocation particleTexture, boolean isFullCube) {
-		super(teType, name, shape);
+	public MachinePropertiesTesr(Supplier<FeatureTileType<? extends T>> teType, String name, IShapeProvider shape, @Nullable ForestryTicker<? extends T> clientTicker, @Nullable ForestryTicker<? extends T> serverTicker, @Nullable ResourceLocation particleTexture) {
+		super(teType, name, shape, clientTicker, serverTicker);
 		this.particleTexture = particleTexture;
-		this.isFullCube = isFullCube;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -63,10 +62,6 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 		return particleTexture;
 	}
 
-	public boolean isFullCube(BlockState state) {
-		return isFullCube;
-	}
-	
 	@Override
 	public ModelLayerLocation getModelLayer() {
 		return modelLayer;
@@ -75,7 +70,6 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 	public static class Builder<T extends TileForestry> extends MachineProperties.Builder<T, Builder<T>> {
 		@Nullable
 		private ResourceLocation particleTexture;
-		private boolean isFullCube = true;
 
 		public Builder(Supplier<FeatureTileType<? extends T>> type, String name) {
 			super(type, name);
@@ -93,18 +87,13 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 			return this;
 		}
 
-		public Builder<T> setNotFullCube() {
-			isFullCube = false;
-			return this;
-		}
-
 		@Override
 		public MachinePropertiesTesr<T> create() {
 			Preconditions.checkNotNull(type);
 			Preconditions.checkNotNull(name);
 			Preconditions.checkNotNull(shape);
 			Preconditions.checkNotNull(particleTexture);
-			return new MachinePropertiesTesr<>(type, name, shape, particleTexture, isFullCube);
+			return new MachinePropertiesTesr<>(type, name, shape, clientTicker, serverTicker, particleTexture);
 		}
 	}
 }

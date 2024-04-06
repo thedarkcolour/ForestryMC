@@ -10,10 +10,9 @@
  ******************************************************************************/
 package forestry.core.gui;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
 
 import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFiltered;
@@ -27,14 +26,8 @@ import forestry.core.tiles.TileUtil;
 public class ContainerEscritoire extends ContainerTile<TileEscritoire> implements IGuiSelectable {
 	private long lastUpdate;
 
-	//TODO duplicated code with every other ContainerTile, refactor at some point
-	public static ContainerEscritoire fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-		TileEscritoire tile = TileUtil.getTile(playerInv.player.level, extraData.readBlockPos(), TileEscritoire.class);
-		return new ContainerEscritoire(windowId, playerInv.player, tile);
-	}
-
-	public ContainerEscritoire(int id, Player player, TileEscritoire tile) {
-		super(id, CoreMenuTypes.ESCRITOIRE.menuType(), player.getInventory(), tile, 34, 153);
+	public ContainerEscritoire(int id, Inventory playerInv, TileEscritoire tile) {
+		super(id, CoreMenuTypes.ESCRITOIRE.menuType(), playerInv, tile, 34, 153);
 
 		// Analyze slot
 		addSlot(new SlotFiltered(this.tile, InventoryEscritoire.SLOT_ANALYZE, 97, 67).setPickupWatcher(this.tile).setStackLimit(1));
@@ -48,6 +41,11 @@ public class ContainerEscritoire extends ContainerTile<TileEscritoire> implement
 				addSlot(new SlotOutput(this.tile, InventoryEscritoire.SLOT_RESULTS_1 + i * 2 + j, 177 + j * 18, 85 + i * 18));
 			}
 		}
+	}
+
+	public static ContainerEscritoire fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
+		TileEscritoire tile = TileUtil.getTile(playerInv.player.level, extraData.readBlockPos(), TileEscritoire.class);
+		return new ContainerEscritoire(windowId, playerInv, tile);
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -101,8 +102,8 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 	public abstract boolean hasWork();
 
 	@Override
-	protected void updateServerSide() {
-		super.updateServerSide();
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
+		super.serverTick(level, pos, state);
 
 		if (!updateOnInterval(WORK_TICK_INTERVAL)) {
 			return;

@@ -140,7 +140,7 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 	/* UPDATING */
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void updateClientSide() {
+	public void clientTick(Level level, BlockPos pos, BlockState state) {
 		if (beeLogic.canDoBeeFX() && updateOnInterval(4)) {
 			beeLogic.doBeeFX();
 
@@ -168,7 +168,7 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 	}
 
 	@Override
-	public void updateServerSide() {
+	public void serverTick(Level level, BlockPos pos, BlockState state) {
 		if (beeLogic.canWork()) {
 			beeLogic.doWork();
 		}

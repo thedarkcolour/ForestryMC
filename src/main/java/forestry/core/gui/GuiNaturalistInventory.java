@@ -58,7 +58,7 @@ public class GuiNaturalistInventory extends GuiForestry<ContainerNaturalistInven
 		this.speciesRoot = container.tile.getSpeciesRoot();
 
 		this.pageCurrent = container.getPage();
-		this.pageMax = container.getMaxPage();
+		this.pageMax = ContainerNaturalistInventory.MAX_PAGE;
 
 		imageWidth = 196;
 		imageHeight = 202;
