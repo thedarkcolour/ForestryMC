@@ -8,12 +8,14 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-class ClientCraftingHelper {
+import genetics.Log;
+
+public class ClientCraftingHelper {
 	@OnlyIn(Dist.CLIENT)
 	private static final RecipeManager DUMMY = new RecipeManager();
 
 	@OnlyIn(Dist.CLIENT)
-	static RecipeManager adjustClient() {
+	public static RecipeManager adjustClient() {
 		Minecraft minecraft = Minecraft.getInstance();
 		IntegratedServer integratedServer = minecraft.getSingleplayerServer();
 

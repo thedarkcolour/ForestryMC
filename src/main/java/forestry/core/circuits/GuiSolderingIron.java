@@ -26,12 +26,11 @@ import forestry.api.circuits.ICircuitLayout;
 import forestry.api.circuits.ICircuitSocketType;
 import forestry.api.farming.FarmDirection;
 import forestry.api.recipes.ISolderRecipe;
+import forestry.core.ClientsideCode;
 import forestry.core.config.Constants;
 import forestry.core.gui.GuiForestry;
 import forestry.core.inventory.ItemInventorySolderingIron;
 import forestry.core.render.ColourProperties;
-import forestry.core.utils.ClientUtils;
-import forestry.core.utils.Translator;
 
 public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
 
@@ -56,7 +55,7 @@ public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
 		for (int i = 0; i < 4; i++) {
 			String description;
 			ItemStack tube = itemInventory.getItem(i + 2);
-			Optional<ISolderRecipe> recipe = ChipsetManager.solderManager.getMatchingRecipe(ClientUtils.getRecipeManager(), layout, tube);
+			Optional<ISolderRecipe> recipe = ChipsetManager.solderManager.getMatchingRecipe(ClientsideCode.getRecipeManager(), layout, tube);
 			if (recipe.isEmpty()) {
 				description = "(" + Component.translatable("for.gui.noeffect").getString() + ")";
 			} else {

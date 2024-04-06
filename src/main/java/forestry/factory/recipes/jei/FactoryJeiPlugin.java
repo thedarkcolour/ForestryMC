@@ -11,18 +11,17 @@ import forestry.api.recipes.IMoistenerRecipe;
 import forestry.api.recipes.ISqueezerRecipe;
 import forestry.api.recipes.IStillRecipe;
 import forestry.api.recipes.RecipeManagers;
+import forestry.core.ClientsideCode;
 import forestry.core.config.Constants;
 import forestry.core.features.FluidsItems;
 import forestry.core.gui.GuiForestry;
 import forestry.core.recipes.jei.ForestryRecipeType;
-import forestry.core.utils.ClientUtils;
 import forestry.core.utils.JeiUtil;
 import forestry.factory.ModuleFactory;
 import forestry.factory.blocks.BlockFactoryPlain;
 import forestry.factory.blocks.BlockTypeFactoryPlain;
 import forestry.factory.blocks.BlockTypeFactoryTesr;
 import forestry.factory.features.FactoryBlocks;
-import forestry.factory.gui.ContainerCarpenter;
 import forestry.factory.gui.GuiBottler;
 import forestry.factory.gui.GuiCarpenter;
 import forestry.factory.gui.GuiCentrifuge;
@@ -53,7 +52,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -104,7 +102,7 @@ public class FactoryJeiPlugin implements IModPlugin {
 		}
 
 		if (ModuleFactory.machineEnabled()) {
-			RecipeManager recipeManager = ClientUtils.getRecipeManager();
+			RecipeManager recipeManager = ClientsideCode.getRecipeManager();
 			categories.add(new FabricatorRecipeCategory(guiHelper, recipeManager));
 		}
 
@@ -133,7 +131,7 @@ public class FactoryJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registry) {
-		RecipeManager recipeManager = ClientUtils.getRecipeManager();
+		RecipeManager recipeManager = ClientsideCode.getRecipeManager();
 
 		if (ModuleFactory.machineEnabled()) {
 			List<BottlerRecipe> recipes = BottlerRecipeMaker.getBottlerRecipes(registry.getIngredientManager());

@@ -12,14 +12,18 @@ package forestry.factory.recipes;
 
 import forestry.api.recipes.ICraftingProvider;
 import forestry.api.recipes.IForestryRecipe;
+import forestry.core.ClientsideCode;
+
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+
+import net.minecraftforge.api.distmarker.Dist;
 
 public class AbstractCraftingProvider<T extends IForestryRecipe> implements ICraftingProvider<T> {
 
@@ -57,7 +61,11 @@ public class AbstractCraftingProvider<T extends IForestryRecipe> implements ICra
 	 */
 	protected static RecipeManager adjust(@Nullable RecipeManager recipeManager) {
 		if (recipeManager == null) {
-			return DistExecutor.safeRunForDist(() -> ClientCraftingHelper::adjustClient, () -> ServerCraftingHelper::adjustServer);
+			if (FMLEnvironment.dist == Dist.CLIENT) {
+				return ClientsideCode.craftingHelperAdjust();
+			} else {
+				return ServerCraftingHelper.adjustServer();
+			}
 		} else {
 			return recipeManager;
 		}

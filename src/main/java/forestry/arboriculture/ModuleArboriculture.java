@@ -12,12 +12,13 @@ package forestry.arboriculture;
 
 import java.util.function.Consumer;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.core.IArmorNaturalist;
@@ -28,8 +29,8 @@ import forestry.arboriculture.genetics.TreeFactory;
 import forestry.arboriculture.genetics.TreeMutationFactory;
 import forestry.arboriculture.network.PacketRegistryArboriculture;
 import forestry.arboriculture.proxy.ProxyArboriculture;
-import forestry.arboriculture.proxy.ProxyArboricultureClient;
 import forestry.arboriculture.villagers.RegisterVillager;
+import forestry.core.ClientsideCode;
 import forestry.core.ModuleCore;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
@@ -40,7 +41,7 @@ import forestry.modules.ISidedModuleHandler;
 @ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.ARBORICULTURE, name = "Arboriculture", author = "Binnie & SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.arboriculture.description", lootTable = "arboriculture")
 public class ModuleArboriculture extends BlankForestryModule {
 
-	public static final ProxyArboriculture PROXY = DistExecutor.safeRunForDist(() -> ProxyArboricultureClient::new, () -> ProxyArboriculture::new);
+	public static final ProxyArboriculture PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyArboriculture() : new ProxyArboriculture();
 	public static String treekeepingMode = "NORMAL";
 
 	public ModuleArboriculture() {

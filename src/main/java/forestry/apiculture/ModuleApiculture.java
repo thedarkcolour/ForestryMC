@@ -35,8 +35,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.FlowerManager;
@@ -67,10 +67,10 @@ import forestry.apiculture.items.EnumHoneyComb;
 import forestry.apiculture.items.EnumPollenCluster;
 import forestry.apiculture.network.PacketRegistryApiculture;
 import forestry.apiculture.proxy.ProxyApiculture;
-import forestry.apiculture.proxy.ProxyApicultureClient;
 import forestry.apiculture.worldgen.HiveDescription;
 import forestry.apiculture.worldgen.HiveGenHelper;
 import forestry.apiculture.worldgen.HiveRegistry;
+import forestry.core.ClientsideCode;
 import forestry.core.ISaveEventHandler;
 import forestry.core.ModuleCore;
 import forestry.core.config.Constants;
@@ -105,7 +105,7 @@ public class ModuleApiculture extends BlankForestryModule {
 
 	public static int maxFlowersSpawnedPerHive = 20;
 
-	public static final ProxyApiculture PROXY = DistExecutor.safeRunForDist(() -> ProxyApicultureClient::new, () -> ProxyApiculture::new);
+	public static final ProxyApiculture PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyApiculture() : new ProxyApiculture();
 
 	public static HiveRegistry getHiveRegistry() {
 		Preconditions.checkNotNull(hiveRegistry);

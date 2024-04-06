@@ -34,12 +34,16 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.brigadier.CommandDispatcher;
 
+import net.minecraftforge.api.distmarker.Dist;
+
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.IForestryModule;
 import forestry.api.modules.IModuleContainer;
 import forestry.api.modules.IModuleManager;
+import forestry.core.ClientsideCode;
 import forestry.core.IPickupHandler;
 import forestry.core.IResupplyHandler;
 import forestry.core.ISaveEventHandler;
@@ -183,7 +187,7 @@ public class ModuleManager implements IModuleManager {
 	public static void runSetup() {
 		Map<String, List<IForestryModule>> forestryModules = ForestryPluginUtil.getForestryModules();
 
-		moduleHandler = DistExecutor.runForDist(() -> ClientModuleHandler::new, () -> CommonModuleHandler::new);
+		moduleHandler = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newModuleHandler() : new CommonModuleHandler();
 		configureModules(forestryModules);
 	}
 

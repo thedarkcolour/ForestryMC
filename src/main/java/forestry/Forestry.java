@@ -16,19 +16,15 @@ import com.google.common.base.Preconditions;
 import javax.annotation.Nullable;
 
 import genetics.Genetics;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -39,11 +35,10 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.climate.ClimateManager;
 import forestry.api.core.ForestryAPI;
@@ -62,6 +57,7 @@ import forestry.api.recipes.ISqueezerRecipe;
 import forestry.api.recipes.IStillRecipe;
 import forestry.arboriculture.loot.CountBlockFunction;
 import forestry.arboriculture.loot.GrafterLootModifier;
+import forestry.core.ClientsideCode;
 import forestry.core.EventHandlerCore;
 import forestry.core.circuits.CircuitRecipe;
 import forestry.core.climate.ClimateFactory;
@@ -83,20 +79,15 @@ import forestry.core.data.ForestryRecipeProvider;
 import forestry.core.data.models.ForestryWoodModelProvider;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.errors.ErrorStateRegistry;
-import forestry.core.gui.elements.GuiElementFactory;
 import forestry.core.loot.ConditionLootModifier;
 import forestry.core.loot.OrganismFunction;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.network.NetworkHandler;
 import forestry.core.network.PacketHandlerServer;
 import forestry.core.proxy.Proxies;
-import forestry.core.proxy.ProxyClient;
 import forestry.core.proxy.ProxyCommon;
 import forestry.core.proxy.ProxyRender;
-import forestry.core.proxy.ProxyRenderClient;
 import forestry.core.recipes.HygroregulatorRecipe;
-import forestry.core.render.ColourProperties;
-import forestry.core.render.ForestrySpriteUploader;
 import forestry.core.render.TextureManagerForestry;
 import forestry.core.utils.ForgeUtils;
 import forestry.core.worldgen.VillagerJigsaw;
@@ -146,14 +137,11 @@ public class Forestry {
 		modEventBus.addListener(this::gatherData);
 		MinecraftForge.EVENT_BUS.register(EventHandlerCore.class);
 		MinecraftForge.EVENT_BUS.register(this);
-		Proxies.render = DistExecutor.safeRunForDist(() -> ProxyRenderClient::new, () -> ProxyRender::new);
-		Proxies.common = DistExecutor.safeRunForDist(() -> ProxyClient::new, () -> ProxyCommon::new);
+		Proxies.render = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyRender() : new ProxyRender();
+		Proxies.common = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyCommon() : new ProxyCommon();
         // Modules must be set up before Genetics API
         ModuleManager.getModuleHandler().runSetup();
         Genetics.initGenetics(modEventBus);
-
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new Client(modEventBus, networkHandler)::run);
-		modEventBus.addListener(EventPriority.NORMAL, false, FMLCommonSetupEvent.class, evt -> networkHandler.serverPacketHandler());
 
 		// Features must be created before registry events fire
 		ModuleManager.getModuleHandler().createFeatures();
@@ -182,7 +170,6 @@ public class Forestry {
 		packetHandler = new PacketHandlerServer();
 
 		// Register event handler
-		//TODO - DistExecutor
 		callSetupListeners(true);
 		ModuleManager.getModuleHandler().runPreInit();
 		//TODO put these here for now
@@ -227,28 +214,6 @@ public class Forestry {
         generator.addProvider(event.includeServer(), new ForestryMachineRecipeProvider(generator));
         generator.addProvider(event.includeServer(), new ForestryLootModifierProvider(generator));
     }
-
-	@OnlyIn(Dist.CLIENT)
-	private record Client(IEventBus modEventBus, NetworkHandler networkHandler) implements Runnable {
-		@Override
-		public void run() {
-			modEventBus.addListener((RegisterColorHandlersEvent.Block x) -> {
-				Minecraft minecraft = Minecraft.getInstance();
-				ForestrySpriteUploader spriteUploader = new ForestrySpriteUploader(minecraft.textureManager, TextureManagerForestry.LOCATION_FORESTRY_TEXTURE, "gui");
-				TextureManagerForestry.getInstance().init(spriteUploader);
-				ResourceManager resourceManager = minecraft.getResourceManager();
-				if (resourceManager instanceof ReloadableResourceManager reloadableManager) {
-					reloadableManager.registerReloadListener(ColourProperties.INSTANCE);
-					reloadableManager.registerReloadListener(GuiElementFactory.INSTANCE);
-					reloadableManager.registerReloadListener(spriteUploader);
-				}
-				//EntriesCategory.registerSearchTree();
-				ModuleManager.getModuleHandler().runClientInit();
-
-			});
-			modEventBus.addListener(EventPriority.NORMAL, false, FMLLoadCompleteEvent.class, fmlLoadCompleteEvent -> networkHandler.clientPacketHandler());
-		}
-	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = Constants.MOD_ID)
 	public static class RegistryEvents {

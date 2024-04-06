@@ -10,14 +10,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.modules.ForestryModule;
+import forestry.core.ClientsideCode;
 import forestry.core.config.Constants;
 import forestry.cultivation.features.CultivationMenuTypes;
 import forestry.cultivation.gui.GuiPlanter;
 import forestry.cultivation.proxy.ProxyCultivation;
-import forestry.cultivation.proxy.ProxyCultivationClient;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
@@ -25,12 +25,7 @@ import forestry.modules.ISidedModuleHandler;
 @ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.CULTIVATION, name = "Cultivation", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.cultivation.description")
 public class ModuleCultivation extends BlankForestryModule {
 
-	@SuppressWarnings("NullableProblems")
-	public static ProxyCultivation proxy;
-
-	public ModuleCultivation() {
-		proxy = DistExecutor.runForDist(() -> ProxyCultivationClient::new, () -> ProxyCultivation::new);
-	}
+	public static final ProxyCultivation PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyCultivation() : new ProxyCultivation();
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -46,7 +41,7 @@ public class ModuleCultivation extends BlankForestryModule {
 
 	@Override
 	public ISidedModuleHandler getModuleHandler() {
-		return proxy;
+		return PROXY;
 	}
 
 }

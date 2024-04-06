@@ -11,10 +11,10 @@
 package forestry.core.proxy;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -26,19 +26,24 @@ import forestry.core.blocks.IColoredBlock;
 import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.features.CoreBlocks;
 import forestry.core.fluids.ForestryFluids;
+import forestry.core.gui.elements.GuiElementFactory;
 import forestry.core.models.ClientManager;
 import forestry.core.models.FluidContainerModel;
+import forestry.core.render.ColourProperties;
+import forestry.core.render.ForestrySpriteUploader;
 import forestry.core.render.RenderAnalyzer;
 import forestry.core.render.RenderEscritoire;
 import forestry.core.render.RenderMachine;
 import forestry.core.render.RenderMill;
 import forestry.core.render.RenderNaturalistChest;
+import forestry.core.render.TextureManagerForestry;
 import forestry.core.tiles.TileAnalyzer;
 import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileEscritoire;
 import forestry.core.tiles.TileMill;
 import forestry.core.tiles.TileNaturalistChest;
 import forestry.modules.IClientModuleHandler;
+import forestry.modules.ModuleManager;
 
 public class ProxyRenderClient extends ProxyRender implements IClientModuleHandler {
 
@@ -99,6 +104,17 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 	public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
 		ClientManager.getInstance().registerBlockColors(event);
 
+		Minecraft minecraft = Minecraft.getInstance();
+		ForestrySpriteUploader spriteUploader = new ForestrySpriteUploader(minecraft.textureManager, TextureManagerForestry.LOCATION_FORESTRY_TEXTURE, "gui");
+		TextureManagerForestry.getInstance().init(spriteUploader);
+		ResourceManager resourceManager = minecraft.getResourceManager();
+		if (resourceManager instanceof ReloadableResourceManager reloadableManager) {
+			reloadableManager.registerReloadListener(ColourProperties.INSTANCE);
+			reloadableManager.registerReloadListener(GuiElementFactory.INSTANCE);
+			reloadableManager.registerReloadListener(spriteUploader);
+		}
+		//EntriesCategory.registerSearchTree();
+		ModuleManager.getModuleHandler().runClientInit();
 	}
 
 	@Override

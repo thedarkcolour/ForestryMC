@@ -6,6 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+
+import forestry.core.ClientsideCode;
 
 /**
  * Util methods used at the runtime of the game based around the rendering.
@@ -16,12 +19,8 @@ public class RenderUtil {
 	}
 
 	public static void markForUpdate(BlockPos pos) {
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new ClientRun(pos)::markForUpdate);
-	}
-
-	private record ClientRun(BlockPos pos) {
-		private void markForUpdate() {
-			Minecraft.getInstance().levelRenderer.setBlocksDirty(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
+		if (FMLEnvironment.dist == Dist.CLIENT) {
+			ClientsideCode.markForUpdate(pos);
 		}
 	}
 }

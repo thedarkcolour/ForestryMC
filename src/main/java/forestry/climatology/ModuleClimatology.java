@@ -17,7 +17,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.climate.IClimateListener;
 import forestry.api.climate.IClimateTransformer;
@@ -26,7 +26,7 @@ import forestry.climatology.features.ClimatologyMenuTypes;
 import forestry.climatology.gui.GuiHabitatFormer;
 import forestry.climatology.network.PacketRegistryClimatology;
 import forestry.climatology.proxy.ProxyClimatology;
-import forestry.climatology.proxy.ProxyClimatologyClient;
+import forestry.core.ClientsideCode;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
 import forestry.modules.BlankForestryModule;
@@ -36,11 +36,7 @@ import forestry.modules.ISidedModuleHandler;
 @ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.CLIMATOLOGY, name = "Climatology", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.greenhouse.description")
 public class ModuleClimatology extends BlankForestryModule {
 
-	private final ProxyClimatology proxy;
-
-	public ModuleClimatology() {
-		proxy = DistExecutor.safeRunForDist(() -> ProxyClimatologyClient::new, () -> ProxyClimatology::new);
-	}
+	private static final ProxyClimatology PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyClimatology() : new ProxyClimatology();
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -50,7 +46,7 @@ public class ModuleClimatology extends BlankForestryModule {
 
 	@Override
 	public void preInit() {
-		proxy.preInit();
+		PROXY.preInit();
 	}
 
 	@Override
@@ -66,6 +62,6 @@ public class ModuleClimatology extends BlankForestryModule {
 
 	@Override
 	public ISidedModuleHandler getModuleHandler() {
-		return proxy;
+		return PROXY;
 	}
 }

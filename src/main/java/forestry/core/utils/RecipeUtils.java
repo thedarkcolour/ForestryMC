@@ -16,7 +16,9 @@ import net.minecraft.world.level.Level;
 
 import net.minecraftforge.api.distmarker.Dist;
 
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+
+import forestry.core.ClientsideCode;
 
 public final class RecipeUtils {
     private RecipeUtils() {
@@ -24,7 +26,7 @@ public final class RecipeUtils {
 
     @Nullable
     public static RecipeManager getRecipeManager(@Nullable Level world){
-        RecipeManager manager = DistExecutor.safeCallWhenOn(Dist.CLIENT, ()->ClientUtils::getRecipeManager);
+        RecipeManager manager = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.getRecipeManager() : null;
         return manager != null ?  manager : world != null ? world.getRecipeManager() : null;
     }
 

@@ -7,10 +7,10 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.core.ClientsideCode;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
-import forestry.core.utils.ClientUtils;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -49,7 +49,7 @@ public class FarmingJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		RecipeManager recipeManager = ClientUtils.getRecipeManager();
+		RecipeManager recipeManager = ClientsideCode.getRecipeManager();
 
 		List<FarmingInfoRecipe> recipes = FarmingInfoRecipeMaker.getRecipes(recipeManager);
 		registration.addRecipes(FarmingInfoRecipeCategory.TYPE, recipes);
