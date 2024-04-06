@@ -6,9 +6,9 @@ import deleteme.RegistryNameFinder;
 import deleteme.Todos;
 
 import forestry.apiculture.features.ApicultureItems;
-import forestry.apiculture.items.EnumPropolis;
 import forestry.core.config.Constants;
 import forestry.core.data.builder.FilledCrateModelBuilder;
+import forestry.core.data.models.ForestryBlockStateProvider;
 import forestry.core.fluids.ForestryFluids;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
@@ -27,6 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ForestryItemModelProvider extends ItemModelProvider {
@@ -44,9 +45,6 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 				.texture("layer0", new ResourceLocation(Constants.MOD_ID, "item/liquids/jar.bottle"))
 				.texture("layer1", new ResourceLocation(Constants.MOD_ID, "item/liquids/jar.contents"));
 
-		// todo: custom loader
-		Todos.todo();
-		//	registerModel(ArboricultureItems.SAPLING, new ModelBuilder().parent("forge:item/default").loader(new ResourceLocation(Constants.MOD_ID, "sapling_ge")));
 		for (FeatureItem<ItemCrated> featureCrated : CrateItems.getCrates()) {
 			Item containedItem = featureCrated.get().getContained().getItem();
 			String id = featureCrated.getIdentifier();
@@ -78,21 +76,23 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 
 		for (Table.Cell<BlockTypePlanter, BlockPlanter.Mode, FeatureBlock<BlockPlanter, BlockItem>> cell : CultivationBlocks.PLANTER.getFeatureByTypes().cellSet()) {
 			Block block = cell.getValue().block();
-			withExistingParent(RegistryNameFinder.getRegistryName(block).getPath(), new ResourceLocation(Constants.MOD_ID, "block/" + cell.getRowKey().getSerializedName()));
+			withExistingParent(ForestryBlockStateProvider.path(block), new ResourceLocation(Constants.MOD_ID, "block/" + cell.getRowKey().getSerializedName()));
 		}
 
 		for (ForestryFluids fluid : ForestryFluids.values()) {
 			BucketItem item = fluid.getBucket();
-			if (item == null) {
-				continue;
+			if (item != null) {
+				getBuilder(path(item))
+						.customLoader(DynamicFluidContainerModelBuilder::begin)
+						.fluid(fluid.getFluid())
+						.end()
+						.parent(getExistingFile(new ResourceLocation("forge:item/bucket")));
 			}
-			//"bucket_"
-			//	registerModel(item, new ModelBuilder()
-			//			.loader(new ResourceLocation("forge", "bucket"))
-			//			.parent("forge:item/bucket_drip")
-			//			.loaderData("fluid", new JsonPrimitive(RegistryNameFinder.getRegistryName(fluid.getFluid()).toString()))
-			//	);
 		}
+	}
+
+	private static String path(Item block) {
+		return RegistryNameFinder.getRegistryName(block).getPath();
 	}
 
 	private void filledCrateModel(String id, ResourceLocation texture) {

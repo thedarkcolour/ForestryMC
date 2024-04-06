@@ -18,7 +18,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import forestry.core.utils.Translator;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 
 public class EscritoireTextSource {
@@ -36,7 +36,9 @@ public class EscritoireTextSource {
 		for (Notes notesLevel : multipleTranslationNoteLevels) {
 			for (int i = 1; i <= 10; i++) {
 				String key = "for.gui.escritoire.notes." + notesLevel + '.' + i;
-				researchNotes.put(notesLevel, Component.translatable(key));
+				if (Language.getInstance().has(key)) {
+					researchNotes.put(notesLevel, Component.translatable(key));
+				}
 			}
 		}
 		researchNotes.put(Notes.empty, Component.translatable("for.gui.escritoire.instructions"));
@@ -63,7 +65,7 @@ public class EscritoireTextSource {
 		return candidates.get(index);
 	}
 
-	public static Notes getNoteLevel(EscritoireGame game) {
+	private static Notes getNoteLevel(EscritoireGame game) {
 		EscritoireGame.Status status = game.getStatus();
 		switch (status) {
 			case PLAYING: {

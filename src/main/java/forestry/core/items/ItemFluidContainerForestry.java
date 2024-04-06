@@ -18,6 +18,8 @@ import forestry.core.fluids.ForestryFluids;
 import forestry.core.items.definitions.DrinkProperties;
 import forestry.core.items.definitions.EnumContainerType;
 import forestry.core.items.definitions.FluidHandlerItemForestry;
+import forestry.core.items.definitions.IColoredItem;
+import forestry.core.models.FluidContainerModel;
 import forestry.core.utils.Translator;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +57,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
-public class ItemFluidContainerForestry extends ItemForestry {
+public class ItemFluidContainerForestry extends ItemForestry implements IColoredItem {
 	private final EnumContainerType type;
 
 	public ItemFluidContainerForestry(EnumContainerType type) {
@@ -212,5 +214,10 @@ public class ItemFluidContainerForestry extends ItemForestry {
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
 		return new FluidHandlerItemForestry(stack, type);
+	}
+
+	@Override
+	public int getColorFromItemStack(ItemStack stack, int tintIndex) {
+		return FluidContainerModel.DYNAMIC_COLOR.getColor(stack, tintIndex);
 	}
 }

@@ -73,6 +73,7 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 		generic2d(CoreItems.GEAR_TIN);
 		generic2d(CoreItems.INGOT_BRONZE);
 		generic2d(CoreItems.GEAR_BRONZE);
+		generic2d(CoreItems.GEAR_COPPER);
 
 		// Backpacks
 		for (RegistryObject<Item> object : ModFeatureRegistry.get(ModuleBackpacks.class).getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
@@ -150,7 +151,7 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 		itemModels().withExistingParent(path, modLoc("block/" + path));
 	}
 
-	protected static String path(Block block) {
+	public static String path(Block block) {
 		return RegistryNameFinder.getRegistryName(block).getPath();
 	}
 

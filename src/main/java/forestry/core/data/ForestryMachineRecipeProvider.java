@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.core.data;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import deleteme.RegistryNameFinder;
@@ -74,6 +75,7 @@ import forestry.storage.features.BackpackItems;
 import forestry.storage.features.CrateItems;
 import forestry.storage.items.ItemCrated;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.jarjar.nio.util.LambdaExceptionUtils;
 
 public class ForestryMachineRecipeProvider extends RecipeProvider {
 
@@ -785,16 +787,23 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 	private void addFireproofRecipes(Consumer<FinishedRecipe> consumer, IWoodType type) {
 		FluidStack liquidGlass = ForestryFluids.GLASS.getFluid(500);
 
-		new FabricatorRecipeBuilder()
-				.setPlan(Ingredient.EMPTY)
-				.setMolten(liquidGlass)
-				.recipe(ShapedRecipeBuilder.shaped(TreeManager.woodAccess.getBlock(type, WoodBlockKind.LOG, true).getBlock())
-						.pattern(" # ")
-						.pattern("#X#")
-						.pattern(" # ")
-						.define('#', CoreItems.REFRACTORY_WAX)
-						.define('X', TreeManager.woodAccess.getBlock(type, WoodBlockKind.LOG, false).getBlock()))
-				.build(consumer, id("fabricator", "fireproof", "logs", type.toString()));
+		List<WoodBlockKind> logLike = List.of(WoodBlockKind.LOG, WoodBlockKind.WOOD, WoodBlockKind.STRIPPED_LOG, WoodBlockKind.STRIPPED_WOOD);
+
+		for (WoodBlockKind woodKind : logLike) {
+			try {
+				new FabricatorRecipeBuilder()
+						.setPlan(Ingredient.EMPTY)
+						.setMolten(liquidGlass)
+						.recipe(ShapedRecipeBuilder.shaped(TreeManager.woodAccess.getBlock(type, woodKind, true).getBlock())
+								.pattern(" # ")
+								.pattern("#X#")
+								.pattern(" # ")
+								.define('#', CoreItems.REFRACTORY_WAX)
+								.define('X', TreeManager.woodAccess.getBlock(type, woodKind, false).getBlock()))
+						.build(consumer, id("fabricator", "fireproof", woodKind.getSerializedName(), type.toString()));
+			} catch (IllegalStateException ignored) {
+			}
+		}
 
 		new FabricatorRecipeBuilder()
 				.setPlan(Ingredient.EMPTY)

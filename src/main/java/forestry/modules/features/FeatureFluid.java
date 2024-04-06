@@ -2,16 +2,20 @@ package forestry.modules.features;
 
 import javax.annotation.Nullable;
 import java.awt.Color;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import net.minecraft.world.level.material.Fluid;
+
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
@@ -33,7 +37,7 @@ public class FeatureFluid extends ModFeature implements IFluidFeature {
 		super(builder.moduleID, builder.registry.getModId(), builder.identifier);
 		this.block = builder.registry.block(() -> new BlockForestryFluid(this), "fluid_" + builder.identifier);
 		this.properties = new FluidProperties(builder);
-		RegistryObject<FluidType> attributes = builder.registry.getRegistry(ForgeRegistries.Keys.FLUID_TYPES).register(identifier, () -> new FluidType(FluidType.Properties.create()
+		RegistryObject<FluidType> attributes = builder.registry.getRegistry(ForgeRegistries.Keys.FLUID_TYPES).register(identifier, () -> new ForestryFluidType(this.properties, FluidType.Properties.create()
 				.density(properties.density)
 				.viscosity(properties.viscosity)
 				.temperature(properties.temperature)));
@@ -131,6 +135,39 @@ public class FeatureFluid extends ModFeature implements IFluidFeature {
 
 		public FeatureFluid create() {
 			return registry.register(new FeatureFluid(this));
+		}
+	}
+
+	public static class ForestryFluidType extends FluidType {
+		private final int color;
+		private final ResourceLocation stillTexture;
+		private final ResourceLocation flowingTexture;
+
+		public ForestryFluidType(FluidProperties forestryProps, Properties properties) {
+			super(properties);
+			this.color = forestryProps.particleColor.getRGB();
+			this.stillTexture = forestryProps.resources[0];
+			this.flowingTexture = forestryProps.resources[1];
+		}
+
+		@Override
+		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+			consumer.accept(new IClientFluidTypeExtensions() {
+				@Override
+				public ResourceLocation getStillTexture() {
+					return stillTexture;
+				}
+
+				@Override
+				public ResourceLocation getFlowingTexture() {
+					return flowingTexture;
+				}
+
+				@Override
+				public int getTintColor() {
+					return color;
+				}
+			});
 		}
 	}
 }
