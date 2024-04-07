@@ -1,21 +1,25 @@
 package forestry.core.data.models;
 
-import net.minecraft.core.Registry;
+import java.util.List;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
 
+import forestry.arboriculture.features.ArboricultureBlocks;
+import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
+import forestry.core.fluids.ForestryFluids;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
 import forestry.cultivation.features.CultivationBlocks;
@@ -23,9 +27,9 @@ import forestry.farming.blocks.BlockFarm;
 import forestry.farming.blocks.EnumFarmBlockType;
 import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
-import forestry.modules.features.ModFeatureRegistry;
-import forestry.storage.ModuleBackpacks;
-import forestry.storage.items.ItemBackpack;
+import forestry.lepidopterology.blocks.BlockCocoon;
+import forestry.lepidopterology.features.LepidopterologyBlocks;
+import forestry.modules.features.FeatureBlock;
 
 import deleteme.RegistryNameFinder;
 
@@ -75,18 +79,42 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 		generic2d(CoreItems.GEAR_BRONZE);
 		generic2d(CoreItems.GEAR_COPPER);
 
-		// Backpacks
-		for (RegistryObject<Item> object : ModFeatureRegistry.get(ModuleBackpacks.class).getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
-			if (object.get() instanceof ItemBackpack) {
-				String path = object.getId().getPath();
-				boolean woven = path.endsWith("woven");
-
-				itemModels().withExistingParent(path, woven ? modLoc("item/backpack/woven_neutral") : modLoc("item/backpack/normal_neutral"))
-						.override().predicate(new ResourceLocation("mode"), 1).model(file(woven ? modLoc("item/backpack/woven_locked") : modLoc("item/backpack/normal_locked"))).end()
-						.override().predicate(new ResourceLocation("mode"), 2).model(file(woven ? modLoc("item/backpack/woven_receive") : modLoc("item/backpack/normal_receive"))).end()
-						.override().predicate(new ResourceLocation("mode"), 3).model(file(woven ? modLoc("item/backpack/woven_resupply") : modLoc("item/backpack/normal_resupply"))).end();
-			}
+		// Fluids (doesn't actually show in game, but silences the warning spam from Minecraft)
+		for (ForestryFluids fluid : ForestryFluids.values()) {
+			Block block = fluid.getFeature().fluidBlock().block();
+			ModelFile blockModel = particleOnly(path(block), fluid.getFeature().properties().resources[0]);
+			getVariantBuilder(block).partialState().modelForState().modelFile(blockModel).addModel();
 		}
+
+		// Leaves (same as with fluids)
+		for (TreeDefinition treeType : TreeDefinition.VALUES) {
+			Block defaultBlock = ArboricultureBlocks.LEAVES_DEFAULT.get(treeType).block();
+			Block defaultFruitBlock = ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(treeType).block();
+			Block decorativeBlock = ArboricultureBlocks.LEAVES_DECORATIVE.get(treeType).block();
+			ResourceLocation particle = treeType.getSpecies().getLeafSpriteProvider().getSprite(false, true);
+			ModelFile file = models().getBuilder(path(defaultBlock)).texture("particle", particle);
+
+			getVariantBuilder(defaultBlock).partialState().modelForState().modelFile(file).addModel();
+			getVariantBuilder(defaultFruitBlock).partialState().modelForState().modelFile(file).addModel();
+			getVariantBuilder(decorativeBlock).partialState().modelForState().modelFile(file).addModel();
+
+			generic3d(defaultBlock);
+			generic3d(defaultFruitBlock, defaultBlock);
+			generic3d(decorativeBlock, defaultBlock);
+		}
+		getVariantBuilder(ArboricultureBlocks.LEAVES.block()).partialState().modelForState().modelFile(particleOnly(ArboricultureBlocks.LEAVES.getIdentifier(), blockTexture(Blocks.OAK_LEAVES))).addModel();
+
+		// Cocoons
+		for (FeatureBlock<BlockCocoon, BlockItem> cocoon : List.of(LepidopterologyBlocks.COCOON, LepidopterologyBlocks.COCOON)) {
+			getVariantBuilder(cocoon.block())
+					.partialState().with(BlockCocoon.AGE, 0).modelForState().modelFile(models().getExistingFile(modBlock("cocoon_early"))).addModel()
+					.partialState().with(BlockCocoon.AGE, 1).modelForState().modelFile(models().getExistingFile(modBlock("cocoon_middle"))).addModel()
+					.partialState().with(BlockCocoon.AGE, 2).modelForState().modelFile(models().getExistingFile(modBlock("cocoon_late"))).addModel();
+		}
+	}
+
+	private ModelFile particleOnly(String path, ResourceLocation particleTexture) {
+		return models().getBuilder(path).texture("particle", particleTexture);
 	}
 
 	private void singleFarm(BlockFarm block) {

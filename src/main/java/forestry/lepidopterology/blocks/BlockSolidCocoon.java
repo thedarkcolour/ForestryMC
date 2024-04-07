@@ -27,67 +27,25 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import forestry.core.tiles.TileUtil;
 import forestry.core.utils.ItemStackUtil;
-import forestry.lepidopterology.genetics.alleles.AlleleButterflyCocoon;
-import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 import forestry.lepidopterology.tiles.TileCocoon;
 
 public class BlockSolidCocoon extends Block implements EntityBlock {
-	private static final PropertyCocoon COCOON = AlleleButterflyCocoon.COCOON;
-
 	public BlockSolidCocoon() {
 		super(Block.Properties.of(MaterialCocoon.INSTANCE)
 				.strength(0.5F)
 				.randomTicks()
 				.sound(SoundType.GRAVEL));
-		registerDefaultState(this.getStateDefinition().any().setValue(COCOON, ButterflyAlleles.cocoonDefault)
-				.setValue(AlleleButterflyCocoon.AGE, 0));
+		registerDefaultState(getStateDefinition().any().setValue(BlockCocoon.AGE, 0));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(COCOON, AlleleButterflyCocoon.AGE);
+		builder.add(BlockCocoon.AGE);
 	}
-
-	//TODO
-	//	@OnlyIn(Dist.CLIENT)
-	//	@Override
-	//	public BlockState getActualState(BlockState state, IBlockReader world, BlockPos pos) {
-	//		TileCocoon cocoon = TileUtil.getTile(world, pos, TileCocoon.class);
-	//		if (cocoon != null) {
-	//			state = state.with(COCOON, cocoon.getCaterpillar().getGenome().getCocoon())
-	//				.with(AlleleButterflyCocoon.AGE, cocoon.getAge());
-	//		}
-	//		return super.getActualState(state, world, pos);
-	//	}
-	//
-	//	@OnlyIn(Dist.CLIENT)
-	//	@Override
-	//	public void registerStateMapper() {
-	//		ModelLoader.setCustomStateMapper(this, new CocoonStateMapper());
-	//	}
-	//
-	//	@OnlyIn(Dist.CLIENT)
-	//	@Override
-	//	public void registerModel(Item item, IModelManager manager) {
-	//		// To delete the error message
-	//		manager.registerItemModel(item, 0, "cocoon_late");
-	//	}
-
-	//	@Override
-	//	public boolean isFullBlock(BlockState state) {
-	//		return false;
-	//	}
-	//
-	//	@Override
-	//	public boolean isOpaqueCube(BlockState state) {
-	//		return false;
-	//	}
 
 	@Override
 	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
@@ -119,5 +77,4 @@ public class BlockSolidCocoon extends Block implements EntityBlock {
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return BlockCocoon.BOUNDING_BOX;
 	}
-
 }

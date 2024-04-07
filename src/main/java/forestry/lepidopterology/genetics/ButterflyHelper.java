@@ -39,7 +39,7 @@ public class ButterflyHelper {
 			.set(ButterflyChromosomes.FIRE_RESIST, false)
 			.set(ButterflyChromosomes.FLOWER_PROVIDER, EnumAllele.Flowers.VANILLA)
 			.set(ButterflyChromosomes.EFFECT, ButterflyAlleles.butterflyNone)
-			.set(ButterflyChromosomes.COCOON, ButterflyAlleles.cocoonDefault)
+			.set(ButterflyChromosomes.COCOON, ButterflyAlleles.DEFAULT_COCOON)
 			.set(ButterflyChromosomes.SPECIES, ButterflyDefinition.Monarch.getSpecies())
 			.build();
 	}

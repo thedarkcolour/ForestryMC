@@ -1,24 +1,8 @@
-package forestry.core.data;
+package forestry.core.data.models;
 
 import com.google.common.collect.Table;
 
-import deleteme.RegistryNameFinder;
-import deleteme.Todos;
-
-import forestry.apiculture.features.ApicultureItems;
-import forestry.core.config.Constants;
-import forestry.core.data.builder.FilledCrateModelBuilder;
-import forestry.core.data.models.ForestryBlockStateProvider;
-import forestry.core.fluids.ForestryFluids;
-import forestry.cultivation.blocks.BlockPlanter;
-import forestry.cultivation.blocks.BlockTypePlanter;
-import forestry.cultivation.features.CultivationBlocks;
-import forestry.lepidopterology.features.LepidopterologyItems;
-import forestry.modules.features.FeatureBlock;
-import forestry.modules.features.FeatureItem;
-import forestry.storage.features.CrateItems;
-import forestry.storage.items.ItemCrated;
-
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -26,9 +10,30 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.level.block.Block;
+
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.RegistryObject;
+
+import forestry.apiculture.features.ApicultureItems;
+import forestry.core.config.Constants;
+import forestry.core.data.builder.FilledCrateModelBuilder;
+import forestry.core.fluids.ForestryFluids;
+import forestry.cultivation.blocks.BlockPlanter;
+import forestry.cultivation.blocks.BlockTypePlanter;
+import forestry.cultivation.features.CultivationBlocks;
+import forestry.lepidopterology.features.LepidopterologyItems;
+import forestry.modules.features.FeatureBlock;
+import forestry.modules.features.FeatureItem;
+import forestry.modules.features.ModFeatureRegistry;
+import forestry.storage.ModuleBackpacks;
+import forestry.storage.features.CrateItems;
+import forestry.storage.items.ItemBackpack;
+import forestry.storage.items.ItemCrated;
+
+import deleteme.RegistryNameFinder;
+import static forestry.core.data.models.ForestryBlockStateProvider.file;
 
 public class ForestryItemModelProvider extends ItemModelProvider {
 
@@ -79,6 +84,7 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 			withExistingParent(ForestryBlockStateProvider.path(block), new ResourceLocation(Constants.MOD_ID, "block/" + cell.getRowKey().getSerializedName()));
 		}
 
+		// Buckets
 		for (ForestryFluids fluid : ForestryFluids.values()) {
 			BucketItem item = fluid.getBucket();
 			if (item != null) {
@@ -87,6 +93,19 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 						.fluid(fluid.getFluid())
 						.end()
 						.parent(getExistingFile(new ResourceLocation("forge:item/bucket")));
+			}
+		}
+
+		// Backpacks
+		for (RegistryObject<Item> object : ModFeatureRegistry.get(ModuleBackpacks.class).getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
+			if (object.get() instanceof ItemBackpack) {
+				String path = object.getId().getPath();
+				boolean woven = path.endsWith("woven");
+
+				withExistingParent(path, woven ? modLoc("item/backpack/woven_neutral") : modLoc("item/backpack/normal_neutral"))
+						.override().predicate(mcLoc("mode"), 1).model(file(woven ? modLoc("item/backpack/woven_locked") : modLoc("item/backpack/normal_locked"))).end()
+						.override().predicate(mcLoc("mode"), 2).model(file(woven ? modLoc("item/backpack/woven_receive") : modLoc("item/backpack/normal_receive"))).end()
+						.override().predicate(mcLoc("mode"), 3).model(file(woven ? modLoc("item/backpack/woven_resupply") : modLoc("item/backpack/normal_resupply"))).end();
 			}
 		}
 	}

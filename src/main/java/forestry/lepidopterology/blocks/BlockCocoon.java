@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.lepidopterology.blocks;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -27,6 +25,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -35,51 +34,24 @@ import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.EnumFlutterType;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.tiles.TileUtil;
-import forestry.lepidopterology.genetics.alleles.AlleleButterflyCocoon;
-import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 import forestry.lepidopterology.items.ItemButterflyGE;
 import forestry.lepidopterology.tiles.TileCocoon;
 
 public class BlockCocoon extends Block implements EntityBlock {
 	public static final VoxelShape BOUNDING_BOX = Block.box(0.3125F, 0.3125F, 0.3125F, 0.6875F, 1F, 0.6875F);
-	private static final PropertyCocoon COCOON = AlleleButterflyCocoon.COCOON;//TODO: Convert to ModelProperty and add Cocoon model
+	public static final IntegerProperty AGE = IntegerProperty.create("age", 0, 2);
 
 	public BlockCocoon() {
 		super(Block.Properties.of(MaterialCocoon.INSTANCE)
 				.randomTicks()
 				.sound(SoundType.GRAVEL));
-		//		setCreativeTab(null);
-		registerDefaultState(this.getStateDefinition().any().setValue(COCOON, ButterflyAlleles.cocoonDefault)
-				.setValue(AlleleButterflyCocoon.AGE, 0));
+		registerDefaultState(getStateDefinition().any().setValue(AGE, 0));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(COCOON, AlleleButterflyCocoon.AGE);
+		builder.add(AGE);
 	}
-
-	//TODO
-	//	@OnlyIn(Dist.CLIENT)
-	//	@Override
-	//	public BlockState getActualState(BlockState state, IBlockReader world, BlockPos pos) {
-	//		TileCocoon cocoon = TileUtil.getTile(world, pos, TileCocoon.class);
-	//		if (cocoon != null) {
-	//			state = state.with(COCOON, cocoon.getCaterpillar().getGenome().getCocoon())
-	//				.with(AlleleButterflyCocoon.AGE, cocoon.getAge());
-	//		}
-	//		return super.getActualState(state, world, pos);
-	//	}
-
-
-	//	@Override
-	//	public boolean isFullBlock(BlockState state) {
-	//		return false;
-	//	}
-	//
-	//	@Override
-	//	public boolean isOpaqueCube(BlockState state) {
-	//		return false;
-	//	}
 
 	@Override
 	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {

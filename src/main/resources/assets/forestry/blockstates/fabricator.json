@@ -1,11 +1,5 @@
 {
     "variants": {
-      "facing=up": {
-        "model": "forestry:block/fabricator"
-      },
-      "facing=down": {
-        "model": "forestry:block/fabricator"
-      },
       "facing=north": {
         "model": "forestry:block/fabricator"
       },

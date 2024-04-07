@@ -39,9 +39,8 @@ public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForg
 				.sound(SoundType.GRASS)
 				.noOcclusion()
 				.isSuffocating(BlockUtil::alwaysTrue)
-				.isRedstoneConductor((state, reader, pos) -> !Proxies.render.fancyGraphicsEnabled() && !TreeDefinition.Willow.equals(definition))
+				.isRedstoneConductor(BlockUtil::alwaysFalse)
 		);
-		//		this.setCreativeTab(Tabs.tabArboriculture);
 		//		this.setLightOpacity(1);	//TODO block stuff);
 		this.definition = definition;
 	}

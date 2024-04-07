@@ -12,7 +12,6 @@ package forestry.lepidopterology.genetics.alleles;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 import genetics.api.alleles.AlleleCategorized;
 
@@ -23,9 +22,9 @@ import forestry.core.config.Constants;
 import forestry.core.genetics.ProductListWrapper;
 import forestry.lepidopterology.blocks.PropertyCocoon;
 
+// this was never implemented in Forestry. what do we do about this?
 public class AlleleButterflyCocoon extends AlleleCategorized implements IAlleleButterflyCocoon, ISetupListener {
 	public static final PropertyCocoon COCOON = new PropertyCocoon("cocoon");
-	public static final IntegerProperty AGE = IntegerProperty.create("age", 0, 2);
 
 	private ProductListWrapper loot = ProductListWrapper.create();
 	private final String name;
@@ -86,5 +85,4 @@ public class AlleleButterflyCocoon extends AlleleCategorized implements IAlleleB
 	public int compareTo(IAlleleButterflyCocoon o) {
 		return 0;
 	}
-
 }

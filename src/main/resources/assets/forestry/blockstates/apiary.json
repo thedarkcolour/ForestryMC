@@ -3,12 +3,6 @@
       "facing=north": {
         "model": "forestry:block/apiary"
       },
-      "facing=down": {
-        "model": "forestry:block/apiary"
-      },
-      "facing=up": {
-        "model": "forestry:block/apiary"
-      },
       "facing=east": {
         "model": "forestry:block/apiary",
         "y": 90

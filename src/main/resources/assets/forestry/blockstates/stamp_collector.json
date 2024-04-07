@@ -1,11 +1,5 @@
 {
     "variants": {
-      "facing=up": {
-        "model": "forestry:block/stamp_collector"
-      },
-      "facing=down": {
-        "model": "forestry:block/stamp_collector"
-      },
       "facing=north": {
         "model": "forestry:block/stamp_collector"
       },

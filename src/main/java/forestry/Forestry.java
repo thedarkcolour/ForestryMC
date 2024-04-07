@@ -66,11 +66,10 @@ import forestry.core.climate.ClimateStateHelper;
 import forestry.core.config.Constants;
 import forestry.core.data.ForestryAdvancementProvider;
 import forestry.core.data.ForestryBackpackTagProvider;
-import forestry.core.data.ForestryBlockModelProvider;
 import forestry.core.data.models.ForestryBlockStateProvider;
 import forestry.core.data.ForestryBlockTagsProvider;
 import forestry.core.data.ForestryFluidTagsProvider;
-import forestry.core.data.ForestryItemModelProvider;
+import forestry.core.data.models.ForestryItemModelProvider;
 import forestry.core.data.ForestryItemTagsProvider;
 import forestry.core.data.ForestryLootModifierProvider;
 import forestry.core.data.ForestryLootTableProvider;
@@ -206,13 +205,13 @@ public class Forestry {
         generator.addProvider(event.includeServer(), new ForestryBackpackTagProvider(generator, blockTagsProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new ForestryFluidTagsProvider(generator, existingFileHelper));
         generator.addProvider(event.includeServer(), new ForestryLootTableProvider(generator));
-        generator.addProvider(event.includeServer(), new ForestryBlockStateProvider(generator, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ForestryWoodModelProvider(generator, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ForestryBlockModelProvider(generator, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ForestryItemModelProvider(generator, existingFileHelper));
         generator.addProvider(event.includeServer(), new ForestryRecipeProvider(generator));
         generator.addProvider(event.includeServer(), new ForestryMachineRecipeProvider(generator));
         generator.addProvider(event.includeServer(), new ForestryLootModifierProvider(generator));
+
+		generator.addProvider(event.includeClient(), new ForestryBlockStateProvider(generator, existingFileHelper));
+		generator.addProvider(event.includeClient(), new ForestryWoodModelProvider(generator, existingFileHelper));
+		generator.addProvider(event.includeClient(), new ForestryItemModelProvider(generator, existingFileHelper));
     }
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = Constants.MOD_ID)

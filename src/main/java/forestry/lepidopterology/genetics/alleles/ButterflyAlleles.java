@@ -1,6 +1,5 @@
 package forestry.lepidopterology.genetics.alleles;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.world.item.ItemStack;
@@ -15,16 +14,11 @@ import forestry.core.items.definitions.EnumCraftingMaterial;
 import genetics.api.alleles.IAlleleRegistry;
 
 public class ButterflyAlleles {
-	public static final IAlleleButterflyCocoon cocoonDefault;
-	public static final IAlleleButterflyCocoon cocoonSilk;
-	public static final List<IAlleleButterflyCocoon> cocoonAlleles;
+	public static final IAlleleButterflyCocoon DEFAULT_COCOON = new AlleleButterflyCocoon("default", false);
+	public static final IAlleleButterflyCocoon SILK_COCOON = new AlleleButterflyCocoon("silk", false);
+	public static final List<IAlleleButterflyCocoon> cocoonAlleles = List.of(DEFAULT_COCOON, SILK_COCOON);
 
 	public static final IAlleleButterflyEffect butterflyNone = new AlleleButterflyEffectNone();
-
-	static {
-		cocoonAlleles = Arrays.asList(cocoonDefault = new AlleleButterflyCocoon("default", false),
-			cocoonSilk = new AlleleButterflyCocoon("silk", false));
-	}
 
 	public static void registerAlleles(IAlleleRegistry registry) {
 		for (IAlleleButterflyCocoon cocoonAllele : cocoonAlleles) {
@@ -34,12 +28,11 @@ public class ButterflyAlleles {
 	}
 
 	public static void createLoot() {
-		cocoonDefault.addLoot(new ItemStack(Items.STRING, 2), 1F);
-		cocoonDefault.addLoot(new ItemStack(Items.STRING), 0.75F);
-		cocoonDefault.addLoot(new ItemStack(Items.STRING, 3), 0.25F);
+		DEFAULT_COCOON.addLoot(new ItemStack(Items.STRING, 2), 1F);
+		DEFAULT_COCOON.addLoot(new ItemStack(Items.STRING), 0.75F);
+		DEFAULT_COCOON.addLoot(new ItemStack(Items.STRING, 3), 0.25F);
 
-		cocoonSilk.addLoot(CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.SILK_WISP, 3), 0.75F);
-		cocoonSilk.addLoot(CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.SILK_WISP, 2), 0.25F);
+		SILK_COCOON.addLoot(CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.SILK_WISP, 3), 0.75F);
+		SILK_COCOON.addLoot(CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.SILK_WISP, 2), 0.25F);
 	}
-
 }

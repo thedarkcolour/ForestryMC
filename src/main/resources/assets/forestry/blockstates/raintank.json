@@ -1,11 +1,5 @@
 {
     "variants": {
-      "facing=up": {
-        "model": "forestry:block/raintank"
-      },
-      "facing=down": {
-        "model": "forestry:block/raintank"
-      },
       "facing=north": {
         "model": "forestry:block/raintank"
       },

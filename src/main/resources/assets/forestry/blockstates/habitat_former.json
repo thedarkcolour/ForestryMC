@@ -1,11 +1,5 @@
 {
     "variants": {
-      "facing=up": {
-        "model": "forestry:block/habitat_former"
-      },
-      "facing=down": {
-        "model": "forestry:block/habitat_former"
-      },
       "facing=north": {
         "model": "forestry:block/habitat_former",
         "y": 180

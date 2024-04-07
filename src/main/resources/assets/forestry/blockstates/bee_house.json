@@ -1,11 +1,5 @@
 {
     "variants": {
-      "facing=up": {
-        "model": "forestry:block/bee_house"
-      },
-      "facing=down": {
-        "model": "forestry:block/bee_house"
-      },
       "facing=north": {
         "model": "forestry:block/bee_house"
       },
