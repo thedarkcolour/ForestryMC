@@ -13,6 +13,7 @@ package forestry.factory.tiles;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -85,13 +86,13 @@ public class TileMillRainmaker extends TileMill {
 	}
 
 	@Override
-	public void activate() {
+	public void activate(Level level, BlockPos pos) {
 		if (level.isClientSide) {
-			level.playSound(null, getBlockPos(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 10000.0F, 0.8F + level.random.nextFloat() * 0.2F);
+			level.playSound(null, pos, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 10000.0F, 0.8F + level.random.nextFloat() * 0.2F);
 
-			float f = getBlockPos().getX() + 0.5F;
-			float f1 = getBlockPos().getY() + 0.0F + level.random.nextFloat() * 6F / 16F;
-			float f2 = getBlockPos().getZ() + 0.5F;
+			float f = pos.getX() + 0.5F;
+			float f1 = pos.getY() + level.random.nextFloat() * 6F / 16F;
+			float f2 = pos.getZ() + 0.5F;
 			float f3 = 0.52F;
 			float f4 = level.random.nextFloat() * 0.6F - 0.3F;
 

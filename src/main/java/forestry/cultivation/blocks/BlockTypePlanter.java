@@ -6,6 +6,7 @@ import forestry.core.blocks.IBlockTypeCustom;
 import forestry.core.blocks.IMachineProperties;
 import forestry.core.blocks.MachineProperties;
 import forestry.cultivation.features.CultivationTiles;
+import forestry.cultivation.tiles.TileArboretum;
 import forestry.cultivation.tiles.TilePlanter;
 import forestry.modules.features.FeatureTileType;
 
@@ -16,15 +17,12 @@ public enum BlockTypePlanter implements IBlockTypeCustom {
 	FARM_GOURD(() -> CultivationTiles.GOURD, "farm_gourd"),
 	FARM_NETHER(() -> CultivationTiles.NETHER, "farm_nether"),
 	FARM_ENDER(() -> CultivationTiles.ENDER, "farm_ender"),
-	PEAT_POG(() -> CultivationTiles.BOG, "peat_bog"),
-
-	//TODO Add ic2 integration
-	/*PLANTATION(TilePlantation.class, "plantation")*/;
+	PEAT_POG(() -> CultivationTiles.BOG, "peat_bog");
 
 	private final IMachineProperties machineProperties;
 
 	BlockTypePlanter(Supplier<FeatureTileType<? extends TilePlanter>> teClass, String name) {
-		this.machineProperties = new MachineProperties.Builder<>(teClass, name).create();
+		this.machineProperties = new MachineProperties.Builder<>(teClass, name).setServerTicker(TilePlanter::serverTick).create();
 	}
 
 	@Override

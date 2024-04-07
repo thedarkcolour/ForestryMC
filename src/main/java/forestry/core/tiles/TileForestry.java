@@ -83,10 +83,10 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	}
 
 	// these are not called automatically, they must be specified in the MachineProperties
-	public void clientTick(Level level, BlockPos pos, BlockState state) {
+	protected void clientTick(Level level, BlockPos pos, BlockState state) {
 	}
 
-	public void serverTick(Level level, BlockPos pos, BlockState state) {
+	protected void serverTick(Level level, BlockPos pos, BlockState state) {
 	}
 
 	protected final boolean updateOnInterval(int tickInterval) {

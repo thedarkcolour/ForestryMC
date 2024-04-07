@@ -13,6 +13,7 @@ package forestry.apiculture.blocks;
 import java.util.function.Supplier;
 
 import forestry.apiculture.features.ApicultureTiles;
+import forestry.apiculture.tiles.TileBeeHousingBase;
 import forestry.core.blocks.IBlockType;
 import forestry.core.blocks.IMachineProperties;
 import forestry.core.blocks.MachineProperties;
@@ -27,8 +28,11 @@ public enum BlockTypeApiculture implements IBlockType {
 
 	private final IMachineProperties<?> machineProperties;
 
-	<T extends TileForestry> BlockTypeApiculture(Supplier<FeatureTileType<? extends T>> teClass, String name) {
-		this.machineProperties = new MachineProperties.Builder<>(teClass, name).create();
+	<T extends TileBeeHousingBase> BlockTypeApiculture(Supplier<FeatureTileType<? extends T>> teClass, String name) {
+		this.machineProperties = new MachineProperties.Builder<>(teClass, name)
+				.setClientTicker(TileBeeHousingBase::clientTick)
+				.setServerTicker(TileBeeHousingBase::serverTick)
+				.create();
 	}
 
 	@Override

@@ -40,9 +40,6 @@ import forestry.core.utils.WorldUtils;
 
 import genetics.api.individual.IGenome;
 
-//import forestry.core.entities.ParticleClimate;
-//import forestry.core.entities.ParticleHoneydust;
-
 @OnlyIn(Dist.CLIENT)
 public class ParticleRender {
 	private static final DustParticleOptions HONEY_DUST = new DustParticleOptions(new Vector3f(0.9F, 0.75F, 0.0F), 1.0F);

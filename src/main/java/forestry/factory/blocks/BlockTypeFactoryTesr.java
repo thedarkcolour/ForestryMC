@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.factory.blocks;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 import net.minecraft.world.level.block.Block;
@@ -20,30 +21,38 @@ import net.minecraft.world.phys.shapes.Shapes;
 import forestry.core.blocks.BlockBase;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.blocks.IMachinePropertiesTesr;
-import forestry.core.blocks.MachineProperties;
 import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.config.Constants;
 import forestry.core.proxy.Proxies;
+import forestry.core.tiles.ForestryTicker;
 import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileMill;
 import forestry.factory.features.FactoryTiles;
+import forestry.factory.tiles.TileBottler;
+import forestry.factory.tiles.TileCarpenter;
+import forestry.factory.tiles.TileCentrifuge;
+import forestry.factory.tiles.TileFermenter;
+import forestry.factory.tiles.TileMillRainmaker;
+import forestry.factory.tiles.TileMoistener;
+import forestry.factory.tiles.TileSqueezer;
+import forestry.factory.tiles.TileStill;
 import forestry.modules.features.FeatureTileType;
 
 public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
-	BOTTLER(() -> FactoryTiles.BOTTLER, "bottler"),
-	CARPENTER(() -> FactoryTiles.CARPENTER, "carpenter"),
-	CENTRIFUGE(() -> FactoryTiles.CENTRIFUGE, "centrifuge"),
-	FERMENTER(() -> FactoryTiles.FERMENTER, "fermenter"),
-	MOISTENER(() -> FactoryTiles.MOISTENER, "moistener"),
-	SQUEEZER(() -> FactoryTiles.SQUEEZER, "squeezer"),
-	STILL(() -> FactoryTiles.STILL, "still"),
+	BOTTLER(() -> FactoryTiles.BOTTLER, "bottler", TileBottler::serverTick),
+	CARPENTER(() -> FactoryTiles.CARPENTER, "carpenter", TileCarpenter::serverTick),
+	CENTRIFUGE(() -> FactoryTiles.CENTRIFUGE, "centrifuge", TileCentrifuge::serverTick),
+	FERMENTER(() -> FactoryTiles.FERMENTER, "fermenter", TileFermenter::serverTick),
+	MOISTENER(() -> FactoryTiles.MOISTENER, "moistener", TileMoistener::serverTick),
+	SQUEEZER(() -> FactoryTiles.SQUEEZER, "squeezer", TileSqueezer::serverTick),
+	STILL(() -> FactoryTiles.STILL, "still", TileStill::serverTick),
 	RAINMAKER(() -> FactoryTiles.RAINMAKER, "rainmaker", Constants.TEXTURE_PATH_BLOCK + "/rainmaker_");
 
 	public static final BlockTypeFactoryTesr[] VALUES = values();
 
 	private final IMachinePropertiesTesr<?> machineProperties;
 
-	<T extends TileBase> BlockTypeFactoryTesr(Supplier<FeatureTileType<? extends T>> teClass, String name) {
+	<T extends TileBase> BlockTypeFactoryTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, @Nullable ForestryTicker<T> serverTicker) {
 		final VoxelShape nsBase = Block.box(2D, 2D, 4D, 14, 14, 12);
 		final VoxelShape nsFront = Block.box(0D, 0D, 0D, 16, 16, 4);
 		final VoxelShape nsBack = Block.box(0D, 0D, 12D, 16, 16, 16);
@@ -54,6 +63,7 @@ public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
 		final VoxelShape ew = Shapes.or(ewBase, ewFront, ewBack);
 		MachinePropertiesTesr<T> machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
 				.setParticleTexture(name + ".0")
+				.setServerTicker(serverTicker)
 				.setShape((state, reader, pos, context) -> {
 					Direction direction = state.getValue(BlockBase.FACING);
 					return (direction == Direction.NORTH || direction == Direction.SOUTH) ? ns : ew;
@@ -70,6 +80,8 @@ public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
 		MachinePropertiesTesr<T> machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
 				.setParticleTexture(name + ".0")
 				.setShape(() -> Shapes.or(pedestal, column, extension))
+				.setClientTicker(TileMill::clientTick)
+				.setServerTicker(TileMill::serverTick)
 				.create();
 		Proxies.render.setRenderMill(machineProperties, renderMillTexture);
 		this.machineProperties = machineProperties;

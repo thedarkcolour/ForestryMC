@@ -37,12 +37,12 @@ public abstract class TileMill extends TileBase {
 
 	@Override
 	public void clientTick(Level level, BlockPos pos, BlockState state) {
-		update(false);
+		update(level, pos, false);
 	}
 
 	@Override
 	public void serverTick(Level level, BlockPos pos, BlockState state) {
-		update(true);
+		update(level, pos, true);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public abstract class TileMill extends TileBase {
 		stage = data.readInt();
 	}
 
-	private void update(boolean isSimulating) {
+	private void update(Level level, BlockPos pos, boolean isSimulating) {
 
 		// Stop gracefully if discharged.
 		if (charge <= 0) {
@@ -98,11 +98,11 @@ public abstract class TileMill extends TileBase {
 
 			// Fully charged! Do something!
 			if (charge >= 7) {
-				activate();
+				activate(level, pos);
 			}
 		}
 
 	}
 
-	protected abstract void activate();
+	protected abstract void activate(Level level, BlockPos pos);
 }

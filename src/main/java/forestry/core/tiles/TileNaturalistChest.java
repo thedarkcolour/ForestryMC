@@ -43,6 +43,7 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 	public static final VoxelShape CHEST_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
 	private final IForestrySpeciesRoot speciesRoot;
+	private final ChestLidController chestLidController = new ChestLidController();
 	public float lidAngle;
 	public float prevLidAngle;
 	private int numPlayersUsing;
@@ -111,14 +112,12 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 	/* IStreamable */
 	@Override
 	public void writeData(PacketBufferForestry data) {
-		super.writeData(data);
 		data.writeInt(numPlayersUsing);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void readData(PacketBufferForestry data) throws IOException {
-		super.readData(data);
 		numPlayersUsing = data.readInt();
 	}
 

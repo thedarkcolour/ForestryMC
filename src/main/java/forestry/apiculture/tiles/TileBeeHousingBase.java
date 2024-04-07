@@ -139,7 +139,6 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 
 	/* UPDATING */
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void clientTick(Level level, BlockPos pos, BlockState state) {
 		if (beeLogic.canDoBeeFX() && updateOnInterval(4)) {
 			beeLogic.doBeeFX();

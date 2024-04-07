@@ -2,6 +2,7 @@ package forestry.apiculture.features;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
 import forestry.api.apiculture.hives.IHiveRegistry;
@@ -32,7 +33,7 @@ public class ApicultureBlocks {
 	public static final FeatureBlockGroup<BlockApiculture, BlockTypeApiculture> BASE = REGISTRY.blockGroup(BlockApiculture::new, BlockTypeApiculture.values()).item((block) -> new ItemBlockForestry<>(block, new Item.Properties().tab(ItemGroups.tabApiculture))).create();
 
 	public static final FeatureBlock<BlockBase<BlockTypeApicultureTesr>, ItemBlockBase<BlockBase<BlockTypeApicultureTesr>>> BEE_CHEST = REGISTRY.block(() -> {
-        return new BlockBase<>(BlockTypeApicultureTesr.APIARIST_CHEST, Block.Properties.of(Material.WOOD));
+        return new BlockBase<>(BlockTypeApicultureTesr.APIARIST_CHEST, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD));
     }, (block) -> {
         return new ItemBlockBase<>(block, new Item.Properties().tab(ItemGroups.tabApiculture), BlockTypeApicultureTesr.APIARIST_CHEST);
     }, "bee_chest");

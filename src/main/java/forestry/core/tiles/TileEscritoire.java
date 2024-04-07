@@ -169,7 +169,7 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inv, Player player) {
-		return new ContainerEscritoire(windowId, player, this);
+		return new ContainerEscritoire(windowId, player.getInventory(), this);
 	}
 
 	@Override

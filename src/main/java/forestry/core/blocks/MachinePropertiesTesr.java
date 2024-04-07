@@ -75,9 +75,6 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 			super(type, name);
 		}
 
-		public Builder() {
-		}
-
 		public Builder<T> setParticleTexture(String particleTexture) {
 			return setParticleTexture(new ResourceLocation(Constants.MOD_ID, "block/" + particleTexture));
 		}
@@ -89,8 +86,6 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 
 		@Override
 		public MachinePropertiesTesr<T> create() {
-			Preconditions.checkNotNull(type);
-			Preconditions.checkNotNull(name);
 			Preconditions.checkNotNull(shape);
 			Preconditions.checkNotNull(particleTexture);
 			return new MachinePropertiesTesr<>(type, name, shape, clientTicker, serverTicker, particleTexture);

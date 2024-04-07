@@ -13,6 +13,7 @@ package forestry.climatology.blocks;
 import java.util.function.Supplier;
 
 import forestry.climatology.features.ClimatologyTiles;
+import forestry.climatology.tiles.TileHabitatFormer;
 import forestry.core.blocks.IBlockTypeCustom;
 import forestry.core.blocks.IMachineProperties;
 import forestry.core.blocks.MachineProperties;
@@ -24,8 +25,8 @@ public enum BlockTypeClimatology implements IBlockTypeCustom {
 
 	private final IMachineProperties machineProperties;
 
-	<T extends TileForestry> BlockTypeClimatology(Supplier<FeatureTileType<? extends T>> feature, String name) {
-		this.machineProperties = new MachineProperties.Builder<>(feature, name).create();
+	<T extends TileHabitatFormer> BlockTypeClimatology(Supplier<FeatureTileType<? extends T>> feature, String name) {
+		this.machineProperties = new MachineProperties.Builder<>(feature, name).setServerTicker(TileHabitatFormer::serverTick).create();
 	}
 
 	@Override

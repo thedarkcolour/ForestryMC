@@ -84,10 +84,8 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 	}
 
 	public static class Builder<T extends TileForestry, B extends Builder<T, ?>> {
-		@Nullable
-		protected Supplier<FeatureTileType<? extends T>> type;
-		@Nullable
-		protected String name;
+		protected final Supplier<FeatureTileType<? extends T>> type;
+		protected final String name;
 		protected IShapeProvider shape = FULL_CUBE;
 		@Nullable
 		protected ForestryTicker<? extends T> clientTicker = null;
@@ -95,23 +93,8 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 		protected ForestryTicker<? extends T> serverTicker = null;
 
 		public Builder(Supplier<FeatureTileType<? extends T>> type, String name) {
-			this.type = type;
-			this.name = name;
-		}
-
-		public Builder() {
-		}
-
-		public B setName(String name) {
-			this.name = name;
-			//noinspection unchecked
-			return (B) this;
-		}
-
-		public B setType(Supplier<FeatureTileType<? extends T>> teType) {
-			this.type = teType;
-			//noinspection unchecked
-			return (B) this;
+			this.type = Preconditions.checkNotNull(type);
+			this.name = Preconditions.checkNotNull(name);
 		}
 
 		public B setShape(VoxelShape shape) {
@@ -143,8 +126,6 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 		}
 
 		public MachineProperties<T> create() {
-			Preconditions.checkNotNull(type);
-			Preconditions.checkNotNull(name);
 			Preconditions.checkNotNull(shape);
 			return new MachineProperties<>(type, name, shape, clientTicker, serverTicker);
 		}

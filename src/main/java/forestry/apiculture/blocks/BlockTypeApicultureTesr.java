@@ -18,7 +18,6 @@ import forestry.apiculture.features.ApicultureTiles;
 import forestry.apiculture.tiles.TileApiaristChest;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.blocks.IMachinePropertiesTesr;
-import forestry.core.blocks.MachineProperties;
 import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.proxy.Proxies;
 import forestry.core.tiles.TileNaturalistChest;

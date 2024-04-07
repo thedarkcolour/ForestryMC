@@ -17,7 +17,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.blocks.IMachinePropertiesTesr;
-import forestry.core.blocks.MachineProperties;
 import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.proxy.Proxies;
 import forestry.core.tiles.TileNaturalistChest;
@@ -32,9 +31,10 @@ public enum BlockTypeArboricultureTesr implements IBlockTypeTesr {
 
 	<T extends TileNaturalistChest> BlockTypeArboricultureTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, String renderName, VoxelShape shape) {
 		MachinePropertiesTesr<T> machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
-			.setParticleTexture(name + ".0")
-			.setShape(shape)
-			.create();
+				.setParticleTexture(name + ".0")
+				.setClientTicker(TileNaturalistChest::clientTick)
+				.setShape(shape)
+				.create();
 		Proxies.render.setRenderChest(machineProperties, renderName);
 		this.machineProperties = machineProperties;
 	}
