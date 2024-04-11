@@ -10,12 +10,13 @@
  ******************************************************************************/
 package forestry.arboriculture.blocks;
 
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
 import forestry.core.blocks.BlockBase;
 
 public class BlockArboriculture extends BlockBase<BlockTypeArboricultureTesr> {
 	public BlockArboriculture(BlockTypeArboricultureTesr type) {
-		super(type, Properties.of(Material.WOOD));
+		super(type, Properties.of(Material.WOOD).sound(SoundType.WOOD));
 	}
 }

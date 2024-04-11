@@ -89,8 +89,8 @@ public abstract class TileMill extends TileBase {
 			stage = 2;
 			if (charge < 7 && isSimulating) {
 				charge++;
-				setNeedsNetworkUpdate();
-			}
+                sendNetworkUpdate();
+            }
 		}
 		if (progress > 1) {
 			progress = 0;

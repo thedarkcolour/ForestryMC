@@ -105,12 +105,12 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 		getVariantBuilder(ArboricultureBlocks.LEAVES.block()).partialState().modelForState().modelFile(particleOnly(ArboricultureBlocks.LEAVES.getIdentifier(), blockTexture(Blocks.OAK_LEAVES))).addModel();
 
 		// Cocoons
-		for (FeatureBlock<BlockCocoon, BlockItem> cocoon : List.of(LepidopterologyBlocks.COCOON, LepidopterologyBlocks.COCOON)) {
+		/*for (FeatureBlock<BlockCocoon, BlockItem> cocoon : List.of(LepidopterologyBlocks.COCOON, LepidopterologyBlocks.COCOON)) {
 			getVariantBuilder(cocoon.block())
 					.partialState().with(BlockCocoon.AGE, 0).modelForState().modelFile(models().getExistingFile(modBlock("cocoon_early"))).addModel()
 					.partialState().with(BlockCocoon.AGE, 1).modelForState().modelFile(models().getExistingFile(modBlock("cocoon_middle"))).addModel()
 					.partialState().with(BlockCocoon.AGE, 2).modelForState().modelFile(models().getExistingFile(modBlock("cocoon_late"))).addModel();
-		}
+		}*/
 	}
 
 	private ModelFile particleOnly(String path, ResourceLocation particleTexture) {

@@ -33,6 +33,7 @@ import forestry.arboriculture.items.ItemBlockLeaves;
 import forestry.arboriculture.items.ItemBlockWood;
 import forestry.arboriculture.items.ItemBlockWoodDoor;
 import forestry.arboriculture.items.ItemBlockWoodSlab;
+import forestry.core.blocks.BlockBase;
 import forestry.core.items.ItemBlockBase;
 import forestry.core.items.ItemBlockForestry;
 import forestry.modules.features.FeatureBlock;
@@ -45,6 +46,8 @@ import forestry.modules.features.ModFeatureRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 
 @FeatureProvider
 public class ArboricultureBlocks {
@@ -94,7 +97,7 @@ public class ArboricultureBlocks {
 	public static final FeatureBlockGroup<BlockFruitPod, IAlleleFruit> PODS = REGISTRY.blockGroup(BlockFruitPod::new, AlleleFruits.getFruitAllelesWithModels()).identifier("pods").create();
 
 	/* MACHINES */
-	public static final FeatureBlock<BlockArboriculture, ItemBlockBase> TREE_CHEST = REGISTRY.block(() -> new BlockArboriculture(BlockTypeArboricultureTesr.ARB_CHEST), (block) -> new ItemBlockBase<>(block, BlockTypeArboricultureTesr.ARB_CHEST), "tree_chest");
+	public static final FeatureBlock<BlockBase<BlockTypeArboricultureTesr>, ItemBlockBase<BlockBase<BlockTypeArboricultureTesr>>> TREE_CHEST = REGISTRY.block(() -> new BlockBase<>(BlockTypeArboricultureTesr.ARB_CHEST, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD)), (block) -> new ItemBlockBase<>(block, BlockTypeArboricultureTesr.ARB_CHEST), "tree_chest");
 
 	private static <B extends Block & IWoodTyped, S extends IWoodType> FeatureBlockGroup<B, S> woodGroup(BiFunction<Boolean, S, B> constructor, WoodBlockKind kind, boolean fireproof, S[] types) {
 		return woodGroup(constructor, ItemBlockWood::new, kind, fireproof, types);

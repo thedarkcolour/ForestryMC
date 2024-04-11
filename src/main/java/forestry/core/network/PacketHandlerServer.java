@@ -50,8 +50,12 @@ public class PacketHandlerServer {
 	}
 
 	public static void sendPacket(IForestryPacketClient packet, ServerPlayer player) {
+		Packet<?> vanillaPacket = toVanillaPacket(packet);
+		player.connection.send(vanillaPacket);
+	}
+
+	public static Packet<?> toVanillaPacket(IForestryPacket packet) {
 		Pair<FriendlyByteBuf, Integer> packetData = packet.getPacketData();
-		ICustomPacket<Packet<?>> payload = NetworkDirection.PLAY_TO_CLIENT.buildPacket(packetData, PacketHandlerServer.CHANNEL_ID);
-		player.connection.send(payload.getThis());
+		return NetworkDirection.PLAY_TO_CLIENT.buildPacket(packetData, PacketHandlerServer.CHANNEL_ID).getThis();
 	}
 }

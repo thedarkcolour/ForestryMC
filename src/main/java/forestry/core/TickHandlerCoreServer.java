@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.core;
 
+import forestry.core.blocks.TileStreamUpdateTracker;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.modules.ModuleManager;
@@ -34,5 +35,7 @@ public class TickHandlerCoreServer {
 				}
 			}
 		}
+
+		TileStreamUpdateTracker.syncVisualUpdates();
 	}
 }

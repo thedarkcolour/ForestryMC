@@ -15,6 +15,7 @@ import com.google.common.base.Preconditions;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
+import forestry.core.blocks.TileStreamUpdateTracker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -43,9 +44,7 @@ import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.network.IStreamable;
 import forestry.core.network.PacketBufferForestry;
-import forestry.core.network.packets.PacketTileStream;
 import forestry.core.utils.NBTUtilForestry;
-import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.TickHelper;
 
 public abstract class TileForestry extends BlockEntity implements IStreamable, IErrorLogicSource, WorldlyContainer, IFilterSlotDelegate, ITitled, ILocatable, MenuProvider {
@@ -56,7 +55,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 
 	// package private for ForestryTicker
 	final TickHelper tickHelper = new TickHelper();
-	boolean needsNetworkUpdate = false;
 
 	public TileForestry(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
 		super(tileEntityTypeIn, pos, state);
@@ -127,8 +125,7 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 
 	/* INetworkedEntity */
 	protected final void sendNetworkUpdate() {
-		PacketTileStream packet = new PacketTileStream(this);
-		NetworkUtil.sendNetworkPacket(packet, worldPosition, level);
+		TileStreamUpdateTracker.sendVisualUpdate(this);
 	}
 
 	/* IStreamable */
@@ -153,10 +150,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	// / REDSTONE INFO
 	protected boolean isRedstoneActivated() {
 		return level.getBestNeighborSignal(getBlockPos()) > 0;
-	}
-
-	protected final void setNeedsNetworkUpdate() {
-		needsNetworkUpdate = true;
 	}
 
 	@Override

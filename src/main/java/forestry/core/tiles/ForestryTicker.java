@@ -11,11 +11,6 @@ public interface ForestryTicker<T extends TileForestry> extends BlockEntityTicke
 		tile.tickHelper.onTick();
 
 		tick(tile, level, pos, state);
-
-		if (tile.needsNetworkUpdate) {
-			tile.needsNetworkUpdate = false;
-			tile.sendNetworkUpdate();
-		}
 	}
 
 	void tick(T tile, Level level, BlockPos pos, BlockState state);

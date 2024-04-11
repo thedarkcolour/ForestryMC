@@ -12,6 +12,7 @@ package forestry.core.network.packets;
 
 import java.io.IOException;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
@@ -27,13 +28,25 @@ import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
+import javax.annotation.Nullable;
+
 public class PacketTileStream extends ForestryPacket implements IForestryPacketClient {
 	private final BlockPos pos;
+	@Nullable
 	private final IStreamable streamable;
+	@Nullable
+	private final PacketBufferForestry payload;
 
 	public <T extends BlockEntity & IStreamable> PacketTileStream(T streamable) {
 		this.pos = streamable.getBlockPos();
 		this.streamable = streamable;
+		this.payload = null;
+	}
+
+	private PacketTileStream(BlockPos pos, PacketBufferForestry payload) {
+		this.pos = pos;
+		this.streamable = null;
+		this.payload = payload;
 	}
 
 	@Override
@@ -44,17 +57,29 @@ public class PacketTileStream extends ForestryPacket implements IForestryPacketC
 	@Override
 	protected void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
+		// write a placeholder value for the number of bytes, keeping its index for replacing later
+		int dataBytesIndex = data.writerIndex();
+		data.writeInt(0);
+		// write data bytes
 		streamable.writeData(data);
+		// replace placeholder with length of data bytes, not including length integer
+		int numDataBytes = data.writerIndex() - dataBytesIndex - 4;
+		data.setInt(dataBytesIndex, numDataBytes);
+	}
+
+	public static PacketTileStream decode(FriendlyByteBuf data) {
+		return new PacketTileStream(data.readBlockPos(), new PacketBufferForestry(data.readBytes(data.readInt())));
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static class Handler implements IForestryPacketHandlerClient {
 		@Override
 		public void onPacketData(PacketBufferForestry data, Player player) throws IOException {
-			BlockPos pos = data.readBlockPos();
-			IStreamable tile = TileUtil.getTile(player.level, pos, IStreamable.class);
+			PacketTileStream packet = decode(data);
+			IStreamable tile = TileUtil.getTile(player.level, packet.pos, IStreamable.class);
+
 			if (tile != null) {
-				tile.readData(data);
+				tile.readData(packet.payload);
 			}
 		}
 	}

@@ -60,8 +60,8 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 		}
 
 		numPlayersUsing++;
-		setNeedsNetworkUpdate();
-	}
+        sendNetworkUpdate();
+    }
 
 	public void decreaseNumPlayersUsing() {
 		numPlayersUsing--;
@@ -71,8 +71,8 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 		if (numPlayersUsing == 0) {
 			playLidSound(level, SoundEvents.CHEST_CLOSE);
 		}
-		setNeedsNetworkUpdate();
-	}
+        sendNetworkUpdate();
+    }
 
 	@Override
 	public void clientTick(Level level, BlockPos pos, BlockState state) {

@@ -215,8 +215,8 @@ public class TileHabitatFormer extends TilePowered implements IClimateHousing, I
 
 	@Override
 	public void markNetworkUpdate() {
-		setNeedsNetworkUpdate();
-	}
+        sendNetworkUpdate();
+    }
 
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inv, Player player) {
