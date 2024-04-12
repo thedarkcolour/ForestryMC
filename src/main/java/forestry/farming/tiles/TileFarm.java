@@ -46,12 +46,6 @@ public abstract class TileFarm extends MultiblockTileEntityForestry<MultiblockLo
 		super(tileEntityType, pos, state, new MultiblockLogicFarm());
 	}
 
-	//TODO don't know
-	//	@Override
-	//	public boolean shouldRefresh(World world, BlockPos pos, BlockState oldState, BlockState newState) {
-	//		return oldState.getBlock() != newState.getBlock();
-	//	}
-
 	@Override
 	public void onMachineAssembled(IMultiblockController multiblockController, BlockPos minCoord, BlockPos maxCoord) {
 		level.updateNeighborsAt(getBlockPos(), level.getBlockState(worldPosition).getBlock());    //TODO - removing false OK?
@@ -68,14 +62,6 @@ public abstract class TileFarm extends MultiblockTileEntityForestry<MultiblockLo
 	public IInventoryAdapter getInternalInventory() {
 		return getMultiblockLogic().getController().getInternalInventory();
 	}
-
-	//	public EnumFarmBlockTexture getFarmBlockTexture() {
-	//		return farmBlockTexture;
-	//	}
-	//
-	//	public EnumFarmBlockType getFarmBlockType() {
-	//		return EnumFarmBlockType.VALUES[getBlockMetadata()];
-	//	}
 
 	/* ISocketable */
 	@Override

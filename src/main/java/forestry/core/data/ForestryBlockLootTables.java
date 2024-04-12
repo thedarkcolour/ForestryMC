@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import forestry.arboriculture.blocks.BlockForestryDoor;
 import net.minecraft.core.Registry;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
@@ -64,6 +65,9 @@ public class ForestryBlockLootTables extends BlockLoot {
 			Block defaultLeavesBlock = defaultLeaves.block();
 			Block fruitLeavesBlock = entry.getValue().block();
 			this.add(fruitLeavesBlock, (block) -> droppingWithChances(defaultLeavesBlock, entry.getKey(), NORMAL_LEAVES_SAPLING_CHANCES));
+		}
+		for (BlockForestryDoor door : ArboricultureBlocks.DOORS.getBlocks()) {
+			this.add(door, BlockLoot.createDoorTable(door));
 		}
 		registerLootTable(CharcoalBlocks.ASH, (block) -> LootTable.lootTable().setParamSet(LootContextParamSets.BLOCK)
 				.withPool(LootPool.lootPool().add(LootItem.lootTableItem(CoreItems.ASH)).apply(SetItemCountFunction.setCount(BinomialDistributionGenerator.binomial(2, 1.0f / 3.0f))))

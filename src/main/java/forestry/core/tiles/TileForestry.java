@@ -224,16 +224,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 		getInternalInventory().stopOpen(player);
 	}
 
-	//	@Override
-	//	public String getName() {
-	//		return getUnlocalizedTitle();
-	//	}
-	//
-	//	@Override
-	//	public ITextComponent getDisplayName() {
-	//		return new TranslationTextComponent(getUnlocalizedTitle());
-	//	}
-
 	@Override
 	public final boolean stillValid(Player player) {
 		return getInternalInventory().stillValid(player);

@@ -115,8 +115,8 @@ public class GuiBetterButton extends Button implements IToolTipProvider {
 			blit(transform, x, y, xOffset, yOffset + hoverState * h, width / 2, h);
 			blit(transform, x + width / 2, y, xOffset + w - width / 2, yOffset + hoverState * h, width / 2, h);
 		}
-
-		if (getMessage() != Component.empty()) {
+		Component text = getMessage();
+		if (Minecraft.getInstance().font.width(text) > 0) {
 			renderButton(transform, mouseX, mouseY, partialTicks);
 			drawCenteredString(transform, Minecraft.getInstance().font, getMessage(), x + getWidth() / 2, y + (h - 8) / 2, getTextColor(isHovered));
 		}

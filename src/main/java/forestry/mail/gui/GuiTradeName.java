@@ -24,7 +24,6 @@ import forestry.core.config.Constants;
 import forestry.core.gui.GuiForestry;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.Translator;
 import forestry.mail.network.packets.PacketTraderAddressRequest;
 import forestry.mail.tiles.TileTrader;
 
@@ -46,7 +45,7 @@ public class GuiTradeName extends GuiForestry<ContainerTradeName> {
 		super.init();
 
 		addressNameField = new EditBox(this.minecraft.font, leftPos + 44, topPos + 39, 90, 14, null);
-		addressNameField.setValue(container.getAddress().getName());
+		addressNameField.setValue(menu.getAddress().getName());
 		addressNameField.setFocus(true);
 	}
 

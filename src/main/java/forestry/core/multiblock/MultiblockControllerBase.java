@@ -38,7 +38,6 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 
 	// Ticks
 	private static final Random rand = new Random();
-	//TODO: Use TickHelper
 	private int tickCount = rand.nextInt(256);
 
 	// Disassembled -> Assembled; Assembled -> Disassembled OR Paused; Paused -> Assembled
@@ -394,8 +393,6 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	@Override
 	public void _onAssimilated(IMultiblockControllerInternal otherController) {
 		if (referenceCoord != null) {
-			//TODO think 3rd param means will be loaded
-			//also TODO - is this the source of multiblock chunk loading stuff
 			if (world.getChunkSource().hasChunk(referenceCoord.getX() >> 4, referenceCoord.getZ() >> 4)) {
 				TileUtil.actOnTile(world, referenceCoord, IMultiblockComponent.class, part -> {
 					MultiblockLogic logic = (MultiblockLogic) part.getMultiblockLogic();
@@ -447,8 +444,11 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 				for (int x = minChunkX; x <= maxChunkX; x++) {
 					for (int z = minChunkZ; z <= maxChunkZ; z++) {
 						// Ensure that we save our data, even if the our save delegate is in has no TEs.
-						LevelChunk chunkToSave = this.world.getChunk(x, z);
-						// chunkToSave.markUnsaved();    //TODO types mean this needs cast or something
+						LevelChunk chunkToSave = this.world.getChunkSource().getChunkNow(x, z);
+						// unloaded chunks do not need to be saved again, NBT delegate is in loaded chunks
+						if (chunkToSave != null) {
+							chunkToSave.setUnsaved(true);
+						}
 					}
 				}
 			}
@@ -718,7 +718,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		for (IMultiblockComponent part : connectedParts) {
 			// This happens during chunk unload.
 			BlockPos partCoord = part.getCoordinates();
-			if (chunkProvider.getChunk(partCoord.getX() >> 4, partCoord.getZ() >> 4, true) == null || isInvalid(part)) {
+			if (chunkProvider.getChunkNow(partCoord.getX() >> 4, partCoord.getZ() >> 4) == null || isInvalid(part)) {
 				deadParts.add(part);
 				onDetachBlock(part);
 				continue;
@@ -818,7 +818,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		ChunkSource chunkProvider = world.getChunkSource();
 		for (IMultiblockComponent part : connectedParts) {
 			BlockPos partCoord = part.getCoordinates();
-			if (chunkProvider.getChunk(partCoord.getX() >> 4, partCoord.getZ() >> 4, true) != null) {
+			if (chunkProvider.getChunkNow(partCoord.getX() >> 4, partCoord.getZ() >> 4) != null) {
 				onDetachBlock(part);
 			}
 		}
@@ -844,7 +844,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 
 		for (IMultiblockComponent part : connectedParts) {
 			BlockPos partCoord = part.getCoordinates();
-			if (isInvalid(part) || chunkProvider.getChunk(partCoord.getX() >> 4, partCoord.getZ() >> 4, true) == null) {
+			if (isInvalid(part) || chunkProvider.getChunkNow(partCoord.getX() >> 4, partCoord.getZ() >> 4) == null) {
 				// Chunk is unloading, skip this coord to prevent chunk thrashing
 				continue;
 			}

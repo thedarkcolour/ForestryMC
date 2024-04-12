@@ -36,7 +36,6 @@ import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.Translator;
 import forestry.mail.inventory.ItemInventoryLetter;
 import forestry.mail.network.packets.PacketLetterInfoRequest;
 
@@ -75,15 +74,15 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 		minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
 		address = new EditBox(this.minecraft.font, leftPos + 46, topPos + 13, 93, 13, null);
-		IMailAddress recipient = container.getRecipient();
+		IMailAddress recipient = menu.getRecipient();
 		if (recipient != null) {
 			address.setValue(recipient.getName());
 		}
 
 		text = new GuiTextBox(this.minecraft.font, leftPos + 17, topPos + 31, 122, 57);
 		text.setMaxLength(128);
-		if (!container.getText().isEmpty()) {
-			text.setValue(container.getText());
+		if (!menu.getText().isEmpty()) {
+			text.setValue(menu.getText());
 		}
 	}
 
@@ -137,7 +136,7 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 			checkedSessionVars = true;
 			setFromSessionVars();
 			String recipient = this.address.getValue();
-			EnumAddressee recipientType = container.getCarrierType();
+			EnumAddressee recipientType = menu.getCarrierType();
 			setRecipient(recipient, recipientType);
 		}
 
@@ -145,7 +144,7 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 		if (addressFocus != address.isFocused()) {
 			String recipient = this.address.getValue();
 			if (StringUtils.isNotBlank(recipient)) {
-				EnumAddressee recipientType = container.getCarrierType();
+				EnumAddressee recipientType = menu.getCarrierType();
 				setRecipient(recipient, recipientType);
 			}
 		}
@@ -163,7 +162,7 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 		} else {
 			clearTradeInfoWidgets();
 			address.render(transform, mouseX, mouseY, partialTicks);    //TODO correct?
-			if (container.getCarrierType() == EnumAddressee.TRADER) {
+			if (menu.getCarrierType() == EnumAddressee.TRADER) {
 				drawTradePreview(transform, 18, 32);
 			} else {
 				text.render(transform, mouseX, mouseY, partialTicks);
@@ -174,12 +173,12 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 	private void drawTradePreview(PoseStack transform, int x, int y) {
 
 		Component infoString = null;
-		if (container.getTradeInfo() == null) {
+		if (menu.getTradeInfo() == null) {
 			infoString = Component.translatable("for.gui.mail.no.trader");
-		} else if (container.getTradeInfo().getTradegood().isEmpty()) {
+		} else if (menu.getTradeInfo().getTradegood().isEmpty()) {
 			infoString = Component.translatable("for.gui.mail.nothing.to.trade");
-		} else if (!container.getTradeInfo().getState().isOk()) {
-			infoString = container.getTradeInfo().getState().getDescription();
+		} else if (!menu.getTradeInfo().getState().isOk()) {
+			infoString = menu.getTradeInfo().getState().getDescription();
 		}
 
 		if (infoString != null) {
@@ -189,12 +188,12 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 
 		minecraft.font.draw(transform, Component.translatable("for.gui.mail.pleasesend"), leftPos + x, topPos + y, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
 
-		addTradeInfoWidget(new ItemStackWidget(widgetManager, x, y + 10, container.getTradeInfo().getTradegood()));
+		addTradeInfoWidget(new ItemStackWidget(widgetManager, x, y + 10, menu.getTradeInfo().getTradegood()));
 
 		minecraft.font.draw(transform, Component.translatable("for.gui.mail.foreveryattached"), leftPos + x, topPos + y + 28, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
 
-		for (int i = 0; i < container.getTradeInfo().getRequired().size(); i++) {
-			addTradeInfoWidget(new ItemStackWidget(widgetManager, x + i * 18, y + 38, container.getTradeInfo().getRequired().get(i)));
+		for (int i = 0; i < menu.getTradeInfo().getRequired().size(); i++) {
+			addTradeInfoWidget(new ItemStackWidget(widgetManager, x + i * 18, y + 38, menu.getTradeInfo().getRequired().get(i)));
 		}
 	}
 
@@ -213,7 +212,7 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 	@Override
 	public void onClose() {
 		String recipientName = this.address.getValue();
-		EnumAddressee recipientType = container.getCarrierType();
+		EnumAddressee recipientType = menu.getCarrierType();
 		setRecipient(recipientName, recipientType);
 		setText();
 		minecraft.keyboardHandler.setSendRepeatsToGui(false);
@@ -232,7 +231,7 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 			address.setValue(recipient);
 
 			EnumAddressee type = EnumAddressee.fromString(typeName);
-			container.setCarrierType(type);
+			menu.setCarrierType(type);
 		}
 
 		SessionVars.clearStringVar("mail.letter.recipient");
@@ -254,7 +253,7 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 			return;
 		}
 
-		container.setText(this.text.getValue());
+		menu.setText(this.text.getValue());
 	}
 
 	@Override

@@ -53,28 +53,24 @@ import forestry.core.render.ForestryResource;
 import forestry.energy.EnergyManager;
 
 public abstract class GuiForestry<C extends AbstractContainerMenu> extends AbstractContainerScreen<C> implements IGuiSizable {
-	protected final C container;
-
 	public final ResourceLocation textureFile;
 	protected final WidgetManager widgetManager;
 	protected final LedgerManager ledgerManager;
 	protected final TextLayoutHelper textLayout;
 	protected final WindowGui<?> window;
 
-	protected GuiForestry(String texture, C container, Inventory inv, Component title) {
-		this(new ForestryResource(texture), container, inv, title);
+	protected GuiForestry(String texture, C menu, Inventory inv, Component title) {
+		this(new ForestryResource(texture), menu, inv, title);
 	}
 
-	protected GuiForestry(ResourceLocation texture, C container, Inventory inv, Component title) {
-		super(container, inv, title);
+	protected GuiForestry(ResourceLocation texture, C menu, Inventory inv, Component title) {
+		super(menu, inv, title);
 
 		this.widgetManager = new WidgetManager(this);
 		this.ledgerManager = new LedgerManager(this);
 		this.window = new WindowGui<>(imageWidth, imageHeight, this);
 
 		this.textureFile = texture;
-
-		this.container = container;
 
 		this.textLayout = new TextLayoutHelper(this, ColourProperties.INSTANCE);
 	}
@@ -164,7 +160,7 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 	}
 
 	public Font getFontRenderer() {
-		return minecraft.font;
+		return font;
 	}
 
 	@Override
@@ -255,8 +251,8 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 
 	@Nullable
 	protected Slot getSlotAtPosition(double mouseX, double mouseY) {
-		for (int k = 0; k < this.container.slots.size(); ++k) {
-			Slot slot = this.container.slots.get(k);
+		for (int k = 0; k < this.menu.slots.size(); ++k) {
+			Slot slot = this.menu.slots.get(k);
 
 			if (isMouseOverSlot(slot, mouseX, mouseY)) {
 				return slot;
@@ -299,7 +295,7 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 		if (this.menu.getCarried().isEmpty()) {
 			GuiUtil.drawToolTips(transform, this, widgetManager.getWidgets(), mouseX, mouseY);
 			GuiUtil.drawToolTips(transform, this, this.renderables, mouseX, mouseY);
-			GuiUtil.drawToolTips(transform, this, container.slots, mouseX, mouseY);
+			GuiUtil.drawToolTips(transform, this, menu.slots, mouseX, mouseY);
 			window.drawTooltip(transform, mouseX, mouseY);
 		}
 	}

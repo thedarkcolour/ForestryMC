@@ -35,7 +35,6 @@ import forestry.core.gui.buttons.StandardButtonTextureSets;
 import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.Translator;
 
 import genetics.api.alleles.IAlleleSpecies;
 import genetics.api.individual.IChromosomeType;
@@ -77,7 +76,7 @@ public class GuiNaturalistInventory extends GuiForestry<ContainerNaturalistInven
 		Component header = Component.translatable("for.gui.page").append(" " + (pageCurrent + 1) + "/" + pageMax);
 		getFontRenderer().draw(transform, header, leftPos + 95 + textLayout.getCenteredOffset(header, 98), topPos + 10, ColourProperties.INSTANCE.get("gui.title"));
 
-		IIndividual individual = getIndividualAtPosition(i, j);
+		IIndividual individual = getHoveredIndividual();
 		if (individual == null) {
 			displayBreedingStatistics(transform, 10);
 		}
@@ -115,13 +114,14 @@ public class GuiNaturalistInventory extends GuiForestry<ContainerNaturalistInven
 		}));
 	}
 
-	private static void flipPage(int page) {
+	private void flipPage(int page) {
+		menu.closing = false;
 		NetworkUtil.sendToServer(new PacketGuiSelectRequest(page, 0));
 	}
 
 	@Nullable
-	private IIndividual getIndividualAtPosition(int x, int y) {
-		Slot slot = getSlotAtPosition(x, y);
+	private IIndividual getHoveredIndividual() {
+		Slot slot = hoveredSlot;
 		if (slot == null) {
 			return null;
 		}
@@ -171,7 +171,7 @@ public class GuiNaturalistInventory extends GuiForestry<ContainerNaturalistInven
 		}
 
 		textLayout.drawLine(transform, species.getDisplayName(), x);
-		GuiUtil.drawItemStack(transform, this, iconStack, leftPos + x + 69, topPos + textLayout.getLineY() - 2);
+		GuiUtil.drawItemStack(transform, this, iconStack, leftPos + x + 67, topPos + textLayout.getLineY() - 4);
 
 		textLayout.newLine();
 

@@ -10,7 +10,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import forestry.api.genetics.gatgets.IGeneticAnalyzer;
 import forestry.api.genetics.gatgets.IGeneticAnalyzerProvider;
@@ -103,7 +102,7 @@ public abstract class GuiAnalyzerProvider<C extends AbstractContainerMenu> exten
 		}
 		window.init(leftPos, topPos + (imageHeight - 166) / 2);
 
-		addRenderableWidget(new GuiToggleButton(leftPos + buttonX, topPos + buttonY, 18, 20, TOGGLE_BUTTON, new Handler())).visible = ((IContainerAnalyzerProvider) container).getAnalyzerSlot() != null;
+		addRenderableWidget(new GuiToggleButton(leftPos + buttonX, topPos + buttonY, 18, 20, TOGGLE_BUTTON, new Handler())).visible = ((IContainerAnalyzerProvider) menu).getAnalyzerSlot() != null;
 		dirty = true;
 
 		slotDirty = true;
@@ -136,7 +135,7 @@ public abstract class GuiAnalyzerProvider<C extends AbstractContainerMenu> exten
 				slotAnalyzer = new SlotAnalyzer((ItemInventoryAlyzer) slotAnalyzer.container, slotAnalyzer.getSlotIndex(), element.getAbsoluteX() - leftPos + 6, element.getAbsoluteY() - topPos + 9);
 				slotAnalyzer.index = index;
 				slotAnalyzer.setVisibleCallback(analyzer::isVisible);
-				container.slots.set(index, slotAnalyzer);
+				menu.slots.set(index, slotAnalyzer);
 			}
 			slotDirty = false;
 		}

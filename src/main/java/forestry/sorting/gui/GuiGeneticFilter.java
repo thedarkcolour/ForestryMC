@@ -71,7 +71,7 @@ public class GuiGeneticFilter extends GuiForestryTitled<ContainerGeneticFilter> 
 			searchField.setVisible(true);
 		}
 		selection.filterEntries(searchField != null ? searchField.getValue() : "");
-		for (Slot slot : this.container.slots) {
+		for (Slot slot : this.menu.slots) {
 			if (slot instanceof SlotGeneticFilter filter) {
 				filter.setEnabled(false);
 			}
@@ -85,7 +85,7 @@ public class GuiGeneticFilter extends GuiForestryTitled<ContainerGeneticFilter> 
 			searchField.setVisible(false);
 		}
 		scrollBar.setVisible(false);
-		for (Slot slot : this.container.slots) {
+		for (Slot slot : this.menu.slots) {
 			if (slot instanceof SlotGeneticFilter filter) {
 				filter.setEnabled(true);
 			}

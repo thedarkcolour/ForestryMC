@@ -12,6 +12,8 @@ package forestry.core.tiles;
 
 import java.io.IOException;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +25,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -43,7 +44,6 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 	public static final VoxelShape CHEST_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
 	private final IForestrySpeciesRoot speciesRoot;
-	private final ChestLidController chestLidController = new ChestLidController();
 	public float lidAngle;
 	public float prevLidAngle;
 	private int numPlayersUsing;
@@ -95,7 +95,7 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 
 	@Override
 	public void flipPage(ServerPlayer player, short page) {
-		NetworkHooks.openScreen(player, this, p -> {
+		NetworkHooks.openScreen(player, new PagedMenuProvider(page), p -> {
 			p.writeBlockPos(this.worldPosition);
 			p.writeVarInt(page);
 		});
@@ -103,7 +103,7 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 
 	@Override
 	public void openGui(ServerPlayer player, BlockPos pos) {
-		NetworkHooks.openScreen(player, this, p -> {
+		NetworkHooks.openScreen(player, new PagedMenuProvider(0), p -> {
 			p.writeBlockPos(this.worldPosition);
 			p.writeVarInt(0);
 		});
@@ -129,5 +129,24 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 
 	public IForestrySpeciesRoot getSpeciesRoot() {
 		return speciesRoot;
+	}
+
+	// ensures ContainerNaturalistInventory.page is correct on the server side
+	private class PagedMenuProvider implements MenuProvider {
+		private final int page;
+
+		private PagedMenuProvider(int page) {
+			this.page = page;
+		}
+
+		@Override
+		public Component getDisplayName() {
+			return TileNaturalistChest.this.getDisplayName();
+		}
+
+		@Override
+		public AbstractContainerMenu createMenu(int windowId, Inventory playerInv, Player player) {
+			return new ContainerNaturalistInventory(windowId, playerInv, TileNaturalistChest.this, page);
+		}
 	}
 }

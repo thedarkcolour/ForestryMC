@@ -1,6 +1,5 @@
 package forestry.core.blocks;
 
-import forestry.core.network.IStreamable;
 import forestry.core.network.PacketHandlerServer;
 import forestry.core.network.packets.PacketTileStream;
 import forestry.core.tiles.TileForestry;

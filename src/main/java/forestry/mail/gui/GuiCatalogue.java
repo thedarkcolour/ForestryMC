@@ -35,7 +35,6 @@ import forestry.core.gui.widgets.Widget;
 import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.Translator;
 
 public class GuiCatalogue extends GuiForestry<ContainerCatalogue> {
 
@@ -84,11 +83,11 @@ public class GuiCatalogue extends GuiForestry<ContainerCatalogue> {
 	protected void renderBg(PoseStack transform, float partialTicks, int mouseY, int mouseX) {
 		super.renderBg(transform, partialTicks, mouseY, mouseX);
 
-		Minecraft.getInstance().font.draw(transform, String.format("%s / %s", container.getPageNumber(), container.getPageCount()), leftPos + imageWidth - 72, topPos + 12, ColourProperties.INSTANCE.get("gui.book"));
+		Minecraft.getInstance().font.draw(transform, String.format("%s / %s", menu.getPageNumber(), menu.getPageCount()), leftPos + imageWidth - 72, topPos + 12, ColourProperties.INSTANCE.get("gui.book"));
 
 		clearTradeInfoWidgets();
 
-		ITradeStationInfo tradeInfo = container.getTradeInfo();
+		ITradeStationInfo tradeInfo = menu.getTradeInfo();
 
 		if (tradeInfo != null) {
 			drawTradePreview(transform, tradeInfo, leftPos + 38, topPos + 30);
@@ -98,7 +97,7 @@ public class GuiCatalogue extends GuiForestry<ContainerCatalogue> {
 			buttonUse.visible = false;
 		}
 
-		buttonFilter.setMessage(Component.translatable("for.gui.mail.filter." + container.getFilterIdent()));
+		buttonFilter.setMessage(Component.translatable("for.gui.mail.filter." + menu.getFilterIdent()));
 	}
 
 	private void drawNoTrade(int x, int y) {
@@ -152,7 +151,7 @@ public class GuiCatalogue extends GuiForestry<ContainerCatalogue> {
 			case 4 -> // cycle filter
 					NetworkUtil.sendToServer(new PacketGuiSelectRequest(2, 0));
 			case 5 -> {
-				ITradeStationInfo info = container.getTradeInfo();
+				ITradeStationInfo info = menu.getTradeInfo();
 				if (info != null) {
 					SessionVars.setStringVar("mail.letter.recipient", info.getAddress().getName());
 					SessionVars.setStringVar("mail.letter.addressee", EnumAddressee.TRADER.toString());

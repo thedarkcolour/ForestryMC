@@ -72,7 +72,7 @@ public class MultiblockWorldRegistry {
 	public void tickStart() {
 		if (!controllers.isEmpty()) {
 			for (IMultiblockControllerInternal controller : controllers) {
-				if (controller.getWorldObj() == world && controller.getWorldObj().isClientSide == world.isClientSide()) {
+				if (controller.getWorldObj() == world && controller.getWorldObj().isClientSide == world.isClientSide) {
 					if (controller.isEmpty()) {
 						// This happens on the server when the user breaks the last block. It's fine.
 						// Mark 'er dead and move on.
@@ -116,8 +116,7 @@ public class MultiblockWorldRegistry {
 				// These are blocks that exist in a valid chunk and require a controller
 				for (IMultiblockComponent orphan : orphansToProcess) {
 					coord = orphan.getCoordinates();
-					//TODO loaded boolean
-					if (chunkProvider.getChunk(coord.getX() >> 4, coord.getZ() >> 4, true) == null) {
+					if (chunkProvider.getChunk(coord.getX() >> 4, coord.getZ() >> 4, false) == null) {
 						continue;
 					}
 
@@ -137,7 +136,7 @@ public class MultiblockWorldRegistry {
 					if (compatibleControllers.isEmpty()) {
 						// FOREVER ALONE! Create and register a new controller.
 						// THIS IS THE ONLY PLACE WHERE NEW CONTROLLERS ARE CREATED.
-						MultiblockLogic logic = (MultiblockLogic) orphan.getMultiblockLogic();
+						MultiblockLogic<?> logic = (MultiblockLogic<?>) orphan.getMultiblockLogic();
 						IMultiblockControllerInternal newController = logic.createNewController(world);
 						newController.attachBlock(orphan);
 						this.controllers.add(newController);
@@ -157,7 +156,7 @@ public class MultiblockWorldRegistry {
 							}
 						}
 
-						if (candidatePools.size() <= 0) {
+						if (candidatePools.isEmpty()) {
 							// No pools nearby, create a new merge pool
 							mergePools.add(compatibleControllers);
 						} else if (candidatePools.size() == 1) {
@@ -261,7 +260,7 @@ public class MultiblockWorldRegistry {
 		// list, and will be checked next tick to see if their chunk is still loaded.
 		for (IMultiblockComponent part : detachedParts) {
 			// Ensure parts know they're detached
-			MultiblockLogic logic = (MultiblockLogic) part.getMultiblockLogic();
+			MultiblockLogic<?> logic = (MultiblockLogic<?>) part.getMultiblockLogic();
 			logic.assertDetached(part);
 		}
 
@@ -274,7 +273,7 @@ public class MultiblockWorldRegistry {
 		Set<IMultiblockControllerInternal> controllers = new HashSet<>();
 		IMultiblockControllerInternal bestController = null;
 
-		MultiblockLogic logic = (MultiblockLogic) part.getMultiblockLogic();
+		MultiblockLogic<?> logic = (MultiblockLogic<?>) part.getMultiblockLogic();
 		Class<?> controllerClass = logic.getControllerClass();
 		// Look for a compatible controller in our neighboring parts.
 		List<IMultiblockComponent> partsToCheck = MultiblockUtil.getNeighboringParts(world, part);
@@ -362,7 +361,7 @@ public class MultiblockWorldRegistry {
 			}
 		}
 
-		MultiblockLogic logic = (MultiblockLogic) part.getMultiblockLogic();
+		MultiblockLogic<?> logic = (MultiblockLogic<?>) part.getMultiblockLogic();
 		logic.assertDetached(part);
 	}
 

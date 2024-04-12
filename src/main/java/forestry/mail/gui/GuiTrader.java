@@ -18,7 +18,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import forestry.core.config.Constants;
 import forestry.core.gui.GuiForestry;
 import forestry.core.render.ColourProperties;
-import forestry.core.utils.Translator;
 import forestry.mail.tiles.TileTrader;
 
 public class GuiTrader extends GuiForestry<ContainerTrader> {
@@ -49,7 +48,7 @@ public class GuiTrader extends GuiForestry<ContainerTrader> {
 	protected void renderBg(PoseStack transform, float partialTicks, int mouseY, int mouseX) {
 		super.renderBg(transform, partialTicks, mouseY, mouseX);
 
-		this.minecraft.font.draw(transform, container.getAddress().getName(), leftPos + 19, topPos + 22, ColourProperties.INSTANCE.get("gui.mail.text"));
+		this.minecraft.font.draw(transform, menu.getAddress().getName(), leftPos + 19, topPos + 22, ColourProperties.INSTANCE.get("gui.mail.text"));
 	}
 
 	@Override

@@ -48,7 +48,7 @@ public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
 	protected void renderBg(PoseStack transform, float partialTicks, int mouseY, int mouseX) {
 		super.renderBg(transform, partialTicks, mouseY, mouseX);
 
-		ICircuitLayout layout = container.getLayout();
+		ICircuitLayout layout = menu.getLayout();
 		Component title = layout.getName();
 		getFontRenderer().draw(transform, title, leftPos + 8 + textLayout.getCenteredOffset(title, 138), topPos + 16, ColourProperties.INSTANCE.get("gui.screen"));
 

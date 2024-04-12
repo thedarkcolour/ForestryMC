@@ -61,7 +61,7 @@ public class GuiBeeHousing<C extends ContainerForestry & IContainerBeeHousing> e
 
 	@Override
 	protected void drawSelectedSlot(PoseStack transform, int selectedSlot) {
-		Slot slot = container.getForestrySlot(1 + selectedSlot);
+		Slot slot = menu.getForestrySlot(1 + selectedSlot);
 		SELECTED_COMB_SLOT.draw(transform, topPos + slot.y - 3, leftPos + slot.x - 3);
 	}
 
@@ -82,7 +82,7 @@ public class GuiBeeHousing<C extends ContainerForestry & IContainerBeeHousing> e
 
 	@Override
 	public ItemStack getSpecimen(int index) {
-		Slot slot = container.getForestrySlot(getSelectedSlot(index));
+		Slot slot = menu.getForestrySlot(getSelectedSlot(index));
 		return slot.getItem();
 	}
 

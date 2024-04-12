@@ -26,6 +26,7 @@ import forestry.core.tiles.TileUtil;
 public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistChest> implements IGuiSelectable {
 	private final int page;
 	public static final int MAX_PAGE = 5;
+	public boolean closing = true;
 
 	public ContainerNaturalistInventory(int windowId, Inventory player, TileNaturalistChest tile, int page) {
 		super(windowId, CoreMenuTypes.NATURALIST_INVENTORY.menuType(), player, tile, 18, 120);
@@ -41,8 +42,6 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 					int slot = y + page * 25 + x * 5;
 					if (page == selectedPage) {
 						container.addSlot(new SlotFilteredInventory(inventory, slot, 100 + y * 18, 21 + x * 18));
-					} else {
-						container.addSlot(new SlotFilteredInventory(inventory, slot, -10000, -10000));
 					}
 				}
 			}
@@ -56,6 +55,7 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 
 	@Override
 	public void handleSelectionRequest(ServerPlayer player, int primary, int secondary) {
+		closing = false;
 		tile.flipPage(player, (short) primary);
 	}
 
@@ -67,12 +67,17 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 	public void addSlotListener(ContainerListener listener) {
 		super.addSlotListener(listener);
 
-		tile.increaseNumPlayersUsing();
+		if (page == 0) {
+			tile.increaseNumPlayersUsing();
+		}
 	}
 
 	@Override
 	public void removed(Player player) {
 		super.removed(player);
-		tile.decreaseNumPlayersUsing();
+
+		if (closing) {
+            tile.decreaseNumPlayersUsing();
+        }
 	}
 }

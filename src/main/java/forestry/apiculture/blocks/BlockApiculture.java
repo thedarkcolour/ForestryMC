@@ -11,12 +11,13 @@
 package forestry.apiculture.blocks;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
 import forestry.core.blocks.BlockBase;
 
 public class BlockApiculture extends BlockBase<BlockTypeApiculture> {
 	public BlockApiculture(BlockTypeApiculture type) {
-		super(type, Block.Properties.of(Material.WOOD));
+		super(type, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD));
 	}
 }
