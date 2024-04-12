@@ -1,21 +1,10 @@
-buildscript {
-	repositories {
-		maven { url = "https://files.minecraftforge.net/maven" }
-		mavenCentral()
-	}
-
-	dependencies {
-		classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "6.0.+", changing: true
-	}
-}
-
 plugins {
+	id 'net.minecraftforge.gradle' version '6.+'
 	id "maven-publish"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "2.8.7"
+	id "org.parchmentmc.librarian.forgegradle" version "1.+"
 }
-
-apply plugin: "net.minecraftforge.gradle"
 
 group = "net.sengir.forestry"
 version = System.getenv("FORESTRY_VERSION") ?: "0.0.0.0"
@@ -63,7 +52,7 @@ sourceSets {
 }
 
 minecraft {
-	mappings channel: "official", version: minecraft_version
+	mappings channel: 'parchment', version: "$parchment_mappings-$minecraft_version"
 
 	accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
 
