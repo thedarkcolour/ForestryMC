@@ -1,28 +1,26 @@
 package forestry.energy;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 import forestry.core.network.IStreamable;
 import forestry.core.network.PacketBufferForestry;
-import forestry.energy.compat.EnergyStorageWrapper;
 
-public class EnergyManager extends EnergyStorage implements IStreamable, INbtReadable, INbtWritable {
-	private boolean canExtract = true;
-
-	public EnergyManager(int maxTransfer, int capacity) {
-		super(EnergyHelper.scaleForDifficulty(capacity), EnergyHelper.scaleForDifficulty(maxTransfer), EnergyHelper.scaleForDifficulty(maxTransfer));
+public class ForestryEnergyStorage extends EnergyStorage implements IStreamable, INbtReadable, INbtWritable {
+	public ForestryEnergyStorage(int maxTransfer, int capacity) {
+		this(maxTransfer, capacity, EnergyTransferMode.RECEIVE);
 	}
 
-	public void setReceiveOnly() {
-		canExtract = false;
+	public ForestryEnergyStorage(int maxTransfer, int capacity, EnergyTransferMode mode) {
+		super(
+				EnergyHelper.scaleForDifficulty(capacity),
+				mode.canReceive() ? EnergyHelper.scaleForDifficulty(maxTransfer) : 0,
+				mode.canExtract() ? EnergyHelper.scaleForDifficulty(maxTransfer) : 0
+		);
 	}
 
 	@Override
@@ -58,6 +56,10 @@ public class EnergyManager extends EnergyStorage implements IStreamable, INbtRea
 		setEnergyStored(energy - amount);
 	}
 
+	public void generateEnergy(int amount) {
+		setEnergyStored(energy + amount);
+	}
+
 	public void setEnergyStored(int energyStored) {
 		this.energy = energyStored;
 		if (this.energy > capacity) {
@@ -67,12 +69,7 @@ public class EnergyManager extends EnergyStorage implements IStreamable, INbtRea
 		}
 	}
 
-	public <T> LazyOptional<T> getCapability(Capability<T> capability) {
-		if (capability == ForgeCapabilities.ENERGY) {
-            IEnergyStorage energyStorage = new EnergyStorageWrapper(this, canExtract);
-            return LazyOptional.of(() -> energyStorage).cast();
-        }
-
-		return LazyOptional.empty();
+	public int calculateRedstone() {
+		return Mth.floor(((float) energy / (float) capacity) * 14.0F) + (energy > 0 ? 1 : 0);
 	}
 }

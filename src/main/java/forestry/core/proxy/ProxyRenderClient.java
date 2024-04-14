@@ -23,6 +23,7 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import forestry.core.blocks.IMachinePropertiesTesr;
+import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.features.CoreBlocks;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.gui.elements.GuiElementFactory;
@@ -31,6 +32,7 @@ import forestry.core.models.FluidContainerModel;
 import forestry.core.render.ColourProperties;
 import forestry.core.render.ForestrySpriteUploader;
 import forestry.core.render.RenderAnalyzer;
+import forestry.core.render.RenderEngine;
 import forestry.core.render.RenderEscritoire;
 import forestry.core.render.RenderMachine;
 import forestry.core.render.RenderMill;
@@ -41,6 +43,7 @@ import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileEscritoire;
 import forestry.core.tiles.TileMill;
 import forestry.core.tiles.TileNaturalistChest;
+import forestry.energy.tiles.EngineBlockEntity;
 import forestry.modules.IClientModuleHandler;
 import forestry.modules.ModuleManager;
 
@@ -80,6 +83,11 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 	@Override
 	public void setRenderMill(IMachinePropertiesTesr<? extends TileMill> machineProperties, String baseTexture) {
 		machineProperties.setRenderer(RenderMill.MODEL_LAYER, part -> new RenderMill(part, baseTexture));
+	}
+
+	@Override
+	public void setRenderDefaultEngine(MachinePropertiesTesr<? extends EngineBlockEntity> properties, String baseTexture) {
+		properties.setRenderer(RenderEngine.MODEL_LAYER, root -> new RenderEngine(root, baseTexture));
 	}
 
 	@Override
@@ -127,5 +135,6 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 		event.registerLayerDefinition(RenderNaturalistChest.MODEL_LAYER, RenderNaturalistChest::createBodyLayer);
 		event.registerLayerDefinition(RenderEscritoire.MODEL_LAYER, RenderEscritoire::createBodyLayer);
 		event.registerLayerDefinition(RenderMill.MODEL_LAYER, RenderMill::createBodyLayer);
+		event.registerLayerDefinition(RenderEngine.MODEL_LAYER, RenderEngine::createBodyLayer);
 	}
 }

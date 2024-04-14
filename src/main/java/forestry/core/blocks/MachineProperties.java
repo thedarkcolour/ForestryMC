@@ -32,6 +32,7 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 	@Nullable
 	private Block block;
 
+	// todo make this not a supplier because Feature... is already a registry object
 	public MachineProperties(Supplier<FeatureTileType<? extends T>> teType, String name, IShapeProvider shape, @Nullable ForestryTicker<? extends T> clientTicker, @Nullable ForestryTicker<? extends T> serverTicker) {
 		this.teType = teType;
 		this.name = name;

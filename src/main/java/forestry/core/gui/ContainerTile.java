@@ -30,7 +30,7 @@ import forestry.core.network.packets.PacketGuiUpdate;
 import forestry.core.tiles.IPowerHandler;
 import forestry.core.tiles.TilePowered;
 import forestry.core.tiles.TileUtil;
-import forestry.energy.EnergyManager;
+import forestry.energy.ForestryEnergyStorage;
 
 //TODO: Add needsGuiUpdate() method, so we only send one gui update packet.
 public abstract class ContainerTile<T extends BlockEntity> extends ContainerForestry {
@@ -78,8 +78,8 @@ public abstract class ContainerTile<T extends BlockEntity> extends ContainerFore
 		}
 
 		if (tile instanceof IPowerHandler) {
-			EnergyManager energyManager = ((IPowerHandler) tile).getEnergyManager();
-			int energyManagerData = energyManager.getEnergyStored();
+			ForestryEnergyStorage energyStorage = ((IPowerHandler) tile).getEnergyManager();
+			int energyManagerData = energyStorage.getEnergyStored();
 			if (energyManagerData != previousEnergyManagerData) {
 				PacketGuiEnergy packet = new PacketGuiEnergy(containerId, energyManagerData);
 				sendPacketToListeners(packet);
@@ -113,8 +113,8 @@ public abstract class ContainerTile<T extends BlockEntity> extends ContainerFore
 	@OnlyIn(Dist.CLIENT)
 	public void onGuiEnergy(int energyStored) {
 		if (tile instanceof IPowerHandler) {
-			EnergyManager energyManager = ((IPowerHandler) tile).getEnergyManager();
-			energyManager.setEnergyStored(energyStored);
+			ForestryEnergyStorage energyStorage = ((IPowerHandler) tile).getEnergyManager();
+			energyStorage.setEnergyStored(energyStored);
 		}
 	}
 

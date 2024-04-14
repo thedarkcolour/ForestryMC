@@ -66,7 +66,7 @@ public class FermenterRecipeCategory extends ForestryRecipeCategory<IFermenterRe
 			.addIngredients(recipe.getResource());
 
 		Collection<FermenterFuel> fuels = FuelManager.fermenterFuel.values();
-		List<ItemStack> fuelInputs = fuels.stream().map(FermenterFuel::getItem).toList();
+		List<ItemStack> fuelInputs = fuels.stream().map(FermenterFuel::item).toList();
 		builder.addSlot(RecipeIngredientRole.INPUT, 41, 39)
 				.addItemStacks(fuelInputs);
 

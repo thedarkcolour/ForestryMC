@@ -777,7 +777,6 @@ public enum BeeDefinition implements IBeeDefinition {
 		protected void setSpeciesProperties(IAlleleBeeSpeciesBuilder beeSpecies) {
 			beeSpecies.addProduct(() -> BEE_COMBS.stack(EnumHoneyComb.HONEY, 1), 0.40f)
 				.addProduct(() -> new ItemStack(Items.COOKIE), 0.15f)
-				//TODO - use tag here? have to be careful about wither skel skulls though
 				.addSpecialty(() -> new ItemStack(Items.SKELETON_SKULL, 1), 0.02f)
 				.addSpecialty(() -> new ItemStack(Items.ZOMBIE_HEAD, 1), 0.02f)
 				.addSpecialty(() -> new ItemStack(Items.CREEPER_HEAD, 1), 0.02f)

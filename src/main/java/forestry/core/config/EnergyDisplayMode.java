@@ -11,6 +11,11 @@ public enum EnergyDisplayMode {
 	}
 
 	public String formatEnergyValue(int energy) {
-		return NumberFormat.getIntegerInstance(Minecraft.getInstance().getLocale()).format((float) energy) + " RF";
+		NumberFormat format = NumberFormat.getIntegerInstance(Minecraft.getInstance().getLocale());
+		return format.format(energy) + " RF";
+	}
+
+	public String formatRate(int rate) {
+		return formatEnergyValue(rate) + "/t";
 	}
 }

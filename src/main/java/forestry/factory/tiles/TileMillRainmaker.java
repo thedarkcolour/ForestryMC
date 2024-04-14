@@ -79,9 +79,9 @@ public class TileMillRainmaker extends TileMill {
 
 	public void addCharge(RainSubstrate substrate) {
 		charge = 1;
-		speed = substrate.getSpeed();
-		duration = substrate.getDuration();
-		reverse = substrate.isReverse();
+		speed = substrate.speed();
+		duration = substrate.duration();
+		reverse = substrate.reverse();
 		sendNetworkUpdate();
 	}
 

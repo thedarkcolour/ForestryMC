@@ -35,8 +35,8 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 	@Nullable
 	private final ServerPlayer player;
 
-	protected ContainerForestry(int windowId, MenuType<?> type, @Nullable Player player) {
-		super(type, windowId);
+	protected ContainerForestry(int containerId, MenuType<?> type, @Nullable Player player) {
+		super(type, containerId);
 
 		if (player instanceof ServerPlayer serverPlayer) {
 			this.player = serverPlayer;

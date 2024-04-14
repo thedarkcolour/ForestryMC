@@ -57,7 +57,7 @@ import forestry.core.fluids.TankManager;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
-import forestry.energy.EnergyManager;
+import forestry.energy.ForestryEnergyStorage;
 
 public class TileHabitatFormer extends TilePowered implements IClimateHousing, IClimatised, ILiquidTankTile {
 	private static final String TRANSFORMER_KEY = "Transformer";
@@ -156,16 +156,16 @@ public class TileHabitatFormer extends TilePowered implements IClimateHousing, I
 
 	private void updateTemperature(IErrorLogic errorLogic, IClimateState changedState) {
 		IClimateManipulator manipulator = transformer.createManipulator(ClimateType.TEMPERATURE).setAllowBackwards().build();
-		EnergyManager energyManager = getEnergyManager();
+		ForestryEnergyStorage energyStorage = getEnergyManager();
 		int currentCost = getEnergyCost(changedState);
-		if (energyManager.extractEnergy(currentCost, true) > 0) {
+		if (energyStorage.extractEnergy(currentCost, true) > 0) {
 			IClimateState simulatedState = manipulator.addChange(true);
 			int energyCost = getEnergyCost(simulatedState);
-			if (energyManager.extractEnergy(energyCost, true) > 0) {
-				energyManager.extractEnergy(energyCost, false);
+			if (energyStorage.extractEnergy(energyCost, true) > 0) {
+				energyStorage.extractEnergy(energyCost, false);
 				manipulator.addChange(false);
 			} else {
-				energyManager.extractEnergy(currentCost, false);
+				energyStorage.extractEnergy(currentCost, false);
 			}
 			errorLogic.setCondition(false, EnumErrorCode.NO_POWER);
 		} else {

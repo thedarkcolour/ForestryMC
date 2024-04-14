@@ -1,7 +1,7 @@
 @ParametersAreNonnullByDefault
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package forestry.energy.proxy;
+package forestry.energy.screen;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.climate.IClimateControlled;
@@ -28,7 +29,8 @@ import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
 import forestry.core.utils.NetworkUtil;
 import forestry.energy.EnergyHelper;
-import forestry.energy.EnergyManager;
+import forestry.energy.ForestryEnergyStorage;
+import forestry.energy.EnergyTransferMode;
 
 public abstract class TileAlvearyClimatiser extends TileAlveary implements IActivatable, IAlvearyComponent.Climatiser {
 
@@ -43,7 +45,9 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 		float getBoundaryDown();
 	}
 
-	private final EnergyManager energyManager;
+	private final ForestryEnergyStorage energyStorage;
+	private final LazyOptional<ForestryEnergyStorage> energyCap;
+
 	private final IClimitiserDefinition definition;
 
 	private int workingTime = 0;
@@ -55,14 +59,14 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 		super(alvearyType, pos, state);
 		this.definition = definition;
 
-		this.energyManager = new EnergyManager(1000, 2000);
-		this.energyManager.setReceiveOnly();
+		this.energyStorage = new ForestryEnergyStorage(1000, 2000, EnergyTransferMode.RECEIVE);
+		this.energyCap = LazyOptional.of(() -> energyStorage);
 	}
 
 	/* UPDATING */
 	@Override
 	public void changeClimate(int tick, IClimateControlled climateControlled) {
-		if (workingTime < 20 && EnergyHelper.consumeEnergyToDoWork(energyManager, WORK_CYCLES, ENERGY_PER_OPERATION)) {
+		if (workingTime < 20 && EnergyHelper.consumeEnergyToDoWork(energyStorage, WORK_CYCLES, ENERGY_PER_OPERATION)) {
 			// one tick of work for every 10 RF
 			workingTime += ENERGY_PER_OPERATION / 10;
 		}
@@ -79,7 +83,7 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 	@Override
 	public void load(CompoundTag compoundNBT) {
 		super.load(compoundNBT);
-		energyManager.read(compoundNBT);
+		energyStorage.read(compoundNBT);
 		workingTime = compoundNBT.getInt("Heating");
 		setActive(workingTime > 0);
 	}
@@ -87,7 +91,7 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 	@Override
 	public void saveAdditional(CompoundTag compoundNBT) {
 		super.saveAdditional(compoundNBT);
-		energyManager.write(compoundNBT);
+		energyStorage.write(compoundNBT);
 		compoundNBT.putInt("Heating", workingTime);
 	}
 
@@ -132,9 +136,8 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-		LazyOptional<T> energyCapability = energyManager.getCapability(capability);
-		if (energyCapability.isPresent()) {
-			return energyCapability;
+		if (!remove && capability == ForgeCapabilities.ENERGY) {
+			return energyCap.cast();
 		}
 		return super.getCapability(capability, facing);
 	}

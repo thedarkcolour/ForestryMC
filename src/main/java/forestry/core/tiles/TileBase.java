@@ -71,7 +71,7 @@ public abstract class TileBase extends TileForestry {
 
 	@Nonnull
 	public Direction getFacing() {
-		return getLevel().getBlockState(getBlockPos()).getValue(BlockBase.FACING);
+		return getBlockState().getValue(BlockBase.FACING);
 	}
 
 }

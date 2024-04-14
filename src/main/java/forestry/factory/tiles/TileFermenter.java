@@ -184,8 +184,8 @@ public class TileFermenter extends TilePowered implements WorldlyContainer, ILiq
 			if (!fuel.isEmpty()) {
 				FermenterFuel fermenterFuel = FuelManager.fermenterFuel.get(fuel);
 				if (fermenterFuel != null) {
-					fuelBurnTime = fuelTotalTime = fermenterFuel.getBurnDuration();
-					fuelCurrentFerment = fermenterFuel.getFermentPerCycle();
+					fuelBurnTime = fuelTotalTime = fermenterFuel.burnDuration();
+					fuelCurrentFerment = fermenterFuel.fermentPerCycle();
 
 					removeItem(InventoryFermenter.SLOT_FUEL, 1);
 				}

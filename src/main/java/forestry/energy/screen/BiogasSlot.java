@@ -8,7 +8,7 @@
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
  ******************************************************************************/
-package forestry.energy.gui;
+package forestry.energy.screen;
 
 
 import net.minecraft.network.chat.Component;

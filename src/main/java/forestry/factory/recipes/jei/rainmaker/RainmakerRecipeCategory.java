@@ -17,7 +17,6 @@ import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.awt.Color;
@@ -47,26 +46,26 @@ public class RainmakerRecipeCategory extends ForestryRecipeCategory<RainSubstrat
 	public void setRecipe(IRecipeLayoutBuilder builder, RainSubstrate recipe, IFocusGroup focuses) {
 		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
 				.setBackground(slot, -1, -1)
-				.addItemStack(recipe.getItem());
+				.addItemStack(recipe.item());
 	}
 
 	@Override
 	public void draw(RainSubstrate recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
 		Component effect = getEffectString(recipe);
-		Component speed = Component.translatable("for.jei.rainmaker.speed", recipe.getSpeed());
+		Component speed = Component.translatable("for.jei.rainmaker.speed", recipe.speed());
 
 		Minecraft minecraft = Minecraft.getInstance();
 		Font fontRenderer = minecraft.font;
 		fontRenderer.draw(stack, effect, 24, 0, Color.darkGray.getRGB());
 		fontRenderer.draw(stack, speed, 24, 10, Color.gray.getRGB());
-		if (!recipe.isReverse()) {
-			Component duration = Component.translatable("for.jei.rainmaker.duration", recipe.getDuration());
+		if (!recipe.reverse()) {
+			Component duration = Component.translatable("for.jei.rainmaker.duration", recipe.duration());
 			fontRenderer.draw(stack, duration, 24, 20, Color.gray.getRGB());
 		}
 	}
 
 	private static Component getEffectString(RainSubstrate recipe) {
-		if (recipe.isReverse()) {
+		if (recipe.reverse()) {
 			return Component.translatable("for.jei.rainmaker.stops.rain");
 		} else {
 			return Component.translatable("for.jei.rainmaker.causes.rain");

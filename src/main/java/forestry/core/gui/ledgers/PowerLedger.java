@@ -16,15 +16,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.core.config.Config;
 import forestry.core.render.TextureManagerForestry;
-import forestry.core.utils.Translator;
-import forestry.energy.EnergyManager;
+import forestry.energy.ForestryEnergyStorage;
 
 public class PowerLedger extends Ledger {
-	private final EnergyManager energyManager;
+	private final ForestryEnergyStorage energyStorage;
 
-	public PowerLedger(LedgerManager manager, EnergyManager energyManager) {
+	public PowerLedger(LedgerManager manager, ForestryEnergyStorage energyStorage) {
 		super(manager, "power");
-		this.energyManager = energyManager;
+		this.energyStorage = energyStorage;
 		maxHeight = 94;
 	}
 
@@ -46,18 +45,18 @@ public class PowerLedger extends Ledger {
 		drawHeader(transform, Component.translatable("for.gui.energy"), xHeader, y + 8);
 
 		drawSubheader(transform, Component.translatable("for.gui.stored").append(":"), xBody, y + 20);
-		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyManager.getEnergyStored()), xBody, y + 32);
+		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyStorage.getEnergyStored()), xBody, y + 32);
 
 		drawSubheader(transform, Component.translatable("for.gui.maxenergy").append(":"), xBody, y + 44);
-		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyManager.getMaxEnergyStored()), xBody, y + 56);
+		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyStorage.getMaxEnergyStored()), xBody, y + 56);
 
 		drawSubheader(transform, Component.translatable("for.gui.maxenergyreceive").append(":"), xBody, y + 68);
-		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyManager.getMaxEnergyReceived()), xBody, y + 80);
+		drawText(transform, Config.energyDisplayMode.formatEnergyValue(energyStorage.getMaxEnergyReceived()), xBody, y + 80);
 	}
 
 	@Override
 	public Component getTooltip() {
-		return Component.literal(Config.energyDisplayMode.formatEnergyValue(energyManager.getEnergyStored()));
+		return Component.literal(Config.energyDisplayMode.formatEnergyValue(energyStorage.getEnergyStored()));
 	}
 
 }

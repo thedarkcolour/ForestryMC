@@ -23,29 +23,29 @@ public class FlexLayout implements Layout {
 	}
 
 	public static FlexLayout horizontal(int spacing, Insets margin) {
-		return new FlexLayout(Direction.HORIZONTAL, spacing, margin);
+		return new FlexLayout(LayoutDirection.HORIZONTAL, spacing, margin);
 	}
 
 	public static FlexLayout vertical(int spacing, Insets margin) {
-		return new FlexLayout(Direction.VERTICAL, spacing, margin);
+		return new FlexLayout(LayoutDirection.VERTICAL, spacing, margin);
 	}
 
-	protected final Direction direction;
+	protected final LayoutDirection direction;
 	protected final int spacing;
 	protected final Insets margin;
 
-	protected FlexLayout(Direction direction, int spacing) {
+	protected FlexLayout(LayoutDirection direction, int spacing) {
 		this(direction, spacing, DEFAULT_MARGIN);
 	}
 
-	protected FlexLayout(Direction direction, int spacing, Insets margin) {
+	protected FlexLayout(LayoutDirection direction, int spacing, Insets margin) {
 		this.direction = direction;
 		this.spacing = spacing;
 		this.margin = margin;
 	}
 
 	public boolean isHorizontal() {
-		return direction == Direction.HORIZONTAL;
+		return direction == LayoutDirection.HORIZONTAL;
 	}
 
 	@Override
@@ -66,10 +66,10 @@ public class FlexLayout implements Layout {
 		boolean unboundExtent = sizeExtent < 0;
 		boolean unboundOpposite = oppositeExtent < 0;
 		if (unboundExtent) {
-			sizeExtent = (direction == Direction.HORIZONTAL ? margin.left : margin.top);
+			sizeExtent = (direction == LayoutDirection.HORIZONTAL ? margin.left : margin.top);
 		}
 		if (unboundOpposite) {
-			sizeExtent = (direction == Direction.HORIZONTAL ? margin.top : margin.left);
+			sizeExtent = (direction == LayoutDirection.HORIZONTAL ? margin.top : margin.left);
 		}
 		//unbound, extent will be calculated from the child elements
 		for (GuiElement element : container.getElements()) {
@@ -86,13 +86,13 @@ public class FlexLayout implements Layout {
 			}
 			oppositeExtent = Math.max(oppositeExtent, elementOpposite);
 		}
-		return direction == Direction.HORIZONTAL ?
+		return direction == LayoutDirection.HORIZONTAL ?
 				new Dimension(sizeExtent, oppositeExtent) :
 				new Dimension(oppositeExtent, sizeExtent);
 	}
 
 	protected void handleUnbound(Rectangle bounds, List<GuiElement> elements) {
-		int sizeExtent = (direction == Direction.HORIZONTAL ? margin.left : margin.top);
+		int sizeExtent = (direction == LayoutDirection.HORIZONTAL ? margin.left : margin.top);
 		for (GuiElement element : elements) {
 			Dimension preferredSize = new Dimension(element.getLayoutSize());
 			int elementExtent = getDirectionExtent(preferredSize);
@@ -102,7 +102,7 @@ public class FlexLayout implements Layout {
 			}
 			sizeExtent += elementExtent;
 			Point pos = new Point();
-			if (direction == Direction.HORIZONTAL) {
+			if (direction == LayoutDirection.HORIZONTAL) {
 				pos.x = sizeExtent;
 				if (preferredSize.height < 0) {
 					preferredSize.height = bounds.height;
@@ -117,8 +117,8 @@ public class FlexLayout implements Layout {
 			Layout.alignElement(bounds, elementBounds, element.getAlign(), direction);
 			element.setAssignedBounds(elementBounds);
 		}
-		sizeExtent += (direction == Direction.HORIZONTAL ? margin.right : margin.bottom);
-		if (direction == Direction.HORIZONTAL) {
+		sizeExtent += (direction == LayoutDirection.HORIZONTAL ? margin.right : margin.bottom);
+		if (direction == LayoutDirection.HORIZONTAL) {
 			bounds.width = sizeExtent;
 		} else {
 			bounds.height = sizeExtent;
@@ -127,14 +127,14 @@ public class FlexLayout implements Layout {
 
 	protected void handleBound(Rectangle bounds, List<GuiElement> elements) {
 		int sizeExtent = getDirectionExtent(bounds.getSize());
-		sizeExtent -= (direction == Direction.HORIZONTAL ? margin.left : margin.top)
-				+ (direction == Direction.HORIZONTAL ? margin.right : margin.bottom);
+		sizeExtent -= (direction == LayoutDirection.HORIZONTAL ? margin.left : margin.top)
+				+ (direction == LayoutDirection.HORIZONTAL ? margin.right : margin.bottom);
 		int flexExtent = getFlexExtent(elements, sizeExtent);
-		int position = direction == Direction.HORIZONTAL ? margin.left : margin.top;
+		int position = direction == LayoutDirection.HORIZONTAL ? margin.left : margin.top;
 		for (GuiElement element : elements) {
 			Dimension size = new Dimension(element.getLayoutSize());
 			Point pos = new Point();
-			if (direction == Direction.HORIZONTAL) {
+			if (direction == LayoutDirection.HORIZONTAL) {
 				pos.x = position;
 				if (size.width < 0) {
 					size.width = flexExtent;
@@ -180,10 +180,10 @@ public class FlexLayout implements Layout {
 	}
 
 	private int getDirectionExtent(Dimension preferredSize) {
-		return direction == Direction.HORIZONTAL ? preferredSize.width : preferredSize.height;
+		return direction == LayoutDirection.HORIZONTAL ? preferredSize.width : preferredSize.height;
 	}
 
 	private int getOppositeExtent(Dimension preferredSize) {
-		return direction == Direction.HORIZONTAL ? preferredSize.height : preferredSize.width;
+		return direction == LayoutDirection.HORIZONTAL ? preferredSize.height : preferredSize.width;
 	}
 }

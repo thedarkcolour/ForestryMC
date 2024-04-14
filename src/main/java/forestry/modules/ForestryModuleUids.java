@@ -6,6 +6,7 @@ public class ForestryModuleUids {
 	public static final String ARBORICULTURE = "arboriculture";
 	public static final String CHARCOAL = "charcoal";
 	public static final String CORE = "core";
+	public static final String ENERGY = "energy";
 	public static final String FACTORY = "factory";
 	public static final String FARMING = "farming";
 	public static final String CLIMATOLOGY = "climatology";

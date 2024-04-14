@@ -92,7 +92,7 @@ public enum ClientsideCode {
 	@Nullable
 	public static RecipeManager getRecipeManager() {
 		ClientPacketListener connection = Minecraft.getInstance().getConnection();
-		if (connection != null){
+		if (connection != null) {
 			return connection.getRecipeManager();
 		}
 		return null;

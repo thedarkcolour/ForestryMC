@@ -18,13 +18,13 @@ public interface Layout {
 		return container.getPreferredSize();
 	}
 
-	static void alignElement(Rectangle parent, Rectangle element, Alignment align, @Nullable Direction direction) {
-		if (direction == null || direction == Direction.VERTICAL) {
+	static void alignElement(Rectangle parent, Rectangle element, Alignment align, @Nullable LayoutDirection direction) {
+		if (direction == null || direction == LayoutDirection.VERTICAL) {
 			if (parent.width >= 0 && parent.width > element.width) {
 				element.x = (int) ((parent.width - element.width) * align.getXOffset()) + element.x;
 			}
 		}
-		if (direction == null || direction == Direction.HORIZONTAL) {
+		if (direction == null || direction == LayoutDirection.HORIZONTAL) {
 			if (parent.height >= 0 && parent.height > element.height) {
 				element.y = (int) ((parent.height - element.height) * align.getYOffset()) + element.y;
 			}
@@ -39,10 +39,5 @@ public interface Layout {
 		if (size.height == 0 || size.width == 0) {
 			Log.info(String.format("Found element with zero height or width %s", element));
 		}
-	}
-
-	enum Direction {
-		HORIZONTAL,
-		VERTICAL
 	}
 }

@@ -52,10 +52,10 @@ public class MoistenerRecipeCategory extends ForestryRecipeCategory<IMoistenerRe
 
 		Collection<MoistenerFuel> fuels = FuelManager.moistenerResource.values();
 		fuelResources = fuels.stream()
-				.map(MoistenerFuel::getResource)
+				.map(MoistenerFuel::resource)
 				.toList();
 		fuelProducts = fuels.stream()
-				.map(MoistenerFuel::getProduct)
+				.map(MoistenerFuel::product)
 				.toList();
 	}
 

@@ -50,7 +50,7 @@ import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.render.ColourProperties;
 import forestry.core.render.ForestryResource;
-import forestry.energy.EnergyManager;
+import forestry.energy.ForestryEnergyStorage;
 
 public abstract class GuiForestry<C extends AbstractContainerMenu> extends AbstractContainerScreen<C> implements IGuiSizable {
 	public final ResourceLocation textureFile;
@@ -124,9 +124,9 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 		ledgerManager.add(new ClimateLedger(ledgerManager, climatised));
 	}
 
-	protected final void addPowerLedger(EnergyManager energyManager) {
+	protected final void addPowerLedger(ForestryEnergyStorage energyStorage) {
 		if (Config.enableEnergyStat) {
-			ledgerManager.add(new PowerLedger(ledgerManager, energyManager));
+			ledgerManager.add(new PowerLedger(ledgerManager, energyStorage));
 		}
 	}
 

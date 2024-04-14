@@ -165,7 +165,7 @@ public class FactoryJeiPlugin implements IModPlugin {
 
 		if (ModuleFactory.machineEnabled()) {
 			List<RainSubstrate> recipes = FuelManager.rainSubstrate.values().stream()
-					.sorted(Comparator.comparing(RainSubstrate::getDuration))
+					.sorted(Comparator.comparing(RainSubstrate::duration))
 					.toList();
 			registry.addRecipes(ForestryRecipeType.RAINMAKER, recipes);
 		}

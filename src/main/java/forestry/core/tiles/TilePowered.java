@@ -23,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.core.IErrorLogic;
@@ -32,17 +33,15 @@ import forestry.core.network.IStreamableGui;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.render.TankRenderInfo;
 import forestry.energy.EnergyHelper;
-import forestry.energy.EnergyManager;
-
-//import forestry.core.capabilities.HasWorkWrapper;
-
-//import static forestry.core.capabilities.HasWorkWrapper.CAPABILITY_HAS_WORK;
+import forestry.energy.ForestryEnergyStorage;
+import forestry.energy.EnergyTransferMode;
 
 public abstract class TilePowered extends TileBase implements IRenderableTile, ISpeedUpgradable, IStreamableGui {
 
 	private static final int WORK_TICK_INTERVAL = 5; // one Forestry work tick happens every WORK_TICK_INTERVAL game ticks
 
-	private final EnergyManager energyManager;
+	private final ForestryEnergyStorage energyStorage;
+	private final LazyOptional<ForestryEnergyStorage> energyCap;
 
 	private int workCounter;
 	private int ticksPerWorkCycle;
@@ -56,14 +55,15 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 
 	protected TilePowered(BlockEntityType<?> type, BlockPos pos, BlockState state, int maxTransfer, int capacity) {
 		super(type, pos, state);
-		this.energyManager = new EnergyManager(maxTransfer, capacity);
-		this.energyManager.setReceiveOnly();
+
+		this.energyStorage = new ForestryEnergyStorage(maxTransfer, capacity, EnergyTransferMode.RECEIVE);
+		this.energyCap = LazyOptional.of(() -> energyStorage);
 
 		this.ticksPerWorkCycle = 4;
 	}
 
-	public EnergyManager getEnergyManager() {
-		return energyManager;
+	public ForestryEnergyStorage getEnergyManager() {
+		return energyStorage;
 	}
 
 	public int getWorkCounter() {
@@ -125,7 +125,7 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 
 		if (workCounter < ticksPerWorkCycle) {
 			int energyPerWorkCycle = getEnergyPerWorkCycle();
-			boolean consumedEnergy = EnergyHelper.consumeEnergyToDoWork(energyManager, ticksPerWorkCycle, energyPerWorkCycle);
+			boolean consumedEnergy = EnergyHelper.consumeEnergyToDoWork(energyStorage, ticksPerWorkCycle, energyPerWorkCycle);
 			if (consumedEnergy) {
 				errorLogic.setCondition(false, EnumErrorCode.NO_POWER);
 				workCounter++;
@@ -159,18 +159,18 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 	@Override
 	public void saveAdditional(CompoundTag nbt) {
 		super.saveAdditional(nbt);
-		energyManager.write(nbt);
+		energyStorage.write(nbt);
 	}
 
 	@Override
 	public void load(CompoundTag nbt) {
 		super.load(nbt);
-		energyManager.read(nbt);
+		energyStorage.read(nbt);
 	}
 
 	@Override
 	public void writeGuiData(PacketBufferForestry data) {
-		energyManager.writeData(data);
+		energyStorage.writeData(data);
 		data.writeVarInt(workCounter);
 		data.writeVarInt(getTicksPerWorkCycle());
 	}
@@ -178,7 +178,7 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void readGuiData(PacketBufferForestry data) throws IOException {
-		energyManager.readData(data);
+		energyStorage.readData(data);
 		workCounter = data.readVarInt();
 		ticksPerWorkCycle = data.readVarInt();
 	}
@@ -202,23 +202,10 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 		return TankRenderInfo.EMPTY;
 	}
 
-	/* IPowerHandler */
-	//	@Override
-	//	public boolean hasCapability(Capability<?> capability, @Nullable Direction facing) {
-	//		if (capability == CAPABILITY_HAS_WORK) {
-	//			return true;
-	//		}
-	//		return energyManager.hasCapability(capability) || super.hasCapability(capability, facing);
-	//	}
-
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-		//		if (capability == CAPABILITY_HAS_WORK) {
-		//			return CAPABILITY_HAS_WORK.cast(new HasWorkWrapper(this));
-		//		}
-		LazyOptional<T> energyCapability = energyManager.getCapability(capability);
-		if (energyCapability.isPresent()) {
-			return energyCapability;
+		if (!remove && capability == ForgeCapabilities.ENERGY) {
+			return energyCap.cast();
 		}
 		return super.getCapability(capability, facing);
 	}

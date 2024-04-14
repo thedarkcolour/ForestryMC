@@ -10,8 +10,8 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
-import forestry.energy.EnergyManager;
+import forestry.energy.ForestryEnergyStorage;
 
 public interface IPowerHandler {
-	EnergyManager getEnergyManager();
+	ForestryEnergyStorage getEnergyManager();
 }

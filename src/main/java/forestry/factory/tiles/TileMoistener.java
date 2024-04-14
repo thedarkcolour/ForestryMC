@@ -212,7 +212,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 
 				if (FuelManager.moistenerResource.containsKey(getItem(InventoryMoistener.SLOT_WORKING))) {
 					MoistenerFuel res = FuelManager.moistenerResource.get(getItem(InventoryMoistener.SLOT_WORKING));
-					burnTime = totalTime = res.getMoistenerValue();
+					burnTime = totalTime = res.moistenerValue();
 				}
 			} else {
 				rotateReservoir();
@@ -318,8 +318,8 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 			}
 
 			MoistenerFuel res = FuelManager.moistenerResource.get(slotStack);
-			if (stage < 0 || res.getStage() < stage) {
-				stage = res.getStage();
+			if (stage < 0 || res.stage() < stage) {
+				stage = res.stage();
 				resourceSlot = i;
 			}
 		}
@@ -336,7 +336,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 			ItemStack deposit;
 			if (FuelManager.moistenerResource.containsKey(getItem(InventoryMoistener.SLOT_WORKING))) {
 				MoistenerFuel res = FuelManager.moistenerResource.get(getItem(InventoryMoistener.SLOT_WORKING));
-				deposit = res.getProduct().copy();
+				deposit = res.product().copy();
 			} else {
 				deposit = getItem(InventoryMoistener.SLOT_WORKING).copy();
 			}
@@ -436,7 +436,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 			}
 			if (FuelManager.moistenerResource.containsKey(inventory.getItem(i))) {
 				MoistenerFuel res = FuelManager.moistenerResource.get(inventory.getItem(i));
-				if (ItemStack.isSame(res.getResource(), inventory.getItem(i))) {
+				if (ItemStack.isSame(res.resource(), inventory.getItem(i))) {
 					max += 64;
 					avail += inventory.getItem(i).getCount();
 				}
