@@ -123,9 +123,9 @@ public class PeatEngineBlockEntity extends EngineBlockEntity implements WorldlyC
 	}
 
 	@Override
-	public int dissipateHeat() {
+	public void dissipateHeat() {
 		if (heat <= 0) {
-			return 0;
+			return;
 		}
 
 		int loss = 0;
@@ -140,11 +140,10 @@ public class PeatEngineBlockEntity extends EngineBlockEntity implements WorldlyC
 		}
 
 		heat -= loss;
-		return loss;
 	}
 
 	@Override
-	public int generateHeat() {
+	public void generateHeat() {
 
 		int heatToAdd = 0;
 
@@ -156,7 +155,6 @@ public class PeatEngineBlockEntity extends EngineBlockEntity implements WorldlyC
 		}
 
 		addHeat(heatToAdd);
-		return heatToAdd;
 	}
 
 	private void addAsh(int amount) {

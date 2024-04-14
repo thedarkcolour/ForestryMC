@@ -75,7 +75,7 @@ public class TileCarpenter extends TilePowered implements WorldlyContainer, ILiq
 	}
 
 	public TileCarpenter(BlockPos pos, BlockState state) {
-		super(FactoryTiles.CARPENTER.tileType(), pos, state, 1100, 4000);
+		super(FactoryTiles.CARPENTER.tileType(), pos, state, 1100, Constants.MACHINE_MAX_ENERGY);
 		setEnergyPerWorkCycle(ENERGY_PER_WORK_CYCLE);
 		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(() -> RecipeManagers.carpenterManager.getRecipeFluids(getLevel().getRecipeManager()));
 

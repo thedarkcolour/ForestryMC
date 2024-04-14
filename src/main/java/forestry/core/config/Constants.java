@@ -107,7 +107,7 @@ public class Constants implements IForestryConstants {
 	// Factory
 	public static final int PROCESSOR_TANK_CAPACITY = 10 * FluidType.BUCKET_VOLUME;
 
-	public static final int MACHINE_MAX_ENERGY = 5000;
+	public static final int MACHINE_MAX_ENERGY = 40000;
 
 	public static final int RAINMAKER_RAIN_DURATION_IODINE = 10000;
 

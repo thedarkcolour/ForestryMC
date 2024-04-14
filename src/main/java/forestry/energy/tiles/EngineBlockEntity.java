@@ -87,9 +87,9 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 		}
 	}
 
-	protected abstract int dissipateHeat();
+	protected abstract void dissipateHeat();
 
-	protected abstract int generateHeat();
+	protected abstract void generateHeat();
 
 	protected boolean mayBurn() {
 		return !forceCooldown;
@@ -128,7 +128,7 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 		errorLogic.setCondition(!enabledRedstone, EnumErrorCode.NO_REDSTONE);
 
 		// Determine targeted tile
-		BlockState blockState = level.getBlockState(getBlockPos());
+		BlockState blockState = getBlockState();
 		Direction facing = blockState.getValue(BlockBase.FACING);
 		BlockEntity tile = level.getBlockEntity(getBlockPos().relative(facing));
 

@@ -91,13 +91,11 @@ public class ClockworkEngineBlockEntity extends EngineBlockEntity {
 	}
 
 	@Override
-	public int dissipateHeat() {
-		return 0;
+	public void dissipateHeat() {
 	}
 
 	@Override
-	public int generateHeat() {
-		return 0;
+	public void generateHeat() {
 	}
 
 	@Override

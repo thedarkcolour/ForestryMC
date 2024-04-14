@@ -22,6 +22,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import org.lwjgl.glfw.GLFW;
+
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.circuits.ISocketable;
 import forestry.core.circuits.ISolderingIron;
@@ -75,6 +77,9 @@ public class SocketWidget extends Widget {
 		ItemStack itemstack = Minecraft.getInstance().player.containerMenu.getCarried();
 
 		if (itemstack.isEmpty()) {
+			if (mouseButton == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
+
+			}
 			return;
 		}
 

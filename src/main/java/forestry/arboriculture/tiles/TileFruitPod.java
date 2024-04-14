@@ -177,7 +177,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 		NonNullList<ItemStack> fruits = getDrops();
 		maturity = 0;
 
-		BlockState oldState = level.getBlockState(getBlockPos());
+		BlockState oldState = getBlockState();
 		BlockState newState = oldState.setValue(CocoaBlock.AGE, 0);
 		BlockUtil.setBlockWithBreakSound(level, getBlockPos(), newState, oldState);
 
@@ -200,7 +200,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 
 		int age = maturity;
 		if (age - previousAge > 0) {
-			BlockState state = level.getBlockState(getBlockPos()).setValue(CocoaBlock.AGE, age);
+			BlockState state = getBlockState().setValue(CocoaBlock.AGE, age);
 			level.setBlockAndUpdate(getBlockPos(), state);
 		}
 	}

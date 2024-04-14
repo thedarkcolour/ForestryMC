@@ -36,7 +36,7 @@ import forestry.energy.EnergyHelper;
 import forestry.energy.ForestryEnergyStorage;
 import forestry.energy.EnergyTransferMode;
 
-public abstract class TilePowered extends TileBase implements IRenderableTile, ISpeedUpgradable, IStreamableGui {
+public abstract class TilePowered extends TileBase implements IRenderableTile, ISpeedUpgradable, IStreamableGui, IPowerHandler {
 
 	private static final int WORK_TICK_INTERVAL = 5; // one Forestry work tick happens every WORK_TICK_INTERVAL game ticks
 

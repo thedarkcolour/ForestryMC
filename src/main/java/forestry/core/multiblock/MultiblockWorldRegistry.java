@@ -3,7 +3,6 @@ package forestry.core.multiblock;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +17,9 @@ import forestry.api.multiblock.IMultiblockComponent;
 import forestry.api.multiblock.IMultiblockLogic;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.Log;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 /**
  * This class manages all the multiblock controllers that exist in a given world,
@@ -45,7 +47,7 @@ public class MultiblockWorldRegistry {
 	// They will be added to the orphan list when they are finished loading.
 	// Indexed by the hashed chunk coordinate
 	// This can be added-to asynchronously via chunk loads!
-	private final HashMap<Long, Set<IMultiblockComponent>> partsAwaitingChunkLoad;
+	private final Long2ObjectMap<Set<IMultiblockComponent>> partsAwaitingChunkLoad;
 
 	// Mutexes to protect lists which may be changed due to asynchronous events, such as chunk loads
 	private final Object partsAwaitingChunkLoadMutex;
@@ -61,7 +63,7 @@ public class MultiblockWorldRegistry {
 		this.detachedParts = new HashSet<>();
 		this.orphanedParts = new HashSet<>();
 
-		this.partsAwaitingChunkLoad = new HashMap<>();
+		this.partsAwaitingChunkLoad = new Long2ObjectOpenHashMap<>();
 		this.partsAwaitingChunkLoadMutex = new Object();
 		this.orphanedPartsMutex = new Object();
 	}
@@ -445,6 +447,7 @@ public class MultiblockWorldRegistry {
 	}
 
 	private void addAllOrphanedPartsThreadsafe(Collection<? extends IMultiblockComponent> parts) {
+		if (parts.isEmpty()) return;
 		synchronized (orphanedPartsMutex) {
 			orphanedParts.addAll(parts);
 		}

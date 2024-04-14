@@ -151,9 +151,9 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 	}
 
 	@Override
-	public int dissipateHeat() {
+	public void dissipateHeat() {
 		if (heat <= 0) {
-			return 0;
+			return;
 		}
 
 		int loss = 1; // Basic loss even when running
@@ -179,11 +179,10 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 		}
 
 		heat -= loss;
-		return loss;
 	}
 
 	@Override
-	public int generateHeat() {
+	public void generateHeat() {
 
 		int generate = 0;
 
@@ -199,7 +198,6 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 		}
 
 		heat += generate;
-		return generate;
 
 	}
 
