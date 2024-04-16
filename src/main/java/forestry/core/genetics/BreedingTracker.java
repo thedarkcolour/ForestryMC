@@ -143,14 +143,22 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 
 	/* HELPER FUNCTIONS TO PREVENT OBFUSCATION OF INTERFACE METHODS */
 	@Override
-	public void decodeFromNBT(CompoundTag compound) {
-		// load(compound);
+	public void decodeFromNBT(CompoundTag nbt) {
+		if (nbt.contains(MODE_NAME_KEY)) {
+			modeName = nbt.getString(MODE_NAME_KEY);
+		}
+
+		readValuesFromNBT(nbt, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
+		readValuesFromNBT(nbt, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
+		readValuesFromNBT(nbt, researchedMutations, RESEARCHED_COUNT_KEY, RESEARCHED_KEY);
 	}
 
 	@Override
 	public void encodeToNBT(CompoundTag compound) {
 		save(compound);
 	}
+
+
 
 	@Override
 	public CompoundTag save(CompoundTag CompoundNBT) {
