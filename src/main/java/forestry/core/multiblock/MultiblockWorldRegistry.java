@@ -118,7 +118,7 @@ public class MultiblockWorldRegistry {
 				// These are blocks that exist in a valid chunk and require a controller
 				for (IMultiblockComponent orphan : orphansToProcess) {
 					coord = orphan.getCoordinates();
-					if (chunkProvider.getChunk(coord.getX() >> 4, coord.getZ() >> 4, false) == null) {
+					if (!chunkProvider.hasChunk(coord.getX() >> 4, coord.getZ() >> 4)) {
 						continue;
 					}
 

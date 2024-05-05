@@ -70,8 +70,8 @@ public abstract class MultiblockTileEntityBase<T extends IMultiblockLogic> exten
 	}
 
 	@Override
-	public final void clearRemoved() {
-		super.clearRemoved();
+	public void onLoad() {
+		super.onLoad();
 		multiblockLogic.validate(level, this);
 	}
 

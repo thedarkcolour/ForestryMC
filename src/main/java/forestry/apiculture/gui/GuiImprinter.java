@@ -99,26 +99,26 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 		return -1;
 	}
 
-	//TODO check return
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int k) {
-		super.mouseClicked(mouseX, mouseY, k);
+		if (super.mouseClicked(mouseX, mouseY, k)) {
+			return true;
+		}
 
 		int cornerX = (width - imageWidth) / 2;
 		int cornerY = (height - imageHeight) / 2;
 
 		int slot = getHabitatSlotAtPosition(mouseX - cornerX, mouseY - cornerY);
 		if (slot < 0) {
-			return true;
+			return false;
 		}
 
 		if (k == 0) {
 			advanceSelection(slot);
-			return true;
 		} else {
 			regressSelection(slot);
-			return true;
 		}
+		return true;
 	}
 
 	@Override
