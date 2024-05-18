@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
@@ -23,7 +22,7 @@ import forestry.core.network.PacketIdClient;
 import forestry.mail.POBoxInfo;
 import forestry.mail.gui.GuiMailboxInfo;
 
-public class PacketPOBoxInfoResponse extends ForestryPacket implements IForestryPacketClient {
+public class PacketPOBoxInfoResponse implements IForestryPacketClient {
 	public final POBoxInfo poboxInfo;
 
 	public PacketPOBoxInfoResponse(POBoxInfo info) {
@@ -36,7 +35,7 @@ public class PacketPOBoxInfoResponse extends ForestryPacket implements IForestry
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeInt(poboxInfo.playerLetters);
 		data.writeInt(poboxInfo.tradeLetters);
 	}

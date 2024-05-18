@@ -19,14 +19,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketErrorUpdate extends ForestryPacket implements IForestryPacketClient {
+public class PacketErrorUpdate implements IForestryPacketClient {
 	private final BlockPos pos;
 	private final IErrorLogic errorLogic;
 
@@ -36,7 +35,7 @@ public class PacketErrorUpdate extends ForestryPacket implements IForestryPacket
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		errorLogic.writeData(data);
 	}

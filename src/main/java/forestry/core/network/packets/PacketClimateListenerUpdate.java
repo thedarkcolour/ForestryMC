@@ -10,13 +10,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import forestry.api.climate.IClimateListener;
 import forestry.api.climate.IClimateState;
 import forestry.core.climate.ClimateRoot;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketClimateListenerUpdate extends ForestryPacket implements IForestryPacketClient {
+public class PacketClimateListenerUpdate implements IForestryPacketClient {
 	private final BlockPos pos;
 	private final IClimateState state;
 
@@ -26,7 +25,7 @@ public class PacketClimateListenerUpdate extends ForestryPacket implements IFore
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeClimateState(state);
 	}

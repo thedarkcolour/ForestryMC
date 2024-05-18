@@ -15,13 +15,12 @@ import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketBeeLogicEntityRequest extends ForestryPacket implements IForestryPacketServer {
+public class PacketBeeLogicEntityRequest implements IForestryPacketServer {
 	private final Entity entity;
 
 	public PacketBeeLogicEntityRequest(Entity entity) {
@@ -34,7 +33,7 @@ public class PacketBeeLogicEntityRequest extends ForestryPacket implements IFore
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeEntityById(entity);
 	}
 

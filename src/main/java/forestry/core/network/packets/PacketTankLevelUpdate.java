@@ -20,7 +20,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.core.fluids.ITankManager;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
@@ -28,7 +27,7 @@ import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TileUtil;
 
-public class PacketTankLevelUpdate extends ForestryPacket implements IForestryPacketClient {
+public class PacketTankLevelUpdate implements IForestryPacketClient {
 	private final BlockPos pos;
 	private final int tankIndex;
 	@Nullable
@@ -46,7 +45,7 @@ public class PacketTankLevelUpdate extends ForestryPacket implements IForestryPa
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeVarInt(tankIndex);
 		data.writeFluidStack(contents);

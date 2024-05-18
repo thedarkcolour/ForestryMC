@@ -31,7 +31,6 @@ import forestry.api.mail.EnumTradeStationState;
 import forestry.api.mail.IMailAddress;
 import forestry.api.mail.ITradeStationInfo;
 import forestry.api.mail.PostManager;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
@@ -40,7 +39,7 @@ import forestry.mail.TradeStationInfo;
 import forestry.mail.gui.ILetterInfoReceiver;
 
 // TODO: split this into two different packets
-public class PacketLetterInfoResponse extends ForestryPacket implements IForestryPacketClient {
+public class PacketLetterInfoResponse implements IForestryPacketClient {
 	public final EnumAddressee type;
 	@Nullable
 	public final ITradeStationInfo tradeInfo;

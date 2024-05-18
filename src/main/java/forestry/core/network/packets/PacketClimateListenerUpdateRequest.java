@@ -8,13 +8,12 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.climate.ClimateCapabilities;
 import forestry.api.climate.IClimateListener;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketClimateListenerUpdateRequest extends ForestryPacket implements IForestryPacketServer {
+public class PacketClimateListenerUpdateRequest implements IForestryPacketServer {
 	private final BlockPos pos;
 
 	public PacketClimateListenerUpdateRequest(BlockPos pos) {
@@ -22,7 +21,7 @@ public class PacketClimateListenerUpdateRequest extends ForestryPacket implement
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 	}
 

@@ -13,7 +13,6 @@ package forestry.mail.network.packets;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
@@ -21,7 +20,7 @@ import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
 import forestry.mail.tiles.TileTrader;
 
-public class PacketTraderAddressRequest extends ForestryPacket implements IForestryPacketServer {
+public class PacketTraderAddressRequest implements IForestryPacketServer {
 	private final BlockPos pos;
 	private final String addressName;
 
@@ -36,7 +35,7 @@ public class PacketTraderAddressRequest extends ForestryPacket implements IFores
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeUtf(addressName);
 	}

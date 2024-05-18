@@ -50,7 +50,7 @@ public class PacketHandlerClient {
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener netHandler = minecraft.getConnection();
 		if (netHandler != null) {
-			Pair<FriendlyByteBuf, Integer> packetData = packet.getPacketData();
+			Pair<FriendlyByteBuf, Integer> packetData = IForestryPacket.getPacketData(packet);
 			ICustomPacket<Packet<?>> payload = NetworkDirection.PLAY_TO_SERVER.buildPacket(packetData, PacketHandlerServer.CHANNEL_ID);
 			netHandler.send(payload.getThis());
 		}

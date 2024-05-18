@@ -23,7 +23,6 @@ import forestry.api.core.ForestryEvent;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IForestrySpeciesRoot;
 import forestry.core.genetics.BreedingTracker;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
@@ -33,7 +32,7 @@ import genetics.api.GeneticsAPI;
 import genetics.api.individual.IIndividual;
 import genetics.api.root.IRootDefinition;
 
-public class PacketGenomeTrackerSync extends ForestryPacket implements IForestryPacketClient {
+public class PacketGenomeTrackerSync implements IForestryPacketClient {
 	private final CompoundTag nbt;
 
 	public PacketGenomeTrackerSync(CompoundTag CompoundNBT) {
@@ -46,7 +45,7 @@ public class PacketGenomeTrackerSync extends ForestryPacket implements IForestry
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeNbt(nbt);
 	}
 

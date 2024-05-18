@@ -16,14 +16,13 @@ import net.minecraft.core.BlockPos;
 import forestry.api.climate.IClimateHousing;
 import forestry.api.climate.IClimateState;
 import forestry.api.climate.IClimateTransformer;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
 
-public class PacketSelectClimateTargeted extends ForestryPacket implements IForestryPacketServer {
+public class PacketSelectClimateTargeted implements IForestryPacketServer {
 	private final BlockPos pos;
 	private final IClimateState climateState;
 
@@ -38,7 +37,7 @@ public class PacketSelectClimateTargeted extends ForestryPacket implements IFore
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeClimateState(climateState);
 	}

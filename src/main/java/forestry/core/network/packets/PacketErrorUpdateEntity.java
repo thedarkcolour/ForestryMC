@@ -18,13 +18,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketErrorUpdateEntity extends ForestryPacket implements IForestryPacketClient {
+public class PacketErrorUpdateEntity implements IForestryPacketClient {
 	private final Entity entity;
 	private final IErrorLogic errorLogic;
 
@@ -39,7 +38,7 @@ public class PacketErrorUpdateEntity extends ForestryPacket implements IForestry
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeEntityById(entity);
 		errorLogic.writeData(data);
 	}

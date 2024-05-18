@@ -12,14 +12,13 @@ package forestry.mail.network.packets;
 
 import net.minecraft.server.level.ServerPlayer;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.mail.gui.ContainerLetter;
 
-public class PacketLetterTextSet extends ForestryPacket implements IForestryPacketServer {
+public class PacketLetterTextSet implements IForestryPacketServer {
 	private final String string;
 
 	public PacketLetterTextSet(String string) {
@@ -32,7 +31,7 @@ public class PacketLetterTextSet extends ForestryPacket implements IForestryPack
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeUtf(string);
 	}
 

@@ -14,13 +14,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.core.gui.IContainerSocketed;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketSolderingIronClick extends ForestryPacket implements IForestryPacketServer {
+public class PacketSolderingIronClick implements IForestryPacketServer {
 	private final int slot;
 
 	public PacketSolderingIronClick(int slot) {
@@ -33,7 +32,7 @@ public class PacketSolderingIronClick extends ForestryPacket implements IForestr
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeVarInt(slot);
 	}
 

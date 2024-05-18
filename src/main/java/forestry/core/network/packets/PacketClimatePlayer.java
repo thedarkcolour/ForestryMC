@@ -4,13 +4,12 @@ import net.minecraft.world.entity.player.Player;
 
 import forestry.api.climate.IClimateState;
 import forestry.core.ClimateHandlerClient;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketClimatePlayer extends ForestryPacket implements IForestryPacketClient {
+public class PacketClimatePlayer implements IForestryPacketClient {
 
 	private IClimateState climateState;
 
@@ -19,7 +18,7 @@ public class PacketClimatePlayer extends ForestryPacket implements IForestryPack
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeClimateState(climateState);
 	}
 

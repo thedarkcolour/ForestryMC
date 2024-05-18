@@ -13,14 +13,13 @@ package forestry.mail.network.packets;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.mail.EnumAddressee;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.mail.gui.ContainerLetter;
 
-public class PacketLetterInfoRequest extends ForestryPacket implements IForestryPacketServer {
+public class PacketLetterInfoRequest implements IForestryPacketServer {
 	private final String recipientName;
 	private final EnumAddressee addressType;
 
@@ -35,7 +34,7 @@ public class PacketLetterInfoRequest extends ForestryPacket implements IForestry
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeUtf(recipientName);
 		data.writeEnum(addressType, EnumAddressee.values());
 	}

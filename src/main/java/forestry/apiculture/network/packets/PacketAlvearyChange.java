@@ -17,14 +17,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.multiblock.IMultiblockComponent;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketAlvearyChange extends ForestryPacket implements IForestryPacketClient {
+public class PacketAlvearyChange implements IForestryPacketClient {
 	private final BlockPos controllerPos;
 
 	public PacketAlvearyChange(BlockPos controllerPos) {
@@ -37,7 +36,7 @@ public class PacketAlvearyChange extends ForestryPacket implements IForestryPack
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(controllerPos);
 	}
 

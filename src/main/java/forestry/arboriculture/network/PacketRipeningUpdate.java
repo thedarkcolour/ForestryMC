@@ -17,14 +17,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.arboriculture.tiles.TileLeaves;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketRipeningUpdate extends ForestryPacket implements IForestryPacketClient {
+public class PacketRipeningUpdate implements IForestryPacketClient {
 	private final BlockPos pos;
 	private final int value;
 
@@ -39,7 +38,7 @@ public class PacketRipeningUpdate extends ForestryPacket implements IForestryPac
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeVarInt(value);
 	}

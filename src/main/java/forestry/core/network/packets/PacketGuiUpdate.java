@@ -19,7 +19,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.ILocatable;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.IStreamableGui;
@@ -27,7 +26,7 @@ import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketGuiUpdate extends ForestryPacket implements IForestryPacketClient {
+public class PacketGuiUpdate implements IForestryPacketClient {
 	private final BlockPos pos;
 	private final IStreamableGui guiDataTile;
 
@@ -37,7 +36,7 @@ public class PacketGuiUpdate extends ForestryPacket implements IForestryPacketCl
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		guiDataTile.writeGuiData(data);
 	}

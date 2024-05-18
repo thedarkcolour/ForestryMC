@@ -14,8 +14,21 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.network.FriendlyByteBuf;
 
+import io.netty.buffer.Unpooled;
+
 public interface IForestryPacket {
-	Pair<FriendlyByteBuf, Integer> getPacketData();
+	static Pair<FriendlyByteBuf, Integer> getPacketData(IForestryPacket packet) {
+		PacketBufferForestry data = new PacketBufferForestry(Unpooled.buffer());
+
+		IPacketId id = packet.getPacketId();
+		int ordinal = id.ordinal();
+		data.writeByte(id.ordinal());
+		packet.writeData(data);
+
+		return Pair.of(data, ordinal);
+	}
 
 	IPacketId getPacketId();
+
+	void writeData(PacketBufferForestry data);
 }

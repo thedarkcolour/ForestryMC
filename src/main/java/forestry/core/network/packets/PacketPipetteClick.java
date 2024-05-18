@@ -13,13 +13,12 @@ package forestry.core.network.packets;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.core.gui.IContainerLiquidTanks;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketPipetteClick extends ForestryPacket implements IForestryPacketServer {
+public class PacketPipetteClick implements IForestryPacketServer {
 	private final int slot;
 
 	public PacketPipetteClick(int slot) {
@@ -27,7 +26,7 @@ public class PacketPipetteClick extends ForestryPacket implements IForestryPacke
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeVarInt(slot);
 	}
 

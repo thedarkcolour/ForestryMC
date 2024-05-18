@@ -16,13 +16,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.core.gui.ContainerTile;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketGuiEnergy extends ForestryPacket implements IForestryPacketClient {
+public class PacketGuiEnergy implements IForestryPacketClient {
 	private final int windowId;
 	private final int value;
 

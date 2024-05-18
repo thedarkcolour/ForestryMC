@@ -21,13 +21,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.apiculture.BeekeepingLogic;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketBeeLogicActiveEntity extends ForestryPacket implements IForestryPacketClient {
+public class PacketBeeLogicActiveEntity implements IForestryPacketClient {
 	private final Entity entity;
 	private final BeekeepingLogic beekeepingLogic;
 
@@ -42,7 +41,7 @@ public class PacketBeeLogicActiveEntity extends ForestryPacket implements IFores
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeEntityById(entity);
 		beekeepingLogic.writeData(data);
 	}

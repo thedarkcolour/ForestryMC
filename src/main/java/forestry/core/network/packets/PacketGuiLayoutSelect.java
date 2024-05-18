@@ -19,13 +19,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.ICircuitLayout;
 import forestry.core.circuits.ContainerSolderingIron;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketGuiLayoutSelect extends ForestryPacket implements IForestryPacketClient {
+public class PacketGuiLayoutSelect implements IForestryPacketClient {
 	private final String layoutUid;
 
 	public PacketGuiLayoutSelect(String layoutUid) {
@@ -38,7 +37,7 @@ public class PacketGuiLayoutSelect extends ForestryPacket implements IForestryPa
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeUtf(layoutUid);
 	}
 

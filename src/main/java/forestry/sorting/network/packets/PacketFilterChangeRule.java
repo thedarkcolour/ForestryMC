@@ -1,8 +1,8 @@
 package forestry.sorting.network.packets;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -10,14 +10,13 @@ import forestry.api.genetics.GeneticCapabilities;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.api.genetics.filter.IFilterLogic;
 import forestry.api.genetics.filter.IFilterRuleType;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
 
-public class PacketFilterChangeRule extends ForestryPacket implements IForestryPacketServer {
+public class PacketFilterChangeRule implements IForestryPacketServer {
 	private final BlockPos pos;
 	private final Direction facing;
 	private final IFilterRuleType rule;
@@ -29,7 +28,7 @@ public class PacketFilterChangeRule extends ForestryPacket implements IForestryP
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeShort(facing.get3DDataValue());
 		data.writeShort(AlleleManager.filterRegistry.getId(rule));

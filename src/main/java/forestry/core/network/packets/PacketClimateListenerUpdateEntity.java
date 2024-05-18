@@ -10,13 +10,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import forestry.api.climate.ClimateCapabilities;
 import forestry.api.climate.IClimateListener;
 import forestry.api.climate.IClimateState;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketClimateListenerUpdateEntity extends ForestryPacket implements IForestryPacketClient {
+public class PacketClimateListenerUpdateEntity implements IForestryPacketClient {
 	private final Entity entity;
 	private final IClimateState state;
 
@@ -26,7 +25,7 @@ public class PacketClimateListenerUpdateEntity extends ForestryPacket implements
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeEntityById(entity);
 		data.writeClimateState(state);
 	}

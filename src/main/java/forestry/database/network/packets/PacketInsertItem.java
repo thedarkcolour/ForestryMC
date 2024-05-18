@@ -7,14 +7,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.database.gui.ContainerDatabase;
 
-public class PacketInsertItem extends ForestryPacket implements IForestryPacketServer {
+public class PacketInsertItem implements IForestryPacketServer {
 	private final boolean single;
 
 	public PacketInsertItem(boolean single) {
@@ -22,7 +21,7 @@ public class PacketInsertItem extends ForestryPacket implements IForestryPacketS
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBoolean(single);
 	}
 

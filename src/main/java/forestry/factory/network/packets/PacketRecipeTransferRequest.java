@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
@@ -27,7 +26,7 @@ import forestry.core.utils.NetworkUtil;
 import forestry.factory.tiles.TileCarpenter;
 import forestry.factory.tiles.TileFabricator;
 
-public class PacketRecipeTransferRequest extends ForestryPacket implements IForestryPacketServer {
+public class PacketRecipeTransferRequest implements IForestryPacketServer {
 	private final BlockPos pos;
 	private final NonNullList<ItemStack> craftingInventory;
 
@@ -37,7 +36,7 @@ public class PacketRecipeTransferRequest extends ForestryPacket implements IFore
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeItemStacks(craftingInventory);
 	}

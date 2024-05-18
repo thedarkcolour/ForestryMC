@@ -19,7 +19,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.network.ICustomPacket;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -55,7 +54,7 @@ public class PacketHandlerServer {
 	}
 
 	public static Packet<?> toVanillaPacket(IForestryPacket packet) {
-		Pair<FriendlyByteBuf, Integer> packetData = packet.getPacketData();
+		Pair<FriendlyByteBuf, Integer> packetData = IForestryPacket.getPacketData(packet);
 		return NetworkDirection.PLAY_TO_CLIENT.buildPacket(packetData, PacketHandlerServer.CHANNEL_ID).getThis();
 	}
 }

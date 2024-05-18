@@ -26,13 +26,12 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketFXSignal extends ForestryPacket implements IForestryPacketClient {
+public class PacketFXSignal implements IForestryPacketClient {
 
 	public enum VisualFXType {
 		NONE, BLOCK_BREAK, SAPLING_PLACE
@@ -63,7 +62,7 @@ public class PacketFXSignal extends ForestryPacket implements IForestryPacketCli
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeByte(visualFX.ordinal());
 		data.writeByte(soundFX.ordinal());

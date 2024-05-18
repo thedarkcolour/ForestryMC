@@ -15,13 +15,12 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.core.circuits.ItemCircuitBoard;
 import forestry.core.gui.IContainerSocketed;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketChipsetClick extends ForestryPacket implements IForestryPacketServer {
+public class PacketChipsetClick implements IForestryPacketServer {
 	private final int slot;
 
 	public PacketChipsetClick(int slot) {
@@ -29,7 +28,7 @@ public class PacketChipsetClick extends ForestryPacket implements IForestryPacke
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeVarInt(slot);
 	}
 

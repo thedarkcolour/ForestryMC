@@ -20,7 +20,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.IStreamable;
@@ -30,7 +29,7 @@ import forestry.core.tiles.TileUtil;
 
 import javax.annotation.Nullable;
 
-public class PacketTileStream extends ForestryPacket implements IForestryPacketClient {
+public class PacketTileStream implements IForestryPacketClient {
 	private final BlockPos pos;
 	@Nullable
 	private final IStreamable streamable;
@@ -55,7 +54,7 @@ public class PacketTileStream extends ForestryPacket implements IForestryPacketC
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		// write a placeholder value for the number of bytes, keeping its index for replacing later
 		int dataBytesIndex = data.writerIndex();

@@ -16,13 +16,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketHabitatBiomePointer extends ForestryPacket implements IForestryPacketClient {
+public class PacketHabitatBiomePointer implements IForestryPacketClient {
 	private final BlockPos pos;
 
 	public PacketHabitatBiomePointer(BlockPos coordinates) {
@@ -30,7 +29,7 @@ public class PacketHabitatBiomePointer extends ForestryPacket implements IForest
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 	}
 

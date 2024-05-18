@@ -18,14 +18,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.IStreamableGui;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketGuiUpdateEntity extends ForestryPacket implements IForestryPacketClient {
+public class PacketGuiUpdateEntity implements IForestryPacketClient {
 	private final Entity entity;
 	private final IStreamableGui streamableGui;
 
@@ -40,7 +39,7 @@ public class PacketGuiUpdateEntity extends ForestryPacket implements IForestryPa
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeEntityById(entity);
 		streamableGui.writeGuiData(data);
 	}

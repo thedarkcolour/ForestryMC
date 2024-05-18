@@ -18,7 +18,6 @@ import net.minecraft.core.BlockPos;
 import forestry.api.climate.IClimateHousing;
 import forestry.api.climate.IClimateTransformer;
 import forestry.core.climate.ClimateTransformer;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.IStreamable;
@@ -26,7 +25,7 @@ import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketClimateUpdate extends ForestryPacket implements IForestryPacketClient {
+public class PacketClimateUpdate implements IForestryPacketClient {
 
 	private BlockPos pos;
 	private ClimateTransformer container;
@@ -42,7 +41,7 @@ public class PacketClimateUpdate extends ForestryPacket implements IForestryPack
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		container.writeData(data);
 	}

@@ -14,13 +14,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import forestry.core.gui.IGuiSelectable;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketGuiSelectRequest extends ForestryPacket implements IForestryPacketServer {
+public class PacketGuiSelectRequest implements IForestryPacketServer {
 	private final int primaryIndex;
 	private final int secondaryIndex;
 
@@ -35,7 +34,7 @@ public class PacketGuiSelectRequest extends ForestryPacket implements IForestryP
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeVarInt(primaryIndex);
 		data.writeVarInt(secondaryIndex);
 	}

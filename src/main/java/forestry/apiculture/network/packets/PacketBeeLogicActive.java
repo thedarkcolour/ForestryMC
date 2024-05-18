@@ -12,22 +12,21 @@ package forestry.apiculture.network.packets;
 
 import java.io.IOException;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketBeeLogicActive extends ForestryPacket implements IForestryPacketClient {
+public class PacketBeeLogicActive implements IForestryPacketClient {
 	private final BlockPos tilePos;
 	private final IBeekeepingLogic beekeepingLogic;
 
@@ -42,7 +41,7 @@ public class PacketBeeLogicActive extends ForestryPacket implements IForestryPac
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(tilePos);
 		beekeepingLogic.writeData(data);
 	}

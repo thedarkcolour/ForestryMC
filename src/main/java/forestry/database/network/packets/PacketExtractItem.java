@@ -8,14 +8,13 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.database.gui.ContainerDatabase;
 
-public class PacketExtractItem extends ForestryPacket implements IForestryPacketServer {
+public class PacketExtractItem implements IForestryPacketServer {
 	public static final int HALF = 1;
 	public static final int SHIFT = 2;
 	public static final int CLONE = 4;
@@ -29,7 +28,7 @@ public class PacketExtractItem extends ForestryPacket implements IForestryPacket
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeInt(invIndex);
 		data.writeByte(flags);
 	}
@@ -39,7 +38,6 @@ public class PacketExtractItem extends ForestryPacket implements IForestryPacket
 		return PacketIdServer.EXTRACT_ITEM;
 	}
 
-	//TODO pretty big method
 	public static class Handler implements IForestryPacketHandlerServer {
 		@Override
 		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {

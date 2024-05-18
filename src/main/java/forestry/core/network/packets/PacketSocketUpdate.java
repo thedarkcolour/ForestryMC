@@ -12,24 +12,23 @@ package forestry.core.network.packets;
 
 import java.io.IOException;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.core.circuits.ISocketable;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketSocketUpdate extends ForestryPacket implements IForestryPacketClient {
+public class PacketSocketUpdate implements IForestryPacketClient {
 	private final BlockPos pos;
 	private final NonNullList<ItemStack> itemStacks;
 
@@ -48,7 +47,7 @@ public class PacketSocketUpdate extends ForestryPacket implements IForestryPacke
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeBlockPos(pos);
 		data.writeItemStacks(itemStacks);
 	}

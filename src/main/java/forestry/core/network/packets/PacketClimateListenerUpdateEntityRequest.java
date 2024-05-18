@@ -4,13 +4,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.climate.ClimateCapabilities;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketClimateListenerUpdateEntityRequest extends ForestryPacket implements IForestryPacketServer {
+public class PacketClimateListenerUpdateEntityRequest implements IForestryPacketServer {
 	private final Entity entity;
 
 	public PacketClimateListenerUpdateEntityRequest(Entity entity) {
@@ -18,7 +17,7 @@ public class PacketClimateListenerUpdateEntityRequest extends ForestryPacket imp
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeEntityById(entity);
 	}
 

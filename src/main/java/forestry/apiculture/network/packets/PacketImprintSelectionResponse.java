@@ -17,13 +17,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.apiculture.gui.ContainerImprinter;
-import forestry.core.network.ForestryPacket;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IForestryPacketHandlerClient;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketImprintSelectionResponse extends ForestryPacket implements IForestryPacketClient {
+public class PacketImprintSelectionResponse implements IForestryPacketClient {
 	private final int primary;
 	private final int secondary;
 
@@ -38,7 +37,7 @@ public class PacketImprintSelectionResponse extends ForestryPacket implements IF
 	}
 
 	@Override
-	protected void writeData(PacketBufferForestry data) {
+	public void writeData(PacketBufferForestry data) {
 		data.writeVarInt(primary);
 		data.writeVarInt(secondary);
 	}
