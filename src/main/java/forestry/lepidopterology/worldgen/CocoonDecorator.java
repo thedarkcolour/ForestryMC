@@ -28,6 +28,7 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.Material;
 
+import forestry.Forestry;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
@@ -35,7 +36,6 @@ import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
-import forestry.core.utils.Log;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.lepidopterology.tiles.TileCocoon;
@@ -116,7 +116,7 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 		world.getLevel().setBlocksDirty(pos, state, cocoonBlock.defaultBlockState());
 
 		if (Config.logCocoonPlacement) {
-			Log.info("Placed {} at {}", cocoonBlock.toString(), pos.toString());
+			Forestry.LOGGER.info("Placed {} at {}", cocoonBlock, pos);
 		}
 
 		return true;

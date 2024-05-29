@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
+import forestry.Forestry;
 import forestry.api.mail.EnumAddressee;
 import forestry.api.mail.ILetter;
 import forestry.api.mail.IMailAddress;
@@ -31,7 +32,6 @@ import forestry.api.mail.IPostRegistry;
 import forestry.api.mail.IPostalCarrier;
 import forestry.api.mail.ITradeStation;
 import forestry.api.mail.PostManager;
-import forestry.core.utils.Log;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.PlayerUtil;
 import forestry.mail.features.MailItems;
@@ -152,7 +152,7 @@ public class PostRegistry implements IPostRegistry {
 		//		File file = world.getSaveHandler().getMapFileFromName(trade.getName());	//TODO which file?
 		boolean delete = false; //TODO fix file.delete();
 		if (!delete) {
-			Log.error("Failed to delete trade station file. {}", "FIXME!");//file);
+			Forestry.LOGGER.error("Failed to delete trade station file. {}", "FIXME!");//file);
 		}
 	}
 

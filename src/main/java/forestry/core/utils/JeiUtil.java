@@ -22,6 +22,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
+import forestry.Forestry;
 import forestry.modules.features.FeatureItem;
 
 import mezz.jei.api.constants.VanillaTypes;
@@ -49,7 +50,7 @@ public class JeiUtil {
 			if (item != Items.AIR) {
 				addDescription(registry, item);
 			} else {
-				Log.error("No item for block {}", block);
+				Forestry.LOGGER.error("No item for block {}", block);
 			}
 		}
 	}

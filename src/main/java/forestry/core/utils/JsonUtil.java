@@ -9,6 +9,8 @@ import net.minecraft.util.GsonHelper;
 
 import net.minecraftforge.common.util.JsonUtils;
 
+import forestry.Forestry;
+
 public class JsonUtil {
 	private JsonUtil() {
 	}
@@ -20,7 +22,7 @@ public class JsonUtil {
 	public static ItemStack deserializeItemStack(JsonObject object, ItemStack fallback, boolean logError) {
 		if (!object.has("item")) {
 			if (logError) {
-				Log.error("Unsupported icon type, currently only items are supported (add 'item' key)");
+				Forestry.LOGGER.error("Unsupported icon type, currently only items are supported (add 'item' key)");
 			}
 			return fallback;
 		}
@@ -32,7 +34,7 @@ public class JsonUtil {
 			return stack;
 		} catch (JsonSyntaxException e) {
 			if (logError) {
-				Log.trace("Filed to parse item.", e);
+				Forestry.LOGGER.trace("Filed to parse item.", e);
 			}
 			return fallback;
 		}

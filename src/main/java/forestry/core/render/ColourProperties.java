@@ -20,7 +20,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.utils.Log;
+import forestry.Forestry;
 
 @OnlyIn(Dist.CLIENT)
 public class ColourProperties implements ResourceManagerReloadListener {
@@ -50,7 +50,7 @@ public class ColourProperties implements ResourceManagerReloadListener {
 
 			defaultFontStream.close();
 		} catch (IOException e) {
-			Log.error("Failed to load colors.properties.", e);
+			Forestry.LOGGER.error("Failed to load colors.properties.", e);
 		}
 	}
 

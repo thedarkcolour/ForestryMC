@@ -16,9 +16,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+import forestry.Forestry;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.api.multiblock.IMultiblockLogic;
-import forestry.core.utils.Log;
 
 public abstract class MultiblockLogic<T extends IMultiblockControllerInternal> implements IMultiblockLogic {
 	private final Class<T> controllerClass;
@@ -131,7 +131,7 @@ public abstract class MultiblockLogic<T extends IMultiblockControllerInternal> i
 	public final void assertDetached(IMultiblockComponent part) {
 		if (this.controller != null) {
 			BlockPos coords = part.getCoordinates();
-			Log.info("[assert] Part @ (%d, %d, %d) should be detached already, but detected that it was not. This is not a fatal error, and will be repaired, but is unusual.", coords.getX(), coords.getY(), coords.getZ());
+			Forestry.LOGGER.info("[assert] Part @ ({}, {}, {}) should be detached already, but detected that it was not. This is not a fatal error, and will be repaired, but is unusual.", coords.getX(), coords.getY(), coords.getZ());
 			this.controller = null;
 		}
 	}

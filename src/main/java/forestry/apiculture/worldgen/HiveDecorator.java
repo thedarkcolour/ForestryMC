@@ -23,12 +23,12 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
+import forestry.Forestry;
 import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
 import forestry.apiculture.ModuleApiculture;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
-import forestry.core.utils.Log;
 
 public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 	public HiveDecorator() {
@@ -104,7 +104,7 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 
 		if (Config.logHivePlacement) {
 			//getCoordinatesAsString
-			Log.info("Placed {} at {}", hive.toString(), pos.toShortString());
+			Forestry.LOGGER.info("Placed {} at {}", hive, pos.toShortString());
 		}
 
 		return true;

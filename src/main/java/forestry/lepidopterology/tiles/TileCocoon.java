@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.Forestry;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
@@ -41,7 +42,6 @@ import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
 import forestry.core.utils.ItemStackUtil;
-import forestry.core.utils.Log;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.NetworkUtil;
 import forestry.lepidopterology.features.LepidopterologyTiles;
@@ -204,7 +204,7 @@ public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, 
 	private static void attemptButterflySpawn(Level world, IButterfly butterfly, BlockPos pos) {
 		Mob entityLiving = ButterflyManager.butterflyRoot.spawnButterflyInWorld(world, butterfly.copy(),
 				pos.getX(), pos.getY() + 0.1f, pos.getZ());
-		Log.trace("A caterpillar '%s' hatched at %s/%s/%s.", butterfly.getDisplayName(), pos.getX(), pos.getY(),
+		Forestry.LOGGER.trace("A caterpillar '{}' hatched at {}/{}/{}.", butterfly.getDisplayName(), pos.getX(), pos.getY(),
 				pos.getZ());
 	}
 

@@ -19,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -30,7 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.datafixers.util.Pair;
 
-import forestry.core.utils.Log;
+import forestry.Forestry;
 
 public class ForestryLootTableProvider implements DataProvider {
 
@@ -62,7 +61,7 @@ public class ForestryLootTableProvider implements DataProvider {
 
 		Multimap<String, String> multimap = validationtracker.getProblems();
 		if (!multimap.isEmpty()) {
-			multimap.forEach((location, message) -> Log.warning("Found validation problem in " + location + ": " + message));
+			multimap.forEach((location, message) -> Forestry.LOGGER.warn("Found validation problem in {}: {}", location, message));
 			throw new IllegalStateException("Failed to validate loot tables, see logs");
 		} else {
 			map.forEach((location, table) -> {

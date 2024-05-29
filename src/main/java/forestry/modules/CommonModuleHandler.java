@@ -3,16 +3,17 @@ package forestry.modules;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.block.Block;
+
+import net.minecraftforge.registries.RegisterEvent;
+
 import net.minecraftforge.fml.InterModComms;
 
+import forestry.Forestry;
 import forestry.api.modules.IForestryModule;
 import forestry.core.IPickupHandler;
 import forestry.core.IResupplyHandler;
@@ -20,11 +21,8 @@ import forestry.core.ISaveEventHandler;
 import forestry.core.ItemGroupForestry;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
-import forestry.core.utils.Log;
 import forestry.modules.features.IModFeature;
 import forestry.modules.features.ModFeatureRegistry;
-import net.minecraftforge.registries.RegisterEvent;
-//import forestry.plugins.ForestryCompatPlugins;
 
 //TODO - most of this needs tearing up and replacing
 public class CommonModuleHandler {
@@ -71,15 +69,15 @@ public class CommonModuleHandler {
 	public void runSetup() {
 		stage = Stage.SETUP;
 		for (IForestryModule module : modules) {
-			Log.debug("Setup API Start: {}", module);
+			Forestry.LOGGER.debug("Setup API Start: {}", module);
 			module.setupAPI();
-			Log.debug("Setup API Complete: {}", module);
+			Forestry.LOGGER.debug("Setup API Complete: {}", module);
 		}
 		stage = Stage.SETUP_DISABLED;
 		for (IForestryModule module : disabledModules) {
-			Log.debug("Disabled-Setup Start: {}", module);
+			Forestry.LOGGER.debug("Disabled-Setup Start: {}", module);
 			module.disabledSetupAPI();
-			Log.debug("Disabled-Setup Complete: {}", module);
+			Forestry.LOGGER.debug("Disabled-Setup Complete: {}", module);
 		}
 		stage = Stage.REGISTER;
 
@@ -117,10 +115,10 @@ public class CommonModuleHandler {
 	public void runPreInit() {
 		stage = Stage.PRE_INIT;
 		for (BlankForestryModule module : modules) {
-			Log.debug("Pre-Init Start: {}", module);
+			Forestry.LOGGER.debug("Pre-Init Start: {}", module);
 			registerHandlers(module);
 			module.preInit();
-			Log.debug("Pre-Init Complete: {}", module);
+			Forestry.LOGGER.debug("Pre-Init Complete: {}", module);
 		}
 	}
 
@@ -131,7 +129,7 @@ public class CommonModuleHandler {
 	}
 
 	private void registerHandlers(BlankForestryModule module) {
-		Log.debug("Registering Handlers for Module: {}", module);
+		Forestry.LOGGER.debug("Registering Handlers for Module: {}", module);
 
 		IPacketRegistry packetRegistry = module.getPacketRegistry();
 		if (packetRegistry != null) {
@@ -161,10 +159,10 @@ public class CommonModuleHandler {
 	public void runInit() {
 		stage = Stage.INIT;
 		for (IForestryModule module : modules) {
-			Log.debug("Init Start: {}", module);
+			Forestry.LOGGER.debug("Init Start: {}", module);
 			module.doInit();
 			module.registerRecipes();
-			Log.debug("Init Complete: {}", module);
+			Forestry.LOGGER.debug("Init Complete: {}", module);
 		}
 	}
 
@@ -175,9 +173,9 @@ public class CommonModuleHandler {
 	public void runPostInit() {
 		stage = Stage.POST_INIT;
 		for (IForestryModule module : modules) {
-			Log.debug("Post-Init Start: {}", module);
+			Forestry.LOGGER.debug("Post-Init Start: {}", module);
 			module.postInit();
-			Log.debug("Post-Init Complete: {}", module);
+			Forestry.LOGGER.debug("Post-Init Complete: {}", module);
 		}
 		stage = Stage.FINISHED;
 	}

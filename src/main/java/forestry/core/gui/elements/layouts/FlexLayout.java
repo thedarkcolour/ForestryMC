@@ -6,8 +6,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
+import forestry.Forestry;
 import forestry.core.gui.elements.GuiElement;
-import forestry.core.utils.Log;
 
 public class FlexLayout implements Layout {
 
@@ -78,7 +78,7 @@ public class FlexLayout implements Layout {
 			int elementExtent = getDirectionExtent(elementSize);
 			int elementOpposite = getOppositeExtent(elementSize);
 			if (elementExtent < 0) {
-				Log.error(String.format("Tried to an widget with unbound extent to a flex layout. Direction: %s; Widget: %s; Size:%s", direction, element, elementSize));
+				Forestry.LOGGER.error(String.format("Tried to an widget with unbound extent to a flex layout. Direction: %s; Widget: %s; Size:%s", direction, element, elementSize));
 				continue;
 			}
 			if (unboundExtent) {
@@ -97,7 +97,7 @@ public class FlexLayout implements Layout {
 			Dimension preferredSize = new Dimension(element.getLayoutSize());
 			int elementExtent = getDirectionExtent(preferredSize);
 			if (elementExtent < 0) {
-				Log.error(String.format("Tried to an widget with unbound extent to a flex layout. Direction: %s; Widget: %s; Size:%s", direction, element, preferredSize));
+				Forestry.LOGGER.error(String.format("Tried to an widget with unbound extent to a flex layout. Direction: %s; Widget: %s; Size:%s", direction, element, preferredSize));
 				continue;
 			}
 			sizeExtent += elementExtent;

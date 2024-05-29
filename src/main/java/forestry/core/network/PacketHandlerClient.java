@@ -3,8 +3,6 @@ package forestry.core.network;
 import java.io.IOException;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -18,11 +16,10 @@ import net.minecraftforge.network.ICustomPacket;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
+import forestry.Forestry;
+
 @OnlyIn(Dist.CLIENT)
 public class PacketHandlerClient {
-
-	private static final Logger LOGGER = LogManager.getLogger();
-
 	public void onPacket(NetworkEvent.ServerCustomPayloadEvent event) {
 		PacketBufferForestry data = new PacketBufferForestry(event.getPayload());
 		byte idOrdinal = data.readByte();
@@ -37,10 +34,10 @@ public class PacketHandlerClient {
 				try {
 					packetHandler.onPacketData(data, player);
 				} catch (IOException e) {
-					LOGGER.error("exception handling packet", e);
+					Forestry.LOGGER.error("exception handling packet", e);
 				}
 			} else {
-				LOGGER.warn("the player was null, event: {}", event);
+				Forestry.LOGGER.warn("the player was null, event: {}", event);
 			}
 		});
 		ctx.setPacketHandled(true);

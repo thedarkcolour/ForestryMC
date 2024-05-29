@@ -59,7 +59,6 @@ import forestry.core.multiblock.RectangularMultiblockControllerBase;
 import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.utils.PlayerUtil;
-import forestry.core.utils.Translator;
 import forestry.farming.FarmDefinition;
 import forestry.farming.FarmHelper;
 import forestry.farming.FarmManager;

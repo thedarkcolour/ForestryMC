@@ -37,6 +37,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.Forestry;
 import forestry.api.arboriculture.IArboristTracker;
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.ILeafTickHandler;
@@ -63,7 +64,6 @@ import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.network.packets.PacketFXSignal;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
-import forestry.core.utils.Log;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.RenderUtil;
 
@@ -263,7 +263,7 @@ public class TreeRoot extends IndividualRoot<ITree> implements ITreeRoot, IBreed
 		ITreekeepingMode mode = getTreekeepingMode(modeName);
 		Preconditions.checkNotNull(mode);
 		setTreekeepingMode(world, mode);
-		Log.debug("Set Treekeeping mode for a world to " + mode);
+		Forestry.LOGGER.debug("Set Treekeeping mode for a world to " + mode);
 
 		return activeTreekeepingMode;
 	}
@@ -287,7 +287,7 @@ public class TreeRoot extends IndividualRoot<ITree> implements ITreeRoot, IBreed
 			}
 		}
 
-		Log.debug("Failed to find a Treekeeping mode called '%s', reverting to fallback.");
+		Forestry.LOGGER.debug("Failed to find a Treekeeping mode called '{}', reverting to fallback.", name);
 		return treekeepingModes.get(0);
 	}
 

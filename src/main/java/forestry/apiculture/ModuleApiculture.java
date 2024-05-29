@@ -38,6 +38,7 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
+import forestry.Forestry;
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.FlowerManager;
 import forestry.api.apiculture.IArmorApiarist;
@@ -76,7 +77,6 @@ import forestry.core.ModuleCore;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
 import forestry.core.utils.IMCUtil;
-import forestry.core.utils.Log;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
@@ -339,7 +339,7 @@ public class ModuleApiculture extends BlankForestryModule {
 				continue;
 			}
 
-			Log.debug("Blacklisting bee species identified by " + item);
+			Forestry.LOGGER.debug("Blacklisting bee species identified by {}", item);
 			GeneticsAPI.apiInstance.getAlleleRegistry().blacklistAllele(new ResourceLocation(item));
 		}
 	}

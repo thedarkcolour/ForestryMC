@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.Forestry;
 import forestry.api.mail.EnumAddressee;
 import forestry.api.mail.ILetter;
 import forestry.api.mail.IMailAddress;
@@ -33,7 +34,6 @@ import forestry.api.mail.ITradeStationInfo;
 import forestry.api.mail.PostManager;
 import forestry.core.gui.ContainerItemInventory;
 import forestry.core.gui.slots.SlotFiltered;
-import forestry.core.utils.Log;
 import forestry.core.utils.NetworkUtil;
 import forestry.mail.Letter;
 import forestry.mail.features.MailMenuTypes;
@@ -135,7 +135,7 @@ public class ContainerLetter extends ContainerItemInventory<ItemInventoryLetter>
 	public void handleRequestLetterInfo(Player player, String recipientName, EnumAddressee type) {
 		MinecraftServer server = player.getServer();
 		if (server == null) {
-			Log.error("Could not get server");
+			Forestry.LOGGER.error("Could not get server");
 			return;
 		}
 		IMailAddress recipient = getRecipient(server, recipientName, type);

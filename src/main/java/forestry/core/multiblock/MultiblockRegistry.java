@@ -9,8 +9,8 @@ import java.util.Set;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 
+import forestry.Forestry;
 import forestry.api.multiblock.IMultiblockComponent;
-import forestry.core.utils.Log;
 
 /**
  * This is a very static singleton registry class which directs incoming events to sub-objects, which
@@ -111,7 +111,7 @@ public class MultiblockRegistry {
 		if (registries.containsKey(world)) {
 			registries.get(world).addDeadController(controller);
 		} else {
-			Log.warning("Controller {} in world {} marked as dead, but that world is not tracked! Controller is being ignored.", controller.hashCode(), world);
+			Forestry.LOGGER.warn("Controller {} in world {} marked as dead, but that world is not tracked! Controller is being ignored.", controller.hashCode(), world);
 		}
 	}
 

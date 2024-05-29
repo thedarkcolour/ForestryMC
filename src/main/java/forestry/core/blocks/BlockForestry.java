@@ -23,11 +23,11 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
+import forestry.Forestry;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.tiles.TileForestry;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.Log;
 
 public abstract class BlockForestry extends Block {
 
@@ -64,7 +64,7 @@ public abstract class BlockForestry extends Block {
 			try {
 				TileUtil.actOnTile(world, pos, TileForestry.class, tile -> tile.onNeighborTileChange((Level) world, pos, neighbor));
 			} catch (StackOverflowError error) {
-				Log.error("Stack Overflow Error in BlockForestry.onNeighborChange()", error);
+				Forestry.LOGGER.error("Stack Overflow Error in BlockForestry.onNeighborChange()", error);
 				throw error;
 			}
 		}

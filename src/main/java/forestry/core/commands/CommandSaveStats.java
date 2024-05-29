@@ -35,12 +35,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraftforge.fml.ModList;
 
+import forestry.Forestry;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.core.config.Constants;
 import forestry.core.proxy.Proxies;
-import forestry.core.utils.Log;
 import forestry.core.utils.StringUtil;
-import forestry.core.utils.Translator;
 
 import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAlleleSpecies;
@@ -147,7 +146,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 
 		} catch (IOException ex) {
 			CommandHelpers.sendLocalizedChatMessage(ctx.getSource(), "for.chat.command.forestry.stats.save.error3");
-			Log.error(Component.translatable("for.for.chat.command.forestry.stats.save.error3").getString(), ex);
+			Forestry.LOGGER.error("Write operation threw an exception. Failed to save statistics.", ex);
 			return 0;
 		}
 

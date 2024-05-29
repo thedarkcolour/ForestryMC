@@ -40,7 +40,6 @@ import forestry.arboriculture.loot.CountBlockFunction;
 import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
 import forestry.core.loot.OrganismFunction;
-import forestry.core.utils.Log;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.modules.ModuleManager;
 import forestry.modules.features.FeatureBlock;

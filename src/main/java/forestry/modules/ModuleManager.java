@@ -36,9 +36,9 @@ import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraftforge.api.distmarker.Dist;
 
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
+import forestry.Forestry;
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.IForestryModule;
 import forestry.api.modules.IModuleContainer;
@@ -47,7 +47,6 @@ import forestry.core.ClientsideCode;
 import forestry.core.IPickupHandler;
 import forestry.core.IResupplyHandler;
 import forestry.core.ISaveEventHandler;
-import forestry.core.utils.Log;
 
 public class ModuleManager implements IModuleManager {
 
@@ -117,7 +116,7 @@ public class ModuleManager implements IModuleManager {
 				containerModules.remove(coreModule);
 				containerModules.add(0, coreModule);
 			} else {
-				Log.debug("Could not find core module for the module container: {}", containerID);
+				Forestry.LOGGER.debug("Could not find core module for the module container: {}", containerID);
 			}
 
 			for (IForestryModule module : containerModules) {
@@ -142,7 +141,7 @@ public class ModuleManager implements IModuleManager {
 					ForestryModule info = module.getClass().getAnnotation(ForestryModule.class);
 					String moduleId = info.moduleID();
 					toLoad.remove(new ResourceLocation(moduleId));
-					Log.warning("Module {} is missing dependencies: {}", moduleId, dependencies);
+					Forestry.LOGGER.warn("Module {} is missing dependencies: {}", moduleId, dependencies);
 				}
 			}
 		} while (changed);

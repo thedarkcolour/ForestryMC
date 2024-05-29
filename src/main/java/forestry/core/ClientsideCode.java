@@ -34,13 +34,11 @@ import forestry.modules.CommonModuleHandler;
 import forestry.storage.proxy.ProxyStorage;
 import forestry.storage.proxy.ProxyStorageClient;
 
-// Rule of thumb for safely calling client code: client classes must be in a static method
+// Rule of thumb for safely calling client code: client classes must be in the body of a static method
 // in another class (like this one), guarded by an if statement checking FMLEnvironment.dist == Dist.CLIENT
 // Calls to this class must be guarded by an if statement.
 // DistExecutor will be deprecated for removal in 1.20, and it doesn't work anyway.
-public enum ClientsideCode {
-	;
-
+public class ClientsideCode {
 	public static ProxyArboriculture newProxyArboriculture() {
 		return new ProxyArboricultureClient();
 	}

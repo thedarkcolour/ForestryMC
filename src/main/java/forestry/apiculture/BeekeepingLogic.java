@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 
-import forestry.apiculture.genetics.BeeHelper;
+import forestry.Forestry;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -54,7 +54,6 @@ import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.apiculture.network.packets.PacketBeeLogicActiveEntity;
 import forestry.core.config.Constants;
 import forestry.core.errors.EnumErrorCode;
-import forestry.core.utils.Log;
 import forestry.core.utils.NetworkUtil;
 
 import genetics.api.GeneticHelper;
@@ -423,7 +422,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 			beeListener.onQueenDeath();
 			beeInventory.getQueen().setCount(0);
 		} else {
-			Log.warning("Tried to spawn offspring off an unmated queen. Devolving her to a princess.");
+			Forestry.LOGGER.warn("Tried to spawn offspring off an unmated queen. Devolving her to a princess.");
 
 			ItemStack convert = ApicultureItems.BEE_PRINCESS.stack();
 			GeneticHelper.setIndividual(convert, queen);

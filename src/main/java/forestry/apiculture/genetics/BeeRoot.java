@@ -28,6 +28,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.Forestry;
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeListener;
@@ -47,7 +48,6 @@ import forestry.apiculture.BeeHousingListener;
 import forestry.apiculture.BeeHousingModifier;
 import forestry.apiculture.BeekeepingLogic;
 import forestry.core.genetics.root.BreedingTrackerManager;
-import forestry.core.utils.Log;
 
 import genetics.api.individual.IGenome;
 import genetics.api.individual.IGenomeWrapper;
@@ -169,7 +169,7 @@ public class BeeRoot extends IndividualRoot<IBee> implements IBeeRoot, IBreeding
 		Preconditions.checkNotNull(mode);
 
 		setBeekeepingMode(world, mode);
-		Log.debug("Set beekeeping mode for a world to " + mode);
+		Forestry.LOGGER.debug("Set beekeeping mode for a world to {}", mode);
 
 		return activeBeekeepingMode;
 	}
@@ -195,7 +195,7 @@ public class BeeRoot extends IndividualRoot<IBee> implements IBeeRoot, IBreeding
 			}
 		}
 
-		Log.debug("Failed to find a beekeeping mode called '{}', reverting to fallback.", name);
+		Forestry.LOGGER.debug("Failed to find a beekeeping mode called '{}', reverting to fallback.", name);
 		return beekeepingModes.get(0);
 	}
 

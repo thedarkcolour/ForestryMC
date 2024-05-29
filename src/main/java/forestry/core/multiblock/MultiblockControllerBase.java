@@ -21,10 +21,9 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.Forestry;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.Log;
-import forestry.core.utils.Translator;
 
 /**
  * This class contains the base logic for "multiblock controllers". Conceptually, they are
@@ -117,7 +116,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		BlockPos coord = part.getCoordinates();
 
 		if (!connectedParts.add(part)) {
-			Log.warning("[%s] Controller %s is double-adding part %d @ %s. This is unusual. " +
+			Forestry.LOGGER.warn("[{}] Controller {} is double-adding part {} @ {}. This is unusual. " +
 							"If you encounter odd behavior, please tear down the machine and rebuild it.",
 					world.isClientSide() ? "CLIENT" : "SERVER", hashCode(), part.hashCode(), coord);
 		}
@@ -252,7 +251,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		onDetachBlock(part);
 		if (!connectedParts.remove(part)) {
 			BlockPos partCoords = part.getCoordinates();
-			Log.warning("[%s] Double-removing part (%d) @ %d, %d, %d, this is unexpected and may cause problems. " +
+			Forestry.LOGGER.warn("[{}] Double-removing part ({}) @ {}, {}, {}, this is unexpected and may cause problems. " +
 							"If you encounter anomalies, please tear down the reactor and rebuild it.",
 					world.isClientSide() ? "CLIENT" : "SERVER", part.hashCode(), partCoords.getX(), partCoords.getY(), partCoords.getZ());
 		}
@@ -629,7 +628,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			return false;
 		} else {
 			// Strip dead parts from both and retry
-			Log.warning("[%s] Encountered two controllers with the same reference coordinate. Auditing connected parts and retrying.", world.isClientSide ? "CLIENT" : "SERVER");
+			Forestry.LOGGER.warn("[{}] Encountered two controllers with the same reference coordinate. Auditing connected parts and retrying.", world.isClientSide ? "CLIENT" : "SERVER");
 			auditParts();
 			otherController.auditParts();
 
@@ -639,8 +638,8 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			} else if (res > 0) {
 				return false;
 			} else {
-				Log.error("My Controller (%d): size (%d), parts: %s", hashCode(), connectedParts.size(), getPartsListString());
-				Log.error("Other Controller (%d): size (%d), coords: %s", otherController.hashCode(), otherController.getComponents().size(), otherController.getPartsListString());
+				Forestry.LOGGER.error("My Controller ({}): size ({}), parts: {}", hashCode(), connectedParts.size(), getPartsListString());
+				Forestry.LOGGER.error("Other Controller ({}): size ({}), coords: {}", otherController.hashCode(), otherController.getComponents().size(), otherController.getPartsListString());
 				throw new IllegalArgumentException("[" + (world.isClientSide ? "CLIENT" : "SERVER") + "] " +
 						"Two controllers with the same reference coord that somehow both have valid parts - this should never happen!");
 			}
@@ -688,7 +687,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		}
 
 		connectedParts.removeAll(deadParts);
-		Log.warning("[%s] Controller found %d dead parts during an audit, %d parts remain attached", world.isClientSide ? "CLIENT" : "SERVER", deadParts.size(), connectedParts.size());
+		Forestry.LOGGER.warn("[{}] Controller found {} dead parts during an audit, {} parts remain attached", world.isClientSide ? "CLIENT" : "SERVER", deadParts.size(), connectedParts.size());
 	}
 
 	@Override

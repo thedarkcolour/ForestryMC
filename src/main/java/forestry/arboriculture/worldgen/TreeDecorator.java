@@ -35,6 +35,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import forestry.Forestry;
 import forestry.api.arboriculture.IGrowthProvider;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
@@ -44,7 +45,6 @@ import forestry.arboriculture.TreeConfig;
 import forestry.arboriculture.commands.TreeGenHelper;
 import forestry.core.config.Config;
 import forestry.core.utils.BlockUtil;
-import forestry.core.utils.Log;
 
 import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAllele;
@@ -153,7 +153,7 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 					if (species.getGrowthProvider().canSpawn(tree, level.getLevel(), validPos)) {
 						if (TreeGenHelper.generateTree(tree, level, validPos)) {
 							if (Config.logTreePlacement) {
-								Log.info("Placed {} at {}", treeUID.toString(), pos.toString());
+								Forestry.LOGGER.info("Placed {} at {}", treeUID, pos);
 							}
 
 							return true;

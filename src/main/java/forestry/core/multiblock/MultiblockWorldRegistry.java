@@ -13,10 +13,10 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkSource;
 
+import forestry.Forestry;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.api.multiblock.IMultiblockLogic;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.Log;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -195,7 +195,7 @@ public class MultiblockWorldRegistry {
 				}
 
 				if (newMaster == null) {
-					Log.error("Multiblock system checked a merge pool of size %d, found no master candidates. This should never happen.", mergePool.size());
+					Forestry.LOGGER.error("Multiblock system checked a merge pool of size {}, found no master candidates. This should never happen.", mergePool.size());
 				} else {
 					// Merge all the other machines into the master machine, then unregister them
 					addDirtyController(newMaster);
@@ -246,7 +246,7 @@ public class MultiblockWorldRegistry {
 				// Go through any controllers which have marked themselves as potentially dead.
 				// Validate that they are empty/dead, then unregister them.
 				if (!controller.isEmpty()) {
-					Log.error("Found a non-empty controller. Forcing it to shed its blocks and die. This should never happen!");
+					Forestry.LOGGER.error("Found a non-empty controller. Forcing it to shed its blocks and die. This should never happen!");
 					detachedParts.addAll(controller.detachAllBlocks());
 				}
 

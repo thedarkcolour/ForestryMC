@@ -2,6 +2,8 @@ package forestry.core.utils;
 
 import net.minecraftforge.fml.InterModComms;
 
+import forestry.Forestry;
+
 public class IMCUtil {
 	public static String getInvalidIMCMessageText(InterModComms.IMCMessage message) {
 		//TODO new imc
@@ -22,6 +24,6 @@ public class IMCUtil {
 
 	public static void logInvalidIMCMessage(InterModComms.IMCMessage message) {
 		String invalidIMCMessageText = getInvalidIMCMessageText(message);
-		Log.warning(invalidIMCMessageText);
+		Forestry.LOGGER.warn(invalidIMCMessageText);
 	}
 }

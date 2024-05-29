@@ -19,6 +19,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.Forestry;
 import forestry.core.gui.Drawable;
 import forestry.core.gui.GuiConstants;
 import forestry.core.gui.elements.ActionConfig;
@@ -30,7 +31,6 @@ import forestry.core.gui.elements.GuiElement;
 import forestry.core.gui.elements.GuiElementFactory;
 import forestry.core.gui.elements.ItemElement;
 import forestry.core.gui.elements.text.LabelElement;
-import forestry.core.utils.Log;
 
 @OnlyIn(Dist.CLIENT)
 public class ContainerElement extends GuiElement {
@@ -127,7 +127,7 @@ public class ContainerElement extends GuiElement {
 			return;
 		}
 		if (bounds == null) {
-			Log.error("Failed to layout container %s!", this);
+			Forestry.LOGGER.error("Failed to layout container {}!", this);
 			markClean();
 			return;
 		}
