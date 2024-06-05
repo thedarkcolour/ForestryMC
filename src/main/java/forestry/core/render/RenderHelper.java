@@ -66,7 +66,7 @@ public class RenderHelper {
 		}
 
 		EntityRenderDispatcher renderManager = Minecraft.getInstance().getEntityRenderDispatcher();
-		renderManager.render(dummyItem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, transformation, buffer, combinedLight);
+		renderManager.render(dummyItem, 0.0D, 0.0D, 0.0D, 0.0F, partialTicks, transformation, buffer, combinedLight);
 
 		dummyItem.level = null;
 	}
