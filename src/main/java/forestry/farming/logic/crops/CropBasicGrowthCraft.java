@@ -10,20 +10,18 @@
  ******************************************************************************/
 package forestry.farming.logic.crops;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 
-import forestry.core.config.Constants;
-import forestry.core.network.packets.PacketFXSignal;
-import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.BlockUtil;
 
 //TODO consider movnig compat specific crops to compat
 //TODO follow up in forge on generic crop interface...
@@ -46,29 +44,28 @@ public class CropBasicGrowthCraft extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level world, BlockPos pos) {
+	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		Block block = blockState.getBlock();
 		NonNullList<ItemStack> harvest = NonNullList.create();
 		//TODO cast
-		LootContext.Builder ctx = new LootContext.Builder((ServerLevel) world)
+		LootContext.Builder ctx = new LootContext.Builder((ServerLevel) level)
 				.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos));
 		harvest.addAll(block.getDrops(blockState, ctx));
 		if (harvest.size() > 1) {
 			harvest.remove(0); //Hops have rope as first drop.
 		}
 
-		PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK, PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, blockState);
-		NetworkUtil.sendNetworkPacket(packet, pos, world);
+		BlockUtil.sendDestroyEffects(level, pos, blockState);
 
 		if (isGrape) {
-			world.removeBlock(pos, false);
+			level.removeBlock(pos, false);
 		} else {
-			world.setBlock(pos, block.defaultBlockState(), Constants.FLAG_BLOCK_SYNC);
+			level.setBlock(pos, block.defaultBlockState(), Block.UPDATE_CLIENTS);
 		}
 
 		if (isRice) {
 			// TODO: GrowthCraft for MC 1.9. Don't use meta, get the actual block state.
-			world.setBlock(pos.below(), block.defaultBlockState(), Constants.FLAG_BLOCK_SYNC);
+			level.setBlock(pos.below(), block.defaultBlockState(), Block.UPDATE_CLIENTS);
 			//TODO flatten
 		}
 

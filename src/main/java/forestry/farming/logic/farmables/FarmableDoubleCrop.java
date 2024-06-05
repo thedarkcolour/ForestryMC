@@ -17,17 +17,17 @@ public class FarmableDoubleCrop extends FarmableBase {
 	}
 
 	@Override
-	public boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState) {
-		return blockState.getBlock() == plantedState.getBlock() && blockState != topMatureState;
+	public boolean isSaplingAt(Level level, BlockPos pos, BlockState state) {
+		return state.getBlock() == plantedState.getBlock() && state != topMatureState;
 	}
 
 	@Override
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
 		BlockPos posUp = pos.above();
-		BlockState stateUp = world.getBlockState(posUp);
-		if (blockState != matureState || stateUp != topMatureState) {
+		BlockState stateUp = level.getBlockState(posUp);
+		if (state != matureState || stateUp != topMatureState) {
 			return null;
 		}
-		return new CropDestroyDouble(world, blockState, stateUp, pos, replant ? plantedState : null);
+		return new CropDestroyDouble(level, state, stateUp, pos, replant ? plantedState : null);
 	}
 }

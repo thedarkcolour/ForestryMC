@@ -10,44 +10,37 @@
  ******************************************************************************/
 package forestry.mail.network.packets;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
 import forestry.mail.tiles.TileTrader;
 
-public class PacketTraderAddressRequest implements IForestryPacketServer {
-	private final BlockPos pos;
-	private final String addressName;
-
+public record PacketTraderAddressRequest(BlockPos pos, String addressName) implements IForestryPacketServer {
 	public PacketTraderAddressRequest(TileTrader tile, String addressName) {
-		this.pos = tile.getBlockPos();
-		this.addressName = addressName;
+		this(tile.getBlockPos(), addressName);
+	}
+
+	public static void handle(PacketTraderAddressRequest msg, ServerPlayer player) {
+		TileUtil.actOnTile(player.level, msg.pos(), TileTrader.class, tile -> tile.handleSetAddressRequest(msg.addressName()));
 	}
 
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.TRADING_ADDRESS_REQUEST;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		data.writeUtf(addressName);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		buffer.writeUtf(addressName);
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			BlockPos pos = data.readBlockPos();
-			String addressName = data.readUtf();
-
-			TileUtil.actOnTile(player.level, pos, TileTrader.class, tile -> tile.handleSetAddressRequest(addressName));
-		}
+	public static PacketTraderAddressRequest decode(FriendlyByteBuf buffer) {
+		return new PacketTraderAddressRequest(buffer.readBlockPos(), buffer.readUtf());
 	}
 }

@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -38,7 +39,6 @@ import forestry.api.core.EnumTemperature;
 import forestry.apiculture.gui.IGuiBeeHousingDelegate;
 import forestry.core.climate.ClimateListener;
 import forestry.core.network.IStreamableGui;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
@@ -179,12 +179,12 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		data.writeVarInt(beeLogic.getBeeProgressPercent());
 	}
 
 	@Override
-	public void readGuiData(PacketBufferForestry data) {
+	public void readGuiData(FriendlyByteBuf data) {
 		breedingProgressPercent = data.readVarInt();
 	}
 

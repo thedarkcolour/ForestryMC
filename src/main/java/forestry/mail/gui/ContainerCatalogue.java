@@ -37,7 +37,8 @@ import forestry.api.mail.PostManager;
 import forestry.core.gui.IGuiSelectable;
 import forestry.core.utils.NetworkUtil;
 import forestry.mail.features.MailMenuTypes;
-import forestry.mail.network.packets.PacketLetterInfoResponse;
+import forestry.mail.network.packets.PacketLetterInfoResponseTrader;
+
 import net.minecraft.world.item.ItemStack;
 
 public class ContainerCatalogue extends AbstractContainerMenu implements IGuiSelectable, ILetterInfoReceiver {
@@ -96,6 +97,7 @@ public class ContainerCatalogue extends AbstractContainerMenu implements IGuiSel
 	}
 
 	private void rebuildStationsList() {
+		// todo check that Nedelosk did not create a bug with this
 		if (!player.level.isClientSide) {
 			return;
 		}
@@ -178,7 +180,7 @@ public class ContainerCatalogue extends AbstractContainerMenu implements IGuiSel
 				crafter.dataChanged(this, 2, currentFilter);
 			}
 
-			NetworkUtil.sendToPlayer(new PacketLetterInfoResponse(EnumAddressee.TRADER, currentTrade, null), player);
+			NetworkUtil.sendToPlayer(new PacketLetterInfoResponseTrader(currentTrade), (ServerPlayer) player);
 			needsSync = false;
 		}
 	}

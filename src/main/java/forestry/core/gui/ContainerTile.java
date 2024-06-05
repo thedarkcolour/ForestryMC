@@ -26,7 +26,7 @@ import forestry.api.core.IErrorLogicSource;
 import forestry.api.core.IErrorState;
 import forestry.core.network.packets.PacketErrorUpdate;
 import forestry.core.network.packets.PacketGuiEnergy;
-import forestry.core.network.packets.PacketGuiUpdate;
+import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.IPowerHandler;
 import forestry.core.tiles.TilePowered;
 import forestry.core.tiles.TileUtil;
@@ -104,7 +104,7 @@ public abstract class ContainerTile<T extends BlockEntity> extends ContainerFore
 			}
 
 			if (guiNeedsUpdate) {
-				PacketGuiUpdate packet = new PacketGuiUpdate(tilePowered);
+				PacketGuiStream packet = new PacketGuiStream(tilePowered);
 				sendPacketToListeners(packet);
 			}
 		}

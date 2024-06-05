@@ -11,11 +11,11 @@
 package forestry.energy.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,7 +33,6 @@ import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.network.IStreamableGui;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
 import forestry.core.tiles.TemperatureState;
@@ -264,7 +263,7 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 
 	/* NETWORK */
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 		data.writeBoolean(active);
 		data.writeInt(heat);
@@ -274,7 +273,7 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		active = data.readBoolean();
 		heat = data.readInt();
@@ -283,7 +282,7 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		data.writeInt(currentOutput);
 		data.writeInt(heat);
 		data.writeBoolean(forceCooldown);
@@ -291,7 +290,7 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 	}
 
 	@Override
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		currentOutput = data.readInt();
 		heat = data.readInt();
 		forceCooldown = data.readBoolean();

@@ -14,13 +14,13 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +56,6 @@ import forestry.core.inventory.InventoryAdapter;
 import forestry.core.multiblock.IMultiblockControllerInternal;
 import forestry.core.multiblock.MultiblockValidationException;
 import forestry.core.multiblock.RectangularMultiblockControllerBase;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.utils.PlayerUtil;
 import forestry.farming.FarmDefinition;
@@ -277,13 +276,13 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		manager.writeData(data);
 		sockets.writeData(data);
 	}
 
 	@Override
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		manager.readData(data);
 		sockets.readData(data);
 

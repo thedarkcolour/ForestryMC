@@ -10,45 +10,36 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import forestry.core.gui.IGuiSelectable;
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketGuiSelectRequest implements IForestryPacketServer {
-	private final int primaryIndex;
-	private final int secondaryIndex;
+public record PacketGuiSelectRequest(int primaryIndex, int secondaryIndex) implements IForestryPacketServer {
+	public static void handle(PacketGuiSelectRequest msg, ServerPlayer player) {
+		AbstractContainerMenu container = player.containerMenu;
 
-	public PacketGuiSelectRequest(int primaryIndex, int secondaryIndex) {
-		this.primaryIndex = primaryIndex;
-		this.secondaryIndex = secondaryIndex;
+		if (container instanceof IGuiSelectable guiSelectable) {
+			guiSelectable.handleSelectionRequest(player, msg.primaryIndex(), msg.secondaryIndex());
+		}
 	}
 
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.GUI_SELECTION_REQUEST;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeVarInt(primaryIndex);
-		data.writeVarInt(secondaryIndex);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeVarInt(primaryIndex);
+		buffer.writeVarInt(secondaryIndex);
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			int primary = data.readVarInt();
-			int secondary = data.readVarInt();
-
-			AbstractContainerMenu container = player.containerMenu;
-			if ((container instanceof IGuiSelectable guiSelectable)) {
-				guiSelectable.handleSelectionRequest(player, primary, secondary);
-			}
-		}
+	public static PacketGuiSelectRequest decode(FriendlyByteBuf buffer) {
+		return new PacketGuiSelectRequest(buffer.readVarInt(), buffer.readVarInt());
 	}
 }

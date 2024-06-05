@@ -1,48 +1,33 @@
 package forestry.core.network.packets;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
-
-import forestry.api.climate.IClimateListener;
 import forestry.api.climate.IClimateState;
 import forestry.core.climate.ClimateRoot;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
+import forestry.core.utils.NetworkUtil;
 
-public class PacketClimateListenerUpdate implements IForestryPacketClient {
-	private final BlockPos pos;
-	private final IClimateState state;
-
-	public PacketClimateListenerUpdate(BlockPos pos, IClimateState state) {
-		this.pos = pos;
-		this.state = state;
-	}
-
+public record PacketClimateListenerUpdate(BlockPos pos, IClimateState state) implements IForestryPacketClient {
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		data.writeClimateState(state);
-	}
-
-	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.CLIMATE_LISTENER_UPDATE;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			BlockPos pos = data.readBlockPos();
-			IClimateState state = data.readClimateState();
-			LazyOptional<IClimateListener> listener = ClimateRoot.getInstance().getListener(player.level, pos);
-			listener.ifPresent(l -> l.setClimateState(state));
-		}
+	@Override
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		NetworkUtil.writeClimateState(buffer, state);
+	}
+
+	public static PacketClimateListenerUpdate decode(FriendlyByteBuf buffer) {
+		return new PacketClimateListenerUpdate(buffer.readBlockPos(), NetworkUtil.readClimateState(buffer));
+	}
+
+	public static void handle(PacketClimateListenerUpdate msg, Player player) {
+		ClimateRoot.getInstance().getListener(player.level, msg.pos).ifPresent(l -> l.setClimateState(msg.state));
 	}
 }

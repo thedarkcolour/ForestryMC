@@ -11,11 +11,11 @@
 package forestry.factory.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Stack;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,7 +42,6 @@ import forestry.core.config.Constants;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.inventory.InventoryAdapter;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.IItemStackDisplay;
 import forestry.core.tiles.TilePowered;
 import forestry.core.utils.InventoryUtil;
@@ -110,14 +109,14 @@ public class TileCentrifuge extends TilePowered implements ISocketable, WorldlyC
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		super.writeGuiData(data);
 		sockets.writeData(data);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		super.readGuiData(data);
 		sockets.readData(data);
 	}

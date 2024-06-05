@@ -10,44 +10,38 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.core.circuits.ItemCircuitBoard;
 import forestry.core.gui.IContainerSocketed;
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketChipsetClick implements IForestryPacketServer {
-	private final int slot;
-
-	public PacketChipsetClick(int slot) {
-		this.slot = slot;
+public record PacketChipsetClick(int slot) implements IForestryPacketServer {
+	public static void handle(PacketChipsetClick msg, ServerPlayer player) {
+		if (player.containerMenu instanceof IContainerSocketed socketMenu) {
+			ItemStack itemstack = player.containerMenu.getCarried();
+			// todo replace check with tag
+			if (itemstack.getItem() instanceof ItemCircuitBoard) {
+				socketMenu.handleChipsetClickServer(msg.slot(), player, itemstack);
+			}
+		}
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeVarInt(slot);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeVarInt(slot);
 	}
 
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.CHIPSET_CLICK;
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			int slot = data.readVarInt();
-
-			if (player.containerMenu instanceof IContainerSocketed) {
-				ItemStack itemstack = player.containerMenu.getCarried();
-				if (itemstack.getItem() instanceof ItemCircuitBoard) {
-					((IContainerSocketed) player.containerMenu).handleChipsetClickServer(slot, player, itemstack);
-				}
-			}
-		}
+	public static PacketChipsetClick decode(FriendlyByteBuf buffer) {
+		return new PacketChipsetClick(buffer.readVarInt());
 	}
 }

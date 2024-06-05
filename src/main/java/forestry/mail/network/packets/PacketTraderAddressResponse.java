@@ -10,48 +10,33 @@
  ******************************************************************************/
 package forestry.mail.network.packets;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 import forestry.mail.tiles.TileTrader;
 
-public class PacketTraderAddressResponse implements IForestryPacketClient {
-	private final BlockPos pos;
-	private final String addressName;
-
-	public PacketTraderAddressResponse(TileTrader tile, String addressName) {
-		this.pos = tile.getBlockPos();
-		this.addressName = addressName;
-	}
-
+public record PacketTraderAddressResponse(BlockPos pos, String addressName) implements IForestryPacketClient {
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.TRADING_ADDRESS_RESPONSE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		data.writeUtf(addressName);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		buffer.writeUtf(addressName);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
+	public static PacketTraderAddressResponse decode(FriendlyByteBuf buffer) {
+		return new PacketTraderAddressResponse(buffer.readBlockPos(), buffer.readUtf());
+	}
 
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			BlockPos pos = data.readBlockPos();
-			String addressName = data.readUtf();
-
-			TileUtil.actOnTile(player.level, pos, TileTrader.class, tile -> tile.handleSetAddressResponse(addressName));
-		}
+	public static void handle(PacketTraderAddressResponse msg, Player player) {
+		TileUtil.actOnTile(player.level, msg.pos, TileTrader.class, tile -> tile.handleSetAddressResponse(msg.addressName));
 	}
 }

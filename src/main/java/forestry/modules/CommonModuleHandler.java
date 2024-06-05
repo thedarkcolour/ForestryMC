@@ -131,11 +131,6 @@ public class CommonModuleHandler {
 	private void registerHandlers(BlankForestryModule module) {
 		Forestry.LOGGER.debug("Registering Handlers for Module: {}", module);
 
-		IPacketRegistry packetRegistry = module.getPacketRegistry();
-		if (packetRegistry != null) {
-			registerPackages(packetRegistry);
-		}
-
 		IPickupHandler pickupHandler = module.getPickupHandler();
 		if (pickupHandler != null) {
 			ModuleManager.pickupHandlers.add(pickupHandler);
@@ -150,10 +145,6 @@ public class CommonModuleHandler {
 		if (resupplyHandler != null) {
 			ModuleManager.resupplyHandlers.add(resupplyHandler);
 		}
-	}
-
-	protected void registerPackages(IPacketRegistry packetRegistry) {
-		packetRegistry.registerPacketsServer();
 	}
 
 	public void runInit() {

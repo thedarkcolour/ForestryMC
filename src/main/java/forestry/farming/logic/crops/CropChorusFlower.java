@@ -1,14 +1,13 @@
 package forestry.farming.logic.crops;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.core.network.packets.PacketFXSignal;
-import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.BlockUtil;
 
 public class CropChorusFlower extends Crop {
 	private static final BlockState BLOCK_STATE = Blocks.CHORUS_FLOWER.defaultBlockState();
@@ -23,18 +22,16 @@ public class CropChorusFlower extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level world, BlockPos pos) {
+	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		NonNullList<ItemStack> harvested = NonNullList.create();
 		harvested.add(new ItemStack(Blocks.CHORUS_FLOWER));
 		//TODO: Fix dropping
-		//float chance = ForgeEventFactory.fireBlockHarvesting(harvested, world, pos, BLOCK_STATE, 0, 1.0F, false, null);
+		//float chance = ForgeEventFactory.fireBlockHarvesting(harvested, level, pos, BLOCK_STATE, 0, 1.0F, false, null);
 		float chance = 1.0F;
-		harvested.removeIf(next -> world.random.nextFloat() > chance);
+		harvested.removeIf(next -> level.random.nextFloat() > chance);
 
-		PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK, PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, BLOCK_STATE);
-		NetworkUtil.sendNetworkPacket(packet, pos, world);
-
-		world.removeBlock(pos, false);
+		BlockUtil.sendDestroyEffects(level, pos, BLOCK_STATE);
+		level.removeBlock(pos, false);
 
 		return harvested;
 	}

@@ -10,86 +10,50 @@
  ******************************************************************************/
 package forestry.core.network;
 
+import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nullable;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.core.network.packets.PacketHandlerDummyClient;
+import forestry.core.utils.ModUtil;
 
 /**
  * Packets sent to the client from the server
  */
-public enum PacketIdClient implements IPacketId {
-	INVALID,
-
+public class PacketIdClient {
 	// Core Gui
-	ERROR_UPDATE,
-	ERROR_UPDATE_ENTITY,
-	GUI_UPDATE,
-	GUI_UPDATE_ENTITY,
-	GUI_LAYOUT_SELECT,
-	GUI_ENERGY,
-	SOCKET_UPDATE,
-
+	public static final ResourceLocation ERROR_UPDATE = ModUtil.modLoc("error_update");
+	public static final ResourceLocation GUI_UPDATE = ModUtil.modLoc("gui_update");
+	public static final ResourceLocation GUI_FILTER_UPDATE = ModUtil.modLoc("gui_filter_update");
+	public static final ResourceLocation GUI_LAYOUT_SELECT = ModUtil.modLoc("gui_layout_select");
+	public static final ResourceLocation GUI_ENERGY = ModUtil.modLoc("gui_energy");
+	public static final ResourceLocation SOCKET_UPDATE = ModUtil.modLoc("socket_update");
 	// Core Tile Entities
-	TILE_FORESTRY_UPDATE,
-	ITEMSTACK_DISPLAY,
-	FX_SIGNAL,
-	TANK_LEVEL_UPDATE,
-
+	public static final ResourceLocation TILE_FORESTRY_UPDATE = ModUtil.modLoc("tile_forestry_update");
+	public static final ResourceLocation ITEMSTACK_DISPLAY = ModUtil.modLoc("itemstack_display");
+	public static final ResourceLocation FX_SIGNAL = ModUtil.modLoc("fx_signal");
+	public static final ResourceLocation TANK_LEVEL_UPDATE = ModUtil.modLoc("tank_level_update");
 	// Core Genome
-	GENOME_TRACKER_UPDATE,
-
+	public static final ResourceLocation GENOME_TRACKER_UPDATE = ModUtil.modLoc("genome_tracker_update");
 	// Factory
-	WORKTABLE_MEMORY_UPDATE,
-	WORKTABLE_CRAFTING_UPDATE,
-
+	public static final ResourceLocation WORKTABLE_MEMORY_UPDATE = ModUtil.modLoc("worktable_memory_update");
+	public static final ResourceLocation WORKTABLE_CRAFTING_UPDATE = ModUtil.modLoc("worktable_crafting_update");
 	// Apiculture
-	TILE_FORESTRY_ACTIVE,
-	BEE_LOGIC_ACTIVE,
-	BEE_LOGIC_ACTIVE_ENTITY,
-	HABITAT_BIOME_POINTER,
-	IMPRINT_SELECTION_RESPONSE,
-	ALVERAY_CONTROLLER_CHANGE,
-
+	public static final ResourceLocation TILE_FORESTRY_ACTIVE = ModUtil.modLoc("tile_forestry_active");
+	public static final ResourceLocation BEE_LOGIC_ACTIVE = ModUtil.modLoc("bee_logic_active");
+	public static final ResourceLocation HABITAT_BIOME_POINTER = ModUtil.modLoc("habitat_biome_pointer");
+	public static final ResourceLocation IMPRINT_SELECTION_RESPONSE = ModUtil.modLoc("imprint_selection_response");
+	public static final ResourceLocation ALVERAY_CONTROLLER_CHANGE = ModUtil.modLoc("alveray_controller_change");
 	// Arboriculture
-	RIPENING_UPDATE,
-
+	public static final ResourceLocation RIPENING_UPDATE = ModUtil.modLoc("ripening_update");
 	// Mail
-	TRADING_ADDRESS_RESPONSE,
-	LETTER_INFO_RESPONSE,
-	POBOX_INFO_RESPONSE,
-
+	public static final ResourceLocation TRADING_ADDRESS_RESPONSE = ModUtil.modLoc("trading_address_response");
+	public static final ResourceLocation LETTER_INFO_RESPONSE_PLAYER = ModUtil.modLoc("letter_info_response_player");
+	public static final ResourceLocation LETTER_INFO_RESPONSE_TRADER = ModUtil.modLoc("letter_info_response_trader");
+	public static final ResourceLocation POBOX_INFO_RESPONSE = ModUtil.modLoc("pobox_info_response");
 	// Climate
-	UPDATE_CLIMATE,
-	CLIMATE_LISTENER_UPDATE,
-	CLIMATE_LISTENER_UPDATE_ENTITY,
-	CLIMATE_PLAYER,
-
+	public static final ResourceLocation UPDATE_CLIMATE = ModUtil.modLoc("update_climate");
+	public static final ResourceLocation CLIMATE_LISTENER_UPDATE = ModUtil.modLoc("climate_listener_update");
+	public static final ResourceLocation CLIMATE_PLAYER = ModUtil.modLoc("climate_player");
 	// Sorting
-	GUI_UPDATE_FILTER,
-
+	public static final ResourceLocation GUI_UPDATE_FILTER = ModUtil.modLoc("gui_update_filter");
 	// JEI
-	RECIPE_TRANSFER_UPDATE;
-
-	public static final PacketIdClient[] VALUES = values();
-
-	@OnlyIn(Dist.CLIENT)
-	@Nullable
-	private IForestryPacketHandlerClient packetHandler;
-
-	@OnlyIn(Dist.CLIENT)
-	public void setPacketHandler(IForestryPacketHandlerClient packetHandler) {
-		this.packetHandler = packetHandler;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public IForestryPacketHandlerClient getPacketHandler() {
-		if (packetHandler == null) {
-			return PacketHandlerDummyClient.INSTANCE;
-		}
-		return packetHandler;
-	}
+	public static final ResourceLocation RECIPE_TRANSFER_UPDATE = ModUtil.modLoc("recipe_transfer_update");
 }

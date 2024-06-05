@@ -10,43 +10,36 @@
  ******************************************************************************/
 package forestry.mail.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.mail.POBoxInfo;
 import forestry.mail.gui.GuiMailboxInfo;
 
-public class PacketPOBoxInfoResponse implements IForestryPacketClient {
-	public final POBoxInfo poboxInfo;
-
+public record PacketPOBoxInfoResponse(int playerLetters, int tradeLetters) implements IForestryPacketClient {
 	public PacketPOBoxInfoResponse(POBoxInfo info) {
-		this.poboxInfo = info;
+		this(info.playerLetters(), info.tradeLetters());
 	}
 
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.POBOX_INFO_RESPONSE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeInt(poboxInfo.playerLetters);
-		data.writeInt(poboxInfo.tradeLetters);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeInt(playerLetters);
+		buffer.writeInt(tradeLetters);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
+	public static PacketPOBoxInfoResponse decode(FriendlyByteBuf buffer) {
+		return new PacketPOBoxInfoResponse(buffer.readInt(), buffer.readInt());
+	}
 
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			POBoxInfo poboxInfo = new POBoxInfo(data.readInt(), data.readInt());
-			GuiMailboxInfo.instance.setPOBoxInfo(player, poboxInfo);
-		}
+	public static void handle(PacketPOBoxInfoResponse msg, Player player) {
+		GuiMailboxInfo.instance.setPOBoxInfo(player, new POBoxInfo(msg.playerLetters, msg.tradeLetters));
 	}
 }

@@ -1,7 +1,8 @@
 package forestry.core;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import net.minecraftforge.event.TickEvent;
@@ -18,8 +19,6 @@ import forestry.core.config.Constants;
 import forestry.core.network.packets.PacketClimatePlayer;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.TickHelper;
-
-//import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = Constants.MOD_ID)
 public class ClimateHandlerServer {
@@ -40,7 +39,7 @@ public class ClimateHandlerServer {
 		tickHelper.onTick();
 		if (tickHelper.updateOnInterval(100) && !climateState.equals(previousState)) {
 			ClimateHandlerServer.previousState = climateState;
-			NetworkUtil.sendToPlayer(new PacketClimatePlayer(climateState), player);
+			NetworkUtil.sendToPlayer(new PacketClimatePlayer(climateState), (ServerPlayer) player);
 		}
 	}
 }

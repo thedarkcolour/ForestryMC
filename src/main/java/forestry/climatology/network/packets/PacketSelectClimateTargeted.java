@@ -10,49 +10,40 @@
  ******************************************************************************/
 package forestry.climatology.network.packets;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.climate.IClimateHousing;
 import forestry.api.climate.IClimateState;
 import forestry.api.climate.IClimateTransformer;
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
+import forestry.core.utils.NetworkUtil;
 
-public class PacketSelectClimateTargeted implements IForestryPacketServer {
-	private final BlockPos pos;
-	private final IClimateState climateState;
-
-	public PacketSelectClimateTargeted(BlockPos pos, IClimateState climateState) {
-		this.pos = pos;
-		this.climateState = climateState;
-	}
-
+public record PacketSelectClimateTargeted(BlockPos pos, IClimateState climateState) implements IForestryPacketServer {
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.SELECT_CLIMATE_TARGETED;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		data.writeClimateState(climateState);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		NetworkUtil.writeClimateState(buffer, climateState);
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			BlockPos pos = data.readBlockPos();
-			IClimateState climateState = data.readClimateState();
+	public static PacketSelectClimateTargeted decode(FriendlyByteBuf buffer) {
+		return new PacketSelectClimateTargeted(buffer.readBlockPos(), NetworkUtil.readClimateState(buffer));
+	}
 
-			IClimateHousing housing = TileUtil.getTile(player.level, pos, IClimateHousing.class);
-			if (housing != null) {
-				IClimateTransformer transformer = housing.getTransformer();
-				transformer.setTarget(climateState);
-			}
+	public static void handle(PacketSelectClimateTargeted msg, ServerPlayer player) {
+		IClimateHousing housing = TileUtil.getTile(player.level, msg.pos(), IClimateHousing.class);
+		if (housing != null) {
+			IClimateTransformer transformer = housing.getTransformer();
+			transformer.setTarget(msg.climateState());
 		}
 	}
 }

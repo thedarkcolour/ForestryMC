@@ -10,44 +10,35 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.core.gui.IContainerSocketed;
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketSolderingIronClick implements IForestryPacketServer {
-	private final int slot;
-
-	public PacketSolderingIronClick(int slot) {
-		this.slot = slot;
-	}
-
+public record PacketSolderingIronClick(int slot) implements IForestryPacketServer {
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.SOLDERING_IRON_CLICK;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeVarInt(slot);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeVarInt(slot);
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			int slot = data.readVarInt();
+	public static PacketSolderingIronClick decode(FriendlyByteBuf buffer) {
+		return new PacketSolderingIronClick(buffer.readVarInt());
+	}
 
-			if (!(player.containerMenu instanceof IContainerSocketed)) {
-				return;
-			}
-
+	public static void handle(PacketSolderingIronClick msg, ServerPlayer player) {
+		if (player.containerMenu instanceof IContainerSocketed socketMenu) {
 			ItemStack itemstack = player.containerMenu.getCarried();
 
-			((IContainerSocketed) player.containerMenu).handleSolderingIronClickServer(slot, player, itemstack);
+			socketMenu.handleSolderingIronClickServer(msg.slot(), player, itemstack);
 		}
 	}
 }

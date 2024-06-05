@@ -8,7 +8,6 @@ import forestry.apiculture.gui.ContainerAlvearySwarmer;
 import forestry.apiculture.gui.ContainerBeeHousing;
 import forestry.apiculture.gui.ContainerHabitatLocator;
 import forestry.apiculture.gui.ContainerImprinter;
-import forestry.apiculture.gui.ContainerMinecartBeehouse;
 import forestry.modules.features.FeatureMenuType;
 import forestry.modules.features.FeatureProvider;
 import forestry.modules.features.IFeatureRegistry;
@@ -25,5 +24,4 @@ public class ApicultureMenuTypes {
 	public static final FeatureMenuType<ContainerBeeHousing> BEE_HOUSING = REGISTRY.menuType(ContainerBeeHousing::fromNetwork, "bee_housing");
 	public static final FeatureMenuType<ContainerHabitatLocator> HABITAT_LOCATOR = REGISTRY.menuType(ContainerHabitatLocator::fromNetwork, "habitat_locator");
 	public static final FeatureMenuType<ContainerImprinter> IMPRINTER = REGISTRY.menuType(ContainerImprinter::fromNetwork, "imprinter");
-	public static final FeatureMenuType<ContainerMinecartBeehouse> BEEHOUSE_MINECART = REGISTRY.menuType(ContainerMinecartBeehouse::fromNetwork, "minecart_beehouse");
 }

@@ -28,7 +28,6 @@ import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
 
 public class ApiaristTracker extends BreedingTracker implements IApiaristTracker {
-
 	/**
 	 * Required for creation from map storage
 	 */
@@ -49,13 +48,13 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 	private int princessesTotal = 0;
 
 	@Override
-	public CompoundTag save(CompoundTag compoundnbt) {
-		compoundnbt.putInt("QueensTotal", queensTotal);
-		compoundnbt.putInt("PrincessesTotal", princessesTotal);
-		compoundnbt.putInt("DronesTotal", dronesTotal);
+	public CompoundTag save(CompoundTag nbt) {
+		nbt.putInt("QueensTotal", queensTotal);
+		nbt.putInt("PrincessesTotal", princessesTotal);
+		nbt.putInt("DronesTotal", dronesTotal);
 
-		compoundnbt = super.save(compoundnbt);
-		return compoundnbt;
+		nbt = super.save(nbt);
+		return nbt;
 	}
 
 	@Override

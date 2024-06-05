@@ -1,6 +1,7 @@
 package forestry.energy;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
 import net.minecraftforge.energy.EnergyStorage;
@@ -8,7 +9,6 @@ import net.minecraftforge.energy.EnergyStorage;
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 
 public class ForestryEnergyStorage extends EnergyStorage implements IStreamable, INbtReadable, INbtWritable {
 	public ForestryEnergyStorage(int maxTransfer, int capacity) {
@@ -35,12 +35,12 @@ public class ForestryEnergyStorage extends EnergyStorage implements IStreamable,
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		data.writeVarInt(this.energy);
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 		int energyStored = data.readVarInt();
 		setEnergyStored(energyStored);
 	}

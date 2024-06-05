@@ -38,7 +38,7 @@ import forestry.apiculture.gui.ContainerBeeHousing;
 import forestry.apiculture.gui.GuiBeeHousing;
 import forestry.apiculture.inventory.IApiaryInventory;
 import forestry.apiculture.inventory.InventoryApiary;
-import forestry.core.network.PacketBufferForestry;
+import forestry.core.utils.NetworkUtil;
 
 public class TileApiary extends TileBeeHousingBase implements IApiary {
 	private final IBeeModifier beeModifier = new ApiaryBeeModifier();
@@ -88,11 +88,10 @@ public class TileApiary extends TileBeeHousingBase implements IApiary {
 
 	@Override
 	public void openGui(ServerPlayer player, BlockPos pos) {
-		NetworkHooks.openScreen(player, this, p -> {
-			PacketBufferForestry forestryP = new PacketBufferForestry(p);
-			forestryP.writeBlockPos(pos);
-			forestryP.writeBoolean(true);
-			forestryP.writeEnum(GuiBeeHousing.Icon.APIARY, GuiBeeHousing.Icon.values());
+		NetworkHooks.openScreen(player, this, buffer -> {
+			buffer.writeBlockPos(pos);
+			buffer.writeBoolean(true);
+			NetworkUtil.writeEnum(buffer, GuiBeeHousing.Icon.APIARY);
 		});
 	}
 }

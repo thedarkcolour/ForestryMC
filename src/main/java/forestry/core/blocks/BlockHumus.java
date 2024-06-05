@@ -1,7 +1,5 @@
 package forestry.core.blocks;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +20,6 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
 import forestry.core.config.Config;
-import forestry.core.config.Constants;
 import forestry.core.utils.RenderUtil;
 
 public class BlockHumus extends Block {
@@ -83,9 +80,9 @@ public class BlockHumus extends Block {
 		degrade++;
 
 		if (degrade >= degradeDelimiter) {
-			world.setBlock(pos, Blocks.SAND.defaultBlockState(), Constants.FLAG_BLOCK_SYNC);
+			world.setBlock(pos, Blocks.SAND.defaultBlockState(), UPDATE_CLIENTS);
 		} else {
-			world.setBlock(pos, blockState.setValue(DEGRADE, degrade), Constants.FLAG_BLOCK_SYNC);
+			world.setBlock(pos, blockState.setValue(DEGRADE, degrade), UPDATE_CLIENTS);
 		}
 		//TODO: Is this still needed ? Should now be marked with setBlockState
 		RenderUtil.markForUpdate(pos);

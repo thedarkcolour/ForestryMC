@@ -17,8 +17,12 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.VersionRange;
 
+import net.minecraft.resources.ResourceLocation;
+
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
+
+import forestry.core.config.Constants;
 
 
 public abstract class ModUtil {
@@ -46,5 +50,9 @@ public abstract class ModUtil {
 		}
 
 		return true;
+	}
+
+	public static ResourceLocation modLoc(String path) {
+		return new ResourceLocation(Constants.MOD_ID, path);
 	}
 }

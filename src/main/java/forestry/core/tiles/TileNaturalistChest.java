@@ -10,8 +10,7 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
-import java.io.IOException;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.Level;
@@ -37,7 +36,6 @@ import forestry.api.genetics.IForestrySpeciesRoot;
 import forestry.core.gui.ContainerNaturalistInventory;
 import forestry.core.gui.IPagedInventory;
 import forestry.core.inventory.InventoryNaturalistChest;
-import forestry.core.network.PacketBufferForestry;
 
 public abstract class TileNaturalistChest extends TileBase implements IPagedInventory {
 	private static final float lidAngleVariationPerTick = 0.1F;
@@ -111,13 +109,13 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 
 	/* IStreamable */
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		data.writeInt(numPlayersUsing);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		numPlayersUsing = data.readInt();
 	}
 

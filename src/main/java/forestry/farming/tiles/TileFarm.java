@@ -10,8 +10,7 @@
  ******************************************************************************/
 package forestry.farming.tiles;
 
-import java.io.IOException;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,7 +32,6 @@ import forestry.core.circuits.ISocketable;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.MultiblockTileEntityForestry;
 import forestry.core.network.IStreamableGui;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.tiles.ITitled;
@@ -86,13 +84,13 @@ public abstract class TileFarm extends MultiblockTileEntityForestry<MultiblockLo
 
 	/* IStreamableGui */
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		getMultiblockLogic().getController().writeGuiData(data);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		getMultiblockLogic().getController().readGuiData(data);
 	}
 

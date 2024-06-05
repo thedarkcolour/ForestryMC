@@ -31,7 +31,7 @@ import forestry.core.gui.ContainerTile;
 import forestry.core.gui.IContainerLiquidTanks;
 import forestry.core.gui.IGuiSelectable;
 import forestry.core.gui.slots.SlotLiquidIn;
-import forestry.core.network.packets.PacketGuiUpdate;
+import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.TileUtil;
 
 public class ContainerHabitatFormer extends ContainerTile<TileHabitatFormer> implements IContainerLiquidTanks, IGuiSelectable {
@@ -100,7 +100,7 @@ public class ContainerHabitatFormer extends ContainerTile<TileHabitatFormer> imp
 		}
 
 		if (guiNeedsUpdate) {
-			PacketGuiUpdate packet = new PacketGuiUpdate(tile);
+			PacketGuiStream packet = new PacketGuiStream(tile);
 			sendPacketToListeners(packet);
 		}
 

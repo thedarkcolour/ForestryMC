@@ -10,38 +10,32 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.core.gui.IContainerLiquidTanks;
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketPipetteClick implements IForestryPacketServer {
-	private final int slot;
-
-	public PacketPipetteClick(int slot) {
-		this.slot = slot;
+public record PacketPipetteClick(int slot) implements IForestryPacketServer {
+	public static void handle(PacketPipetteClick msg, ServerPlayer player) {
+		if (player.containerMenu instanceof IContainerLiquidTanks tanksMenu) {
+			tanksMenu.handlePipetteClick(msg.slot(), player);
+		}
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeVarInt(slot);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeVarInt(slot);
 	}
 
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.PIPETTE_CLICK;
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			int slot = data.readVarInt();
-			if (player.containerMenu instanceof IContainerLiquidTanks) {
-				((IContainerLiquidTanks) player.containerMenu).handlePipetteClick(slot, player);
-			}
-		}
+	public static PacketPipetteClick decode(FriendlyByteBuf buffer) {
+		return new PacketPipetteClick(buffer.readVarInt());
 	}
 }

@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +57,6 @@ import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.arboriculture.network.IRipeningPacketReceiver;
 import forestry.arboriculture.network.PacketRipeningUpdate;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.packets.PacketTileStream;
 import forestry.core.utils.ColourUtil;
 import forestry.core.utils.GeneticsUtil;
@@ -383,7 +383,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	private static final short isPollinatedFlag = 1 << 1;
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 
 		byte leafState = 0;
@@ -409,7 +409,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 
 		String speciesUID = data.readUtf(); // this is called instead of super.readData, be careful!
 

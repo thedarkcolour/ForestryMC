@@ -18,8 +18,10 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -49,8 +51,8 @@ import forestry.core.inventory.ItemInventory;
 import forestry.core.inventory.StandardStackFilters;
 import forestry.core.items.ItemWithGui;
 import forestry.core.items.definitions.IColoredItem;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.TileUtil;
+import forestry.core.utils.NetworkUtil;
 import forestry.storage.BackpackMode;
 import forestry.storage.gui.ContainerBackpack;
 import forestry.storage.inventory.ItemInventoryBackpack;
@@ -77,8 +79,8 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 	}
 
 	@Override
-	protected void writeContainerData(ServerPlayer player, ItemStack stack, PacketBufferForestry buffer) {
-		buffer.writeEnum(type == EnumBackpackType.WOVEN ? ContainerBackpack.Size.T2 : ContainerBackpack.Size.DEFAULT, ContainerBackpack.Size.values());
+	protected void writeContainerData(ServerPlayer player, ItemStack stack, FriendlyByteBuf buffer) {
+		NetworkUtil.writeEnum(buffer, type == EnumBackpackType.WOVEN ? ContainerBackpack.Size.T2 : ContainerBackpack.Size.DEFAULT);
 		buffer.writeItem(stack);
 	}
 
@@ -105,7 +107,7 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
 		Player player = context.getPlayer();
 		// We only do this when shift is clicked
-		if (player.isShiftKeyDown()) {
+		if (player != null && player.isShiftKeyDown()) {
 			ItemStack heldItem = player.getItemInHand(context.getHand());
 			return evaluateTileHit(heldItem, player, context.getLevel(), context.getClickedPos(), context.getClickedFace()) ? InteractionResult.PASS : InteractionResult.FAIL;
 		}
@@ -203,7 +205,7 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 		int occupied = ItemInventory.getOccupiedSlotCount(itemstack);
 
 		BackpackMode mode = getMode(itemstack);
-		String infoKey = mode.getUnlocalizedInfo();
+		String infoKey = mode.getTranslationkey();
 		if (infoKey != null) {
 			list.add(Component.translatable(infoKey).withStyle(ChatFormatting.GRAY));
 		}
@@ -235,19 +237,13 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 	}
 
 	public static BackpackMode getMode(ItemStack backpack) {
-		if (!(backpack.getItem() instanceof ItemBackpack)) return BackpackMode.NEUTRAL;
-
-		int meta = backpack.getDamageValue();
-
-		if (meta >= 3) {
-			return BackpackMode.RESUPPLY;
-		} else if (meta >= 2) {
-			return BackpackMode.RECEIVE;
-		} else if (meta >= 1) {
-			return BackpackMode.LOCKED;
-		} else {
+		if (!(backpack.getItem() instanceof ItemBackpack)) {
 			return BackpackMode.NEUTRAL;
 		}
+
+		int meta = Mth.clamp(backpack.getDamageValue(), 0, 3);
+
+		return BackpackMode.VALUES[meta];
 	}
 
 	public static EnumBackpackType getType(ItemStack backpack) {

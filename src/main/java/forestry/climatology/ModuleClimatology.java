@@ -24,18 +24,18 @@ import forestry.api.climate.IClimateTransformer;
 import forestry.api.modules.ForestryModule;
 import forestry.climatology.features.ClimatologyMenuTypes;
 import forestry.climatology.gui.GuiHabitatFormer;
-import forestry.climatology.network.PacketRegistryClimatology;
+import forestry.climatology.network.packets.PacketSelectClimateTargeted;
 import forestry.climatology.proxy.ProxyClimatology;
 import forestry.core.ClientsideCode;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
+import forestry.core.network.PacketIdServer;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
 
 @ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.CLIMATOLOGY, name = "Climatology", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.greenhouse.description")
 public class ModuleClimatology extends BlankForestryModule {
-
 	private static final ProxyClimatology PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyClimatology() : new ProxyClimatology();
 
 	@Override
@@ -56,8 +56,8 @@ public class ModuleClimatology extends BlankForestryModule {
 	}
 
 	@Override
-	public IPacketRegistry getPacketRegistry() {
-		return new PacketRegistryClimatology();
+	public void registerPackets(IPacketRegistry registry) {
+		registry.serverbound(PacketIdServer.SELECT_CLIMATE_TARGETED, PacketSelectClimateTargeted.class, PacketSelectClimateTargeted::decode, PacketSelectClimateTargeted::handle);
 	}
 
 	@Override

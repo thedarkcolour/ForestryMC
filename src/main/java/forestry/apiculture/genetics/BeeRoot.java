@@ -224,7 +224,7 @@ public class BeeRoot extends IndividualRoot<IBee> implements IBeeRoot, IBreeding
 		if (!(tracker instanceof ApiaristTracker apiaristTracker)) {
 			return;
 		}
-		apiaristTracker.setWorld(world);
+		apiaristTracker.setLevel(world);
 		apiaristTracker.setUsername(profile);
 	}
 

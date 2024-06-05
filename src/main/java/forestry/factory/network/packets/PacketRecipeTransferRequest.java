@@ -10,66 +10,59 @@
  ******************************************************************************/
 package forestry.factory.network.packets;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
-import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;
 import forestry.factory.tiles.TileCarpenter;
 import forestry.factory.tiles.TileFabricator;
 
-public class PacketRecipeTransferRequest implements IForestryPacketServer {
-	private final BlockPos pos;
-	private final NonNullList<ItemStack> craftingInventory;
+public record PacketRecipeTransferRequest(BlockPos pos,
+										  NonNullList<ItemStack> craftingInventory) implements IForestryPacketServer {
+	public static void handle(PacketRecipeTransferRequest msg, ServerPlayer player) {
+		BlockPos pos = msg.pos();
+		NonNullList<ItemStack> craftingInventory = msg.craftingInventory();
 
-	public PacketRecipeTransferRequest(TileBase base, NonNullList<ItemStack> craftingInventory) {
-		this.pos = base.getBlockPos();
-		this.craftingInventory = craftingInventory;
+		BlockEntity tile = TileUtil.getTile(player.level, pos);
+		if (tile instanceof TileCarpenter carpenter) {
+			int index = 0;
+			for (ItemStack stack : craftingInventory) {
+				carpenter.getCraftingInventory().setItem(index, stack);
+				index++;
+			}
+
+			NetworkUtil.sendNetworkPacket(new PacketRecipeTransferUpdate(carpenter.getBlockPos(), craftingInventory), pos, player.level);
+		} else if (tile instanceof TileFabricator fabricator) {
+			int index = 0;
+			for (ItemStack stack : craftingInventory) {
+				fabricator.getCraftingInventory().setItem(index, stack);
+				index++;
+			}
+
+			NetworkUtil.sendNetworkPacket(new PacketRecipeTransferUpdate(fabricator.getBlockPos(), craftingInventory), pos, player.level);
+		}
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		data.writeItemStacks(craftingInventory);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		NetworkUtil.writeItemStacks(buffer, craftingInventory);
 	}
 
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.RECIPE_TRANSFER_REQUEST;
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			BlockPos pos = data.readBlockPos();
-			NonNullList<ItemStack> craftingInventory = data.readItemStacks();
-
-			BlockEntity tile = TileUtil.getTile(player.level, pos);
-			if (tile instanceof TileCarpenter carpenter) {
-				int index = 0;
-				for (ItemStack stack : craftingInventory) {
-					carpenter.getCraftingInventory().setItem(index, stack);
-					index++;
-				}
-
-				NetworkUtil.sendNetworkPacket(new PacketRecipeTransferUpdate(carpenter, craftingInventory), pos, player.level);
-			} else if (tile instanceof TileFabricator fabricator) {
-				int index = 0;
-				for (ItemStack stack : craftingInventory) {
-					fabricator.getCraftingInventory().setItem(index, stack);
-					index++;
-				}
-
-				NetworkUtil.sendNetworkPacket(new PacketRecipeTransferUpdate(fabricator, craftingInventory), pos, player.level);
-			}
-		}
+	public static PacketRecipeTransferRequest decode(FriendlyByteBuf buffer) {
+		return new PacketRecipeTransferRequest(buffer.readBlockPos(), NetworkUtil.readItemStacks(buffer));
 	}
 }

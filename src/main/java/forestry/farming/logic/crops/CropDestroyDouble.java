@@ -9,12 +9,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.core.config.Constants;
-import forestry.core.network.packets.PacketFXSignal;
-import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.BlockUtil;
 
 public class CropDestroyDouble extends Crop {
-
 	protected final BlockState blockState;
 	protected final BlockState blockStateUp;
 	@Nullable
@@ -33,21 +30,20 @@ public class CropDestroyDouble extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level world, BlockPos pos) {
+	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		Block block = blockState.getBlock();
 		Block blockUp = blockStateUp.getBlock();
 		NonNullList<ItemStack> harvested = NonNullList.create();
-		//		block.getDrops(harvested, world, pos, blockState, 0);
-		//		blockUp.getDrops(harvested, world, pos.up(), blockStateUp, 0);
+		//		block.getDrops(harvested, level, pos, blockState, 0);
+		//		blockUp.getDrops(harvested, level, pos.up(), blockStateUp, 0);
 		//TODO getDrops. Loot tables?
-		PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK, PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, blockState);
-		NetworkUtil.sendNetworkPacket(packet, pos, world);
+		BlockUtil.sendDestroyEffects(level, pos, blockState);
 
-		world.removeBlock(pos.above(), false);
+		level.removeBlock(pos.above(), false);
 		if (replantState != null) {
-			world.setBlock(pos, replantState, Constants.FLAG_BLOCK_SYNC);
+			level.setBlock(pos, replantState, Block.UPDATE_CLIENTS);
 		} else {
-			world.removeBlock(pos, false);
+			level.removeBlock(pos, false);
 		}
 
 		return harvested;

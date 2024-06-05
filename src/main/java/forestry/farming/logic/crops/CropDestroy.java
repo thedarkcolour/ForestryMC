@@ -22,10 +22,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
-import forestry.core.config.Constants;
-import forestry.core.network.packets.PacketFXSignal;
+import forestry.core.utils.BlockUtil;
 import forestry.core.utils.ItemStackUtil;
-import forestry.core.utils.NetworkUtil;
 
 public class CropDestroy extends Crop {
 
@@ -52,18 +50,18 @@ public class CropDestroy extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level world, BlockPos pos) {
+	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		Block block = blockState.getBlock();
-		List<ItemStack> harvested = Block.getDrops(blockState, (ServerLevel) world, pos, world.getBlockEntity(pos));    //TODO - method safety
+		List<ItemStack> harvested = Block.getDrops(blockState, (ServerLevel) level, pos, level.getBlockEntity(pos));    //TODO - method safety
 		NonNullList<ItemStack> nnHarvested = NonNullList.of(ItemStack.EMPTY, harvested.toArray(new ItemStack[0]));    //TODO very messy
-		//float chance = ForgeEventFactory.fireBlockHarvesting(nnHarvested, world, pos, blockState, 0, 1.0F, false, null);
+		//float chance = ForgeEventFactory.fireBlockHarvesting(nnHarvested, level, pos, blockState, 0, 1.0F, false, null);
 		//TODO: Fix dropping
 		float chance = 1.0F;
 		boolean removedSeed = germling.isEmpty();
 		Iterator<ItemStack> dropIterator = harvested.iterator();
 		while (dropIterator.hasNext()) {
 			ItemStack next = dropIterator.next();
-			if (world.random.nextFloat() <= chance) {
+			if (level.random.nextFloat() <= chance) {
 				if (!removedSeed && ItemStackUtil.isIdenticalItem(next, germling)) {
 					next.shrink(1);
 					if (next.isEmpty()) {
@@ -76,14 +74,12 @@ public class CropDestroy extends Crop {
 			}
 		}
 
-		PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK, PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, blockState);
-		NetworkUtil.sendNetworkPacket(packet, pos, world);
+		BlockUtil.sendDestroyEffects(level, pos, blockState);
 
 		if (replantState != null) {
-			world.setBlock(pos, replantState, Constants.FLAG_BLOCK_SYNC);
+			level.setBlock(pos, replantState, Block.UPDATE_CLIENTS);
 		} else {
-			//TODO right call?
-			world.removeBlock(pos, false);
+			level.removeBlock(pos, false);
 		}
 		if (!(harvested instanceof NonNullList)) {
 			return NonNullList.of(ItemStack.EMPTY, harvested.toArray(new ItemStack[0]));

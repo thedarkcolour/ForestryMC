@@ -5,13 +5,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.Direction;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.ILocatable;
 import forestry.api.genetics.alleles.AlleleManager;
@@ -21,10 +19,9 @@ import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.core.utils.NetworkUtil;
 import forestry.sorting.network.packets.PacketFilterChangeGenome;
 import forestry.sorting.network.packets.PacketFilterChangeRule;
+import forestry.sorting.network.packets.PacketGuiFilterUpdate;
 
-import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleRegistry;
 import genetics.api.individual.IGenome;
 import genetics.api.individual.IIndividual;
 import genetics.api.organism.IOrganismType;
@@ -32,8 +29,6 @@ import genetics.api.root.IIndividualRoot;
 import genetics.api.root.IRootDefinition;
 import genetics.utils.AlleleUtils;
 import genetics.utils.RootUtils;
-
-import forestry.api.genetics.filter.IFilterLogic.INetworkHandler;
 
 public class FilterLogic implements IFilterLogic {
 	private final ILocatable locatable;
@@ -98,55 +93,74 @@ public class FilterLogic implements IFilterLogic {
 	}
 
 	@Override
-	public void writeGuiData(FriendlyByteBuf data) {
-		for (IFilterRuleType filterRule : filterRules) {
-			data.writeShort(AlleleManager.filterRegistry.getId(filterRule));
-		}
+	public void writeGuiData(FriendlyByteBuf buffer) {
+		writeFilterRules(buffer, filterRules);
+		writeGenomeFilters(buffer, genomeFilter);
+	}
 
+	@Override
+	public void readGuiData(FriendlyByteBuf buffer) {
+		filterRules = readFilterRules(buffer);
+		genomeFilter = readGenomeFilters(buffer);
+	}
+
+	public static void writeFilterRules(FriendlyByteBuf buffer, IFilterRuleType[] filterRules) {
+		for (IFilterRuleType filterRule : filterRules) {
+			buffer.writeShort(AlleleManager.filterRegistry.getId(filterRule));
+		}
+	}
+
+	public static void writeGenomeFilters(FriendlyByteBuf buffer, AlleleFilter[][] genomeFilter) {
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 3; j++) {
 				AlleleFilter filter = genomeFilter[i][j];
 				if (filter == null) {
-					data.writeBoolean(false);
-					data.writeBoolean(false);
+					buffer.writeBoolean(false);
+					buffer.writeBoolean(false);
 					continue;
 				}
 				if (filter.activeAllele != null) {
-					data.writeBoolean(true);
-					data.writeUtf(filter.activeAllele.getRegistryName().toString());
+					buffer.writeBoolean(true);
+					buffer.writeUtf(filter.activeAllele.getRegistryName().toString());
 				} else {
-					data.writeBoolean(false);
+					buffer.writeBoolean(false);
 				}
 				if (filter.inactiveAllele != null) {
-					data.writeBoolean(true);
-					data.writeUtf(filter.inactiveAllele.getRegistryName().toString());
+					buffer.writeBoolean(true);
+					buffer.writeUtf(filter.inactiveAllele.getRegistryName().toString());
 				} else {
-					data.writeBoolean(false);
+					buffer.writeBoolean(false);
 				}
 			}
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public void readGuiData(FriendlyByteBuf data) {
-		for (int i = 0; i < filterRules.length; i++) {
-			filterRules[i] = AlleleManager.filterRegistry.getRule(data.readShort());
+	public static IFilterRuleType[] readFilterRules(FriendlyByteBuf buffer) {
+		IFilterRuleType[] filterRules = new IFilterRuleType[6];
+		for (int i = 0; i < 6; i++) {
+			filterRules[i] = AlleleManager.filterRegistry.getRule(buffer.readShort());
 		}
 
-		IAlleleRegistry alleleRegistry = GeneticsAPI.apiInstance.getAlleleRegistry();
+		return filterRules;
+	}
+
+	public static AlleleFilter[][] readGenomeFilters(FriendlyByteBuf buffer) {
+		AlleleFilter[][] genomeFilters = new AlleleFilter[6][32023];
+
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 3; j++) {
 				AlleleFilter filter = new AlleleFilter();
-				if (data.readBoolean()) {
-					filter.activeAllele = AlleleUtils.getAlleleOrNull(data.readUtf(1024));
+				if (buffer.readBoolean()) {
+					filter.activeAllele = AlleleUtils.getAlleleOrNull(buffer.readUtf(1024));
 				}
-				if (data.readBoolean()) {
-					filter.inactiveAllele = AlleleUtils.getAlleleOrNull(data.readUtf(1024));
+				if (buffer.readBoolean()) {
+					filter.inactiveAllele = AlleleUtils.getAlleleOrNull(buffer.readUtf(1024));
 				}
-				genomeFilter[i][j] = filter;
+				genomeFilters[i][j] = filter;
 			}
 		}
+
+		return genomeFilters;
 	}
 
 	public Collection<Direction> getValidDirections(ItemStack itemStack, Direction from) {
@@ -279,5 +293,14 @@ public class FilterLogic implements IFilterLogic {
 	@Override
 	public void sendToServer(Direction facing, IFilterRuleType rule) {
 		NetworkUtil.sendToServer(new PacketFilterChangeRule(locatable.getCoordinates(), facing, rule));
+	}
+
+	public PacketGuiFilterUpdate createGuiUpdatePacket(BlockPos pos) {
+		return new PacketGuiFilterUpdate(pos, this.filterRules, this.genomeFilter);
+	}
+
+	public void readGuiUpdatePacket(PacketGuiFilterUpdate msg) {
+		this.filterRules = msg.filterRules();
+		this.genomeFilter = msg.genomeFilter();
 	}
 }

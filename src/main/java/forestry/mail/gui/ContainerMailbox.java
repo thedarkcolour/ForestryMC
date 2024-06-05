@@ -13,6 +13,7 @@ package forestry.mail.gui;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -66,7 +67,7 @@ public class ContainerMailbox extends ContainerTile<TileMailbox> {
 		if (SlotUtil.isSlotInRange(slotId, SLOT_LETTERS, SLOT_LETTERS_COUNT)) {
 			if (!player.level.isClientSide && mailInventory != null) {
 				POBoxInfo info = mailInventory.getPOBoxInfo();
-				NetworkUtil.sendToPlayer(new PacketPOBoxInfoResponse(info), player);
+				NetworkUtil.sendToPlayer(new PacketPOBoxInfoResponse(info), (ServerPlayer) player);
 			}
 		}
 	}

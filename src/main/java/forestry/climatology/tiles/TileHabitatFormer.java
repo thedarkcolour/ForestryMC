@@ -11,11 +11,11 @@
 package forestry.climatology.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Objects;
 
 import forestry.api.recipes.IHygroregulatorManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +54,6 @@ import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.ITankManager;
 import forestry.core.fluids.TankManager;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
 import forestry.energy.ForestryEnergyStorage;
@@ -247,13 +246,13 @@ public class TileHabitatFormer extends TilePowered implements IClimateHousing, I
 
 	/* Methods - Implement IStreamableGui */
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		super.writeGuiData(data);
 		transformer.writeData(data);
 	}
 
 	@Override
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		super.readGuiData(data);
 		transformer.readData(data);
 	}
@@ -282,7 +281,7 @@ public class TileHabitatFormer extends TilePowered implements IClimateHousing, I
 
 	/* Network */
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 		tankManager.writeData(data);
 		transformer.writeData(data);
@@ -290,7 +289,7 @@ public class TileHabitatFormer extends TilePowered implements IClimateHousing, I
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		tankManager.readData(data);
 		transformer.readData(data);

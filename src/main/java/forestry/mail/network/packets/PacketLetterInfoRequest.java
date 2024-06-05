@@ -10,45 +10,35 @@
  ******************************************************************************/
 package forestry.mail.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.mail.EnumAddressee;
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
+import forestry.core.utils.NetworkUtil;
 import forestry.mail.gui.ContainerLetter;
 
-public class PacketLetterInfoRequest implements IForestryPacketServer {
-	private final String recipientName;
-	private final EnumAddressee addressType;
-
-	public PacketLetterInfoRequest(String recipientName, EnumAddressee addressType) {
-		this.recipientName = recipientName;
-		this.addressType = addressType;
+public record PacketLetterInfoRequest(String recipientName, EnumAddressee addressType) implements IForestryPacketServer {
+	public static void handle(PacketLetterInfoRequest msg, ServerPlayer player) {
+		if (player.containerMenu instanceof ContainerLetter containerLetter) {
+			containerLetter.handleRequestLetterInfo(player, msg.recipientName(), msg.addressType());
+		}
 	}
 
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.LETTER_INFO_REQUEST;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeUtf(recipientName);
-		data.writeEnum(addressType, EnumAddressee.values());
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeUtf(recipientName);
+		NetworkUtil.writeEnum(buffer, addressType);
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			String recipientName = data.readUtf();
-			EnumAddressee addressType = data.readEnum(EnumAddressee.values());
-
-			if (player.containerMenu instanceof ContainerLetter containerLetter) {
-				containerLetter.handleRequestLetterInfo(player, recipientName, addressType);
-			}
-		}
+	public static PacketLetterInfoRequest decode(FriendlyByteBuf buffer) {
+		return new PacketLetterInfoRequest(buffer.readUtf(), buffer.readEnum(EnumAddressee.class));
 	}
 }

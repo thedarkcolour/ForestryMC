@@ -10,13 +10,19 @@
  ******************************************************************************/
 package forestry.core.network;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 public interface IPacketRegistry {
-	void registerPacketsServer();
+	/**
+	 * Register a packet that is handled on the main server thread when the sender is not null.
+	 */
+	<P extends IForestryPacketServer> void serverbound(ResourceLocation id, Class<P> packetClass, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> packetHandler);
 
-	@OnlyIn(Dist.CLIENT)
-	void registerPacketsClient();
+	<P extends IForestryPacketClient> void clientbound(ResourceLocation id, Class<P> packetClass, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, Player> packetHandler);
 }

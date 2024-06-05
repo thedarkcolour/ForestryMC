@@ -13,13 +13,20 @@ archivesBaseName = "forestry-$minecraft_version"
 
 repositories {
 	maven {
-		name "JEI"
-		url "https://dvs1.progwml6.com/files/maven"
+		name = "JEI"
+		url = "https://dvs1.progwml6.com/files/maven"
+		content { includeGroup "mezz.jei" }
 	}
 
 	maven {
-		name "Patchouli"
-		url "https://maven.blamejared.com/"
+		name = "Patchouli"
+		url = "https://maven.blamejared.com/"
+	}
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
 	}
 }
 
@@ -32,6 +39,7 @@ dependencies {
 
 	compileOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouli_version:api")
 	runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouli_version")
+	runtimeOnly fg.deobf("curse.maven:spit-it-out-857141:4888738")
 }
 
 java {

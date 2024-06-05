@@ -22,7 +22,7 @@ import forestry.apiculture.multiblock.TileAlveary;
 import forestry.core.climate.ClimateRoot;
 import forestry.core.gui.ContainerTile;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.packets.PacketGuiUpdate;
+import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.TileUtil;
 
 public class ContainerAlveary extends ContainerTile<TileAlveary> {
@@ -52,7 +52,7 @@ public class ContainerAlveary extends ContainerTile<TileAlveary> {
 		int beeProgress = tile.getBeekeepingLogic().getBeeProgressPercent();
 		if (this.beeProgress != beeProgress) {
 			this.beeProgress = beeProgress;
-			IForestryPacketClient packet = new PacketGuiUpdate(tile);
+			IForestryPacketClient packet = new PacketGuiStream(tile);
 			sendPacketToListeners(packet);
 		}
 	}

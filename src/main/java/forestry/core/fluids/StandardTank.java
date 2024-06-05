@@ -14,6 +14,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import deleteme.RegistryNameFinder;
+
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -27,7 +29,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 
 /**
  * @author CovertJaguar <http://www.railcraft.info>
@@ -164,12 +165,12 @@ public class StandardTank extends FluidTank implements IStreamable {
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		data.writeFluidStack(fluid);
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 		fluid = data.readFluidStack();
 	}
 

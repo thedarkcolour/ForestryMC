@@ -125,7 +125,6 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 
 	protected final void sendPacketToListeners(IForestryPacketClient packet) {
 		if (player != null) {
-
 			NetworkUtil.sendToPlayer(packet, player);
 		}
 	}

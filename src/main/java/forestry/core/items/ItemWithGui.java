@@ -12,6 +12,7 @@ package forestry.core.items;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,7 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 
 import forestry.core.gui.ContainerItemInventory;
-import forestry.core.network.PacketBufferForestry;
 
 public abstract class ItemWithGui extends ItemForestry {
 
@@ -48,10 +48,10 @@ public abstract class ItemWithGui extends ItemForestry {
 	}
 
 	protected void openGui(ServerPlayer player, ItemStack stack) {
-		NetworkHooks.openScreen(player, new ContainerProvider(stack), buffer -> writeContainerData(player, stack, new PacketBufferForestry(buffer)));
+		NetworkHooks.openScreen(player, new ContainerProvider(stack), buffer -> writeContainerData(player, stack, buffer));
 	}
 
-	protected void writeContainerData(ServerPlayer player, ItemStack stack, PacketBufferForestry buffer) {
+	protected void writeContainerData(ServerPlayer player, ItemStack stack, FriendlyByteBuf buffer) {
 		buffer.writeBoolean(player.getUsedItemHand() == InteractionHand.MAIN_HAND);
 	}
 

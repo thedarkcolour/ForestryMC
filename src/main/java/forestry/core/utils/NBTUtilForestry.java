@@ -11,11 +11,9 @@
 package forestry.core.utils;
 
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
-
-import java.io.IOException;
+import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * @author CovertJaguar <http://www.railcraft.info/>
@@ -23,7 +21,7 @@ import java.io.IOException;
 public abstract class NBTUtilForestry {
 
 	public static CompoundTag writeStreamableToNbt(IStreamable streamable, CompoundTag nbt) {
-		PacketBufferForestry data = new PacketBufferForestry(Unpooled.buffer());
+		FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
 		streamable.writeData(data);
 
 		byte[] bytes = new byte[data.readableBytes()];
@@ -35,12 +33,8 @@ public abstract class NBTUtilForestry {
 	public static void readStreamableFromNbt(IStreamable streamable, CompoundTag nbt) {
 		if (nbt.contains("dataBytes")) {
 			byte[] bytes = nbt.getByteArray("dataBytes");
-			PacketBufferForestry data = new PacketBufferForestry(Unpooled.wrappedBuffer(bytes));
-			try {
-				streamable.readData(data);
-			} catch (IOException e) {
-				Log.error("Failed to read streamable data", e);
-			}
+			FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
+			streamable.readData(data);
 		}
 	}
 }

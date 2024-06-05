@@ -11,11 +11,11 @@
 package forestry.farming.multiblock;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.cultivation.IFarmHousingInternal;
 
 public class FarmFertilizerManager implements INbtWritable, INbtReadable, IStreamable {
@@ -80,12 +80,12 @@ public class FarmFertilizerManager implements INbtWritable, INbtReadable, IStrea
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		data.writeVarInt(storedFertilizer);
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 		storedFertilizer = data.readVarInt();
 	}
 }

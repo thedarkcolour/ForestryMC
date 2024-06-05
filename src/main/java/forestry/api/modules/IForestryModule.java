@@ -18,6 +18,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.core.network.IPacketRegistry;
+
 /**
  * Defines a Forestry module.
  * Any class implementing this interface and annotated by {@link ForestryModule} to be loaded by
@@ -67,7 +69,9 @@ public interface IForestryModule {
 	}
 
 	default void registerObjects() {
+	}
 
+	default void registerPackets(IPacketRegistry registry) {
 	}
 
 	default void doInit() {

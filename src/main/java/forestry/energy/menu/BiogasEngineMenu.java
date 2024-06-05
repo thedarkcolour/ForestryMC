@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import forestry.core.gui.ContainerLiquidTanks;
 import forestry.core.gui.slots.SlotLiquidIn;
-import forestry.core.network.packets.PacketGuiUpdate;
+import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.TileUtil;
 import forestry.energy.features.EnergyMenus;
 import forestry.energy.inventory.InventoryEngineBiogas;
@@ -26,7 +26,7 @@ public class BiogasEngineMenu extends ContainerLiquidTanks<BiogasEngineBlockEnti
 	@Override
 	public void broadcastChanges() {
 		super.broadcastChanges();
-		PacketGuiUpdate packet = new PacketGuiUpdate(tile);
+		PacketGuiStream packet = new PacketGuiStream(tile);
 		sendPacketToListeners(packet);
 	}
 }

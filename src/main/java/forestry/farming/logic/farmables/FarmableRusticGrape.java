@@ -28,23 +28,23 @@ public class FarmableRusticGrape implements IFarmable {
 	}
 
 	@Override
-	public boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState) {
-		return blockState.getBlock() == cropBlock;
+	public boolean isSaplingAt(Level level, BlockPos pos, BlockState state) {
+		return state.getBlock() == cropBlock;
 	}
 
 	@Override
 	@Nullable
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
-		if (blockState.getBlock() != cropBlock) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
+		if (state.getBlock() != cropBlock) {
 			return null;
 		}
 
-		if (!blockState.getValue(GRAPES)) {
+		if (!state.getValue(GRAPES)) {
 			return null;
 		}
 
-		BlockState replantState = getReplantState(blockState);
-		return new CropDestroy(world, blockState, pos, replantState);
+		BlockState replantState = getReplantState(state);
+		return new CropDestroy(level, state, pos, replantState);
 	}
 
 	@Nullable
@@ -53,17 +53,17 @@ public class FarmableRusticGrape implements IFarmable {
 	}
 
 	@Override
-	public boolean isGermling(ItemStack itemstack) {
+	public boolean isGermling(ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
 		return false;
 	}
 
 	@Override
-	public boolean isWindfall(ItemStack itemstack) {
+	public boolean isWindfall(ItemStack stack) {
 		return false;
 	}
 }

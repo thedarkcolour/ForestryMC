@@ -11,9 +11,9 @@
 package forestry.factory.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.EnumMap;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,7 +45,6 @@ import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.inventory.watchers.ISlotPickupWatcher;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.render.TankRenderInfo;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
@@ -96,14 +95,14 @@ public class TileBottler extends TilePowered implements WorldlyContainer, ILiqui
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 		tankManager.writeData(data);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		tankManager.readData(data);
 	}
@@ -264,7 +263,7 @@ public class TileBottler extends TilePowered implements WorldlyContainer, ILiqui
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		super.writeGuiData(data);
 		if (currentRecipe == null) {
 			data.writeBoolean(false);
@@ -275,7 +274,7 @@ public class TileBottler extends TilePowered implements WorldlyContainer, ILiqui
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		super.readGuiData(data);
 		isFillRecipe = data.readBoolean();
 	}

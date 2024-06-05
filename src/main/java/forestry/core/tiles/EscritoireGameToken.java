@@ -13,6 +13,7 @@ package forestry.core.tiles;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,8 +22,8 @@ import forestry.api.core.INbtWritable;
 import forestry.api.genetics.IForestrySpeciesRoot;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.utils.ColourUtil;
+import forestry.core.utils.NetworkUtil;
 
 import genetics.api.alleles.IAllele;
 import genetics.api.individual.IIndividual;
@@ -50,7 +51,7 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 
 	private State state = State.UNREVEALED;
 
-	public EscritoireGameToken(PacketBufferForestry data) {
+	public EscritoireGameToken(FriendlyByteBuf data) {
 		readData(data);
 	}
 
@@ -167,8 +168,8 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 
 	/* IStreamable */
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeEnum(state, State.VALUES);
+	public void writeData(FriendlyByteBuf data) {
+		NetworkUtil.writeEnum(data, state);
 		if (tokenIndividual != null) {
 			data.writeBoolean(true);
 			data.writeUtf(tokenIndividual.getGenome().getPrimary().getRegistryName().toString());
@@ -178,8 +179,8 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
-		state = data.readEnum(State.VALUES);
+	public void readData(FriendlyByteBuf data) {
+		state = NetworkUtil.readEnum(data, State.VALUES);
 		if (data.readBoolean()) {
 			String speciesUid = data.readUtf();
 			setTokenSpecies(speciesUid);

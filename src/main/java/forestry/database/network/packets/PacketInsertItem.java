@@ -1,54 +1,46 @@
 package forestry.database.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.database.gui.ContainerDatabase;
 
-public class PacketInsertItem implements IForestryPacketServer {
-	private final boolean single;
-
-	public PacketInsertItem(boolean single) {
-		this.single = single;
+public record PacketInsertItem(boolean single) implements IForestryPacketServer {
+	@Override
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBoolean(single);
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBoolean(single);
-	}
-
-	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.INSERT_ITEM;
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			boolean single = data.readBoolean();
-			AbstractContainerMenu container = player.containerMenu;
-			if (!(container instanceof ContainerDatabase)) {
-				return;
-			}
+	public static PacketInsertItem decode(FriendlyByteBuf buffer) {
+		return new PacketInsertItem(buffer.readBoolean());
+	}
 
-			IItemHandler itemHandler = ((ContainerDatabase) container).getItemHandler();
-			if (itemHandler == null) {
-				return;
-			}
+	// todo ensure usages of containerMenu/inventoryMenu are correct
+	public static void handle(PacketInsertItem msg, ServerPlayer player) {
+		boolean single = msg.single();
+
+		if (player.containerMenu instanceof ContainerDatabase databaseMenu) {
+			IItemHandler itemHandler = databaseMenu.getItemHandler();
+
 			ItemStack playerStack = player.inventoryMenu.getCarried();
 			ItemStack itemStack = playerStack.copy();
 
 			if (single) {
 				itemStack.setCount(1);
 			}
+
 			ItemStack remaining = ItemHandlerHelper.insertItemStacked(itemHandler, itemStack, false);
 			if (single && remaining.isEmpty()) {
 				playerStack.shrink(1);
@@ -59,9 +51,7 @@ public class PacketInsertItem implements IForestryPacketServer {
 				player.inventoryMenu.setCarried(remaining);
 			}
 
-			if (container instanceof ContainerDatabase) {
-				((ContainerDatabase) container).sendContainerToListeners();
-			}
+			databaseMenu.sendContainerToListeners();
 		}
 	}
 }

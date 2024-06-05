@@ -34,7 +34,6 @@ import forestry.api.genetics.EnumTolerance;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.apiculture.genetics.BeeDefinition;
-import forestry.core.config.Constants;
 
 import genetics.api.individual.IGenome;
 
@@ -72,7 +71,7 @@ public enum HiveDescription implements IHiveDescription {
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			BlockPos posAbove = pos.above();
 			if (world.isEmptyBlock(posAbove)) {
-				world.setBlock(posAbove, Blocks.SNOW.defaultBlockState(), Constants.FLAG_BLOCK_SYNC);
+				world.setBlock(posAbove, Blocks.SNOW.defaultBlockState(), Block.UPDATE_CLIENTS);
 			}
 
 			postGenFlowers(world, rand, pos, flowerStates);
@@ -172,7 +171,7 @@ public enum HiveDescription implements IHiveDescription {
 				continue;
 			}
 
-			world.setBlock(blockPos, state, Constants.FLAG_BLOCK_SYNC);
+			world.setBlock(blockPos, state, Block.UPDATE_CLIENTS);
 			plantedCount++;
 
 			if (plantedCount >= 3) {

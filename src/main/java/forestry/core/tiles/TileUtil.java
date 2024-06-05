@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -48,12 +47,8 @@ public abstract class TileUtil {
 	 * Avoids creating new tile entities when using a ChunkCache (off the main thread).
 	 */
 	@Nullable
-	public static BlockEntity getTile(BlockGetter world, BlockPos pos) {
-		if (world instanceof PathNavigationRegion chunkCache) {
-			return chunkCache.getBlockEntity(pos);
-		} else {
-			return world.getBlockEntity(pos);
-		}
+	public static BlockEntity getTile(BlockGetter level, BlockPos pos) {
+		return level.getExistingBlockEntity(pos);
 	}
 
 	/**

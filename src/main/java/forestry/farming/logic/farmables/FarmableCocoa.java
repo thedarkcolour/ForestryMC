@@ -27,7 +27,7 @@ public class FarmableCocoa extends FarmableAgingCrop {
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
-		return BlockUtil.tryPlantCocoaPod(world, pos);
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
+		return BlockUtil.tryPlantCocoaPod(level, pos);
 	}
 }

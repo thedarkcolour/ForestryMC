@@ -10,46 +10,33 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.core.gui.ContainerTile;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketGuiEnergy implements IForestryPacketClient {
-	private final int windowId;
-	private final int value;
-
-	public PacketGuiEnergy(int windowId, int value) {
-		this.windowId = windowId;
-		this.value = value;
-	}
-
+public record PacketGuiEnergy(int windowId, int value) implements IForestryPacketClient {
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.GUI_ENERGY;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeVarInt(windowId);
-		data.writeVarInt(value);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeVarInt(windowId);
+		buffer.writeVarInt(value);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			int windowId = data.readVarInt();
-			int value = data.readVarInt();
-			if (player.containerMenu instanceof ContainerTile && player.containerMenu.containerId == windowId) {
-				((ContainerTile) player.containerMenu).onGuiEnergy(value);
-			}
+	public static PacketGuiEnergy decode(FriendlyByteBuf buffer) {
+		return new PacketGuiEnergy(buffer.readVarInt(), buffer.readVarInt());
+	}
+
+	public static void handle(PacketGuiEnergy msg, Player player) {
+		if (player.containerMenu.containerId == msg.windowId && player.containerMenu instanceof ContainerTile<?> menu) {
+			menu.onGuiEnergy(msg.value);
 		}
 	}
 }

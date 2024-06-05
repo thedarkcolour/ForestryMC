@@ -10,13 +10,13 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
-import java.io.IOException;
+import javax.annotation.Nullable;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 
 import forestry.api.core.ForestryEvent;
@@ -24,46 +24,37 @@ import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IForestrySpeciesRoot;
 import forestry.core.genetics.BreedingTracker;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
 import genetics.api.GeneticsAPI;
 import genetics.api.individual.IIndividual;
 import genetics.api.root.IRootDefinition;
 
-public class PacketGenomeTrackerSync implements IForestryPacketClient {
-	private final CompoundTag nbt;
-
-	public PacketGenomeTrackerSync(CompoundTag CompoundNBT) {
-		this.nbt = CompoundNBT;
-	}
-
+public record PacketGenomeTrackerSync(@Nullable CompoundTag nbt) implements IForestryPacketClient {
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.GENOME_TRACKER_UPDATE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeNbt(nbt);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeNbt(nbt);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) throws IOException {
-			CompoundTag nbt = data.readNbt();
-			if (nbt != null) {
-				String type = nbt.getString(BreedingTracker.TYPE_KEY);
+	public static PacketGenomeTrackerSync decode(FriendlyByteBuf buffer) {
+		return new PacketGenomeTrackerSync(buffer.readNbt());
+	}
 
-				IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(type);
-				definition.ifPresent(root -> {
-					IBreedingTracker tracker = root.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());
-					tracker.decodeFromNBT(nbt);
-					MinecraftForge.EVENT_BUS.post(new ForestryEvent.SyncedBreedingTracker(tracker, player));
-				});
-			}
+	public static void handle(PacketGenomeTrackerSync msg, Player player) {
+		if (msg.nbt != null) {
+			String type = msg.nbt.getString(BreedingTracker.TYPE_KEY);
+
+			IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(type);
+			definition.ifPresent(root -> {
+				IBreedingTracker tracker = root.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());
+				tracker.decodeFromNBT(msg.nbt);
+				MinecraftForge.EVENT_BUS.post(new ForestryEvent.SyncedBreedingTracker(tracker, player));
+			});
 		}
 	}
 }

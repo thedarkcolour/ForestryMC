@@ -90,7 +90,7 @@ public class PostalCarrier implements IPostalCarrier {
 		} else {
 			Player player = PlayerUtil.getPlayer(world, recipient.getPlayerProfile());
 			if (player instanceof ServerPlayer) {
-				NetworkUtil.sendToPlayer(new PacketPOBoxInfoResponse(pobox.getPOBoxInfo()), player);
+				NetworkUtil.sendToPlayer(new PacketPOBoxInfoResponse(pobox.getPOBoxInfo()), (ServerPlayer) player);
 			}
 		}
 

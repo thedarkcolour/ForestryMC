@@ -10,16 +10,14 @@
  ******************************************************************************/
 package forestry.farming.logic.crops;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 import forestry.api.genetics.IFruitBearer;
-import forestry.core.network.packets.PacketFXSignal;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.BlockUtil;
 
 public class CropFruit extends Crop {
 
@@ -34,15 +32,13 @@ public class CropFruit extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level world, BlockPos pos) {
-		IFruitBearer tile = TileUtil.getTile(world, pos, IFruitBearer.class);
+	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
+		IFruitBearer tile = TileUtil.getTile(level, pos, IFruitBearer.class);
 		if (tile == null) {
 			return NonNullList.create();
 		}
 
-		BlockState blockState = world.getBlockState(pos);
-		PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK, PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, blockState);
-		NetworkUtil.sendNetworkPacket(packet, pos, world);
+		BlockUtil.sendDestroyEffects(level, pos, level.getBlockState(pos));
 		return tile.pickFruit(ItemStack.EMPTY);
 	}
 

@@ -24,7 +24,6 @@ import forestry.core.genetics.analyzer.DatabasePlugin;
 import forestry.core.genetics.analyzer.MutationsTab;
 import forestry.core.genetics.analyzer.ProductsTab;
 
-@OnlyIn(Dist.CLIENT)
 public class BeePlugin extends DatabasePlugin<IBee> {
 	public static final BeePlugin INSTANCE = new BeePlugin();
 

@@ -9,18 +9,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import genetics.api.alleles.IAllele;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 
 public interface IFilterLogic extends INbtWritable, INbtReadable {
-	void writeGuiData(FriendlyByteBuf data);
+	void writeGuiData(FriendlyByteBuf buffer);
 
-	@OnlyIn(Dist.CLIENT)
 	void readGuiData(FriendlyByteBuf data);
 
 	Collection<Direction> getValidDirections(ItemStack itemStack, Direction from);

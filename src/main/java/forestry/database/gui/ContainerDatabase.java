@@ -10,16 +10,14 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import forestry.core.gui.ContainerAnalyzerProvider;
 import forestry.core.gui.ContainerForestry;
 import forestry.core.gui.slots.SlotFilteredInventory;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.TileUtil;
 import forestry.database.features.DatabaseMenuTypes;
 import forestry.database.tiles.TileDatabase;
 
 public class ContainerDatabase extends ContainerAnalyzerProvider<TileDatabase> {
 
-	public static ContainerDatabase fromNetwork(int windowId, Inventory inv, FriendlyByteBuf data) {
-		PacketBufferForestry buf = new PacketBufferForestry(data);
-		TileDatabase tile = TileUtil.getTile(inv.player.level, buf.readBlockPos(), TileDatabase.class);
+	public static ContainerDatabase fromNetwork(int windowId, Inventory inv, FriendlyByteBuf buffer) {
+		TileDatabase tile = TileUtil.getTile(inv.player.level, buffer.readBlockPos(), TileDatabase.class);
 		return new ContainerDatabase(windowId, inv, tile);    //TODO nullability.
 	}
 
@@ -36,6 +34,7 @@ public class ContainerDatabase extends ContainerAnalyzerProvider<TileDatabase> {
 		}
 	}
 
+	// todo fix
 	public void sendContainerToListeners() {
 		for (ContainerListener listener : containerListeners) {
 			// listener.refreshContainer(this, getItems());

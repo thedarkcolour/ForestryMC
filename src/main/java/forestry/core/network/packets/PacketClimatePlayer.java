@@ -1,36 +1,31 @@
 package forestry.core.network.packets;
 
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.climate.IClimateState;
 import forestry.core.ClimateHandlerClient;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
+import forestry.core.utils.NetworkUtil;
 
-public class PacketClimatePlayer implements IForestryPacketClient {
-
-	private IClimateState climateState;
-
-	public PacketClimatePlayer(IClimateState climateState) {
-		this.climateState = climateState;
-	}
-
+public record PacketClimatePlayer(IClimateState state) implements IForestryPacketClient {
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeClimateState(climateState);
-	}
-
-	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.CLIMATE_PLAYER;
 	}
 
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			ClimateHandlerClient.setCurrentState(data.readClimateState());
-		}
+	@Override
+	public void write(FriendlyByteBuf buffer) {
+		NetworkUtil.writeClimateState(buffer, state);
+	}
+
+	public static PacketClimatePlayer decode(FriendlyByteBuf buffer) {
+		return new PacketClimatePlayer(NetworkUtil.readClimateState(buffer));
+	}
+
+	public static void handle(PacketClimatePlayer msg, ServerPlayer player) {
+		ClimateHandlerClient.setCurrentState(msg.state);
 	}
 }

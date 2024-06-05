@@ -36,22 +36,22 @@ public class FarmableGourd implements IFarmable {
 	}
 
 	@Override
-	public boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState) {
-		return blockState.getBlock() == stem;
+	public boolean isSaplingAt(Level level, BlockPos pos, BlockState state) {
+		return state.getBlock() == stem;
 	}
 
 	@Override
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
-		if (blockState.getBlock() != fruit) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
+		if (state.getBlock() != fruit) {
 			return null;
 		}
 
-		return new CropDestroy(world, blockState, pos, null);
+		return new CropDestroy(level, state, pos, null);
 	}
 
 	@Override
-	public boolean isGermling(ItemStack itemstack) {
-		return ItemStack.isSame(itemstack, seed);
+	public boolean isGermling(ItemStack stack) {
+		return ItemStack.isSame(stack, seed);
 	}
 
 	@Override
@@ -61,13 +61,13 @@ public class FarmableGourd implements IFarmable {
 	}
 
 	@Override
-	public boolean isWindfall(ItemStack itemstack) {
+	public boolean isWindfall(ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
-		return BlockUtil.setBlockWithPlaceSound(world, pos, stem.defaultBlockState());
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
+		return BlockUtil.setBlockWithPlaceSound(level, pos, stem.defaultBlockState());
 	}
 
 }

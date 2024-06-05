@@ -10,58 +10,46 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.IActivatable;
 import forestry.core.tiles.TileUtil;
 
-public class PacketActiveUpdate implements IForestryPacketClient {
-	private final BlockPos pos;
-	private final boolean active;
-
+public record PacketActiveUpdate(BlockPos pos, boolean active) implements IForestryPacketClient {
 	public PacketActiveUpdate(IActivatable tile) {
-		this.pos = tile.getCoordinates();
-		this.active = tile.isActive();
+		this(tile.getCoordinates(), tile.isActive());
 	}
 
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.TILE_FORESTRY_ACTIVE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		data.writeBoolean(active);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		buffer.writeBoolean(active);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			BlockPos pos = data.readBlockPos();
-			boolean active = data.readBoolean();
+	public static PacketActiveUpdate decode(FriendlyByteBuf buffer) {
+		return new PacketActiveUpdate(buffer.readBlockPos(), buffer.readBoolean());
+	}
 
-			ClientLevel world = Minecraft.getInstance().level;
-			BlockEntity tile = TileUtil.getTile(world, pos);
-			if (tile instanceof IActivatable) {
-				((IActivatable) tile).setActive(active);
-			} else if (tile instanceof IMultiblockComponent component) {
-				if (component.getMultiblockLogic().isConnected() && component.getMultiblockLogic().getController() instanceof IActivatable) {
-					((IActivatable) component.getMultiblockLogic().getController()).setActive(active);
-				}
+	public static void handle(PacketActiveUpdate msg, Player player) {
+		BlockEntity tile = TileUtil.getTile(player.level, msg.pos);
+
+		if (tile instanceof IActivatable activatable) {
+			activatable.setActive(msg.active);
+		} else if (tile instanceof IMultiblockComponent component) {
+			if (component.getMultiblockLogic().isConnected() && component.getMultiblockLogic().getController() instanceof IActivatable activatable) {
+				activatable.setActive(msg.active);
 			}
 		}
 	}

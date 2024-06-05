@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import deleteme.BiomeCategory;
+
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
@@ -46,9 +48,7 @@ import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.IMultiblockControllerInternal;
 import forestry.core.multiblock.MultiblockValidationException;
 import forestry.core.multiblock.RectangularMultiblockControllerBase;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.render.ParticleRender;
-import forestry.core.utils.Translator;
 
 public class AlvearyController extends RectangularMultiblockControllerBase implements IAlvearyControllerInternal, IClimateControlled {
 	private final InventoryBeeHousing inventory;
@@ -418,14 +418,14 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		data.writeVarInt(beekeepingLogic.getBeeProgressPercent());
 		data.writeVarInt(Math.round(tempChange * 100));
 		data.writeVarInt(Math.round(humidChange * 100));
 	}
 
 	@Override
-	public void readGuiData(PacketBufferForestry data) {
+	public void readGuiData(FriendlyByteBuf data) {
 		breedingProgressPercent = data.readVarInt();
 		tempChange = data.readVarInt() / 100.0F;
 		humidChange = data.readVarInt() / 100.0F;

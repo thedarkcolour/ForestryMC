@@ -11,9 +11,9 @@
 package forestry.core.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +30,6 @@ import forestry.api.core.IErrorLogic;
 import forestry.core.circuits.ISpeedUpgradable;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.network.IStreamableGui;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.render.TankRenderInfo;
 import forestry.energy.EnergyHelper;
 import forestry.energy.ForestryEnergyStorage;
@@ -169,7 +168,7 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		energyStorage.writeData(data);
 		data.writeVarInt(workCounter);
 		data.writeVarInt(getTicksPerWorkCycle());
@@ -177,7 +176,7 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		energyStorage.readData(data);
 		workCounter = data.readVarInt();
 		ticksPerWorkCycle = data.readVarInt();

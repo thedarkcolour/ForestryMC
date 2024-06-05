@@ -28,7 +28,6 @@ import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
 import forestry.apiculture.ModuleApiculture;
 import forestry.core.config.Config;
-import forestry.core.config.Constants;
 
 public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 	public HiveDecorator() {
@@ -85,7 +84,7 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 	private static boolean setHive(WorldGenLevel world, RandomSource rand, BlockPos pos, Hive hive) {
 		BlockState hiveState = hive.getHiveBlockState();
 		Block hiveBlock = hiveState.getBlock();
-		boolean placed = world.setBlock(pos, hiveState, Constants.FLAG_BLOCK_SYNC);
+		boolean placed = world.setBlock(pos, hiveState, Block.UPDATE_CLIENTS);
 		if (!placed) {
 			return false;
 		}

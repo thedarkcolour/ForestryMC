@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
@@ -35,9 +36,7 @@ import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.packets.PacketTankLevelUpdate;
-import forestry.core.render.EnumTankLevel;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.IRenderableTile;
 import forestry.core.utils.NetworkUtil;
@@ -112,14 +111,14 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		for (StandardTank tank : tanks) {
 			tank.writeData(data);
 		}
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 		for (StandardTank tank : tanks) {
 			tank.readData(data);
 		}

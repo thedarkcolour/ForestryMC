@@ -11,11 +11,11 @@
 package forestry.energy.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +42,6 @@ import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.energy.features.EnergyTiles;
 import forestry.energy.inventory.InventoryEngineBiogas;
@@ -266,7 +265,7 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 
 	/* NETWORK */
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 		data.writeBoolean(shutdown);
 		tankManager.writeData(data);
@@ -275,7 +274,7 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		shutdown = data.readBoolean();
 		tankManager.readData(data);

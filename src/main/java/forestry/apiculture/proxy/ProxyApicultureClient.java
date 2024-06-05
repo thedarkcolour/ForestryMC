@@ -12,34 +12,24 @@ package forestry.apiculture.proxy;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import forestry.apiculture.entities.ParticleSnow;
 import forestry.apiculture.features.ApicultureBlocks;
-import forestry.apiculture.features.ApicultureEntities;
 import forestry.modules.IClientModuleHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class ProxyApicultureClient extends ProxyApiculture implements IClientModuleHandler {
-
 	@Override
 	public void setupClient(FMLClientSetupEvent event) {
 		ApicultureBlocks.BEE_COMB.getBlocks().forEach((block) -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout()));
-	}
-
-	@Override
-	public void setupRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		// event.registerEntityRenderer(ApicultureEntities.APIARY_MINECART.entityType(), MinecartRenderer::new);
-		// event.registerEntityRenderer(ApicultureEntities.BEE_HOUSE_MINECART.entityType(), MinecartRenderer::new);
 	}
 
 	@Override

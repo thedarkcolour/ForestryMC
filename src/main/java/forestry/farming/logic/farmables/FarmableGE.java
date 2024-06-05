@@ -51,36 +51,36 @@ public class FarmableGE implements IFarmable {
 	}
 
 	@Override
-	public boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState) {
-		return ArboricultureBlocks.SAPLING_GE.blockEqual(blockState);
+	public boolean isSaplingAt(Level level, BlockPos pos, BlockState state) {
+		return ArboricultureBlocks.SAPLING_GE.blockEqual(state);
 	}
 
 	@Override
 	@Nullable
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
-		if (!blockState.is(BlockTags.LOGS)) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
+		if (!state.is(BlockTags.LOGS)) {
 			return null;
 		}
 
-		return new CropDestroy(world, blockState, pos, null);
+		return new CropDestroy(level, state, pos, null);
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
 		ITreeRoot treeRoot = TreeManager.treeRoot;
 
 		ITree tree = treeRoot.create(germling).orElse(null);
-		return tree != null && treeRoot.plantSapling(world, tree, player.getGameProfile(), pos);
+		return tree != null && treeRoot.plantSapling(level, tree, player.getGameProfile(), pos);
 	}
 
 	@Override
-	public boolean isGermling(ItemStack itemstack) {
-		return TreeManager.treeRoot.isMember(itemstack);
+	public boolean isGermling(ItemStack stack) {
+		return TreeManager.treeRoot.isMember(stack);
 	}
 
 	@Override
-	public boolean isWindfall(ItemStack itemstack) {
-		return windfall.contains(itemstack.getItem());
+	public boolean isWindfall(ItemStack stack) {
+		return windfall.contains(stack.getItem());
 	}
 
 }

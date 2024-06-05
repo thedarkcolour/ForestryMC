@@ -41,24 +41,24 @@ public class FarmableStacked implements IFarmable {
 	}
 
 	@Override
-	public boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState) {
-		return blockState.getBlock() == cropBlock;
+	public boolean isSaplingAt(Level level, BlockPos pos, BlockState state) {
+		return state.getBlock() == cropBlock;
 	}
 
 	@Override
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
 		BlockPos cropPos = pos.offset(0, matureHeight - 1, 0);
-		blockState = world.getBlockState(cropPos);
-		if (blockState.getBlock() != cropBlock) {
+		state = level.getBlockState(cropPos);
+		if (state.getBlock() != cropBlock) {
 			return null;
 		}
 
-		return new CropDestroy(world, blockState, cropPos, null);
+		return new CropDestroy(level, state, cropPos, null);
 	}
 
 	@Override
-	public boolean isGermling(ItemStack itemstack) {
-		return ItemStack.isSame(germling, itemstack);
+	public boolean isGermling(ItemStack stack) {
+		return ItemStack.isSame(germling, stack);
 	}
 
 	@Override
@@ -68,12 +68,12 @@ public class FarmableStacked implements IFarmable {
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
-		return BlockUtil.setBlockWithPlaceSound(world, pos, cropBlock.defaultBlockState());
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
+		return BlockUtil.setBlockWithPlaceSound(level, pos, cropBlock.defaultBlockState());
 	}
 
 	@Override
-	public boolean isWindfall(ItemStack itemstack) {
+	public boolean isWindfall(ItemStack stack) {
 		return false;
 	}
 }

@@ -24,8 +24,6 @@ import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
 import forestry.api.core.ILocatable;
 import forestry.core.network.packets.PacketClimateListenerUpdate;
-import forestry.core.network.packets.PacketClimateListenerUpdateEntity;
-import forestry.core.network.packets.PacketClimateListenerUpdateEntityRequest;
 import forestry.core.network.packets.PacketClimateListenerUpdateRequest;
 import forestry.core.render.ParticleRender;
 import forestry.core.utils.NetworkUtil;
@@ -69,11 +67,7 @@ public class ClimateListener implements IClimateListener {
 			}
 		}
 		if (needsClimateUpdate) {
-			if (locationProvider instanceof Entity) {
-				NetworkUtil.sendToServer(new PacketClimateListenerUpdateEntityRequest((Entity) locationProvider));
-			} else {
-				NetworkUtil.sendToServer(new PacketClimateListenerUpdateRequest(getCoordinates()));
-			}
+			NetworkUtil.sendToServer(new PacketClimateListenerUpdateRequest(getCoordinates()));
 			needsClimateUpdate = false;
 		}
 	}
@@ -175,14 +169,11 @@ public class ClimateListener implements IClimateListener {
 	@Override
 	public void syncToClient() {
 		if (!cachedState.equals(cachedClientState)) {
-			Level worldObj = getWorldObj();
-			if (!worldObj.isClientSide) {
+			Level level = getWorldObj();
+
+			if (!level.isClientSide) {
 				BlockPos coordinates = getCoordinates();
-				if (locationProvider instanceof Entity) {
-					NetworkUtil.sendNetworkPacket(new PacketClimateListenerUpdateEntity((Entity) locationProvider, cachedState), coordinates, worldObj);
-				} else {
-					NetworkUtil.sendNetworkPacket(new PacketClimateListenerUpdate(getCoordinates(), cachedState), coordinates, getWorldObj());
-				}
+				NetworkUtil.sendNetworkPacket(new PacketClimateListenerUpdate(getCoordinates(), cachedState), coordinates, level);
 			}
 			cachedClientState = cachedState;
 		}
@@ -190,14 +181,10 @@ public class ClimateListener implements IClimateListener {
 
 	@Override
 	public void syncToClient(ServerPlayer player) {
-		Level worldObj = getWorldObj();
-		if (!worldObj.isClientSide) {
+		Level level = getWorldObj();
+		if (!level.isClientSide) {
 			IClimateState climateState = getState(true, false);
-			if (locationProvider instanceof Entity) {
-				NetworkUtil.sendToPlayer(new PacketClimateListenerUpdateEntity((Entity) locationProvider, climateState), player);
-			} else {
-				NetworkUtil.sendToPlayer(new PacketClimateListenerUpdate(getCoordinates(), climateState), player);
-			}
+			NetworkUtil.sendToPlayer(new PacketClimateListenerUpdate(getCoordinates(), climateState), player);
 		}
 	}
 

@@ -11,7 +11,6 @@
 package forestry.lepidopterology.worldgen;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Set;
 
 import deleteme.BiomeCategory;
@@ -33,7 +32,6 @@ import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.config.Config;
-import forestry.core.config.Constants;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
@@ -95,7 +93,7 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 
 	private static boolean setCocoon(WorldGenLevel world, BlockPos pos, IButterfly butterfly) {
 		Block cocoonBlock = LepidopterologyBlocks.COCOON_SOLID.block();
-		boolean placed = world.setBlock(pos, cocoonBlock.defaultBlockState(), Constants.FLAG_BLOCK_SYNC);
+		boolean placed = world.setBlock(pos, cocoonBlock.defaultBlockState(), Block.UPDATE_CLIENTS);
 		if (!placed) {
 			return false;
 		}

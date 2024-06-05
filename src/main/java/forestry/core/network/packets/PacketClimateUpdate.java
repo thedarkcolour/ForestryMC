@@ -10,55 +10,42 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
-import java.io.IOException;
-
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import forestry.api.climate.IClimateHousing;
 import forestry.api.climate.IClimateTransformer;
 import forestry.core.climate.ClimateTransformer;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketClimateUpdate implements IForestryPacketClient {
-
-	private BlockPos pos;
-	private ClimateTransformer container;
-
-	public PacketClimateUpdate(BlockPos pos, ClimateTransformer container) {
-		this.pos = pos;
-		this.container = container;
-	}
-
+public record PacketClimateUpdate(BlockPos pos, ClimateTransformer transformer) implements IForestryPacketClient {
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.UPDATE_CLIMATE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		container.writeData(data);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		transformer.writeData(buffer);
 	}
 
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) throws IOException {
-			BlockPos position = data.readBlockPos();
-			IClimateHousing housing = TileUtil.getTile(player.level, position, IClimateHousing.class);
-			if (housing == null) {
-				return;
-			}
-			IClimateTransformer transformer = housing.getTransformer();
-			if (transformer instanceof IStreamable streamable) {
-				streamable.readData(data);
-			}
-			//housing.onUpdateClimate();
+	public static PacketClimateUpdate decode(FriendlyByteBuf buffer) {
+		return new PacketClimateUpdate(buffer.readBlockPos(), new ClimateTransformer(buffer));
+	}
+
+	public static void handle(PacketClimateUpdate msg, Player player) {
+		IClimateHousing housing = TileUtil.getTile(player.level, msg.pos, IClimateHousing.class);
+		if (housing == null) {
+			return;
+		}
+		IClimateTransformer transformer = housing.getTransformer();
+		if (transformer instanceof ClimateTransformer climateTransformer) {
+			climateTransformer.copy(msg.transformer);
 		}
 	}
 }

@@ -86,7 +86,6 @@ import forestry.core.loot.ConditionLootModifier;
 import forestry.core.loot.OrganismFunction;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.network.NetworkHandler;
-import forestry.core.network.PacketHandlerServer;
 import forestry.core.proxy.Proxies;
 import forestry.core.proxy.ProxyCommon;
 import forestry.core.proxy.ProxyRender;
@@ -127,7 +126,7 @@ public class Forestry {
 		ClimateManager.stateHelper = ClimateStateHelper.INSTANCE;
 		EnumErrorCode.init();
 
-		ModuleManager moduleManager = ModuleManager.getInstance();
+		ModuleManager moduleManager = ModuleManager.INSTANCE;
 		ForestryAPI.moduleManager = moduleManager;
 		moduleManager.registerContainers(new ForestryModules());
 		ModuleManager.runSetup();
@@ -159,19 +158,9 @@ public class Forestry {
 		}
 	}
 
-	@Nullable
-	private static PacketHandlerServer packetHandler;
-
-	public static PacketHandlerServer getPacketHandler() {
-		Preconditions.checkNotNull(packetHandler);
-		return packetHandler;
-	}
-
 	private void setup(FMLCommonSetupEvent event) {
 		// Forestry's villager houses
 		event.enqueueWork(VillagerJigsaw::init);
-
-		packetHandler = new PacketHandlerServer();
 
 		// Register event handler
 		callSetupListeners(true);

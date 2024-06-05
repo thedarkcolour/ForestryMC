@@ -11,10 +11,10 @@
 package forestry.factory.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +51,6 @@ import forestry.core.inventory.InventoryGhostCrafting;
 import forestry.core.inventory.watchers.ISlotPickupWatcher;
 import forestry.core.inventory.wrappers.InventoryMapper;
 import forestry.core.items.definitions.ICraftingPlan;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
 import forestry.core.utils.InventoryUtil;
@@ -100,15 +99,13 @@ public class TileFabricator extends TilePowered implements ISlotPickupWatcher, I
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		super.writeData(data);
+	public void writeData(FriendlyByteBuf data) {
 		tankManager.writeData(data);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
-		super.readData(data);
+	public void readData(FriendlyByteBuf data) {
 		tankManager.readData(data);
 	}
 

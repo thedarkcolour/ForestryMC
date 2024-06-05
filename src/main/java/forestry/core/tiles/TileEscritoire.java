@@ -10,10 +10,10 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -37,7 +37,6 @@ import forestry.core.inventory.InventoryAnalyzer;
 import forestry.core.inventory.InventoryEscritoire;
 import forestry.core.inventory.watchers.ISlotPickupWatcher;
 import forestry.core.network.IStreamableGui;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.packets.PacketItemStackDisplay;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.NetworkUtil;
@@ -125,17 +124,17 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 
 	/* NETWORK */
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		game.writeData(data);
 	}
 
 	@Override
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		game.readData(data);
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 		ItemStack displayStack = getIndividualOnDisplay();
 		data.writeItem(displayStack);
@@ -143,7 +142,7 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		individualOnDisplayClient = data.readItem();
 	}

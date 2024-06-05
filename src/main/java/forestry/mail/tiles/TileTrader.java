@@ -12,9 +12,8 @@ package forestry.mail.tiles;
 
 import com.google.common.base.Preconditions;
 
-import java.io.IOException;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +34,6 @@ import forestry.api.mail.IStamps;
 import forestry.api.mail.PostManager;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.inventory.IInventoryAdapter;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
@@ -97,7 +95,7 @@ public class TileTrader extends TileBase implements IOwnedTile {
 	/* NETWORK */
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 		ownerHandler.writeData(data);
 		String addressName = address.getName();
@@ -106,7 +104,7 @@ public class TileTrader extends TileBase implements IOwnedTile {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		ownerHandler.readData(data);
 		String addressName = data.readUtf();
@@ -259,7 +257,7 @@ public class TileTrader extends TileBase implements IOwnedTile {
 		IMailAddress newAddress = getAddress();
 		String newAddressName = newAddress.getName();
 		if (newAddressName.equals(addressName)) {
-			PacketTraderAddressResponse packetResponse = new PacketTraderAddressResponse(this, addressName);
+			PacketTraderAddressResponse packetResponse = new PacketTraderAddressResponse(worldPosition, addressName);
 			NetworkUtil.sendNetworkPacket(packetResponse, worldPosition, level);
 		}
 	}

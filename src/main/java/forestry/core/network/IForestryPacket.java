@@ -10,25 +10,12 @@
  ******************************************************************************/
 package forestry.core.network;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraft.network.FriendlyByteBuf;
-
-import io.netty.buffer.Unpooled;
+import net.minecraft.resources.ResourceLocation;
 
 public interface IForestryPacket {
-	static Pair<FriendlyByteBuf, Integer> getPacketData(IForestryPacket packet) {
-		PacketBufferForestry data = new PacketBufferForestry(Unpooled.buffer());
+	// Useless until 1.20.4
+	ResourceLocation id();
 
-		IPacketId id = packet.getPacketId();
-		int ordinal = id.ordinal();
-		data.writeByte(id.ordinal());
-		packet.writeData(data);
-
-		return Pair.of(data, ordinal);
-	}
-
-	IPacketId getPacketId();
-
-	void writeData(PacketBufferForestry data);
+	void write(FriendlyByteBuf buffer);
 }

@@ -37,6 +37,8 @@ import forestry.core.fluids.ForestryFluids;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
 import forestry.core.network.IPacketRegistry;
+import forestry.core.network.PacketIdClient;
+import forestry.core.network.PacketIdServer;
 import forestry.core.utils.datastructures.DummyMap;
 import forestry.core.utils.datastructures.ItemStackMap;
 import forestry.factory.circuits.CircuitSpeedUpgrade;
@@ -50,7 +52,8 @@ import forestry.factory.gui.GuiMoistener;
 import forestry.factory.gui.GuiRaintank;
 import forestry.factory.gui.GuiSqueezer;
 import forestry.factory.gui.GuiStill;
-import forestry.factory.network.PacketRegistryFactory;
+import forestry.factory.network.packets.PacketRecipeTransferRequest;
+import forestry.factory.network.packets.PacketRecipeTransferUpdate;
 import forestry.factory.recipes.CarpenterRecipeManager;
 import forestry.factory.recipes.CentrifugeRecipeManager;
 import forestry.factory.recipes.FabricatorRecipeManager;
@@ -115,8 +118,9 @@ public class ModuleFactory extends BlankForestryModule {
 	}
 
 	@Override
-	public IPacketRegistry getPacketRegistry() {
-		return new PacketRegistryFactory();
+	public void registerPackets(IPacketRegistry registry) {
+		registry.serverbound(PacketIdServer.RECIPE_TRANSFER_REQUEST, PacketRecipeTransferRequest.class, PacketRecipeTransferRequest::decode, PacketRecipeTransferRequest::handle);
+		registry.clientbound(PacketIdClient.RECIPE_TRANSFER_UPDATE, PacketRecipeTransferUpdate.class, PacketRecipeTransferUpdate::decode, PacketRecipeTransferUpdate::handle);
 	}
 
 	@Override

@@ -11,7 +11,6 @@
 package forestry.core.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +18,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -34,7 +34,7 @@ import genetics.utils.RootUtils;
 import forestry.api.core.INbtWritable;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
+import forestry.core.utils.NetworkUtil;
 
 public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	private static final Random rand = new Random();
@@ -226,14 +226,14 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 
 	/* IStreamable */
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		data.writeVarInt(tokenCount);
-		data.writeStreamables(gameTokens);
+		NetworkUtil.writeStreamables(data, gameTokens);
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		tokenCount = data.readVarInt();
-		data.readStreamables(gameTokens, EscritoireGameToken::new);
+		NetworkUtil.readStreamables(data, gameTokens, EscritoireGameToken::new);
 	}
 }

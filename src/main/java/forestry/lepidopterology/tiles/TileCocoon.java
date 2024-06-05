@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +37,6 @@ import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.packets.PacketTileStream;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
@@ -100,7 +100,7 @@ public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, 
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		IButterfly caterpillar = getCaterpillar();
 		String speciesUID = caterpillar.getIdentifier();
 		data.writeUtf(speciesUID);
@@ -108,7 +108,7 @@ public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, 
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 		String speciesUID = data.readUtf();
 		IButterfly caterpillar = getButterfly(speciesUID);
 		setCaterpillar(caterpillar);

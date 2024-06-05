@@ -29,27 +29,27 @@ public class FarmableChorus implements IFarmable {
 	}
 
 	@Override
-	public boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState) {
-		return blockState.getBlock() == Blocks.CHORUS_FLOWER;
+	public boolean isSaplingAt(Level level, BlockPos pos, BlockState state) {
+		return state.getBlock() == Blocks.CHORUS_FLOWER;
 	}
 
 	@Nullable
 	@Override
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
-		if (blockState.getBlock() != Blocks.CHORUS_FLOWER) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
+		if (state.getBlock() != Blocks.CHORUS_FLOWER) {
 			return null;
 		}
 
-		if (blockState.getValue(ChorusFlowerBlock.AGE) < 5) {
+		if (state.getValue(ChorusFlowerBlock.AGE) < 5) {
 			return null;
 		}
 
-		return new CropChorusFlower(world, pos);
+		return new CropChorusFlower(level, pos);
 	}
 
 	@Override
-	public boolean isGermling(ItemStack itemstack) {
-		return ItemStack.isSame(germling, itemstack);
+	public boolean isGermling(ItemStack stack) {
+		return ItemStack.isSame(germling, stack);
 	}
 
 	@Override
@@ -59,16 +59,16 @@ public class FarmableChorus implements IFarmable {
 	}
 
 	@Override
-	public boolean isWindfall(ItemStack itemstack) {
-		return ItemStack.isSame(fruit, itemstack);
+	public boolean isWindfall(ItemStack stack) {
+		return ItemStack.isSame(fruit, stack);
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
-		if (!canPlace(world, pos)) {
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
+		if (!canPlace(level, pos)) {
 			return false;
 		}
-		return BlockUtil.setBlockWithPlaceSound(world, pos, Blocks.CHORUS_FLOWER.defaultBlockState());
+		return BlockUtil.setBlockWithPlaceSound(level, pos, Blocks.CHORUS_FLOWER.defaultBlockState());
 	}
 
 	private boolean canPlace(Level world, BlockPos position) {

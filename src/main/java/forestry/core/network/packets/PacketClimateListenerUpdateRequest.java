@@ -1,45 +1,38 @@
 package forestry.core.network.packets;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
 
 import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.climate.ClimateCapabilities;
 import forestry.api.climate.IClimateListener;
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 
-public class PacketClimateListenerUpdateRequest implements IForestryPacketServer {
-	private final BlockPos pos;
-
-	public PacketClimateListenerUpdateRequest(BlockPos pos) {
-		this.pos = pos;
-	}
-
+public record PacketClimateListenerUpdateRequest(BlockPos pos) implements IForestryPacketServer {
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-	}
-
-	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.CLIMATE_LISTENER_UPDATE_REQUEST;
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
+	@Override
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+	}
 
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			BlockPos pos = data.readBlockPos();
-			BlockEntity tileEntity = player.level.getBlockEntity(pos);
-			if (tileEntity != null) {
-				LazyOptional<IClimateListener> listener = tileEntity.getCapability(ClimateCapabilities.CLIMATE_LISTENER);
-				listener.ifPresent(l -> l.syncToClient(player));
-			}
+	public static PacketClimateListenerUpdateRequest decode(FriendlyByteBuf buffer) {
+		return new PacketClimateListenerUpdateRequest(buffer.readBlockPos());
+	}
+
+	public static void handle(PacketClimateListenerUpdateRequest msg, ServerPlayer player) {
+		BlockEntity tileEntity = player.level.getBlockEntity(msg.pos());
+		if (tileEntity != null) {
+			LazyOptional<IClimateListener> listener = tileEntity.getCapability(ClimateCapabilities.CLIMATE_LISTENER);
+			listener.ifPresent(l -> l.syncToClient(player));
 		}
 	}
 }

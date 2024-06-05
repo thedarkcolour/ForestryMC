@@ -49,9 +49,8 @@ import forestry.arboriculture.genetics.TreeHelper;
 import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
-import forestry.core.network.packets.PacketFXSignal;
+import forestry.core.utils.BlockUtil;
 import forestry.core.utils.GeneticsUtil;
-import forestry.core.utils.NetworkUtil;
 
 import genetics.api.GeneticHelper;
 import genetics.api.organism.IOrganismType;
@@ -109,7 +108,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		BlockHitResult traceResult = (BlockHitResult) getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.ANY);
+		BlockHitResult traceResult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.ANY);
 		BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(playerIn, handIn, traceResult));
 
 		ItemStack itemStack = playerIn.getItemInHand(handIn);
@@ -131,33 +130,28 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 	}
 
 
-	private static InteractionResultHolder<ItemStack> onItemRightClickPollen(ItemStack itemStackIn, Level worldIn, Player player, BlockPos pos, ITree tree) {
-		ICheckPollinatable checkPollinatable = GeneticsUtil.getCheckPollinatable(worldIn, pos);
+	private static InteractionResultHolder<ItemStack> onItemRightClickPollen(ItemStack itemStackIn, Level level, Player player, BlockPos pos, ITree tree) {
+		ICheckPollinatable checkPollinatable = GeneticsUtil.getCheckPollinatable(level, pos);
 		if (checkPollinatable == null || !checkPollinatable.canMateWith(tree)) {
 			return new InteractionResultHolder<>(InteractionResult.FAIL, itemStackIn);
 		}
 
-		IPollinatable pollinatable = GeneticsUtil.getOrCreatePollinatable(player.getGameProfile(), worldIn, pos, true);
+		IPollinatable pollinatable = GeneticsUtil.getOrCreatePollinatable(player.getGameProfile(), level, pos, true);
 		if (pollinatable == null || !pollinatable.canMateWith(tree)) {
 			return new InteractionResultHolder<>(InteractionResult.FAIL, itemStackIn);
 		}
 
-		if (worldIn.isClientSide) {
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStackIn);
-		} else {
+		if (!level.isClientSide) {
 			pollinatable.mateWith(tree);
 
-			BlockState blockState = worldIn.getBlockState(pos);
-			PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK, PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, blockState);
-			NetworkUtil.sendNetworkPacket(packet, pos, worldIn);
+			BlockUtil.sendDestroyEffects(level, pos, level.getBlockState(pos));
 
 			if (!player.isCreative()) {
 				itemStackIn.shrink(1);
 			}
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStackIn);
 		}
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStackIn);
 	}
-
 
 	private static InteractionResultHolder<ItemStack> onItemRightClickSapling(ItemStack itemStackIn, Level worldIn, Player player, BlockPos pos, ITree tree, BlockPlaceContext context) {
 		// x, y, z are the coordinates of the block "hit", can thus either be the soil or tall grass, etc.

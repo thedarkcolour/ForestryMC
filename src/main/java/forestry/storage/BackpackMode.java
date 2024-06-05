@@ -21,11 +21,13 @@ public enum BackpackMode implements StringRepresentable {
 	RECEIVE("for.storage.backpack.mode.receiving"),
 	RESUPPLY("for.storage.backpack.mode.resupply");
 
-	@Nullable
-	private final String unlocalizedInfo;
+	public static final BackpackMode[] VALUES = values();
 
-	BackpackMode(@Nullable String unlocalizedInfo) {
-		this.unlocalizedInfo = unlocalizedInfo;
+	@Nullable
+	private final String translationkey;
+
+	BackpackMode(@Nullable String translationkey) {
+		this.translationkey = translationkey;
 	}
 
 	@Override
@@ -34,7 +36,7 @@ public enum BackpackMode implements StringRepresentable {
 	}
 
 	@Nullable
-	public String getUnlocalizedInfo() {
-		return unlocalizedInfo;
+	public String getTranslationkey() {
+		return translationkey;
 	}
 }

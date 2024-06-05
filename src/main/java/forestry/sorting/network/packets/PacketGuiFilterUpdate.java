@@ -1,49 +1,40 @@
 package forestry.sorting.network.packets;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import forestry.api.genetics.GeneticCapabilities;
-import forestry.api.genetics.filter.IFilterLogic;
+import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
-import forestry.sorting.tiles.IFilterContainer;
+import forestry.sorting.AlleleFilter;
+import forestry.sorting.FilterLogic;
 
-public class PacketGuiFilterUpdate implements IForestryPacketClient {
-	private final BlockPos pos;
-	private final IFilterLogic logic;
-
-	public PacketGuiFilterUpdate(IFilterContainer container) {
-		this.pos = container.getCoordinates();
-		this.logic = container.getLogic();
+public record PacketGuiFilterUpdate(BlockPos pos, IFilterRuleType[] filterRules, AlleleFilter[][] genomeFilter) implements IForestryPacketClient {
+	@Override
+	public ResourceLocation id() {
+		return PacketIdClient.GUI_FILTER_UPDATE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		logic.writeGuiData(data);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		FilterLogic.writeFilterRules(buffer, filterRules);
+		FilterLogic.writeGenomeFilters(buffer, genomeFilter);
 	}
 
-	@Override
-	public PacketIdClient getPacketId() {
-		return PacketIdClient.GUI_UPDATE;
+	public static PacketGuiFilterUpdate decode(FriendlyByteBuf buffer) {
+		return new PacketGuiFilterUpdate(buffer.readBlockPos(), FilterLogic.readFilterRules(buffer), FilterLogic.readGenomeFilters(buffer));
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			BlockPos pos = data.readBlockPos();
-
-			LazyOptional<IFilterLogic> logic = TileUtil.getInterface(player.level, pos, GeneticCapabilities.FILTER_LOGIC, null);
-			logic.ifPresent(l -> l.readGuiData(data));
-		}
+	public static void handle(PacketGuiFilterUpdate msg, Player player) {
+		TileUtil.getInterface(player.level, msg.pos(), GeneticCapabilities.FILTER_LOGIC, null).ifPresent(l -> {
+			if (l instanceof FilterLogic logic) {
+				logic.readGuiUpdatePacket(msg);
+			}
+		});
 	}
 }

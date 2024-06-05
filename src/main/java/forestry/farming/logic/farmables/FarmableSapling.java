@@ -10,30 +10,29 @@
  ******************************************************************************/
 package forestry.farming.logic.farmables;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.IFarmableInfo;
-import forestry.core.network.packets.PacketFXSignal;
+import forestry.core.utils.BlockUtil;
 import forestry.core.utils.ItemStackUtil;
-import forestry.core.utils.NetworkUtil;
 import forestry.farming.logic.crops.CropDestroy;
 
 public class FarmableSapling implements IFarmable {
@@ -48,38 +47,37 @@ public class FarmableSapling implements IFarmable {
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
 		ItemStack copy = germling.copy();
 		player.setItemInHand(InteractionHand.MAIN_HAND, copy);
 		BlockHitResult result = new BlockHitResult(Vec3.ZERO, Direction.UP, pos.below(), true);    //TODO isInside
 		InteractionResult actionResult = copy.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, result));
 		player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 		if (actionResult.consumesAction()) {
-			PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.SoundFXType.BLOCK_PLACE, pos, Blocks.OAK_SAPLING.defaultBlockState());
-			NetworkUtil.sendNetworkPacket(packet, pos, world);
+			BlockUtil.sendPlaceSound(level, pos, Blocks.OAK_SAPLING.defaultBlockState());
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState) {
-		return blockState.getBlock() == this.saplingBlock;
+	public boolean isSaplingAt(Level level, BlockPos pos, BlockState state) {
+		return state.getBlock() == this.saplingBlock;
 	}
 
 	@Override
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
-		if (!blockState.is(BlockTags.LOGS)) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
+		if (!state.is(BlockTags.LOGS)) {
 			return null;
 		}
 
-		return new CropDestroy(world, blockState, pos, null);
+		return new CropDestroy(level, state, pos, null);
 	}
 
 	@Override
-	public boolean isGermling(ItemStack itemstack) {
+	public boolean isGermling(ItemStack stack) {
 		//if (ignoreMetadata) {
-		return ItemStack.isSame(germling, new ItemStack((itemstack.getItem())));
+		return ItemStack.isSame(germling, new ItemStack((stack.getItem())));
 		/*}
 		return ItemStack.isSame(germling, itemstack);*/
 	}
@@ -102,9 +100,9 @@ public class FarmableSapling implements IFarmable {
 	}
 
 	@Override
-	public boolean isWindfall(ItemStack itemstack) {
+	public boolean isWindfall(ItemStack stack) {
 		for (ItemStack drop : windfall) {
-			if (drop.sameItem(itemstack)) {
+			if (drop.sameItem(stack)) {
 				return true;
 			}
 		}

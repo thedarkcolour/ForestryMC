@@ -13,12 +13,12 @@ package forestry.core.tiles;
 import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 import forestry.core.blocks.TileStreamUpdateTracker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
@@ -43,7 +43,6 @@ import forestry.core.errors.ErrorLogic;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.TickHelper;
 
@@ -130,12 +129,12 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 
 	/* IStreamable */
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 
 	}
 

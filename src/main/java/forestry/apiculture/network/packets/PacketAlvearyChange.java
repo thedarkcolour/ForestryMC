@@ -10,42 +10,32 @@
  ******************************************************************************/
 package forestry.apiculture.network.packets;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketAlvearyChange implements IForestryPacketClient {
-	private final BlockPos controllerPos;
-
-	public PacketAlvearyChange(BlockPos controllerPos) {
-		this.controllerPos = controllerPos;
-	}
-
+public record PacketAlvearyChange(BlockPos pos) implements IForestryPacketClient {
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.ALVERAY_CONTROLLER_CHANGE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(controllerPos);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			BlockPos pos = data.readBlockPos();
-			TileUtil.actOnTile(player.level, pos, IMultiblockComponent.class, tile -> tile.getMultiblockLogic().getController().reassemble());
-		}
+	public static PacketAlvearyChange decode(FriendlyByteBuf buffer) {
+		return new PacketAlvearyChange(buffer.readBlockPos());
+	}
+
+	public static void handle(PacketAlvearyChange msg, Player player) {
+		TileUtil.actOnTile(player.level, msg.pos, IMultiblockComponent.class, tile -> tile.getMultiblockLogic().getController().reassemble());
 	}
 }

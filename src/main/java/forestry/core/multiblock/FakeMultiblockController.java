@@ -16,6 +16,7 @@ import java.util.Set;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 
 import forestry.api.core.EnumHumidity;
@@ -23,7 +24,6 @@ import forestry.api.core.EnumTemperature;
 import forestry.api.core.IErrorLogic;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.errors.FakeErrorLogic;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.owner.FakeOwnerHandler;
 import forestry.core.owner.IOwnerHandler;
 
@@ -187,12 +187,10 @@ public abstract class FakeMultiblockController implements IMultiblockControllerI
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
-
+	public void writeGuiData(FriendlyByteBuf data) {
 	}
 
 	@Override
-	public void readGuiData(PacketBufferForestry data) {
-
+	public void readGuiData(FriendlyByteBuf data) {
 	}
 }

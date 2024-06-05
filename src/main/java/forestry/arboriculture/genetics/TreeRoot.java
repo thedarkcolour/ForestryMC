@@ -61,10 +61,8 @@ import forestry.arboriculture.tiles.TileFruitPod;
 import forestry.arboriculture.tiles.TileLeaves;
 import forestry.arboriculture.tiles.TileSapling;
 import forestry.core.genetics.root.BreedingTrackerManager;
-import forestry.core.network.packets.PacketFXSignal;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
-import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.RenderUtil;
 
 import genetics.api.individual.IGenome;
@@ -152,30 +150,29 @@ public class TreeRoot extends IndividualRoot<ITree> implements ITreeRoot, IBreed
 	}
 
 	@Override
-	public boolean plantSapling(Level world, ITree tree, GameProfile owner, BlockPos pos) {
+	public boolean plantSapling(Level level, ITree tree, GameProfile owner, BlockPos pos) {
 		BlockState state = ArboricultureBlocks.SAPLING_GE.defaultState();
-		boolean placed = world.setBlockAndUpdate(pos, state);
+		boolean placed = level.setBlockAndUpdate(pos, state);
 		if (!placed) {
 			return false;
 		}
 
-		BlockState blockState = world.getBlockState(pos);
+		BlockState blockState = level.getBlockState(pos);
 		Block block = blockState.getBlock();
 		if (!ArboricultureBlocks.SAPLING_GE.blockEqual(block)) {
 			return false;
 		}
 
-		TileSapling sapling = TileUtil.getTile(world, pos, TileSapling.class);
+		TileSapling sapling = TileUtil.getTile(level, pos, TileSapling.class);
 		if (sapling == null) {
-			world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+			level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 			return false;
 		}
 
 		sapling.setTree(tree.copy());
 		sapling.getOwnerHandler().setOwner(owner);
 
-		PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.SoundFXType.BLOCK_PLACE, pos, blockState);
-		NetworkUtil.sendNetworkPacket(packet, pos, world);
+		BlockUtil.sendPlaceSound(level, pos, blockState);
 
 		return true;
 	}
@@ -235,7 +232,7 @@ public class TreeRoot extends IndividualRoot<ITree> implements ITreeRoot, IBreed
 		if (!(tracker instanceof ArboristTracker arboristTracker)) {
 			return;
 		}
-		arboristTracker.setWorld(world);
+		arboristTracker.setLevel(world);
 		arboristTracker.setUsername(profile);
 	}
 

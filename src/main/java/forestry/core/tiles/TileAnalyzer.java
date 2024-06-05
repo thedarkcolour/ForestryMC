@@ -11,8 +11,8 @@
 package forestry.core.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
@@ -46,7 +46,6 @@ import forestry.core.fluids.TankManager;
 import forestry.core.gui.ContainerAnalyzer;
 import forestry.core.inventory.InventoryAnalyzer;
 import forestry.core.inventory.wrappers.InventoryMapper;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.packets.PacketItemStackDisplay;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.InventoryUtil;
@@ -153,7 +152,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 	/* Network */
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 		ItemStack displayStack = getIndividualOnDisplay();
 		data.writeItem(displayStack);
@@ -162,7 +161,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		individualOnDisplayClient = data.readItem();
 		tankManager.readData(data);

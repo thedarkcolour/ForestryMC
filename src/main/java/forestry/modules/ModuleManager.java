@@ -12,11 +12,11 @@ package forestry.modules;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,27 +48,19 @@ import forestry.core.IPickupHandler;
 import forestry.core.IResupplyHandler;
 import forestry.core.ISaveEventHandler;
 
-public class ModuleManager implements IModuleManager {
-
-	private static final ModuleManager ourInstance = new ModuleManager();
+public enum ModuleManager implements IModuleManager {
+	INSTANCE;
 
 	public static final List<IPickupHandler> pickupHandlers = Lists.newArrayList();
 	public static final List<ISaveEventHandler> saveEventHandlers = Lists.newArrayList();
 	public static final List<IResupplyHandler> resupplyHandlers = Lists.newArrayList();
 
-	private static final HashMap<ResourceLocation, IForestryModule> sortedModules = new LinkedHashMap<>();
+	private static final LinkedHashMap<ResourceLocation, IForestryModule> sortedModules = new LinkedHashMap<>();
 	private static final Set<IForestryModule> loadedModules = new LinkedHashSet<>();
 	private static final Set<IForestryModule> unloadedModules = new LinkedHashSet<>();
 	private static final HashMap<String, IModuleContainer> moduleContainers = new HashMap<>();
 	public static final Set<IForestryModule> configDisabledModules = new HashSet<>();
-	public static CommonModuleHandler moduleHandler;
-
-	private ModuleManager() {
-	}
-
-	public static ModuleManager getInstance() {
-		return ourInstance;
-	}
+	public static final CommonModuleHandler moduleHandler = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newModuleHandler() : new CommonModuleHandler();
 
 	@Override
 	public void registerContainers(IModuleContainer... containers) {
@@ -83,8 +75,8 @@ public class ModuleManager implements IModuleManager {
 		return moduleContainers.values();
 	}
 
-	public static Set<IForestryModule> getLoadedModules() {
-		return ImmutableSet.copyOf(sortedModules.values());
+	public static Collection<IForestryModule> getLoadedModules() {
+		return Collections.unmodifiableCollection(sortedModules.values());
 	}
 
 	@Nullable
@@ -184,10 +176,7 @@ public class ModuleManager implements IModuleManager {
 	}
 
 	public static void runSetup() {
-		Map<String, List<IForestryModule>> forestryModules = ForestryPluginUtil.getForestryModules();
-
-		moduleHandler = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newModuleHandler() : new CommonModuleHandler();
-		configureModules(forestryModules);
+		configureModules(ForestryPluginUtil.getForestryModules());
 	}
 
 	public static CommonModuleHandler getModuleHandler() {

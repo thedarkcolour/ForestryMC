@@ -15,13 +15,13 @@ import java.util.UUID;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
 
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 
 public class OwnerHandler implements IOwnerHandler, IStreamable, INbtWritable, INbtReadable {
 	@Nullable
@@ -39,7 +39,7 @@ public class OwnerHandler implements IOwnerHandler, IStreamable, INbtWritable, I
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		if (owner == null) {
 			data.writeBoolean(false);
 		} else {
@@ -51,7 +51,7 @@ public class OwnerHandler implements IOwnerHandler, IStreamable, INbtWritable, I
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 		if (data.readBoolean()) {
 			GameProfile owner = new GameProfile(new UUID(data.readLong(), data.readLong()), data.readUtf());
 			setOwner(owner);

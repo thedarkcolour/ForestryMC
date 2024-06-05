@@ -8,11 +8,9 @@ import forestry.core.gui.ContainerTile;
 import forestry.core.tiles.TileUtil;
 import forestry.sorting.features.SortingMenuTypes;
 import forestry.sorting.network.packets.PacketGuiFilterUpdate;
-import forestry.sorting.tiles.IFilterContainer;
 import forestry.sorting.tiles.TileGeneticFilter;
 
 public class ContainerGeneticFilter extends ContainerTile<TileGeneticFilter> {
-	private final IFilterContainer container;
 	private boolean guiNeedsUpdate = true;
 
 	public static ContainerGeneticFilter fromNetwork(int windowId, Inventory inv, FriendlyByteBuf data) {
@@ -20,9 +18,8 @@ public class ContainerGeneticFilter extends ContainerTile<TileGeneticFilter> {
 		return new ContainerGeneticFilter(windowId, inv, tile);    //TODO nullability.
 	}
 
-	public ContainerGeneticFilter(int windowId, Inventory playerInventory, IFilterContainer container) {
-		super(windowId, SortingMenuTypes.GENETIC_FILTER.menuType(), container.getTileEntity());
-		this.container = container;
+	public ContainerGeneticFilter(int windowId, Inventory playerInventory, TileGeneticFilter tile) {
+		super(windowId, SortingMenuTypes.GENETIC_FILTER.menuType(), tile);
 		addInventory(playerInventory, 26, 140);
 	}
 
@@ -38,7 +35,7 @@ public class ContainerGeneticFilter extends ContainerTile<TileGeneticFilter> {
 			addSlot(new SlotGeneticFilter(playerInventory, column, xInv + column * 18, yInv + 58));
 		}
 
-		Container buffer = container.getBuffer();
+		Container buffer = tile.getBuffer();
 		if (buffer != null) {
 			for (int x = 0; x < 6; x++) {
 				addSlot(new SlotFilterFacing(buffer, x, 8, 18 + x * 18));
@@ -54,7 +51,7 @@ public class ContainerGeneticFilter extends ContainerTile<TileGeneticFilter> {
 	public void broadcastChanges() {
 		super.broadcastChanges();
 		if (guiNeedsUpdate) {
-			PacketGuiFilterUpdate packet = new PacketGuiFilterUpdate(container);
+			PacketGuiFilterUpdate packet = tile.getLogic().createGuiUpdatePacket(tile.getBlockPos());
 			sendPacketToListeners(packet);
 			guiNeedsUpdate = false;
 		}

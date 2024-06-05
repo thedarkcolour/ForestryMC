@@ -16,6 +16,7 @@ import java.util.Iterator;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,11 +39,11 @@ import forestry.core.utils.NetworkUtil;
 import forestry.mail.Letter;
 import forestry.mail.features.MailMenuTypes;
 import forestry.mail.inventory.ItemInventoryLetter;
-import forestry.mail.network.packets.PacketLetterInfoResponse;
+import forestry.mail.network.packets.PacketLetterInfoResponsePlayer;
+import forestry.mail.network.packets.PacketLetterInfoResponseTrader;
 import forestry.mail.network.packets.PacketLetterTextSet;
 
 public class ContainerLetter extends ContainerItemInventory<ItemInventoryLetter> implements ILetterInfoReceiver {
-
 	private EnumAddressee carrierType = EnumAddressee.PLAYER;
 	@Nullable
 	private ITradeStationInfo tradeInfo = null;
@@ -148,7 +149,13 @@ public class ContainerLetter extends ContainerItemInventory<ItemInventoryLetter>
 		}
 
 		// Update info on client
-		NetworkUtil.sendToPlayer(new PacketLetterInfoResponse(type, tradeInfo, recipient), player);
+		if (type == EnumAddressee.PLAYER) {
+			if (recipient != null) {
+				NetworkUtil.sendToPlayer(new PacketLetterInfoResponsePlayer(recipient), (ServerPlayer) player);
+			}
+		} else {
+			NetworkUtil.sendToPlayer(new PacketLetterInfoResponseTrader(tradeInfo), (ServerPlayer) player);
+		}
 	}
 
 	@Nullable

@@ -16,7 +16,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import deleteme.BiomeCategory;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +34,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.Forestry;
@@ -47,8 +45,8 @@ import forestry.api.apiculture.hives.IHiveRegistry.HiveType;
 import forestry.api.genetics.flowers.IFlowerAcceptableRule;
 import forestry.api.modules.ForestryModule;
 import forestry.apiculture.commands.CommandBee;
-import forestry.apiculture.features.ApicultureMenuTypes;
 import forestry.apiculture.features.ApicultureItems;
+import forestry.apiculture.features.ApicultureMenuTypes;
 import forestry.apiculture.flowers.FlowerRegistry;
 import forestry.apiculture.genetics.BeeDefinition;
 import forestry.apiculture.genetics.BeeFactory;
@@ -56,7 +54,6 @@ import forestry.apiculture.genetics.BeeMutationFactory;
 import forestry.apiculture.genetics.HiveDrop;
 import forestry.apiculture.genetics.JubilanceFactory;
 import forestry.apiculture.gui.ContainerBeeHousing;
-import forestry.apiculture.gui.ContainerMinecartBeehouse;
 import forestry.apiculture.gui.GuiAlveary;
 import forestry.apiculture.gui.GuiAlvearyHygroregulator;
 import forestry.apiculture.gui.GuiAlvearySieve;
@@ -66,7 +63,10 @@ import forestry.apiculture.gui.GuiHabitatLocator;
 import forestry.apiculture.gui.GuiImprinter;
 import forestry.apiculture.items.EnumHoneyComb;
 import forestry.apiculture.items.EnumPollenCluster;
-import forestry.apiculture.network.PacketRegistryApiculture;
+import forestry.apiculture.network.packets.PacketAlvearyChange;
+import forestry.apiculture.network.packets.PacketBeeLogicActive;
+import forestry.apiculture.network.packets.PacketHabitatBiomePointer;
+import forestry.apiculture.network.packets.PacketImprintSelectionResponse;
 import forestry.apiculture.proxy.ProxyApiculture;
 import forestry.apiculture.worldgen.HiveDescription;
 import forestry.apiculture.worldgen.HiveGenHelper;
@@ -76,11 +76,12 @@ import forestry.core.ISaveEventHandler;
 import forestry.core.ModuleCore;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
-import forestry.core.utils.IMCUtil;
+import forestry.core.network.PacketIdClient;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
 
+import deleteme.BiomeCategory;
 import genetics.api.GeneticsAPI;
 
 @ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.APICULTURE, name = "Apiculture", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.apiculture.description", lootTable = "apiculture")
@@ -138,7 +139,6 @@ public class ModuleApiculture extends BlankForestryModule {
 		MenuScreens.register(ApicultureMenuTypes.BEE_HOUSING.menuType(), GuiBeeHousing<ContainerBeeHousing>::new);
 		MenuScreens.register(ApicultureMenuTypes.HABITAT_LOCATOR.menuType(), GuiHabitatLocator::new);
 		MenuScreens.register(ApicultureMenuTypes.IMPRINTER.menuType(), GuiImprinter::new);
-		MenuScreens.register(ApicultureMenuTypes.BEEHOUSE_MINECART.menuType(), GuiBeeHousing<ContainerMinecartBeehouse>::new);
 	}
 
 	@Override
@@ -187,6 +187,7 @@ public class ModuleApiculture extends BlankForestryModule {
 		//		registerDungeonLoot();
 	}
 
+	// todo replace with tags "acceptable flowers," "plantable flowers," where plantable is subset of acceptable
 	private void initFlowerRegistry() {
 		FlowerRegistry flowerRegistry = (FlowerRegistry) FlowerManager.flowerRegistry;
 
@@ -255,8 +256,11 @@ public class ModuleApiculture extends BlankForestryModule {
 	}
 
 	@Override
-	public IPacketRegistry getPacketRegistry() {
-		return new PacketRegistryApiculture();
+	public void registerPackets(IPacketRegistry registry) {
+		registry.clientbound(PacketIdClient.IMPRINT_SELECTION_RESPONSE, PacketImprintSelectionResponse.class, PacketImprintSelectionResponse::decode, PacketImprintSelectionResponse::handle);
+		registry.clientbound(PacketIdClient.BEE_LOGIC_ACTIVE, PacketBeeLogicActive.class, PacketBeeLogicActive::decode, PacketBeeLogicActive::handle);
+		registry.clientbound(PacketIdClient.HABITAT_BIOME_POINTER, PacketHabitatBiomePointer.class, PacketHabitatBiomePointer::decode, PacketHabitatBiomePointer::handle);
+		registry.clientbound(PacketIdClient.ALVERAY_CONTROLLER_CHANGE, PacketAlvearyChange.class, PacketAlvearyChange::decode, PacketAlvearyChange::handle);
 	}
 
 	@Override
@@ -347,74 +351,6 @@ public class ModuleApiculture extends BlankForestryModule {
 	@Override
 	public ISaveEventHandler getSaveEventHandler() {
 		return new SaveEventHandlerApiculture();
-	}
-
-	@Override
-	public boolean processIMCMessage(InterModComms.IMCMessage message) {
-		//		if (message.getMethod().equals("add-candle-lighting-id")) {
-		//			ItemStack value = message.getItemStackValue();
-		//			if (value != null) {
-		//				BlockCandle.addItemToLightingList(value.getItem());
-		//			} else {
-		//				IMCUtil.logInvalidIMCMessage(message);
-		//			}
-		//			return true;
-		//		} else if (message.getMethod().equals("add-alveary-slab") && message.isStringMessage()) {
-		//			String messageString = String.format("Received a '%s' request from mod '%s'. This IMC message has been replaced with the oreDictionary for 'slabWood'. Please contact the author and report this issue.", message.key, message.getSender());
-		//			Log.warning(messageString);
-		//			return true;
-		//		} else if (message.getMethod().equals("blacklist-hives-dimension")) {
-		//			int[] dims = message.getNBTValue().getIntArray("dimensions");
-		//			for (int dim : dims) {
-		//				HiveConfig.addBlacklistedDim(dim);
-		//			}
-		//			return true;
-		//		} else if (message.getMethod().equals("add-plantable-flower")) {
-		//			return addPlantableFlower(message);
-		//		} else if (message.getMethod().equals("add-acceptable-flower")) {
-		//			return addAcceptableFlower(message);
-		//		}
-		//TODO new imc
-		return false;
-	}
-
-	private boolean addPlantableFlower(InterModComms.IMCMessage message) {
-		try {
-			//TODO new imc
-			//			CompoundNBT tagCompound = message.getNBTValue();
-			//			BlockState flowerState = NBTUtil.readBlockState(tagCompound);
-			//			double weight = tagCompound.getDouble("weight");
-			//			List<String> flowerTypes = new ArrayList<>();
-			//			for (String key : tagCompound.getKeySet()) {
-			//				if (key.contains("flowertype")) {
-			//					flowerTypes.add(tagCompound.getString("flowertype"));
-			//				}
-			//			}
-			//			FlowerManager.flowerRegistry.registerPlantableFlower(flowerState, weight, flowerTypes.toArray(new String[0]));
-			return true;
-		} catch (Exception e) {
-			IMCUtil.logInvalidIMCMessage(message);
-			return false;
-		}
-	}
-
-	private boolean addAcceptableFlower(InterModComms.IMCMessage message) {
-		try {
-			//TODO new imc
-			//			CompoundNBT tagCompound = message.getNBTValue();
-			//			BlockState flowerState = NBTUtil.readBlockState(tagCompound);
-			//			List<String> flowerTypes = new ArrayList<>();
-			//			for (String key : tagCompound.getKeySet()) {
-			//				if (key.contains("flowertype")) {
-			//					flowerTypes.add(tagCompound.getString("flowertype"));
-			//				}
-			//			}
-			//			FlowerManager.flowerRegistry.registerAcceptableFlower(flowerState, flowerTypes.toArray(new String[0]));
-			return true;
-		} catch (Exception e) {
-			IMCUtil.logInvalidIMCMessage(message);
-			return false;
-		}
 	}
 
 	@Override

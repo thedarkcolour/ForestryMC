@@ -10,8 +10,9 @@
  ******************************************************************************/
 package forestry.core.climate;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
@@ -26,10 +27,9 @@ import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 import forestry.core.config.Config;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
+import forestry.core.utils.NetworkUtil;
 
 public class ClimateTransformer implements IClimateTransformer, IStreamable, INbtReadable, INbtWritable {
-
 	private static final String CURRENT_STATE_KEY = "Current";
 
 	private static final String STATE_KEY = "State";
@@ -62,6 +62,12 @@ public class ClimateTransformer implements IClimateTransformer, IStreamable, INb
 		setRange(Config.habitatformerRange);
 		this.circular = true;
 		this.addedToWorld = false;
+	}
+
+	// Only for network deserialization
+	public ClimateTransformer(FriendlyByteBuf buffer) {
+		readData(buffer);
+		this.housing = null;
 	}
 
 	@Override
@@ -115,31 +121,39 @@ public class ClimateTransformer implements IClimateTransformer, IStreamable, INb
 	@Override
 	public IClimateManipulatorBuilder createManipulator(ClimateType type) {
 		return new ClimateManipulator.Builder()
-			.setDefault(defaultState)
-			.setCurrent(currentState)
-			.setTarget(targetedState)
-			.setChangeSupplier(housing::getChangeForState)
-			.setType(type)
-			.setOnFinish(this::setCurrent);
+				.setDefault(defaultState)
+				.setCurrent(currentState)
+				.setTarget(targetedState)
+				.setChangeSupplier(housing::getChangeForState)
+				.setType(type)
+				.setOnFinish(this::setCurrent);
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeClimateState(currentState);
-		data.writeClimateState(targetedState);
-		data.writeClimateState(defaultState);
+	public void writeData(FriendlyByteBuf data) {
+		NetworkUtil.writeClimateState(data, currentState);
+		NetworkUtil.writeClimateState(data, targetedState);
+		NetworkUtil.writeClimateState(data, defaultState);
 		data.writeBoolean(circular);
 		data.writeVarInt(range);
 		onAreaChange(range, circular);
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
-		currentState = data.readClimateState();
-		targetedState = data.readClimateState();
-		defaultState = data.readClimateState();
+	public void readData(FriendlyByteBuf data) {
+		currentState = NetworkUtil.readClimateState(data);
+		targetedState = NetworkUtil.readClimateState(data);
+		defaultState = NetworkUtil.readClimateState(data);
 		circular = data.readBoolean();
 		range = data.readVarInt();
+	}
+
+	public void copy(ClimateTransformer other) {
+		this.currentState = other.currentState;
+		this.targetedState = other.targetedState;
+		this.defaultState = other.defaultState;
+		this.circular = other.circular;
+		this.range = other.range;
 	}
 
 	@Override

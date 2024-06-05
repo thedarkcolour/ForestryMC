@@ -65,23 +65,23 @@ public class FarmableAgingCrop implements IFarmable {
 	}
 
 	@Override
-	public boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState) {
-		return blockState.getBlock() == cropBlock && blockState.getValue(ageProperty) <= minHarvestAge;
+	public boolean isSaplingAt(Level level, BlockPos pos, BlockState state) {
+		return state.getBlock() == cropBlock && state.getValue(ageProperty) <= minHarvestAge;
 	}
 
 	@Override
 	@Nullable
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
-		if (blockState.getBlock() != cropBlock) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
+		if (state.getBlock() != cropBlock) {
 			return null;
 		}
 
-		if (blockState.getValue(ageProperty) < minHarvestAge) {
+		if (state.getValue(ageProperty) < minHarvestAge) {
 			return null;
 		}
 
-		BlockState replantState = getReplantState(blockState);
-		return new CropDestroy(world, blockState, pos, replantState, germling);
+		BlockState replantState = getReplantState(state);
+		return new CropDestroy(level, state, pos, replantState, germling);
 	}
 
 	@Nullable
@@ -93,8 +93,8 @@ public class FarmableAgingCrop implements IFarmable {
 	}
 
 	@Override
-	public boolean isGermling(ItemStack itemstack) {
-		return ItemStack.isSame(germling, itemstack);
+	public boolean isGermling(ItemStack stack) {
+		return ItemStack.isSame(germling, stack);
 	}
 
 	@Override
@@ -104,13 +104,13 @@ public class FarmableAgingCrop implements IFarmable {
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
 		BlockState plantedState = cropBlock.defaultBlockState().setValue(ageProperty, 0);
-		return BlockUtil.setBlockWithPlaceSound(world, pos, plantedState);
+		return BlockUtil.setBlockWithPlaceSound(level, pos, plantedState);
 	}
 
 	@Override
-	public boolean isWindfall(ItemStack itemstack) {
+	public boolean isWindfall(ItemStack stack) {
 		return false;
 	}
 }

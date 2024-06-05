@@ -10,51 +10,44 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
+import forestry.core.errors.ErrorLogic;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
+import forestry.core.utils.NetworkUtil;
 
-public class PacketErrorUpdate implements IForestryPacketClient {
-	private final BlockPos pos;
-	private final IErrorLogic errorLogic;
-
+public record PacketErrorUpdate(BlockPos pos, IErrorLogic errorLogic) implements IForestryPacketClient {
 	public PacketErrorUpdate(BlockEntity tile, IErrorLogicSource errorLogicSource) {
-		this.pos = tile.getBlockPos();
-		this.errorLogic = errorLogicSource.getErrorLogic();
+		this(tile.getBlockPos(), errorLogicSource.getErrorLogic());
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		errorLogic.writeData(data);
-	}
-
-	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.ERROR_UPDATE;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			BlockPos pos = data.readBlockPos();
+	@Override
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		errorLogic.writeData(buffer);
+	}
 
-			TileUtil.actOnTile(player.level, pos, IErrorLogicSource.class, errorSourceTile -> {
-				IErrorLogic errorLogic = errorSourceTile.getErrorLogic();
-				errorLogic.readData(data);
-			});
-		}
+	public static PacketErrorUpdate decode(FriendlyByteBuf buffer) {
+		return new PacketErrorUpdate(buffer.readBlockPos(), new ErrorLogic(buffer));
+	}
+
+	public static void handle(PacketErrorUpdate msg, Player player) {
+		TileUtil.actOnTile(player.level, msg.pos, IErrorLogicSource.class, errorSourceTile -> {
+			errorSourceTile.getErrorLogic().copy(msg.errorLogic);
+		});
+
 	}
 }

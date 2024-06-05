@@ -13,19 +13,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-import forestry.core.network.IPacketRegistry;
 import forestry.core.utils.ForgeUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientModuleHandler extends CommonModuleHandler {
 	public ClientModuleHandler() {
 		ForgeUtils.modBus().register(this);
-	}
-
-	@Override
-	protected void registerPackages(IPacketRegistry packetRegistry) {
-		super.registerPackages(packetRegistry);
-		packetRegistry.registerPacketsClient();
 	}
 
 	@SubscribeEvent

@@ -14,6 +14,7 @@ import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +32,6 @@ import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.arboriculture.genetics.Tree;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
@@ -79,7 +79,7 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		String speciesUID = "";
 		ITree tree = getTree();
 		if (tree != null) {
@@ -89,7 +89,7 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 		String speciesUID = data.readUtf();
 		ITree tree = getTree(speciesUID);
 		setTree(tree);

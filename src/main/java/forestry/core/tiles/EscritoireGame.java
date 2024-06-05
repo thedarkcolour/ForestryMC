@@ -11,10 +11,10 @@
 package forestry.core.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.Random;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +25,7 @@ import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IResearchHandler;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
+import forestry.core.utils.NetworkUtil;
 
 import genetics.api.individual.IIndividual;
 import genetics.utils.RootUtils;
@@ -87,17 +87,17 @@ public class EscritoireGame implements INbtWritable, INbtReadable, IStreamable {
 
 	/* NETWORK */
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		data.writeInt(bountyLevel);
 		gameBoard.writeData(data);
-		data.writeEnum(status, Status.VALUES);
+		NetworkUtil.writeEnum(data, status);
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		bountyLevel = data.readInt();
 		gameBoard.readData(data);
-		status = data.readEnum(Status.VALUES);
+		status = NetworkUtil.readEnum(data, Status.VALUES);
 	}
 
 	/* INTERACTION */

@@ -11,10 +11,10 @@
 package forestry.energy.tiles;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -28,7 +28,6 @@ import forestry.core.config.Constants;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.features.CoreItems;
 import forestry.core.inventory.IInventoryAdapter;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.TemperatureState;
 import forestry.energy.features.EnergyTiles;
 import forestry.energy.menu.PeatEngineMenu;
@@ -259,14 +258,14 @@ public class PeatEngineBlockEntity extends EngineBlockEntity implements WorldlyC
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		super.writeGuiData(data);
 		data.writeInt(burnTime);
 		data.writeInt(totalBurnTime);
 	}
 
 	@Override
-	public void readGuiData(PacketBufferForestry data) throws IOException {
+	public void readGuiData(FriendlyByteBuf data) {
 		super.readGuiData(data);
 		burnTime = data.readInt();
 		totalBurnTime = data.readInt();

@@ -41,4 +41,6 @@ public interface IErrorLogic extends IErrorSource {
 	void writeData(FriendlyByteBuf data);
 
 	void readData(FriendlyByteBuf data);
+
+	void copy(IErrorLogic errorLogic);
 }

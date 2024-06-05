@@ -10,31 +10,26 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
-import java.io.IOException;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
-import forestry.core.network.PacketIdClient;
-import forestry.core.tiles.TileUtil;
-
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+import forestry.core.network.IForestryPacketClient;
+import forestry.core.network.IStreamable;
+import forestry.core.network.PacketIdClient;
+import forestry.core.tiles.TileUtil;
+import forestry.core.utils.NetworkUtil;
+
 public class PacketTileStream implements IForestryPacketClient {
-	private final BlockPos pos;
+	protected final BlockPos pos;
 	@Nullable
-	private final IStreamable streamable;
+	protected final IStreamable streamable;
 	@Nullable
-	private final PacketBufferForestry payload;
+	protected final FriendlyByteBuf payload;
 
 	public <T extends BlockEntity & IStreamable> PacketTileStream(T streamable) {
 		this.pos = streamable.getBlockPos();
@@ -42,44 +37,32 @@ public class PacketTileStream implements IForestryPacketClient {
 		this.payload = null;
 	}
 
-	private PacketTileStream(BlockPos pos, PacketBufferForestry payload) {
+	private PacketTileStream(BlockPos pos, FriendlyByteBuf payload) {
 		this.pos = pos;
 		this.streamable = null;
 		this.payload = payload;
 	}
 
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.TILE_FORESTRY_UPDATE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		// write a placeholder value for the number of bytes, keeping its index for replacing later
-		int dataBytesIndex = data.writerIndex();
-		data.writeInt(0);
-		// write data bytes
-		streamable.writeData(data);
-		// replace placeholder with length of data bytes, not including length integer
-		int numDataBytes = data.writerIndex() - dataBytesIndex - 4;
-		data.setInt(dataBytesIndex, numDataBytes);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		NetworkUtil.writePayloadBuffer(buffer, streamable::writeData);
 	}
 
 	public static PacketTileStream decode(FriendlyByteBuf data) {
-		return new PacketTileStream(data.readBlockPos(), new PacketBufferForestry(data.readBytes(data.readInt())));
+		return new PacketTileStream(data.readBlockPos(), NetworkUtil.readPayloadBuffer(data));
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) throws IOException {
-			PacketTileStream packet = decode(data);
-			IStreamable tile = TileUtil.getTile(player.level, packet.pos, IStreamable.class);
+	public static void handle(PacketTileStream msg, Player player) {
+		IStreamable tile = TileUtil.getTile(player.level, msg.pos, IStreamable.class);
 
-			if (tile != null) {
-				tile.readData(packet.payload);
-			}
+		if (tile != null) {
+			tile.readData(msg.payload);
 		}
 	}
 }

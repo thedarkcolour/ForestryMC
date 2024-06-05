@@ -19,7 +19,7 @@ import forestry.core.gui.ContainerSocketed;
 import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.gui.slots.SlotLiquidIn;
 import forestry.core.gui.slots.SlotOutput;
-import forestry.core.network.packets.PacketGuiUpdate;
+import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.TileUtil;
 import forestry.farming.features.FarmingMenuTypes;
 import forestry.farming.multiblock.InventoryFarm;
@@ -72,7 +72,7 @@ public class ContainerFarm extends ContainerSocketed<TileFarm> {
 	@Override
 	public void broadcastChanges() {
 		super.broadcastChanges();
-		PacketGuiUpdate packet = new PacketGuiUpdate(tile);
+		PacketGuiStream packet = new PacketGuiStream(tile);
 		sendPacketToListeners(packet);
 	}
 

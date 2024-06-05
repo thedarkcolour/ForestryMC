@@ -10,15 +10,7 @@
  ******************************************************************************/
 package forestry.mail;
 
-public class POBoxInfo {
-	public final int playerLetters;
-	public final int tradeLetters;
-
-	public POBoxInfo(int playerLetters, int tradeLetters) {
-		this.playerLetters = playerLetters;
-		this.tradeLetters = tradeLetters;
-	}
-
+public record POBoxInfo(int playerLetters, int tradeLetters) {
 	public boolean hasMail() {
 		return playerLetters > 0 || tradeLetters > 0;
 	}

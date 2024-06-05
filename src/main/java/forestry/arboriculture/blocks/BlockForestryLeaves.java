@@ -13,26 +13,26 @@ package forestry.arboriculture.blocks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.BlockHitResult;
 
 import com.mojang.authlib.GameProfile;
 
@@ -49,10 +49,9 @@ import forestry.api.lepidopterology.genetics.EnumFlutterType;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.arboriculture.ModuleArboriculture;
 import forestry.arboriculture.tiles.TileLeaves;
-import forestry.core.network.packets.PacketFXSignal;
 import forestry.core.tiles.TileUtil;
+import forestry.core.utils.BlockUtil;
 import forestry.core.utils.ItemStackUtil;
-import forestry.core.utils.NetworkUtil;
 
 public class BlockForestryLeaves extends BlockAbstractLeaves implements BonemealableBlock, EntityBlock {
 
@@ -121,16 +120,15 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		TileLeaves leaves = TileUtil.getTile(world, pos, TileLeaves.class);
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		TileLeaves leaves = TileUtil.getTile(level, pos, TileLeaves.class);
 		if (leaves != null) {
 			IButterfly caterpillar = leaves.getCaterpillar();
 			ItemStack heldItem = player.getItemInHand(hand);
 			ItemStack otherHand = player.getItemInHand(hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
 			if (heldItem.isEmpty() && otherHand.isEmpty()) {
 				if (leaves.hasFruit() && leaves.getRipeness() >= 0.9F) {
-					PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK, PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, state);
-					NetworkUtil.sendNetworkPacket(packet, pos, world);
+					BlockUtil.sendDestroyEffects(level, pos, state);
 					for (ItemStack fruit : leaves.pickFruit(ItemStack.EMPTY)) {
 						ItemHandlerHelper.giveItemToPlayer(player, fruit);
 					}
@@ -138,7 +136,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 				}
 			} else if (heldItem.getItem() instanceof IToolScoop && caterpillar != null) {
 				ItemStack butterfly = ButterflyManager.butterflyRoot.getTypes().createStack(caterpillar, EnumFlutterType.CATERPILLAR);
-				ItemStackUtil.dropItemStackAsEntity(butterfly, world, pos);
+				ItemStackUtil.dropItemStackAsEntity(butterfly, level, pos);
 				leaves.setCaterpillar(null);
 				return InteractionResult.SUCCESS;
 			}

@@ -10,47 +10,37 @@
  ******************************************************************************/
 package forestry.arboriculture.network;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 
-public class PacketRipeningUpdate implements IForestryPacketClient {
-	private final BlockPos pos;
-	private final int value;
-
+public record PacketRipeningUpdate(BlockPos pos, int value) implements IForestryPacketClient {
 	public PacketRipeningUpdate(TileLeaves leaves) {
-		this.pos = leaves.getBlockPos();
-		this.value = leaves.getFruitColour();
+		this(leaves.getBlockPos(), leaves.getFruitColour());
 	}
 
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.RIPENING_UPDATE;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		data.writeVarInt(value);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		buffer.writeVarInt(value);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			BlockPos pos = data.readBlockPos();
-			int value = data.readVarInt();
+	public static PacketRipeningUpdate decode(FriendlyByteBuf buffer) {
+		return new PacketRipeningUpdate(buffer.readBlockPos(), buffer.readVarInt());
+	}
 
-			TileUtil.actOnTile(player.level, pos, IRipeningPacketReceiver.class, tile -> tile.fromRipeningPacket(value));
-		}
+	public static void handle(PacketRipeningUpdate msg, Player player) {
+		TileUtil.actOnTile(player.level, msg.pos, IRipeningPacketReceiver.class, tile -> tile.fromRipeningPacket(msg.value));
 	}
 }

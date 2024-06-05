@@ -31,20 +31,20 @@ public class FarmableVanillaMushroom extends FarmableBase {
 	}
 
 	@Override
-	public ICrop getCropAt(Level world, BlockPos pos, BlockState blockState) {
-		if (blockState.getBlock() != hugeMushroomBlock) {
+	public ICrop getCropAt(Level level, BlockPos pos, BlockState state) {
+		if (state.getBlock() != hugeMushroomBlock) {
 			return null;
 		}
 
-		return new CropDestroy(world, blockState, pos, null);
+		return new CropDestroy(level, state, pos, null);
 	}
 
 	@Override
-	public boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos) {
-		if (!plantedState.canSurvive(world, pos)) {
+	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
+		if (!plantedState.canSurvive(level, pos)) {
 			return false;
 		}
-		return BlockUtil.setBlockWithPlaceSound(world, pos, plantedState);
+		return BlockUtil.setBlockWithPlaceSound(level, pos, plantedState);
 	}
 
 	@Override

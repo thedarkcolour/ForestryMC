@@ -12,12 +12,12 @@ package forestry.arboriculture.tiles;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +38,6 @@ import forestry.api.genetics.products.Product;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.RenderUtil;
@@ -206,7 +205,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		if (allele != defaultAllele) {
 			data.writeUtf(allele.getRegistryName().toString());
 		} else {
@@ -215,7 +214,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) {
+	public void readData(FriendlyByteBuf data) {
 		Optional<IAllele> optionalAllele = AlleleUtils.getAllele(data.readUtf());
 		if (!optionalAllele.isPresent()) {
 			allele = defaultAllele;

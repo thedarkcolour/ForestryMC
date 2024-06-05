@@ -33,9 +33,7 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.TreeDefinition;
-import forestry.core.config.Constants;
-import forestry.core.network.packets.PacketFXSignal;
-import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.BlockUtil;
 
 import genetics.api.individual.IGenome;
 
@@ -56,21 +54,20 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
 		ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
 		ItemStack offHand = player.getItemInHand(InteractionHand.OFF_HAND);
 		if (mainHand.isEmpty() && offHand.isEmpty()) {
-			PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK, PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, state);
-			NetworkUtil.sendNetworkPacket(packet, pos, world);
-			ITree tree = getTree(world, pos);
+			BlockUtil.sendDestroyEffects(level, pos, state);
+			ITree tree = getTree(level, pos);
 			if (tree == null) {
 				return InteractionResult.FAIL;
 			}
 			IFruitProvider fruitProvider = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
-			NonNullList<ItemStack> products = tree.produceStacks(world, pos, fruitProvider.getRipeningPeriod());
-			world.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(definition).defaultState()
+			NonNullList<ItemStack> products = tree.produceStacks(level, pos, fruitProvider.getRipeningPeriod());
+			level.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(definition).defaultState()
 					.setValue(LeavesBlock.PERSISTENT, state.getValue(LeavesBlock.PERSISTENT))
-					.setValue(LeavesBlock.DISTANCE, state.getValue(LeavesBlock.DISTANCE)), Constants.FLAG_BLOCK_SYNC);
+					.setValue(LeavesBlock.DISTANCE, state.getValue(LeavesBlock.DISTANCE)), Block.UPDATE_CLIENTS);
 			for (ItemStack fruit : products) {
 				ItemHandlerHelper.giveItemToPlayer(player, fruit);
 			}

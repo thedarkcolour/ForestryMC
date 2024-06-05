@@ -10,9 +10,8 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
-import java.io.IOException;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,11 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.network.PacketBufferForestry;
-
-//TODO - move to factory?
 public abstract class TileMill extends TileBase {
-
 	protected float speed;
 	protected int stage = 0;
 	public int charge = 0;
@@ -46,7 +41,7 @@ public abstract class TileMill extends TileBase {
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		super.writeData(data);
 		data.writeInt(charge);
 		data.writeFloat(speed);
@@ -55,7 +50,7 @@ public abstract class TileMill extends TileBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		charge = data.readInt();
 		speed = data.readFloat();
@@ -63,7 +58,6 @@ public abstract class TileMill extends TileBase {
 	}
 
 	private void update(Level level, BlockPos pos, boolean isSimulating) {
-
 		// Stop gracefully if discharged.
 		if (charge <= 0) {
 			if (stage > 0) {
@@ -89,8 +83,8 @@ public abstract class TileMill extends TileBase {
 			stage = 2;
 			if (charge < 7 && isSimulating) {
 				charge++;
-                sendNetworkUpdate();
-            }
+				sendNetworkUpdate();
+			}
 		}
 		if (progress > 1) {
 			progress = 0;

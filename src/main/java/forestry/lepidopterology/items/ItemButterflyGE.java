@@ -13,18 +13,18 @@ package forestry.lepidopterology.items;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -42,10 +42,9 @@ import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
-import forestry.core.network.packets.PacketFXSignal;
+import forestry.core.utils.BlockUtil;
 import forestry.core.utils.EntityUtil;
 import forestry.core.utils.GeneticsUtil;
-import forestry.core.utils.NetworkUtil;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyEntities;
 import forestry.lepidopterology.genetics.ButterflyHelper;
@@ -55,8 +54,6 @@ import genetics.api.alleles.IAlleleSpecies;
 import genetics.api.individual.IIndividual;
 import genetics.api.organism.IOrganismType;
 import genetics.utils.AlleleUtils;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColoredItem {
 
@@ -217,10 +214,10 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
-		Level world = context.getLevel();
+		Level level = context.getLevel();
 		Player player = context.getPlayer();
 		BlockPos pos = context.getClickedPos();
-		if (world.isClientSide) {
+		if (level.isClientSide) {
 			return InteractionResult.PASS;
 		}
 
@@ -228,12 +225,11 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 
 		IButterfly flutter = ButterflyManager.butterflyRoot.getTypes().createIndividual(stack).orElse(null);
 
-		BlockState blockState = world.getBlockState(pos);
+		BlockState blockState = level.getBlockState(pos);
 		if (type == EnumFlutterType.COCOON) {
-			pos = ButterflyManager.butterflyRoot.plantCocoon(world, pos, flutter, player.getGameProfile(), getAge(stack), true);
+			pos = ButterflyManager.butterflyRoot.plantCocoon(level, pos, flutter, player.getGameProfile(), getAge(stack), true);
 			if (pos != BlockPos.ZERO) {
-				PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.SoundFXType.BLOCK_PLACE, pos, blockState);
-				NetworkUtil.sendNetworkPacket(packet, pos, world);
+				BlockUtil.sendPlaceSound(level, pos, blockState);
 
 				if (!player.isCreative()) {
 					stack.shrink(1);
@@ -243,7 +239,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 				return InteractionResult.PASS;
 			}
 		} else if (type == EnumFlutterType.CATERPILLAR) {
-			IButterflyNursery nursery = GeneticsUtil.getOrCreateNursery(player.getGameProfile(), world, pos, true);
+			IButterflyNursery nursery = GeneticsUtil.getOrCreateNursery(player.getGameProfile(), level, pos, true);
 			if (nursery != null) {
 				if (!nursery.canNurse(flutter)) {
 					return InteractionResult.PASS;
@@ -251,9 +247,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 
 				nursery.setCaterpillar(flutter);
 
-				PacketFXSignal packet = new PacketFXSignal(PacketFXSignal.VisualFXType.BLOCK_BREAK,
-					PacketFXSignal.SoundFXType.BLOCK_BREAK, pos, blockState);
-				NetworkUtil.sendNetworkPacket(packet, pos, world);
+				BlockUtil.sendDestroyEffects(level, pos, blockState);
 
 				if (!player.isCreative()) {
 					stack.shrink(1);

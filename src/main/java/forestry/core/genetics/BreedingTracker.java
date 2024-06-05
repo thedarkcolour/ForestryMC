@@ -37,10 +37,10 @@ import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAlleleSpecies;
 import genetics.api.individual.IIndividual;
 import genetics.api.mutation.IMutation;
+import genetics.api.root.IIndividualRoot;
 import genetics.api.root.IRootDefinition;
 
 public abstract class BreedingTracker extends SavedData implements IBreedingTracker {
-
 	private static final String SPECIES_COUNT_KEY = "SpeciesCount";
 	private static final String MUTATIONS_COUNT_KEY = "MutationsCount";
 	private static final String RESEARCHED_COUNT_KEY = "ResearchedCount";
@@ -61,7 +61,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	@Nullable
 	private GameProfile username;
 	@Nullable
-	private Level world;
+	private Level level;
 
 	protected BreedingTracker(String defaultModeName) {
 		this.modeName = defaultModeName;
@@ -83,8 +83,8 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 		this.username = username;
 	}
 
-	public void setWorld(@Nullable Level world) {
-		this.world = world;
+	public void setLevel(@Nullable Level level) {
+		this.level = level;
 	}
 
 	@Override
@@ -121,13 +121,13 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 			CompoundTag CompoundNBT = new CompoundTag();
 			encodeToNBT(CompoundNBT);
 			PacketGenomeTrackerSync packet = new PacketGenomeTrackerSync(CompoundNBT);
-			NetworkUtil.sendToPlayer(packet, player);
+			NetworkUtil.sendToPlayer(packet, (ServerPlayer) player);
 		}
 	}
 
 	private void syncToPlayer(Collection<String> discoveredSpecies, Collection<String> discoveredMutations, Collection<String> researchedMutations) {
-		if (world != null && username != null && username.getName() != null) {
-			Player player = world.getPlayerByUUID(username.getId());
+		if (level != null && username != null && username.getName() != null) {
+			Player player = level.getPlayerByUUID(username.getId());
 			if (player instanceof ServerPlayer && !(player instanceof FakePlayer)) {
 				IBreedingTracker breedingTracker = getBreedingTracker(player);
 				String modeName = breedingTracker.getModeName();
@@ -136,7 +136,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 				CompoundTag compound = new CompoundTag();
 				writeToNBT(compound, discoveredSpecies, discoveredMutations, researchedMutations);
 				PacketGenomeTrackerSync packet = new PacketGenomeTrackerSync(compound);
-				NetworkUtil.sendToPlayer(packet, player);
+				NetworkUtil.sendToPlayer(packet, (ServerPlayer) player);
 			}
 		}
 	}
@@ -158,16 +158,14 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 		save(compound);
 	}
 
-
-
 	@Override
-	public CompoundTag save(CompoundTag CompoundNBT) {
-		writeToNBT(CompoundNBT, discoveredSpecies, discoveredMutations, researchedMutations);
-		return CompoundNBT;
+	public CompoundTag save(CompoundTag nbt) {
+		writeToNBT(nbt, discoveredSpecies, discoveredMutations, researchedMutations);
+		return nbt;
 	}
 
 	private void writeToNBT(CompoundTag CompoundNBT, Collection<String> discoveredSpecies, Collection<String> discoveredMutations, Collection<String> researchedMutations) {
-		if (modeName != null && !modeName.isEmpty()) {
+		if (!modeName.isEmpty()) {
 			CompoundNBT.putString(MODE_NAME_KEY, modeName);
 		}
 
@@ -218,7 +216,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 			discoveredMutations.add(mutationString);
 			setDirty();
 
-			IRootDefinition speciesRoot = GeneticsAPI.apiInstance.getRoot(speciesRootUID());
+			IRootDefinition<IIndividualRoot<?>> speciesRoot = GeneticsAPI.apiInstance.getRoot(speciesRootUID());
 			ForestryEvent event = new ForestryEvent.MutationDiscovered(speciesRoot, username, mutation, this);
 			MinecraftForge.EVENT_BUS.post(event);
 

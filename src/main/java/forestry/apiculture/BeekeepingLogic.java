@@ -11,7 +11,6 @@
 package forestry.apiculture;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,22 +19,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 
-import forestry.Forestry;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.Forestry;
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.IBeeHousing;
@@ -51,7 +48,6 @@ import forestry.api.core.IErrorState;
 import forestry.api.genetics.IEffectData;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
-import forestry.apiculture.network.packets.PacketBeeLogicActiveEntity;
 import forestry.core.config.Constants;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.utils.NetworkUtil;
@@ -63,7 +59,6 @@ import genetics.api.organism.IOrganismType;
 import genetics.organism.OrganismHandler;
 
 public class BeekeepingLogic implements IBeekeepingLogic {
-
 	private static final int totalBreedingTime = Constants.APIARY_BREEDING_TIME;
 
 	private final IBeeHousing housing;
@@ -153,7 +148,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	}
 
 	@Override
-	public void readData(FriendlyByteBuf data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		boolean active = data.readBoolean();
 		setActive(active);
 		if (active) {
@@ -484,26 +479,16 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 	@Override
 	public void syncToClient() {
-		Level world = housing.getWorldObj();
-		if (world != null && !world.isClientSide) {
-			if (housing instanceof Entity) {
-				Entity housingEntity = (Entity) this.housing;
-				NetworkUtil.sendNetworkPacket(new PacketBeeLogicActiveEntity(this.housing, housingEntity), housingEntity.blockPosition(), world);
-			} else {
-				NetworkUtil.sendNetworkPacket(new PacketBeeLogicActive(housing), housing.getCoordinates(), world);
-			}
+		Level level = housing.getWorldObj();
+		if (!level.isClientSide) {
+			NetworkUtil.sendNetworkPacket(new PacketBeeLogicActive(housing), housing.getCoordinates(), level);
 		}
 	}
 
 	@Override
 	public void syncToClient(ServerPlayer player) {
-		Level world = housing.getWorldObj();
-		if (world != null && !world.isClientSide) {
-			if (housing instanceof BlockEntity) {
-				NetworkUtil.sendToPlayer(new PacketBeeLogicActive(housing), player);
-			} else if (housing instanceof Entity) {
-				NetworkUtil.sendToPlayer(new PacketBeeLogicActiveEntity(housing, (Entity) housing), player);
-			}
+		if (!housing.getWorldObj().isClientSide) {
+			NetworkUtil.sendToPlayer(new PacketBeeLogicActive(housing), player);
 		}
 	}
 

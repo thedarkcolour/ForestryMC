@@ -11,8 +11,8 @@
 package forestry.core.inventory;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -20,8 +20,8 @@ import net.minecraft.core.Direction;
 
 import forestry.core.config.Constants;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.utils.InventoryUtil;
+import forestry.core.utils.NetworkUtil;
 
 /**
  * With permission from Krapht.
@@ -167,13 +167,13 @@ public class InventoryAdapter implements IInventoryAdapter, IStreamable {
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeInventory(inventory);
+	public void writeData(FriendlyByteBuf data) {
+		NetworkUtil.writeInventory(data, inventory);
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) throws IOException {
-		data.readInventory(inventory);
+	public void readData(FriendlyByteBuf data) {
+		NetworkUtil.readInventory(data, inventory);
 	}
 
 	/* FIELDS */

@@ -42,17 +42,18 @@ public class FakeErrorLogic implements IErrorLogic {
 
 	@Override
 	public void clearErrors() {
-
 	}
 
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-
 	}
 
 	@Override
 	public void readData(FriendlyByteBuf data) {
+	}
 
+	@Override
+	public void copy(IErrorLogic errorLogic) {
 	}
 
 	@Override

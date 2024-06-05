@@ -5,12 +5,11 @@
  ******************************************************************************/
 package forestry.api.apiculture;
 
-import java.io.IOException;
 import java.util.List;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -82,11 +81,9 @@ public interface IBeekeepingLogic extends INbtWritable, INbtReadable {
 	 */
 	List<BlockPos> getFlowerPositions();
 
-	default void readData(FriendlyByteBuf data) throws IOException {
-
+	default void readData(FriendlyByteBuf data) {
 	}
 
 	default void writeData(FriendlyByteBuf data) {
-
 	}
 }

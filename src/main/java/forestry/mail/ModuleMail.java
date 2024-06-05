@@ -24,6 +24,8 @@ import forestry.core.ModuleCore;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
+import forestry.core.network.PacketIdClient;
+import forestry.core.network.PacketIdServer;
 import forestry.mail.commands.CommandMail;
 import forestry.mail.features.MailMenuTypes;
 import forestry.mail.gui.GuiCatalogue;
@@ -32,7 +34,13 @@ import forestry.mail.gui.GuiMailbox;
 import forestry.mail.gui.GuiStampCollector;
 import forestry.mail.gui.GuiTradeName;
 import forestry.mail.gui.GuiTrader;
-import forestry.mail.network.PacketRegistryMail;
+import forestry.mail.network.packets.PacketLetterInfoRequest;
+import forestry.mail.network.packets.PacketLetterInfoResponsePlayer;
+import forestry.mail.network.packets.PacketLetterInfoResponseTrader;
+import forestry.mail.network.packets.PacketLetterTextSet;
+import forestry.mail.network.packets.PacketPOBoxInfoResponse;
+import forestry.mail.network.packets.PacketTraderAddressRequest;
+import forestry.mail.network.packets.PacketTraderAddressResponse;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 
@@ -67,8 +75,15 @@ public class ModuleMail extends BlankForestryModule {
 	}
 
 	@Override
-	public IPacketRegistry getPacketRegistry() {
-		return new PacketRegistryMail();
+	public void registerPackets(IPacketRegistry registry) {
+		registry.serverbound(PacketIdServer.LETTER_INFO_REQUEST, PacketLetterInfoRequest.class, PacketLetterInfoRequest::decode, PacketLetterInfoRequest::handle);
+		registry.serverbound(PacketIdServer.TRADING_ADDRESS_REQUEST, PacketTraderAddressRequest.class, PacketTraderAddressRequest::decode, PacketTraderAddressRequest::handle);
+		registry.serverbound(PacketIdServer.LETTER_TEXT_SET, PacketLetterTextSet.class, PacketLetterTextSet::decode, PacketLetterTextSet::handle);
+
+		registry.clientbound(PacketIdClient.LETTER_INFO_RESPONSE_PLAYER, PacketLetterInfoResponsePlayer.class, PacketLetterInfoResponsePlayer::decode, PacketLetterInfoResponsePlayer::handle);
+		registry.clientbound(PacketIdClient.LETTER_INFO_RESPONSE_TRADER, PacketLetterInfoResponseTrader.class, PacketLetterInfoResponseTrader::decode, PacketLetterInfoResponseTrader::handle);
+		registry.clientbound(PacketIdClient.TRADING_ADDRESS_RESPONSE, PacketTraderAddressResponse.class, PacketTraderAddressResponse::decode, PacketTraderAddressResponse::handle);
+		registry.clientbound(PacketIdClient.POBOX_INFO_RESPONSE, PacketPOBoxInfoResponse.class, PacketPOBoxInfoResponse::decode, PacketPOBoxInfoResponse::handle);
 	}
 
 	@Override

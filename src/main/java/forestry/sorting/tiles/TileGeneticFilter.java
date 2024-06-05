@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -29,10 +30,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import forestry.api.genetics.GeneticCapabilities;
 import forestry.api.genetics.IForestrySpeciesRoot;
 import forestry.api.genetics.filter.IFilterData;
-import forestry.api.genetics.filter.IFilterLogic;
 import forestry.core.inventory.AdjacentInventoryCache;
 import forestry.core.network.IStreamableGui;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.tiles.TileForestry;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.ItemStackUtil;
@@ -76,20 +75,20 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 	}
 
 	@Override
-	public void writeGuiData(PacketBufferForestry data) {
+	public void writeGuiData(FriendlyByteBuf data) {
 		logic.writeGuiData(data);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void readGuiData(PacketBufferForestry data) {
+	public void readGuiData(FriendlyByteBuf data) {
 		logic.readGuiData(data);
 	}
 
-	private void sendToPlayers(ServerLevel server, Player PlayerEntity) {
+	private void sendToPlayers(ServerLevel server, Player filterChanger) {
 		for (Player player : server.players()) {
-			if (player != PlayerEntity && player.containerMenu instanceof ContainerGeneticFilter) {
-				if (((ContainerGeneticFilter) PlayerEntity.containerMenu).hasSameTile((ContainerGeneticFilter) player.containerMenu)) {
+			if (player != filterChanger && player.containerMenu instanceof ContainerGeneticFilter) {
+				if (((ContainerGeneticFilter) filterChanger.containerMenu).hasSameTile((ContainerGeneticFilter) player.containerMenu)) {
 					((ContainerGeneticFilter) player.containerMenu).setGuiNeedsUpdate(true);
 				}
 			}
@@ -168,7 +167,7 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 		return inventoryCache.getAdjacentInventory(facing) != null && logic.isValid(facing, itemStack, filterData);
 	}
 
-	public IFilterLogic getLogic() {
+	public FilterLogic getLogic() {
 		return logic;
 	}
 

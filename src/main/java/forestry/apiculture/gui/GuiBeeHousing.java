@@ -30,6 +30,7 @@ public class GuiBeeHousing<C extends ContainerForestry & IContainerBeeHousing> e
 		APIARY("/apiary.png"),
 		BEE_HOUSE("/alveary.png");
 
+		public static final Icon[] VALUES = values();
 		private final String path;
 
 		Icon(String path) {

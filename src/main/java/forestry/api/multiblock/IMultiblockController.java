@@ -36,6 +36,7 @@ public interface IMultiblockController {
 	@Nullable
 	String getLastValidationError();
 
+	// used in old MultiblockEventHandlerClient.java
 	@Nullable
 	BlockPos getLastValidationErrorPosition();
 

@@ -24,11 +24,15 @@ import forestry.api.core.IErrorState;
 public class ErrorLogic implements IErrorLogic {
 	private final Set<IErrorState> errorStates = new HashSet<>();
 
+	public ErrorLogic(FriendlyByteBuf buffer) {
+		readData(buffer);
+	}
+
+	public ErrorLogic() {
+	}
+
 	@Override
 	public final boolean setCondition(boolean condition, IErrorState errorState) {
-		if (errorState == null) {
-			return false;
-		}
 		if (condition) {
 			errorStates.add(errorState);
 		} else {
@@ -73,9 +77,13 @@ public class ErrorLogic implements IErrorLogic {
 		for (int i = 0; i < errorStateCount; i++) {
 			short errorStateId = data.readShort();
 			IErrorState errorState = ForestryAPI.errorStateRegistry.getErrorState(errorStateId);
-			if (errorState != null) {
-				errorStates.add(errorState);
-			}
+			errorStates.add(errorState);
 		}
+	}
+
+	@Override
+	public void copy(IErrorLogic errorLogic) {
+		this.errorStates.clear();
+		this.errorStates.addAll(errorLogic.getErrorStates());
 	}
 }

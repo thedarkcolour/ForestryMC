@@ -68,7 +68,7 @@ public class ContainerSocketedHelper<T extends BlockEntity & ISocketable> implem
 		stack.shrink(1);
 		player.containerMenu.broadcastChanges();
 
-		PacketSocketUpdate packet = new PacketSocketUpdate(tile);
+		PacketSocketUpdate packet = PacketSocketUpdate.create(tile);
 		NetworkUtil.sendToPlayer(packet, player);
 	}
 
@@ -95,7 +95,7 @@ public class ContainerSocketedHelper<T extends BlockEntity & ISocketable> implem
 		itemstack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(p.getUsedItemHand()));    //TODO onBreak
 		player.inventoryMenu.broadcastChanges();
 
-		PacketSocketUpdate packet = new PacketSocketUpdate(tile);
+		PacketSocketUpdate packet = PacketSocketUpdate.create(tile);
 		NetworkUtil.sendToPlayer(packet, player);
 	}
 }

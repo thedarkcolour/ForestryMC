@@ -27,13 +27,14 @@ import forestry.arboriculture.commands.CommandTree;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.arboriculture.genetics.TreeFactory;
 import forestry.arboriculture.genetics.TreeMutationFactory;
-import forestry.arboriculture.network.PacketRegistryArboriculture;
+import forestry.arboriculture.network.PacketRipeningUpdate;
 import forestry.arboriculture.proxy.ProxyArboriculture;
 import forestry.arboriculture.villagers.RegisterVillager;
 import forestry.core.ClientsideCode;
 import forestry.core.ModuleCore;
 import forestry.core.config.Constants;
 import forestry.core.network.IPacketRegistry;
+import forestry.core.network.PacketIdClient;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.modules.ISidedModuleHandler;
@@ -92,22 +93,8 @@ public class ModuleArboriculture extends BlankForestryModule {
 	}
 
 	@Override
-	public void registerRecipes() {
-		//TODO: Recipes
-		//		ItemRegistryCore coreItems = ModuleCore.getItems();
-		//		BlockRegistryArboriculture blocks = getBlocks();
-		//		ItemRegistryArboriculture items = getItems();
-		//
-		//		for (BlockForestryLog log : blocks.logs.values()) {
-		//			ItemStack logInput = new ItemStack(log, 1, OreDictionary.WILDCARD_VALUE);
-		//			ItemStack coalOutput = new ItemStack(Items.COAL, 1, 1);
-		//			RecipeUtil.addSmelting(logInput, coalOutput, 0.15F);
-		//		}
-	}
-
-	@Override
-	public IPacketRegistry getPacketRegistry() {
-		return new PacketRegistryArboriculture();
+	public void registerPackets(IPacketRegistry registry) {
+		registry.clientbound(PacketIdClient.RIPENING_UPDATE, PacketRipeningUpdate.class, PacketRipeningUpdate::decode, PacketRipeningUpdate::handle);
 	}
 
 	@Override

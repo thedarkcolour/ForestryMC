@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.core.blocks;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -28,7 +26,6 @@ import net.minecraft.world.level.material.Material;
 
 import net.minecraftforge.common.IPlantable;
 
-import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
 
 /**
@@ -62,9 +59,9 @@ public class BlockBogEarth extends Block {
 		int maturity = state.getValue(MATURITY);
 		if (isMoistened(world, pos)) {
 			if (maturity == maturityDelimiter - 1) {
-				world.setBlock(pos, CoreBlocks.PEAT.defaultState(), Constants.FLAG_BLOCK_SYNC);
+				world.setBlock(pos, CoreBlocks.PEAT.defaultState(), UPDATE_CLIENTS);
 			} else {
-				world.setBlock(pos, state.setValue(MATURITY, maturity + 1), Constants.FLAG_BLOCK_SYNC);
+				world.setBlock(pos, state.setValue(MATURITY, maturity + 1), UPDATE_CLIENTS);
 			}
 		}
 	}

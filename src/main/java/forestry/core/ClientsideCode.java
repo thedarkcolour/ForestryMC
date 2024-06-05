@@ -7,8 +7,6 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.RecipeManager;
 
-import net.minecraftforge.network.event.EventNetworkChannel;
-
 import forestry.apiculture.proxy.ProxyApiculture;
 import forestry.apiculture.proxy.ProxyApicultureClient;
 import forestry.arboriculture.proxy.ProxyArboriculture;
@@ -17,7 +15,6 @@ import forestry.climatology.proxy.ProxyClimatology;
 import forestry.climatology.proxy.ProxyClimatologyClient;
 import forestry.core.genetics.root.ClientBreedingHandler;
 import forestry.core.genetics.root.ServerBreedingHandler;
-import forestry.core.network.PacketHandlerClient;
 import forestry.core.proxy.ProxyClient;
 import forestry.core.proxy.ProxyCommon;
 import forestry.core.proxy.ProxyRender;
@@ -98,10 +95,5 @@ public class ClientsideCode {
 
 	public static void markForUpdate(BlockPos pos) {
 		Minecraft.getInstance().levelRenderer.setBlocksDirty(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
-	}
-
-	public static void initClientPacketHandler(EventNetworkChannel channel) {
-		PacketHandlerClient packetHandlerClient = new PacketHandlerClient();
-		channel.addListener(packetHandlerClient::onPacket);
 	}
 }

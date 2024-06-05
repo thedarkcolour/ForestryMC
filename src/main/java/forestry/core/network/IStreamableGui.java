@@ -10,14 +10,11 @@
  ******************************************************************************/
 package forestry.core.network;
 
-import java.io.IOException;
+import net.minecraft.network.FriendlyByteBuf;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+// IStreamable variant for screen data
 public interface IStreamableGui {
-	void writeGuiData(PacketBufferForestry data);
+	void writeGuiData(FriendlyByteBuf data);
 
-	@OnlyIn(Dist.CLIENT)
-	void readGuiData(PacketBufferForestry data) throws IOException;
+	void readGuiData(FriendlyByteBuf data);
 }

@@ -18,7 +18,7 @@ import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.inventory.InventoryEscritoire;
-import forestry.core.network.packets.PacketGuiUpdate;
+import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.EscritoireGame;
 import forestry.core.tiles.TileEscritoire;
 import forestry.core.tiles.TileUtil;
@@ -55,7 +55,7 @@ public class ContainerEscritoire extends ContainerTile<TileEscritoire> implement
 		long gameLastUpdate = tile.getGame().getLastUpdate();
 		if (lastUpdate != gameLastUpdate) {
 			lastUpdate = gameLastUpdate;
-			sendPacketToListeners(new PacketGuiUpdate(tile));
+			sendPacketToListeners(new PacketGuiStream(tile));
 		}
 	}
 

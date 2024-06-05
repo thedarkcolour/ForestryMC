@@ -218,7 +218,7 @@ public class ButterflyRoot extends IndividualRoot<IButterfly> implements IButter
 		if (!(tracker instanceof LepidopteristTracker arboristTracker)) {
 			return;
 		}
-		arboristTracker.setWorld(world);
+		arboristTracker.setLevel(world);
 		arboristTracker.setUsername(profile);
 	}
 

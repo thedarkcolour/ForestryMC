@@ -1,5 +1,17 @@
 package forestry.factory.recipes.jei.carpenter;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import forestry.api.recipes.ICarpenterRecipe;
 import forestry.core.recipes.jei.ForestryRecipeType;
 import forestry.core.utils.JeiUtil;
@@ -7,23 +19,11 @@ import forestry.core.utils.NetworkUtil;
 import forestry.factory.features.FactoryMenuTypes;
 import forestry.factory.gui.ContainerCarpenter;
 import forestry.factory.network.packets.PacketRecipeTransferRequest;
+
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class CarpenterRecipeTransferHandler implements IRecipeTransferHandler<ContainerCarpenter, ICarpenterRecipe> {
@@ -52,7 +52,7 @@ public class CarpenterRecipeTransferHandler implements IRecipeTransferHandler<Co
 			for (int i = 1; i < items.size(); i++) {
 				craftingInventory.setItem(i - 1, items.get(i));
 			}
-			NetworkUtil.sendToServer(new PacketRecipeTransferRequest(container.getCarpenter(), items));
+			NetworkUtil.sendToServer(new PacketRecipeTransferRequest(container.getCarpenter().getBlockPos(), items));
 		}
 
 		return null;

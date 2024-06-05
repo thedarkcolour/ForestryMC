@@ -10,50 +10,37 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.ICircuitLayout;
 import forestry.core.circuits.ContainerSolderingIron;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 
-public class PacketGuiLayoutSelect implements IForestryPacketClient {
-	private final String layoutUid;
-
-	public PacketGuiLayoutSelect(String layoutUid) {
-		this.layoutUid = layoutUid;
-	}
-
+public record PacketGuiLayoutSelect(String layoutUid) implements IForestryPacketClient {
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.GUI_LAYOUT_SELECT;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeUtf(layoutUid);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeUtf(layoutUid);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) {
-			String layoutUid = data.readUtf();
-			AbstractContainerMenu container = player.containerMenu;
-			if (!(container instanceof ContainerSolderingIron)) {
-				return;
-			}
+	public static PacketGuiLayoutSelect decode(FriendlyByteBuf buffer) {
+		return new PacketGuiLayoutSelect(buffer.readUtf());
+	}
 
-			ICircuitLayout layout = ChipsetManager.circuitRegistry.getLayout(layoutUid);
+	public static void handle(PacketGuiLayoutSelect msg, Player player) {
+		if (player.containerMenu instanceof ContainerSolderingIron solderingIron) {
+			ICircuitLayout layout = ChipsetManager.circuitRegistry.getLayout(msg.layoutUid);
+
 			if (layout != null) {
-				((ContainerSolderingIron) container).setLayout(layout);
+				solderingIron.setLayout(layout);
 			}
 		}
 	}

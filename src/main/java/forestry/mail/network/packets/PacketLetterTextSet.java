@@ -10,39 +10,32 @@
  ******************************************************************************/
 package forestry.mail.network.packets;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-import forestry.core.network.IForestryPacketHandlerServer;
 import forestry.core.network.IForestryPacketServer;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdServer;
 import forestry.mail.gui.ContainerLetter;
 
-public class PacketLetterTextSet implements IForestryPacketServer {
-	private final String string;
-
-	public PacketLetterTextSet(String string) {
-		this.string = string;
+public record PacketLetterTextSet(String string) implements IForestryPacketServer {
+	public static void handle(PacketLetterTextSet msg, ServerPlayer player) {
+		if (player.containerMenu instanceof ContainerLetter letterMenu) {
+			letterMenu.handleSetText(msg.string());
+		}
 	}
 
 	@Override
-	public PacketIdServer getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdServer.LETTER_TEXT_SET;
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeUtf(string);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeUtf(string);
 	}
 
-	public static class Handler implements IForestryPacketHandlerServer {
-
-		@Override
-		public void onPacketData(PacketBufferForestry data, ServerPlayer player) {
-			if (player.containerMenu instanceof ContainerLetter) {
-				String string = data.readUtf();
-				((ContainerLetter) player.containerMenu).handleSetText(string);
-			}
-		}
+	public static PacketLetterTextSet decode(FriendlyByteBuf buffer) {
+		return new PacketLetterTextSet(buffer.readUtf());
 	}
 }

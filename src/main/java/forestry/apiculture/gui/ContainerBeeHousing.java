@@ -10,9 +10,9 @@
  ******************************************************************************/
 package forestry.apiculture.gui;
 
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -22,20 +22,19 @@ import forestry.apiculture.tiles.TileBeeHousingBase;
 import forestry.core.climate.ClimateRoot;
 import forestry.core.gui.ContainerAnalyzerProvider;
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.PacketBufferForestry;
-import forestry.core.network.packets.PacketGuiUpdate;
+import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.TileUtil;
+import forestry.core.utils.NetworkUtil;
 
 public class ContainerBeeHousing extends ContainerAnalyzerProvider<TileBeeHousingBase> implements IContainerBeeHousing {
 
 	private final IGuiBeeHousingDelegate delegate;
 	private final GuiBeeHousing.Icon icon;
 
-	public static ContainerBeeHousing fromNetwork(int windowId, Inventory inv, FriendlyByteBuf data) {
-		PacketBufferForestry buf = new PacketBufferForestry(data);
-		TileBeeHousingBase tile = TileUtil.getTile(inv.player.level, buf.readBlockPos(), TileBeeHousingBase.class);
-		boolean hasFrames = buf.readBoolean();
-		GuiBeeHousing.Icon icon = buf.readEnum(GuiBeeHousing.Icon.values());
+	public static ContainerBeeHousing fromNetwork(int windowId, Inventory inv, FriendlyByteBuf buffer) {
+		TileBeeHousingBase tile = TileUtil.getTile(inv.player.level, buffer.readBlockPos(), TileBeeHousingBase.class);
+		boolean hasFrames = buffer.readBoolean();
+		GuiBeeHousing.Icon icon = NetworkUtil.readEnum(buffer, GuiBeeHousing.Icon.VALUES);
 		return new ContainerBeeHousing(windowId, inv, tile, hasFrames, icon);    //TODO nullability.
 	}
 
@@ -63,7 +62,7 @@ public class ContainerBeeHousing extends ContainerAnalyzerProvider<TileBeeHousin
 		int beeProgress = tile.getBeekeepingLogic().getBeeProgressPercent();
 		if (this.beeProgress != beeProgress) {
 			this.beeProgress = beeProgress;
-			IForestryPacketClient packet = new PacketGuiUpdate(tile);
+			IForestryPacketClient packet = new PacketGuiStream(tile);
 			sendPacketToListeners(packet);
 		}
 	}

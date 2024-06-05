@@ -10,51 +10,39 @@
  ******************************************************************************/
 package forestry.core.network.packets;
 
-import java.io.IOException;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.BlockPos;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketHandlerClient;
-import forestry.core.network.PacketBufferForestry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.IItemStackDisplay;
 import forestry.core.tiles.TileForestry;
 import forestry.core.tiles.TileUtil;
 
-public class PacketItemStackDisplay implements IForestryPacketClient {
-	private final BlockPos pos;
-	private final ItemStack itemStack;
-
+public record PacketItemStackDisplay(BlockPos pos, ItemStack itemStack) implements IForestryPacketClient {
 	public <T extends TileForestry & IItemStackDisplay> PacketItemStackDisplay(T tile, ItemStack itemStack) {
-		this.pos = tile.getBlockPos();
-		this.itemStack = itemStack;
+		this(tile.getBlockPos(), itemStack);
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
-		data.writeBlockPos(pos);
-		data.writeItem(itemStack);
+	public void write(FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		buffer.writeItem(itemStack);
 	}
 
 	@Override
-	public PacketIdClient getPacketId() {
+	public ResourceLocation id() {
 		return PacketIdClient.ITEMSTACK_DISPLAY;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Handler implements IForestryPacketHandlerClient {
-		@Override
-		public void onPacketData(PacketBufferForestry data, Player player) throws IOException {
-			BlockPos pos = data.readBlockPos();
-			ItemStack itemStack = data.readItem();
+	public static PacketItemStackDisplay decode(FriendlyByteBuf buffer) {
+		return new PacketItemStackDisplay(buffer.readBlockPos(), buffer.readItem());
+	}
 
-			TileUtil.actOnTile(player.level, pos, IItemStackDisplay.class, tile -> tile.handleItemStackForDisplay(itemStack));
-		}
+	public static void handle(PacketItemStackDisplay msg, Player player) {
+		TileUtil.actOnTile(player.level, msg.pos, IItemStackDisplay.class, tile -> tile.handleItemStackForDisplay(msg.itemStack));
 	}
 }

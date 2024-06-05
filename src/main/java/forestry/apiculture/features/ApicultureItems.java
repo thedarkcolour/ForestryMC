@@ -15,7 +15,6 @@ import forestry.apiculture.items.ItemHabitatLocator;
 import forestry.apiculture.items.ItemHiveFrame;
 import forestry.apiculture.items.ItemHoneyComb;
 import forestry.apiculture.items.ItemImprinter;
-import forestry.apiculture.items.ItemMinecartBeehousing;
 import forestry.apiculture.items.ItemPollenCluster;
 import forestry.apiculture.items.ItemPropolis;
 import forestry.apiculture.items.ItemScoop;
@@ -23,7 +22,6 @@ import forestry.apiculture.items.ItemSmoker;
 import forestry.apiculture.items.ItemWaxCast;
 import forestry.core.items.ItemForestry;
 import forestry.core.items.ItemOverlay;
-import forestry.modules.features.FeatureGroup;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureItemGroup;
 import forestry.modules.features.FeatureProvider;
@@ -42,8 +40,6 @@ public class ApicultureItems {
 
 	public static final FeatureItem<ItemHabitatLocator> HABITAT_LOCATOR = REGISTRY.item(ItemHabitatLocator::new, "habitat_locator");
 	public static final FeatureItem<ItemImprinter> IMPRINTER = REGISTRY.item(ItemImprinter::new, "imprinter");
-
-	public static final FeatureItemGroup<ItemMinecartBeehousing, ItemMinecartBeehousing.Type> MINECART_BEEHOUSING = REGISTRY.itemGroup(ItemMinecartBeehousing::new, "cart", ItemMinecartBeehousing.Type.values());
 
 	// / COMB FRAMES
 	public static final FeatureItem<ItemHiveFrame> FRAME_UNTREATED = REGISTRY.item(() -> new ItemHiveFrame(80, 0.9f), "frame_untreated");

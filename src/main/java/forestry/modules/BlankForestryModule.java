@@ -1,7 +1,5 @@
 package forestry.modules;
 
-import com.google.common.collect.ImmutableSet;
-
 import javax.annotation.Nullable;
 import java.util.Set;
 
@@ -15,16 +13,14 @@ import forestry.core.IPickupHandler;
 import forestry.core.IResupplyHandler;
 import forestry.core.ISaveEventHandler;
 import forestry.core.config.Constants;
-import forestry.core.network.IPacketRegistry;
 
 public class BlankForestryModule implements IForestryModule {
-
 	/**
 	 * The ForestryModule.moduleID()s of any other modules this module depends on.
 	 */
 	@Override
 	public Set<ResourceLocation> getDependencyUids() {
-		return ImmutableSet.of(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.CORE));
+		return Set.of(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.CORE));
 	}
 
 	@Override
@@ -42,11 +38,6 @@ public class BlankForestryModule implements IForestryModule {
 
 	@Nullable
 	public ISaveEventHandler getSaveEventHandler() {
-		return null;
-	}
-
-	@Nullable
-	public IPacketRegistry getPacketRegistry() {
 		return null;
 	}
 

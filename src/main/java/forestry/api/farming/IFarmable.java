@@ -21,18 +21,18 @@ public interface IFarmable {
 	/**
 	 * @return true if the block at the given location is a "sapling" for this type, i.e. a non-harvestable immature version of the crop.
 	 */
-	boolean isSaplingAt(Level world, BlockPos pos, BlockState blockState);
+	boolean isSaplingAt(Level level, BlockPos pos, BlockState state);
 
 	/**
 	 * @return {@link ICrop} if the block at the given location is a harvestable and mature crop, null otherwise.
 	 */
 	@Nullable
-	ICrop getCropAt(Level world, BlockPos pos, BlockState blockState);
+	ICrop getCropAt(Level level, BlockPos pos, BlockState state);
 
 	/**
 	 * @return true if the item is a valid germling (plantable sapling, seed, etc.) for this type.
 	 */
-	boolean isGermling(ItemStack itemstack);
+	boolean isGermling(ItemStack stack);
 
 	default void addInformation(IFarmableInfo info) {
 	}
@@ -40,7 +40,7 @@ public interface IFarmable {
 	/**
 	 * @return true if the item is something that can drop from this type without actually being harvested as a crop. (Apples or sapling from decaying leaves.)
 	 */
-	boolean isWindfall(ItemStack itemstack);
+	boolean isWindfall(ItemStack stack);
 
 	/**
 	 * Plants a sapling by manipulating the world. The {@link IFarmLogic} should have verified the given location as valid. Called by the {@link IFarmHousing}
@@ -48,6 +48,6 @@ public interface IFarmable {
 	 *
 	 * @return true on success, false otherwise.
 	 */
-	boolean plantSaplingAt(Player player, ItemStack germling, Level world, BlockPos pos);
+	boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos);
 
 }

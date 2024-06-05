@@ -4,10 +4,8 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,6 +15,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import deleteme.Shuffler;
+
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -41,7 +41,6 @@ import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
 import forestry.core.network.IStreamable;
-import forestry.core.network.PacketBufferForestry;
 import forestry.cultivation.IFarmHousingInternal;
 import forestry.farming.FarmHelper.FarmWorkStatus;
 import forestry.farming.FarmHelper.Stage;
@@ -299,14 +298,14 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	}
 
 	@Override
-	public void writeData(PacketBufferForestry data) {
+	public void writeData(FriendlyByteBuf data) {
 		tankManager.writeData(data);
 		hydrationManager.writeData(data);
 		fertilizerManager.writeData(data);
 	}
 
 	@Override
-	public void readData(PacketBufferForestry data) throws IOException {
+	public void readData(FriendlyByteBuf data) {
 		tankManager.readData(data);
 		hydrationManager.readData(data);
 		fertilizerManager.readData(data);
