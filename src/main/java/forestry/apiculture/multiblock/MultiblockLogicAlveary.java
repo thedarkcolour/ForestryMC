@@ -26,7 +26,7 @@ public class MultiblockLogicAlveary extends MultiblockLogic<IAlvearyControllerIn
 		if (super.isConnected()) {
 			return controller;
 		} else {
-			return FakeAlvearyController.instance;
+			return FakeAlvearyController.INSTANCE;
 		}
 	}
 

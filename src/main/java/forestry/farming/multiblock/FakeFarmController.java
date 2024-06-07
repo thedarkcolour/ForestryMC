@@ -40,12 +40,8 @@ import forestry.farming.FarmTarget;
 import forestry.farming.gui.IFarmLedgerDelegate;
 import forestry.farming.logic.ForestryFarmIdentifier;
 
-public class FakeFarmController extends FakeMultiblockController implements IFarmControllerInternal {
-	public static final FakeFarmController instance = new FakeFarmController();
-
-	private FakeFarmController() {
-
-	}
+public enum FakeFarmController implements FakeMultiblockController, IFarmControllerInternal {
+	INSTANCE;
 
 	@Override
 	public BlockPos getCoords() {
@@ -74,7 +70,6 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 	@Override
 	public void removeLiquid(FluidStack liquid) {
-
 	}
 
 	@Override
@@ -84,7 +79,7 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 	@Override
 	public IFarmInventoryInternal getFarmInventory() {
-		return FakeFarmInventory.instance;
+		return FakeFarmInventory.INSTANCE;
 	}
 
 	@Override
@@ -103,18 +98,16 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 	@Override
 	public void addPendingProduct(ItemStack stack) {
-
 	}
 
 	@Override
 	public void setFarmLogic(FarmDirection direction, IFarmLogic logic) {
-
 	}
 
 	//TODO: Empty / fake farm property, this is a stupid work around
 	@Override
 	public IFarmLogic getFarmLogic(FarmDirection direction) {
-		return FarmRegistry.getInstance().getProperties(ForestryFarmIdentifier.ARBOREAL).getLogic(false);
+		return FarmRegistry.INSTANCE.getProperties(ForestryFarmIdentifier.ARBOREAL).getLogic(false);
 	}
 
 	@Override
@@ -124,7 +117,6 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 	@Override
 	public void resetFarmLogic(FarmDirection direction) {
-
 	}
 
 	@Override
@@ -149,7 +141,6 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 	@Override
 	public void setSocket(int slot, ItemStack stack) {
-
 	}
 
 	@Override
@@ -159,7 +150,7 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 	@Override
 	public IFarmLedgerDelegate getFarmLedgerDelegate() {
-		return FakeFarmLedgerDelegate.instance;
+		return FakeFarmLedgerDelegate.INSTANCE;
 	}
 
 	@Override
@@ -189,20 +180,14 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 	@Override
 	public void setExtents(FarmDirection direction, BlockPos pos, int extend) {
-
 	}
 
 	@Override
 	public void cleanExtents(FarmDirection direction) {
-
 	}
 
-	private static class FakeFarmInventory implements IFarmInventoryInternal {
-		public static final FakeFarmInventory instance = new FakeFarmInventory();
-
-		private FakeFarmInventory() {
-
-		}
+	private enum FakeFarmInventory implements IFarmInventoryInternal {
+		INSTANCE;
 
 		@Override
 		public boolean hasResources(NonNullList<ItemStack> resources) {
@@ -211,7 +196,6 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 		@Override
 		public void removeResources(NonNullList<ItemStack> resources) {
-
 		}
 
 		@Override
@@ -261,7 +245,6 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 
 		@Override
 		public void stowProducts(Iterable<ItemStack> harvested, Stack<ItemStack> pendingProduce) {
-
 		}
 
 		@Override
@@ -270,12 +253,8 @@ public class FakeFarmController extends FakeMultiblockController implements IFar
 		}
 	}
 
-	private static class FakeFarmLedgerDelegate implements IFarmLedgerDelegate {
-		public static final FakeFarmLedgerDelegate instance = new FakeFarmLedgerDelegate();
-
-		private FakeFarmLedgerDelegate() {
-
-		}
+	private enum FakeFarmLedgerDelegate implements IFarmLedgerDelegate {
+		INSTANCE;
 
 		@Override
 		public float getHydrationModifier() {

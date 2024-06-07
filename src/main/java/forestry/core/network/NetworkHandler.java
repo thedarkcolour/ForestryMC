@@ -1,8 +1,8 @@
 package forestry.core.network;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -36,12 +37,12 @@ public class NetworkHandler {
 	private record PacketRegistry(AtomicInteger packetId) implements IPacketRegistry {
 		@Override
 		public <P extends IForestryPacketServer> void serverbound(ResourceLocation id, Class<P> packetClass, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> packetHandler) {
-			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleServerbound(msg, ctxSupplier, packetHandler));
+			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleServerbound(msg, ctxSupplier, packetHandler), Optional.of(NetworkDirection.PLAY_TO_SERVER));
 		}
 
 		@Override
 		public <P extends IForestryPacketClient> void clientbound(ResourceLocation id, Class<P> packetClass, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, Player> packetHandler) {
-			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleClientbound(msg, ctxSupplier, packetHandler));
+			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleClientbound(msg, ctxSupplier, packetHandler), Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 		}
 	}
 

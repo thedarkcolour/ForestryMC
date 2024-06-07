@@ -19,8 +19,7 @@ import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
 
 public class JubilanceDefault implements IJubilanceProvider {
-
-	public static final JubilanceDefault instance = new JubilanceDefault();
+	public static final JubilanceDefault INSTANCE = new JubilanceDefault();
 
 	protected JubilanceDefault() {
 

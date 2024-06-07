@@ -53,7 +53,7 @@ public class ModuleFarming extends BlankForestryModule {
 
 	@Override
 	public void setupAPI() {
-		ForestryAPI.farmRegistry = FarmRegistry.getInstance();
+		ForestryAPI.farmRegistry = FarmRegistry.INSTANCE;
 	}
 
 	@Override

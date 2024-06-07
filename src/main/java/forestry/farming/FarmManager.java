@@ -165,7 +165,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 				farmWorkStatus.didWork = !harvested.isEmpty();
 				if (!harvested.isEmpty()) {
 					pendingCrops.addAll(harvested);
-					pendingCrops.sort(FarmHelper.TopDownICropComparator.INSTANCE);
+					pendingCrops.sort(FarmHelper.TOP_DOWN_COMPARATOR);
 					harvestProvider = logic;
 				}
 			} else if (stage == Stage.CULTIVATE) {

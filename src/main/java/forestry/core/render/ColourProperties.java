@@ -17,31 +17,19 @@ import java.util.Properties;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.Forestry;
 
-@OnlyIn(Dist.CLIENT)
-public class ColourProperties implements ResourceManagerReloadListener {
-
-	public static final ColourProperties INSTANCE;
-
-	static {
-		INSTANCE = new ColourProperties();
-	}
+public enum ColourProperties implements ResourceManagerReloadListener {
+	INSTANCE;
 
 	private final Properties defaultMappings = new Properties();
 	private final Properties mappings = new Properties();
-
-	private ColourProperties() {
-	}
 
 	public synchronized int get(String key) {
 		return Integer.parseInt(mappings.getProperty(key, defaultMappings.getProperty(key, "d67fff")), 16);
 	}
 
-	@Override    //TODO - actually be selective
+	@Override
 	public void onResourceManagerReload(ResourceManager resourceManager) {
 		try {
 			InputStream defaultFontStream = ColourProperties.class.getResourceAsStream("/config/forestry/colour.properties");

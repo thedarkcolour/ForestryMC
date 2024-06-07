@@ -9,11 +9,8 @@ import forestry.api.climate.IClimateManipulatorBuilder;
 import forestry.api.climate.IClimateState;
 import forestry.api.climate.IClimateTransformer;
 
-public class FakeClimateTransformer implements IClimateTransformer {
-	public static final FakeClimateTransformer INSTANCE = new FakeClimateTransformer();
-
-	private FakeClimateTransformer() {
-	}
+public enum FakeClimateTransformer implements IClimateTransformer {
+	INSTANCE;
 
 	@Override
 	public void setCircular(boolean circular) {
@@ -35,12 +32,10 @@ public class FakeClimateTransformer implements IClimateTransformer {
 
 	@Override
 	public void setTarget(IClimateState target) {
-
 	}
 
 	@Override
 	public void setCurrent(IClimateState state) {
-
 	}
 
 	@Override

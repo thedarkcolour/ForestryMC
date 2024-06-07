@@ -18,32 +18,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import deleteme.RegistryNameFinder;
-
-import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
-
-import com.mojang.math.Vector3f;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 
 import forestry.core.blocks.IColoredBlock;
 import forestry.core.items.definitions.IColoredItem;
@@ -52,56 +42,49 @@ import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureGroup;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureTable;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.model.DynamicFluidContainerModel;
+
+import deleteme.RegistryNameFinder;
 
 @OnlyIn(Dist.CLIENT)
-public class ClientManager {
+public enum ClientManager {
+	INSTANCE;
 
-	private static final ClientManager instance = new ClientManager();
+	private static final ItemColor FORESTRY_ITEM_COLOR = (stack, tintIndex) -> {
+		Item item = stack.getItem();
+		if (item instanceof IColoredItem) {
+			return ((IColoredItem) item).getColorFromItemStack(stack, tintIndex);
+		}
+		return 0xffffff;
+	};
+	private static final BlockColor FORESTRY_BLOCK_COLOR = (state, level, pos, tintIndex) -> {
+		Block block = state.getBlock();
+		if (level != null && pos != null && block instanceof IColoredBlock coloredBlock) {
+			return coloredBlock.colorMultiplier(state, level, pos, tintIndex);
+		}
+		return 0xffffff;
+	};
 
 	/* CUSTOM MODELS*/
 	private final List<BlockModelEntry> customBlockModels = new ArrayList<>();
 	private final List<ModelEntry> customModels = new ArrayList<>();
 	/* ITEM AND BLOCK REGISTERS*/
-	private final Set<IColoredBlock> blockColorList = new HashSet<>();
-	private final Set<IColoredItem> itemColorList = new HashSet<>();
+	private Set<IColoredBlock> blockColorList = new HashSet<>();
+	private Set<IColoredItem> itemColorList = new HashSet<>();
 	/* DEFAULT ITEM AND BLOCK MODEL STATES*/
 	@Nullable
 	private ModelState defaultBlockState;
-	@Nullable
-	private ModelState defaultItemState;
-
-	public static ClientManager getInstance() {
-		return instance;
-	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void registerBlockClient(Block block) {
-		if (block instanceof IColoredBlock) {
-			blockColorList.add((IColoredBlock) block);
+		if (block instanceof IColoredBlock coloredBlock) {
+			blockColorList.add(coloredBlock);
 		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void registerItemClient(Item item) {
-		if (item instanceof IColoredItem) {
-			itemColorList.add((IColoredItem) item);
-		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void registerItemAndBlockColors() {
-		Minecraft minecraft = Minecraft.getInstance();
-
-
-
-		ItemColors itemColors = minecraft.getItemColors();
-		for (IColoredItem itemColor : itemColorList) {
-			if (itemColor instanceof Item) {
-				itemColors.register(ColoredItemItemColor.INSTANCE, (Item) itemColor);
-			}
+		if (item instanceof IColoredItem coloredItem) {
+			itemColorList.add(coloredItem);
 		}
 	}
 
@@ -110,13 +93,6 @@ public class ClientManager {
 			defaultBlockState = ResourceUtil.loadTransform(new ResourceLocation("block/block"));
 		}
 		return defaultBlockState;
-	}
-
-	public ModelState getDefaultItemState() {
-		if (defaultItemState == null) {
-			defaultItemState = ResourceUtil.loadTransform(new ResourceLocation("item/generated"));
-		}
-		return defaultItemState;
 	}
 
 	public void registerModel(BakedModel model, Object feature) {
@@ -164,82 +140,32 @@ public class ClientManager {
 		}
 	}
 
+	@SuppressWarnings("DataFlowIssue")
 	public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
 		for (IColoredBlock blockColor : blockColorList) {
 			if (blockColor instanceof Block tintedBlock) {
-				event.register(ClientManager.ColoredBlockBlockColor.INSTANCE, tintedBlock);
+				event.register(FORESTRY_BLOCK_COLOR, tintedBlock);
 			}
 		}
+		// block colors are only registered once
+		blockColorList = null;
 	}
 
+	@SuppressWarnings("DataFlowIssue")
 	public void registerItemColors(RegisterColorHandlersEvent.Item event) {
 		for (IColoredItem itemColor : itemColorList) {
 			if (itemColor instanceof Item tintedItem) {
-				event.register(ColoredItemItemColor.INSTANCE, tintedItem);
+				event.register(FORESTRY_ITEM_COLOR, tintedItem);
 			}
 		}
+		// item colors are only registered once
+		itemColorList = null;
 	}
 
-	private static class ColoredItemItemColor implements ItemColor {
-		public static final ColoredItemItemColor INSTANCE = new ColoredItemItemColor();
-
-		private ColoredItemItemColor() {
-
-		}
-
-		@Override
-		public int getColor(ItemStack stack, int tintIndex) {
-			Item item = stack.getItem();
-			if (item instanceof IColoredItem) {
-				return ((IColoredItem) item).getColorFromItemStack(stack, tintIndex);
-			}
-			return 0xffffff;
-		}
+	private record BlockModelEntry(BakedModel model, Block block, @Nullable BlockItem item,
+								   Collection<BlockState> states) {
 	}
 
-	private static class ColoredBlockBlockColor implements BlockColor {
-		public static final ColoredBlockBlockColor INSTANCE = new ColoredBlockBlockColor();
-
-		private ColoredBlockBlockColor() {
-
-		}
-
-		@Override
-		public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos, int tintIndex) {
-			Block block = state.getBlock();
-			if (block instanceof IColoredBlock && worldIn != null && pos != null) {
-				return ((IColoredBlock) block).colorMultiplier(state, worldIn, pos, tintIndex);
-			}
-			return 0xffffff;
-		}
-	}
-
-	private static class BlockModelEntry {
-
-		private final BakedModel model;
-		private final Block block;
-		private final Collection<BlockState> states;
-		@Nullable
-		private final BlockItem item;
-
-		private BlockModelEntry(BakedModel model, Block block, @Nullable BlockItem item, Collection<BlockState> states) {
-			this.model = model;
-			this.block = block;
-			this.item = item;
-			this.states = states;
-		}
-
-	}
-
-	private static class ModelEntry {
-
-		private final ModelResourceLocation modelLocation;
-		private final BakedModel model;
-
-		private ModelEntry(ModelResourceLocation modelLocation, BakedModel model) {
-			this.modelLocation = modelLocation;
-			this.model = model;
-		}
-
+	private record ModelEntry(ModelResourceLocation modelLocation, BakedModel model) {
 	}
 }

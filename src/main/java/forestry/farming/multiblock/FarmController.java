@@ -87,7 +87,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	private Vec3i area;
 
 	public FarmController(Level world) {
-		super(world, FarmMultiblockSizeLimits.instance);
+		super(world, FarmMultiblockSizeLimits.INSTANCE);
 
 		this.inventory = new InventoryFarm(this);
 		this.manager = new FarmManager(this);

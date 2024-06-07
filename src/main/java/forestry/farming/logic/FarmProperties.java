@@ -45,7 +45,7 @@ public final class FarmProperties implements IFarmProperties {
 		Preconditions.checkNotNull(builder.waterConsumption);
 		Preconditions.checkNotNull(builder.fertilizerConsumption);
 		Preconditions.checkNotNull(builder.translationKey);
-		FarmRegistry registry = FarmRegistry.getInstance();
+		FarmRegistry registry = FarmRegistry.INSTANCE;
 		this.manualLogic = builder.factory.apply(this, true);
 		this.managedLogic = builder.factory.apply(this, false);
 		this.soils = ImmutableSet.copyOf(builder.soils);
@@ -168,7 +168,7 @@ public final class FarmProperties implements IFarmProperties {
 
 		public Builder(String identifier) {
 			this.identifier = identifier;
-			this.defaultInfo = FarmRegistry.getInstance().getFarmableInfo(identifier);
+			this.defaultInfo = FarmRegistry.INSTANCE.getFarmableInfo(identifier);
 		}
 
 		@Override
@@ -254,7 +254,7 @@ public final class FarmProperties implements IFarmProperties {
 
 		@Override
 		public IFarmProperties create() {
-			return FarmRegistry.getInstance().registerProperties("farm" + WordUtils.capitalize(identifier), new FarmProperties(this));
+			return FarmRegistry.INSTANCE.registerProperties("farm" + WordUtils.capitalize(identifier), new FarmProperties(this));
 		}
 	}
 }

@@ -22,7 +22,6 @@ public class FarmableChorus implements IFarmable {
 
 	private final ItemStack germling;
 	private final ItemStack fruit;
-
 	private FarmableChorus() {
 		this.germling = new ItemStack(Blocks.CHORUS_FLOWER);
 		this.fruit = new ItemStack(Items.CHORUS_FRUIT);

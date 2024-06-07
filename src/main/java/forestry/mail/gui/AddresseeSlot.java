@@ -39,7 +39,7 @@ public class AddresseeSlot extends Widget {
 		IPostalCarrier carrier = PostManager.postRegistry.getCarrier(containerLetter.getCarrierType());
 		if (carrier != null) {
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0F);
-			TextureManagerForestry.getInstance().bindGuiTextureMap();
+			TextureManagerForestry.INSTANCE.bindGuiTextureMap();
 			GuiComponent.blit(transform, startX + xPos, startY + yPos, manager.gui.getBlitOffset(), 32, 32, carrier.getSprite());
 		}
 	}

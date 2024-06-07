@@ -33,8 +33,6 @@ import forestry.core.genetics.alleles.AlleleForestrySpecies;
 
 import genetics.api.individual.IGenome;
 
-import forestry.core.genetics.alleles.AlleleForestrySpecies.AbstractBuilder;
-
 public class AlleleBeeSpecies extends AlleleForestrySpecies implements IAlleleBeeSpecies, ISetupListener {
 	private final IBeeSpriteColourProvider beeSpriteColourProvider;
 	private final IJubilanceProvider jubilanceProvider;
@@ -95,7 +93,7 @@ public class AlleleBeeSpecies extends AlleleForestrySpecies implements IAlleleBe
 		private final ProductListWrapper specialties = ProductListWrapper.create();
 		@Nullable
 		private IBeeSpriteColourProvider beeSpriteColourProvider;
-		private IJubilanceProvider jubilanceProvider = JubilanceDefault.instance;
+		private IJubilanceProvider jubilanceProvider = JubilanceDefault.INSTANCE;
 		private boolean nocturnal = false;
 
 		public Builder(String modId, String uid, String speciesIdentifier) {

@@ -120,7 +120,7 @@ public enum EnumErrorCode implements IErrorState {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public TextureAtlasSprite getSprite() {
-		return TextureManagerForestry.getInstance().getSpriteUploader().getSprite(location);
+		return TextureManagerForestry.INSTANCE.getSpriteUploader().getSprite(location);
 	}
 
 	@Override

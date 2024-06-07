@@ -46,7 +46,7 @@ public final class ModelBaker {
 
 	private final List<ModelBakerFace> faces = new ArrayList<>();
 
-	private final ModelBakerModel currentModel = new ModelBakerModel(ClientManager.getInstance().getDefaultBlockState());
+	private final ModelBakerModel currentModel = new ModelBakerModel(ClientManager.INSTANCE.getDefaultBlockState());
 
 	private int colorIndex = -1;
 

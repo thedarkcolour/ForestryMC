@@ -21,8 +21,8 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-import forestry.apiculture.entities.ParticleSnow;
 import forestry.apiculture.features.ApicultureBlocks;
+import forestry.apiculture.particles.ParticleSnow;
 import forestry.modules.IClientModuleHandler;
 
 @OnlyIn(Dist.CLIENT)

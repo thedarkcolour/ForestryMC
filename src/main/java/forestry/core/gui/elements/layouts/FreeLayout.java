@@ -5,15 +5,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
+import forestry.Forestry;
 import forestry.core.gui.elements.GuiElement;
 
-import genetics.Log;
-
-public class FreeLayout implements Layout {
-	public static final FreeLayout INSTANCE = new FreeLayout();
-
-	protected FreeLayout() {
-	}
+public enum FreeLayout implements Layout {
+	INSTANCE;
 
 	@Override
 	public void layoutContainer(Rectangle bounds, List<GuiElement> elements) {
@@ -21,7 +17,7 @@ public class FreeLayout implements Layout {
 			Point pos = element.getPreferredPos();
 			Dimension size = element.getLayoutSize();
 			if (size.height < 0 || size.width < 0) {
-				Log.error(String.format("Failed to layout element %s!", element));
+				Forestry.LOGGER.error(String.format("Failed to layout element %s!", element));
 				continue;
 			}
 			Rectangle elementBounds = new Rectangle(pos == null ? new Point(0, 0) : pos, size);

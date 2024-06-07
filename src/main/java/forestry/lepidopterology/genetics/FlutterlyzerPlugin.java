@@ -27,8 +27,8 @@ import forestry.api.genetics.IAlyzerPlugin;
 import forestry.core.config.Config;
 
 //TODO: Port plugin
-public class FlutterlyzerPlugin implements IAlyzerPlugin {
-	public static final FlutterlyzerPlugin INSTANCE = new FlutterlyzerPlugin();
+public enum FlutterlyzerPlugin implements IAlyzerPlugin {
+	INSTANCE;
 
 	protected final Map<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
 

@@ -5,29 +5,23 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import genetics.api.individual.IIndividual;
-
 /**
  * A empty instance of an {@link IRootDefinition}.
  */
-public final class EmptyRootDefinition<T extends IIndividualRoot<?>> implements IRootDefinition<T> {
-	private static final EmptyRootDefinition<IIndividualRoot<?>> INSTANCE = new EmptyRootDefinition<>();
-	public static <R extends IIndividualRoot<?>> IRootDefinition<R> empty() {
-		@SuppressWarnings("unchecked")
-		IRootDefinition<R> t = (IRootDefinition<R>) INSTANCE;
-		return t;
-	}
+public enum EmptyRootDefinition implements IRootDefinition<IIndividualRoot<?>> {
+	INSTANCE;
 
-	private EmptyRootDefinition() {
+	public static <R extends IIndividualRoot<?>> IRootDefinition<R> empty() {
+		return (IRootDefinition<R>) INSTANCE;
 	}
 
 	@Override
-	public Optional<T> maybe() {
+	public Optional<IIndividualRoot<?>> maybe() {
 		return Optional.empty();
 	}
 
 	@Override
-	public T get() {
+	public IIndividualRoot<?> get() {
 		throw new NullPointerException();
 	}
 
@@ -42,7 +36,7 @@ public final class EmptyRootDefinition<T extends IIndividualRoot<?>> implements 
 	}
 
 	@Override
-	public T orElse(T other) {
+	public IIndividualRoot<?> orElse(IIndividualRoot<?> other) {
 		return other;
 	}
 

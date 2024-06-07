@@ -23,7 +23,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.Util;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
@@ -39,8 +38,6 @@ import forestry.api.genetics.IForestrySpeciesRoot;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.items.ItemForestry;
-import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.Translator;
 
 import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAllele;
@@ -318,8 +315,6 @@ public class ItemResearchNote extends ItemForestry {
 		ResearchNote note = new ResearchNote(heldItem.getTag());
 		if (note.registerResults(worldIn, playerIn)) {
 			playerIn.getInventory().removeItem(playerIn.getInventory().selected, 1);
-			// Notify player that his inventory has changed.
-			NetworkUtil.inventoryChangeNotify(playerIn, playerIn.containerMenu);    //TODO not sure this is right
 		}
 
 		return InteractionResultHolder.success(heldItem);

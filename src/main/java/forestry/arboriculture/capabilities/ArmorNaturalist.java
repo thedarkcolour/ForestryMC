@@ -5,12 +5,8 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.api.core.IArmorNaturalist;
 
-public class ArmorNaturalist implements IArmorNaturalist {
-	public static final ArmorNaturalist INSTANCE = new ArmorNaturalist();
-
-	protected ArmorNaturalist() {
-
-	}
+public enum ArmorNaturalist implements IArmorNaturalist {
+	INSTANCE;
 
 	@Override
 	public boolean canSeePollination(Player player, ItemStack armor, boolean doSee) {

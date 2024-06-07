@@ -17,13 +17,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorState;
 
-public class FakeErrorLogic implements IErrorLogic {
-
-	public static final FakeErrorLogic instance = new FakeErrorLogic();
-
-	private FakeErrorLogic() {
-
-	}
+public enum FakeErrorLogic implements IErrorLogic {
+	INSTANCE;
 
 	@Override
 	public boolean setCondition(boolean condition, IErrorState errorState) {

@@ -33,7 +33,7 @@ public class PowerLedger extends Ledger {
 		drawBackground(transform, y, x);
 
 		// Draw icon
-		drawSprite(transform, TextureManagerForestry.getInstance().getDefault("misc/energy"), x + 3, y + 4);
+		drawSprite(transform, TextureManagerForestry.INSTANCE.getDefault("misc/energy"), x + 3, y + 4);
 
 		if (!isFullyOpened()) {
 			return;

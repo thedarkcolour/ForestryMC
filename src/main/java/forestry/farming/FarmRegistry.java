@@ -23,9 +23,8 @@ import forestry.core.utils.ItemStackUtil;
 import forestry.farming.logic.FarmProperties;
 import forestry.farming.logic.farmables.FarmableInfo;
 
-public final class FarmRegistry implements IFarmRegistry {
-
-	private static final FarmRegistry INSTANCE = new FarmRegistry();
+public enum FarmRegistry implements IFarmRegistry {
+	INSTANCE;
 
 	private final Multimap<String, IFarmable> farmables = HashMultimap.create();
 	private final Map<String, IFarmableInfo> farmableInfo = new LinkedHashMap<>();
@@ -33,10 +32,6 @@ public final class FarmRegistry implements IFarmRegistry {
 	private final Map<String, IFarmProperties> farmInstances = new HashMap<>();
 	private final Map<String, IFarmPropertiesBuilder> propertiesBuilders = new HashMap<>();
 	private FertilizerConfig fertilizer = FertilizerConfig.DUMMY;
-
-	public static FarmRegistry getInstance() {
-		return INSTANCE;
-	}
 
 	@Override
 	public void registerFarmables(String identifier, IFarmable... farmablesArray) {

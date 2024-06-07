@@ -31,26 +31,18 @@ import forestry.api.core.ITextureManager;
 import forestry.core.config.Constants;
 import forestry.core.errors.ErrorStateRegistry;
 
-@OnlyIn(Dist.CLIENT)
-public class TextureManagerForestry implements ITextureManager {
+public enum TextureManagerForestry implements ITextureManager {
+	INSTANCE;
+
 	public static final ResourceLocation LOCATION_FORESTRY_TEXTURE = new ResourceLocation(Constants.MOD_ID, "textures/atlas/gui.png");
-	private static final TextureManagerForestry INSTANCE = new TextureManagerForestry();
 	private final List<ISpriteRegister> spriteRegisters = new ArrayList<>();
 
-	@SuppressWarnings("NullableProblems")
+	@Nullable
 	private ForestrySpriteUploader spriteUploader;
 
 	static {
 		ForestryAPI.textureManager = INSTANCE;
 	}
-
-	public static TextureManagerForestry getInstance() {
-		return INSTANCE;
-	}
-
-	private TextureManagerForestry() {
-	}
-
 
 	public void init(ForestrySpriteUploader spriteUploader) {
 		ErrorStateRegistry.initSprites(spriteUploader);

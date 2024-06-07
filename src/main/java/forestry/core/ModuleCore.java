@@ -16,6 +16,7 @@ import java.util.Set;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -118,7 +119,7 @@ public class ModuleCore extends BlankForestryModule {
 
 	@Override
 	public void preInit() {
-		GameProfileDataSerializer.register();
+		EntityDataSerializers.registerSerializer(GameProfileDataSerializer.INSTANCE);
 
 		rootCommand.then(CommandModules.register());
 	}

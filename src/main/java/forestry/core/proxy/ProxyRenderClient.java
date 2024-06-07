@@ -72,7 +72,7 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 
 	@Override
 	public void bakeModels(ModelEvent.BakingCompleted event) {
-		ClientManager.getInstance().onBakeModels(event);
+		ClientManager.INSTANCE.onBakeModels(event);
 	}
 
 	@Override
@@ -107,11 +107,11 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 
 	@Override
 	public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-		ClientManager.getInstance().registerBlockColors(event);
+		ClientManager.INSTANCE.registerBlockColors(event);
 
 		Minecraft minecraft = Minecraft.getInstance();
 		ForestrySpriteUploader spriteUploader = new ForestrySpriteUploader(minecraft.textureManager, TextureManagerForestry.LOCATION_FORESTRY_TEXTURE, "gui");
-		TextureManagerForestry.getInstance().init(spriteUploader);
+		TextureManagerForestry.INSTANCE.init(spriteUploader);
 		ResourceManager resourceManager = minecraft.getResourceManager();
 		if (resourceManager instanceof ReloadableResourceManager reloadableManager) {
 			reloadableManager.registerReloadListener(ColourProperties.INSTANCE);
@@ -124,7 +124,7 @@ public class ProxyRenderClient extends ProxyRender implements IClientModuleHandl
 
 	@Override
 	public void registerItemColors(RegisterColorHandlersEvent.Item event) {
-		ClientManager.getInstance().registerItemColors(event);
+		ClientManager.INSTANCE.registerItemColors(event);
 	}
 
 	@Override

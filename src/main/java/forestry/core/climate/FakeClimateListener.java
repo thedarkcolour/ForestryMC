@@ -15,12 +15,8 @@ import forestry.api.climate.IClimateState;
 import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
 
-public class FakeClimateListener implements IClimateListener {
-
-	public static final FakeClimateListener INSTANCE = new FakeClimateListener();
-
-	private FakeClimateListener() {
-	}
+public enum FakeClimateListener implements IClimateListener {
+	INSTANCE;
 
 	@Override
 	public IClimateState getClimateState() {
@@ -30,7 +26,6 @@ public class FakeClimateListener implements IClimateListener {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void updateClientSide(boolean spawnParticles) {
-
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -66,13 +61,11 @@ public class FakeClimateListener implements IClimateListener {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void syncToClient() {
-
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void syncToClient(ServerPlayer player) {
-
 	}
 
 	@Override

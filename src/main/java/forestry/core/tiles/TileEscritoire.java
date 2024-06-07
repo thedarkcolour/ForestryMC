@@ -161,8 +161,8 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 	public void setItem(int slotIndex, ItemStack itemstack) {
 		super.setItem(slotIndex, itemstack);
 		if (slotIndex == InventoryEscritoire.SLOT_ANALYZE) {
-			PacketItemStackDisplay packet = new PacketItemStackDisplay(this, getIndividualOnDisplay());
-			NetworkUtil.sendNetworkPacket(packet, worldPosition, level);
+			//PacketItemStackDisplay packet = new PacketItemStackDisplay(this, getIndividualOnDisplay());
+			//NetworkUtil.sendNetworkPacket(packet, worldPosition, level);
 		}
 	}
 

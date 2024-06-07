@@ -19,12 +19,8 @@ import net.minecraft.core.BlockPos;
 
 import forestry.api.apiculture.IBeekeepingLogic;
 
-public class FakeBeekeepingLogic implements IBeekeepingLogic {
-	public static final FakeBeekeepingLogic instance = new FakeBeekeepingLogic();
-
-	private FakeBeekeepingLogic() {
-
-	}
+public enum FakeBeekeepingLogic implements IBeekeepingLogic {
+	INSTANCE;
 
 	@Override
 	public boolean canWork() {
@@ -33,22 +29,18 @@ public class FakeBeekeepingLogic implements IBeekeepingLogic {
 
 	@Override
 	public void doWork() {
-
 	}
 
 	@Override
 	public void clearCachedValues() {
-
 	}
 
 	@Override
 	public void syncToClient() {
-
 	}
 
 	@Override
 	public void syncToClient(ServerPlayer player) {
-
 	}
 
 	@Override
@@ -63,7 +55,6 @@ public class FakeBeekeepingLogic implements IBeekeepingLogic {
 
 	@Override
 	public void doBeeFX() {
-
 	}
 
 	@Override
@@ -72,12 +63,11 @@ public class FakeBeekeepingLogic implements IBeekeepingLogic {
 	}
 
 	@Override
-	public void read(CompoundTag CompoundNBT) {
-
+	public void read(CompoundTag nbt) {
 	}
 
 	@Override
-	public CompoundTag write(CompoundTag CompoundNBT) {
-		return CompoundNBT;
+	public CompoundTag write(CompoundTag nbt) {
+		return nbt;
 	}
 }

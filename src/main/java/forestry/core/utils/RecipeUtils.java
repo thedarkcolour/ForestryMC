@@ -21,9 +21,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import forestry.core.ClientsideCode;
 
 public final class RecipeUtils {
-    private RecipeUtils() {
-    }
-
     @Nullable
     public static RecipeManager getRecipeManager(@Nullable Level world){
         RecipeManager manager = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.getRecipeManager() : null;
@@ -53,5 +50,4 @@ public final class RecipeUtils {
                 .filter(recipe -> recipe.matches(inventory, world))
                 .collect(Collectors.toList());
     }
-
 }

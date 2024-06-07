@@ -25,7 +25,7 @@ public class MultiblockLogicFarm extends MultiblockLogic<IFarmControllerInternal
 		if (controller != null) {
 			return controller;
 		} else {
-			return FakeFarmController.instance;
+			return FakeFarmController.INSTANCE;
 		}
 	}
 

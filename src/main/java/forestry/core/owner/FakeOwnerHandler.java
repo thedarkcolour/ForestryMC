@@ -10,24 +10,10 @@
  ******************************************************************************/
 package forestry.core.owner;
 
-import javax.annotation.Nullable;
-
 import com.mojang.authlib.GameProfile;
 
-public class FakeOwnerHandler implements IOwnerHandler {
-	@Nullable
-	private static FakeOwnerHandler instance;
-
-	public static FakeOwnerHandler getInstance() {
-		if (instance == null) {
-			instance = new FakeOwnerHandler();
-		}
-		return instance;
-	}
-
-	private FakeOwnerHandler() {
-
-	}
+public enum FakeOwnerHandler implements IOwnerHandler {
+	INSTANCE;
 
 	@Override
 	public GameProfile getOwner() {
@@ -36,6 +22,5 @@ public class FakeOwnerHandler implements IOwnerHandler {
 
 	@Override
 	public void setOwner(GameProfile owner) {
-
 	}
 }

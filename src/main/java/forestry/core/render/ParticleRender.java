@@ -27,7 +27,7 @@ import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
-import forestry.apiculture.entities.ParticleSnow;
+import forestry.apiculture.particles.ParticleSnow;
 import forestry.apiculture.genetics.alleles.AlleleEffect;
 import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.particles.BeeParticleData;

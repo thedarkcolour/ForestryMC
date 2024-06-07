@@ -21,7 +21,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.render.TextureManagerForestry;
 import forestry.core.utils.PlayerUtil;
-import forestry.core.utils.Translator;
 
 /**
  * Ledger displaying ownership information
@@ -48,7 +47,7 @@ public class OwnerLedger extends Ledger {
 		drawBackground(transform, y, x);
 
 		// Draw icon
-		TextureAtlasSprite accessIcon = TextureManagerForestry.getInstance().getDefault("misc/access.shared");
+		TextureAtlasSprite accessIcon = TextureManagerForestry.INSTANCE.getDefault("misc/access.shared");
 		drawSprite(transform, accessIcon, x + 3, y + 4);
 
 		// Draw description

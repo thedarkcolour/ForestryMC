@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -44,20 +44,18 @@ import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
-import forestry.core.utils.StringUtil;
-import forestry.core.utils.Translator;
 
 import genetics.api.GeneticHelper;
 import genetics.api.individual.IGenome;
 import genetics.api.organism.IOrganism;
 import genetics.api.organism.IOrganismType;
 
-public class TreeAlyzerPlugin implements IAlyzerPlugin {
-	public static final TreeAlyzerPlugin INSTANCE = new TreeAlyzerPlugin();
+public enum TreeAlyzerPlugin implements IAlyzerPlugin {
+	INSTANCE;
 
-	protected final Map<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
+	private final Map<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
 
-	private TreeAlyzerPlugin() {
+	TreeAlyzerPlugin() {
 		NonNullList<ItemStack> treeList = NonNullList.create();
 		ArboricultureItems.SAPLING.item().addCreativeItems(treeList, false);
 		for (ItemStack treeStack : treeList) {
@@ -70,7 +68,6 @@ public class TreeAlyzerPlugin implements IAlyzerPlugin {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack itemStack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {

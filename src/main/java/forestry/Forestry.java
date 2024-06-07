@@ -11,10 +11,6 @@
 
 package forestry;
 
-import com.google.common.base.Preconditions;
-
-import javax.annotation.Nullable;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -249,7 +245,7 @@ public class Forestry {
 		@OnlyIn(Dist.CLIENT)
 		public void handleTextureRemap(TextureStitchEvent.Pre event) {
 			if (event.getAtlas().location() == InventoryMenu.BLOCK_ATLAS) {
-				TextureManagerForestry.getInstance().registerSprites(ISpriteRegistry.fromEvent(event));
+				TextureManagerForestry.INSTANCE.registerSprites(ISpriteRegistry.fromEvent(event));
 				ModelBlockCached.clear();
 			}
 		}

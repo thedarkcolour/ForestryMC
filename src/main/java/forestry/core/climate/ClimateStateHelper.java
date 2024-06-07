@@ -17,19 +17,16 @@ import forestry.api.climate.ClimateType;
 import forestry.api.climate.IClimateState;
 import forestry.api.climate.IClimateStateHelper;
 
-public final class ClimateStateHelper implements IClimateStateHelper {
+public enum ClimateStateHelper implements IClimateStateHelper {
+	INSTANCE;
 
 	private static final String TEMPERATURE_NBT_KEY = "TEMP";
 	private static final String HUMIDITY_NBT_KEY = "HUMID";
 	private static final String ABSENT_NBT_KEY = "ABSENT";
 	private static final String MUTABLE_NBT_KEY = "MUTABLE";
 
-	public static final ClimateStateHelper INSTANCE = new ClimateStateHelper();
 	public static final IClimateState ZERO_STATE = ImmutableClimateState.MIN;
 	public static final float CLIMATE_CHANGE = 0.01F;
-
-	private ClimateStateHelper() {
-	}
 
 	public static IClimateState of(float temperature, float humidity, boolean mutable) {
 		return INSTANCE.create(temperature, humidity, mutable);

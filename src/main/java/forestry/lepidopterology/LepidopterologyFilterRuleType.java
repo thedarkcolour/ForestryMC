@@ -73,7 +73,7 @@ public enum LepidopterologyFilterRuleType implements IFilterRuleType {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public TextureAtlasSprite getSprite() {
-		return TextureManagerForestry.getInstance().getDefault("analyzer/" + name().toLowerCase(Locale.ENGLISH));
+		return TextureManagerForestry.INSTANCE.getDefault("analyzer/" + name().toLowerCase(Locale.ENGLISH));
 	}
 
 	@OnlyIn(Dist.CLIENT)

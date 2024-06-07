@@ -4,10 +4,10 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.filter.IFilterData;
 import forestry.api.genetics.filter.IFilterLogic;
@@ -15,22 +15,15 @@ import forestry.api.genetics.filter.IFilterRuleType;
 
 import genetics.api.alleles.IAllele;
 
-import forestry.api.genetics.filter.IFilterLogic.INetworkHandler;
-
-public final class FakeFilterLogic implements IFilterLogic {
-	public static final FakeFilterLogic INSTANCE = new FakeFilterLogic();
-
-	private FakeFilterLogic() {
-	}
+public enum FakeFilterLogic implements IFilterLogic {
+	INSTANCE;
 
 	@Override
-	public void writeGuiData(FriendlyByteBuf data) {
-
+	public void writeGuiData(FriendlyByteBuf buffer) {
 	}
 
 	@Override
 	public void readGuiData(FriendlyByteBuf data) {
-
 	}
 
 	@Override
@@ -76,7 +69,6 @@ public final class FakeFilterLogic implements IFilterLogic {
 
 	@Override
 	public void sendToServer(Direction facing, int index, boolean active, @Nullable IAllele allele) {
-
 	}
 
 	@Override
@@ -87,12 +79,10 @@ public final class FakeFilterLogic implements IFilterLogic {
 
 	@Override
 	public void sendToServer(Direction facing, IFilterRuleType rule) {
-
 	}
 
 	@Override
 	public void read(CompoundTag nbt) {
-
 	}
 
 	@Override

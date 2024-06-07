@@ -129,7 +129,7 @@ public class HabitatSelectionElement extends ContainerElement {
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0F);
 			RenderSystem.setShaderTexture(0, new ResourceLocation(Constants.MOD_ID, "textures/gui/habitat_former.png"));
 			blit(transform, 0, 0, 204, 46, 20, 20);
-			TextureManagerForestry.getInstance().bindGuiTextureMap();
+			TextureManagerForestry.INSTANCE.bindGuiTextureMap();
 			blit(transform, 2, 2, getBlitOffset(), 16, 16, climate.getSprite());
 		}
 

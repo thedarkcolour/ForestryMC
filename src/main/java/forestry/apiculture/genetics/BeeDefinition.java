@@ -933,7 +933,7 @@ public enum BeeDefinition implements IBeeDefinition {
 		protected void setSpeciesProperties(IAlleleBeeSpeciesBuilder beeSpecies) {
 			beeSpecies.addProduct(() -> BEE_COMBS.stack(EnumHoneyComb.WHEATEN, 1), 0.30f)
 				.addSpecialty(() -> BEE_COMBS.stack(EnumHoneyComb.MELLOW, 1), 0.10f)
-				.setJubilanceProvider(new JubilanceProviderHermit());
+				.setJubilanceProvider(JubilanceProviderHermit.INSTANCE);
 		}
 
 		@Override
@@ -950,7 +950,7 @@ public enum BeeDefinition implements IBeeDefinition {
 		@Override
 		protected void setSpeciesProperties(IAlleleBeeSpeciesBuilder beeSpecies) {
 			beeSpecies.addSpecialty(() -> BEE_COMBS.stack(EnumHoneyComb.MELLOW, 1), 0.20f)
-				.setJubilanceProvider(new JubilanceProviderHermit());
+				.setJubilanceProvider(JubilanceProviderHermit.INSTANCE);
 		}
 
 		@Override
@@ -967,7 +967,7 @@ public enum BeeDefinition implements IBeeDefinition {
 		@Override
 		protected void setSpeciesProperties(IAlleleBeeSpeciesBuilder beeSpecies) {
 			beeSpecies.addSpecialty(() -> BEE_COMBS.stack(EnumHoneyComb.MELLOW, 1), 0.20f)
-				.setJubilanceProvider(new JubilanceProviderHermit())
+				.setJubilanceProvider(JubilanceProviderHermit.INSTANCE)
 				.setHasEffect();
 		}
 

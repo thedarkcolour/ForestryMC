@@ -5,21 +5,12 @@ import java.util.UUID;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.EntityDataSerializer;
 
 import com.mojang.authlib.GameProfile;
 
-public class GameProfileDataSerializer implements EntityDataSerializer<Optional<GameProfile>> {
-	public static final GameProfileDataSerializer INSTANCE = new GameProfileDataSerializer();
-
-	public static void register() {
-		EntityDataSerializers.registerSerializer(INSTANCE);
-	}
-
-	private GameProfileDataSerializer() {
-
-	}
+public enum GameProfileDataSerializer implements EntityDataSerializer<Optional<GameProfile>> {
+	INSTANCE;
 
 	@Override
 	public void write(FriendlyByteBuf buf, Optional<GameProfile> value) {

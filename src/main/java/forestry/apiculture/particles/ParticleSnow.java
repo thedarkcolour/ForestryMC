@@ -8,13 +8,14 @@
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
  ******************************************************************************/
-package forestry.apiculture.entities;
+package forestry.apiculture.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
+// todo check if this is broken
 public class ParticleSnow extends TextureSheetParticle {
 	public static final TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
 

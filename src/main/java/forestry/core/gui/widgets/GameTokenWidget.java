@@ -81,9 +81,9 @@ public class GameTokenWidget extends Widget {
 		GuiUtil.drawItemStack(transform, manager.gui, tokenStack, startX + xPos + 3, startY + yPos + 3);
 
 		RenderSystem.disableDepthTest();
-		TextureManagerForestry.getInstance().bindGuiTextureMap();
+		TextureManagerForestry.INSTANCE.bindGuiTextureMap();
 		for (String ident : token.getOverlayIcons()) {
-			TextureAtlasSprite icon = TextureManagerForestry.getInstance().getDefault(ident);
+			TextureAtlasSprite icon = TextureManagerForestry.INSTANCE.getDefault(ident);
 			GuiComponent.blit(transform, startX + xPos + 3, startY + yPos + 3, manager.gui.getBlitOffset(), 16, 16, icon);
 		}
 		RenderSystem.enableDepthTest();

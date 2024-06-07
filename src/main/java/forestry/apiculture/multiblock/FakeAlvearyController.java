@@ -14,13 +14,12 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.phys.Vec3;
 
 import com.mojang.authlib.GameProfile;
-
-import net.minecraftforge.registries.ForgeRegistries;
 
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
@@ -34,12 +33,8 @@ import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.FakeMultiblockController;
 
-public class FakeAlvearyController extends FakeMultiblockController implements IAlvearyControllerInternal {
-	public static final FakeAlvearyController instance = new FakeAlvearyController();
-
-	private FakeAlvearyController() {
-
-	}
+public enum FakeAlvearyController implements FakeMultiblockController, IAlvearyControllerInternal {
+	INSTANCE;
 
 	@Override
 	public Iterable<IBeeModifier> getBeeModifiers() {
@@ -53,12 +48,12 @@ public class FakeAlvearyController extends FakeMultiblockController implements I
 
 	@Override
 	public IBeeHousingInventory getBeeInventory() {
-		return FakeBeeHousingInventory.instance;
+		return FakeBeeHousingInventory.INSTANCE;
 	}
 
 	@Override
 	public IBeekeepingLogic getBeekeepingLogic() {
-		return FakeBeekeepingLogic.instance;
+		return FakeBeekeepingLogic.INSTANCE;
 	}
 
 	@Override
@@ -89,12 +84,12 @@ public class FakeAlvearyController extends FakeMultiblockController implements I
 
 	@Override
 	public Vec3 getBeeFXCoordinates() {
-		return new Vec3(0, 0, 0);
+		return Vec3.ZERO;
 	}
 
 	@Override
 	public Biome getBiome() {
-		return ForgeRegistries.BIOMES.getDelegateOrThrow(Biomes.PLAINS).value();
+		return BuiltinRegistries.BIOME.getOrThrow(Biomes.PLAINS);
 	}
 
 	@Override

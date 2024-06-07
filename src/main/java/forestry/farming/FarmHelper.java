@@ -34,6 +34,7 @@ import forestry.api.farming.IFarmLogic;
 import forestry.core.utils.VectUtil;
 
 public class FarmHelper {
+	public static final Comparator<ICrop> TOP_DOWN_COMPARATOR = (o1, o2) -> VectUtil.TOP_DOWN_COMPARATOR.compare(o1.getPosition(), o2.getPosition());
 
 	public enum Stage {
 		CULTIVATE, HARVEST;
@@ -225,18 +226,5 @@ public class FarmHelper {
 			}
 		}
 		return harvested;
-	}
-
-	public static class TopDownICropComparator implements Comparator<ICrop> {
-		public static final TopDownICropComparator INSTANCE = new TopDownICropComparator();
-
-		private TopDownICropComparator() {
-
-		}
-
-		@Override
-		public int compare(ICrop o1, ICrop o2) {
-			return VectUtil.TOP_DOWN_COMPARATOR.compare(o1.getPosition(), o2.getPosition());
-		}
 	}
 }

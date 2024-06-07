@@ -18,7 +18,7 @@ import forestry.api.apiculture.IJubilanceProvider;
 public class JubilanceFactory implements IJubilanceFactory {
 	@Override
 	public IJubilanceProvider getDefault() {
-		return JubilanceDefault.instance;
+		return JubilanceDefault.INSTANCE;
 	}
 
 	@Override

@@ -31,18 +31,15 @@ import forestry.arboriculture.models.ModelDefaultLeavesFruit;
 import forestry.arboriculture.models.ModelLeaves;
 import forestry.arboriculture.models.SaplingModelLoader;
 import forestry.arboriculture.models.TextureLeaves;
-import forestry.core.config.Constants;
 import forestry.core.models.ClientManager;
 import forestry.modules.IClientModuleHandler;
-
-import genetics.utils.AlleleUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class ProxyArboricultureClient extends ProxyArboriculture implements IClientModuleHandler {
 
 	@Override
 	public void initializeModels() {
-		ClientManager clientManager = ClientManager.getInstance();
+		ClientManager clientManager = ClientManager.INSTANCE;
 		clientManager.registerModel(new ModelLeaves(), ArboricultureBlocks.LEAVES);
 		clientManager.registerModel(new ModelDecorativeLeaves(), ArboricultureBlocks.LEAVES_DECORATIVE);
 		clientManager.registerModel(new ModelDefaultLeaves(), ArboricultureBlocks.LEAVES_DEFAULT);

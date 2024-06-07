@@ -194,7 +194,7 @@ public enum FarmDefinition implements StringRepresentable {
 
 	FarmDefinition(String identifier, EnumElectronTube tube, BiFunction<IFarmProperties, Boolean, IFarmLogic> factory, String module) {
 		String camelCase = WordUtils.capitalize(identifier);
-		IFarmPropertiesBuilder builder = FarmRegistry.getInstance().getPropertiesBuilder(identifier)
+		IFarmPropertiesBuilder builder = FarmRegistry.INSTANCE.getPropertiesBuilder(identifier)
 			.setFactory(factory)
 			.setTranslationKey("for.farm." + identifier)
 			.addFarmables("farm" + camelCase);

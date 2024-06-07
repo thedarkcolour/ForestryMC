@@ -52,7 +52,7 @@ public class HabitatSlot extends Widget {
 
 	@OnlyIn(Dist.CLIENT)
 	public TextureAtlasSprite getIcon() {
-		return TextureManagerForestry.getInstance().getDefault(iconIndex);
+		return TextureManagerForestry.INSTANCE.getDefault(iconIndex);
 	}
 
 	public void setActive(Collection<BiomeCategory> biomes) {
@@ -67,7 +67,7 @@ public class HabitatSlot extends Widget {
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
-		TextureManagerForestry.getInstance().bindGuiTextureMap();
+		TextureManagerForestry.INSTANCE.bindGuiTextureMap();
 		GuiComponent.blit(transform, startX + xPos, startY + yPos, manager.gui.getBlitOffset(), 16, 16, getIcon());
 	}
 }

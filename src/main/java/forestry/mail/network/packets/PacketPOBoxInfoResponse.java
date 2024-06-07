@@ -40,6 +40,6 @@ public record PacketPOBoxInfoResponse(int playerLetters, int tradeLetters) imple
 	}
 
 	public static void handle(PacketPOBoxInfoResponse msg, Player player) {
-		GuiMailboxInfo.instance.setPOBoxInfo(player, new POBoxInfo(msg.playerLetters, msg.tradeLetters));
+		GuiMailboxInfo.INSTANCE.setPOBoxInfo(player, new POBoxInfo(msg.playerLetters, msg.tradeLetters));
 	}
 }

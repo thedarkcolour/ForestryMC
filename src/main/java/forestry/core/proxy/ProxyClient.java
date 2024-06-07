@@ -21,29 +21,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.core.models.ClientManager;
 import forestry.core.render.TextureManagerForestry;
 
-@SuppressWarnings("unused")
-@OnlyIn(Dist.CLIENT)
 public class ProxyClient extends ProxyCommon {
-
 	@Override
 	public void registerBlock(Block block) {
-		ClientManager.getInstance().registerBlockClient(block);
-		if (Minecraft.getInstance() != null) {
-			TextureManagerForestry.getInstance().registerBlock(block);
-		}
+		ClientManager.INSTANCE.registerBlockClient(block);
+		TextureManagerForestry.INSTANCE.registerBlock(block);
 	}
 
 	@Override
 	public void registerItem(Item item) {
-		ClientManager.getInstance().registerItemClient(item);
-		if (Minecraft.getInstance() != null) {
-			TextureManagerForestry.getInstance().registerItem(item);
-		}
+		ClientManager.INSTANCE.registerItemClient(item);
+		TextureManagerForestry.INSTANCE.registerItem(item);
 	}
 
 	@Override
 	public File getForestryRoot() {
 		return Minecraft.getInstance().gameDirectory;
 	}
-
 }

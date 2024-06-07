@@ -14,8 +14,6 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
 public class MaterialBeehive {
-
 	public static final Material BEEHIVE_WORLD = (new Material.Builder(MaterialColor.COLOR_BROWN)).build();
 	public static final Material BEEHIVE_ALVEARY = (new Material.Builder(MaterialColor.COLOR_BROWN)).build();
-
 }

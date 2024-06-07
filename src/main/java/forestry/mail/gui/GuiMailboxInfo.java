@@ -42,7 +42,7 @@ public class GuiMailboxInfo extends GuiComponent {
 		TOP, BOTTOM
 	}
 
-	public static final GuiMailboxInfo instance = new GuiMailboxInfo();
+	public static final GuiMailboxInfo INSTANCE = new GuiMailboxInfo();
 	private static final int WIDTH = 98;
 	private static final int HEIGHT = 17;
 

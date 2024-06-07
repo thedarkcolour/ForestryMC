@@ -24,6 +24,8 @@ import forestry.apiculture.genetics.alleles.AlleleEffect;
  * Hermits will not produce if there are any other living creatures nearby.
  */
 public class JubilanceProviderHermit extends JubilanceDefault {
+	public static final JubilanceProviderHermit INSTANCE = new JubilanceProviderHermit();
+
 	@Override
 	public boolean isJubilant(IAlleleBeeSpecies species, IGenome genome, IBeeHousing housing) {
 		List<Mob> list = AlleleEffect.getEntitiesInRange(genome, housing, Mob.class);

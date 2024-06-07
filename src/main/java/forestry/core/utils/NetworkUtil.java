@@ -49,14 +49,6 @@ public class NetworkUtil {
 		NetworkHandler.CHANNEL.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
-	// todo implement
-	public static void inventoryChangeNotify(Player player, AbstractContainerMenu container) {
-		if (player instanceof ServerPlayer) {
-			throw new RuntimeException("Unimplemented");
-			// ((ServerPlayer) player).refreshContainer(container);
-		}
-	}
-
 	// Used for Streamable to prepare FriendlyByteBuf for sending over the network
 	public static void writePayloadBuffer(FriendlyByteBuf buffer, Consumer<FriendlyByteBuf> dataWriter) {
 		// write a placeholder value for the number of bytes, keeping its index for replacing later

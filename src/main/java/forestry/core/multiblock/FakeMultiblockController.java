@@ -14,183 +14,171 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 
 import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
 import forestry.api.core.IErrorLogic;
+import forestry.api.core.ILocatable;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.errors.FakeErrorLogic;
 import forestry.core.owner.FakeOwnerHandler;
 import forestry.core.owner.IOwnerHandler;
 
-public abstract class FakeMultiblockController implements IMultiblockControllerInternal {
-	@Override
-	public void attachBlock(IMultiblockComponent part) {
+import org.jetbrains.annotations.Nullable;
 
+public interface FakeMultiblockController extends IMultiblockControllerInternal, ILocatable {
+	@Override
+	default void attachBlock(IMultiblockComponent part) {
 	}
 
 	@Override
-	public void detachBlock(IMultiblockComponent part, boolean chunkUnloading) {
-
+	default void detachBlock(IMultiblockComponent part, boolean chunkUnloading) {
 	}
 
 	@Override
-	public void checkIfMachineIsWhole() {
-
+	default void checkIfMachineIsWhole() {
 	}
 
 	@Override
-	public void assimilate(IMultiblockControllerInternal other) {
-
+	default void assimilate(IMultiblockControllerInternal other) {
 	}
 
 	@Override
-	public void _onAssimilated(IMultiblockControllerInternal otherController) {
-
+	default void _onAssimilated(IMultiblockControllerInternal otherController) {
 	}
 
 	@Override
-	public void onAssimilated(IMultiblockControllerInternal assimilator) {
-
+	default void onAssimilated(IMultiblockControllerInternal assimilator) {
 	}
 
 	@Override
-	public void updateMultiblockEntity() {
-
+	default void updateMultiblockEntity() {
 	}
 
 	@Override
-	public BlockPos getReferenceCoord() {
+	default BlockPos getReferenceCoord() {
 		return BlockPos.ZERO;
 	}
 
 	@Override
-	public void recalculateMinMaxCoords() {
-
+	default void recalculateMinMaxCoords() {
 	}
 
 	@Override
-	public void formatDescriptionPacket(CompoundTag data) {
-
+	default void formatDescriptionPacket(CompoundTag data) {
 	}
 
 	@Override
-	public void decodeDescriptionPacket(CompoundTag data) {
-
+	default void decodeDescriptionPacket(CompoundTag data) {
 	}
 
 	@Override
-	public Level getWorldObj() {
+	default Level getWorldObj() {
 		return null;
 	}
 
 	@Override
-	public boolean isEmpty() {
+	default boolean isEmpty() {
 		return true;
 	}
 
 	@Override
-	public boolean shouldConsume(IMultiblockControllerInternal otherController) {
+	default boolean shouldConsume(IMultiblockControllerInternal otherController) {
 		return false;
 	}
 
 	@Override
-	public String getPartsListString() {
+	default String getPartsListString() {
 		return "";
 	}
 
 	@Override
-	public void auditParts() {
-
+	default void auditParts() {
 	}
 
-
 	@Override
-	public Set<IMultiblockComponent> checkForDisconnections() {
-		return Collections.emptySet();
-	}
-
-
-	@Override
-	public Set<IMultiblockComponent> detachAllBlocks() {
+	default Set<IMultiblockComponent> checkForDisconnections() {
 		return Collections.emptySet();
 	}
 
 	@Override
-	public boolean isAssembled() {
+	default Set<IMultiblockComponent> detachAllBlocks() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	default boolean isAssembled() {
 		return false;
 	}
 
 	@Override
-	public void reassemble() {
-
+	default void reassemble() {
 	}
 
 	@Override
-	public String getLastValidationError() {
+	default String getLastValidationError() {
+		return null;
+	}
+
+	@Nullable
+	@Override
+	default BlockPos getLastValidationErrorPosition() {
 		return null;
 	}
 
 	@Override
-	public BlockPos getLastValidationErrorPosition() {
-		return null;
-	}
-
-	@Override
-
-	public Collection<IMultiblockComponent> getComponents() {
+	default Collection<IMultiblockComponent> getComponents() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	public void read(CompoundTag CompoundNBT) {
-
+	default void read(CompoundTag CompoundNBT) {
 	}
 
 	@Override
-	public CompoundTag write(CompoundTag CompoundNBT) {
+	default CompoundTag write(CompoundTag CompoundNBT) {
 		return CompoundNBT;
 	}
 
 	@Override
-	public IOwnerHandler getOwnerHandler() {
-		return FakeOwnerHandler.getInstance();
+	default IOwnerHandler getOwnerHandler() {
+		return FakeOwnerHandler.INSTANCE;
 	}
 
 	@Override
-	public EnumTemperature getTemperature() {
+	default EnumTemperature getTemperature() {
 		return EnumTemperature.NORMAL;
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
+	default EnumHumidity getHumidity() {
 		return EnumHumidity.NORMAL;
 	}
 
 	@Override
-	public float getExactTemperature() {
+	default float getExactTemperature() {
 		return 0.5f;
 	}
 
 	@Override
-	public float getExactHumidity() {
+	default float getExactHumidity() {
 		return 0.5f;
 	}
 
 	@Override
-	public IErrorLogic getErrorLogic() {
-		return FakeErrorLogic.instance;
+	default IErrorLogic getErrorLogic() {
+		return FakeErrorLogic.INSTANCE;
 	}
 
 	@Override
-	public void writeGuiData(FriendlyByteBuf data) {
+	default void writeGuiData(FriendlyByteBuf data) {
 	}
 
 	@Override
-	public void readGuiData(FriendlyByteBuf data) {
+	default void readGuiData(FriendlyByteBuf data) {
 	}
 }

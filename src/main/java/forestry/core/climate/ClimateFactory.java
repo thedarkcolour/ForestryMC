@@ -6,11 +6,8 @@ import forestry.api.climate.IClimateListener;
 import forestry.api.climate.IClimateTransformer;
 import forestry.api.core.ILocatable;
 
-public class ClimateFactory implements IClimateFactory {
-	public static final IClimateFactory INSTANCE = new ClimateFactory();
-
-	private ClimateFactory() {
-	}
+public enum ClimateFactory implements IClimateFactory {
+	INSTANCE;
 
 	@Override
 	public IClimateTransformer createTransformer(IClimateHousing housing) {

@@ -12,12 +12,8 @@ package forestry.farming.multiblock;
 
 import forestry.core.multiblock.IMultiblockSizeLimits;
 
-class FarmMultiblockSizeLimits implements IMultiblockSizeLimits {
-	public static final FarmMultiblockSizeLimits instance = new FarmMultiblockSizeLimits();
-
-	private FarmMultiblockSizeLimits() {
-
-	}
+enum FarmMultiblockSizeLimits implements IMultiblockSizeLimits {
+	INSTANCE;
 
 	@Override
 	public int getMinimumNumberOfBlocksForAssembledMachine() {

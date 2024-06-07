@@ -35,7 +35,7 @@ public class EngineScreen<M extends AbstractContainerMenu, E extends EngineBlock
 		public void draw(PoseStack transform, int y, int x) {
 			drawBackground(transform, y, x);
 
-			drawSprite(transform, TextureManagerForestry.getInstance().getDefault("misc/energy"), x + 3, y + 4);
+			drawSprite(transform, TextureManagerForestry.INSTANCE.getDefault("misc/energy"), x + 3, y + 4);
 
 			if (isFullyOpened()) {
 				drawHeader(transform, Component.translatable("for.gui.energy"), x + 22, y + 8);

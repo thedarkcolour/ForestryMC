@@ -222,7 +222,7 @@ public abstract class Ledger {
 	}
 
 	protected void drawSprite(PoseStack transform, TextureAtlasSprite sprite, int x, int y) {
-		drawSprite(transform, sprite, x, y, TextureManagerForestry.getInstance().getGuiTextureMap());
+		drawSprite(transform, sprite, x, y, TextureManagerForestry.INSTANCE.getGuiTextureMap());
 	}
 
 	protected void drawSprite(PoseStack transform, TextureAtlasSprite sprite, int x, int y, ResourceLocation textureMap) {

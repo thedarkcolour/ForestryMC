@@ -4,12 +4,8 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.IBeeHousingInventory;
 
-public class FakeBeeHousingInventory implements IBeeHousingInventory {
-	public static final FakeBeeHousingInventory instance = new FakeBeeHousingInventory();
-
-	private FakeBeeHousingInventory() {
-
-	}
+public enum FakeBeeHousingInventory implements IBeeHousingInventory {
+	INSTANCE;
 
 	@Override
 	public ItemStack getQueen() {
@@ -23,12 +19,10 @@ public class FakeBeeHousingInventory implements IBeeHousingInventory {
 
 	@Override
 	public void setQueen(ItemStack itemstack) {
-
 	}
 
 	@Override
 	public void setDrone(ItemStack itemstack) {
-
 	}
 
 	@Override

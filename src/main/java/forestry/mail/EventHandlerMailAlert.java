@@ -35,9 +35,9 @@ public class EventHandlerMailAlert {
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
 		if (event.phase == TickEvent.Phase.END &&
 				Minecraft.getInstance().level != null &&
-				GuiMailboxInfo.instance.hasPOBoxInfo()) {
+				GuiMailboxInfo.INSTANCE.hasPOBoxInfo()) {
 			//TODO: Test / Find a valid matrix stack
-			GuiMailboxInfo.instance.render(new PoseStack());
+			GuiMailboxInfo.INSTANCE.render(new PoseStack());
 		}
 	}
 
