@@ -1,11 +1,5 @@
 {
     "variants": {
-      "facing=up": {
-        "model": "forestry:block/worktable"
-      },
-      "facing=down": {
-        "model": "forestry:block/worktable"
-      },
       "facing=north": {
         "model": "forestry:block/worktable"
       },

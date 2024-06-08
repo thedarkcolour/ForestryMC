@@ -12,6 +12,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -89,6 +90,12 @@ public final class ForestryItemTagsProvider extends ItemTagsProvider {
 		copy(Tags.Blocks.FENCE_GATES, Tags.Items.FENCE_GATES);
 		copy(Tags.Blocks.FENCE_GATES_WOODEN, Tags.Items.FENCE_GATES_WOODEN);
 		copy(Tags.Blocks.CHESTS, Tags.Items.CHESTS);
+
+		tag(ForestryTags.Items.CRAFTING_TABLES)
+				.addOptionalTag(new ResourceLocation("c", "player_workstations/crafting_tables"))
+				.addOptionalTag(new ResourceLocation("c", "workbenches"))
+				.addOptionalTag(new ResourceLocation("c", "workbench"))
+				.add(Items.CRAFTING_TABLE);
 	}
 
 	@SafeVarargs
