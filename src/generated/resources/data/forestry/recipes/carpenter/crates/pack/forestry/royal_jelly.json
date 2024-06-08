@@ -1,0 +1,27 @@
+{
+  "type": "forestry:carpenter",
+  "box": {
+    "item": "forestry:crate"
+  },
+  "liquid": {
+    "Amount": 100,
+    "FluidName": "minecraft:water"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "item": "forestry:royal_jelly"
+      }
+    },
+    "pattern": [
+      "###",
+      "###",
+      "###"
+    ],
+    "result": {
+      "item": "forestry:crated_royal_jelly"
+    }
+  },
+  "time": 5
+}

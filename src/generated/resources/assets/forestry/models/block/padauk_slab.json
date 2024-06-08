@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "forestry:block/padauk_planks",
+    "side": "forestry:block/padauk_planks",
+    "top": "forestry:block/padauk_planks"
+  }
+}

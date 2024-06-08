@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:paper"
+    },
+    "X": {
+      "item": "minecraft:nether_star"
+    },
+    "Z": [
+      {
+        "tag": "forestry:drop_honey"
+      },
+      {
+        "item": "minecraft:slime_ball"
+      }
+    ]
+  },
+  "pattern": [
+    "XXX",
+    "###",
+    "ZZZ"
+  ],
+  "result": {
+    "count": 9,
+    "item": "forestry:stamp_100n"
+  }
+}

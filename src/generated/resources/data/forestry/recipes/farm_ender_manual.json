@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "forestry:farm_ender_managed"
+    }
+  ],
+  "result": {
+    "item": "forestry:farm_ender_manual"
+  }
+}

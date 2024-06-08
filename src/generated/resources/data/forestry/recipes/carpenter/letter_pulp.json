@@ -1,0 +1,24 @@
+{
+  "type": "forestry:carpenter",
+  "box": [],
+  "liquid": {
+    "Amount": 250,
+    "FluidName": "minecraft:water"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "item": "forestry:wood_pulp"
+      }
+    },
+    "pattern": [
+      "###",
+      "###"
+    ],
+    "result": {
+      "item": "forestry:letter_empty_fresh"
+    }
+  },
+  "time": 10
+}

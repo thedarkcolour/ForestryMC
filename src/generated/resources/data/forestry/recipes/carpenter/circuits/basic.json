@@ -1,0 +1,35 @@
+{
+  "type": "forestry:carpenter",
+  "box": [],
+  "liquid": {
+    "Amount": 1000,
+    "FluidName": "minecraft:water"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "tag": "forge:ingots/tin"
+      },
+      "R": {
+        "tag": "forge:dusts/redstone"
+      }
+    },
+    "pattern": [
+      "R R",
+      "R#R",
+      "R R"
+    ],
+    "result": {
+      "item": "forestry:circuit_board_basic"
+    }
+  },
+  "result": {
+    "Count": 1,
+    "id": "forestry:circuit_board_basic",
+    "tag": {
+      "T": 0
+    }
+  },
+  "time": 20
+}

@@ -1,0 +1,17 @@
+{
+  "type": "forestry:carpenter",
+  "box": [],
+  "recipe": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "forestry:crated_charcoal"
+      }
+    ],
+    "result": {
+      "count": 9,
+      "item": "minecraft:charcoal"
+    }
+  },
+  "time": 5
+}

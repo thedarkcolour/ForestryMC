@@ -1,0 +1,6 @@
+{
+  "loader": "forestry:filled_crate",
+  "textures": {
+    "layer1": "minecraft:item/glowstone_dust"
+  }
+}

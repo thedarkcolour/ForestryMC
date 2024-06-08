@@ -1,0 +1,30 @@
+{
+  "type": "forestry:squeezer",
+  "chance": 0.0,
+  "output": {
+    "Amount": 4000,
+    "FluidName": "forestry:ice"
+  },
+  "remnant": {
+    "Count": 1,
+    "id": "minecraft:air"
+  },
+  "resources": [
+    {
+      "item": "minecraft:snowball"
+    },
+    {
+      "item": "forestry:ice_shard"
+    },
+    {
+      "item": "forestry:ice_shard"
+    },
+    {
+      "item": "forestry:ice_shard"
+    },
+    {
+      "item": "forestry:ice_shard"
+    }
+  ],
+  "time": 10
+}

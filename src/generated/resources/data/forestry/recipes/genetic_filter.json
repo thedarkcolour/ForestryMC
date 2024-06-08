@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:gears/bronze"
+    },
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "F": [
+      {
+        "item": "forestry:caterpillar_ge"
+      },
+      {
+        "item": "forestry:propolis_normal"
+      },
+      {
+        "tag": "forestry:forestry_fruits"
+      }
+    ],
+    "G": {
+      "tag": "forge:glass"
+    },
+    "W": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "WDW",
+    "FGF",
+    "BDB"
+  ],
+  "result": {
+    "count": 2,
+    "item": "forestry:genetic_filter"
+  }
+}

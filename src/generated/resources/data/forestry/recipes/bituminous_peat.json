@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:dusts/ash"
+    },
+    "X": {
+      "item": "forestry:peat"
+    },
+    "Y": {
+      "item": "forestry:propolis_normal"
+    }
+  },
+  "pattern": [
+    " # ",
+    "XYX",
+    " # "
+  ],
+  "result": {
+    "item": "forestry:bituminous_peat"
+  }
+}

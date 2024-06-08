@@ -1,0 +1,25 @@
+{
+  "type": "forestry:carpenter",
+  "box": [],
+  "liquid": {
+    "Amount": 500,
+    "FluidName": "forestry:seed_oil"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "tag": "minecraft:planks"
+      }
+    },
+    "pattern": [
+      "#  ",
+      "###",
+      "# #"
+    ],
+    "result": {
+      "item": "forestry:escritoire"
+    }
+  },
+  "time": 50
+}

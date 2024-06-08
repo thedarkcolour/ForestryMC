@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "forestry:impregnated_casing"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "tag": "minecraft:wooden_slabs"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "PCP",
+    "PPP"
+  ],
+  "result": {
+    "item": "forestry:apiary"
+  }
+}

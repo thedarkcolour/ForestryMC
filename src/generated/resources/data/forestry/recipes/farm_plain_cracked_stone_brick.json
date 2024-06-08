@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:cracked_stone_bricks"
+    },
+    "C": {
+      "item": "forestry:electron_tube_tin"
+    },
+    "I": {
+      "item": "minecraft:copper_ingot"
+    },
+    "W": {
+      "tag": "minecraft:wooden_slabs"
+    }
+  },
+  "pattern": [
+    "I#I",
+    "WCW"
+  ],
+  "result": {
+    "item": "forestry:farm_plain_cracked_stone_brick"
+  }
+}

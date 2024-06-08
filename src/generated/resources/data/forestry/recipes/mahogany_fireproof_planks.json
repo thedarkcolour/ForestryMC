@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "planks",
+  "ingredients": [
+    {
+      "item": "forestry:mahogany_fireproof_log"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "item": "forestry:mahogany_fireproof_planks"
+  }
+}

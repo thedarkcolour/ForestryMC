@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "wooden_door",
+  "key": {
+    "#": [
+      {
+        "item": "forestry:cherry_planks"
+      },
+      {
+        "item": "forestry:cherry_fireproof_planks"
+      }
+    ]
+  },
+  "pattern": [
+    "##",
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 3,
+    "item": "forestry:cherry_door"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "minecraft:wool"
+    },
+    "V": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "tag": "forge:string"
+    },
+    "Y": {
+      "item": "forestry:tree_chest"
+    }
+  },
+  "pattern": [
+    "X#X",
+    "VYV",
+    "X#X"
+  ],
+  "result": {
+    "item": "forestry:apiarist_bag"
+  }
+}

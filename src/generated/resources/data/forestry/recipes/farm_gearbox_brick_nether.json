@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:nether_bricks"
+    },
+    "T": {
+      "tag": "forge:gears/tin"
+    }
+  },
+  "pattern": [
+    " # ",
+    "TTT"
+  ],
+  "result": {
+    "item": "forestry:farm_gearbox_brick_nether"
+  }
+}

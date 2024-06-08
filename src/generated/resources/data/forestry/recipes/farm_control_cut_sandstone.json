@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:cut_sandstone"
+    },
+    "T": {
+      "item": "forestry:electron_tube_gold"
+    },
+    "X": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    " # ",
+    "XTX"
+  ],
+  "result": {
+    "item": "forestry:farm_control_cut_sandstone"
+  }
+}

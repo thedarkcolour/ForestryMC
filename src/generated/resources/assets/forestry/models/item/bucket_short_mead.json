@@ -1,0 +1,5 @@
+{
+  "parent": "forge:item/bucket",
+  "fluid": "forestry:short_mead",
+  "loader": "forge:fluid_container"
+}

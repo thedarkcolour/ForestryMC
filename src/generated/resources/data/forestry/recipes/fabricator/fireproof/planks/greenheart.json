@@ -1,0 +1,28 @@
+{
+  "type": "forestry:fabricator",
+  "molten": {
+    "Amount": 500,
+    "FluidName": "forestry:glass"
+  },
+  "plan": [],
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "item": "forestry:refractory_wax"
+      },
+      "X": {
+        "item": "forestry:greenheart_planks"
+      }
+    },
+    "pattern": [
+      "X#X",
+      "#X#",
+      "X#X"
+    ],
+    "result": {
+      "count": 5,
+      "item": "forestry:greenheart_fireproof_planks"
+    }
+  }
+}

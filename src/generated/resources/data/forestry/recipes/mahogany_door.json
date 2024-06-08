@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "wooden_door",
+  "key": {
+    "#": [
+      {
+        "item": "forestry:mahogany_planks"
+      },
+      {
+        "item": "forestry:mahogany_fireproof_planks"
+      }
+    ]
+  },
+  "pattern": [
+    "##",
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 3,
+    "item": "forestry:mahogany_door"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:glass"
+    },
+    "X": {
+      "tag": "minecraft:saplings"
+    },
+    "Y": {
+      "tag": "forge:chests/wooden"
+    }
+  },
+  "pattern": [
+    " # ",
+    "XYX",
+    "XXX"
+  ],
+  "result": {
+    "item": "forestry:tree_chest"
+  }
+}

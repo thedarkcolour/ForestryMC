@@ -1,0 +1,27 @@
+{
+  "type": "forestry:carpenter",
+  "box": {
+    "item": "forestry:crate"
+  },
+  "liquid": {
+    "Amount": 100,
+    "FluidName": "minecraft:water"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "item": "forestry:peat"
+      }
+    },
+    "pattern": [
+      "###",
+      "###",
+      "###"
+    ],
+    "result": {
+      "item": "forestry:crated_peat"
+    }
+  },
+  "time": 5
+}

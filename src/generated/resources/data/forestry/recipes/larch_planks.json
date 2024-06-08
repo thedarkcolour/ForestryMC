@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "planks",
+  "ingredients": [
+    {
+      "item": "forestry:larch_log"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "item": "forestry:larch_planks"
+  }
+}

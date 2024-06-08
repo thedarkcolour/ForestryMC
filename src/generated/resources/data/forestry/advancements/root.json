@@ -1,0 +1,123 @@
+{
+  "criteria": {
+    "tick": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "forestry:bee_comb_omega"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_mysterious"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_irradiated"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_parched"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_mossy"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_frozen"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_darkened"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_wheaten"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_reddened"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_dripping"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_powdery"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_cocoa"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_silky"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_honey"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_simmering"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_mellow"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_stringy"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/block/honeycomb_block.png",
+    "description": {
+      "translate": "advancements.forestry.root.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "forestry:bee_queen_ge",
+      "nbt": "{Individual:{Genome:{Chromosomes:[{Slot:0b,UID0:\"forestry:species_industrious\",UID1:\"forestry:species_industrious\"},{Slot:1b,UID0:\"forestry:speed_slower\",UID1:\"forestry:speed_slower\"},{Slot:2b,UID0:\"forestry:lifespan_normal\",UID1:\"forestry:lifespan_normal\"},{Slot:3b,UID0:\"forestry:fertility_normal\",UID1:\"forestry:fertility_normal\"},{Slot:4b,UID0:\"forestry:tolerance_none\",UID1:\"forestry:tolerance_none\"},{Slot:5b,UID0:\"forestry:bool_false\",UID1:\"forestry:bool_false\"},{Slot:6b,UID0:\"forestry:tolerance_none\",UID1:\"forestry:tolerance_none\"},{Slot:7b,UID0:\"forestry:bool_false\",UID1:\"forestry:bool_false\"},{Slot:8b,UID0:\"forestry:bool_false\",UID1:\"forestry:bool_false\"},{Slot:9b,UID0:\"forestry:flowers_vanilla\",UID1:\"forestry:flowers_vanilla\"},{Slot:10b,UID0:\"forestry:flowering_fast\",UID1:\"forestry:flowering_fast\"},{Slot:11b,UID0:\"forestry:territory_average\",UID1:\"forestry:territory_average\"},{Slot:12b,UID0:\"forestry:effect_none\",UID1:\"forestry:effect_none\"}]},Health:40,IsAnalyzed:0b,MaxH:40}}"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.forestry.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "tick"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "forestry:grant_guide"
+    ]
+  }
+}

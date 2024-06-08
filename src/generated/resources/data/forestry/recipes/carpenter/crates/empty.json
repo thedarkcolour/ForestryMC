@@ -1,0 +1,26 @@
+{
+  "type": "forestry:carpenter",
+  "box": [],
+  "liquid": {
+    "Amount": 1000,
+    "FluidName": "minecraft:water"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "tag": "minecraft:logs"
+      }
+    },
+    "pattern": [
+      " # ",
+      "# #",
+      " # "
+    ],
+    "result": {
+      "count": 24,
+      "item": "forestry:crate"
+    }
+  },
+  "time": 20
+}

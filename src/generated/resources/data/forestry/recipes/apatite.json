@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/apatite"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "forestry:apatite"
+  }
+}

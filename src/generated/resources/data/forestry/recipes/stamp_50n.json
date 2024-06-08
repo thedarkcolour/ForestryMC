@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:paper"
+    },
+    "X": {
+      "tag": "forge:gems/emerald"
+    },
+    "Z": [
+      {
+        "tag": "forestry:drop_honey"
+      },
+      {
+        "item": "minecraft:slime_ball"
+      }
+    ]
+  },
+  "pattern": [
+    "XXX",
+    "###",
+    "ZZZ"
+  ],
+  "result": {
+    "count": 9,
+    "item": "forestry:stamp_50n"
+  }
+}

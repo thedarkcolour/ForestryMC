@@ -1,0 +1,62 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "forge:gears/stone"
+          }
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "key": {
+          "#": {
+            "tag": "forge:ingots/bronze"
+          },
+          "X": {
+            "tag": "forge:gears/stone"
+          }
+        },
+        "pattern": [
+          " # ",
+          "#X#",
+          " # "
+        ],
+        "result": {
+          "item": "forestry:gear_bronze"
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "forge:tag_empty",
+          "tag": "forge:gears/stone"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "key": {
+          "#": {
+            "tag": "forge:ingots/bronze"
+          },
+          "X": {
+            "item": "minecraft:copper_ingot"
+          }
+        },
+        "pattern": [
+          " # ",
+          "#X#",
+          " # "
+        ],
+        "result": {
+          "item": "forestry:gear_bronze"
+        }
+      }
+    }
+  ]
+}

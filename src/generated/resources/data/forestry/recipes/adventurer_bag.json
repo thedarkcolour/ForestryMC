@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "minecraft:wool"
+    },
+    "V": {
+      "tag": "forge:bones"
+    },
+    "X": {
+      "tag": "forge:string"
+    },
+    "Y": {
+      "tag": "forge:chests/wooden"
+    }
+  },
+  "pattern": [
+    "X#X",
+    "VYV",
+    "X#X"
+  ],
+  "result": {
+    "item": "forestry:adventurer_bag"
+  }
+}

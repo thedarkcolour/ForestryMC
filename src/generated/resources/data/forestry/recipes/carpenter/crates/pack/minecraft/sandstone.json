@@ -1,0 +1,27 @@
+{
+  "type": "forestry:carpenter",
+  "box": {
+    "item": "forestry:crate"
+  },
+  "liquid": {
+    "Amount": 100,
+    "FluidName": "minecraft:water"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "tag": "forge:sandstone"
+      }
+    },
+    "pattern": [
+      "###",
+      "###",
+      "###"
+    ],
+    "result": {
+      "item": "forestry:crated_sandstone"
+    }
+  },
+  "time": 5
+}

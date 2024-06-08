@@ -1,0 +1,34 @@
+{
+  "type": "forestry:carpenter",
+  "box": [],
+  "liquid": {
+    "Amount": 2000,
+    "FluidName": "minecraft:water"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "D": {
+        "tag": "forge:gems/diamond"
+      },
+      "G": {
+        "item": "forestry:gear_bronze"
+      },
+      "I": {
+        "item": "forestry:ingot_bronze"
+      },
+      "P": {
+        "tag": "forge:glass_panes"
+      }
+    },
+    "pattern": [
+      "IPI",
+      "IPI",
+      "GDG"
+    ],
+    "result": {
+      "item": "forestry:habitat_screen"
+    }
+  },
+  "time": 100
+}

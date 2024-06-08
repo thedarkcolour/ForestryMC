@@ -1,0 +1,18 @@
+{
+  "type": "forestry:squeezer",
+  "chance": 0.0,
+  "output": {
+    "Amount": 10,
+    "FluidName": "forestry:seed_oil"
+  },
+  "remnant": {
+    "Count": 1,
+    "id": "minecraft:air"
+  },
+  "resources": [
+    {
+      "tag": "forge:seeds"
+    }
+  ],
+  "time": 10
+}

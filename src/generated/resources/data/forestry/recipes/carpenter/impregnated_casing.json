@@ -1,0 +1,25 @@
+{
+  "type": "forestry:carpenter",
+  "box": [],
+  "liquid": {
+    "Amount": 250,
+    "FluidName": "forestry:seed_oil"
+  },
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "tag": "minecraft:logs"
+      }
+    },
+    "pattern": [
+      "###",
+      "# #",
+      "###"
+    ],
+    "result": {
+      "item": "forestry:impregnated_casing"
+    }
+  },
+  "time": 50
+}

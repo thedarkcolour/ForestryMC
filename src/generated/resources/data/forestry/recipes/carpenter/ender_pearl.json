@@ -1,0 +1,21 @@
+{
+  "type": "forestry:carpenter",
+  "box": [],
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "item": "forestry:pulsating_mesh"
+      }
+    },
+    "pattern": [
+      " # ",
+      "###",
+      " # "
+    ],
+    "result": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "time": 100
+}

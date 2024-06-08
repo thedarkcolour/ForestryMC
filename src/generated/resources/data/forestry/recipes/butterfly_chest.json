@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:glass"
+    },
+    "X": {
+      "item": "forestry:butterfly_ge"
+    },
+    "Y": {
+      "tag": "forge:chests/wooden"
+    }
+  },
+  "pattern": [
+    " # ",
+    "XYX",
+    "XXX"
+  ],
+  "result": {
+    "item": "forestry:butterfly_chest"
+  }
+}

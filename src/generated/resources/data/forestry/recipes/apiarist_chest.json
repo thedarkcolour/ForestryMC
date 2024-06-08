@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "apiarist_armour",
+  "key": {
+    "#": {
+      "item": "forestry:woven_silk"
+    }
+  },
+  "pattern": [
+    "# #",
+    "###",
+    "###"
+  ],
+  "result": {
+    "item": "forestry:apiarist_chest"
+  }
+}

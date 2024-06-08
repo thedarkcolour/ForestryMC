@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:rods/wooden"
+    },
+    "B": {
+      "tag": "forge:ingots/bronze"
+    }
+  },
+  "pattern": [
+    "  B",
+    " # ",
+    "#  "
+  ],
+  "result": {
+    "item": "forestry:grafter"
+  }
+}

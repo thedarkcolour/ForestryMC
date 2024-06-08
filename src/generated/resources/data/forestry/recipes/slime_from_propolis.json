@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "forestry:propolis_normal"
+    },
+    "X": {
+      "item": "forestry:pollen_cluster_normal"
+    }
+  },
+  "pattern": [
+    "#X#",
+    "#X#",
+    "#X#"
+  ],
+  "result": {
+    "item": "minecraft:slime_ball"
+  }
+}

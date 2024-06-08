@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "G": {
+      "tag": "forge:gears/bronze"
+    },
+    "I": {
+      "tag": "forge:ingots/bronze"
+    },
+    "P": {
+      "tag": "forge:glass_panes"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "IPI",
+    "DGD"
+  ],
+  "result": {
+    "item": "forestry:habitat_screen"
+  }
+}

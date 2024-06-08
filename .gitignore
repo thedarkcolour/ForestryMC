@@ -1,23 +1,25 @@
-# everything
-/*
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
 
-# folders
-!/.github
-!/gradle/wrapper
-!/src
-/src/generated/
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+logs
 
-# files
-!/.gitignore
-!/CLA.txt
-!/CONTRIBUTING.md
-!/LICENSE.txt
-!/license-header.txt
-!/README.md
-!/gradle.properties
-!/build.gradle
-!/settings.gradle
-!/gradlew
-!/gradlew.bat
-!/cla-signatures.txt
-!/formatting-settings.jar
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+runs
+libs

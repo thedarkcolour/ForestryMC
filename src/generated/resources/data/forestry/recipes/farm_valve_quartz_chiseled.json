@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:chiseled_quartz_block"
+    },
+    "T": {
+      "tag": "forge:gears/tin"
+    },
+    "X": {
+      "tag": "forge:glass"
+    }
+  },
+  "pattern": [
+    " # ",
+    "XTX"
+  ],
+  "result": {
+    "item": "forestry:farm_valve_quartz_chiseled"
+  }
+}

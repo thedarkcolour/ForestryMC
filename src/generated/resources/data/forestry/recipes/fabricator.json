@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:glass"
+    },
+    "X": {
+      "tag": "forge:ingots/gold"
+    },
+    "Y": {
+      "item": "forestry:sturdy_machine"
+    },
+    "Z": {
+      "tag": "forge:chests/wooden"
+    }
+  },
+  "pattern": [
+    "X#X",
+    "#Y#",
+    "XZX"
+  ],
+  "result": {
+    "item": "forestry:fabricator"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "forestry:honey_drop_honey"
+    },
+    "X": {
+      "item": "forestry:capsule"
+    }
+  },
+  "pattern": [
+    "# #",
+    " X ",
+    "# #"
+  ],
+  "result": {
+    "item": "forestry:honey_pot"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/tin"
+    },
+    "X": {
+      "tag": "forge:chests/wooden"
+    },
+    "Y": {
+      "item": "forestry:sturdy_machine"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#Y#",
+    "XXX"
+  ],
+  "result": {
+    "item": "forestry:mailbox"
+  }
+}

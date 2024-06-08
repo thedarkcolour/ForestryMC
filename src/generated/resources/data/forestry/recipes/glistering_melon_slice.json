@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "forestry:honey_drop_honey"
+    },
+    "X": {
+      "item": "forestry:honeydew"
+    },
+    "Y": {
+      "item": "minecraft:melon_slice"
+    }
+  },
+  "pattern": [
+    "#X#",
+    "#Y#",
+    "#X#"
+  ],
+  "result": {
+    "item": "minecraft:glistering_melon_slice"
+  }
+}

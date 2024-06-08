@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "state=band": {
+      "model": "forestry:block/farm_plain_quartz_band"
+    },
+    "state=plain": {
+      "model": "forestry:block/farm_plain_quartz"
+    }
+  }
+}
