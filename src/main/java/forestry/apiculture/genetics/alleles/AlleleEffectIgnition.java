@@ -14,6 +14,7 @@ import java.util.List;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 
@@ -24,7 +25,6 @@ import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.IEffectData;
 import forestry.core.render.ParticleRender;
-import forestry.core.utils.WorldUtils;
 
 import genetics.api.individual.IGenome;
 
@@ -72,7 +72,8 @@ public class AlleleEffectIgnition extends AlleleEffectThrottled {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public IEffectData doFX(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		ClientLevel world = WorldUtils.asClient(housing.getWorldObj());
+		LevelAccessor world1 = housing.getWorldObj();
+		ClientLevel world = (ClientLevel) world1;
 		if (world.random.nextInt(2) != 0) {
 			super.doFX(genome, storedData, housing);
 		} else {

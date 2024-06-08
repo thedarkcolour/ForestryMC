@@ -31,7 +31,6 @@ import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.core.utils.BlockUtil;
-import forestry.core.utils.WorldUtils;
 import forestry.core.worldgen.FeatureBase;
 
 import genetics.api.alleles.IAllele;
@@ -44,7 +43,7 @@ public final class TreeGenHelper {
 	public static Feature<NoneFeatureConfiguration> getWorldGen(ResourceLocation treeName, Player player, BlockPos pos) throws SpeciesNotFoundException {
 		IGenome treeGenome = getTreeGenome(treeName);
 		ITree tree = TreeManager.treeRoot.getTree(player.level, treeGenome);
-		return tree.getTreeGenerator(WorldUtils.asServer(player.level), pos, true);
+		return tree.getTreeGenerator((ServerLevel) player.level, pos, true);
 	}
 
 	public static <FC extends FeatureConfiguration> boolean generateTree(Feature<FC> feature, ChunkGenerator generator, Level world, BlockPos pos, FC config) {

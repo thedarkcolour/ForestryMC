@@ -1208,6 +1208,7 @@
   "for.gui.book.patchouli.entry.core.tubes1": "Electron Tubes can be attached to Circuit Boards using a Soldering Iron. They have many purposes displayed on the tooltip, which depend on the circuit type selected in the Soldering Iron. Once soldered, they cannot be removed from a Circuit Board.",
 
   "for.gui.book.patchouli.entry.core.worktable": "Worktable",
+  "block.forestry.worktable_tooltip": "There are still some scribbles on this.",
   "for.gui.book.patchouli.entry.core.worktable1": "A manual crafting table which remembers the last nine used recipes. Left click one of the recipes shown in the right-hand side to automatically fill in the crafting grid. Right-click to lock a memorized recipe and prevent a newer recipe from bumping it off.",
   "for.gui.book.patchouli.entry.core.worktable2": "Resources need to go into the internal inventory. The crafting matrix is only a visual representation.",
 

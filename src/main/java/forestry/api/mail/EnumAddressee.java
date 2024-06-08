@@ -8,15 +8,18 @@ package forestry.api.mail;
 import javax.annotation.Nullable;
 import java.util.Locale;
 
+// todo why are these being converted to lowercase?
 public enum EnumAddressee {
 	PLAYER, TRADER;
+
+	private final String lowercase = this.name().toLowerCase(Locale.ENGLISH);
 
 	@Nullable
 	public static EnumAddressee fromString(String ident) {
 		ident = ident.toLowerCase(Locale.ENGLISH);
-		for (EnumAddressee addr : values()) {
-			if (addr.toString().equals(ident)) {
-				return addr;
+		for (EnumAddressee type : values()) {
+			if (type.toString().equals(ident)) {
+				return type;
 			}
 		}
 
@@ -25,6 +28,6 @@ public enum EnumAddressee {
 
 	@Override
 	public String toString() {
-		return super.toString().toLowerCase(Locale.ENGLISH);
+		return lowercase;
 	}
 }

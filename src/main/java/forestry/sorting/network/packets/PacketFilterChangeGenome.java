@@ -12,6 +12,7 @@ import forestry.api.genetics.GeneticCapabilities;
 import forestry.core.network.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
+import forestry.core.utils.NetworkUtil;
 
 import genetics.api.alleles.IAllele;
 import genetics.utils.AlleleUtils;
@@ -28,7 +29,7 @@ public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short ind
 	@Override
 	public void write(FriendlyByteBuf buffer) {
 		buffer.writeBlockPos(pos);
-		buffer.writeShort(facing.get3DDataValue());
+		NetworkUtil.writeDirection(buffer, facing);
 		buffer.writeShort(index);
 		buffer.writeBoolean(active);
 		if (allele != null) {
@@ -46,7 +47,7 @@ public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short ind
 
 	public static PacketFilterChangeGenome decode(FriendlyByteBuf buffer) {
 		BlockPos pos = buffer.readBlockPos();
-		Direction facing = Direction.VALUES[buffer.readShort()];
+		Direction facing = NetworkUtil.readDirection(buffer);
 		short index = buffer.readShort();
 		boolean active = buffer.readBoolean();
 		IAllele allele = buffer.readBoolean() ? AlleleUtils.getAlleleOrNull(buffer.readUtf()) : null;

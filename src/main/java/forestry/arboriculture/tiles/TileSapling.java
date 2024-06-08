@@ -35,7 +35,6 @@ import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.arboriculture.worldgen.FeatureArboriculture;
-import forestry.core.utils.WorldUtils;
 import forestry.core.worldgen.FeatureBase;
 
 public class TileSapling extends TileTreeContainer {
@@ -86,7 +85,7 @@ public class TileSapling extends TileTreeContainer {
 			return true;
 		}
 
-		Feature generator = tree.getTreeGenerator(WorldUtils.asServer(level), getBlockPos(), true);
+		Feature generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), true);
 		if (generator instanceof FeatureArboriculture arboricultureGenerator) {
 			arboricultureGenerator.preGenerate(level, rand, getBlockPos());
 			return arboricultureGenerator.getValidGrowthPos(level, getBlockPos()) != null;
@@ -110,7 +109,7 @@ public class TileSapling extends TileTreeContainer {
 			return;
 		}
 
-		Feature<NoneFeatureConfiguration> generator = tree.getTreeGenerator(WorldUtils.asServer(level), getBlockPos(), bonemealed);
+		Feature<NoneFeatureConfiguration> generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), bonemealed);
 		final boolean generated;
 		if (generator instanceof FeatureBase) {
 			generated = ((FeatureBase) generator).place(level, random, getBlockPos(), false);

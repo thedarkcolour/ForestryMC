@@ -1,6 +1,12 @@
 package forestry.core.network;
 
-import java.util.Optional;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -12,12 +18,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import forestry.Forestry;
+import forestry.api.modules.IForestryModule;
 import forestry.core.config.Constants;
 import forestry.modules.ModuleManager;
 
@@ -28,21 +34,21 @@ public class NetworkHandler {
 	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(CHANNEL_ID, () -> VERSION, VERSION::equals, VERSION::equals);
 
 	public static void register() {
-		// in case modules are ever parallelized
 		IPacketRegistry registry = new NetworkHandler.PacketRegistry(new AtomicInteger());
 
-		ModuleManager.getLoadedModules().forEach(module -> module.registerPackets(registry));
+		// packets must be registered in a deterministic order (until 1.20.4)
+		ModuleManager.getSortedModules().forEach(module -> module.registerPackets(registry));
 	}
 
 	private record PacketRegistry(AtomicInteger packetId) implements IPacketRegistry {
 		@Override
 		public <P extends IForestryPacketServer> void serverbound(ResourceLocation id, Class<P> packetClass, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> packetHandler) {
-			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleServerbound(msg, ctxSupplier, packetHandler), Optional.of(NetworkDirection.PLAY_TO_SERVER));
+			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleServerbound(msg, ctxSupplier, packetHandler));
 		}
 
 		@Override
 		public <P extends IForestryPacketClient> void clientbound(ResourceLocation id, Class<P> packetClass, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, Player> packetHandler) {
-			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleClientbound(msg, ctxSupplier, packetHandler), Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleClientbound(msg, ctxSupplier, packetHandler));
 		}
 	}
 

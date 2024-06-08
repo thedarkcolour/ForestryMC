@@ -20,4 +20,5 @@ public class ForestryModuleUids {
 	public static final String SORTING = "sorting";
 	public static final String CULTIVATION = "cultivation";
 	public static final String RESEARCH = "research";
+	public static final String WORKTABLE = "worktable";
 }

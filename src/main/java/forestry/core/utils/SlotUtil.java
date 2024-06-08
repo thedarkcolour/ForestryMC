@@ -13,16 +13,15 @@ package forestry.core.utils;
 import java.util.List;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.core.gui.slots.WorktableSlot;
 import forestry.core.gui.slots.SlotForestry;
 
 public abstract class SlotUtil {
-
 	public static boolean isSlotInRange(int slotIndex, int start, int count) {
 		return slotIndex >= start && slotIndex < start + count;
 	}
@@ -54,7 +53,7 @@ public abstract class SlotUtil {
 				}
 			}
 		} else if (mouseButton == 5) {
-			ItemStack stackHeld = player.inventoryMenu.getCarried();
+			ItemStack stackHeld = player.containerMenu.getCarried();
 			if (!slot.hasItem()) {
 				fillPhantomSlot(slot, stackHeld, mouseButton);
 			}
@@ -65,10 +64,11 @@ public abstract class SlotUtil {
 	public static ItemStack transferStackInSlot(List<Slot> inventorySlots, Player player, int slotIndex) {
 		Slot slot = inventorySlots.get(slotIndex);
 		if (slot == null || !slot.hasItem()) {
+			// nothing left to transfer
 			return ItemStack.EMPTY;
 		}
 
-		boolean fromCraftingSlot = slot instanceof ResultSlot;
+		boolean fromCraftingSlot = slot instanceof ResultSlot || slot instanceof WorktableSlot;
 
 		int numSlots = inventorySlots.size();
 		ItemStack stackInSlot = slot.getItem();
@@ -211,7 +211,7 @@ public abstract class SlotUtil {
 		return changed;
 	}
 
-	private static final int PLAYER_INVENTORY_SIZE = 9 * 4;
+	private static final int PLAYER_INVENTORY_SIZE = 36;
 	private static final int PLAYER_HOTBAR_SIZE = 9;
 
 	private static boolean isInPlayerInventory(int slotIndex) {

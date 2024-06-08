@@ -13,10 +13,12 @@ package forestry.modules;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,6 +35,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraftforge.api.distmarker.Dist;
 
@@ -55,8 +58,7 @@ public enum ModuleManager implements IModuleManager {
 	public static final List<ISaveEventHandler> saveEventHandlers = Lists.newArrayList();
 	public static final List<IResupplyHandler> resupplyHandlers = Lists.newArrayList();
 
-	private static final LinkedHashMap<ResourceLocation, IForestryModule> sortedModules = new LinkedHashMap<>();
-	private static final Set<IForestryModule> loadedModules = new LinkedHashSet<>();
+	private static final LinkedHashMap<ResourceLocation, IForestryModule> loadedModules = new LinkedHashMap<>();
 	private static final Set<IForestryModule> unloadedModules = new LinkedHashSet<>();
 	private static final HashMap<String, IModuleContainer> moduleContainers = new HashMap<>();
 	public static final Set<IForestryModule> configDisabledModules = new HashSet<>();
@@ -75,8 +77,19 @@ public enum ModuleManager implements IModuleManager {
 		return moduleContainers.values();
 	}
 
+	// Dependencies appear BEFORE dependents
 	public static Collection<IForestryModule> getLoadedModules() {
-		return Collections.unmodifiableCollection(sortedModules.values());
+		return Collections.unmodifiableCollection(loadedModules.values());
+	}
+
+	// Alphabetical sorting according to module ID
+	public static List<IForestryModule> getSortedModules() {
+		Map<IForestryModule, ResourceLocation> reverseLookup = new HashMap<>();
+		for (Map.Entry<ResourceLocation, IForestryModule> entry : loadedModules.entrySet()) {
+			reverseLookup.put(entry.getValue(), entry.getKey());
+		}
+		Comparator<IForestryModule> ordering = Comparator.comparing(reverseLookup::get);
+		return Ordering.from(ordering).sortedCopy(loadedModules.values());
 	}
 
 	@Nullable
@@ -144,22 +157,21 @@ public enum ModuleManager implements IModuleManager {
 			iterator = modulesToLoad.iterator();
 			while (iterator.hasNext()) {
 				IForestryModule module = iterator.next();
-				if (sortedModules.keySet().containsAll(module.getDependencyUids())) {
+				if (loadedModules.keySet().containsAll(module.getDependencyUids())) {
 					iterator.remove();
 					ForestryModule info = module.getClass().getAnnotation(ForestryModule.class);
-					sortedModules.put(new ResourceLocation(info.modId(), info.moduleID()), module);
+					loadedModules.put(new ResourceLocation(info.modId(), info.moduleID()), module);
 					changed = true;
 					break;
 				}
 			}
 		} while (changed);
 
-		loadedModules.addAll(sortedModules.values());
 		unloadedModules.addAll(allModules);
-		unloadedModules.removeAll(sortedModules.values());
+		unloadedModules.removeAll(loadedModules.values());
 
 		for (IModuleContainer container : moduleContainers.values()) {
-			Collection<IForestryModule> loadedModules = sortedModules.values().stream().filter(m -> {
+			Collection<IForestryModule> loadedModules = ModuleManager.loadedModules.values().stream().filter(m -> {
 						ForestryModule info = m.getClass().getAnnotation(ForestryModule.class);
 						return info.modId().equals(container.getID());
 					}
@@ -185,9 +197,12 @@ public enum ModuleManager implements IModuleManager {
 	}
 
 	public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
-		loadedModules.stream()
-				.map(IForestryModule::register)
-				.filter(Objects::nonNull)
-				.forEach(dispatcher::register);
+		for (IForestryModule module : loadedModules.values()) {
+			LiteralArgumentBuilder<CommandSourceStack> rootCommand = module.register();
+
+			if (rootCommand != null) {
+				dispatcher.register(rootCommand);
+			}
+		}
 	}
 }

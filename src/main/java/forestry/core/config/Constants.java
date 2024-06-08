@@ -15,16 +15,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidType;
 
 import forestry.api.core.IForestryConstants;
-import net.minecraftforge.fluids.FluidType;
 
 public class Constants implements IForestryConstants {
 	// System
 	public static final String MOD_NAME = "Forestry";
 	public static final String MOD_ID = "forestry";
 	public static final String URL = "https://forestry.sengir.net/";
-
-	public static final int FLAG_BLOCK_UPDATE = 1;
-	public static final int FLAG_BLOCK_SYNC = 2;
 
 	public static final int FLUID_PER_HONEY_DROP = 100;
 

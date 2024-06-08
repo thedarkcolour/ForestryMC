@@ -38,7 +38,7 @@ public abstract class ItemStackUtil {
 	 * Compares item id, damage and NBT. Accepts wildcard damage.
 	 */
 	public static boolean isIdenticalItem(ItemStack lhs, ItemStack rhs) {
-		return lhs.equals(rhs, false);
+		return ItemStack.isSameItemSameTags(lhs, rhs);
 	}
 
 	/**
@@ -162,6 +162,26 @@ public abstract class ItemStackUtil {
 		}
 
 		return totalSets;
+	}
+
+	public static boolean equalSets(NonNullList<ItemStack> set1, NonNullList<ItemStack> set2) {
+		if (set1 == set2) {
+			return true;
+		}
+
+		int count = set1.size();
+
+		if (count != set2.size()) {
+			return false;
+		}
+
+		for (int i = 0; i < count; i++) {
+			if (!isIdenticalItem(set1.get(i), set2.get(i))) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**

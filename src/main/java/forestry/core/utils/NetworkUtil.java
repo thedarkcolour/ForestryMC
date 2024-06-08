@@ -18,12 +18,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -179,5 +178,17 @@ public class NetworkUtil {
 
 	public static BlockState readBlockState(FriendlyByteBuf buffer) {
 		return buffer.readById(Block.BLOCK_STATE_REGISTRY);
+	}
+
+	public static void writeDirection(FriendlyByteBuf buffer, Direction direction) {
+		buffer.writeByte(direction.ordinal());
+	}
+
+	public static Direction readDirection(FriendlyByteBuf buffer) {
+		byte ordinal = buffer.readByte();
+		if (ordinal > 5 || ordinal < 0) {
+			throw new IllegalArgumentException("Tried to deserialize Direction enum from network, but got invalid ordinal: " + ordinal);
+		}
+		return Direction.VALUES[ordinal];
 	}
 }

@@ -66,15 +66,11 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 		super.addSlot(new Slot(playerInventory, slot, x, y));
 	}
 
+	// Public override
 	@Override
 	public Slot addSlot(Slot slot) {
 		return super.addSlot(slot);
 	}
-	//
-	//	@Override
-	//	public Slot addSlotToContainer(Slot p_75146_1_) {
-	//		return super.addSlotToContainer(p_75146_1_);
-	//	}
 
 	@Override
 	public void clicked(int slotId, int dragType_or_button, ClickType clickTypeIn, Player player) {
@@ -107,7 +103,6 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 		return getSlot(PLAYER_INV_SLOTS + slot);
 	}
 
-	// todo fix
 	@Override
 	public final ItemStack quickMoveStack(Player player, int slotIndex) {
 		if (!canAccess(player)) {

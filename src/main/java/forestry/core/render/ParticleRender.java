@@ -13,6 +13,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
@@ -36,7 +37,6 @@ import forestry.core.config.Config;
 import forestry.core.entities.ParticleIgnition;
 import forestry.core.entities.ParticleSmoke;
 import forestry.core.utils.VectUtil;
-import forestry.core.utils.WorldUtils;
 
 import genetics.api.individual.IGenome;
 
@@ -62,7 +62,8 @@ public class ParticleRender {
 	}
 
 	public static void addBeeHiveFX(IBeeHousing housing, IGenome genome, List<BlockPos> flowerPositions) {
-		ClientLevel world = WorldUtils.asClient(housing.getWorldObj());
+		LevelAccessor world1 = housing.getWorldObj();
+		ClientLevel world = (ClientLevel) world1;
 		if (!shouldSpawnParticle(world)) {
 			return;
 		}
@@ -196,7 +197,7 @@ public class ParticleRender {
 		}
 
 		ParticleEngine effectRenderer = Minecraft.getInstance().particleEngine;
-		effectRenderer.add(new ParticleSnow(WorldUtils.asClient(world), x + world.random.nextGaussian(), y, z + world.random.nextGaussian()));
+		effectRenderer.add(new ParticleSnow((ClientLevel) world, x + world.random.nextGaussian(), y, z + world.random.nextGaussian()));
 	}
 
 	public static void addEntityIgnitionFX(ClientLevel world, double x, double y, double z) {
@@ -214,7 +215,7 @@ public class ParticleRender {
 		}
 
 		ParticleEngine effectRenderer = Minecraft.getInstance().particleEngine;
-		effectRenderer.add(new ParticleSmoke(WorldUtils.asClient(world), x, y, z));
+		effectRenderer.add(new ParticleSmoke((ClientLevel) world, x, y, z));
 	}
 
 	public static void addEntityPotionFX(Level world, double x, double y, double z, int color) {

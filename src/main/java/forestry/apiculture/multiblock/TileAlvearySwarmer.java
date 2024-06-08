@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.Stack;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,7 +41,6 @@ import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.WorldUtils;
 
 public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer, IActivatable, IAlvearyComponent.Active {
 
@@ -143,7 +143,7 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		int x = getBlockPos().getX() + level.random.nextInt(40 * 2) - 40;
 		int z = getBlockPos().getZ() + level.random.nextInt(40 * 2) - 40;
 
-		if (HiveDecorator.tryGenHive(WorldUtils.asServer(level), level.random, x, z, hive)) {
+		if (HiveDecorator.tryGenHive((ServerLevel) level, level.random, x, z, hive)) {
 			pendingSpawns.pop();
 		}
 	}

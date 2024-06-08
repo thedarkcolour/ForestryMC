@@ -12,6 +12,7 @@ package forestry.core.utils;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -36,7 +37,7 @@ public abstract class EntityUtil {
 		living.yBodyRot = living.getYRot();
 		DifficultyInstance diff = world.getCurrentDifficultyAt(new BlockPos(x, y, z));
 		//TODO - check SpawnReason
-		living.finalizeSpawn(WorldUtils.asServer(world), diff, MobSpawnType.MOB_SUMMONED, null, null);
+		living.finalizeSpawn((ServerLevel) world, diff, MobSpawnType.MOB_SUMMONED, null, null);
 		world.addFreshEntity(living);
 		//TODO - right sound?
 		living.playAmbientSound();

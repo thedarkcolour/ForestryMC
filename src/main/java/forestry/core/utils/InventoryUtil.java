@@ -136,6 +136,48 @@ public abstract class InventoryUtil {
 		return removed;
 	}
 
+	public static boolean deleteExactSet(Container inventory, NonNullList<ItemStack> required) {
+		NonNullList<ItemStack> offered = getStacks(inventory);
+		NonNullList<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(required);
+		NonNullList<ItemStack> condensedOffered = ItemStackUtil.condenseStacks(offered);
+
+		for (ItemStack req : condensedRequired) {
+			if (!containsExactStack(req, condensedOffered)) {
+				return false;
+			}
+		}
+
+		for (ItemStack itemStack : condensedRequired) {
+			deleteExactStack(inventory, itemStack);
+		}
+		return true;
+	}
+
+	private static boolean containsExactStack(ItemStack req, NonNullList<ItemStack> condensedOffered) {
+		for (ItemStack offer : condensedOffered) {
+			if (offer.getCount() >= req.getCount() && ItemStackUtil.areItemStacksEqualIgnoreCount(req, offer)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static void deleteExactStack(Container inventory, ItemStack itemStack) {
+		int count = itemStack.getCount();
+		for (int j = 0; j < inventory.getContainerSize(); j++) {
+			ItemStack stackInSlot = inventory.getItem(j);
+			if (!stackInSlot.isEmpty()) {
+				if (ItemStackUtil.areItemStacksEqualIgnoreCount(itemStack, stackInSlot)) {
+					ItemStack removed = inventory.removeItem(j, count);
+					count -= removed.getCount();
+					if (count == 0) {
+						return;
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * Private Helper for removeSetsFromInventory. Assumes removal is possible.
 	 */
