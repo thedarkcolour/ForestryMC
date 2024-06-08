@@ -87,11 +87,7 @@ public class RenderEngine implements IForestryRenderer<EngineBlockEntity> {
 		float progress = tile.progress;
 		if (tile.stagePiston != 0) {
 			float smoothing = tile.pistonSpeedServer * helper.partialTicks;
-			if (smoothing + progress > 1f || progress == 0) {
-				progress = smoothing;
-			} else {
-				progress = (progress + smoothing);
-			}
+			progress = (progress + smoothing);
 		}
 		render(tile.getTemperatureState(), progress, facing, helper);
 	}

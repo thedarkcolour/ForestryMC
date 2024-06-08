@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
@@ -87,7 +88,7 @@ public class TileApiary extends TileBeeHousingBase implements IApiary {
 	}
 
 	@Override
-	public void openGui(ServerPlayer player, BlockPos pos) {
+	public void openGui(ServerPlayer player, InteractionHand hand, BlockPos pos) {
 		NetworkHooks.openScreen(player, this, buffer -> {
 			buffer.writeBlockPos(pos);
 			buffer.writeBoolean(true);

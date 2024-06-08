@@ -20,8 +20,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class TileMill extends TileBase {
-	protected float speed;
-	protected int stage = 0;
+	public float speed;
+	public int stage = 0;
 	public int charge = 0;
 	public float progress;
 
@@ -49,7 +49,6 @@ public abstract class TileMill extends TileBase {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		charge = data.readInt();

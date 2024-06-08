@@ -13,6 +13,9 @@ package forestry.factory.tiles;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.storage.ServerLevelData;
 
+import forestry.api.fuels.FuelManager;
 import forestry.api.fuels.RainSubstrate;
 import forestry.core.render.ParticleRender;
 import forestry.core.tiles.TileMill;
@@ -39,20 +43,22 @@ public class TileMillRainmaker extends TileMill {
 		setInternalInventory(new InventoryRainmaker(this));
 	}
 
-	//	@Override	//TODO this needs to be in onactivated or similar
-	//	public void openGui(PlayerEntity player, ItemStack heldItem) {
-	//		if (!player.world.isRemote && !heldItem.isEmpty()) {
-	//			// We don't have a gui, but we can be activated
-	//			if (FuelManager.rainSubstrate.containsKey(heldItem) && charge == 0) {
-	//				RainSubstrate substrate = FuelManager.rainSubstrate.get(heldItem);
-	//				if (substrate.getItem().isItemEqual(heldItem)) {
-	//					addCharge(substrate);
-	//					heldItem.shrink(1);
-	//				}
-	//			}
-	//			sendNetworkUpdate();
-	//		}
-	//	}
+	@Override
+	public void openGui(ServerPlayer player, InteractionHand hand, BlockPos pos) {
+		if (!player.level.isClientSide) {
+			ItemStack heldItem = player.getItemInHand(hand);
+
+			// We don't have a gui, but we can be activated
+			if (FuelManager.rainSubstrate.containsKey(heldItem) && charge == 0) {
+				RainSubstrate substrate = FuelManager.rainSubstrate.get(heldItem);
+				if (substrate.item().sameItem(heldItem)) {
+					addCharge(substrate);
+					heldItem.shrink(1);
+				}
+			}
+			sendNetworkUpdate();
+		}
+	}
 
 	@Override
 	public void load(CompoundTag compoundNBT) {

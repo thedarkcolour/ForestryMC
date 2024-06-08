@@ -76,7 +76,12 @@ public class RenderMill implements IForestryRenderer<TileMill> {
 
 	@Override
 	public void renderTile(TileMill tile, RenderHelper helper) {
-		render(tile.progress, tile.charge, Direction.WEST, helper);
+		float progress = tile.progress;
+		if (tile.stage != 0) {
+			float smoothing = tile.speed * helper.partialTicks;
+			progress = (progress + smoothing);
+		}
+		render(progress, tile.charge, Direction.WEST, helper);
 	}
 
 	@Override
@@ -137,16 +142,16 @@ public class RenderMill implements IForestryRenderer<TileMill> {
 
 		Vector3f invertedRotation = rotation.copy();
 		invertedRotation.mul(-1);
-		helper.renderModel(textures[Textures.EXTENSION.ordinal() + charge], invertedRotation, extension);
+		helper.renderModel(textures[Textures.EXTENSION.ordinal()], invertedRotation, extension);
 
 		helper.translate(translate[0] * tfactor, translate[1] * tfactor, translate[2] * tfactor);
-		helper.renderModel(textures[Textures.BLADE_1.ordinal() + charge], blade1);
+		helper.renderModel(textures[Textures.BLADE_1.ordinal()], blade1);
 
 		// Reset
 		helper.translate(-translate[0] * tfactor, -translate[1] * tfactor, -translate[2] * tfactor);
 
 		helper.translate(-translate[0] * tfactor, translate[1] * tfactor, -translate[2] * tfactor);
-		helper.renderModel(textures[Textures.BLADE_2.ordinal() + charge], blade2);
+		helper.renderModel(textures[Textures.BLADE_2.ordinal()], blade2);
 
 		helper.pop();
 

@@ -154,7 +154,7 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 
 			if (!worldIn.isClientSide) {
 				ServerPlayer sPlayer = (ServerPlayer) playerIn;
-				tile.openGui(sPlayer, pos);
+				tile.openGui(sPlayer, hand, pos);
 			}
 		}
 		return InteractionResult.SUCCESS;

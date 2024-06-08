@@ -12,6 +12,7 @@ package forestry.core.tiles;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -100,7 +101,7 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 	}
 
 	@Override
-	public void openGui(ServerPlayer player, BlockPos pos) {
+	public void openGui(ServerPlayer player, InteractionHand hand, BlockPos pos) {
 		NetworkHooks.openScreen(player, new PagedMenuProvider(0), p -> {
 			p.writeBlockPos(this.worldPosition);
 			p.writeVarInt(0);

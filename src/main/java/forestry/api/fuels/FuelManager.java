@@ -10,6 +10,7 @@ import java.util.Map;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 
+// todo get rid of the ItemStack maps
 public class FuelManager {
 	/**
 	 * Add new fuels for the fermenter here (i.e. fertilizer).

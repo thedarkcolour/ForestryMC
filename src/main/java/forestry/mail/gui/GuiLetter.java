@@ -63,8 +63,6 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 		this.isProcessedLetter = container.getLetter().isProcessed();
 		this.widgetManager.add(new AddresseeSlot(widgetManager, 16, 12, container));
 		this.tradeInfoWidgets = new ArrayList<>();
-		address = new EditBox(this.minecraft.font, leftPos + 46, topPos + 13, 93, 13, null);
-		text = new GuiTextBox(this.minecraft.font, leftPos + 17, topPos + 31, 122, 57);
 	}
 
 	@Override
@@ -84,6 +82,9 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 		if (!menu.getText().isEmpty()) {
 			text.setValue(menu.getText());
 		}
+
+		addWidget(address);
+		addWidget(text);
 	}
 
 	@Override
@@ -91,7 +92,7 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 
 		// Set focus or enter text into address
 		if (this.address.isFocused()) {
-			if (scanCode == GLFW.GLFW_KEY_ENTER) {
+			if (key == GLFW.GLFW_KEY_ENTER) {
 				this.address.setFocus(false);
 			} else {
 				this.address.keyPressed(key, scanCode, modifiers);
@@ -100,17 +101,17 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 		}
 
 		if (this.text.isFocused()) {
-			if (scanCode == GLFW.GLFW_KEY_ENTER) {
+			if (key == GLFW.GLFW_KEY_ENTER) {
 				if (hasShiftDown()) {
 					text.setValue(text.getValue() + "\n");
 				} else {
 					this.text.setFocus(false);
 				}
-			} else if (scanCode == GLFW.GLFW_KEY_DOWN) {
+			} else if (key == GLFW.GLFW_KEY_DOWN) {
 				text.advanceLine();
-			} else if (scanCode == GLFW.GLFW_KEY_UP) {
+			} else if (key == GLFW.GLFW_KEY_UP) {
 				text.regressLine();
-			} else if (text.moreLinesAllowed() || scanCode == GLFW.GLFW_KEY_DELETE || scanCode == GLFW.GLFW_KEY_BACKSLASH) {
+			} else if (text.moreLinesAllowed() || key == GLFW.GLFW_KEY_DELETE || key == GLFW.GLFW_KEY_BACKSLASH) {
 				this.text.keyPressed(key, scanCode, modifiers);
 			}
 			return true;

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.mail.gui;
 
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -42,7 +43,7 @@ public class ContainerTradeName extends ContainerTile<TileTrader> {
 		if (tile.isLinked()) {
 			for (Object crafter : containerListeners) {
 				if (crafter instanceof ServerPlayer player) {
-					tile.openGui(player, tile.getBlockPos());    //TODO correct pos?
+					tile.openGui(player, InteractionHand.MAIN_HAND, tile.getBlockPos());
 				}
 			}
 		}

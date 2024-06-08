@@ -13,6 +13,7 @@ package forestry.energy.tiles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -47,7 +48,7 @@ public class ClockworkEngineBlockEntity extends EngineBlockEntity {
 	}
 
 	@Override
-	public void openGui(ServerPlayer player, BlockPos pos) {
+	public void openGui(ServerPlayer player, InteractionHand hand, BlockPos pos) {
 		if (player instanceof FakePlayer) {
 			return;
 		}

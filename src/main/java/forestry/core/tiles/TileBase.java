@@ -12,6 +12,7 @@ package forestry.core.tiles;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,7 +31,7 @@ public abstract class TileBase extends TileForestry {
 		super(tileEntityTypeIn, pos, state);
 	}
 
-	public void openGui(ServerPlayer player, BlockPos pos) {
+	public void openGui(ServerPlayer player, InteractionHand hand, BlockPos pos) {
 		if (!hasGui()) {
 			return;
 		}
