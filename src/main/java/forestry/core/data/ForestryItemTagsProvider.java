@@ -96,6 +96,8 @@ public final class ForestryItemTagsProvider extends ItemTagsProvider {
 				.addOptionalTag(new ResourceLocation("c", "workbenches"))
 				.addOptionalTag(new ResourceLocation("c", "workbench"))
 				.add(Items.CRAFTING_TABLE);
+
+		tag(ForestryTags.Items.SCOOPS).add(ApicultureItems.SCOOP.item());
 	}
 
 	@SafeVarargs

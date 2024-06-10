@@ -76,6 +76,8 @@ public class ForestryTags {
 
 		public static final TagKey<Item> STAMPS = tag("stamps");
 
+		public static final TagKey<Item> SCOOPS = tag("scoops");
+
 		public static final TagKey<Item> FRUITS = tag("forestry_fruits");
 
 		public static final TagKey<Item> MINER_ALLOW = tag("backpack/allow/miner");

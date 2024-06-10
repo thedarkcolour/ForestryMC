@@ -43,12 +43,12 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.EnumGermlingType;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.core.IToolScoop;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.EnumFlutterType;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.arboriculture.ModuleArboriculture;
 import forestry.arboriculture.tiles.TileLeaves;
+import forestry.core.data.ForestryTags;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.ItemStackUtil;
@@ -134,7 +134,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 					}
 					return InteractionResult.SUCCESS;
 				}
-			} else if (heldItem.getItem() instanceof IToolScoop && caterpillar != null) {
+			} else if (heldItem.is(ForestryTags.Items.SCOOPS) && caterpillar != null) {
 				ItemStack butterfly = ButterflyManager.butterflyRoot.getTypes().createStack(caterpillar, EnumFlutterType.CATERPILLAR);
 				ItemStackUtil.dropItemStackAsEntity(butterfly, level, pos);
 				leaves.setCaterpillar(null);

@@ -55,7 +55,6 @@ import net.minecraftforge.common.IPlantable;
 
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.EnumGermlingType;
-import forestry.api.core.IToolScoop;
 import forestry.api.lepidopterology.IEntityButterfly;
 import forestry.api.lepidopterology.ILepidopteristTracker;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
@@ -63,6 +62,7 @@ import forestry.api.lepidopterology.genetics.EnumFlutterType;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflyRoot;
+import forestry.core.data.ForestryTags;
 import forestry.core.utils.ItemStackUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.genetics.Butterfly;
@@ -446,7 +446,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 			return InteractionResult.FAIL;
 		}
 		ItemStack stack = player.getItemInHand(hand);
-		if ((stack.getItem() instanceof IToolScoop)) {
+		if (stack.is(ForestryTags.Items.SCOOPS)) {
 			if (!level.isClientSide) {
 				IButterflyRoot root = ButterflyHelper.getRoot();
 				ILepidopteristTracker tracker = root.getBreedingTracker(level, player.getGameProfile());
