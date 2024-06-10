@@ -17,15 +17,18 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerListener;
 
+import forestry.api.genetics.IForestrySpeciesRoot;
 import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFilteredInventory;
 import forestry.core.tiles.IFilterSlotDelegate;
 import forestry.core.tiles.TileNaturalistChest;
 import forestry.core.tiles.TileUtil;
 
-public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistChest> implements IGuiSelectable {
-	private final int page;
+import genetics.api.individual.IIndividual;
+
+public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistChest> implements IGuiSelectable, INaturalistMenu {
 	public static final int MAX_PAGE = 5;
+	private final int page;
 	public boolean closing = true;
 
 	public ContainerNaturalistInventory(int windowId, Inventory player, TileNaturalistChest tile, int page) {
@@ -59,8 +62,20 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 		tile.flipPage(player, (short) primary);
 	}
 
-	public int getPage() {
+	@Override
+	public IForestrySpeciesRoot<IIndividual> getSpeciesRoot() {
+		return tile.getSpeciesRoot();
+	}
+
+	@Override
+	public int getCurrentPage() {
 		return page;
+	}
+
+	@Override
+	public void onFlipPage() {
+		// stop chest from playing closing animation and sound
+		this.closing = false;
 	}
 
 	@Override
@@ -77,7 +92,7 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 		super.removed(player);
 
 		if (closing) {
-            tile.decreaseNumPlayersUsing();
-        }
+			tile.decreaseNumPlayersUsing();
+		}
 	}
 }

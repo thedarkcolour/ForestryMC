@@ -10,25 +10,35 @@
  ******************************************************************************/
 package forestry.storage.gui;
 
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
+import forestry.api.genetics.IForestrySpeciesRoot;
 import forestry.core.config.Constants;
 import forestry.core.gui.ContainerItemInventory;
 import forestry.core.gui.ContainerNaturalistInventory;
 import forestry.core.gui.IGuiSelectable;
+import forestry.core.gui.INaturalistMenu;
 import forestry.storage.features.BackpackMenuTypes;
 import forestry.storage.inventory.ItemInventoryBackpackPaged;
 import forestry.storage.items.ItemBackpackNaturalist;
 
-public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInventoryBackpackPaged> implements IGuiSelectable {
+import genetics.api.GeneticsAPI;
+import genetics.api.individual.IIndividual;
 
-	public ContainerNaturalistBackpack(int windowId, Inventory inv, ItemInventoryBackpackPaged inventory, int selectedPage) {
+public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInventoryBackpackPaged> implements IGuiSelectable, INaturalistMenu {
+	private final int currentPage;
+	private final IForestrySpeciesRoot<IIndividual> speciesRoot;
+
+	public ContainerNaturalistBackpack(int windowId, Inventory inv, ItemInventoryBackpackPaged inventory, int selectedPage, String rootUid) {
 		super(windowId, inventory, inv, 18, 120, BackpackMenuTypes.NATURALIST_BACKPACK.menuType());
 
 		ContainerNaturalistInventory.addInventory(this, inventory, selectedPage);
+
+		this.currentPage = selectedPage;
+		this.speciesRoot = (IForestrySpeciesRoot<IIndividual>) GeneticsAPI.apiInstance.getRoot(rootUid).get();
 	}
 
 	@Override
@@ -36,11 +46,21 @@ public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInve
 		inventory.flipPage(player, (short) primary);
 	}
 
-	public static ContainerNaturalistBackpack fromNetwork(int windowId, Inventory playerInventory, FriendlyByteBuf extraData) {
-		ItemStack parent = extraData.readItem();
-		ItemBackpackNaturalist backpack = (ItemBackpackNaturalist) extraData.readItem().getItem();    //TODO this is b it ugly
+	@Override
+	public IForestrySpeciesRoot<IIndividual> getSpeciesRoot() {
+		return this.speciesRoot;
+	}
+
+	@Override
+	public int getCurrentPage() {
+		return this.currentPage;
+	}
+
+	public static ContainerNaturalistBackpack fromNetwork(int windowId, Inventory playerInventory, FriendlyByteBuf buffer) {
+		ItemStack parent = buffer.readItem();
+		ItemBackpackNaturalist backpack = (ItemBackpackNaturalist) parent.getItem();
 		ItemInventoryBackpackPaged paged = new ItemInventoryBackpackPaged(playerInventory.player, Constants.SLOTS_BACKPACK_APIARIST, parent, backpack);
-		int page = extraData.readVarInt();
-		return new ContainerNaturalistBackpack(windowId, playerInventory, paged, page);
+		int page = buffer.readByte();
+		return new ContainerNaturalistBackpack(windowId, playerInventory, paged, page, buffer.readUtf());
 	}
 }

@@ -10,8 +10,8 @@
  ******************************************************************************/
 package forestry.storage.inventory;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.network.NetworkHooks;
@@ -27,12 +27,12 @@ public class ItemInventoryBackpackPaged extends ItemInventoryBackpack implements
 		this.backpackNaturalist = backpackNaturalist;
 	}
 
-	//TODO gui
 	@Override
 	public void flipPage(ServerPlayer player, short page) {
-		ItemStack heldItem = player.getItemInHand(player.getUsedItemHand());
-		NetworkHooks.openScreen(player, new ItemBackpackNaturalist.ContainerProvider(heldItem), b -> {
-
+		NetworkHooks.openScreen(player, backpackNaturalist.getMenuProvider(getParent()), buffer -> {
+			buffer.writeItem(getParent());
+			buffer.writeByte(page);
+			buffer.writeUtf(backpackNaturalist.rootUid);
 		});
 	}
 }

@@ -13,16 +13,14 @@ package forestry.core.items;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import net.minecraftforge.network.NetworkHooks;
@@ -30,25 +28,27 @@ import net.minecraftforge.network.NetworkHooks;
 import forestry.core.gui.ContainerItemInventory;
 
 public abstract class ItemWithGui extends ItemForestry {
-
 	public ItemWithGui(Item.Properties properties) {
 		super(properties);
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		ItemStack stack = playerIn.getItemInHand(handIn);
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player player, InteractionHand handIn) {
+		ItemStack stack = player.getItemInHand(handIn);
 
-		if (!worldIn.isClientSide) {
-			ServerPlayer sPlayer = (ServerPlayer) playerIn;    //TODO safe?
-			openGui(sPlayer, stack);
+		if (player instanceof ServerPlayer serverPlayer) {
+			openGui(serverPlayer, stack);
 		}
 
 		return InteractionResultHolder.success(stack);
 	}
 
-	protected void openGui(ServerPlayer player, ItemStack stack) {
-		NetworkHooks.openScreen(player, new ContainerProvider(stack), buffer -> writeContainerData(player, stack, buffer));
+	protected void openGui(ServerPlayer serverPlayer, ItemStack heldItem) {
+		NetworkHooks.openScreen(serverPlayer, getMenuProvider(heldItem), buffer -> writeContainerData(serverPlayer, heldItem, buffer));
+	}
+
+	public SimpleMenuProvider getMenuProvider(ItemStack heldItem) {
+		return new SimpleMenuProvider((windowId, playerInv, player) -> getContainer(windowId, player, heldItem), heldItem.getHoverName());
 	}
 
 	protected void writeContainerData(ServerPlayer player, ItemStack stack, FriendlyByteBuf buffer) {
@@ -57,9 +57,7 @@ public abstract class ItemWithGui extends ItemForestry {
 
 	@Override
 	public boolean onDroppedByPlayer(ItemStack itemstack, Player player) {
-		if (!itemstack.isEmpty() &&
-				player instanceof ServerPlayer &&
-				player.containerMenu instanceof ContainerItemInventory) {
+		if (!itemstack.isEmpty() && player instanceof ServerPlayer && player.containerMenu instanceof ContainerItemInventory) {
 			player.closeContainer();
 		}
 
@@ -68,29 +66,4 @@ public abstract class ItemWithGui extends ItemForestry {
 
 	@Nullable
 	public abstract AbstractContainerMenu getContainer(int windowId, Player player, ItemStack heldItem);
-
-	public static class ContainerProvider implements MenuProvider {
-
-		private final ItemStack heldItem;
-
-		public ContainerProvider(ItemStack heldItem) {
-			this.heldItem = heldItem;
-		}
-
-		@Override
-		public Component getDisplayName() {
-			return heldItem.getHoverName();
-		}
-
-		@Nullable
-		@Override
-		public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-			Item item = heldItem.getItem();
-			if (!(item instanceof ItemWithGui itemWithGui)) {
-				return null;
-			}
-			return itemWithGui.getContainer(windowId, playerEntity, heldItem);
-		}
-	}
-
 }

@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -44,19 +45,19 @@ import genetics.api.mutation.IMutation;
 import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
 
-public class GuiNaturalistInventory extends GuiForestry<ContainerNaturalistInventory> {
+public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalistMenu> extends GuiForestry<C> {
 	private final IForestrySpeciesRoot<IIndividual> speciesRoot;
 	private final IBreedingTracker breedingTracker;
 	private final HashMap<String, ItemStack> iconStacks = new HashMap<>();
 	private final int pageCurrent, pageMax;
 	private final CycleTimer timer = new CycleTimer(0);
 
-	public GuiNaturalistInventory(ContainerNaturalistInventory container, Inventory playerInv, Component name) {
-		super(Constants.TEXTURE_PATH_GUI + "/apiaristinventory.png", container, playerInv, name);
+	public GuiNaturalistInventory(C menu, Inventory playerInv, Component name) {
+		super(Constants.TEXTURE_PATH_GUI + "/apiaristinventory.png", menu, playerInv, name);
 
-		this.speciesRoot = container.tile.getSpeciesRoot();
+		this.speciesRoot = menu.getSpeciesRoot();
 
-		this.pageCurrent = container.getPage();
+		this.pageCurrent = menu.getCurrentPage();
 		this.pageMax = ContainerNaturalistInventory.MAX_PAGE;
 
 		imageWidth = 196;
@@ -115,7 +116,7 @@ public class GuiNaturalistInventory extends GuiForestry<ContainerNaturalistInven
 	}
 
 	private void flipPage(int page) {
-		menu.closing = false;
+		menu.onFlipPage();
 		NetworkUtil.sendToServer(new PacketGuiSelectRequest(page, 0));
 	}
 

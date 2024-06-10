@@ -42,6 +42,7 @@ import forestry.core.config.Constants;
 import forestry.core.features.CoreFeatures;
 import forestry.core.features.CoreMenuTypes;
 import forestry.core.genetics.alleles.AlleleFactory;
+import forestry.core.gui.ContainerNaturalistInventory;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.GuiAnalyzer;
 import forestry.core.gui.GuiEscritoire;
@@ -111,11 +112,10 @@ public class ModuleCore extends BlankForestryModule {
 	public void registerGuiFactories() {
 		MenuScreens.register(CoreMenuTypes.ALYZER.menuType(), GuiAlyzer::new);
 		MenuScreens.register(CoreMenuTypes.ANALYZER.menuType(), GuiAnalyzer::new);
-		MenuScreens.register(CoreMenuTypes.NATURALIST_INVENTORY.menuType(), GuiNaturalistInventory::new);
+		MenuScreens.register(CoreMenuTypes.NATURALIST_INVENTORY.menuType(), GuiNaturalistInventory<ContainerNaturalistInventory>::new);
 		MenuScreens.register(CoreMenuTypes.ESCRITOIRE.menuType(), GuiEscritoire::new);
 		MenuScreens.register(CoreMenuTypes.SOLDERING_IRON.menuType(), GuiSolderingIron::new);
 	}
-
 
 	@Override
 	public void preInit() {

@@ -17,6 +17,5 @@ import net.minecraft.world.Container;
  * @author CovertJaguar <http://www.railcraft.info/>
  */
 public interface IPagedInventory extends Container {
-
 	void flipPage(ServerPlayer player, short page);
 }

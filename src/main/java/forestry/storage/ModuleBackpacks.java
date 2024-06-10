@@ -13,28 +13,33 @@ package forestry.storage;
 
 import java.awt.Color;
 
+import net.minecraft.client.gui.screens.MenuScreens;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import forestry.api.modules.ForestryModule;
 import forestry.api.storage.IBackpackInterface;
+import forestry.apiculture.genetics.BeeRoot;
 import forestry.core.IPickupHandler;
 import forestry.core.IResupplyHandler;
 import forestry.core.config.Constants;
 import forestry.core.data.ForestryTags;
+import forestry.core.gui.GuiNaturalistInventory;
+import forestry.lepidopterology.genetics.ButterflyRoot;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleUids;
 import forestry.storage.features.BackpackMenuTypes;
+import forestry.storage.gui.ContainerNaturalistBackpack;
 import forestry.storage.gui.GuiBackpack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import net.minecraft.client.gui.screens.MenuScreens;
 
 @ForestryModule(moduleID = ForestryModuleUids.BACKPACKS, modId = Constants.MOD_ID, name = "Backpack", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.backpacks.description", lootTable = "storage")
 public class ModuleBackpacks extends BlankForestryModule {
 
 	public static final IBackpackInterface BACKPACK_INTERFACE = new BackpackInterface();
 
-	public static final BackpackDefinition APIARIST = new BackpackDefinition(new Color(0xc4923d), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter("rootBees"));
-	public static final BackpackDefinition LEPIDOPTERIST = new BackpackDefinition(new Color(0x995b31), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter("rootButterflies"));
+	public static final BackpackDefinition APIARIST = new BackpackDefinition(new Color(0xc4923d), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(BeeRoot.UID));
+	public static final BackpackDefinition LEPIDOPTERIST = new BackpackDefinition(new Color(0x995b31), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(ButterflyRoot.UID));
 	public static final BackpackDefinition MINER = new BackpackDefinition(new Color(0x36187d), Color.WHITE, new BackpackFilter(ForestryTags.Items.MINER_ALLOW, ForestryTags.Items.MINER_REJECT));
 	public static final BackpackDefinition DIGGER = new BackpackDefinition(new Color(0x363cc5), Color.WHITE, new BackpackFilter(ForestryTags.Items.DIGGER_ALLOW, ForestryTags.Items.DIGGER_REJECT));
 	public static final BackpackDefinition FORESTER = new BackpackDefinition(new Color(0x347427), Color.WHITE, new BackpackFilter(ForestryTags.Items.FORESTER_ALLOW, ForestryTags.Items.FORESTER_REJECT));
@@ -46,6 +51,7 @@ public class ModuleBackpacks extends BlankForestryModule {
 	@OnlyIn(Dist.CLIENT)
 	public void registerGuiFactories() {
 		MenuScreens.register(BackpackMenuTypes.BACKPACK.menuType(), GuiBackpack::new);
+		MenuScreens.register(BackpackMenuTypes.NATURALIST_BACKPACK.menuType(), GuiNaturalistInventory<ContainerNaturalistBackpack>::new);
 	}
 
 	@Override

@@ -18,17 +18,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.core.IToolScoop;
 import forestry.api.core.ItemGroups;
 import forestry.core.data.ForestryTags;
 import forestry.core.items.ItemForestry;
 
-public class ItemScoop extends ItemForestry implements IToolScoop {
-
+public class ItemScoop extends ItemForestry {
 	public ItemScoop() {
-		super(new Item.Properties()
-				.durability(10)
-				.tab(ItemGroups.tabApiculture));
+		super(new Item.Properties().durability(10).tab(ItemGroups.tabApiculture));
 	}
 
 	@Override
