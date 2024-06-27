@@ -77,10 +77,7 @@ import genetics.api.root.IIndividualRoot;
 import genetics.api.root.IRootDefinition;
 import genetics.utils.AlleleUtils;
 
-//TODO minecraft has flying entities (bat, parrot). Can some of their logic be reused here?
-//TODO getMaxSpawnedInChunk?
 public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
-
 	private static final String NBT_BUTTERFLY = "BTFLY";
 	private static final String NBT_ROOT = "ROT";
 	private static final String NBT_POLLEN = "PLN";
@@ -429,11 +426,6 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	}
 
 	@Override
-	public boolean isNoAi() {
-		return false;
-	}
-
-	@Override
 	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
 		return tickCount > MAX_LIFESPAN;
 	}
@@ -454,11 +446,11 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 				tracker.registerCatch(contained);
 				ItemStackUtil.dropItemStackAsEntity(itemStack, level, getX(), getY(), getZ());
-				this.dead = true;
+				remove(RemovalReason.KILLED);
 			} else {
 				player.swing(hand);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
 
 		return super.mobInteract(player, hand);

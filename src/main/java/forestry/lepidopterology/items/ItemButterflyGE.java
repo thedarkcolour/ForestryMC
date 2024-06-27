@@ -11,7 +11,6 @@
 package forestry.lepidopterology.items;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -56,24 +55,14 @@ import genetics.api.organism.IOrganismType;
 import genetics.utils.AlleleUtils;
 
 public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColoredItem {
-
-	private static final Random rand = new Random();
 	public static final String NBT_AGE = "Age";
 	public static final int MAX_AGE = 3;
-	//private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
 	private final EnumFlutterType type;
 
 	public ItemButterflyGE(EnumFlutterType type) {
 		super(new Properties().tab(ItemGroups.tabLepidopterology));
 		this.type = type;
-		/*ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double)this.attackDamage, AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double)attackSpeedIn, AttributeModifier.Operation.ADDITION));
-		if (type == EnumFlutterType.COCOON) {
-			addPropertyOverride(new ResourceLocation("age"), (stack, world, livingEntity) -> getAge(stack));
-		}
-		this.attributeModifiers = builder.build();*/
 	}
 
 	@Override
@@ -132,10 +121,11 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		if (type != EnumFlutterType.BUTTERFLY) {
 			return false;
 		}
-		if (entityItem.level.isClientSide || entityItem.tickCount < 80) {
+		Level level = entityItem.level;
+		if (level.isClientSide || entityItem.tickCount < 80) {
 			return false;
 		}
-		if (rand.nextInt(24) != 0) {
+		if (level.random.nextInt(24) != 0) {
 			return false;
 		}
 
@@ -144,16 +134,11 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 			return false;
 		}
 
-		if (butterfly.canTakeFlight(entityItem.level, entityItem.getX(), entityItem.getY(), entityItem.getZ())) {
+		if (!butterfly.canTakeFlight(level, entityItem.getX(), entityItem.getY(), entityItem.getZ())) {
 			return false;
 		}
 
-		if (false) {//TODO entityItem.world.countEntities(EntityButterfly.class) > ModuleLepidopterology.entityConstraint) {
-			return false;
-		}
-
-		EntityUtil.spawnEntity(entityItem.level,
-				EntityButterfly.create(LepidopterologyEntities.BUTTERFLY.entityType(), entityItem.level, butterfly, entityItem.blockPosition()), entityItem.getX(), entityItem.getY(), entityItem.getZ());
+		EntityUtil.spawnEntity(entityItem.level, EntityButterfly.create(LepidopterologyEntities.BUTTERFLY.entityType(), entityItem.level, butterfly, entityItem.blockPosition()), entityItem.getX(), entityItem.getY(), entityItem.getZ());
 		if (!entityItem.getItem().isEmpty()) {
 			entityItem.getItem().shrink(1);
 		} else {
@@ -161,56 +146,6 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		}
 		return true;
 	}
-
-	/* MODELS */
-	//	@OnlyIn(Dist.CLIENT)
-	//	@Override
-	//	public void registerModel(Item item, IModelManager manager) {
-	//		switch (this.type) {
-	//			case CATERPILLAR:
-	//				manager.registerItemModel(item, 0, "caterpillar");
-	//				break;
-	//			case BUTTERFLY:
-	//				manager.registerItemModel(item, 0, "butterflyge");
-	//				break;
-	//			case COCOON:
-	//				manager.registerItemModel(item, new CocoonMeshDefinition());
-	//				for (IAllele allele : AlleleManager.alleleRegistry.getRegisteredAlleles().values()) {
-	//					if (allele instanceof IAlleleButterflyCocoon) {
-	//						for (int age = 0; age < 3; age++) {
-	//							ModelBakery.registerItemVariants(this,
-	//								((IAlleleButterflyCocoon) allele).getCocoonItemModel(age));
-	//						}
-	//					}
-	//				}
-	//				break;
-	//			default:
-	//				manager.registerItemModel(item, 0, "liquids/jar");
-	//		}
-	//	}
-
-	//	private static class CocoonMeshDefinition implements ItemMeshDefinition {
-	//		@Override
-	//		public ModelResourceLocation getModelLocation(ItemStack itemstack) {
-	//			CompoundNBT tagCompound = itemstack.getTag();
-	//			IButterflyGenome genome;
-	//			int age;
-	//			if (tagCompound == null) {
-	//				genome = ButterflyDefinition.CabbageWhite.getGenome();
-	//				age = 0;
-	//			} else {
-	//				if (!tagCompound.contains(NBT_AGE)) {
-	//					tagCompound.putInt(NBT_AGE, 0);
-	//				}
-	//				age = tagCompound.getInt(NBT_AGE);
-	//				IIndividual individual = AlleleManager.alleleRegistry.getIndividual(itemstack);
-	//				Preconditions.checkNotNull(individual);
-	//				genome = (IButterflyGenome) individual.getGenome();
-	//			}
-	//			return genome.getCocoon().getCocoonItemModel(age);
-	//		}
-	//
-	//	}
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
@@ -310,5 +245,4 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		}
 		return 0xffffff;
 	}
-
 }

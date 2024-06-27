@@ -19,13 +19,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.lepidopterology.features.LepidopterologyEntities;
 import forestry.lepidopterology.items.ItemButterflyGE;
 import forestry.lepidopterology.render.ButterflyEntityRenderer;
 import forestry.lepidopterology.render.ButterflyItemModel;
+import forestry.lepidopterology.render.ButterflyModel;
 import forestry.lepidopterology.render.CocoonItemModel;
 import forestry.modules.IClientModuleHandler;
 
@@ -48,6 +47,11 @@ public class ProxyLepidopterologyClient extends ProxyLepidopterology implements 
 	@Override
 	public void setupRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(LepidopterologyEntities.BUTTERFLY.entityType(), ButterflyEntityRenderer::new);
+	}
+
+	@Override
+	public void setupLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+		event.registerLayerDefinition(ButterflyModel.LAYER, ButterflyModel::createLayer);
 	}
 
 	@Override
