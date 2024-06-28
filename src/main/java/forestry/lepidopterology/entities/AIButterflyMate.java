@@ -13,9 +13,14 @@ package forestry.lepidopterology.entities;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.phys.AABB;
+
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.core.config.Config;
 import forestry.core.utils.GeneticsUtil;
+import forestry.lepidopterology.ModuleLepidopterology;
 
 public class AIButterflyMate extends AIButterflyInteract {
 	@Nullable
@@ -23,6 +28,7 @@ public class AIButterflyMate extends AIButterflyInteract {
 
 	public AIButterflyMate(EntityButterfly entity) {
 		super(entity);
+		// flags: MOVE, JUMP (from interact)
 	}
 
 	@Override
@@ -38,8 +44,7 @@ public class AIButterflyMate extends AIButterflyInteract {
 			return false;
 		}
 
-		//TODO I think this needs a server world. Check what vanilla spawn cap code does?
-		if (false) {//entity.world.countEntities(EntityButterfly.class) > ModuleLepidopterology.spawnConstraint) {
+		if (EntityButterfly.isMaxButterflyCluster(entity.position(), entity.level)) {
 			return false;
 		}
 

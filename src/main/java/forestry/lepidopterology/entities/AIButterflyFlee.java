@@ -16,19 +16,14 @@ import net.minecraft.world.entity.player.Player;
 
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class AIButterflyFlee extends AIButterflyMovement {
-
 	public AIButterflyFlee(EntityButterfly entity) {
 		super(entity);
-		setFlags(EnumSet.of(Flag.MOVE));
-		//		setMutexBits(3);	TODO mutex
+		setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP));
 	}
 
 	@Override
 	public boolean canUse() {
-
 		Player player = entity.level.getNearestPlayer(entity, entity.getButterfly().getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getFlightDistance());
 
 		if (player == null || player.isShiftKeyDown()) {

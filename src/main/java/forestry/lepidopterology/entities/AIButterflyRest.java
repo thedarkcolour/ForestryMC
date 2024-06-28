@@ -29,16 +29,13 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class AIButterflyRest extends AIButterflyBase {
-
 	public AIButterflyRest(EntityButterfly entity) {
 		super(entity);
-		setFlags(EnumSet.of(Flag.MOVE));
-		//		setMutexBits(3);	TODO mutex
+		setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP));
 	}
 
 	@Override
 	public boolean canUse() {
-
 		if (entity.getExhaustion() < EntityButterfly.EXHAUSTION_REST
 				&& entity.canFly()) {
 			return false;

@@ -15,11 +15,9 @@ import java.util.EnumSet;
 import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class AIButterflyWander extends AIButterflyMovement {
-
 	public AIButterflyWander(EntityButterfly entity) {
 		super(entity);
-		setFlags(EnumSet.of(Flag.MOVE));
-		//		setMutexBits(1);	TODO mutex
+		setFlags(EnumSet.of(Flag.JUMP));
 	}
 
 	@Override

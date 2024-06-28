@@ -15,11 +15,9 @@ import java.util.EnumSet;
 import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class AIButterflyRise extends AIButterflyMovement {
-
 	public AIButterflyRise(EntityButterfly entity) {
 		super(entity);
 		setFlags(EnumSet.of(Flag.JUMP));
-		//		setMutexBits(1);	TODO mutex
 	}
 
 	@Override

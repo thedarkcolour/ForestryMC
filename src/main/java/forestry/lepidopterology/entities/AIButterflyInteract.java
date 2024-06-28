@@ -27,8 +27,7 @@ public abstract class AIButterflyInteract extends AIButterflyBase {
 
 	protected AIButterflyInteract(EntityButterfly entity) {
 		super(entity);
-		setFlags(EnumSet.of(Flag.MOVE));
-		//		setMutexBits(3);	TODO mutex
+		setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP));
 	}
 
 	@Override
