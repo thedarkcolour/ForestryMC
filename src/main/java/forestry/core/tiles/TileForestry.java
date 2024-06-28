@@ -142,7 +142,7 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	}
 
 	@Override
-	public Level getWorldObj() {
+	public @Nullable Level getWorldObj() {
 		return level;
 	}
 

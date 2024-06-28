@@ -7,18 +7,19 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import deleteme.Todos;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Style;
 
-import forestry.api.genetics.EnumTolerance;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.core.gui.elements.layouts.ContainerElement;
 import forestry.core.gui.elements.layouts.FlexLayout;
-import forestry.core.utils.Translator;
 
 import genetics.api.alleles.IAllele;
 import genetics.api.alleles.IAlleleValue;
@@ -78,10 +79,9 @@ public class DatabaseElement extends ContainerElement {
 
 	public void addToleranceLine(IChromosomeType chromosome) {
 		IAllele allele = getGenome().getActiveAllele(chromosome);
-		if (!(allele instanceof IAlleleValue)) {
-			return;
+		if (allele instanceof IAlleleValue value) {
+			addLine(Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiElementFactory.INSTANCE.createToleranceInfo(value));
 		}
-		addLine(Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiElementFactory.INSTANCE.createToleranceInfo((IAlleleValue<EnumTolerance>) allele));
 	}
 
 	public void addMutation(int x, int y, int width, int height, IMutation mutation, IAllele species, IBreedingTracker breedingTracker) {
@@ -150,9 +150,9 @@ public class DatabaseElement extends ContainerElement {
 	private ContainerElement addSplitText(int width, Component text, Style style) {
 		Font fontRenderer = Minecraft.getInstance().font;
 		ContainerElement vertical = GuiElementFactory.vertical(width, 0);
-		for (FormattedCharSequence splitText : fontRenderer.split(text, width)) {
-			vertical.label(splitText).setStyle(style);
-		}
+		fontRenderer.getSplitter().splitLines(text, width, style, (contents, contentsStyle) -> {
+			vertical.label(contents.getString()).setStyle(style);
+		});
 		return vertical;
 	}
 

@@ -8,8 +8,6 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import genetics.Log;
-
 public class ClientCraftingHelper {
 	@OnlyIn(Dist.CLIENT)
 	private static final RecipeManager DUMMY = new RecipeManager();

@@ -10,9 +10,10 @@ import java.util.function.Supplier;
 
 import net.minecraft.world.item.ItemStack;
 
+import forestry.Forestry;
+
 import genetics.GeneticFactory;
 import genetics.Genetics;
-import genetics.Log;
 import genetics.api.GeneticHelper;
 import genetics.api.individual.IIndividual;
 import genetics.api.organism.IOrganism;
@@ -109,7 +110,7 @@ public class OrganismTypes<I extends IIndividual> implements IOrganismTypes<I> {
 				throw new IllegalStateException(message);
 			}
 			defaultType = organismTypes.next();
-			Log.debug("No default type was registered for individual root '{}' used first registered type.", root.getUID());
+			Forestry.LOGGER.debug("No default type was registered for individual root '{}' used first registered type.", new Object[]{root.getUID()});
 		}
 		return defaultType;
 	}

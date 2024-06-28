@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import java.util.Objects;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -43,7 +44,7 @@ public class Allele implements IAllele {
 	}
 
 	@Override
-	public Component getDisplayName() {
+	public MutableComponent getDisplayName() {
 		return Component.translatable(getLocalisationKey());
 	}
 

@@ -63,8 +63,8 @@ public abstract class AbstractTextElement<T, E extends AbstractTextElement<T, E>
 	@Override
 	@SuppressWarnings("unchecked")
 	public E setStyle(Style style) {
-		if (text instanceof MutableComponent) {
-			((MutableComponent) text).setStyle(style);
+		if (text instanceof MutableComponent mutable) {
+			mutable.setStyle(style);
 		}
 		requestLayout();
 		return (E) this;

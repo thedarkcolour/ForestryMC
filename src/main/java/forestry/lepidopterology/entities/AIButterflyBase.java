@@ -33,7 +33,7 @@ public abstract class AIButterflyBase extends Goal {
 		}
 
 		Vec3 entityPos = entity.position();
-		Vec3 randomTarget = DefaultRandomPos.getPosAway(entity, 16, 7, entityPos.add(new Vec3(1, 0, 0).yRot(entity.getYRot())));
+		Vec3 randomTarget = DefaultRandomPos.getPosAway(entity, 16, 7, entityPos.add(new Vec3(0, 0, 1).yRot(entity.getYRot())));
 
 		if (randomTarget != null && validateDestination(randomTarget, false)) {
 			return randomTarget;

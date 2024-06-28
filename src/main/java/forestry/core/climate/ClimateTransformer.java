@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.core.climate;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -275,6 +277,7 @@ public class ClimateTransformer implements IClimateTransformer, IStreamable, INb
 		return housing.getCoordinates();
 	}
 
+	@Nullable
 	@Override
 	public Level getWorldObj() {
 		return housing.getWorldObj();

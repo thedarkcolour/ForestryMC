@@ -1,6 +1,6 @@
 package genetics.api.alleles;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import genetics.api.individual.IChromosome;
@@ -24,7 +24,7 @@ public interface IAllele {
 	/**
 	 * @return Localized short, human-readable identifier used in tooltips and beealyzer.
 	 */
-	Component getDisplayName();
+	MutableComponent getDisplayName();
 
 	/**
 	 * @return The localisation identifier for this allele.

@@ -5,13 +5,11 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.List;
 
+import forestry.Forestry;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.GuiElement;
 
-import genetics.Log;
-
 public interface Layout {
-
 	void layoutContainer(Rectangle bounds, List<GuiElement> elements);
 
 	default Dimension getLayoutSize(ContainerElement container) {
@@ -37,7 +35,7 @@ public interface Layout {
 
 	static void checkSize(GuiElement element, Dimension size) {
 		if (size.height == 0 || size.width == 0) {
-			Log.info(String.format("Found element with zero height or width %s", element));
+			Forestry.LOGGER.info("Found element with zero height or width {}", element);
 		}
 	}
 }

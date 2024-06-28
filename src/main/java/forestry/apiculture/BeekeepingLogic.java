@@ -480,14 +480,15 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	@Override
 	public void syncToClient() {
 		Level level = housing.getWorldObj();
-		if (!level.isClientSide) {
+		if (level != null && !level.isClientSide) {
 			NetworkUtil.sendNetworkPacket(new PacketBeeLogicActive(housing), housing.getCoordinates(), level);
 		}
 	}
 
 	@Override
 	public void syncToClient(ServerPlayer player) {
-		if (!housing.getWorldObj().isClientSide) {
+		Level level = housing.getWorldObj();
+		if (level != null && !level.isClientSide) {
 			NetworkUtil.sendToPlayer(new PacketBeeLogicActive(housing), player);
 		}
 	}

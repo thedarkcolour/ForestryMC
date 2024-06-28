@@ -45,8 +45,8 @@ public abstract class LabelElement extends GuiElement {
 		public Builder(@Nullable Consumer<GuiElement> parentAdder, Object root, @Nullable Function<LabelElement, GuiElement> finisher) {
 			this.parentAdder = parentAdder;
 			this.finisher = finisher;
-			if (root instanceof String) {
-				root = Component.literal((String) root);
+			if (root instanceof String string) {
+				root = Component.literal(string);
 			}
 			this.root = root;
 		}
@@ -54,16 +54,16 @@ public abstract class LabelElement extends GuiElement {
 		@Nullable
 		@Override
 		public Component lastComponent() {
-			if (root instanceof Component) {
-				return (Component) root;
+			if (root instanceof Component component) {
+				return component;
 			}
 			return null;
 		}
 
 		@Override
 		public Builder add(Component line) {
-			if (root instanceof MutableComponent) {
-				((MutableComponent) root).append(line);
+			if (root instanceof MutableComponent mutable) {
+				mutable.append(line);
 			}
 			return this;
 		}
@@ -82,12 +82,12 @@ public abstract class LabelElement extends GuiElement {
 		public LabelElement create() {
 			Preconditions.checkNotNull(root);
 			LabelElement element;
-			if (root instanceof Component) {
-				element = new ComponentText((Component) root)
+			if (root instanceof Component component) {
+				element = new ComponentText(component)
 						.setFitText(fitText)
 						.setShadow(shadow);
-			} else if (root instanceof FormattedCharSequence) {
-				element = new ProcessorText((FormattedCharSequence) root)
+			} else if (root instanceof FormattedCharSequence formatted) {
+				element = new ProcessorText(formatted)
 						.setFitText(fitText)
 						.setShadow(shadow);
 			} else {
@@ -108,20 +108,20 @@ public abstract class LabelElement extends GuiElement {
 		}
 
 		public Builder shadow() {
-			shadow = true;
+			this.shadow = true;
 			return this;
 		}
 
 		public Builder setStyle(Style style) {
-			if (root instanceof MutableComponent) {
-				((MutableComponent) root).setStyle(style);
+			if (root instanceof MutableComponent mutable) {
+				mutable.setStyle(style);
 			}
 			return this;
 		}
 
 		public Builder withStyle(Style style) {
-			if (root instanceof MutableComponent) {
-				((MutableComponent) root).withStyle(style);
+			if (root instanceof MutableComponent mutable) {
+				mutable.withStyle(style);
 			}
 			return this;
 		}

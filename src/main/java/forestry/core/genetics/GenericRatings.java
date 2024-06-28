@@ -14,8 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public class GenericRatings {
-
-	public static Component rateMetabolism(int metabolism) {
+	public static MutableComponent rateMetabolism(int metabolism) {
 		if (metabolism >= 19) {
 			return Component.translatable("forestry.allele.highest");
 		} else if (metabolism >= 16) {
@@ -33,7 +32,7 @@ public class GenericRatings {
 		}
 	}
 
-	public static Component rateActivityTime(boolean neverSleeps, boolean naturalNocturnal) {
+	public static MutableComponent rateActivityTime(boolean neverSleeps, boolean naturalNocturnal) {
 		MutableComponent active = naturalNocturnal ? Component.translatable("for.gui.nocturnal") : Component.translatable("for.gui.diurnal");
 		if (neverSleeps) {
 			active.append(", ").append(naturalNocturnal ? Component.translatable("for.gui.diurnal") : Component.translatable("for.gui.nocturnal"));

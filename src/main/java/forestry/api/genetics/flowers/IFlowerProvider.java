@@ -5,6 +5,7 @@
  ******************************************************************************/
 package forestry.api.genetics.flowers;
 
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,7 @@ public interface IFlowerProvider {
 	/**
 	 * @return Short, human-readable identifier used in the beealyzer.
 	 */
-	Component getDescription();
+	MutableComponent getDescription();
 
 	/**
 	 * Allows the flower provider to affect the produce at the given location.

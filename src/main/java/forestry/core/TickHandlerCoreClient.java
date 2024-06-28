@@ -27,27 +27,23 @@ import forestry.core.utils.GeneticsUtil;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
 public class TickHandlerCoreClient {
-
 	private static boolean hasNaturalistEye;
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
 			Minecraft minecraft = Minecraft.getInstance();
-			if (minecraft != null) {
-				Player player = minecraft.player;
-				if (player != null) {
-					boolean hasNaturalistEye = GeneticsUtil.hasNaturalistEye(player);
-					if (TickHandlerCoreClient.hasNaturalistEye != hasNaturalistEye) {
-						TickHandlerCoreClient.hasNaturalistEye = hasNaturalistEye;
-						//TODO - I think this is the correct field
-						LevelRenderer renderGlobal = minecraft.levelRenderer;
-						if (renderGlobal != null) {
-							renderGlobal.setBlocksDirty(
-									(int) player.getX() - 32, (int) player.getY() - 32, (int) player.getZ() - 32,
-									(int) player.getX() + 32, (int) player.getY() + 32, (int) player.getZ() + 32);
-						}
-					}
+			Player player = minecraft.player;
+
+			if (player != null) {
+				boolean hasNaturalistEye = GeneticsUtil.hasNaturalistEye(player);
+				if (TickHandlerCoreClient.hasNaturalistEye != hasNaturalistEye) {
+					TickHandlerCoreClient.hasNaturalistEye = hasNaturalistEye;
+
+					// Re-render blocks
+					minecraft.levelRenderer.setBlocksDirty(
+							(int) player.getX() - 32, (int) player.getY() - 32, (int) player.getZ() - 32,
+							(int) player.getX() + 32, (int) player.getY() + 32, (int) player.getZ() + 32);
 				}
 			}
 		}

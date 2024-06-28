@@ -62,6 +62,7 @@ import forestry.api.lepidopterology.genetics.EnumFlutterType;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflyRoot;
+import forestry.core.config.Config;
 import forestry.core.data.ForestryTags;
 import forestry.core.utils.ItemStackUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
@@ -109,6 +110,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	public int cooldownPollination = 0;
 	public int cooldownEgg = 0;
 	public int cooldownMate = 0;
+	private boolean isImmuneToFire;
 
 	// Client Rendering
 	@Nullable
@@ -118,26 +120,20 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	@OnlyIn(Dist.CLIENT)
 	private ResourceLocation textureResource;
 
-	/* CONSTRUCTOR */
 	public EntityButterfly(EntityType<EntityButterfly> type, Level world) {
 		super(type, world);
-		setDefaults();
 	}
-
-	//TODO this doesn't play well with registering the entity. So static method for now
-	//	public EntityButterfly(EntityType<EntityButterfly> type, World world, IButterfly butterfly, BlockPos homePos) {
-	//		super(type, world);
-	//		setDefaults();
-	//		setIndividual(butterfly);
-	//		setHomePosAndDistance(homePos, ModuleLepidopterology.maxDistance);
-	//	}
 
 	public static EntityButterfly create(EntityType<EntityButterfly> type, Level world, IButterfly butterfly, BlockPos homePos) {
 		EntityButterfly bf = new EntityButterfly(type, world);
-		bf.setDefaults();
 		bf.setIndividual(butterfly);
 		bf.restrictTo(homePos, ModuleLepidopterology.maxDistance);
 		return bf;
+	}
+
+	// Returns true if too many butterflies are in the same area according to config values
+	public static boolean isMaxButterflyCluster(Vec3 center, Level level) {
+		return level.getEntities(null, AABB.ofSize(center, Config.butterflyClusterWidth, Config.butterflyClusterHeight, Config.butterflyClusterWidth)).size() > Config.butterflyClusterLimit;
 	}
 
 	@Override
@@ -149,13 +145,14 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		entityData.define(DATAWATCHER_ID_STATE, (byte) DEFAULT_STATE.ordinal());
 	}
 
-	private void setDefaults() {
+	@Override
+	protected void registerGoals() {
 		this.goalSelector.addGoal(8, new AIButterflyFlee(this));
 		this.goalSelector.addGoal(9, new AIButterflyMate(this));
 		this.goalSelector.addGoal(10, new AIButterflyPollinate(this));
 		this.goalSelector.addGoal(11, new AIButterflyRest(this));
 		this.goalSelector.addGoal(12, new AIButterflyRise(this));
-		this.goalSelector.addGoal(12, new AIButterflyWander(this));
+		this.goalSelector.addGoal(13, new AIButterflyWander(this));
 	}
 
 	@Override
@@ -239,6 +236,11 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		return contained.getGenome().getActiveValue(ButterflyChromosomes.SPEED);
 	}
 
+	@Override
+	public boolean fireImmune() {
+		return isImmuneToFire;
+	}
+
 	/* DESTINATION */
 	@Nullable
 	public Vec3 getDestination() {
@@ -259,7 +261,6 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		double distanceToHome = getRestrictCenter().distSqr(pos);
 
 		if (!isWithinHomeDistanceFromPosition(distanceToHome)) {
-
 			weight -= 7.5f + 0.005 * (distanceToHome / 4);
 		}
 
@@ -291,7 +292,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 			BlockState blockStateBelow = level.getBlockState(posBelow);
 			Block blockBelow = blockStateBelow.getBlock();
 			if (blockStateBelow.is(BlockTags.LEAVES)) {
-				weight += 2.5f;
+				weight += 50f;
 			} else if (blockBelow instanceof FenceBlock) {
 				weight += 1.0f;
 			} else if (blockBelow instanceof WallBlock) {
@@ -312,9 +313,10 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		int xx = pos.getX() & 15;
 		int zz = pos.getZ() & 15;
 		int depth = 0;
+		BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos(xx, 0, zz);
+
 		for (int y = chunk.getHighestSectionPosition() + 15; y > 0; --y) {
-			//TODO could be a mutable blockpos if this shows as a hotspot
-			BlockState blockState = chunk.getBlockState(new BlockPos(xx, y, zz));
+			BlockState blockState = chunk.getBlockState(cursor.setY(y));
 			if (blockState.getMaterial().isLiquid()) {
 				depth++;
 			} else if (!blockState.isAir()) {
@@ -361,10 +363,9 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		IGenome genome = contained.getGenome();
 
-		//TODO AT methods or more entity types.
-		//		isImmuneToFire();
-		//		isImmuneToFire = genome.getFireResist();
+		isImmuneToFire = genome.getActiveValue(ButterflyChromosomes.FIRE_RESIST);
 		size = genome.getActiveValue(ButterflyChromosomes.SIZE);
+		// todo
 		//		setSize(size, 0.4f);
 		species = genome.getActiveAllele(ButterflyChromosomes.SPECIES);
 
@@ -504,10 +505,10 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		}
 
 		Vec3 motion = getDeltaMovement();
-		setDeltaMovement(motion.x, motion.y * 0.6000000238418579d, motion.z);
+		setDeltaMovement(motion.x, motion.y * 0.6, motion.z);
 
 		// Make sure we die if the butterfly hasn't rested in a long, long time.
-		if (exhaustion > EXHAUSTION_CONSUMPTION && getRandom().nextInt(20) == 0) {
+		if (exhaustion > EXHAUSTION_CONSUMPTION && random.nextInt(20) == 0) {
 			hurt(DamageSource.GENERIC, 1);
 		}
 
@@ -529,30 +530,27 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 	@Override
 	protected void customServerAiStep() {
-		super.customServerAiStep();
-
+		Vec3 flightTarget = this.flightTarget;
 		if (getState().doesMovement && flightTarget != null) {
-			double diffX = flightTarget.x + 0.5d - getX();
-			double diffY = flightTarget.y + 0.1d - getY();
-			double diffZ = flightTarget.z + 0.5d - getZ();
+			Vec3 position = position();
+			double diffX = flightTarget.x + 0.5 - position.x;
+			double diffY = flightTarget.y + 0.1 - position.y;
+			double diffZ = flightTarget.z + 0.5 - position.z;
 
 			Vec3 motion = getDeltaMovement();
-			double newX = (Math.signum(diffX) * 0.5d - motion.x) * 0.10000000149011612d;
-			double newY = (Math.signum(diffY) * 0.699999988079071d - motion.y) * 0.10000000149011612d;
-			double newZ = (Math.signum(diffZ) * 0.5d - motion.z) * 0.10000000149011612d;
+			double newX = motion.x + (Math.signum(diffX) * 0.5 - motion.x) * 0.1;
+			double newY = motion.y + (Math.signum(diffY) * 0.7 - motion.y) * 0.1;
+			double newZ = motion.z + (Math.signum(diffZ) * 0.5 - motion.z) * 0.1;
 
 			setDeltaMovement(newX, newY, newZ);
 
-			float horizontal = (float) (Math.atan2(newZ, newX) * 180d / Math.PI) - 90f;
+			float horizontal = (float) (Mth.atan2(newZ, newX) * Mth.RAD_TO_DEG) - 90f;
 			setYRot(getYRot() + Mth.wrapDegrees(horizontal - getYRot()));
 
 			setZza(contained.getGenome().getActiveValue(ButterflyChromosomes.SPEED));
+		} else {
+			setDeltaMovement(getDeltaMovement().multiply(1, 0.6, 1));
 		}
-	}
-
-	// @Override
-	protected boolean isMovementNoisy() {
-		return false;
 	}
 
 	@Override

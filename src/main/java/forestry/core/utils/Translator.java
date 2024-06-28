@@ -15,11 +15,11 @@ public class Translator {
 		return Language.getInstance().has(key);
 	}
 
-	public static Component tryTranslate(String optionalKey, String defaultKey) {
+	public static MutableComponent tryTranslate(String optionalKey, String defaultKey) {
 		return tryTranslate(optionalKey, () -> Component.translatable(defaultKey));
 	}
 
-	public static Component tryTranslate(String optionalKey, Supplier<Component> defaultKey) {
+	public static MutableComponent tryTranslate(String optionalKey, Supplier<MutableComponent> defaultKey) {
 		TranslatableContents contents = new TranslatableContents(optionalKey);
 		boolean translationFailed = contents.visit(s -> Optional.of(optionalKey.equals(s))).orElse(false);
 

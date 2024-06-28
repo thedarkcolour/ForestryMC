@@ -25,7 +25,7 @@ public enum ColourProperties implements ResourceManagerReloadListener {
 	private final Properties defaultMappings = new Properties();
 	private final Properties mappings = new Properties();
 
-	public synchronized int get(String key) {
+	public int get(String key) {
 		return Integer.parseInt(mappings.getProperty(key, defaultMappings.getProperty(key, "d67fff")), 16);
 	}
 

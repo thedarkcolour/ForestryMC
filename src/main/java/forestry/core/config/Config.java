@@ -79,4 +79,9 @@ public class Config {
 	// Charcoal
 	public static final int charcoalAmountBase = 8;
 	public static final int charcoalWallCheckRange = 16;
+
+	// Lepidopterology
+	public static int butterflyClusterLimit = 60;
+	public static int butterflyClusterWidth = 128;
+	public static int butterflyClusterHeight = 64;
 }

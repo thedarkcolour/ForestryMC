@@ -68,13 +68,11 @@ public abstract class GuiElement extends GuiComponent {
 	protected GuiElement parent;
 	protected final ActionConfig actionConfig;
 
-	@Deprecated
 	protected GuiElement(int xPos, int yPos) {
 		this();
 		setPos(xPos, yPos);
 	}
 
-	@Deprecated
 	protected GuiElement(int xPos, int yPos, int width, int height) {
 		this();
 		setPreferredBounds(xPos, yPos, width, height);

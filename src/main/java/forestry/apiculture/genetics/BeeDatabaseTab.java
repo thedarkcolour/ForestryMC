@@ -3,6 +3,7 @@ package forestry.apiculture.genetics;
 import java.util.Optional;
 import java.util.function.Function;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -53,13 +54,13 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 
 		container.label(Component.translatable("for.gui.database.tab." + (mode == DatabaseMode.ACTIVE ? "active" : "inactive") + "_species"), Alignment.TOP_CENTER, GuiElementFactory.INSTANCE.databaseTitle);
 
-		container.addLine(Component.translatable("for.gui.species"), BeeChromosomes.SPECIES);
+		container.addLine(Component.translatable("for.gui.species").withStyle(ChatFormatting.WHITE), BeeChromosomes.SPECIES);
 
 		Function<Boolean, Component> toleranceText = a -> {
 			IAlleleForestrySpecies species = a ? primarySpecies : secondarySpecies;
 			return AlleleManager.climateHelper.toDisplay(species.getTemperature());
 		};
-		container.addLine(Component.translatable("for.gui.climate"), toleranceText, BeeChromosomes.TEMPERATURE_TOLERANCE);
+		container.addLine(Component.translatable("for.gui.climate").withStyle(GuiElementFactory.INSTANCE.guiStyle), toleranceText, BeeChromosomes.TEMPERATURE_TOLERANCE);
 		container.addToleranceLine(BeeChromosomes.TEMPERATURE_TOLERANCE);
 
 		container.addLine(Component.translatable("for.gui.humidity"), toleranceText, BeeChromosomes.HUMIDITY_TOLERANCE);

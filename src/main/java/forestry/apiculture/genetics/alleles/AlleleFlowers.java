@@ -10,7 +10,7 @@
  ******************************************************************************/
 package forestry.apiculture.genetics.alleles;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import genetics.api.alleles.AlleleCategorizedValue;
 
@@ -32,7 +32,7 @@ public class AlleleFlowers<P extends IFlowerProvider> extends AlleleCategorizedV
 	}
 
 	@Override
-	public Component getDisplayName() {
+	public MutableComponent getDisplayName() {
 		return getProvider().getDescription();
 	}
 }

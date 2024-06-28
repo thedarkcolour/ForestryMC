@@ -13,6 +13,8 @@ package forestry.core.multiblock;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
@@ -55,7 +57,7 @@ public abstract class MultiblockControllerForestry extends MultiblockControllerB
 	}
 
 	@Override
-	public Level getWorldObj() {
+	public @Nullable Level getWorldObj() {
 		return world;
 	}
 

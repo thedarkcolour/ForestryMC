@@ -17,8 +17,8 @@ class ProcessorText extends AbstractTextElement<FormattedCharSequence, Processor
 
 	@Override
 	public LabelElement setValue(Object text) {
-		if (text instanceof FormattedCharSequence) {
-			this.text = (FormattedCharSequence) text;
+		if (text instanceof FormattedCharSequence formatted) {
+			this.text = formatted;
 		}
 		requestLayout();
 		return this;

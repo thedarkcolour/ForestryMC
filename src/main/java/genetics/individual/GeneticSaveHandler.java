@@ -8,8 +8,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.Forestry;
+
 import genetics.ApiInstance;
-import genetics.Log;
 import genetics.api.GeneticHelper;
 import genetics.api.IGeneticSaveHandler;
 import genetics.api.alleles.IAllele;
@@ -171,7 +172,7 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 		CompoundTag genomeNBT = compound.getCompound(GENOME_TAG);
 
 		if (genomeNBT.isEmpty()) {
-			Log.error("Got a genetic item with no genome, setting it to a default value.");
+			Forestry.LOGGER.error("Got a genetic item with no genome, setting it to a default value.", new Object[]{});
 			genomeNBT = new CompoundTag();
 
 			ITemplateContainer container = root.getTemplates();

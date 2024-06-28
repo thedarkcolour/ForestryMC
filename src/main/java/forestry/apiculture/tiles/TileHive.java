@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import forestry.apiculture.genetics.BeeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -340,7 +339,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 	}
 
 	@Override
-	public Level getWorldObj() {
+	public @Nullable Level getWorldObj() {
 		return level;
 	}
 

@@ -3,6 +3,7 @@ package forestry.core.gui.elements;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -97,16 +98,6 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 				return provider.getSpecimen(selectedSlot);
 			}
 		});
-		/*addEventHandler(GuiEvent.KeyEvent.class, event -> {
-			int keyCode = event.getKeyCode();
-			if ((keyCode == GLFW.GLFW_KEY_DOWN || keyCode == GLFW.GLFW_KEY_RIGHT) && rightButton.isEnabled()) {
-				rightButton.onPressed();
-			} else if ((keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_LEFT) && leftButton.isEnabled()) {
-				leftButton.onPressed();
-			} else if (keyCode == GLFW.GLFW_KEY_ENTER && analyzeButton.isEnabled()) {
-				analyzeButton.onPressed();
-			}
-		});*/
 	}
 
 	@Override
@@ -189,10 +180,7 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 		scrollableContent.clear();
 		Font fontRenderer = Minecraft.getInstance().font;
 		String key = "for.gui.portablealyzer.help";
-		//if(state == DatabaseScreenLogic.ScreenState.NO_PLUGIN){
-		//key = "for.gui.database.support";
-		//}
-		List<FormattedCharSequence> lines = fontRenderer.split(Component.translatable(key), scrollable.getPreferredSize().width);
+		List<FormattedCharSequence> lines = fontRenderer.split(Component.translatable(key).withStyle(ChatFormatting.WHITE), scrollable.getPreferredSize().width);
 		for (FormattedCharSequence text : lines) {
 			scrollableContent.label(text);
 		}

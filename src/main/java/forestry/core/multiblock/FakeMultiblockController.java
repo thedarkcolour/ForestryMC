@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.core.multiblock;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -27,8 +28,6 @@ import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.errors.FakeErrorLogic;
 import forestry.core.owner.FakeOwnerHandler;
 import forestry.core.owner.IOwnerHandler;
-
-import org.jetbrains.annotations.Nullable;
 
 public interface FakeMultiblockController extends IMultiblockControllerInternal, ILocatable {
 	@Override
@@ -77,6 +76,7 @@ public interface FakeMultiblockController extends IMultiblockControllerInternal,
 	}
 
 	@Override
+	@Nullable
 	default Level getWorldObj() {
 		return null;
 	}

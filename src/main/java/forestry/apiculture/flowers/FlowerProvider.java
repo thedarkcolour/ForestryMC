@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.apiculture.flowers;
 
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
@@ -52,7 +53,7 @@ public class FlowerProvider implements IFlowerProvider {
 	}
 
 	@Override
-	public Component getDescription() {
+	public MutableComponent getDescription() {
 		return Component.translatable(this.unlocalizedDescription);
 	}
 

@@ -74,6 +74,9 @@ public class AIButterflyRise extends AIButterflyMovement {
 		}
 
 		entity.setDestination(flightTarget);
+		if (flightTarget != null) {
+			entity.getNavigation().moveTo(flightTarget.x, flightTarget.y, flightTarget.z, 0.5f);
+		}
 		entity.changeExhaustion(1);
 	}
 }

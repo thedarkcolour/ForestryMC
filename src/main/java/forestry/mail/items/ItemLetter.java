@@ -85,12 +85,12 @@ public class ItemLetter extends ItemWithGui {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		ItemStack heldItem = playerIn.getItemInHand(handIn);
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player player, InteractionHand handIn) {
+		ItemStack heldItem = player.getItemInHand(handIn);
 		if (heldItem.getCount() == 1) {
-			return super.use(worldIn, playerIn, handIn);
+			return super.use(worldIn, player, handIn);
 		} else {
-			playerIn.sendSystemMessage(Component.translatable("for.chat.mail.wrongstacksize"));
+			player.sendSystemMessage(Component.translatable("for.chat.mail.wrongstacksize"));
 			return InteractionResultHolder.fail(heldItem);
 		}
 	}

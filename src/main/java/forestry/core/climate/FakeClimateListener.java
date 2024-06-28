@@ -1,5 +1,7 @@
 package forestry.core.climate;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -73,6 +75,7 @@ public enum FakeClimateListener implements IClimateListener {
 		return BlockPos.ZERO;
 	}
 
+	@Nullable
 	@Override
 	public Level getWorldObj() {
 		return null;

@@ -60,12 +60,6 @@ public class BlockSapling extends BlockTreeContainer implements BonemealableBloc
 		return new TileSapling(pos, state);
 	}
 
-	/* RENDERING */
-	/*@Override
-	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos) {
-		return false;
-	}*/
-
 	/* PLANTING */
 	public static boolean canBlockStay(BlockGetter world, BlockPos pos) {
 		TileSapling tile = TileUtil.getTile(world, pos, TileSapling.class);

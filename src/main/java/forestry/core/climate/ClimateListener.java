@@ -2,10 +2,8 @@ package forestry.core.climate;
 
 import javax.annotation.Nullable;
 
-import deleteme.BiomeCategory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,6 +26,8 @@ import forestry.core.network.packets.PacketClimateListenerUpdateRequest;
 import forestry.core.render.ParticleRender;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.TickHelper;
+
+import deleteme.BiomeCategory;
 
 public class ClimateListener implements IClimateListener {
 	public static final int SERVER_UPDATE = 250;
@@ -196,6 +196,7 @@ public class ClimateListener implements IClimateListener {
 		return this.pos;
 	}
 
+	@Nullable
 	@Override
 	public Level getWorldObj() {
 		if (this.world == null) {

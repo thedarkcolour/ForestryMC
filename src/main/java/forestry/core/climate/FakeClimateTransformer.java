@@ -1,5 +1,7 @@
 package forestry.core.climate;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
@@ -96,6 +98,7 @@ public enum FakeClimateTransformer implements IClimateTransformer {
 		return BlockPos.ZERO;
 	}
 
+	@Nullable
 	@Override
 	public Level getWorldObj() {
 		return null;

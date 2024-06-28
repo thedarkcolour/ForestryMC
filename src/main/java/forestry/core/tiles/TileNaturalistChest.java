@@ -120,7 +120,6 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 		numPlayersUsing = data.readInt();
 	}
 
-	//TODO page stuff.
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inv, Player player) {
 		return new ContainerNaturalistInventory(windowId, inv, this, 5);
