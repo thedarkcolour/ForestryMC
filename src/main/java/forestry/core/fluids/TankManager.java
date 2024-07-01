@@ -28,6 +28,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.level.Level;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -105,7 +106,7 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 			if (slot >= 0 && slot < tanks.size()) {
 				StandardTank tank = tanks.get(slot);
 				tank.readFromNBT(compound);
-				updateTankLevels(tank, false);
+				updateTankLevels(tank);
 			}
 		}
 	}
@@ -261,19 +262,18 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 
 	@Override
 	public void updateTankLevels(StandardTank tank) {
-		updateTankLevels(tank, true);
-	}
-
-	private void updateTankLevels(StandardTank tank, boolean sendUpdate) {
 		if (!(tile instanceof IRenderableTile)) {
 			return;
 		}
 
+
+		Level world = tile.getWorldObj();
+		if (world == null || world.isClientSide)
+			return;
+
 		int tankIndex = tank.getTankIndex();
-		if (sendUpdate) {
-			PacketTankLevelUpdate tankLevelUpdate = new PacketTankLevelUpdate(tile, tankIndex, tank.getFluid());
-			NetworkUtil.sendNetworkPacket(tankLevelUpdate, tile.getCoordinates(), tile.getWorldObj());
-		}
+		PacketTankLevelUpdate tankLevelUpdate = new PacketTankLevelUpdate(tile, tankIndex, tank.getFluid());
+		NetworkUtil.sendNetworkPacket(tankLevelUpdate, tile.getCoordinates(), tile.getWorldObj());
 	}
 
 	@Override

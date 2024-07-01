@@ -151,6 +151,7 @@ public class ModuleCore extends BlankForestryModule {
 		registry.serverbound(PacketIdServer.SELECT_CLIMATE_TARGETED, PacketSelectClimateTargeted.class, PacketSelectClimateTargeted::decode, PacketSelectClimateTargeted::handle);
 		registry.serverbound(PacketIdServer.CLIMATE_LISTENER_UPDATE_REQUEST, PacketClimateListenerUpdateRequest.class, PacketClimateListenerUpdateRequest::decode, PacketClimateListenerUpdateRequest::handle);
 
+		registry.clientbound(PacketIdClient.TANK_LEVEL_UPDATE, PacketTankLevelUpdate.class, PacketTankLevelUpdate::decode, PacketTankLevelUpdate::handle);
 		registry.clientbound(PacketIdClient.GUI_UPDATE, PacketErrorUpdate.class, PacketErrorUpdate::decode, PacketErrorUpdate::handle);
 		registry.clientbound(PacketIdClient.GUI_LAYOUT_SELECT, PacketGuiStream.class, PacketGuiStream::decode, PacketGuiStream::handle);
 		registry.clientbound(PacketIdClient.GUI_ENERGY, PacketGuiLayoutSelect.class, PacketGuiLayoutSelect::decode, PacketGuiLayoutSelect::handle);
@@ -159,7 +160,6 @@ public class ModuleCore extends BlankForestryModule {
 		registry.clientbound(PacketIdClient.TILE_FORESTRY_ACTIVE, PacketTileStream.class, PacketTileStream::decode, PacketTileStream::handle);
 		registry.clientbound(PacketIdClient.ITEMSTACK_DISPLAY, PacketActiveUpdate.class, PacketActiveUpdate::decode, PacketActiveUpdate::handle);
 		registry.clientbound(PacketIdClient.FX_SIGNAL, PacketItemStackDisplay.class, PacketItemStackDisplay::decode, PacketItemStackDisplay::handle);
-		registry.clientbound(PacketIdClient.GENOME_TRACKER_UPDATE, PacketTankLevelUpdate.class, PacketTankLevelUpdate::decode, PacketTankLevelUpdate::handle);
 		registry.clientbound(PacketIdClient.UPDATE_CLIMATE, PacketGenomeTrackerSync.class, PacketGenomeTrackerSync::decode, PacketGenomeTrackerSync::handle);
 		registry.clientbound(PacketIdClient.CLIMATE_LISTENER_UPDATE, PacketClimateUpdate.class, PacketClimateUpdate::decode, PacketClimateUpdate::handle);
 		registry.clientbound(PacketIdClient.CLIMATE_PLAYER, PacketClimateListenerUpdate.class, PacketClimateListenerUpdate::decode, PacketClimateListenerUpdate::handle);
