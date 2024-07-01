@@ -273,7 +273,7 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 
 		int tankIndex = tank.getTankIndex();
 		PacketTankLevelUpdate tankLevelUpdate = new PacketTankLevelUpdate(tile, tankIndex, tank.getFluid());
-		NetworkUtil.sendNetworkPacket(tankLevelUpdate, tile.getCoordinates(), tile.getWorldObj());
+		NetworkUtil.sendNetworkPacket(tankLevelUpdate, tile.getCoordinates(), world);
 	}
 
 	@Override
