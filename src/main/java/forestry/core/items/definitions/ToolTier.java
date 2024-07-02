@@ -9,7 +9,7 @@ import net.minecraft.util.LazyLoadedValue;
 import forestry.core.data.ForestryTags;
 
 public enum ToolTier implements Tier {
-	BRONZE(3, 200, 7.0F, 2.5F, 10, () -> {
+	SURVIVALIST(3, 200, 7.0F, 2.5F, 10, () -> {
 		return Ingredient.of(ForestryTags.Items.INGOTS_BRONZE);
 	});
 
