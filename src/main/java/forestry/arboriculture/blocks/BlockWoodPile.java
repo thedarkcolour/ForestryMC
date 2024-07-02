@@ -2,8 +2,6 @@ package forestry.arboriculture.blocks;
 
 import com.google.common.base.Preconditions;
 
-import java.util.Collection;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -33,24 +31,17 @@ import forestry.api.arboriculture.ICharcoalPileWall;
 import forestry.api.arboriculture.TreeManager;
 import forestry.arboriculture.features.CharcoalBlocks;
 import forestry.core.config.Config;
-import org.jetbrains.annotations.Nullable;
 
 // TODO: Fix propagation, aging
 public class BlockWoodPile extends Block {
-
 	public static final BooleanProperty IS_ACTIVE = BooleanProperty.create("active");
 	public static final IntegerProperty AGE = BlockStateProperties.AGE_7;
 	public static final int RANDOM_TICK = 160;
 	public static final int TICK_RATE = 960;
 
 	public BlockWoodPile() {
-		super(Block.Properties.of(Material.WOOD)
-				.strength(1.5f)
-				.sound(SoundType.WOOD)
-				.noOcclusion());
-		registerDefaultState(getStateDefinition().any()
-				.setValue(AGE, 0)
-				.setValue(IS_ACTIVE, false));
+		super(Block.Properties.of(Material.WOOD).strength(1.5f).sound(SoundType.WOOD).noOcclusion());
+		registerDefaultState(getStateDefinition().any().setValue(AGE, 0).setValue(IS_ACTIVE, false));
 	}
 
 	@Override
@@ -58,7 +49,6 @@ public class BlockWoodPile extends Block {
 		builder.add(IS_ACTIVE, AGE);
 	}
 
-	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		for (Direction facing : Direction.VALUES) {
@@ -73,21 +63,21 @@ public class BlockWoodPile extends Block {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean p_220069_6_) {
-		BlockState neighborState = world.getBlockState(fromPos);
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos, boolean p_220069_6_) {
+		BlockState fromState = level.getBlockState(fromPos);
 
-		if (neighborState.getBlock() == Blocks.FIRE || (neighborState.is(this) && neighborState.getValue(IS_ACTIVE))) {
+		if (fromState.is(Blocks.FIRE)) {
 			if (!state.getValue(IS_ACTIVE)) {
-				activatePile(state, world, pos, true);
+				activatePile(state, level, pos, true);
 			}
 		}
 	}
 
-	private void activatePile(BlockState state, Level world, BlockPos pos, boolean scheduleUpdate) {
-		world.setBlock(pos, state.setValue(IS_ACTIVE, true), Block.UPDATE_CLIENTS);
+	private void activatePile(BlockState state, Level level, BlockPos pos, boolean scheduleUpdate) {
+		level.setBlock(pos, state.setValue(IS_ACTIVE, true), Block.UPDATE_CLIENTS);
 
 		if (scheduleUpdate) {
-			// world.getBlockTicks().scheduleTick(pos, this, (TICK_RATE + world.random.nextInt(RANDOM_TICK)) / 4);
+			level.scheduleTick(pos, this, (TICK_RATE + level.random.nextInt(RANDOM_TICK)) / 4);
 		}
 	}
 
@@ -122,7 +112,7 @@ public class BlockWoodPile extends Block {
 					world.setBlock(pos, ashState, Block.UPDATE_CLIENTS);
 				}
 			}
-			// world.getBlockTicks().scheduleTick(pos, this, TICK_RATE + world.random.nextInt(RANDOM_TICK));
+			world.scheduleTick(pos, this, TICK_RATE + world.random.nextInt(RANDOM_TICK));
 		}
 	}
 
@@ -151,23 +141,20 @@ public class BlockWoodPile extends Block {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
-		if (rand.nextInt() < 0.25F) {
-			return;
-		}
+	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
 		if (state.getValue(IS_ACTIVE)) {
-			if (rand.nextDouble() < 0.05D) {
-				world.playLocalSound(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1.0F + rand.nextFloat(), rand.nextFloat() * 0.7F + 0.3F, false);
+			if (rand.nextDouble() < 0.1) {
+				level.playLocalSound(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1.0F + rand.nextFloat(), rand.nextFloat() * 0.7F + 0.3F, false);
 			}
 			float f = pos.getX() + 0.5F;
 			float f1 = pos.getY() + 0.0F + rand.nextFloat() * 6.0F / 16.0F;
 			float f2 = pos.getZ() + 0.5F;
 			float f3 = 0.52F;
 			float f4 = rand.nextFloat() * 0.6F - 0.3F;
-			if (rand.nextDouble() < 0.2D) {
-				world.addParticle(ParticleTypes.LARGE_SMOKE, f + f3 - 0.5, f1 + 1, f2 + f4, 0.0D, 0.15D, 0.0D);
+			if (rand.nextDouble() < 0.2) {
+				level.addParticle(ParticleTypes.LARGE_SMOKE, f + f3 - 0.5, f1 + 1, f2 + f4, 0.0D, 0.15D, 0.0D);
 			} else {
-				world.addParticle(ParticleTypes.SMOKE, f + f3 - 0.5, f1 + 1, f2 + f4, 0.0D, 0.15D, 0.0D);
+				level.addParticle(ParticleTypes.SMOKE, f + f3 - 0.5, f1 + 1, f2 + f4, 0.0D, 0.15D, 0.0D);
 			}
 		}
 	}
@@ -178,15 +165,14 @@ public class BlockWoodPile extends Block {
 		for (Direction facing : Direction.VALUES) {
 			charcoalAmount += getCharcoalFaceAmount(world, pos, facing);
 		}
-		return Mth.clamp(charcoalAmount / 6, 0, 63.0F - Config.charcoalAmountBase);
+		return Mth.clamp(charcoalAmount / 6, Config.charcoalAmountBase, 63.0F - Config.charcoalAmountBase);
 	}
 
 	private int getCharcoalFaceAmount(Level world, BlockPos pos, Direction facing) {
 		ICharcoalManager charcoalManager = Preconditions.checkNotNull(TreeManager.charcoalManager);
-		Collection<ICharcoalPileWall> walls = charcoalManager.getWalls();
 
-		BlockPos.MutableBlockPos testPos = new BlockPos.MutableBlockPos();
-		testPos.set(pos).move(facing);
+		BlockPos.MutableBlockPos testPos = pos.mutable();
+		testPos.move(facing);
 		int i = 0;
 		while (i < Config.charcoalWallCheckRange && world.hasChunkAt(testPos) && !world.isEmptyBlock(testPos)) {
 			BlockState state = world.getBlockState(testPos);

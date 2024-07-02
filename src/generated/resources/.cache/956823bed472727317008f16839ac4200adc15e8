@@ -1,4 +1,4 @@
-// 1.19.2	2024-06-07T20:40:08.4144367	Forestry LootTables
+// 1.19.2	2024-07-01T17:43:41.1193268	Forestry LootTables
 1dea25d1b0318463812efccd949d344aa360b995 data/forestry/loot_tables/blocks/acaciavanilla_decorative_leaves.json
 67b7e5633b93958a25793daf528d9b4c331d4ab7 data/forestry/loot_tables/blocks/acaciavanilla_default_leaves.json
 67b7e5633b93958a25793daf528d9b4c331d4ab7 data/forestry/loot_tables/blocks/acaciavanilla_default_leaves_fruit.json
@@ -41,7 +41,7 @@ ac42429c2157a643f9b67ed083406838cbfb3439 data/forestry/loot_tables/blocks/analyz
 334d953d73c744c83bde245e595ae619e2442616 data/forestry/loot_tables/blocks/apiary.json
 10f5950ded5339d2c1fdb7abcffcc4e34cd4f140 data/forestry/loot_tables/blocks/arboretum_managed.json
 e41487ab239096bdea8136d03712db560766237c data/forestry/loot_tables/blocks/arboretum_manual.json
-a057daf3c9ead7895817f0a3230a36e7c8711804 data/forestry/loot_tables/blocks/ash_block.json
+98cd7a33fb3eca9b33277876dbd47e06870bd5e7 data/forestry/loot_tables/blocks/ash_block.json
 53f8ccbdc2185d81e5e1cf8feae07333a0344033 data/forestry/loot_tables/blocks/balsa_decorative_leaves.json
 c42945d0df971b45d7e8b994f38d3c5be867269b data/forestry/loot_tables/blocks/balsa_default_leaves.json
 c42945d0df971b45d7e8b994f38d3c5be867269b data/forestry/loot_tables/blocks/balsa_default_leaves_fruit.json
