@@ -53,11 +53,11 @@ public class BeeChromosomes {
 	/**
 	 * If true the bee can work during rain.
 	 */
-	public static final IChromosomeValue<Boolean> TOLERATES_RAIN = TYPES.builder().name("speed").asValue(Boolean.class);
+	public static final IChromosomeValue<Boolean> TOLERATES_RAIN = TYPES.builder().name("tolerates_rain").asValue(Boolean.class);
 	/**
 	 * If true, the bee can work without a clear view of the sky.
 	 */
-	public static final IChromosomeValue<Boolean> CAVE_DWELLING = TYPES.builder().name("tolerates_rain").asValue(Boolean.class);
+	public static final IChromosomeValue<Boolean> CAVE_DWELLING = TYPES.builder().name("cave_dwelling").asValue(Boolean.class);
 	/**
 	 * Contains the supported flower provider.
 	 */
