@@ -13,9 +13,7 @@ import genetics.api.individual.IIndividual;
 
 import forestry.api.lepidopterology.genetics.IButterfly;
 
-//TODO - figure out how IAnimal works now, might want to make abstract and extend AnimalEntity
 public interface IEntityButterfly {
-
 	void changeExhaustion(int change);
 
 	int getExhaustion();

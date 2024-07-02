@@ -14,10 +14,5 @@ import forestry.modules.features.ModFeatureRegistry;
 public class LepidopterologyEntities {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleLepidopterology.class);
 
-	public static final FeatureEntityType<EntityButterfly> BUTTERFLY = REGISTRY.entity(EntityButterfly::new,
-			MobCategory.CREATURE, "butterfly", (builder) -> builder.sized(1.0f, 0.4f),
-			Mob::createMobAttributes);
-
-	private LepidopterologyEntities() {
-	}
+	public static final FeatureEntityType<EntityButterfly> BUTTERFLY = REGISTRY.entity(EntityButterfly::new, MobCategory.CREATURE, "butterfly", builder -> builder.sized(0.5f, 0.25f), Mob::createMobAttributes);
 }

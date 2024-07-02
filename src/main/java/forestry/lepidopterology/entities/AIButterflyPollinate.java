@@ -53,6 +53,7 @@ public class AIButterflyPollinate extends AIButterflyInteract {
 			if (checkPollinatable != null) {
 				if (entity.getPollen() == null) {
 					entity.setPollen(checkPollinatable.getPollen());
+					entity.changeExhaustion(-entity.getExhaustion());
 				} else if (checkPollinatable.canMateWith(entity.getPollen())) {
 					IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(null, entity.level, rest, false);
 					if (realPollinatable != null) {

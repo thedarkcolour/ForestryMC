@@ -14,10 +14,7 @@ import java.util.EnumSet;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.core.Direction;
@@ -25,8 +22,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
 import net.minecraftforge.common.IPlantable;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class AIButterflyRest extends AIButterflyBase {
 	public AIButterflyRest(EntityButterfly entity) {
@@ -94,36 +89,31 @@ public class AIButterflyRest extends AIButterflyBase {
 			return false;
 		}
 		BlockState blockState = entity.level.getBlockState(pos);
-		if (!blockState.isAir()) {    //TODO
-			//			if (!block.isPassable(entity.world, pos)) {
+		if (!blockState.isAir()) {
 			return false;
 		}
 		if (isPlant(blockState)) {
 			return true;
 		}
 
-		BlockState blockStateBelow = entity.level.getBlockState(pos.below());
-		Block blockBelow = blockStateBelow.getBlock();
-		return isRest(blockBelow) || blockStateBelow.is(BlockTags.LEAVES);
+		BlockState belowState = entity.level.getBlockState(pos.below());
+		return isRest(belowState) || belowState.is(BlockTags.LEAVES);
 	}
 
-	private static boolean isRest(Block block) {
-		if (block instanceof FenceBlock) {
-			return true;
-		}
-		return block instanceof WallBlock;
+	private static boolean isRest(BlockState state) {
+		return state.is(BlockTags.FENCES) || state.is(BlockTags.WALLS);
 	}
 
-	private static boolean isPlant(BlockState blockState) {
-		Block block = blockState.getBlock();
-		if (block instanceof FlowerBlock) {
+	private static boolean isPlant(BlockState state) {
+		Block block = state.getBlock();
+		if (state.is(BlockTags.FLOWERS)) {
 			return true;
 		} else if (block instanceof IPlantable) {
 			return true;
 		} else if (block instanceof BonemealableBlock) {
 			return true;
 		} else {
-			return blockState.getMaterial() == Material.PLANT;
+			return state.getMaterial() == Material.PLANT;
 		}
 	}
 }

@@ -161,7 +161,6 @@ public class Forestry {
 		// Register event handler
 		callSetupListeners(true);
 		ModuleManager.getModuleHandler().runPreInit();
-		//TODO put these here for now
 		ModuleManager.getModuleHandler().runInit();
 		callSetupListeners(false);
 		ModuleManager.getModuleHandler().runPostInit();
@@ -171,7 +170,6 @@ public class Forestry {
 		ModuleManager.getModuleHandler().registerCapabilities(event::register);
 	}
 
-	//TODO: Move to somewhere else
 	private void callSetupListeners(boolean start) {
 		for (IAllele allele : AlleleUtils.getAlleles()) {
 			if (allele instanceof ISetupListener listener) {

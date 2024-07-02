@@ -40,7 +40,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -55,6 +54,7 @@ import net.minecraftforge.common.IPlantable;
 
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.lepidopterology.IEntityButterfly;
 import forestry.api.lepidopterology.ILepidopteristTracker;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
@@ -64,6 +64,7 @@ import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflyRoot;
 import forestry.core.config.Config;
 import forestry.core.data.ForestryTags;
+import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.genetics.Butterfly;
@@ -278,7 +279,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		} else {
 			BlockState blockState = level.getBlockState(pos);
 			Block block = blockState.getBlock();
-			if (block instanceof FlowerBlock) {
+			if (blockState.is(BlockTags.FLOWERS)) {
 				weight += 2.0f;
 			} else if (block instanceof IPlantable) {
 				weight += 1.5f;
@@ -291,8 +292,20 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 			BlockPos posBelow = pos.below();
 			BlockState blockStateBelow = level.getBlockState(posBelow);
 			Block blockBelow = blockStateBelow.getBlock();
-			if (blockStateBelow.is(BlockTags.LEAVES)) {
-				weight += 50f;
+			if (blockState.is(BlockTags.LEAVES)) {
+				boolean isSamePollen = false;
+
+				if (this.pollen != null) {
+					ICheckPollinatable pollinatable = GeneticsUtil.getCheckPollinatable(level, posBelow);
+					if (pollinatable != null && pollinatable.getPollen().getIdentifier().equals(this.pollen.getIdentifier())) {
+						isSamePollen = true;
+					}
+				}
+				if (isSamePollen) {
+					weight -= 15.0f;
+				} else {
+					weight += 5.0f;
+				}
 			} else if (blockBelow instanceof FenceBlock) {
 				weight += 1.0f;
 			} else if (blockBelow instanceof WallBlock) {
@@ -505,7 +518,11 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		}
 
 		Vec3 motion = getDeltaMovement();
-		setDeltaMovement(motion.x, motion.y * 0.6, motion.z);
+		if (state == EnumButterflyState.FLYING && flightTarget != null && flightTarget.y > position().y) {
+			setDeltaMovement(motion.x, motion.y * 0.6 + 0.15, motion.z);
+		} else {
+			setDeltaMovement(motion.x, motion.y * 0.6, motion.z);
+		}
 
 		// Make sure we die if the butterfly hasn't rested in a long, long time.
 		if (exhaustion > EXHAUSTION_CONSUMPTION && random.nextInt(20) == 0) {
