@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.genetics.ITree;
@@ -21,13 +22,12 @@ import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
+import forestry.lepidopterology.entities.EntityButterfly;
 
 public class ButterflySpawner implements ILeafTickHandler {
 
 	@Override
 	public boolean onRandomLeafTick(ITree tree, Level world, RandomSource rand, BlockPos pos, boolean isDestroyed) {
-
-		//TODO hopefully this is right
 		if (!world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
 			return false;
 		}
@@ -48,8 +48,7 @@ public class ButterflySpawner implements ILeafTickHandler {
 			return false;
 		}
 
-		//TODO needs server world?
-		if (false) {//world.countEntities(EntityButterfly.class) > ModuleLepidopterology.spawnConstraint) {
+		if (EntityButterfly.isMaxButterflyCluster(Vec3.atCenterOf(pos), world)) {
 			return false;
 		}
 

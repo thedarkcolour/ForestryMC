@@ -75,8 +75,8 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
-		super.tick(state, world, pos, rand);
+	public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
+		super.randomTick(state, world, pos, rand);
 
 		TileLeaves tileLeaves = TileUtil.getTile(world, pos, TileLeaves.class);
 
@@ -84,6 +84,11 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 		if (tileLeaves != null && !tileLeaves.isRemoved() && rand.nextFloat() <= 0.1) {
 			tileLeaves.onBlockTick(world, pos, state, rand);
 		}
+	}
+
+	@Override
+	public boolean isRandomlyTicking(BlockState state) {
+		return !state.getValue(PERSISTENT);
 	}
 
 	/* TILE ENTITY */
