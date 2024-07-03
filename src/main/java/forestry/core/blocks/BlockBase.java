@@ -75,12 +75,15 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 
 	public BlockBase(P blockType, Block.Properties properties) {
 		super(createProperties(blockType, properties));
-		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+
+		if (getStateDefinition().any().hasProperty(FACING)) {
+			registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH));
+		}
 
 		this.blockType = blockType;
-		blockType.getMachineProperties().setBlock(this);
-
 		this.hasTESR = blockType instanceof IBlockTypeTesr;
+
+		blockType.getMachineProperties().setBlock(this);
 	}
 
 	public BlockBase(P blockType, Material material) {

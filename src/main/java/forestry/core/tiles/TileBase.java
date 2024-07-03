@@ -10,14 +10,11 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.minecraftforge.network.NetworkHooks;
@@ -26,7 +23,6 @@ import forestry.core.blocks.BlockBase;
 import forestry.core.blocks.IBlockType;
 
 public abstract class TileBase extends TileForestry {
-
 	public TileBase(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
 		super(tileEntityTypeIn, pos, state);
 	}
@@ -42,37 +38,14 @@ public abstract class TileBase extends TileForestry {
 		return true;
 	}
 
-	@Override
-	public String getUnlocalizedTitle() {
-		Block block = getBlockState().getBlock();
-		if (block instanceof BlockBase) {
-			return block.getDescriptionId();
-		}
-		return super.getUnlocalizedTitle();
-	}
-
-	@SuppressWarnings("unchecked")
 	public <T extends IBlockType> T getBlockType(T fallbackType) {
 		BlockState blockState = getBlockState();
 		Block block = blockState.getBlock();
-		if (!(block instanceof BlockBase blockBase)) {
+
+		if (block instanceof BlockBase<?> blockBase) {
+			return (T) blockBase.blockType;
+		} else {
 			return fallbackType;
 		}
-		return (T) blockBase.blockType;
 	}
-
-
-	//TODO
-	//	@Override
-	//	public boolean shouldRefresh(World world, BlockPos pos, BlockState oldState, BlockState newState) {
-	//		Block oldBlock = oldState.getBlock();
-	//		Block newBlock = newState.getBlock();
-	//		return oldBlock != newBlock || !(oldBlock instanceof BlockBase) || !(newBlock instanceof BlockBase);
-	//	}
-
-	@Nonnull
-	public Direction getFacing() {
-		return getBlockState().getValue(BlockBase.FACING);
-	}
-
 }

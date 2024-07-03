@@ -16,9 +16,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.math.Vector3f;
 
-import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TemperatureState;
+import forestry.energy.blocks.EngineBlock;
 import forestry.energy.tiles.EngineBlockEntity;
 
 public class RenderEngine implements IForestryRenderer<EngineBlockEntity> {
@@ -82,7 +82,7 @@ public class RenderEngine implements IForestryRenderer<EngineBlockEntity> {
 	@Override
 	public void renderTile(EngineBlockEntity tile, RenderHelper helper) {
 		BlockState blockState = tile.getBlockState();
-		Direction facing = blockState.getValue(BlockBase.FACING);
+		Direction facing = blockState.getValue(EngineBlock.VERTICAL_FACING);
 
 		float progress = tile.progress;
 		if (tile.stagePiston != 0) {

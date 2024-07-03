@@ -41,6 +41,7 @@ import forestry.core.utils.NetworkUtil;
 import forestry.energy.EnergyHelper;
 import forestry.energy.ForestryEnergyStorage;
 import forestry.energy.EnergyTransferMode;
+import forestry.energy.blocks.EngineBlock;
 
 public abstract class EngineBlockEntity extends TileBase implements IActivatable, IStreamableGui {
 	private static final int CANT_SEND_ENERGY_TIME = 20;
@@ -128,7 +129,7 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 
 		// Determine targeted tile
 		BlockState blockState = getBlockState();
-		Direction facing = blockState.getValue(BlockBase.FACING);
+		Direction facing = blockState.getValue(EngineBlock.VERTICAL_FACING);
 		BlockEntity tile = level.getBlockEntity(getBlockPos().relative(facing));
 
 		float newPistonSpeed = getPistonSpeed();
@@ -303,7 +304,7 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
-		if (!remove && capability == ForgeCapabilities.ENERGY && side == getFacing()) {
+		if (!remove && capability == ForgeCapabilities.ENERGY && side == getBlockState().getValue(EngineBlock.VERTICAL_FACING)) {
 			return energyCap.cast();
 		}
 		return super.getCapability(capability, side);

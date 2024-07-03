@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -29,6 +31,8 @@ import org.jetbrains.annotations.Nullable;
 public class EngineBlock extends BlockBase<EngineBlockType> {
 	private static final EnumMap<Direction, VoxelShape> SHAPE_FOR_DIRECTIONS = new EnumMap<>(Direction.class);
 
+	public static final EnumProperty<Direction> VERTICAL_FACING = EnumProperty.create("facing", Direction.class, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.DOWN, Direction.UP);
+
 	static {
 		SHAPE_FOR_DIRECTIONS.put(Direction.EAST, Shapes.or(Block.box(0, 0, 0, 6, 16, 16), Block.box(6, 2, 2, 10, 14, 14), Block.box(10, 4, 4, 16, 12, 12)));
 		SHAPE_FOR_DIRECTIONS.put(Direction.WEST, Shapes.or(Block.box(0, 4, 4, 6, 12, 12), Block.box(6, 2, 2, 10, 14, 14), Block.box(10, 0, 0, 16, 16, 16)));
@@ -40,6 +44,13 @@ public class EngineBlock extends BlockBase<EngineBlockType> {
 
 	public EngineBlock(EngineBlockType blockType) {
 		super(blockType, Properties.of(Material.METAL).sound(SoundType.METAL));
+
+		registerDefaultState(getStateDefinition().any().setValue(VERTICAL_FACING, Direction.NORTH));
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(VERTICAL_FACING);
 	}
 
 	// todo config to disable the clockwork engine
@@ -55,7 +66,7 @@ public class EngineBlock extends BlockBase<EngineBlockType> {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-		Direction orientation = state.getValue(FACING);
+		Direction orientation = state.getValue(VERTICAL_FACING);
 		return SHAPE_FOR_DIRECTIONS.get(orientation);
 	}
 
@@ -71,11 +82,11 @@ public class EngineBlock extends BlockBase<EngineBlockType> {
 	}
 
 	private static BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos) {
-		Direction blockFacing = state.getValue(FACING);
+		Direction blockFacing = state.getValue(VERTICAL_FACING);
 		for (int i = blockFacing.ordinal() + 1; i <= blockFacing.ordinal() + 6; ++i) {
-			Direction orientation = Direction.values()[i % 6];
+			Direction orientation = Direction.VALUES[i % 6];
 			if (isOrientedAtEnergyReciever(world, pos, orientation)) {
-				return state.setValue(FACING, orientation);
+				return state.setValue(VERTICAL_FACING, orientation);
 			}
 		}
 		return state;
@@ -88,9 +99,9 @@ public class EngineBlock extends BlockBase<EngineBlockType> {
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
 		if (isOrientedAtEnergyReciever(world, pos, orientation)) {
-			return defaultBlockState().setValue(FACING, orientation);
+			return defaultBlockState().setValue(VERTICAL_FACING, orientation);
 		}
-		return rotate(defaultBlockState().setValue(FACING, context.getHorizontalDirection()), world, pos);
+		return rotate(defaultBlockState().setValue(VERTICAL_FACING, context.getHorizontalDirection()), world, pos);
 	}
 
 	@Override
