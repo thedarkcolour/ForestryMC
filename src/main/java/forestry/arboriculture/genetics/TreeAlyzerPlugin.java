@@ -128,7 +128,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack itemStack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
 			Optional<ITree> optional = TreeManager.treeRoot.create(itemStack);
-			if (!optional.isPresent()) {
+			if (optional.isEmpty()) {
 				return;
 			}
 			ITree tree = optional.get();
@@ -229,7 +229,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	public void drawAnalyticsPage3(PoseStack transform, ItemStack itemStack, Screen gui) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
 			Optional<ITree> optional = TreeManager.treeRoot.create(itemStack);
-			if (!optional.isPresent()) {
+			if (optional.isEmpty()) {
 				return;
 			}
 			ITree tree = optional.get();

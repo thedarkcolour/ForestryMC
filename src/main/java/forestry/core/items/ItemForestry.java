@@ -21,14 +21,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.core.ItemGroupForestry;
 import forestry.core.utils.ItemTooltipUtil;
 
 public class ItemForestry extends Item {
-
 	private final int burnTime;
 
 	public ItemForestry() {
@@ -45,10 +41,11 @@ public class ItemForestry extends Item {
 
 	public ItemForestry(Item.Properties properties) {
 		super(properties);
-		if (properties instanceof ItemProperties) {
-			this.burnTime = ((ItemProperties) properties).burnTime;
+
+		if (properties instanceof ItemProperties props) {
+			this.burnTime = props.burnTime;
 		} else {
-			burnTime = 0;
+			this.burnTime = 0;
 		}
 	}
 
@@ -58,9 +55,7 @@ public class ItemForestry extends Item {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced) {
-		super.appendHoverText(stack, world, tooltip, advanced);
 		ItemTooltipUtil.addInformation(stack, world, tooltip, advanced);
 	}
 

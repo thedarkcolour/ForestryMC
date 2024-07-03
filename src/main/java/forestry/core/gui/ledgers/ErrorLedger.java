@@ -18,7 +18,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.core.IErrorState;
 import forestry.core.utils.StringUtil;
-import forestry.core.utils.Translator;
 
 /**
  * A ledger displaying error messages and help text.
@@ -36,7 +35,6 @@ public class ErrorLedger extends Ledger {
 	public void setState(@Nullable IErrorState state) {
 		this.state = state;
 		if (state != null) {
-			//TODO - textcomponent
 			int lineHeight = StringUtil.getLineHeight(maxTextWidth, getTooltip(), Component.translatable(state.getUnlocalizedHelp()));
 			maxHeight = lineHeight + 20;
 		}
@@ -62,7 +60,6 @@ public class ErrorLedger extends Ledger {
 
 		// Write description if fully opened
 		if (isFullyOpened()) {
-			//TODO textcomponent
 			y += drawHeader(transform, getTooltip(), xHeader, y);
 			y += 4;
 

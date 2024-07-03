@@ -25,8 +25,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import forestry.api.apiculture.genetics.BeeChromosomes;
@@ -35,7 +33,6 @@ import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeRoot;
 import forestry.api.core.ItemGroups;
-import forestry.apiculture.genetics.BeeHelper;
 import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
@@ -43,7 +40,6 @@ import forestry.core.items.definitions.IColoredItem;
 import genetics.api.GeneticHelper;
 
 public class ItemBeeGE extends ItemGE implements IColoredItem {
-
 	private final EnumBeeType type;
 
 	public ItemBeeGE(EnumBeeType type) {
@@ -63,15 +59,14 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack itemstack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-		if (!itemstack.hasTag()) {
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag flag) {
+		if (!stack.hasTag()) {
 			return;
 		}
 
 		if (type != EnumBeeType.DRONE) {
-			Optional<IBee> optionalIndividual = GeneticHelper.getIndividual(itemstack);
-			if (!optionalIndividual.isPresent()) {
+			Optional<IBee> optionalIndividual = GeneticHelper.getIndividual(stack);
+			if (optionalIndividual.isEmpty()) {
 				return;
 			}
 
@@ -83,7 +78,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 			}
 		}
 
-		super.appendHoverText(itemstack, world, list, flag);
+		super.appendHoverText(stack, level, list, flag);
 	}
 
 	@Override

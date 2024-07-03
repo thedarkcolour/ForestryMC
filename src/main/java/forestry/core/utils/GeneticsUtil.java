@@ -61,7 +61,6 @@ import genetics.utils.AlleleUtils;
 import genetics.utils.RootUtils;
 
 public class GeneticsUtil {
-
 	private static String getKeyPrefix(IAllele allele) {
 		if (allele instanceof IAlleleBeeSpecies) {
 			return "for.bees";

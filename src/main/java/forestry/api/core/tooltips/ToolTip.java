@@ -10,6 +10,10 @@
  ******************************************************************************/
 package forestry.api.core.tooltips;
 
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+
 /**
  * @author CovertJaguar <http://www.railcraft.info/>
  */
@@ -18,6 +22,11 @@ public class ToolTip extends TextCollection {
 	private long mouseOverStart;
 
 	public ToolTip() {
+		this.delay = 0;
+	}
+
+	public ToolTip(List<Component> list) {
+		super(list);
 		this.delay = 0;
 	}
 
