@@ -1,7 +1,6 @@
 package forestry.core.data;
 
 import javax.annotation.Nullable;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -28,27 +28,26 @@ import forestry.core.features.CoreBlocks;
 import forestry.database.features.DatabaseBlocks;
 import forestry.factory.features.FactoryBlocks;
 import forestry.farming.blocks.BlockFarm;
+import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.mail.features.MailBlocks;
 import forestry.modules.features.FeatureBlockGroup;
 
-//TODO: Split up ?
 public final class ForestryBlockTagsProvider extends BlockTagsProvider {
-	@Nullable
-	private Set<ResourceLocation> filter = null;
-
 	public ForestryBlockTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
 		super(generator, Constants.MOD_ID, existingFileHelper);
 	}
 
 	@Override
 	protected void addTags() {
-		//super.registerTags();
-		filter = new HashSet<>(this.builders.keySet());
-
 		tag(ForestryTags.Blocks.MINEABLE_SCOOP);
 		tag(ForestryTags.Blocks.MINEABLE_GRAFTER);
+
+		for (EnumFarmMaterial material : EnumFarmMaterial.values()) {
+			tag(ForestryTags.Blocks.VALID_FARM_BASE).add(material.getBase());
+		}
+		tag(ForestryTags.Blocks.VALID_FARM_BASE).add(Blocks.SMOOTH_STONE);
 
 		{
 			tag(BlockTags.MINEABLE_WITH_AXE).add(ApicultureBlocks.BEE_CHEST.block());
@@ -157,17 +156,11 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 	}
 
 	@SafeVarargs
-	protected final void addToTag(TagKey<Block> tag, TagKey<Block>... providers) {
+	private void addToTag(TagKey<Block> tag, TagKey<Block>... providers) {
 		TagsProvider.TagAppender<Block> builder = tag(tag);
 		for (TagKey<Block> provider : providers) {
 			builder.addTag(provider);
 		}
-	}
-
-	@Override
-	@Nullable
-	protected Path getPath(ResourceLocation id) {
-		return filter != null && filter.contains(id) ? null : super.getPath(id); //We don't want to save vanilla tags.
 	}
 
 	@Override

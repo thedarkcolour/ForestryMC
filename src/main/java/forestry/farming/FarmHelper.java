@@ -73,14 +73,6 @@ public class FarmHelper {
 		};
 	}
 
-	public static final ImmutableSet<Block> bricks = ImmutableSet.of(
-		Blocks.BRICKS,
-		Blocks.STONE_BRICKS,
-		Blocks.SANDSTONE,
-		Blocks.NETHER_BRICKS,
-		Blocks.QUARTZ_BLOCK
-	);
-
 	private static FarmDirection getOpposite(FarmDirection farmDirection) {
 		Direction forgeDirection = farmDirection.getFacing();
 		Direction forgeDirectionOpposite = forgeDirection.getOpposite();

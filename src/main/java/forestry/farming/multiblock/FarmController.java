@@ -48,6 +48,7 @@ import forestry.api.farming.IFarmable;
 import forestry.api.multiblock.IFarmComponent;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.config.Config;
+import forestry.core.data.ForestryTags;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.FakeInventoryAdapter;
@@ -490,8 +491,8 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 	@Override
 	public boolean isValidPlatform(Level world, BlockPos pos) {
-		BlockState blockState = world.getBlockState(pos);
-		return FarmHelper.bricks.contains(blockState.getBlock());
+		BlockState state = world.getBlockState(pos);
+		return state.is(ForestryTags.Blocks.VALID_FARM_BASE);
 	}
 
 	@Override

@@ -15,6 +15,9 @@ public class ForestryTags {
 		public static final TagKey<Block> MINEABLE_SCOOP = tag("scoop");
 		public static final TagKey<Block> MINEABLE_GRAFTER = tag("grafter");
 
+		// Blocks that can be used as farmland bases for multiblock farms
+		public static final TagKey<Block> VALID_FARM_BASE = tag("valid_farm_base");
+
 		public static final TagKey<Block> CHARCOAL_BLOCK = forgeTag("storage_blocks/charcoal");
 
 		public static final TagKey<Block> STORAGE_BLOCKS_APATITE = forgeTag("storage_blocks/apatite");
@@ -35,10 +38,6 @@ public class ForestryTags {
 
 		private static TagKey<Block> forgeTag(String name) {
 			return BlockTags.create(new ResourceLocation("forge", name));
-		}
-
-		private Blocks() {
-
 		}
 	}
 

@@ -1,21 +1,24 @@
 package forestry.modules.features;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import net.minecraft.world.item.Item;
 
 import forestry.api.core.IItemSubtype;
 
 public class FeatureItemGroup<I extends Item, S extends IItemSubtype> extends FeatureGroup<FeatureItemGroup.Builder<I, S>, FeatureItem<I>, S> {
-
 	public FeatureItemGroup(Builder<I, S> builder) {
 		super(builder);
 	}
 
 	public Collection<I> getItems() {
-		return featureByType.values().stream().map(IItemFeature::item).collect(Collectors.toList());
+		ArrayList<I> items = new ArrayList<>(featureByType.size());
+		for (FeatureItem<I> value : featureByType.values()) {
+			items.add(value.item());
+		}
+		return items;
 	}
 
 	public Item[] itemArray() {

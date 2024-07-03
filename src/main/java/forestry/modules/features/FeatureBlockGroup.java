@@ -1,15 +1,15 @@
 package forestry.modules.features;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.BlockItem;
 
 import forestry.api.core.IBlockSubtype;
 
@@ -25,19 +25,27 @@ public class FeatureBlockGroup<B extends Block, S extends IBlockSubtype> extends
 	}
 
 	public Collection<B> getBlocks() {
-		return featureByType.values().stream().map(IBlockFeature::block).collect(Collectors.toList());
+		ArrayList<B> blocks = new ArrayList<>(featureByType.size());
+		for (FeatureBlock<B, BlockItem> value : featureByType.values()) {
+			blocks.add(value.block());
+		}
+		return blocks;
 	}
 
 	public Collection<BlockItem> getItems() {
-		return featureByType.values().stream().map(IBlockFeature::item).collect(Collectors.toList());
+		ArrayList<BlockItem> items = new ArrayList<>(featureByType.size());
+		for (FeatureBlock<B, BlockItem> value : featureByType.values()) {
+			items.add(value.item());
+		}
+		return items;
 	}
 
 	@Nullable
 	public BlockState findState(String typeName) {
 		Optional<FeatureBlock> block = featureByType.entrySet().stream()
 				.filter(e -> e.getKey().getSerializedName().equals(typeName))
-			.findFirst()
-			.flatMap(e -> Optional.of(e.getValue()));
+				.findFirst()
+				.flatMap(e -> Optional.of(e.getValue()));
 		return block.map(FeatureBlock::defaultState).orElse(null);
 	}
 
