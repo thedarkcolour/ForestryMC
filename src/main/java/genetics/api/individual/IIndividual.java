@@ -21,10 +21,7 @@ public interface IIndividual {
 
 	/**
 	 * Adds some information about the individual to the list.
-	 *
-	 * @param tooltip
 	 */
-	@Deprecated
 	void addTooltip(List<Component> tooltip);
 
 	/**

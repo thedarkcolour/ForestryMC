@@ -16,6 +16,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -169,6 +170,7 @@ public abstract class BlockUtil {
 	}
 
 	public static void sendPlaceSound(Level level, BlockPos pos, BlockState state) {
-		// todo: implement (same sound as destroyEffects)
+		var soundType = state.getSoundType();
+		level.playSound(null, pos, soundType.getPlaceSound(), SoundSource.BLOCKS, (soundType.volume + 1.0f) / 2.0f, soundType.pitch * 0.8f);
 	}
 }

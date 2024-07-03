@@ -20,6 +20,7 @@ import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.core.config.Config;
 import forestry.core.features.CoreItems;
+import forestry.core.genetics.ItemGE;
 import forestry.core.genetics.analyzer.DatabasePlugin;
 import forestry.core.genetics.analyzer.MutationsTab;
 import forestry.core.genetics.analyzer.ProductsTab;
@@ -37,7 +38,7 @@ public class TreePlugin extends DatabasePlugin<ITree> {
 			new ProductsTab(() -> CoreItems.FRUITS.stack(ItemFruit.EnumFruit.CHERRY, 1)),
 			new MutationsTab(ArboricultureItems.GRAFTER::stack));
 		NonNullList<ItemStack> treeList = NonNullList.create();
-		ArboricultureItems.SAPLING.item().addCreativeItems(treeList, false);
+		ItemGE.addCreativeItems(ArboricultureItems.SAPLING.item(), treeList, false, TreeHelper.getRoot());
 		for (ItemStack treeStack : treeList) {
 			IOrganism<?> organism = GeneticHelper.getOrganism(treeStack);
 			if (organism.isEmpty()) {

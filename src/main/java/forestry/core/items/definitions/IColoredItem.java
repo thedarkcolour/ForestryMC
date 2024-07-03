@@ -2,9 +2,6 @@ package forestry.core.items.definitions;
 
 import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 /**
  * Gives an item the ability to be colored.
  * <p>
@@ -18,6 +15,5 @@ public interface IColoredItem {
 	 * @param tintIndex The index of the texture sprite in the model
 	 * @return The color that the sprite with the given index should have
 	 */
-	@OnlyIn(Dist.CLIENT)
 	int getColorFromItemStack(ItemStack stack, int tintIndex);
 }

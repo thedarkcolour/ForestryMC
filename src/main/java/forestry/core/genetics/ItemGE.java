@@ -14,25 +14,26 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.apiculture.DisplayHelper;
+import forestry.core.config.Config;
 import forestry.core.items.ItemForestry;
 
 import genetics.api.GeneticHelper;
+import genetics.api.individual.IHasSecrets;
 import genetics.api.individual.IIndividual;
 import genetics.api.organism.IOrganismType;
+import genetics.api.root.IIndividualRoot;
 
 public abstract class ItemGE extends ItemForestry {
 	protected ItemGE(Item.Properties properties) {
@@ -42,11 +43,6 @@ public abstract class ItemGE extends ItemForestry {
 	protected abstract IAlleleForestrySpecies getSpecies(ItemStack itemStack);
 
 	protected abstract IOrganismType getType();
-
-	@Override
-	public boolean canBeDepleted() {
-		return false;
-	}
 
 	@Override
 	public Component getName(ItemStack itemStack) {
@@ -67,37 +63,51 @@ public abstract class ItemGE extends ItemForestry {
 		return species.hasEffect();
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack itemstack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-		if (!itemstack.hasTag()) {
+	public static void appendGeneticsTooltip(ItemStack stack, IOrganismType organismType, List<Component> tooltip) {
+		if (!stack.hasTag()) {
 			return;
 		}
 
-		Optional<IIndividual> optionalIndividual = GeneticHelper.getIndividual(itemstack).filter(IIndividual::isAnalyzed);
+		Optional<IIndividual> optionalIndividual = GeneticHelper.getIndividual(stack).filter(IIndividual::isAnalyzed);
 		if (optionalIndividual.isPresent()) {
 			IIndividual individual = optionalIndividual.get();
 			if (Screen.hasShiftDown()) {
-				ToolTip toolTip = new ToolTip();
+				ToolTip helper = new ToolTip(tooltip);
 				DisplayHelper.getInstance()
-						.getTooltips(individual.getRoot().getUID(), getType())
-						.forEach((provider) -> provider.addTooltip(toolTip, individual.getGenome(), individual));
-				list.addAll(toolTip.getLines());
-				if (toolTip.isEmpty()) {
-					individual.addTooltip(list);
+						.getTooltips(individual.getRoot().getUID(), organismType)
+						.forEach(provider -> provider.addTooltip(helper, individual.getGenome(), individual));
+				if (helper.isEmpty()) {
+					individual.addTooltip(tooltip);
 				}
 			} else {
-				list.add(Component.translatable("for.gui.tooltip.tmi", "< %s >").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+				tooltip.add(Component.translatable("for.gui.tooltip.tmi", "< %s >").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 			}
 		} else {
-			list.add(Component.translatable("for.gui.unknown", "< %s >").withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.translatable("for.gui.unknown", "< %s >").withStyle(ChatFormatting.GRAY));
 		}
 	}
 
-	@Nullable
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+		appendGeneticsTooltip(stack, getType(), tooltip);
+	}
+
 	@Override
 	public String getCreatorModId(ItemStack itemStack) {
 		IAlleleForestrySpecies species = getSpecies(itemStack);
 		return species.getRegistryName().getNamespace();
+	}
+
+	public static <I extends IIndividual & IHasSecrets> void addCreativeItems(Item item, NonNullList<ItemStack> subItems, boolean hideSecrets, IIndividualRoot<I> speciesRoot) {
+		for (I individual : speciesRoot.getIndividualTemplates()) {
+			// Don't show secrets unless ordered to.
+			if (hideSecrets && individual.isSecret() && !Config.isDebug) {
+				continue;
+			}
+
+			ItemStack stack = new ItemStack(item);
+			GeneticHelper.setIndividual(stack, individual);
+			subItems.add(stack);
+		}
 	}
 }

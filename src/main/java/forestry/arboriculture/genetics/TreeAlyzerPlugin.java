@@ -40,6 +40,7 @@ import forestry.api.genetics.IFruitFamily;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.core.config.Config;
+import forestry.core.genetics.ItemGE;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
@@ -57,7 +58,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 
 	TreeAlyzerPlugin() {
 		NonNullList<ItemStack> treeList = NonNullList.create();
-		ArboricultureItems.SAPLING.item().addCreativeItems(treeList, false);
+		ItemGE.addCreativeItems(ArboricultureItems.SAPLING.item(), treeList, false, TreeHelper.getRoot());
 		for (ItemStack treeStack : treeList) {
 			IOrganism<?> organism = GeneticHelper.getOrganism(treeStack);
 			if (organism.isEmpty()) {

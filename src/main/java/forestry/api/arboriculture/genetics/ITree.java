@@ -29,8 +29,9 @@ import forestry.api.genetics.products.IProductList;
 
 import genetics.api.individual.IChromosomeType;
 import genetics.api.individual.IIndividual;
+import genetics.api.individual.IHasSecrets;
 
-public interface ITree extends IIndividual, ITreeGenData {
+public interface ITree extends IIndividual, ITreeGenData, IHasSecrets {
 
 	@Override
 	ITreeRoot getRoot();
@@ -97,6 +98,7 @@ public interface ITree extends IIndividual, ITreeGenData {
 		return getGenome().getActiveAllele(TreeChromosomes.SPECIES).hasEffect();
 	}
 
+	@Override
 	default boolean isSecret() {
 		return getGenome().getActiveAllele(TreeChromosomes.SPECIES).isSecret();
 	}

@@ -17,8 +17,4 @@ public class ArboricultureItems {
 	public static final FeatureItem<ItemGermlingGE> POLLEN_FERTILE = REGISTRY.item(() -> new ItemGermlingGE(EnumGermlingType.POLLEN), "pollen_fertile");
 	public static final FeatureItem<ItemGrafter> GRAFTER = REGISTRY.item(() -> new ItemGrafter(9), "grafter");
 	public static final FeatureItem<ItemGrafter> GRAFTER_PROVEN = REGISTRY.item(() -> new ItemGrafter(149), "grafter_proven");
-
-	public ArboricultureItems() {
-
-	}
 }

@@ -7,12 +7,12 @@ package forestry.api.genetics;
 
 import net.minecraft.world.level.Level;
 
+import genetics.api.individual.IHasSecrets;
 import genetics.api.individual.IIndividual;
 
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 
-public interface IIndividualLiving extends IIndividual {
-
+public interface IIndividualLiving extends IIndividual, IHasSecrets {
 	/**
 	 * @return Current health of the individual.
 	 */
@@ -42,8 +42,8 @@ public interface IIndividualLiving extends IIndividual {
 		return getGenome().getPrimary(IAlleleForestrySpecies.class).hasEffect();
 	}
 
+	@Override
 	default boolean isSecret() {
 		return getGenome().getPrimary(IAlleleForestrySpecies.class).isSecret();
 	}
-
 }
