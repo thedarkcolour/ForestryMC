@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmPropertiesBuilder;
@@ -14,15 +15,12 @@ import forestry.api.farming.IFarmableInfo;
 import forestry.farming.logic.farmables.FarmableInfo;
 
 public class DummyFarmRegistry implements IFarmRegistry {
-
 	@Override
 	public void registerFarmables(String identifier, IFarmable... farmable) {
-		//Dummy-Implementation
 	}
 
 	@Override
 	public Collection<IFarmable> getFarmables(String identifier) {
-		//Dummy-Implementation
 		return Collections.emptyList();
 	}
 
@@ -38,25 +36,21 @@ public class DummyFarmRegistry implements IFarmRegistry {
 
 	@Override
 	public IFarmPropertiesBuilder getPropertiesBuilder(String identifier) {
-		//Dummy-Implementation
 		return null;
 	}
 
 	@Override
-	public void registerFertilizer(ItemStack itemStack, int value) {
-		//Dummy-Implementation
+	public void registerFertilizer(Ingredient fertilizer, int value) {
 	}
 
 	@Override
-	public int getFertilizeValue(ItemStack itemStack) {
-		//Dummy-Implementation
+	public int getFertilizeValue(ItemStack stack) {
 		return 0;
 	}
 
 	@Nullable
 	@Override
 	public IFarmProperties getProperties(String identifier) {
-		//Dummy-Implementation
 		return null;
 	}
 }

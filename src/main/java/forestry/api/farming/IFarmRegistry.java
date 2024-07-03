@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public interface IFarmRegistry {
 
@@ -40,15 +41,15 @@ public interface IFarmRegistry {
 	IFarmableInfo getFarmableInfo(String identifier);
 
 	/**
-	 * @param itemStack the fertilizer itemstack
-	 * @param value     The value of the fertilizer. The value of the forestry fertilizer is 500.
+	 * @param fertilizer the fertilizer
+	 * @param value      The value of the fertilizer. The value of the forestry fertilizer is 500.
 	 */
-	void registerFertilizer(ItemStack itemStack, int value);
+	void registerFertilizer(Ingredient fertilizer, int value);
 
 	/**
 	 * @return The value of the fertilizer
 	 */
-	int getFertilizeValue(ItemStack itemStack);
+	int getFertilizeValue(ItemStack stack);
 
 
 	/**

@@ -6,32 +6,32 @@ import com.google.common.collect.Multimap;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmPropertiesBuilder;
 import forestry.api.farming.IFarmRegistry;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.IFarmableInfo;
-import forestry.core.utils.ItemStackUtil;
 import forestry.farming.logic.FarmProperties;
 import forestry.farming.logic.farmables.FarmableInfo;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public enum FarmRegistry implements IFarmRegistry {
 	INSTANCE;
 
 	private final Multimap<String, IFarmable> farmables = HashMultimap.create();
 	private final Map<String, IFarmableInfo> farmableInfo = new LinkedHashMap<>();
-	private final Map<ItemStack, Integer> fertilizers = new LinkedHashMap<>();
+	private final Object2IntOpenHashMap<Ingredient> fertilizers = new Object2IntOpenHashMap<>();
 	private final Map<String, IFarmProperties> farmInstances = new HashMap<>();
 	private final Map<String, IFarmPropertiesBuilder> propertiesBuilders = new HashMap<>();
-	private FertilizerConfig fertilizer = FertilizerConfig.DUMMY;
 
 	@Override
 	public void registerFarmables(String identifier, IFarmable... farmablesArray) {
@@ -53,16 +53,21 @@ public enum FarmRegistry implements IFarmRegistry {
 	}
 
 	@Override
-	public void registerFertilizer(ItemStack itemStack, int value) {
-		if (itemStack.isEmpty()) {
+	public void registerFertilizer(Ingredient fertilizer, int value) {
+		if (fertilizer.isEmpty()) {
 			return;
 		}
-		fertilizers.put(itemStack, value);
+		fertilizers.put(fertilizer, value);
 	}
 
 	@Override
-	public int getFertilizeValue(ItemStack itemStack) {
-		return fertilizer.getFertilizeValue(itemStack);
+	public int getFertilizeValue(ItemStack stack) {
+		for (Object2IntMap.Entry<Ingredient> fertilizer : this.fertilizers.object2IntEntrySet()) {
+			if (fertilizer.getKey().test(stack)) {
+				return fertilizer.getIntValue();
+			}
+		}
+		return 0;
 	}
 
 	@Override
@@ -86,25 +91,4 @@ public enum FarmRegistry implements IFarmRegistry {
 	public IFarmProperties getProperties(String identifier) {
 		return farmInstances.get(identifier);
 	}
-
-	private static class FertilizerConfig {
-		private static final FertilizerConfig DUMMY = new FertilizerConfig(Collections.emptyMap());
-
-		private final Map<ItemStack, Integer> fertilizers;
-
-		private FertilizerConfig(Map<ItemStack, Integer> fertilizers) {
-			this.fertilizers = fertilizers;
-		}
-
-		private int getFertilizeValue(ItemStack itemStack) {
-			for (Entry<ItemStack, Integer> fertilizer : fertilizers.entrySet()) {
-				ItemStack fertilizerStack = fertilizer.getKey();
-				if (ItemStackUtil.areItemStacksEqualIgnoreCount(fertilizerStack, itemStack)) {
-					return fertilizer.getValue();
-				}
-			}
-			return 0;
-		}
-	}
-
 }

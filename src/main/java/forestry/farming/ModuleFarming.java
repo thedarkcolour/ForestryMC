@@ -10,10 +10,10 @@
  ******************************************************************************/
 package forestry.farming;
 
-
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BeetrootBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
@@ -88,12 +88,17 @@ public class ModuleFarming extends BlankForestryModule {
 		));
 		registry.registerFarmables(ForestryFarmIdentifier.ARBOREAL, new FarmableSapling(
 				new ItemStack(Blocks.DARK_OAK_SAPLING),
-				new ItemStack[]{new ItemStack(Items.STICK)}
+				new ItemStack[]{new ItemStack(Items.APPLE), new ItemStack(Items.STICK)}
 		));
 		registry.registerFarmables(ForestryFarmIdentifier.ARBOREAL, new FarmableSapling(
 				new ItemStack(Blocks.ACACIA_SAPLING),
 				new ItemStack[]{new ItemStack(Items.STICK)}
 		));
+		// todo 1.20.1
+		//registry.registerFarmables(ForestryFarmIdentifier.ARBOREAL, new FarmableSapling(
+		//		new ItemStack(Blocks.CHERRY_SAPLING),
+		//		new ItemStack[]{new ItemStack(Items.STICK)}
+		//));
 		registry.registerFarmables(ForestryFarmIdentifier.ARBOREAL, new FarmableGE());
 
 		registry.registerFarmables(ForestryFarmIdentifier.CROPS,
@@ -120,8 +125,7 @@ public class ModuleFarming extends BlankForestryModule {
 		registry.registerFarmables(ForestryFarmIdentifier.ENDER, FarmableChorus.INSTANCE);
 
 		//Forestry fertilizer
-		//TODO - tags
-		registry.registerFertilizer(CoreItems.FERTILIZER_COMPOUND.stack(), 500);
+		registry.registerFertilizer(Ingredient.of(CoreItems.FERTILIZER_COMPOUND), 500);
 
 		// Layouts
 		ICircuitLayout layoutManaged = new CircuitLayout("farms.managed", CircuitSocketType.FARM);
