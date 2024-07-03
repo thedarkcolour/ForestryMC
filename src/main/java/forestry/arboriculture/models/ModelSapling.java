@@ -33,6 +33,7 @@ import com.mojang.datafixers.util.Pair;
 
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
@@ -43,7 +44,6 @@ import forestry.arboriculture.tiles.TileSapling;
 import genetics.api.GeneticHelper;
 import genetics.api.organism.IOrganism;
 import genetics.utils.AlleleUtils;
-import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 
@@ -135,6 +135,13 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 		@Override
 		public TextureAtlasSprite getParticleIcon() {
 			return defaultBlock.getParticleIcon();
+		}
+
+		@Override
+		public TextureAtlasSprite getParticleIcon(ModelData data) {
+			IAlleleTreeSpecies species = data.get(TileSapling.TREE_SPECIES);
+
+			return blockModels.getOrDefault(species, defaultBlock).getParticleIcon();
 		}
 
 		@Override
