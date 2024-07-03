@@ -10,13 +10,9 @@
  ******************************************************************************/
 package forestry.api.core.tooltips;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 /**
  * @author CovertJaguar <http://www.railcraft.info/>
  */
-@OnlyIn(Dist.CLIENT)
 public class ToolTip extends TextCollection {
 	private final long delay;
 	private long mouseOverStart;
@@ -48,5 +44,4 @@ public class ToolTip extends TextCollection {
 
 	public void refresh() {
 	}
-
 }

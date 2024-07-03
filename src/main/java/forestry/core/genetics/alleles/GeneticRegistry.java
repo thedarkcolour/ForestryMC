@@ -108,7 +108,7 @@ public class GeneticRegistry implements IGeneticRegistry {
 					BeeChromosomes.TOLERATES_RAIN,
 					BeeChromosomes.CAVE_DWELLING,
 					ButterflyChromosomes.NOCTURNAL,
-					ButterflyChromosomes.TOLERANT_FLYER,
+					ButterflyChromosomes.TOLERATES_RAIN,
 					ButterflyChromosomes.FIRE_RESIST
 			);
 		}

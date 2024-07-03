@@ -19,37 +19,37 @@ public interface ITextInstance<I extends ITextInstance<?, ?, ?>, S, R> {
 	}
 
 	default I style(ChatFormatting... formatting) {
-		applyFormatting((component) -> component.withStyle(formatting));
+		applyFormatting(component -> component.withStyle(formatting));
 		return cast();
 	}
 
 	default I style(ChatFormatting formatting) {
-		applyFormatting((component) -> component.withStyle(formatting));
+		applyFormatting(component -> component.withStyle(formatting));
 		return cast();
 	}
 
 	default I style(Style style) {
-		applyFormatting((component) -> component.withStyle(style));
+		applyFormatting(component -> component.withStyle(style));
 		return cast();
 	}
 
 	default I add(Component line, ChatFormatting format) {
-		if (line instanceof MutableComponent) {
-			((MutableComponent) line).withStyle(format);
+		if (line instanceof MutableComponent mutable) {
+			mutable.withStyle(format);
 		}
 		return add(line);
 	}
 
 	default I add(Component line, ChatFormatting... format) {
-		if (line instanceof MutableComponent) {
-			((MutableComponent) line).withStyle(format);
+		if (line instanceof MutableComponent mutable) {
+			mutable.withStyle(format);
 		}
 		return add(line);
 	}
 
 	default I add(Component line, Style style) {
-		if (line instanceof MutableComponent) {
-			((MutableComponent) line).withStyle(style);
+		if (line instanceof MutableComponent mutable) {
+			mutable.withStyle(style);
 		}
 		return add(line);
 	}
@@ -70,8 +70,8 @@ public interface ITextInstance<I extends ITextInstance<?, ?, ?>, S, R> {
 
 	default I applyFormatting(Consumer<MutableComponent> action) {
 		Component last = lastComponent();
-		if (last instanceof MutableComponent) {
-			action.accept((MutableComponent) last);
+		if (last instanceof MutableComponent mutable) {
+			action.accept(mutable);
 		}
 		return cast();
 	}

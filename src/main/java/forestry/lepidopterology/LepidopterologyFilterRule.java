@@ -34,13 +34,13 @@ public enum LepidopterologyFilterRule implements IFilterRule {
 	FLYER(DefaultFilterRuleType.FLYER) {
 		@Override
 		protected boolean isValid(IButterfly butterfly) {
-			return butterfly.getGenome().getActiveValue(ButterflyChromosomes.TOLERANT_FLYER);
+			return butterfly.getGenome().getActiveValue(ButterflyChromosomes.TOLERATES_RAIN);
 		}
 	},
 	PURE_FLYER(DefaultFilterRuleType.PURE_FLYER) {
 		@Override
 		protected boolean isValid(IButterfly butterfly) {
-			return butterfly.getGenome().getActiveValue(ButterflyChromosomes.TOLERANT_FLYER) && butterfly.isPureBred(ButterflyChromosomes.TOLERANT_FLYER);
+			return butterfly.getGenome().getActiveValue(ButterflyChromosomes.TOLERATES_RAIN) && butterfly.isPureBred(ButterflyChromosomes.TOLERATES_RAIN);
 		}
 	};
 

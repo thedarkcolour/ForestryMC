@@ -35,7 +35,7 @@ public class ButterflyHelper {
 			.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, EnumAllele.Tolerance.NONE)
 			.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, EnumAllele.Tolerance.NONE)
 			.set(ButterflyChromosomes.NOCTURNAL, false)
-			.set(ButterflyChromosomes.TOLERANT_FLYER, false)
+			.set(ButterflyChromosomes.TOLERATES_RAIN, false)
 			.set(ButterflyChromosomes.FIRE_RESIST, false)
 			.set(ButterflyChromosomes.FLOWER_PROVIDER, EnumAllele.Flowers.VANILLA)
 			.set(ButterflyChromosomes.EFFECT, ButterflyAlleles.butterflyNone)

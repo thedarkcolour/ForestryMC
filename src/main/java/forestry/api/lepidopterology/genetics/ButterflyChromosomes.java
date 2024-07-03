@@ -54,7 +54,7 @@ public class ButterflyChromosomes {
 	/**
 	 * Only tolerant flyers will fly in the rain.
 	 */
-	public static final IChromosomeValue<Boolean> TOLERANT_FLYER = TYPES.builder().name("tolerant_flyer").asValue(Boolean.class);
+	public static final IChromosomeValue<Boolean> TOLERATES_RAIN = TYPES.builder().name("tolerates_rain").asValue(Boolean.class);
 	/**
 	 * Fire resistance.
 	 */
@@ -69,7 +69,4 @@ public class ButterflyChromosomes {
 	public static final IChromosomeAllele<IAlleleButterflyEffect> EFFECT = TYPES.builder().name("effect").asAllele(IAlleleButterflyEffect.class);
 
 	public static final IChromosomeAllele<IAlleleButterflyCocoon> COCOON = TYPES.builder().name("cocoon").asAllele(IAlleleButterflyCocoon.class);
-
-	private ButterflyChromosomes() {
-	}
 }

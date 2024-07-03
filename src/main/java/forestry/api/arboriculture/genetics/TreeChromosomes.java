@@ -56,7 +56,4 @@ public class TreeChromosomes {
 	 * Determines if the tree can burn.
 	 */
 	public static final IChromosomeValue<Boolean> FIREPROOF = TYPES.builder().name("fireproof").asValue(Boolean.class);
-
-	private TreeChromosomes() {
-	}
 }

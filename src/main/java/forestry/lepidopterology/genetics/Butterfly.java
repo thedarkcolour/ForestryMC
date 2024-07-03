@@ -29,6 +29,7 @@ import net.minecraft.world.level.biome.Biome;
 import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
 import forestry.api.core.IErrorState;
+import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.EnumTolerance;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.api.genetics.products.IProductList;
@@ -80,32 +81,38 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 		return ButterflyHelper.getRoot();
 	}
 
+	// todo finish
 	@Override
 	public void addTooltip(List<Component> list) {
+		ToolTip toolTip = new ToolTip();
+
 		IAlleleButterflySpecies primary = genome.getActiveAllele(ButterflyChromosomes.SPECIES);
 		IAlleleButterflySpecies secondary = genome.getInactiveAllele(ButterflyChromosomes.SPECIES);
 		if (!isPureBred(ButterflyChromosomes.SPECIES)) {
-			list.add(Component.translatable("for.butterflies.hybrid", primary.getDisplayName(), secondary.getDisplayName()).withStyle(ChatFormatting.BLUE));
+			toolTip.translated("for.butterflies.hybrid", primary.getDisplayName(), secondary.getDisplayName()).style(ChatFormatting.BLUE);
 		}
 
 		if (getMate().isPresent()) {
-			list.add(Component.translatable("for.gui.fecundated").withStyle(ChatFormatting.RED));//TODO ITextComponent.toUpperCase(Locale.ENGLISH));
+			//TODO ITextComponent.toUpperCase(Locale.ENGLISH));
+			toolTip.translated("for.gui.fecundated").style(ChatFormatting.RED);
 		}
-		list.add(genome.getActiveAllele(ButterflyChromosomes.SIZE).getDisplayName().copy().withStyle(ChatFormatting.YELLOW));
-		list.add(genome.getActiveAllele(ButterflyChromosomes.SPEED).getDisplayName().copy().withStyle(ChatFormatting.DARK_GREEN));
-		list.add(genome.getActiveAllele(ButterflyChromosomes.LIFESPAN).getDisplayName().copy().append(" ").append(Component.translatable("for.gui.life")));
+		toolTip.add(genome.getActiveAllele(ButterflyChromosomes.SIZE).getDisplayName().withStyle(ChatFormatting.YELLOW));
+		toolTip.add(genome.getActiveAllele(ButterflyChromosomes.SPEED).getDisplayName().withStyle(ChatFormatting.DARK_GREEN));
+		toolTip.singleLine().add(genome.getActiveAllele(ButterflyChromosomes.LIFESPAN).getDisplayName()).text(" ").translated("for.gui.life").style(ChatFormatting.GRAY).create();
 
-		IAlleleValue<EnumTolerance> tempTolerance = getGenome().getActiveAllele(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
-		list.add(Component.literal("T: " + AlleleManager.climateHelper.toDisplay(primary.getTemperature()) + " / " + tempTolerance.getDisplayName()).withStyle(ChatFormatting.GREEN));
+		IAlleleValue<EnumTolerance> tempToleranceAllele = getGenome().getActiveAllele(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
+		IAlleleValue<EnumTolerance> humidToleranceAllele = getGenome().getActiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
 
-		IAlleleValue<EnumTolerance> humidTolerance = getGenome().getActiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
-		list.add(Component.literal("H: " + AlleleManager.climateHelper.toDisplay(primary.getHumidity()) + " / " + humidTolerance.getDisplayName()).withStyle(ChatFormatting.GREEN));
+		toolTip.singleLine().text("T: ").add(AlleleManager.climateHelper.toDisplay(primary.getTemperature())).text(" / ").add(tempToleranceAllele.getDisplayName()).style(ChatFormatting.GREEN).create();
+		toolTip.singleLine().text("H: ").add(AlleleManager.climateHelper.toDisplay(primary.getHumidity())).text(" / ").add(humidToleranceAllele.getDisplayName()).style(ChatFormatting.GREEN).create();
 
-		list.add(GenericRatings.rateActivityTime(genome.getActiveValue(ButterflyChromosomes.NOCTURNAL), primary.isNocturnal()).withStyle(ChatFormatting.RED));
+		toolTip.add(GenericRatings.rateActivityTime(genome.getActiveValue(ButterflyChromosomes.NOCTURNAL), primary.isNocturnal()).withStyle(ChatFormatting.RED));
 
-		if (genome.getActiveValue(ButterflyChromosomes.TOLERANT_FLYER)) {
-			list.add(Component.translatable("for.gui.flyer.tooltip").withStyle(ChatFormatting.WHITE));
+		if (genome.getActiveValue(ButterflyChromosomes.TOLERATES_RAIN)) {
+			toolTip.translated("for.gui.flyer.tooltip").style(ChatFormatting.WHITE);
 		}
+
+		list.addAll(toolTip.getLines());
 	}
 
 	@Override
@@ -200,7 +207,7 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 	}
 
 	private boolean canFly(Level world) {
-		return (!world.isRaining() || getGenome().getActiveValue(ButterflyChromosomes.TOLERANT_FLYER)) && isActiveThisTime(world.isDay());
+		return (!world.isRaining() || getGenome().getActiveValue(ButterflyChromosomes.TOLERATES_RAIN)) && isActiveThisTime(world.isDay());
 	}
 
 	@Override

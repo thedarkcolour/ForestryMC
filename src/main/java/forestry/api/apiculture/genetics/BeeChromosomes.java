@@ -74,7 +74,4 @@ public class BeeChromosomes {
 	 * Determines the bee's effect.
 	 */
 	public static final IChromosomeAllele<IAlleleBeeEffect> EFFECT = TYPES.builder().name("effect").asAllele(IAlleleBeeEffect.class);
-
-	private BeeChromosomes() {
-	}
 }
