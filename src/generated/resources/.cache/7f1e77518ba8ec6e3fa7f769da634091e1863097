@@ -1,4 +1,4 @@
-// 1.19.2	2024-04-05T14:04:04.7509056	Machine Recipes
+// 1.19.2	2024-07-03T13:20:44.3854999	Machine Recipes
 112c37fdf17fd8128a1bf2523a188f3acf0b759b data/forestry/recipes/carpenter/bog_earth.json
 dfdd8578eb3f27d8f71054bb3ddfd7ae0a473a68 data/forestry/recipes/carpenter/carton.json
 483682687e0586864d9ebf5bf004796623178b98 data/forestry/recipes/carpenter/circuits/basic.json
@@ -186,8 +186,8 @@ a7a84efb9f4b5dc8adc421e9ca5e6b5e7063d1da data/forestry/recipes/carpenter/kit_sho
 cc9d2a27541028dcb0b04e42892233379e9720d9 data/forestry/recipes/carpenter/letter_pulp.json
 8baa16a1e6875ca17667dac711a70db37ae72659 data/forestry/recipes/carpenter/paper.json
 4f35a44d541bb9555796ac648e27914e23ac8031 data/forestry/recipes/carpenter/portable_analyzer.json
-d699d45c913fd5f7a3ae4e7a16c9693482d658e7 data/forestry/recipes/carpenter/reclaim_bronze_pickaxe.json
-3a13c54865bd4bde60c3a2f6912e7f3eb9067f15 data/forestry/recipes/carpenter/reclaim_bronze_shovel.json
+287a20f904ee7ddf5edeeae7f7e325e27d5656d1 data/forestry/recipes/carpenter/reclaim_bronze_pickaxe.json
+0ac776e25b37b3425d23f10cdbfc6ec92e0fb3e4 data/forestry/recipes/carpenter/reclaim_bronze_shovel.json
 47c0e923275b3a8d4cf14be1cae628cb81ea577d data/forestry/recipes/carpenter/scented_paneling.json
 790eb7673a327ed72e1175a1ca56b33389d66a84 data/forestry/recipes/carpenter/soldering_iron.json
 5080e41414c9dc24bf10279484a630366bdd343a data/forestry/recipes/carpenter/wood_pulp.json

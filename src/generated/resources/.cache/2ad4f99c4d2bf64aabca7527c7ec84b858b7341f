@@ -1,16 +1,16 @@
-// 1.19.2	2024-07-01T17:43:41.110326	Forestry Item Tags
-b2876bee10315ebde33a15d87d189ead2a9cdb50 data/forestry/tags/items/combs.json
+// 1.19.2	2024-07-03T13:20:44.3815013	Forestry Item Tags
+2d0b06ba9ce5ecfb89a679fb1691e0a4af33d20e data/forestry/tags/items/combs.json
 9f5d66e4017fbcabe22c6702e93310cf271fe042 data/forestry/tags/items/crafting_tables.json
-e6eb2ac5f1d0d5b4a3749532a7c66e30a26a5817 data/forestry/tags/items/drop_honey.json
-29d7d15f13a3a4c1cef9c676e78c389156783858 data/forestry/tags/items/forestry_fruits.json
-6941d0469ead6b13db8e4b80dcc4263dc35639ad data/forestry/tags/items/propolis.json
+ce1f7b72ce898ae6a000ae70dc79151602ad453c data/forestry/tags/items/drop_honey.json
+086b00f7031dd913768429147886541c5d48b4e3 data/forestry/tags/items/forestry_fruits.json
+d847bc1bbe99b3d7833c2c3426180b7683e7f855 data/forestry/tags/items/propolis.json
 cf0c5a0245a3eeb822d88e53776905fa468d455c data/forestry/tags/items/scoops.json
-7b7195ccc50d281d290b8debf81976a34fbc34b8 data/forestry/tags/items/stamps.json
+99825fea992178cc82a28dce0f2bbbb55393820e data/forestry/tags/items/stamps.json
 e736c96d74e1d9b8799f108ba1e8b1e2173926fb data/forge/tags/items/chests.json
 997ede0ad811c9479aabe6bd63d0a5b90a75c3e6 data/forge/tags/items/dusts/ash.json
-0ea4829a19b7af2a33943d28e68b067c2ba348c0 data/forge/tags/items/fences.json
-5f1a97bba8391fc81da8b81a2d069ccb70891d9e data/forge/tags/items/fence_gates.json
-5f1a97bba8391fc81da8b81a2d069ccb70891d9e data/forge/tags/items/fence_gates/wooden.json
+ed72597b6557be31a2b7418dc4ca4de05c626ab1 data/forge/tags/items/fences.json
+50a05c4c2c5a6aece877e9f37a8cfba117ae70f3 data/forge/tags/items/fence_gates.json
+50a05c4c2c5a6aece877e9f37a8cfba117ae70f3 data/forge/tags/items/fence_gates/wooden.json
 b65391d6ad052635e6a05e52a948999fbe4275cc data/forge/tags/items/gears.json
 a8c9d50fad9f4f5fadfdb5b0073b599dda9a140f data/forge/tags/items/gears/bronze.json
 246c3d963343027d30575bca49bede0d04d245b6 data/forge/tags/items/gears/copper.json

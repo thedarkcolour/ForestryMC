@@ -5,7 +5,7 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
       {
-        "item": "forestry:bronze_pickaxe"
+        "item": "forestry:broken_bronze_pickaxe"
       }
     ],
     "result": {

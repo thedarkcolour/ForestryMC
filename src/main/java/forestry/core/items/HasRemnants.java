@@ -23,6 +23,8 @@ public interface HasRemnants {
 		public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
 			if (stack.getDamageValue() + amount >= stack.getMaxDamage()) {
 				if (entity instanceof Player player) {
+					// make sure it's really broken
+					stack.shrink(1);
 					player.getInventory().add(remnants.get());
 				}
 			}
@@ -42,6 +44,8 @@ public interface HasRemnants {
 		public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
 			if (stack.getDamageValue() + amount >= stack.getMaxDamage()) {
 				if (entity instanceof Player player) {
+					// make sure it's really broken
+					stack.shrink(1);
 					player.getInventory().add(remnants.get());
 				}
 			}

@@ -74,8 +74,6 @@ import forestry.modules.features.FeatureItem;
 import forestry.storage.features.BackpackItems;
 import forestry.storage.features.CrateItems;
 import forestry.storage.items.ItemCrated;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.jarjar.nio.util.LambdaExceptionUtils;
 
 public class ForestryMachineRecipeProvider extends RecipeProvider {
 
@@ -133,14 +131,12 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('#', ItemTags.LOGS))
 				.build(consumer, id("carpenter", "impregnated_stick"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
 				.setLiquid(new FluidStack(Fluids.WATER, 250))
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapelessRecipeBuilder.shapeless(CoreItems.WOOD_PULP, 4)
 						.requires(ItemTags.LOGS))
 				.build(consumer, id("carpenter", "wood_pulp"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
 				.setLiquid(new FluidStack(Fluids.WATER, 1000))
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapedRecipeBuilder.shaped(CoreBlocks.HUMUS, 9)
@@ -151,7 +147,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('X', CoreItems.MULCH))
 				.build(consumer, id("carpenter", "humus"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
 				.setLiquid(new FluidStack(Fluids.WATER, 1000))
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapedRecipeBuilder.shaped(CoreBlocks.BOG_EARTH, 8)
@@ -174,7 +169,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('Y', CoreItems.STURDY_CASING))
 				.build(consumer, id("carpenter", "hardened_casing"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
 				.setLiquid(new FluidStack(Fluids.WATER, 1000))
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapedRecipeBuilder.shaped(CoreItems.IODINE_CHARGE)
@@ -187,7 +181,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('Z', ApicultureItems.HONEY_DROPS.get(EnumHoneyDrop.HONEY)))
 				.build(consumer, id("carpenter", "iodine_charge"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
 				.setLiquid(new FluidStack(Fluids.WATER, 1000))
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapedRecipeBuilder.shaped(CoreItems.CRAFTING_MATERIALS.get(EnumCraftingMaterial.DISSIPATION_CHARGE))
@@ -201,7 +194,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.build(consumer, id("carpenter", "dissipation_charge"));
 		new CarpenterRecipeBuilder()
 				.setPackagingTime(100)
-				.setLiquid(null)
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapedRecipeBuilder.shaped(Items.ENDER_PEARL)
 						.pattern(" # ")
@@ -220,18 +212,14 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('X', CoreItems.CRAFTING_MATERIALS.get(EnumCraftingMaterial.SILK_WISP)))
 				.build(consumer, id("carpenter", "woven_silk"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
-				.setLiquid(null)
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapelessRecipeBuilder.shapeless(CoreItems.INGOT_BRONZE, 2)
-						.requires(CoreItems.BRONZE_PICKAXE))
+						.requires(CoreItems.BROKEN_BRONZE_PICKAXE))
 				.build(consumer, id("carpenter", "reclaim_bronze_pickaxe"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
-				.setLiquid(null)
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapelessRecipeBuilder.shapeless(CoreItems.INGOT_BRONZE, 1)
-						.requires(CoreItems.BRONZE_SHOVEL))
+						.requires(CoreItems.BROKEN_BRONZE_SHOVEL))
 				.build(consumer, id("carpenter", "reclaim_bronze_shovel"));
 		new CarpenterRecipeBuilder()
 				.setPackagingTime(50)
@@ -261,7 +249,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.build(consumer, id("carpenter", "portable_analyzer"));
 		new CarpenterRecipeBuilder()
 				.setPackagingTime(20)
-				.setLiquid(null)
 				.setBox(Ingredient.of(CoreItems.CARTON))
 				.recipe(ShapedRecipeBuilder.shaped(CoreItems.KIT_PICKAXE)
 						.pattern("###")
@@ -272,7 +259,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.build(consumer, id("carpenter", "kit_pickaxe"));
 		new CarpenterRecipeBuilder()
 				.setPackagingTime(20)
-				.setLiquid(null)
 				.setBox(Ingredient.of(CoreItems.CARTON))
 				.recipe(ShapedRecipeBuilder.shaped(CoreItems.KIT_SHOVEL)
 						.pattern(" # ")
@@ -293,7 +279,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('B', ForestryTags.Items.INGOTS_BRONZE))
 				.build(consumer, id("carpenter", "soldering_iron"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
 				.setLiquid(new FluidStack(Fluids.WATER, 250))
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapedRecipeBuilder.shaped(Items.PAPER)
@@ -302,7 +287,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('#', CoreItems.WOOD_PULP))
 				.build(consumer, id("carpenter", "paper"));
 		new CarpenterRecipeBuilder()
-				.setPackagingTime(5)
 				.setLiquid(new FluidStack(Fluids.WATER, 1000))
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapedRecipeBuilder.shaped(CoreItems.CARTON, 2)
@@ -520,7 +504,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.build(consumer, id("carpenter", "crates", "pack", name.getNamespace(), name.getPath()));
 		new CarpenterRecipeBuilder()
 				.setPackagingTime(Constants.CARPENTER_UNCRATING_CYCLES)
-				.setLiquid(null)
 				.setBox(Ingredient.EMPTY)
 				.recipe(ShapelessRecipeBuilder.shapeless(contained.getItem(), 9).requires(crated))
 				.build(consumer, id("carpenter", "crates", "unpack", name.getNamespace(), name.getPath()));

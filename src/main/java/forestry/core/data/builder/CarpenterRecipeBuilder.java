@@ -30,8 +30,7 @@ import forestry.api.recipes.ICarpenterRecipe;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class CarpenterRecipeBuilder {
-
-	private int packagingTime;
+	private int packagingTime = 5;
 	@Nullable
 	private FluidStack liquid;
 	private Ingredient box;
