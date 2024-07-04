@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -60,6 +61,9 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 				.strength(0.2f)
 				.sound(SoundType.GRASS)
 				.randomTicks()
+				.isValidSpawn((a, b, c, entityType) -> entityType == EntityType.OCELOT || entityType == EntityType.PARROT)
+				.isSuffocating((a, b, c) -> false)
+				.isViewBlocking((a, b, c) -> false)
 				.noOcclusion());
 	}
 
