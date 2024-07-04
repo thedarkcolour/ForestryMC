@@ -20,7 +20,6 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
 import forestry.core.config.Config;
-import forestry.core.utils.RenderUtil;
 
 public class BlockHumus extends Block {
 	private static final int degradeDelimiter = Config.humusDegradeDelimiter;
@@ -84,8 +83,6 @@ public class BlockHumus extends Block {
 		} else {
 			world.setBlock(pos, blockState.setValue(DEGRADE, degrade), UPDATE_CLIENTS);
 		}
-		//TODO: Is this still needed ? Should now be marked with setBlockState
-		RenderUtil.markForUpdate(pos);
 	}
 
 	@Override
