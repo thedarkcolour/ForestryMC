@@ -2,7 +2,6 @@ package genetics.utils;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,33 +32,23 @@ public class AlleleUtils {
 		return GeneticsAPI.apiInstance.getAlleleRegistry().isBlacklisted(registryName);
 	}
 
-	@Nullable
-	public static <A extends IAllele> A getAlleleOrNull(String registryName) {
-		return getAlleleOrNull(new ResourceLocation(registryName));
-	}
-
-	@Nullable
-	public static <A extends IAllele> A getAlleleOrNull(ResourceLocation registryName) {
-		Optional<A> optional = getAllele(registryName);
-		return optional.orElse(null);
-	}
-
 	public static <A extends IAllele> A getAlleleOr(String registryName, A fallback) {
 		return getAlleleOr(new ResourceLocation(registryName), fallback);
 	}
 
 	public static <A extends IAllele> A getAlleleOr(ResourceLocation registryName, A fallback) {
-		Optional<A> optional = getAllele(registryName);
-		return optional.orElse(fallback);
+		A allele = getAllele(registryName);
+		return allele == null ? fallback : allele;
 	}
 
+	@Nullable
 	@SuppressWarnings("unchecked")
-	public static <A extends IAllele> Optional<A> getAllele(ResourceLocation registryName) {
-		Optional<IAllele> optional = GeneticsAPI.apiInstance.getAlleleRegistry().getAllele(registryName);
-		return optional.map(allele -> (A) allele);
+	public static <A extends IAllele> A getAllele(ResourceLocation registryName) {
+		return (A) GeneticsAPI.apiInstance.getAlleleRegistry().getAllele(registryName);
 	}
 
-	public static <A extends IAllele> Optional<A> getAllele(String registryName) {
+	@Nullable
+	public static <A extends IAllele> A getAllele(String registryName) {
 		return getAllele(new ResourceLocation(registryName));
 	}
 
@@ -72,7 +61,7 @@ public class AlleleUtils {
 	}
 
 	public static <A extends IAllele> void actOn(ResourceLocation location, Class<? extends A> alleleClass, Consumer<A> alleleAction) {
-		IAllele allele = getAlleleOrNull(location);
+		IAllele allele = getAllele(location);
 		if (!alleleClass.isInstance(allele)) {
 			return;
 		}
@@ -81,7 +70,7 @@ public class AlleleUtils {
 	}
 
 	public static <A extends IAllele, R> R callOn(ResourceLocation location, Class<? extends A> alleleClass, Function<A, R> alleleAction, R fallback) {
-		IAllele allele = getAlleleOrNull(location);
+		IAllele allele = getAllele(location);
 		if (!alleleClass.isInstance(allele)) {
 			return fallback;
 		}
@@ -124,7 +113,7 @@ public class AlleleUtils {
 	 * Otherwise it returns the given fallback object.
 	 */
 	public static <V> V getAlleleValue(IAllele allele, Class<? extends V> valueClass, V fallback) {
-		if (!(allele instanceof IAlleleValue alleleValue)) {
+		if (!(allele instanceof IAlleleValue<?> alleleValue)) {
 			return fallback;
 		}
 		Object value = alleleValue.getValue();
@@ -140,7 +129,7 @@ public class AlleleUtils {
 	 */
 	@Nullable
 	public static <V> V getAlleleValue(IAllele allele, Class<? extends V> valueClass) {
-		if (!(allele instanceof IAlleleValue alleleValue)) {
+		if (!(allele instanceof IAlleleValue<?> alleleValue)) {
 			return null;
 		}
 		Object value = alleleValue.getValue();

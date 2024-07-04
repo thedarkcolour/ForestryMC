@@ -1,6 +1,6 @@
 package genetics.api.organism;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -27,7 +27,8 @@ public interface IOrganism<I extends IIndividual> extends ICapabilityProvider {
 	/**
 	 * @return Creates the individual out of the nbt of the item.
 	 */
-	Optional<I> getIndividual();
+	@Nullable
+	I getIndividual();
 
 	/**
 	 * Writes the given individual to the nbt of this item.
@@ -80,5 +81,6 @@ public interface IOrganism<I extends IIndividual> extends ICapabilityProvider {
 	 * @param active True if the allele should be the active allele of the chromosome, false if not.
 	 * @return The allele that is at that position of the genome.
 	 */
-	Optional<IAllele> getAlleleDirectly(IChromosomeType type, boolean active);
+	@Nullable
+	IAllele getAlleleDirectly(IChromosomeType type, boolean active);
 }

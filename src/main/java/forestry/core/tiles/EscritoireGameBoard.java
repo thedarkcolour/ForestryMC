@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import net.minecraft.nbt.Tag;
@@ -66,11 +65,10 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	}
 
 	public boolean initialize(ItemStack specimen) {
-		Optional<IIndividual> optional = RootUtils.getIndividual(specimen);
-		if (!optional.isPresent()) {
+		IIndividual individual = RootUtils.getIndividual(specimen);
+		if (individual == null) {
 			return false;
 		}
-		IIndividual individual = optional.get();
 
 		IGenome genome = individual.getGenome();
 		IKaryotype karyotype = genome.getKaryotype();

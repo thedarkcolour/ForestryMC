@@ -1,8 +1,8 @@
 package genetics.alleles;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import genetics.api.alleles.IAllele;
 import genetics.api.alleles.IAlleleData;
@@ -23,11 +23,10 @@ public enum AlleleHelper implements IAlleleHelper, IAlleleHandler {
 
 	@Override
 	public void onAddTypes(IAllele allele, IChromosomeType... types) {
-		if (!(allele instanceof IAlleleValue alleleValue)) {
-			return;
-		}
-		for (IChromosomeType type : types) {
-			allelesByChromosome.computeIfAbsent(type, t -> new HashMap<>()).put(alleleValue.getValue(), allele);
+		if (allele instanceof IAlleleValue<?> alleleValue) {
+			for (IChromosomeType type : types) {
+				allelesByChromosome.computeIfAbsent(type, t -> new HashMap<>()).put(alleleValue.getValue(), allele);
+			}
 		}
 	}
 
@@ -36,23 +35,18 @@ public enum AlleleHelper implements IAlleleHelper, IAlleleHandler {
 		alleleByData.put(alleleData, allele);
 	}
 
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public <V> Optional<IAlleleValue<V>> getAllele(IChromosomeType chromosomeType, V value) {
+	public <V> IAlleleValue<V> getAllele(IChromosomeType chromosomeType, V value) {
 		Map<Object, IAllele> alleleByValue = allelesByChromosome.get(chromosomeType);
-		if (alleleByValue == null) {
-			return Optional.empty();
-		}
-		return Optional.ofNullable((IAlleleValue<V>) alleleByValue.get(value));
+		return alleleByValue == null ? null : (IAlleleValue<V>) alleleByValue.get(value);
 	}
 
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public <V> Optional<IAlleleValue<V>> getAllele(IAlleleData<V> alleleData) {
-		IAlleleValue allele = alleleByData.get(alleleData);
-		if (allele == null) {
-			return Optional.empty();
-		}
-		return Optional.of((IAlleleValue<V>) allele);
+	public <V> IAlleleValue<V> getAllele(IAlleleData<V> alleleData) {
+		return alleleByData.get(alleleData);
 	}
 }

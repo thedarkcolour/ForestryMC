@@ -2,10 +2,10 @@ package genetics.root;
 
 import com.google.common.collect.Multimap;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import genetics.api.individual.IIndividual;
@@ -55,10 +55,11 @@ public class RootComponentContainer<I extends IIndividual> implements IRootCompo
 		return (C) components.get(key);
 	}
 
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public <C extends IRootComponent<I>> Optional<C> getSafe(ComponentKey key) {
-		return Optional.ofNullable((C) components.get(key));
+	public <C extends IRootComponent<I>> C getSafe(ComponentKey key) {
+		return (C) components.get(key);
 	}
 
 	@Override

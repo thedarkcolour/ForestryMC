@@ -1,7 +1,7 @@
 package genetics.api.organism;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import net.minecraft.world.item.ItemStack;
@@ -76,9 +76,10 @@ public interface IOrganismTypes<I extends IIndividual> extends IRootComponent<I>
 	 * help of the {@link IOrganismHandler} that was registered for the given type.
 	 * {@link IOrganismHandler#createIndividual(ItemStack)}
 	 *
-	 * @return A empty optional if no {@link IOrganismType} was registered for the item of this stack.
+	 * @return {@code null} if no {@link IOrganismType} was registered for the item of this stack.
 	 */
-	Optional<I> createIndividual(ItemStack itemStack);
+	@Nullable
+	I createIndividual(ItemStack itemStack);
 
 	/**
 	 * Writes the genetic information of the given individual to the NBT-Data of the given stack with the help of
@@ -86,14 +87,15 @@ public interface IOrganismTypes<I extends IIndividual> extends IRootComponent<I>
 	 *
 	 * @param individual The individual that contains the genetic information
 	 */
-	boolean setIndividual(ItemStack itemStack, I individual);
+	boolean setIndividual(ItemStack stack, I individual);
 
 	/**
 	 * Gets the type of the item that the given stack contains
 	 *
-	 * @return A empty optional if no {@link IOrganismType} was registered for the item of this stack.
+	 * @return {@code null} if no {@link IOrganismType} was registered for the item of this stack.
 	 */
-	Optional<IOrganismType> getType(ItemStack itemStack);
+	@Nullable
+	IOrganismType getType(ItemStack itemStack);
 
 	/**
 	 * Gets the default type that will be used by the {@link genetics.api.root.IDisplayHelper} of the
@@ -110,9 +112,11 @@ public interface IOrganismTypes<I extends IIndividual> extends IRootComponent<I>
 	 * @return A empty optional if the given {@link IOrganismType} was not registered in the
 	 * {@link IIndividualRootBuilder}.
 	 */
-	Optional<IOrganismHandler<I>> getHandler(IOrganismType type);
+	@Nullable
+	IOrganismHandler<I> getHandler(IOrganismType type);
 
-	Optional<IOrganismHandler<I>> getHandler(ItemStack itemStack);
+	@Nullable
+	IOrganismHandler<I> getHandler(ItemStack itemStack);
 
 	/**
 	 * All types that were registered at the {@link IIndividualRootBuilder}.

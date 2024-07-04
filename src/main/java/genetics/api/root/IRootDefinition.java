@@ -1,5 +1,6 @@
 package genetics.api.root;
 
+import javax.annotation.Nullable;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -18,7 +19,8 @@ import genetics.api.IGeneticApiInstance;
  * @param <R> @param <R> The type of the root of the individual.
  */
 public interface IRootDefinition<R extends IIndividualRoot> {
-	Optional<R> maybe();
+	@Nullable
+	R maybe();
 
 	/**
 	 * Returns the described definition of this optional.
@@ -41,7 +43,8 @@ public interface IRootDefinition<R extends IIndividualRoot> {
 
 	boolean test(Predicate<? super R> predicate);
 
-	Optional<R> filter(Predicate<? super R> predicate);
+	@Nullable
+	R filter(Predicate<? super R> predicate);
 
 	void ifPresent(Consumer<R> consumer);
 

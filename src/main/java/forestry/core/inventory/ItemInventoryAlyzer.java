@@ -12,11 +12,9 @@ package forestry.core.inventory;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Optional;
-
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 
 import forestry.api.core.IErrorSource;
 import forestry.api.core.IErrorState;
@@ -26,6 +24,7 @@ import forestry.apiculture.features.ApicultureItems;
 import forestry.core.errors.EnumErrorCode;
 import forestry.core.utils.GeneticsUtil;
 
+import deleteme.Todos;
 import genetics.api.GeneticHelper;
 import genetics.api.individual.IIndividual;
 import genetics.api.root.IRootDefinition;
@@ -75,8 +74,8 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 			return true;
 		}
 
-		Optional<IIndividual> optionalIndividual = speciesRoot.create(itemStack);
-		return optionalIndividual.filter(IIndividual::isAnalyzed).isPresent();
+		IIndividual individual = speciesRoot.create(itemStack);
+		return individual != null && individual.isAnalyzed();
 	}
 
 	@Override
@@ -105,16 +104,18 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 		}
 		IForestrySpeciesRoot<IIndividual> speciesRoot = definition.get();
 
-		Optional<IIndividual> optionalIndividual = speciesRoot.create(specimen);
+		IIndividual individual = speciesRoot.create(specimen);
 
 		// Analyze if necessary
-		if (optionalIndividual.isPresent()) {
-			IIndividual individual = optionalIndividual.get();
+		if (individual != null) {
 			if (!individual.isAnalyzed()) {
-				final boolean requiresEnergy = true;
-				// Requires energy
-				if (!isAlyzingFuel(getItem(SLOT_ENERGY))) {
-					return;
+				final boolean requiresEnergy = Todos.isApicultureEnabled();
+
+				if (requiresEnergy) {
+					// Requires energy
+					if (!isAlyzingFuel(getItem(SLOT_ENERGY))) {
+						return;
+					}
 				}
 
 				if (individual.analyze()) {

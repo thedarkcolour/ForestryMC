@@ -16,7 +16,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -105,14 +104,12 @@ public class BeeRoot extends IndividualRoot<IBee> implements IBeeRoot, IBreeding
 
 	@Override
 	public boolean isDrone(ItemStack stack) {
-		Optional<IOrganismType> optional = getTypes().getType(stack);
-		return optional.isPresent() && optional.get() == EnumBeeType.DRONE;
+		return getType(stack) == EnumBeeType.DRONE;
 	}
 
 	@Override
 	public boolean isMated(ItemStack stack) {
-		Optional<IOrganismType> optionalType = types.getType(stack);
-		if (!optionalType.isPresent() || optionalType.get() != EnumBeeType.QUEEN) {
+		if (getType(stack) != EnumBeeType.QUEEN) {
 			return false;
 		}
 

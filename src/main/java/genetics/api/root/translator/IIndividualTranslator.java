@@ -1,6 +1,6 @@
 package genetics.api.root.translator;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,33 +43,37 @@ public interface IIndividualTranslator<I extends IIndividual> extends IRootCompo
 	 * @param translatorKey The key of the translator, by default it is the item of the {@link ItemStack} that you want
 	 *                      to translate with the translator.
 	 */
-	Optional<IItemTranslator<I>> getTranslator(Item translatorKey);
+	@Nullable
+	IItemTranslator<I> getTranslator(Item translatorKey);
 
 	/**
 	 * @param translatorKey The key of the translator the block of the{@link BlockState} that you want to translate
 	 *                      with the translator.
 	 */
-	Optional<IBlockTranslator<I>> getTranslator(Block translatorKey);
+	@Nullable
+	IBlockTranslator<I> getTranslator(Block translatorKey);
 
 	/**
 	 * Translates {@link BlockState}s into genetic data.
 	 */
-	Optional<I> translateMember(BlockState objectToTranslate);
+	@Nullable
+	I translateMember(BlockState state);
 
 	/**
 	 * Translates {@link ItemStack}s into genetic data.
 	 */
-	Optional<I> translateMember(ItemStack objectToTranslate);
+	@Nullable
+	I translateMember(ItemStack stack);
 
 	/**
 	 * Translates a {@link BlockState}s into genetic data and returns a {@link ItemStack} that contains this data.
 	 */
-	ItemStack getGeneticEquivalent(BlockState objectToTranslate);
+	ItemStack getGeneticEquivalent(BlockState state);
 
 	/**
 	 * Translates {@link ItemStack}s into genetic data and returns a other {@link ItemStack} that contains this data.
 	 */
-	ItemStack getGeneticEquivalent(ItemStack objectToTranslate);
+	ItemStack getGeneticEquivalent(ItemStack stack);
 
 	@Override
 	ComponentKey<IIndividualTranslator> getKey();

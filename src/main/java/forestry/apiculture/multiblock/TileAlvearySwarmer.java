@@ -12,7 +12,6 @@ package forestry.apiculture.multiblock;
 
 import javax.annotation.Nullable;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Stack;
 
 import net.minecraft.core.BlockPos;
@@ -95,11 +94,7 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		}
 
 		// Queue swarm spawn
-		Optional<IBee> optionalPrincess = BeeManager.beeRoot.create(princessStack);
-		if (!optionalPrincess.isPresent()) {
-			return;
-		}
-		IBee princess = optionalPrincess.get();
+		IBee princess = BeeManager.beeRoot.create(princessStack);
 		princess.setIsNatural(false);
 		pendingSpawns.push(BeeManager.beeRoot.getTypes().createStack(princess, EnumBeeType.PRINCESS));
 	}

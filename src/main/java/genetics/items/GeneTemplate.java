@@ -2,7 +2,6 @@ package genetics.items;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
@@ -36,19 +35,22 @@ public class GeneTemplate implements IGeneTemplate, ICapabilitySerializable<Comp
 	@Nullable
 	private IIndividualRoot root;
 
+	@Nullable
 	@Override
-	public Optional<IAllele> getAllele() {
-		return Optional.ofNullable(allele);
+	public IAllele getAllele() {
+		return allele;
 	}
 
+	@Nullable
 	@Override
-	public Optional<IChromosomeType> getType() {
-		return Optional.ofNullable(type);
+	public IChromosomeType getType() {
+		return type;
 	}
 
+	@Nullable
 	@Override
-	public Optional<IIndividualRoot> getRoot() {
-		return Optional.ofNullable(root);
+	public IIndividualRoot getRoot() {
+		return root;
 	}
 
 	@Override
@@ -84,7 +86,7 @@ public class GeneTemplate implements IGeneTemplate, ICapabilitySerializable<Comp
 			});
 		}
 		if (compound.contains(NBT_ALLELE)) {
-			allele = AlleleUtils.getAlleleOrNull(compound.getString(NBT_ALLELE));
+			allele = AlleleUtils.getAllele(compound.getString(NBT_ALLELE));
 		}
 	}
 
@@ -94,24 +96,26 @@ public class GeneTemplate implements IGeneTemplate, ICapabilitySerializable<Comp
 	}
 
 	private static class Empty implements IGeneTemplate {
+		@Nullable
 		@Override
-		public Optional<IAllele> getAllele() {
-			return Optional.empty();
+		public IAllele getAllele() {
+			return null;
 		}
 
+		@Nullable
 		@Override
-		public Optional<IChromosomeType> getType() {
-			return Optional.empty();
+		public IChromosomeType getType() {
+			return null;
 		}
 
+		@Nullable
 		@Override
-		public Optional<IIndividualRoot> getRoot() {
-			return Optional.empty();
+		public IIndividualRoot getRoot() {
+			return null;
 		}
 
 		@Override
 		public void setAllele(@Nullable IChromosomeType type, @Nullable IAllele allele) {
-			//Default Implementation
 		}
 	}
 }

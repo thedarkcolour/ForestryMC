@@ -1,10 +1,9 @@
 package forestry.core.gui;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -17,12 +16,11 @@ import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.utils.GeneticsUtil;
 import forestry.database.inventory.InventoryDatabaseAnalyzer;
 
+import deleteme.Todos;
 import genetics.api.GeneticHelper;
 import genetics.api.individual.IIndividual;
 import genetics.api.root.IRootDefinition;
 import genetics.utils.RootUtils;
-
-//import forestry.database.inventory.InventoryDatabaseAnalyzer;
 
 public class ContainerAnalyzerProviderHelper {
 	/* Attributes - Final*/
@@ -36,13 +34,11 @@ public class ContainerAnalyzerProviderHelper {
 		this.container = container;
 
 		ItemInventoryAlyzer alyzerInventory = null;
-		int analyzerIndex = -1;
 		for (int i = 0; i < playerInventory.getContainerSize(); i++) {
 			ItemStack stack = playerInventory.getItem(i);
 			if (stack.isEmpty() || !CoreItems.PORTABLE_ALYZER.itemEqual(stack)) {
 				continue;
 			}
-			analyzerIndex = i;
 			alyzerInventory = new ItemInventoryAlyzer(playerInventory.player, stack);
 			Slot slot = container.getSlot(i < 9 ? i + 27 : i - 9);
 			if (slot instanceof SlotLockable lockable) {
@@ -50,7 +46,6 @@ public class ContainerAnalyzerProviderHelper {
 			}
 			break;
 		}
-		int analyzerIndex1 = analyzerIndex;
 		this.alyzerInventory = alyzerInventory;
 
 		if (alyzerInventory != null) {
@@ -94,14 +89,12 @@ public class ContainerAnalyzerProviderHelper {
 		}
 		IForestrySpeciesRoot<IIndividual> speciesRoot = definition.get();
 
-		Optional<IIndividual> optionalIndividual = speciesRoot.create(specimen);
-
+		IIndividual individual = speciesRoot.create(specimen);
 
 		// Analyze if necessary
-		if (optionalIndividual.isPresent()) {
-			IIndividual individual = optionalIndividual.get();
+		if (individual != null) {
 			if (!individual.isAnalyzed()) {
-				final boolean requiresEnergy = true;
+				final boolean requiresEnergy = Todos.isApicultureEnabled();
 				ItemStack energyStack = alyzerInventory.getItem(InventoryDatabaseAnalyzer.SLOT_ENERGY);
 				if (requiresEnergy && !ItemInventoryAlyzer.isAlyzingFuel(energyStack)) {
 					return;

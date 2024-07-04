@@ -11,7 +11,6 @@
 package forestry.core.tiles;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.Random;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -115,11 +114,10 @@ public class EscritoireGame implements INbtWritable, INbtReadable, IStreamable {
 			return;
 		}
 
-		Optional<IIndividual> optional = RootUtils.getIndividual(specimen);
-		if (!optional.isPresent()) {
+		IIndividual individual = RootUtils.getIndividual(specimen);
+		if (individual == null) {
 			return;
 		}
-		IIndividual individual = optional.get();
 
 		if (bountyLevel > 1) {
 			bountyLevel--;

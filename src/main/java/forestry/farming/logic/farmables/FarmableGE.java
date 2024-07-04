@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -69,7 +68,7 @@ public class FarmableGE implements IFarmable {
 	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
 		ITreeRoot treeRoot = TreeManager.treeRoot;
 
-		ITree tree = treeRoot.create(germling).orElse(null);
+		ITree tree = treeRoot.create(germling);
 		return tree != null && treeRoot.plantSapling(level, tree, player.getGameProfile(), pos);
 	}
 

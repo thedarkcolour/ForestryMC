@@ -25,7 +25,7 @@ import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.ComponentKeys;
 
 public class OrganismTypes<I extends IIndividual> implements IOrganismTypes<I> {
-	private final Map<IOrganismType, IOrganismHandler<I>> types = new LinkedHashMap<>();
+	private final Map<IOrganismType, IOrganismHandler<I>> handlers = new LinkedHashMap<>();
 	private final IIndividualRoot<I> root;
 	@Nullable
 	private IOrganismType defaultType;
@@ -41,7 +41,7 @@ public class OrganismTypes<I extends IIndividual> implements IOrganismTypes<I> {
 
 	@Override
 	public IOrganismTypes<I> registerType(IOrganismType type, IOrganismHandler<I> handler, boolean defaultType) {
-		types.put(type, handler);
+		handlers.put(type, handler);
 		if (defaultType) {
 			this.defaultType = type;
 		}
@@ -55,56 +55,64 @@ public class OrganismTypes<I extends IIndividual> implements IOrganismTypes<I> {
 
 	@Override
 	public ItemStack createStack(I individual, IOrganismType type) {
-		IOrganismHandler<I> handler = types.get(type);
+		IOrganismHandler<I> handler = handlers.get(type);
 		if (handler == null) {
 			return ItemStack.EMPTY;
 		}
 		return handler.createStack(individual);
 	}
 
+	@Nullable
 	@Override
-	public Optional<I> createIndividual(ItemStack itemStack) {
-		Optional<IOrganismType> optional = getType(itemStack);
-		if (!optional.isPresent()) {
-			return Optional.empty();
+	public I createIndividual(ItemStack itemStack) {
+		IOrganismType type = getType(itemStack);
+		if (type == null) {
+			return null;
 		}
-		IOrganismHandler<I> handler = types.get(optional.get());
+		IOrganismHandler<I> handler = handlers.get(type);
 		if (handler == null) {
-			return Optional.empty();
+			return null;
 		}
 		return handler.createIndividual(itemStack);
 	}
 
 	@Override
-	public boolean setIndividual(ItemStack itemStack, I individual) {
-		if (itemStack.isEmpty()) {
+	public boolean setIndividual(ItemStack stack, I individual) {
+		if (stack.isEmpty()) {
 			return false;
 		}
-		Optional<IOrganismType> optional = getType(itemStack);
-		if (!optional.isPresent()) {
-			return false;
+		IOrganismType type = getType(stack);
+
+		if (type != null) {
+			IOrganismHandler<I> handler = handlers.get(type);
+
+			if (handler != null) {
+				return handler.setIndividual(stack, individual);
+			}
 		}
-		IOrganismHandler<I> handler = types.get(optional.get());
-		if (handler == null) {
-			return false;
-		}
-		return handler.setIndividual(itemStack, individual);
+		return false;
 	}
 
+	@Nullable
 	@Override
-	public Optional<IOrganismType> getType(ItemStack itemStack) {
+	public IOrganismType getType(ItemStack itemStack) {
 		if (itemStack.isEmpty()) {
-			return Optional.empty();
+			return null;
 		}
 		IOrganism<?> organism = itemStack.getCapability(Genetics.ORGANISM).orElse(GeneticHelper.EMPTY);
 		IOrganismType type = organism.getType();
-		return type.isEmpty() ? Optional.empty() : getHandler(type).map((handler) -> type);
+
+		if (!type.isEmpty() && getHandler(type) != null) {
+			return type;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public IOrganismType getDefaultType() {
 		if (defaultType == null) {
-			Iterator<IOrganismType> organismTypes = types.keySet().iterator();
+			Iterator<IOrganismType> organismTypes = handlers.keySet().iterator();
 			if (!organismTypes.hasNext()) {
 				String message = String.format("No types were registered for the individual root '%s'.", root.getUID());
 				throw new IllegalStateException(message);
@@ -115,25 +123,27 @@ public class OrganismTypes<I extends IIndividual> implements IOrganismTypes<I> {
 		return defaultType;
 	}
 
+	@Nullable
 	@Override
-	public Optional<IOrganismHandler<I>> getHandler(IOrganismType type) {
-		return Optional.ofNullable(types.get(type));
+	public IOrganismHandler<I> getHandler(IOrganismType type) {
+		return handlers.get(type);
 	}
 
+	@Nullable
 	@Override
-	public Optional<IOrganismHandler<I>> getHandler(ItemStack itemStack) {
-		Optional<IOrganismType> type = getType(itemStack);
-		return type.flatMap(this::getHandler);
+	public IOrganismHandler<I> getHandler(ItemStack itemStack) {
+		IOrganismType type = getType(itemStack);
+		return type != null ? getHandler(type) : null;
 	}
 
 	@Override
 	public Collection<IOrganismType> getTypes() {
-		return types.keySet();
+		return handlers.keySet();
 	}
 
 	@Override
 	public Collection<IOrganismHandler<I>> getHandlers() {
-		return types.values();
+		return handlers.values();
 	}
 
 	@Override

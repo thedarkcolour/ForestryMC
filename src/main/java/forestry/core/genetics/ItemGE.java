@@ -12,7 +12,6 @@ package forestry.core.genetics;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -68,9 +67,8 @@ public abstract class ItemGE extends ItemForestry {
 			return;
 		}
 
-		Optional<IIndividual> optionalIndividual = GeneticHelper.getIndividual(stack).filter(IIndividual::isAnalyzed);
-		if (optionalIndividual.isPresent()) {
-			IIndividual individual = optionalIndividual.get();
+		IIndividual individual = GeneticHelper.getIndividual(stack);
+		if (individual != null && individual.isAnalyzed()) {
 			if (Screen.hasShiftDown()) {
 				ToolTip helper = new ToolTip(tooltip);
 				DisplayHelper.getInstance()

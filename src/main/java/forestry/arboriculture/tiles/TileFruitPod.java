@@ -11,7 +11,6 @@
 package forestry.arboriculture.tiles;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -73,16 +72,11 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	public void load(CompoundTag compoundNBT) {
 		super.load(compoundNBT);
 
-		Optional<IAllele> optionalAllele = AlleleUtils.getAllele(compoundNBT.getString("UID"));
-		if (!optionalAllele.isPresent()) {
-			allele = defaultAllele;
+		IAllele stored = AlleleUtils.getAllele(compoundNBT.getString("UID"));
+		if (stored instanceof IAlleleFruit fruit) {
+			this.allele = fruit;
 		} else {
-			IAllele stored = optionalAllele.get();
-			if (stored instanceof IAlleleFruit) {
-				allele = (IAlleleFruit) stored;
-			} else {
-				allele = defaultAllele;
-			}
+			this.allele = defaultAllele;
 		}
 
 		maturity = compoundNBT.getShort("MT");
@@ -215,16 +209,11 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 
 	@Override
 	public void readData(FriendlyByteBuf data) {
-		Optional<IAllele> optionalAllele = AlleleUtils.getAllele(data.readUtf());
-		if (!optionalAllele.isPresent()) {
-			allele = defaultAllele;
+		IAllele stored = AlleleUtils.getAllele(data.readUtf());
+		if (stored instanceof IAlleleFruit fruit) {
+			this.allele = fruit;
 		} else {
-			IAllele stored = optionalAllele.get();
-			if (stored instanceof IAlleleFruit) {
-				allele = (IAlleleFruit) stored;
-			} else {
-				allele = defaultAllele;
-			}
+			this.allele = defaultAllele;
 		}
 		RenderUtil.markForUpdate(getBlockPos());
 	}

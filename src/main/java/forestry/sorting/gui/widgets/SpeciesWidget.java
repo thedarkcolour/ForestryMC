@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -27,7 +26,6 @@ import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.gui.ISelectableProvider;
 
 import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAllele;
 import genetics.api.alleles.IAlleleSpecies;
 import genetics.api.individual.IGenome;
 import genetics.api.individual.IIndividual;
@@ -51,14 +49,13 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<IAllele
 		this.active = active;
 		this.gui = gui;
 		ImmutableSet.Builder<IAlleleSpecies> entries = ImmutableSet.builder();
-		for (IRootDefinition definition : GeneticsAPI.apiInstance.getRoots().values()) {
-			if (!definition.isPresent() || !(definition.get() instanceof IForestrySpeciesRoot root)) {
+		for (IRootDefinition<?> definition : GeneticsAPI.apiInstance.getRoots().values()) {
+			if (!definition.isPresent() || !(definition.get() instanceof IForestrySpeciesRoot<?> root)) {
 				continue;
 			}
 			IBreedingTracker tracker = root.getBreedingTracker(manager.minecraft.level, manager.minecraft.player.getGameProfile());
 			for (String uid : tracker.getDiscoveredSpecies()) {
-				IAllele allele = AlleleUtils.getAllele(uid).orElse(null);
-				if (allele instanceof IAlleleSpecies species) {
+				if (AlleleUtils.getAllele(uid) instanceof IAlleleSpecies species) {
 					entries.add(species);
 				}
 			}
@@ -126,9 +123,8 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<IAllele
 	public void handleMouseClick(double mouseX, double mouseY, int mouseButton) {
 		ItemStack stack = gui.getMinecraft().player.inventoryMenu.getCarried();
 		if (!stack.isEmpty()) {
-			Optional<IIndividual> optional = RootUtils.getIndividual(stack);
-			if (optional.isPresent()) {
-				IIndividual individual = optional.get();
+			IIndividual individual = RootUtils.getIndividual(stack);
+			if (individual != null) {
 				IGenome genome = individual.getGenome();
 				onSelect(mouseButton == 0 ? genome.getPrimary() : genome.getSecondary());
 				return;

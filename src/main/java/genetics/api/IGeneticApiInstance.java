@@ -73,6 +73,7 @@ public interface IGeneticApiInstance {
 
 	IChromosomeList getChromosomeList(String rootUID);
 
+	// todo why is this unused?
 	Optional<IKaryotype> getKaryotype(String rootUID);
 
 	/**

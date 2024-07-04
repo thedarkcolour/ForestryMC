@@ -1,7 +1,6 @@
 package genetics.api.organism;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +22,8 @@ public interface IOrganismHandler<I extends IIndividual> {
 	/**
 	 * Creates a individual with the genetic information that the NBT-Data of the stack contains.
 	 */
-	Optional<I> createIndividual(ItemStack itemStack);
+	@Nullable
+	I createIndividual(ItemStack stack);
 
 	/**
 	 * Writes the genetic information of the given individual to the NBT-Data of the given stack

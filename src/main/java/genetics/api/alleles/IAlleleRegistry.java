@@ -1,7 +1,7 @@
 package genetics.api.alleles;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Optional;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -90,7 +90,8 @@ public interface IAlleleRegistry {
 	 * @param registryName The registry name of the allele to retrieve as a {@link ResourceLocation}.
 	 * @return A optional that contains the IAllele if found, a empty optional otherwise.
 	 */
-	Optional<IAllele> getAllele(ResourceLocation registryName);
+	@Nullable
+	IAllele getAllele(ResourceLocation registryName);
 
 	/**
 	 * @return unmodifiable collection of all the known chromosome types.

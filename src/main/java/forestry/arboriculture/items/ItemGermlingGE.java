@@ -11,7 +11,6 @@
 package forestry.arboriculture.items;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -92,11 +91,10 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 		ItemStack stack = playerIn.getItemInHand(handIn);
 
 		if (traceResult.getType() == HitResult.Type.BLOCK) {
-			Optional<ITree> treeOptional = TreeManager.treeRoot.create(stack);
+			ITree tree = TreeManager.treeRoot.create(stack);
 
-			if (treeOptional.isPresent()) {
+			if (tree != null) {
 				BlockPos pos = traceResult.getBlockPos();
-				ITree tree = treeOptional.get();
 
 				if (type == EnumGermlingType.SAPLING) {
 					BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(playerIn, handIn, traceResult));
@@ -158,9 +156,11 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 	@Override
 	public float getFermentationModifier(ItemStack itemstack) {
 		itemstack = GeneticsUtil.convertToGeneticEquivalent(itemstack);
-		Optional<ITree> treeOptional = TreeManager.treeRoot.create(itemstack);
-		return treeOptional.map(tree -> tree.getGenome().getActiveValue(TreeChromosomes.SAPPINESS) * 10)
-				.orElse(1.0f);
+		ITree tree = TreeManager.treeRoot.create(itemstack);
+		if (tree == null) {
+			return 1.0f;
+		}
+		return tree.getGenome().getActiveValue(TreeChromosomes.SAPPINESS) * 10;
 	}
 
 	@Override

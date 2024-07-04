@@ -188,8 +188,8 @@ public class ButterflyRoot extends IndividualRoot<IButterfly> implements IButter
 
 	@Override
 	public boolean isMated(ItemStack stack) {
-		IButterfly butterfly = getTypes().createIndividual(stack).orElse(null);
-		return butterfly != null && !butterfly.getMate().isPresent();
+		IButterfly butterfly = getTypes().createIndividual(stack);
+		return butterfly != null && butterfly.getMate() == null;
 	}
 
 	/* BREEDING TRACKER */

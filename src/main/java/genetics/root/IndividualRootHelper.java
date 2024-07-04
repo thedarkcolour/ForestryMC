@@ -1,7 +1,7 @@
 package genetics.root;
 
+import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.Optional;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -85,8 +85,9 @@ public enum IndividualRootHelper implements IIndividualRootHelper {
 		return getSpeciesRoot(stack).isPresent();
 	}
 
+	@Nullable
 	@Override
-	public Optional<IIndividual> getIndividual(ItemStack stack) {
+	public IIndividual getIndividual(ItemStack stack) {
 		IOrganism<IIndividual> organism = GeneticHelper.getOrganism(stack);
 		return organism.getIndividual();
 	}
@@ -94,6 +95,7 @@ public enum IndividualRootHelper implements IIndividualRootHelper {
 	@Override
 	public IAlleleTemplateBuilder createTemplate(String uid) {
 		GeneticsAPI.apiInstance.getRoot(uid);
+		// todo why is this returning null? also this method seems entirely unused
 		return null;
 	}
 }

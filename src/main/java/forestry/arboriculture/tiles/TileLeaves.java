@@ -226,7 +226,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	@Override
 	public boolean isPollinated() {
 		ITree tree = getTree();
-		return tree != null && !isDestroyed(tree, damage) && tree.getMate().isPresent();
+		return tree != null && !isDestroyed(tree, damage) && tree.getMate() != null;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -333,9 +333,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	public boolean canMateWith(IIndividual individual) {
 		if (individual instanceof ITree) {
 			ITree tree = getTree();
-			return tree != null &&
-					!tree.getMate().isPresent() &&
-					(ModuleApiculture.doSelfPollination || !tree.isGeneticEqual(individual));
+			return tree != null && tree.getMate() == null && (ModuleApiculture.doSelfPollination || !tree.isGeneticEqual(individual));
 		}
 		return false;
 	}

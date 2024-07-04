@@ -27,7 +27,7 @@ public abstract class PropertyAllele<A extends IAlleleProperty<A>> extends Prope
 
 	@Override
 	public Optional<A> getValue(String value) {
-		IAllele allele = AlleleUtils.getAlleleOrNull(value);
+		IAllele allele = AlleleUtils.getAllele(value);
 		Class<A> valueClass = getValueClass();
 		if (valueClass.isInstance(allele)) {
 			return Optional.of(valueClass.cast(allele));

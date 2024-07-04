@@ -11,7 +11,6 @@
 package forestry.lepidopterology.entities;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -500,9 +499,8 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		if (level.isClientSide) {
 			if (species == null) {
 				String speciesUid = entityData.get(DATAWATCHER_ID_SPECIES);
-				Optional<IAllele> optionalAllele = AlleleUtils.getAllele(speciesUid);
-				if (optionalAllele.isPresent()) {
-					IAllele allele = optionalAllele.get();
+				IAllele allele = AlleleUtils.getAllele(speciesUid);
+				if (allele != null) {
 					if (allele instanceof IAlleleButterflySpecies) {
 						species = (IAlleleButterflySpecies) allele;
 						textureResource = species.getEntityTexture();
@@ -602,10 +600,10 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 	@Override
 	public boolean canMateWith(IEntityButterfly butterfly) {
-		if (butterfly.getButterfly().getMate().isPresent()) {
+		if (butterfly.getButterfly().getMate() != null) {
 			return false;
 		}
-		if (getButterfly().getMate().isPresent()) {
+		if (getButterfly().getMate() != null) {
 			return false;
 		}
 		return !getButterfly().isGeneticEqual(butterfly.getButterfly());

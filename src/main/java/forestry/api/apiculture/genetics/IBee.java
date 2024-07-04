@@ -5,8 +5,8 @@
  ******************************************************************************/
 package forestry.api.apiculture.genetics;
 
+import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.world.level.biome.Biome;
@@ -73,7 +73,8 @@ public interface IBee extends IIndividualLiving {
 
 	NonNullList<ItemStack> produceStacks(IBeeHousing housing);
 
-	Optional<IBee> spawnPrincess(IBeeHousing housing);
+	@Nullable
+	IBee spawnPrincess(IBeeHousing housing);
 
 	List<IBee> spawnDrones(IBeeHousing housing);
 
@@ -85,9 +86,11 @@ public interface IBee extends IIndividualLiving {
 	 * @return the position of the planted flower, or null of none were planted
 	 * @since Forestry 5.5.4
 	 */
-	Optional<BlockPos> plantFlowerRandom(IBeeHousing housing, List<BlockState> potentialFlowers);
+	@Nullable
+	BlockPos plantFlowerRandom(IBeeHousing housing, List<BlockState> potentialFlowers);
 
-	Optional<IIndividual> retrievePollen(IBeeHousing housing);
+	@Nullable
+	IIndividual retrievePollen(IBeeHousing housing);
 
 	boolean pollinateRandom(IBeeHousing housing, IIndividual pollen);
 

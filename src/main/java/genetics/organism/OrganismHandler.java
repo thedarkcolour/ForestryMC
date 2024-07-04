@@ -1,5 +1,6 @@
 package genetics.organism;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -28,14 +29,15 @@ public class OrganismHandler<I extends IIndividual> implements IOrganismHandler<
 		return itemStack;
 	}
 
+	@Nullable
 	@Override
-	public Optional<I> createIndividual(ItemStack itemStack) {
-		CompoundTag tagCompound = itemStack.getTagElement(INDIVIDUAL_KEY);
+	public I createIndividual(ItemStack stack) {
+		CompoundTag tagCompound = stack.getTagElement(INDIVIDUAL_KEY);
 		if (tagCompound == null || !optionalRoot.isPresent()) {
-			return Optional.empty();
+			return null;
 		}
 		IIndividualRoot<I> root = this.optionalRoot.get();
-		return Optional.of(root.create(tagCompound));
+		return root.create(tagCompound);
 	}
 
 	@Override

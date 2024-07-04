@@ -1,8 +1,5 @@
 package genetics.commands;
 
-
-import java.util.Optional;
-
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -31,12 +28,12 @@ public class CommandListAlleles {
 
 		ItemStack stack = player.getMainHandItem();
 
-		Optional<IIndividual> individual = GeneticsAPI.apiInstance.getRootHelper().getIndividual(stack);
-		if (!individual.isPresent()) {
+		IIndividual individual = GeneticsAPI.apiInstance.getRootHelper().getIndividual(stack);
+		if (individual == null) {
 			return 0;
 		}
 
-		IGenome genome = individual.get().getGenome();
+		IGenome genome = individual.getGenome();
 
 		for (IChromosome chromosome : genome.getChromosomes()) {
 			IChromosomeType type = chromosome.getType();

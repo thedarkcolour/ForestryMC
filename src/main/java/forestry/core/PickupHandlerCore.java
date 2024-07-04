@@ -35,9 +35,9 @@ public class PickupHandlerCore implements IPickupHandler {
 		IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = RootUtils.getRoot(itemstack);
 		if (definition.isPresent()) {
 			IForestrySpeciesRoot<IIndividual> root = definition.get();
-			Optional<IIndividual> optionalIndividual = root.create(itemstack);
-			if (optionalIndividual.isPresent()) {
-				IIndividual individual = optionalIndividual.get();
+			IIndividual individual = root.create(itemstack);
+
+			if (individual != null) {
 				IBreedingTracker tracker = root.getBreedingTracker(entityitem.level, PlayerEntity.getGameProfile());
 				tracker.registerPickup(individual);
 			}

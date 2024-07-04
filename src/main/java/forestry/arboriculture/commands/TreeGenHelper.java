@@ -89,11 +89,10 @@ public final class TreeGenHelper {
 				continue;
 			}
 
-			Optional<IAllele> optionalAllele = AlleleUtils.getAllele(uid);
-			if (!optionalAllele.isPresent()) {
+			IAllele allele = AlleleUtils.getAllele(uid);
+			if (allele == null) {
 				continue;
 			}
-			IAllele allele = optionalAllele.get();
 			if (allele instanceof IAlleleTreeSpecies) {
 				species = (IAlleleTreeSpecies) allele;
 				break;

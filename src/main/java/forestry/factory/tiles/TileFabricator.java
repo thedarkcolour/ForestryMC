@@ -166,20 +166,20 @@ public class TileFabricator extends TilePowered implements ISlotPickupWatcher, I
 		return true;
 	}
 
-	private Optional<IFabricatorRecipe> getRecipe() {
+	@Nullable
+	private IFabricatorRecipe getRecipe() {
 		IInventoryAdapter inventory = getInternalInventory();
 		ItemStack plan = inventory.getItem(InventoryFabricator.SLOT_PLAN);
 		FluidStack liquid = moltenTank.getFluid();
 		Optional<IFabricatorRecipe> recipePair = RecipeManagers.fabricatorManager.findMatchingRecipe(level.getRecipeManager(), level, liquid, plan, craftingInventory);
 		IFabricatorRecipe recipe = recipePair.orElse(null);
 		if (!liquid.isEmpty() && recipe != null && !liquid.containsFluid(recipe.getLiquid())) {
-			return Optional.empty();
+			return null;
 		}
-		return recipePair;
+		return recipe;
 	}
 
-	public ItemStack getResult(Optional<IFabricatorRecipe> myRecipePair) {
-		IFabricatorRecipe myRecipe = myRecipePair.orElse(null);
+	public ItemStack getResult(@Nullable IFabricatorRecipe myRecipe) {
 		if (myRecipe == null) {
 			return ItemStack.EMPTY;
 		}
@@ -196,9 +196,9 @@ public class TileFabricator extends TilePowered implements ISlotPickupWatcher, I
 	}
 
 	private void craftResult() {
-		Optional<IFabricatorRecipe> myRecipePair = getRecipe();
-		ItemStack craftResult = getResult(myRecipePair);
-		IFabricatorRecipe myRecipe = myRecipePair.orElse(null);
+		IFabricatorRecipe myRecipe = getRecipe();
+		ItemStack craftResult = getResult(myRecipe);
+
 		if (myRecipe != null && !craftResult.isEmpty() && getItem(InventoryFabricator.SLOT_RESULT).isEmpty()) {
 			FluidStack liquid = myRecipe.getLiquid();
 

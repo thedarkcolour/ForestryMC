@@ -13,14 +13,9 @@ package forestry.lepidopterology.entities;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.phys.AABB;
-
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.core.config.Config;
 import forestry.core.utils.GeneticsUtil;
-import forestry.lepidopterology.ModuleLepidopterology;
 
 public class AIButterflyMate extends AIButterflyInteract {
 	@Nullable
@@ -33,14 +28,14 @@ public class AIButterflyMate extends AIButterflyInteract {
 
 	@Override
 	protected boolean canInteract() {
-		if (!entity.getButterfly().getMate().isPresent() && entity.canMate()) {
+		if (entity.getButterfly().getMate() == null && entity.canMate()) {
 			return true;
 		}
 		if (entity.cooldownEgg > 0) {
 			return false;
 		}
 
-		if (!entity.getButterfly().getMate().isPresent()) {
+		if (entity.getButterfly().getMate() == null) {
 			return false;
 		}
 
@@ -54,7 +49,7 @@ public class AIButterflyMate extends AIButterflyInteract {
 	@Override
 	public void tick() {
 		if (canContinueToUse()) {
-			if (!entity.getButterfly().getMate().isPresent() && targetMate != null) {
+			if (entity.getButterfly().getMate() == null && targetMate != null) {
 				if (entity.cooldownMate <= 0 && entity.distanceTo(targetMate) < 9.0D) {
 					entity.getButterfly().mate(targetMate.getButterfly().getGenome());
 					targetMate.getButterfly().mate(entity.getButterfly().getGenome());
@@ -82,7 +77,7 @@ public class AIButterflyMate extends AIButterflyInteract {
 		if (!super.canUse()) {
 			return false;
 		}
-		if (!entity.getButterfly().getMate().isPresent()) {
+		if (entity.getButterfly().getMate() == null) {
 			if (!entity.canMate()) {
 				return false;
 			} else {
@@ -98,7 +93,7 @@ public class AIButterflyMate extends AIButterflyInteract {
 		if (!super.canContinueToUse()) {
 			return false;
 		}
-		if (!entity.getButterfly().getMate().isPresent()) {
+		if (entity.getButterfly().getMate() == null) {
 			return targetMate != null && targetMate.isAlive() && targetMate.canMate();
 		}
 		return true;

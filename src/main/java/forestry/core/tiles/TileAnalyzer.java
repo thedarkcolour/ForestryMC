@@ -51,6 +51,7 @@ import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.NetworkUtil;
 
+import deleteme.Todos;
 import genetics.api.GeneticHelper;
 import genetics.api.individual.IIndividual;
 import genetics.utils.RootUtils;
@@ -93,7 +94,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 		ItemStack stackToAnalyze = getItem(InventoryAnalyzer.SLOT_ANALYZE);
 		if (!stackToAnalyze.isEmpty()) {
-			specimenToAnalyze = RootUtils.getIndividualOrNull(stackToAnalyze);
+			specimenToAnalyze = RootUtils.getIndividual(stackToAnalyze);
 		}
 	}
 
@@ -220,11 +221,11 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			return;
 		}
 
-		if (true && !TreeManager.treeRoot.isMember(inputStack)) {
+		if (Todos.isArboricultureEnabled() && !TreeManager.treeRoot.isMember(inputStack)) {
 			inputStack = GeneticsUtil.convertToGeneticEquivalent(inputStack);
 		}
 
-		specimenToAnalyze = RootUtils.getIndividualOrNull(inputStack);
+		specimenToAnalyze = RootUtils.getIndividual(inputStack);
 		if (specimenToAnalyze == null) {
 			return;
 		}

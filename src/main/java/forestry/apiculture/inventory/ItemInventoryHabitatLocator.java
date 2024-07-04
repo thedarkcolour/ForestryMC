@@ -68,9 +68,8 @@ public class ItemInventoryHabitatLocator extends ItemInventory implements IError
 		}
 
 		ItemStack analyzed = getItem(SLOT_ANALYZED);
-		Optional<IBee> optionalBee = BeeManager.beeRoot.create(analyzed);
-		if (optionalBee.isPresent()) {
-			IBee bee = optionalBee.get();
+		IBee bee = BeeManager.beeRoot.create(analyzed);
+		if (bee != null) {
 			locatorLogic.startBiomeSearch(bee, player);
 		}
 	}

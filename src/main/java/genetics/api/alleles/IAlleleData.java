@@ -1,8 +1,8 @@
 package genetics.api.alleles;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 
 import net.minecraftforge.fml.ModLoadingContext;
 
@@ -42,7 +42,8 @@ public interface IAlleleData<V> extends IAlleleProvider {
 	 */
 	String getName();
 
-	default Optional<IAlleleValue<V>> getAlleleValue() {
+	@Nullable
+	default IAlleleValue<V> getAlleleValue() {
 		return GeneticsAPI.apiInstance.getAlleleHelper().getAllele(this);
 	}
 
@@ -52,19 +53,15 @@ public interface IAlleleData<V> extends IAlleleProvider {
 
 	@Override
 	default IAllele getAllele() {
-		Optional<IAlleleValue<V>> optionalAllele = getAlleleValue();
-		if (!optionalAllele.isPresent()) {
+		IAlleleValue<V> allele = getAlleleValue();
+		if (allele == null) {
 			throw new IllegalStateException("Attempted to get the allele from an allele data that was not registered! Please register the allele data before you use it.");
 		}
-		return optionalAllele.get();
+		return allele;
 	}
 
 	default Collection<IChromosomeType> getTypes() {
-		Optional<IAlleleValue<V>> optionalAllele = getAlleleValue();
-		if (!optionalAllele.isPresent()) {
-			return Collections.emptySet();
-		}
-		IAlleleValue<V> alleleValue = optionalAllele.get();
-		return AlleleUtils.getChromosomeTypes(alleleValue);
+		IAlleleValue<V> alleleValue = getAlleleValue();
+		return alleleValue == null ? Collections.emptySet() : AlleleUtils.getChromosomeTypes(alleleValue);
 	}
 }

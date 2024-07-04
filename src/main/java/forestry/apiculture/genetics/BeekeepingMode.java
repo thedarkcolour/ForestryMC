@@ -99,7 +99,7 @@ public class BeekeepingMode implements IBeekeepingMode {
 	public boolean isDegenerating(IBee queen, IBee offspring, IBeeHousing housing) {
 		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
 
-		float mutationModifier = beeModifier.getMutationModifier(queen.getGenome(), queen.getMate().orElse(null), 1.0f);
+		float mutationModifier = beeModifier.getMutationModifier(queen.getGenome(), queen.getMate(), 1.0f);
 		if (mutationModifier > 10) {
 			return housing.getWorldObj().random.nextFloat() * 100 < 0.4 * (mutationModifier * mutationModifier - 100);
 		}

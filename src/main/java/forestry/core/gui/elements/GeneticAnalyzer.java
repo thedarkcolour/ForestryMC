@@ -1,7 +1,6 @@
 package forestry.core.gui.elements;
 
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -149,9 +148,8 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 			IForestrySpeciesRoot root = definition.get();
 			IDatabasePlugin<?> databasePlugin = root.getSpeciesPlugin();
 			if (databasePlugin != null) {
-				Optional<IIndividual> optionalIndividual = root.create(stack);
-				if (optionalIndividual.isPresent()) {
-					IIndividual individual = optionalIndividual.get();
+				IIndividual individual = root.create(stack);
+				if (individual != null) {
 					if (individual.isAnalyzed()) {
 						tabs.setPlugin(databasePlugin);
 						IDatabaseTab tab = tabs.getSelected();

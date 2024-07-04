@@ -40,7 +40,7 @@ public class InventoryAnalyzer extends InventoryAdapterTile<TileAnalyzer> {
 	@Override
 	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
 		if (SlotUtil.isSlotInRange(slotIndex, SLOT_INPUT_1, SLOT_INPUT_COUNT)) {
-			return RootUtils.isIndividual(itemStack) || GeneticsUtil.getGeneticEquivalent(itemStack).isPresent();
+			return RootUtils.isIndividual(itemStack) || GeneticsUtil.getGeneticEquivalent(itemStack) != null;
 		} else if (slotIndex == SLOT_CAN) {
 			Optional<FluidStack> fluid = FluidUtil.getFluidContained(itemStack);
 			return fluid.map(f -> tile.getTankManager().canFillFluidType(f)).orElse(false);

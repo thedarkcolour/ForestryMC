@@ -15,7 +15,6 @@ import com.google.common.base.Predicate;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -145,9 +144,8 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 			IGenome beeGenome = null;
 			ItemStack containedBee = contained.getItem(0);
 			if (!containedBee.isEmpty()) {
-				Optional<IBee> optionalBee = BeeManager.beeRoot.create(containedBee);
-				if (optionalBee.isPresent()) {
-					IBee bee = optionalBee.get();
+				IBee bee = BeeManager.beeRoot.create(containedBee);
+				if (bee != null) {
 					beeGenome = bee.getGenome();
 				}
 			}

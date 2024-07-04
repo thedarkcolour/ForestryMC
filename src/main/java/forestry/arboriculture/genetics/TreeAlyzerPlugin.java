@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -72,16 +71,14 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack itemStack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			Optional<ITree> optional = TreeManager.treeRoot.create(itemStack);
-			if (!optional.isPresent()) {
+			ITree tree = TreeManager.treeRoot.create(itemStack);
+			if (tree == null) {
 				return;
 			}
-			ITree tree = optional.get();
-			Optional<IOrganismType> typeOptional = TreeManager.treeRoot.getTypes().getType(itemStack);
-			if (!typeOptional.isPresent()) {
+			IOrganismType type = TreeManager.treeRoot.getTypes().getType(itemStack);
+			if (type == null) {
 				return;
 			}
-			IOrganismType type = typeOptional.get();
 			IGenome genome = tree.getGenome();
 
 			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
@@ -127,11 +124,10 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack itemStack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			Optional<ITree> optional = TreeManager.treeRoot.create(itemStack);
-			if (optional.isEmpty()) {
+			ITree tree = TreeManager.treeRoot.create(itemStack);
+			if (tree == null) {
 				return;
 			}
-			ITree tree = optional.get();
 			IGenome genome = tree.getGenome();
 			IAlleleTreeSpecies primary = genome.getActiveAllele(TreeChromosomes.SPECIES);
 			IAlleleTreeSpecies secondary = genome.getInactiveAllele(TreeChromosomes.SPECIES);
@@ -228,11 +224,10 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage3(PoseStack transform, ItemStack itemStack, Screen gui) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			Optional<ITree> optional = TreeManager.treeRoot.create(itemStack);
-			if (optional.isEmpty()) {
+			ITree tree = TreeManager.treeRoot.create(itemStack);
+			if (tree == null) {
 				return;
 			}
-			ITree tree = optional.get();
 
 			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 			WidgetManager widgetManager = guiAlyzer.getWidgetManager();

@@ -77,23 +77,20 @@ public abstract class IndividualRoot<I extends IIndividual> implements IIndividu
 	}
 
 	@Override
-	public Optional<I> create(String templateIdentifier) {
+	public I create(String templateIdentifier) {
 		IAllele[] template = templates.getTemplate(templateIdentifier);
-		if (template.length == 0) {
-			return Optional.empty();
-		}
-		return Optional.of(create(karyotype.templateAsGenome(template)));
+		return template.length == 0 ? null : create(karyotype.templateAsGenome(template));
 	}
 
 	@Override
 	public ItemStack createStack(IAllele allele, IOrganismType type) {
-		Optional<I> optional = create(allele.getRegistryName().toString());
-		return optional.map(i -> types.createStack(i, type)).orElse(ItemStack.EMPTY);
+		I individual = create(allele.getRegistryName().toString());
+		return individual == null ? ItemStack.EMPTY : types.createStack(individual, type);
 	}
 
 	@Override
 	public boolean isMember(ItemStack stack) {
-		return types.getType(stack).isPresent();
+		return types.getType(stack) != null;
 	}
 
 	@Override
@@ -108,11 +105,11 @@ public abstract class IndividualRoot<I extends IIndividual> implements IIndividu
 
 	@Override
 	public IIndividualTranslator<I> getTranslator() {
-		Optional<IIndividualTranslator<I>> translator = getComponentSafe(ComponentKeys.TRANSLATORS);
-		if (!translator.isPresent()) {
+		IIndividualTranslator<I> translator = getComponentSafe(ComponentKeys.TRANSLATORS);
+		if (translator == null) {
 			throw new IllegalStateException(String.format("No translator component was added to the root with the uid '%s'.", getUID()));
 		}
-		return translator.get();
+		return translator;
 	}
 
 	@Override
@@ -136,8 +133,9 @@ public abstract class IndividualRoot<I extends IIndividual> implements IIndividu
 		return components.has(key);
 	}
 
+	@Nullable
 	@Override
-	public <C extends IRootComponent<I>> Optional<C> getComponentSafe(ComponentKey<?> key) {
+	public <C extends IRootComponent<I>> C getComponentSafe(ComponentKey<?> key) {
 		return components.getSafe(key);
 	}
 

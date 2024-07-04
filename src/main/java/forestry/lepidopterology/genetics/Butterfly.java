@@ -92,7 +92,7 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 			toolTip.translated("for.butterflies.hybrid", primary.getDisplayName(), secondary.getDisplayName()).style(ChatFormatting.BLUE);
 		}
 
-		if (getMate().isPresent()) {
+		if (getMate() != null) {
 			//TODO ITextComponent.toUpperCase(Locale.ENGLISH));
 			toolTip.translated("for.gui.fecundated").style(ChatFormatting.RED);
 		}

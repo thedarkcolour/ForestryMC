@@ -1,8 +1,6 @@
 package genetics.organism;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import net.minecraft.world.item.ItemStack;
@@ -36,8 +34,9 @@ public class Organism<I extends IIndividual> implements IOrganism<I> {
 		this.typeSupplier = typeSupplier;
 	}
 
+	@Nullable
 	@Override
-	public Optional<I> getIndividual() {
+	public I getIndividual() {
 		return getDefinition().get().getTypes().createIndividual(container);
 	}
 
@@ -90,13 +89,14 @@ public class Organism<I extends IIndividual> implements IOrganism<I> {
 		return (IAlleleValue<V>) allele;
 	}
 
+	@Nullable
 	@Override
-	public Optional<IAllele> getAlleleDirectly(IChromosomeType type, boolean active) {
-		return Optional.ofNullable(GeneticSaveHandler.INSTANCE.getAlleleDirectly(container, getType(), type, active));
+	public IAllele getAlleleDirectly(IChromosomeType type, boolean active) {
+		return GeneticSaveHandler.INSTANCE.getAlleleDirectly(container, getType(), type, active);
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction facing) {
 		return Genetics.ORGANISM.orEmpty(cap, holder);
 	}
 }

@@ -15,18 +15,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
@@ -492,19 +488,18 @@ public class Bee extends IndividualLiving implements IBee {
 	/* REPRODUCTION */
 	@Override
 	@Nullable
-	public Optional<IBee> spawnPrincess(IBeeHousing housing) {
-
+	public IBee spawnPrincess(IBeeHousing housing) {
 		// We need a mated queen to produce offspring.
 		if (mate == null) {
-			return Optional.empty();
+			return null;
 		}
 
 		// Fatigued queens do not produce princesses.
 		if (BeeManager.beeRoot.getBeekeepingMode(housing.getWorldObj()).isFatigued(this, housing)) {
-			return Optional.empty();
+			return null;
 		}
 
-		return Optional.ofNullable(createOffspring(housing, mate, getGeneration() + 1));
+		return createOffspring(housing, mate, getGeneration() + 1);
 	}
 
 	@Override
@@ -622,10 +617,9 @@ public class Bee extends IndividualLiving implements IBee {
 	}
 
 	/* FLOWERS */
-	@Override
 	@Nullable
-	public Optional<IIndividual> retrievePollen(IBeeHousing housing) {
-
+	@Override
+	public IIndividual retrievePollen(IBeeHousing housing) {
 		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
 
 		int chance = Math.round(genome.getActiveValue(BeeChromosomes.FLOWERING) * beeModifier.getFloweringModifier(getGenome(), 1f));
@@ -635,7 +629,7 @@ public class Bee extends IndividualLiving implements IBee {
 
 		// Correct speed
 		if (random.nextInt(100) >= chance) {
-			return Optional.empty();
+			return null;
 		}
 
 		Vec3i area = getArea(genome, beeModifier);
@@ -653,15 +647,15 @@ public class Bee extends IndividualLiving implements IBee {
 					pollen = pitcher.getPollen();
 				}
 			} else {
-				pollen = GeneticsUtil.getPollen(world, blockPos).orElse(null);
+				pollen = GeneticsUtil.getPollen(world, blockPos);
 			}
 
 			if (pollen != null) {
-				return Optional.of(pollen);
+				return pollen;
 			}
 		}
 
-		return Optional.empty();
+		return null;
 	}
 
 	@Override
@@ -711,8 +705,9 @@ public class Bee extends IndividualLiving implements IBee {
 		return false;
 	}
 
+	@Nullable
 	@Override
-	public Optional<BlockPos> plantFlowerRandom(IBeeHousing housing, List<BlockState> potentialFlowers) {
+	public BlockPos plantFlowerRandom(IBeeHousing housing, List<BlockState> potentialFlowers) {
 		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
 
 		int chance = Math.round(genome.getActiveValue(BeeChromosomes.FLOWERING) * beeModifier.getFloweringModifier(getGenome(), 1f));
@@ -722,7 +717,7 @@ public class Bee extends IndividualLiving implements IBee {
 
 		// Correct speed
 		if (random.nextInt(100) >= chance) {
-			return Optional.empty();
+			return null;
 		}
 		// Gather required info
 		IFlowerProvider provider = genome.getActiveAllele(BeeChromosomes.FLOWER_PROVIDER).getProvider();
@@ -735,10 +730,10 @@ public class Bee extends IndividualLiving implements IBee {
 			BlockPos posBlock = VectUtil.add(housingPos, randomPos, offset);
 
 			if (FlowerManager.flowerRegistry.growFlower(provider.getFlowerType(), world, this, posBlock, potentialFlowers)) {
-				return Optional.of(posBlock);
+				return posBlock;
 			}
 		}
-		return Optional.empty();
+		return null;
 	}
 
 	private static Vec3i getArea(IGenome genome, IBeeModifier beeModifier) {

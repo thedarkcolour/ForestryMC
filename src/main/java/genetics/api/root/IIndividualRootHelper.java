@@ -1,6 +1,6 @@
 package genetics.api.root;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -37,7 +37,8 @@ public interface IIndividualRootHelper {
 
 	boolean isIndividual(ItemStack stack);
 
-	Optional<IIndividual> getIndividual(ItemStack stack);
+	@Nullable
+	IIndividual getIndividual(ItemStack stack);
 
 	IAlleleTemplateBuilder createTemplate(String uid);
 }

@@ -38,8 +38,8 @@ public class Chromosome implements IChromosome {
 	}
 
 	public static Chromosome create(@Nullable ResourceLocation primarySpeciesUid, @Nullable ResourceLocation secondarySpeciesUid, IChromosomeType type, CompoundTag nbt) {
-		IAllele firstAllele = AlleleUtils.getAlleleOrNull(nbt.getString(ACTIVE_ALLELE_TAG));
-		IAllele secondAllele = AlleleUtils.getAlleleOrNull(nbt.getString(INACTIVE_ALLELE_TAG));
+		IAllele firstAllele = AlleleUtils.getAllele(nbt.getString(ACTIVE_ALLELE_TAG));
+		IAllele secondAllele = AlleleUtils.getAllele(nbt.getString(INACTIVE_ALLELE_TAG));
 		return create(primarySpeciesUid, secondarySpeciesUid, type, firstAllele, secondAllele);
 	}
 
@@ -83,12 +83,14 @@ public class Chromosome implements IChromosome {
 		return new Chromosome(allele, geneType);
 	}
 
-	static Optional<IAllele> getActiveAllele(CompoundTag chromosomeNBT) {
+	@Nullable
+	static IAllele getActiveAllele(CompoundTag chromosomeNBT) {
 		String alleleUid = chromosomeNBT.getString(Chromosome.ACTIVE_ALLELE_TAG);
 		return AlleleUtils.getAllele(alleleUid);
 	}
 
-	static Optional<IAllele> getInactiveAllele(CompoundTag chromosomeNBT) {
+	@Nullable
+	static IAllele getInactiveAllele(CompoundTag chromosomeNBT) {
 		String alleleUid = chromosomeNBT.getString(Chromosome.INACTIVE_ALLELE_TAG);
 		return AlleleUtils.getAllele(alleleUid);
 	}

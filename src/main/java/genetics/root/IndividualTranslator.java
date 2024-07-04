@@ -1,8 +1,8 @@
 package genetics.root;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,37 +48,39 @@ public class IndividualTranslator<I extends IIndividual> implements IIndividualT
 	}
 
 	@Override
-	public Optional<IItemTranslator<I>> getTranslator(Item translatorKey) {
-		return Optional.ofNullable(itemTranslators.get(translatorKey));
+	public IItemTranslator<I> getTranslator(Item translatorKey) {
+		return itemTranslators.get(translatorKey);
 	}
 
 	@Override
-	public Optional<IBlockTranslator<I>> getTranslator(Block translatorKey) {
-		return Optional.ofNullable(blockTranslators.get(translatorKey));
+	public IBlockTranslator<I> getTranslator(Block translatorKey) {
+		return blockTranslators.get(translatorKey);
+	}
+
+	@Nullable
+	@Override
+	public I translateMember(BlockState state) {
+		IBlockTranslator<I> translator = getTranslator(state.getBlock());
+		return translator == null ? null : translator.getIndividualFromObject(state);
+	}
+
+	@Nullable
+	@Override
+	public I translateMember(ItemStack stack) {
+		IItemTranslator<I> translator = getTranslator(stack.getItem());
+		return translator == null ? null : translator.getIndividualFromObject(stack);
 	}
 
 	@Override
-	public Optional<I> translateMember(BlockState objectToTranslate) {
-		Optional<IBlockTranslator<I>> optional = getTranslator(objectToTranslate.getBlock());
-		return optional.map(iiBlockTranslator -> iiBlockTranslator.getIndividualFromObject(objectToTranslate));
+	public ItemStack getGeneticEquivalent(BlockState state) {
+		IBlockTranslator<I> translator = getTranslator(state.getBlock());
+		return translator == null ? ItemStack.EMPTY : translator.getGeneticEquivalent(state);
 	}
 
 	@Override
-	public Optional<I> translateMember(ItemStack objectToTranslate) {
-		Optional<IItemTranslator<I>> optional = getTranslator(objectToTranslate.getItem());
-		return optional.map(iiItemTranslator -> iiItemTranslator.getIndividualFromObject(objectToTranslate));
-	}
-
-	@Override
-	public ItemStack getGeneticEquivalent(BlockState objectToTranslate) {
-		Optional<IBlockTranslator<I>> optional = getTranslator(objectToTranslate.getBlock());
-		return optional.map(blockTranslator -> blockTranslator.getGeneticEquivalent(objectToTranslate)).orElse(ItemStack.EMPTY);
-	}
-
-	@Override
-	public ItemStack getGeneticEquivalent(ItemStack objectToTranslate) {
-		Optional<IItemTranslator<I>> optional = getTranslator(objectToTranslate.getItem());
-		return optional.map(itemTranslator -> itemTranslator.getGeneticEquivalent(objectToTranslate)).orElse(ItemStack.EMPTY);
+	public ItemStack getGeneticEquivalent(ItemStack stack) {
+		IItemTranslator<I> translator = getTranslator(stack.getItem());
+		return translator == null ? ItemStack.EMPTY : translator.getGeneticEquivalent(stack);
 	}
 
 	@Override

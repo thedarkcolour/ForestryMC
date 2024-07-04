@@ -65,12 +65,11 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 		}
 
 		if (type != EnumBeeType.DRONE) {
-			Optional<IBee> optionalIndividual = GeneticHelper.getIndividual(stack);
-			if (optionalIndividual.isEmpty()) {
+			IBee individual = GeneticHelper.getIndividual(stack);
+			if (individual == null) {
 				return;
 			}
 
-			IBee individual = optionalIndividual.get();
 			if (individual.isNatural()) {
 				list.add(Component.translatable("for.bees.stock.pristine").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC));
 			} else {

@@ -1,6 +1,5 @@
 package forestry.apiculture.genetics;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 import net.minecraft.ChatFormatting;
@@ -23,8 +22,6 @@ import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
 import forestry.core.gui.elements.GuiElementFactory;
-import forestry.core.utils.StringUtil;
-import forestry.core.utils.Translator;
 
 import genetics.api.organism.IOrganismType;
 
@@ -44,11 +41,10 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 
 	@Override
 	public void createElements(DatabaseElement container, IBee bee, ItemStack itemStack) {
-		Optional<IOrganismType> optionalType = BeeManager.beeRoot.getTypes().getType(itemStack);
-		if (!optionalType.isPresent()) {
+		IOrganismType type = BeeManager.beeRoot.getTypes().getType(itemStack);
+		if (type == null) {
 			return;
 		}
-		IOrganismType type = optionalType.get();
 		IAlleleBeeSpecies primarySpecies = bee.getGenome().getActiveAllele(BeeChromosomes.SPECIES);
 		IAlleleBeeSpecies secondarySpecies = bee.getGenome().getInactiveAllele(BeeChromosomes.SPECIES);
 

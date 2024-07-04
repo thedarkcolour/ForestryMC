@@ -5,9 +5,8 @@
  ******************************************************************************/
 package forestry.api.arboriculture.genetics;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Optional;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -26,9 +25,7 @@ import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.genetics.alleles.IAlleleProperty;
 
 public interface IAlleleTreeSpecies extends IAlleleForestrySpecies, IAlleleProperty<IAlleleTreeSpecies> {
-
 	@Override
-	@Nonnull
 	ITreeRoot getRoot();
 
 	/**
@@ -51,10 +48,12 @@ public interface IAlleleTreeSpecies extends IAlleleForestrySpecies, IAllelePrope
 	 */
 	float getRarity();
 
-	Optional<ILeafProvider> getLeafProvider();
+	@Nullable
+	ILeafProvider getLeafProvider();
 
 	default ItemStack getDecorativeLeaves() {
-		return getLeafProvider().map(ILeafProvider::getDecorativeLeaves).orElse(ItemStack.EMPTY);
+		ILeafProvider provider = getLeafProvider();
+		return provider == null ? ItemStack.EMPTY : provider.getDecorativeLeaves();
 	}
 
 	IGrowthProvider getGrowthProvider();

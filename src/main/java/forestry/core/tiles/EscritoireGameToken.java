@@ -11,7 +11,6 @@
 package forestry.core.tiles;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -72,11 +71,8 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 	}
 
 	private void setTokenSpecies(String speciesUid) {
-		Optional<IAllele> optionalAllele = AlleleUtils.getAllele(speciesUid);
-		if (!optionalAllele.isPresent()) {
-			return;
-		}
-		IAllele allele = optionalAllele.get();
+		IAllele allele = AlleleUtils.getAllele(speciesUid);
+
 		if (allele instanceof IAlleleForestrySpecies species) {
 			IIndividualRoot<IIndividual> root = (IIndividualRoot<IIndividual>) species.getRoot();
 			IAllele[] template = root.getTemplates().getTemplate(species.getRegistryName().toString());

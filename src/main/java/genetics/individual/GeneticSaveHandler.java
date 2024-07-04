@@ -86,7 +86,7 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 		if (chromosomeTag.isEmpty()) {
 			return null;
 		}
-		return (active ? Chromosome.getActiveAllele(chromosomeTag) : Chromosome.getInactiveAllele(chromosomeTag)).orElse(null);
+		return (active ? Chromosome.getActiveAllele(chromosomeTag) : Chromosome.getInactiveAllele(chromosomeTag));
 	}
 
 	/**
@@ -151,19 +151,19 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 	@Nullable
 	@Override
 	public CompoundTag getIndividualDataDirectly(ItemStack itemStack, IOrganismType type, IIndividualRoot<IIndividual> root) {
-		IOrganismHandler organismHandler = GeneticHelper.getOrganismHandler(root, type);
+		IOrganismHandler<IIndividual> organismHandler = GeneticHelper.getOrganismHandler(root, type);
 		return organismHandler.getIndividualData(itemStack);
 	}
 
 	@Override
 	public void setIndividualData(ItemStack itemStack, IOrganismType type, IIndividualRoot<IIndividual> root, CompoundTag compound) {
-		IOrganismHandler organismHandler = GeneticHelper.getOrganismHandler(root, type);
+		IOrganismHandler<IIndividual> organismHandler = GeneticHelper.getOrganismHandler(root, type);
 		organismHandler.setIndividualData(itemStack, compound);
 	}
 
 	@Override
 	public CompoundTag getIndividualData(ItemStack itemStack, IOrganismType type, IIndividualRoot<IIndividual> root) {
-		IOrganismHandler organismHandler = GeneticHelper.getOrganismHandler(root, type);
+		IOrganismHandler<IIndividual> organismHandler = GeneticHelper.getOrganismHandler(root, type);
 		CompoundTag compound = organismHandler.getIndividualData(itemStack);
 		if (compound != null) {
 			return compound;
@@ -175,7 +175,7 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 			Forestry.LOGGER.error("Got a genetic item with no genome, setting it to a default value.", new Object[]{});
 			genomeNBT = new CompoundTag();
 
-			ITemplateContainer container = root.getTemplates();
+			ITemplateContainer<IIndividual> container = root.getTemplates();
 			IAlleleTemplate defaultTemplate = container.getKaryotype().getDefaultTemplate();
 			IGenome genome = defaultTemplate.toGenome(null);
 			genome.writeToNBT(genomeNBT);

@@ -1,11 +1,13 @@
 package genetics.api.alleles;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import genetics.api.individual.IChromosomeType;
 
 public interface IAlleleHelper {
-	<V> Optional<IAlleleValue<V>> getAllele(IChromosomeType chromosomeType, V value);
+	@Nullable
+	<V> IAlleleValue<V> getAllele(IChromosomeType chromosomeType, V value);
 
-	<V> Optional<IAlleleValue<V>> getAllele(IAlleleData<V> alleleData);
+	@Nullable
+	<V> IAlleleValue<V> getAllele(IAlleleData<V> alleleData);
 }

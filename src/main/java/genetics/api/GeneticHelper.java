@@ -1,8 +1,6 @@
 package genetics.api;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -32,12 +30,8 @@ import genetics.api.root.IRootDefinition;
  * A helper class that contains some help methods.
  */
 public class GeneticHelper {
-
 	public static Capability<IOrganism> ORGANISM = CapabilityManager.get(new CapabilityToken<>() {});
 	public static final IOrganism<?> EMPTY = EmptyOrganism.INSTANCE;
-
-	private GeneticHelper() {
-	}
 
 	public static boolean isValidTemplate(@Nullable IAllele[] template, IRootDefinition<?> root) {
 		return template != null && template.length >= root.map(value -> value.getTemplates().getKaryotype().size()).orElse(0);
@@ -74,25 +68,26 @@ public class GeneticHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <I extends IIndividual> Optional<I> getIndividual(ItemStack itemStack) {
-		return itemStack.getCapability(ORGANISM).orElse(EMPTY).getIndividual();
+	@Nullable
+	public static <I extends IIndividual> I getIndividual(ItemStack itemStack) {
+		return (I) itemStack.getCapability(ORGANISM).orElse(EMPTY).getIndividual();
 	}
 
-	public static IOrganismHandler getOrganismHandler(IIndividualRoot<IIndividual> root, IOrganismType type) {
-		Optional<IOrganismHandler<IIndividual>> optionalHandler = root.getTypes().getHandler(type);
-		if (!optionalHandler.isPresent()) {
+	public static IOrganismHandler<IIndividual> getOrganismHandler(IIndividualRoot<IIndividual> root, IOrganismType type) {
+		IOrganismHandler<IIndividual> handler = root.getTypes().getHandler(type);
+		if (handler == null) {
 			throw new IllegalArgumentException(String.format("No organism handler was registered for the organism type '%s'", type.getName()));
 		}
-		return optionalHandler.get();
+		return handler;
 	}
 
 	private enum EmptyOrganism implements IOrganism<IIndividual> {
 		INSTANCE;
 
-
+		@Nullable
 		@Override
-		public Optional<IIndividual> getIndividual() {
-			return Optional.empty();
+		public IIndividual getIndividual() {
+			return null;
 		}
 
 		@Override
@@ -133,14 +128,14 @@ public class GeneticHelper {
 		}
 
 
+		@Nullable
 		@Override
-		public Optional<IAllele> getAlleleDirectly(IChromosomeType type, boolean active) {
-			return Optional.empty();
+		public IAllele getAlleleDirectly(IChromosomeType type, boolean active) {
+			return null;
 		}
 
-		@Nonnull
 		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+		public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 			return LazyOptional.empty();
 		}
 	}

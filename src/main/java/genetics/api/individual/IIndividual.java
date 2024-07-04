@@ -1,7 +1,7 @@
 package genetics.api.individual;
 
+import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -42,9 +42,10 @@ public interface IIndividual {
 	boolean mate(IGenome mate);
 
 	/**
-	 * @return Genetic information of the mate, empty if unmated.
+	 * @return Genetic information of the mate, {@code null} if unmated.
 	 */
-	Optional<IGenome> getMate();
+	@Nullable
+	IGenome getMate();
 
 	/**
 	 * @return A deep copy of this organism.

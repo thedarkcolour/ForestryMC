@@ -36,11 +36,7 @@ public class InventoryBeeHousing extends InventoryAdapterRestricted implements I
 
 	@Override
 	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		Optional<IOrganismType> optionalType = BeeManager.beeRoot.getTypes().getType(itemStack);
-		if (!optionalType.isPresent()) {
-			return false;
-		}
-		IOrganismType beeType = optionalType.get();
+		IOrganismType beeType = BeeManager.beeRoot.getType(itemStack);
 
 		if (slotIndex == SLOT_QUEEN) {
 			return beeType == EnumBeeType.QUEEN || beeType == EnumBeeType.PRINCESS;

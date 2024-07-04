@@ -82,10 +82,10 @@ public class FilterLogic implements IFilterLogic {
 			for (int j = 0; j < 3; j++) {
 				AlleleFilter filter = new AlleleFilter();
 				if (data.contains("GenomeFilterS" + i + "-" + j + "-" + 0)) {
-					filter.activeAllele = AlleleUtils.getAlleleOrNull(data.getString("GenomeFilterS" + i + "-" + j + "-" + 0));
+					filter.activeAllele = AlleleUtils.getAllele(data.getString("GenomeFilterS" + i + "-" + j + "-" + 0));
 				}
 				if (data.contains("GenomeFilterS" + i + "-" + j + "-" + 1)) {
-					filter.inactiveAllele = AlleleUtils.getAlleleOrNull(data.getString("GenomeFilterS" + i + "-" + j + "-" + 1));
+					filter.inactiveAllele = AlleleUtils.getAllele(data.getString("GenomeFilterS" + i + "-" + j + "-" + 1));
 				}
 				genomeFilter[i][j] = filter;
 			}
@@ -151,10 +151,10 @@ public class FilterLogic implements IFilterLogic {
 			for (int j = 0; j < 3; j++) {
 				AlleleFilter filter = new AlleleFilter();
 				if (buffer.readBoolean()) {
-					filter.activeAllele = AlleleUtils.getAlleleOrNull(buffer.readUtf(1024));
+					filter.activeAllele = AlleleUtils.getAllele(buffer.readUtf(1024));
 				}
 				if (buffer.readBoolean()) {
-					filter.inactiveAllele = AlleleUtils.getAlleleOrNull(buffer.readUtf(1024));
+					filter.inactiveAllele = AlleleUtils.getAllele(buffer.readUtf(1024));
 				}
 				genomeFilters[i][j] = filter;
 			}
@@ -169,8 +169,8 @@ public class FilterLogic implements IFilterLogic {
 		IOrganismType type = null;
 		if (definition.isPresent()) {
 			IIndividualRoot<IIndividual> root = definition.get();
-			individual = root.create(itemStack).orElse(null);
-			type = root.getTypes().getType(itemStack).orElse(null);
+			individual = root.create(itemStack);
+			type = root.getTypes().getType(itemStack);
 		}
 		IFilterData filterData = new FilterData(definition, individual, type);
 		List<Direction> validFacings = new LinkedList<>();
@@ -192,8 +192,8 @@ public class FilterLogic implements IFilterLogic {
 		IOrganismType type = null;
 		if (definition.isPresent()) {
 			IIndividualRoot<IIndividual> root = definition.get();
-			individual = root.create(itemStack).orElse(null);
-			type = root.getTypes().getType(itemStack).orElse(null);
+			individual = root.create(itemStack);
+			type = root.getTypes().getType(itemStack);
 		}
 		return isValid(facing, itemStack, new FilterData(definition, individual, type));
 	}

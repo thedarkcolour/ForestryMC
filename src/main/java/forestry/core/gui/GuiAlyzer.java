@@ -10,12 +10,10 @@
  ******************************************************************************/
 package forestry.core.gui;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +40,6 @@ import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.render.ColourProperties;
-import forestry.core.utils.Translator;
 
 import genetics.api.alleles.IAllele;
 import genetics.api.alleles.IAlleleSpecies;
@@ -206,8 +203,8 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 			}
 			IForestrySpeciesRoot<IIndividual> speciesRoot = definition.get();
 
-			Optional<IIndividual> optionalIndividual = speciesRoot.create(stackInSlot);
-			if (optionalIndividual.filter(individual -> !individual.isAnalyzed()).isPresent()) {
+			IIndividual individual = speciesRoot.create(stackInSlot);
+			if (!individual.isAnalyzed()) {
 				continue;
 			}
 

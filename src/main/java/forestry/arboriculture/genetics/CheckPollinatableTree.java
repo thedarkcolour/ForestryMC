@@ -45,6 +45,6 @@ public class CheckPollinatableTree implements ICheckPollinatable {
 
 	@Override
 	public boolean isPollinated() {
-		return tree.getMate().isPresent();
+		return tree.getMate() != null;
 	}
 }

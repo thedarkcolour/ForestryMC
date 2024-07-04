@@ -3,7 +3,6 @@ package forestry.apiculture.genetics;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -59,16 +58,15 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack itemStack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			Optional<IBee> optional = BeeManager.beeRoot.create(itemStack);
-			if (!optional.isPresent()) {
+			IBee bee = BeeManager.beeRoot.create(itemStack);
+			if (bee == null) {
 				return;
 			}
-			IBee bee = optional.get();
-			Optional<IOrganismType> typeOptional = BeeManager.beeRoot.getTypes().getType(itemStack);
-			if (!typeOptional.isPresent()) {
+
+			IOrganismType type = BeeManager.beeRoot.getTypes().getType(itemStack);
+			if (type == null) {
 				return;
 			}
-			IOrganismType type = typeOptional.get();
 
 			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
@@ -113,17 +111,15 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack itemStack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			Optional<IBee> optional = BeeManager.beeRoot.create(itemStack);
-			if (!optional.isPresent()) {
+			IBee bee = BeeManager.beeRoot.create(itemStack);
+			if (bee == null) {
 				return;
 			}
-			IBee bee = optional.get();
 
-			Optional<IOrganismType> typeOptional = BeeManager.beeRoot.getTypes().getType(itemStack);
-			if (!typeOptional.isPresent()) {
+			IOrganismType type = BeeManager.beeRoot.getTypes().getType(itemStack);
+			if (type == null) {
 				return;
 			}
-			IOrganismType type = typeOptional.get();
 
 			IGenome genome = bee.getGenome();
 			IAlleleBeeSpecies primaryAllele = genome.getActiveAllele(BeeChromosomes.SPECIES);
@@ -228,11 +224,10 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage3(PoseStack transform, ItemStack itemStack, Screen gui) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			Optional<IBee> optional = BeeManager.beeRoot.create(itemStack);
-			if (!optional.isPresent()) {
+			IBee bee = BeeManager.beeRoot.create(itemStack);
+			if (bee == null) {
 				return;
 			}
-			IBee bee = optional.get();
 
 			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 			WidgetManager widgetManager = guiAlyzer.getWidgetManager();
@@ -243,8 +238,6 @@ public class BeeAlyzerPlugin implements IAlyzerPlugin {
 
 			textLayout.newLine();
 
-			int guiLeft = ((GuiAlyzer) gui).getGuiLeft();
-			int guiTop = ((GuiAlyzer) gui).getGuiTop();
 			int x = GuiAlyzer.COLUMN_0;
 			for (ItemStack stack : bee.getProduceList()) {
 				widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), stack));

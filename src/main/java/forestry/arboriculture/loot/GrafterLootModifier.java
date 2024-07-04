@@ -108,7 +108,7 @@ public class GrafterLootModifier extends LootModifier {
 	@Nullable
 	private ITree getTree(BlockState state, @Nullable BlockEntity entity) {
 		ITreeRoot root = TreeHelper.getRoot();
-		ITree tree = root.translateMember(state).orElse(null);
+		ITree tree = root.translateMember(state);
 		if (tree != null || entity == null) {
 			return tree;
 		}

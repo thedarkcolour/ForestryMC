@@ -2,22 +2,20 @@ package genetics.alleles;
 
 import com.google.common.collect.HashMultimap;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
-import forestry.Forestry;
 import forestry.core.config.Constants;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.fml.ModLoadingContext;
 
-import genetics.Genetics;
 import genetics.api.alleles.Allele;
 import genetics.api.alleles.AlleleCategorizedValue;
 import genetics.api.alleles.IAllele;
@@ -64,8 +62,10 @@ public class AlleleRegistry implements IAlleleRegistry {
 
 	@Override
 	public IAlleleRegistry addValidAlleleTypes(ResourceLocation registryName, IChromosomeType... types) {
-		Optional<IAllele> alleleOptional = getAllele(registryName);
-		alleleOptional.ifPresent(allele -> addValidAlleleTypes(allele, types));
+		IAllele allele = getAllele(registryName);
+		if (allele != null) {
+			addValidAlleleTypes(allele, types);
+		}
 		return this;
 	}
 
@@ -134,9 +134,10 @@ public class AlleleRegistry implements IAlleleRegistry {
 		return registry.keySet();
 	}
 
+	@Nullable
 	@Override
-	public Optional<IAllele> getAllele(ResourceLocation location) {
-		return Optional.ofNullable(registry.get(location));
+	public IAllele getAllele(ResourceLocation location) {
+		return registry.get(location);
 	}
 
 	@Override

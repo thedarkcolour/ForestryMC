@@ -1,5 +1,6 @@
 package genetics.api.root;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -15,9 +16,10 @@ public enum EmptyRootDefinition implements IRootDefinition<IIndividualRoot<?>> {
 		return (IRootDefinition<R>) INSTANCE;
 	}
 
+	@Nullable
 	@Override
-	public Optional<IIndividualRoot<?>> maybe() {
-		return Optional.empty();
+	public IIndividualRoot<?> maybe() {
+		return null;
 	}
 
 	@Override
@@ -45,9 +47,10 @@ public enum EmptyRootDefinition implements IRootDefinition<IIndividualRoot<?>> {
 		return false;
 	}
 
+	@Nullable
 	@Override
-	public Optional filter(Predicate predicate) {
-		return Optional.empty();
+	public IIndividualRoot filter(Predicate predicate) {
+		return null;
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short ind
 		Direction facing = NetworkUtil.readDirection(buffer);
 		short index = buffer.readShort();
 		boolean active = buffer.readBoolean();
-		IAllele allele = buffer.readBoolean() ? AlleleUtils.getAlleleOrNull(buffer.readUtf()) : null;
+		IAllele allele = buffer.readBoolean() ? AlleleUtils.getAllele(buffer.readUtf()) : null;
 
 		return new PacketFilterChangeGenome(pos, facing, index, active, allele);
 	}

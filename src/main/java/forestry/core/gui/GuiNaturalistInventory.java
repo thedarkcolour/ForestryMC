@@ -139,7 +139,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 			return null;
 		}
 
-		return speciesRoot.getTypes().createIndividual(slot.getItem()).orElse(null);
+		return speciesRoot.getTypes().createIndividual(slot.getItem());
 	}
 
 	private void displayBreedingStatistics(PoseStack transform, int x) {

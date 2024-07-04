@@ -12,7 +12,6 @@ package forestry.apiculture.inventory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -74,10 +73,8 @@ public class InventoryApiary extends InventoryBeeHousing implements IApiaryInven
 			Item hiveFrameItem = hiveFrameStack.getItem();
 			if ((hiveFrameItem instanceof IHiveFrame hiveFrame)) {
 
-				ItemStack queenStack = getQueen();
-				Optional<IBee> optionalBee = BeeManager.beeRoot.create(queenStack);
-				if (optionalBee.isPresent()) {
-					IBee queen = optionalBee.get();
+				IBee queen = BeeManager.beeRoot.create(getQueen());
+				if (queen != null) {
 					ItemStack usedFrame = hiveFrame.frameUsed(beeHousing, hiveFrameStack, queen, wear);
 
 					setItem(i, usedFrame);

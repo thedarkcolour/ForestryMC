@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.climatology.gui.elements;
 
-import java.util.Optional;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -103,11 +101,10 @@ public class SpeciesSelectionElement extends GuiElement {
 		if (itemstack.isEmpty()) {
 			return false;
 		}
-		Optional<IIndividual> optional = RootUtils.getIndividual(itemstack);
-		if (!optional.isPresent()) {
+		IIndividual individual = RootUtils.getIndividual(itemstack);
+		if (individual == null) {
 			return false;
 		}
-		IIndividual individual = optional.get();
 		IAlleleForestrySpecies primary = individual.getGenome().getPrimary(IAlleleForestrySpecies.class);
 		EnumTemperature temperature = primary.getTemperature();
 		EnumHumidity humidity = primary.getHumidity();

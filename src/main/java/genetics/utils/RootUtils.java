@@ -1,7 +1,6 @@
 package genetics.utils;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -13,10 +12,6 @@ import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.IRootComponent;
 
 public class RootUtils {
-
-	private RootUtils() {
-	}
-
 	public static boolean hasRoot(ItemStack stack) {
 		return GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(stack).isPresent();
 	}
@@ -29,18 +24,15 @@ public class RootUtils {
 		return GeneticsAPI.apiInstance.getRootHelper().isIndividual(stack);
 	}
 
-	public static Optional<IIndividual> getIndividual(ItemStack stack) {
+	@Nullable
+	public static IIndividual getIndividual(ItemStack stack) {
 		return GeneticsAPI.apiInstance.getRootHelper().getIndividual(stack);
 	}
 
 	@Nullable
-	public static IIndividual getIndividualOrNull(ItemStack stack) {
-		return getIndividual(stack).orElse(null);
-	}
-
-	@Nullable
 	public static IIndividual getIndividualOr(ItemStack stack, IIndividual fallback) {
-		return getIndividual(stack).orElse(fallback);
+		IIndividual individual = getIndividual(stack);
+		return individual != null ? individual : fallback;
 	}
 
 	@SuppressWarnings("unchecked")

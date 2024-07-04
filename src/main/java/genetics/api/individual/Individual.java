@@ -1,7 +1,6 @@
 package genetics.api.individual;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.nbt.CompoundTag;
 
@@ -63,9 +62,10 @@ public abstract class Individual implements IIndividual {
 		return true;
 	}
 
+	@Nullable
 	@Override
-	public Optional<IGenome> getMate() {
-		return Optional.ofNullable(mate);
+	public IGenome getMate() {
+		return this.mate;
 	}
 
 	@Override
@@ -83,8 +83,10 @@ public abstract class Individual implements IIndividual {
 		if (otherIndividual.isAnalyzed()) {
 			analyze();
 		}
-		Optional<IGenome> otherMate = otherIndividual.getMate();
-		otherMate.ifPresent(this::mate);
+		IGenome otherMate = otherIndividual.getMate();
+		if (otherMate != null) {
+			mate(otherMate);
+		}
 	}
 
 	@Override

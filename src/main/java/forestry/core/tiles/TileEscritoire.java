@@ -10,18 +10,16 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
-import java.util.Optional;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.authlib.GameProfile;
 
@@ -84,11 +82,10 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 			return;
 		}
 
-		Optional<IIndividual> optional = RootUtils.getIndividual(getItem(InventoryEscritoire.SLOT_ANALYZE));
-		if (!optional.isPresent()) {
+		IIndividual individual = RootUtils.getIndividual(getItem(InventoryEscritoire.SLOT_ANALYZE));
+		if (individual == null) {
 			return;
 		}
-		IIndividual individual = optional.get();
 
 		IAlleleForestrySpecies species = individual.getGenome().getPrimary(IAlleleForestrySpecies.class);
 		IIndividualRoot<IIndividual> root = (IIndividualRoot<IIndividual>) species.getRoot();
@@ -161,6 +158,7 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 	public void setItem(int slotIndex, ItemStack itemstack) {
 		super.setItem(slotIndex, itemstack);
 		if (slotIndex == InventoryEscritoire.SLOT_ANALYZE) {
+			// todo why did i get rid of this?
 			//PacketItemStackDisplay packet = new PacketItemStackDisplay(this, getIndividualOnDisplay());
 			//NetworkUtil.sendNetworkPacket(packet, worldPosition, level);
 		}

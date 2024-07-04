@@ -1,12 +1,7 @@
 package forestry.arboriculture.compat;
 
-import java.util.Optional;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.core.config.Constants;
@@ -22,7 +17,6 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 
 @JeiPlugin
-@OnlyIn(Dist.CLIENT)
 public class ArboricultureJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -32,8 +26,8 @@ public class ArboricultureJeiPlugin implements IModPlugin {
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
 		IIngredientSubtypeInterpreter<ItemStack> arboSubtypeInterpreter = (itemStack, context) -> {
-			Optional<IIndividual> individual = GeneticHelper.getIndividual(itemStack);
-			return individual.map(iIndividual -> iIndividual.getGenome().getPrimary().getBinomial()).orElse(IIngredientSubtypeInterpreter.NONE);
+			IIndividual individual = GeneticHelper.getIndividual(itemStack);
+			return individual == null ? IIngredientSubtypeInterpreter.NONE : individual.getGenome().getPrimary().getBinomial();
 		};
 
 		subtypeRegistry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, ArboricultureItems.SAPLING.item(), arboSubtypeInterpreter);

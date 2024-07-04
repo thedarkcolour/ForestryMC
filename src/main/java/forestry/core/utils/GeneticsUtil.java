@@ -12,7 +12,6 @@ package forestry.core.utils;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -128,12 +127,11 @@ public class GeneticsUtil {
 			return tile;
 		}
 
-		Optional<IIndividual> optionalPollen = GeneticsUtil.getPollen(world, pos);
-		if (optionalPollen.isPresent()) {
-			IIndividual pollen = optionalPollen.get();
-			IIndividualRoot root = pollen.getRoot();
-			if (root instanceof ISpeciesRootPollinatable) {
-				return ((ISpeciesRootPollinatable) root).createPollinatable(pollen);
+		IIndividual pollen = GeneticsUtil.getPollen(world, pos);
+		if (pollen != null) {
+			IIndividualRoot<?> root = pollen.getRoot();
+			if (root instanceof ISpeciesRootPollinatable<?> speciesRoot) {
+				return speciesRoot.createPollinatable(pollen);
 			}
 		}
 
@@ -147,12 +145,11 @@ public class GeneticsUtil {
 	public static IPollinatable getOrCreatePollinatable(@Nullable GameProfile owner, Level world, final BlockPos pos, boolean convertVanilla) {
 		IPollinatable pollinatable = TileUtil.getTile(world, pos, IPollinatable.class);
 		if (pollinatable == null && convertVanilla) {
-			Optional<IIndividual> optionalPollen = GeneticsUtil.getPollen(world, pos);
-			if (optionalPollen.isPresent()) {
-				final IIndividual pollen = optionalPollen.get();
-				IIndividualRoot root = pollen.getRoot();
-				if (root instanceof ISpeciesRootPollinatable rootPollinatable) {
-					pollinatable = rootPollinatable.tryConvertToPollinatable(owner, world, pos, pollen);
+			IIndividual pollen = GeneticsUtil.getPollen(world, pos);
+			if (pollen != null) {
+				IIndividualRoot<?> root = pollen.getRoot();
+				if (root instanceof ISpeciesRootPollinatable<?> speciesRoot) {
+					pollinatable = speciesRoot.tryConvertToPollinatable(owner, world, pos, pollen);
 				}
 			}
 		}
@@ -163,9 +160,8 @@ public class GeneticsUtil {
 	public static IButterflyNursery getOrCreateNursery(@Nullable GameProfile gameProfile, LevelAccessor world, BlockPos pos, boolean convertVanilla) {
 		IButterflyNursery nursery = getNursery(world, pos);
 		if (nursery == null && convertVanilla) {
-			Optional<IIndividual> optionalPollen = GeneticsUtil.getPollen(world, pos);
-			if (optionalPollen.isPresent()) {
-				IIndividual pollen = optionalPollen.get();
+			IIndividual pollen = GeneticsUtil.getPollen(world, pos);
+			if (pollen != null) {
 				if (pollen instanceof ITree treeLeave) {
 					if (treeLeave.setLeaves(world, gameProfile, pos, world.getRandom())) {
 						nursery = getNursery(world, pos);
@@ -177,8 +173,8 @@ public class GeneticsUtil {
 	}
 
 	public static boolean canCreateNursery(LevelAccessor world, BlockPos pos) {
-		Optional<IIndividual> optional = GeneticsUtil.getPollen(world, pos);
-		return optional.filter(pollen -> pollen instanceof ITree).isPresent();
+		IIndividual pollen = GeneticsUtil.getPollen(world, pos);
+		return pollen instanceof ITree;
 	}
 
 	@Nullable
@@ -189,33 +185,35 @@ public class GeneticsUtil {
 	/**
 	 * Gets pollen from a location. Does not affect the pollen source.
 	 */
-	public static Optional<IIndividual> getPollen(LevelAccessor world, final BlockPos pos) {
+	@Nullable
+	public static IIndividual getPollen(LevelAccessor world, final BlockPos pos) {
 		if (!world.hasChunkAt(pos)) {
-			return Optional.empty();
+			return null;
 		}
 
 		ICheckPollinatable checkPollinatable = TileUtil.getTile(world, pos, ICheckPollinatable.class);
 		if (checkPollinatable != null) {
-			return Optional.of(checkPollinatable.getPollen());
+			return checkPollinatable.getPollen();
 		}
 
 		BlockState blockState = world.getBlockState(pos);
 
 		for (IRootDefinition<?> definition : GeneticsAPI.apiInstance.getRoots().values()) {
 			IIndividualRoot<IIndividual> root = definition.cast();
-			Optional<IIndividual> individual = root.translateMember(blockState);
-			if (individual.isPresent()) {
+			IIndividual individual = root.translateMember(blockState);
+			if (individual != null) {
 				return individual;
 			}
 		}
 
-		return Optional.empty();
+		return null;
 	}
 
-	public static <I extends IIndividual> Optional<I> getGeneticEquivalent(ItemStack itemStack) {
-		Item item = itemStack.getItem();
+	@Nullable
+	public static <I extends IIndividual> I getGeneticEquivalent(ItemStack stack) {
+		Item item = stack.getItem();
 		if (item instanceof ItemGE) {
-			return GeneticHelper.getIndividual(itemStack);
+			return GeneticHelper.getIndividual(stack);
 		}
 
 		for (IRootDefinition<?> definition : GeneticsAPI.apiInstance.getRoots().values()) {
@@ -223,30 +221,32 @@ public class GeneticsUtil {
 				continue;
 			}
 			IIndividualRoot<I> root = definition.cast();
-			Optional<I> individual = root.translateMember(itemStack);
-			if (individual.isPresent()) {
+			I individual = root.translateMember(stack);
+			if (individual != null) {
 				return individual;
 			}
 		}
 
-		return Optional.empty();
+		return null;
 	}
 
 	//unfortunately quite a few unchecked casts
 	public static ItemStack convertToGeneticEquivalent(ItemStack foreign) {
 		if (!RootUtils.hasRoot(foreign)) {
-			Optional<? extends IIndividual> optionalIndividual = getGeneticEquivalent(foreign);
+			IIndividual individual = getGeneticEquivalent(foreign);
 
-			return optionalIndividual.map(individual -> {
+			if (individual != null) {
 				IIndividualRoot<? super IIndividual> root = individual.getRoot().cast();
-				Optional<IOrganismType> type = root.getType(foreign);
-				if (type.isPresent()) {
-					ItemStack equivalent = root.createStack(individual, type.get());
+				IOrganismType type = root.getType(foreign);
+				if (type != null) {
+					ItemStack equivalent = root.createStack(individual, type);
 					equivalent.setCount(foreign.getCount());
 					return equivalent;
 				}
-				return null;
-			}).orElse(foreign);
+				return ItemStack.EMPTY;
+			} else {
+				return foreign;
+			}
 		}
 		return foreign;
 	}

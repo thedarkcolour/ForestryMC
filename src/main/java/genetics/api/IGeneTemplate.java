@@ -1,7 +1,6 @@
 package genetics.api;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import genetics.api.alleles.IAllele;
 import genetics.api.individual.IChromosomeType;
@@ -24,17 +23,20 @@ public interface IGeneTemplate {
 	/**
 	 * @return The allele that this template contains.
 	 */
-	Optional<IAllele> getAllele();
+	@Nullable
+	IAllele getAllele();
 
 	/**
 	 * @return The gene type at that the chromosome of the allele is positioned at the chromosome array.
 	 */
-	Optional<IChromosomeType> getType();
+	@Nullable
+	IChromosomeType getType();
 
 	/**
 	 * @return The genetic definition that describes the definition to that the {@link IChromosomeType} belongs to.
 	 */
-	Optional<IIndividualRoot> getRoot();
+	@Nullable
+	IIndividualRoot getRoot();
 
 	/**
 	 * Sets the information of this template.

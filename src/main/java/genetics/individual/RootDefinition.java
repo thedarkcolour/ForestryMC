@@ -19,9 +19,10 @@ public class RootDefinition<R extends IIndividualRoot> implements IRootDefinitio
 		this.root = definition;
 	}
 
+	@Nullable
 	@Override
-	public Optional<R> maybe() {
-		return Optional.ofNullable(root);
+	public R maybe() {
+		return root;
 	}
 
 	@Override
@@ -49,13 +50,14 @@ public class RootDefinition<R extends IIndividualRoot> implements IRootDefinitio
 		return root != null && predicate.test(root);
 	}
 
+	@Nullable
 	@Override
-	public Optional<R> filter(Predicate<? super R> predicate) {
+	public R filter(Predicate<? super R> predicate) {
 		Objects.requireNonNull(predicate);
 		if (root == null) {
-			return Optional.empty();
+			return null;
 		} else {
-			return predicate.test(root) ? Optional.of(root) : Optional.empty();
+			return predicate.test(root) ? root : null;
 		}
 	}
 

@@ -2,7 +2,6 @@ package genetics.api.root;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +49,8 @@ public interface IIndividualRoot<I extends IIndividual> {
 	 */
 	I create(IGenome genome, IGenome mate);
 
-	default Optional<I> create(ItemStack stack) {
+	@Nullable
+	default I create(ItemStack stack) {
 		return getTypes().createIndividual(stack);
 	}
 
@@ -58,7 +58,8 @@ public interface IIndividualRoot<I extends IIndividual> {
 		return getTypes().createStack(individual, type);
 	}
 
-	default Optional<IOrganismType> getType(ItemStack itemStack) {
+	@Nullable
+	default IOrganismType getType(ItemStack itemStack) {
 		return getTypes().getType(itemStack);
 	}
 
@@ -75,7 +76,8 @@ public interface IIndividualRoot<I extends IIndividual> {
 	 * @param templateIdentifier A identifier that is associate with a {@link IAllele} template at the
 	 *                           {@link ITemplateContainer} of this root.
 	 */
-	Optional<I> create(String templateIdentifier);
+	@Nullable
+	I create(String templateIdentifier);
 
 	/**
 	 * Creates a {@link IIndividual} that contains the alleles of the template in a genome.
@@ -147,11 +149,11 @@ public interface IIndividualRoot<I extends IIndividual> {
 	IKaryotype getKaryotype();
 
 	/**
-	 * A translator that can be used to translate {@link net.minecraft.block.BlockState} and
+	 * A translator that can be used to translate {@link BlockState} and
 	 * {@link ItemStack} without any genetic information  into {@link IIndividual}s or into a {@link ItemStack} that
 	 * contains a {@link genetics.api.organism.IOrganism}.
 	 *
-	 * @return A translator that can be used to translate {@link net.minecraft.block.BlockState} and
+	 * @return A translator that can be used to translate {@link BlockState} and
 	 * {@link ItemStack} into {@link IIndividual}s.
 	 */
 	IIndividualTranslator<I> getTranslator();
@@ -159,14 +161,16 @@ public interface IIndividualRoot<I extends IIndividual> {
 	/**
 	 * Translates {@link BlockState}s into genetic data.
 	 */
-	default Optional<I> translateMember(BlockState objectToTranslate) {
+	@Nullable
+	default I translateMember(BlockState objectToTranslate) {
 		return getTranslator().translateMember(objectToTranslate);
 	}
 
 	/**
 	 * Translates {@link ItemStack}s into genetic data.
 	 */
-	default Optional<I> translateMember(ItemStack objectToTranslate) {
+	@Nullable
+	default I translateMember(ItemStack objectToTranslate) {
 		return getTranslator().translateMember(objectToTranslate);
 	}
 
@@ -200,7 +204,8 @@ public interface IIndividualRoot<I extends IIndividual> {
 
 	boolean hasComponent(ComponentKey<?> key);
 
-	<C extends IRootComponent<I>> Optional<C> getComponentSafe(ComponentKey<?> key);
+	@Nullable
+	<C extends IRootComponent<I>> C getComponentSafe(ComponentKey<?> key);
 
 	<C extends IRootComponent<I>> C getComponent(ComponentKey<?> key);
 

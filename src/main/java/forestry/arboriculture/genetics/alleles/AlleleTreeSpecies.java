@@ -47,6 +47,7 @@ public class AlleleTreeSpecies extends AlleleForestrySpecies implements IAlleleT
 	private final ILeafSpriteProvider leafSpriteProvider;
 	private final ImmutableList<IFruitFamily> fruits;
 	private final PlantType nativeType;
+	@Nullable
 	private final ILeafProvider leafProvider;
 	private final IGrowthProvider growthProvider;
 	private final float rarity;
@@ -123,9 +124,10 @@ public class AlleleTreeSpecies extends AlleleForestrySpecies implements IAlleleT
 		return germlingModelProvider.getSpriteColor(type, renderPass);
 	}
 
+	@Nullable
 	@Override
-	public Optional<ILeafProvider> getLeafProvider() {
-		return Optional.of(leafProvider);
+	public ILeafProvider getLeafProvider() {
+		return leafProvider;
 	}
 
 	@Override

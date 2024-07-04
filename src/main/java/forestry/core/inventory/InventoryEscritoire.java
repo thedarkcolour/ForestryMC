@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.core.inventory;
 
-import java.util.Optional;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -45,15 +43,16 @@ public class InventoryEscritoire extends InventoryAdapterTile<TileEscritoire> {
 			if (specimen.isEmpty()) {
 				return false;
 			}
-			Optional<IIndividual> optional = RootUtils.getIndividual(specimen);
-			return optional.filter(individual -> {
+			IIndividual individual = RootUtils.getIndividual(specimen);
+			if (individual != null) {
 				IResearchHandler handler = ((IResearchHandler) individual.getRoot().getComponent(ForestryComponentKeys.RESEARCH));
 				return handler.getResearchSuitability(individual.getGenome().getPrimary(IAlleleForestrySpecies.class), itemStack) > 0;
-			}).isPresent();
+			}
+			return false;
 		}
 
 		return slotIndex == SLOT_ANALYZE &&
-			(RootUtils.isIndividual(itemStack) || GeneticsUtil.getGeneticEquivalent(itemStack).isPresent());
+			(RootUtils.isIndividual(itemStack) || GeneticsUtil.getGeneticEquivalent(itemStack) != null);
 
 	}
 

@@ -129,7 +129,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 			return false;
 		}
 
-		IButterfly butterfly = ButterflyManager.butterflyRoot.getTypes().createIndividual(entityItem.getItem()).orElse(null);
+		IButterfly butterfly = ButterflyManager.butterflyRoot.getTypes().createIndividual(entityItem.getItem());
 		if (butterfly == null) {
 			return false;
 		}
@@ -158,7 +158,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 
 		ItemStack stack = player.getItemInHand(context.getHand());
 
-		IButterfly flutter = ButterflyManager.butterflyRoot.getTypes().createIndividual(stack).orElse(null);
+		IButterfly flutter = ButterflyManager.butterflyRoot.getTypes().createIndividual(stack);
 
 		BlockState blockState = level.getBlockState(pos);
 		if (type == EnumFlutterType.COCOON) {
@@ -199,7 +199,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		if (cocoon.isEmpty()) {
 			return;
 		}
-		if (ButterflyManager.butterflyRoot.getTypes().getType(cocoon).orElse(null) != EnumFlutterType.COCOON) {
+		if (ButterflyManager.butterflyRoot.getTypes().getType(cocoon) != EnumFlutterType.COCOON) {
 			return;
 		}
 		CompoundTag tagCompound = cocoon.getTag();
@@ -213,7 +213,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		if (cocoon.isEmpty()) {
 			return 0;
 		}
-		if (ButterflyManager.butterflyRoot.getTypes().getType(cocoon).orElse(null) != EnumFlutterType.COCOON) {
+		if (ButterflyManager.butterflyRoot.getTypes().getType(cocoon) != EnumFlutterType.COCOON) {
 			return 0;
 		}
 		CompoundTag tagCompound = cocoon.getTag();
@@ -237,7 +237,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 	@Override
 	public int getColorFromItemStack(ItemStack stack, int tintIndex) {
 		if (stack.hasTag()) {
-			IIndividual individual = GeneticHelper.getIndividual(stack).orElse(null);
+			IIndividual individual = GeneticHelper.getIndividual(stack);
 			if (individual != null) {
 				IAlleleSpecies species = individual.getGenome().getPrimary();
 				return ((IAlleleForestrySpecies) species).getSpriteColour(tintIndex);

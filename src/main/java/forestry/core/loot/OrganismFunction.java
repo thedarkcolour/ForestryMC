@@ -4,15 +4,13 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
-import java.util.Optional;
-
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 
 import genetics.api.alleles.IAllele;
 import genetics.api.individual.IIndividual;
@@ -46,17 +44,20 @@ public class OrganismFunction extends LootItemConditionalFunction {
 	@Override
 	protected ItemStack run(ItemStack stack, LootContext lootContext) {
 		IRootDefinition<IIndividualRoot<IIndividual>> definition = RootUtils.getRoot(stack);
-		return definition.map((root) -> {
-			Optional<IOrganismType> speciesType = root.getType(stack);
-			return speciesType.map((type) -> {
+		if (definition.isPresent()) {
+			IIndividualRoot<IIndividual> root = definition.get();
+			IOrganismType type = root.getType(stack);
+
+			if (type != null) {
 				IAllele[] template = root.getTemplate(speciesUid.toString());
 				if (template.length > 0) {
 					IIndividual individual = root.templateAsIndividual(template);
-					return root.createStack(individual, speciesType.get());
+					return root.createStack(individual, type);
 				}
-				return stack;
-			}).orElse(stack);
-		}).orElse(stack);
+			}
+		}
+
+		return stack;
 	}
 
 	@Override
@@ -65,7 +66,6 @@ public class OrganismFunction extends LootItemConditionalFunction {
 	}
 
 	public static class Serializer extends LootItemConditionalFunction.Serializer<OrganismFunction> {
-
 		@Override
 		public void serialize(JsonObject object, OrganismFunction function, JsonSerializationContext context) {
 			super.serialize(object, function, context);
