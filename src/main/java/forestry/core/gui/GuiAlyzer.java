@@ -130,21 +130,12 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		GuiUtil.drawItemStack(transform, this, iconStacks.get(secondary.getRegistryName()), leftPos + textLayout.column2 + columnwidth - 20, topPos + 10);
 
 		Component primaryName = primary.getAlyzerName(type);
-		Component secondaryName = primary.getAlyzerName(type);
+		Component secondaryName = secondary.getAlyzerName(type);
 
 		drawSplitLine(transform, primaryName, textLayout.column1, columnwidth, individual, chromosome, false);
 		drawSplitLine(transform, secondaryName, textLayout.column2, columnwidth, individual, chromosome, true);
 
 		textLayout.newLine();
-	}
-
-	@Nullable
-	public static Component checkCustomName(String key) {
-		if (Translator.canTranslateToLocal(key)) {
-			return Component.translatable(key);
-		} else {
-			return null;
-		}
 	}
 
 	@Override
@@ -167,23 +158,20 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		switch (specimenSlot) {
 			case ItemInventoryAlyzer.SLOT_ANALYZE_1 -> {
 				speciesRoot.getAlyzerPlugin().drawAnalyticsPage1(transform, this, stackInSlot);
-				break;
 			}
 			case ItemInventoryAlyzer.SLOT_ANALYZE_2 -> {
 				speciesRoot.getAlyzerPlugin().drawAnalyticsPage2(transform, this, stackInSlot);
-				break;
 			}
 			case ItemInventoryAlyzer.SLOT_ANALYZE_3 -> {
 				speciesRoot.getAlyzerPlugin().drawAnalyticsPage3(transform, stackInSlot, this);
-				break;
 			}
 			case ItemInventoryAlyzer.SLOT_ANALYZE_4 -> {
-				speciesRoot.create(stackInSlot).ifPresent((value) -> drawAnalyticsPageMutations(transform, value));
-				break;
+				IIndividual individual = speciesRoot.create(stackInSlot);
+				drawAnalyticsPageMutations(transform, individual);
 			}
 			case ItemInventoryAlyzer.SLOT_ANALYZE_5 -> {
-				speciesRoot.create(stackInSlot).ifPresent((value) -> drawAnalyticsPageClassification(transform, value));
-				break;
+				IIndividual individual = speciesRoot.create(stackInSlot);
+				drawAnalyticsPageClassification(transform, individual);
 			}
 			default -> drawAnalyticsOverview(transform);
 		}

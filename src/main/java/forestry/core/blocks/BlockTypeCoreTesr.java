@@ -34,7 +34,7 @@ public enum BlockTypeCoreTesr implements IBlockTypeTesr {
 		MachinePropertiesTesr<? extends TileAnalyzer> machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
 				.setParticleTexture(name + ".0")
 				.setShape(Shapes::block)
-				.setClientTicker(TileAnalyzer::serverTick)
+				.setServerTicker(TileAnalyzer::serverTick)
 				.create();
 		Proxies.render.setRendererAnalyzer(machineProperties);
 		return machineProperties;
