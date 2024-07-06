@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -158,9 +157,10 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 	public void setItem(int slotIndex, ItemStack itemstack) {
 		super.setItem(slotIndex, itemstack);
 		if (slotIndex == InventoryEscritoire.SLOT_ANALYZE) {
-			// todo why did i get rid of this?
-			//PacketItemStackDisplay packet = new PacketItemStackDisplay(this, getIndividualOnDisplay());
-			//NetworkUtil.sendNetworkPacket(packet, worldPosition, level);
+			if (level != null && !level.isClientSide) {
+				PacketItemStackDisplay packet = new PacketItemStackDisplay(this, getIndividualOnDisplay());
+				NetworkUtil.sendNetworkPacket(packet, worldPosition, level);
+			}
 		}
 	}
 
@@ -173,9 +173,6 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 	public void handleItemStackForDisplay(ItemStack itemStack) {
 		if (!ItemStack.matches(itemStack, individualOnDisplayClient)) {
 			individualOnDisplayClient = itemStack;
-			//TODO
-			Minecraft.getInstance().levelRenderer.setSectionDirty(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-			//			world.markForRerender(getPos());
 		}
 	}
 
