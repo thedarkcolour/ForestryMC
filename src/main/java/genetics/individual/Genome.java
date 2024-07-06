@@ -2,6 +2,7 @@ package genetics.individual;
 
 import com.google.common.base.MoreObjects;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 import net.minecraft.nbt.CompoundTag;
@@ -27,9 +28,10 @@ public final class Genome implements IGenome {
 	private final IChromosome[] chromosomes;
 	private final IKaryotype karyotype;
 
-	public Genome(IKaryotype karyotype, CompoundTag compound) {
-		this.karyotype = karyotype;
-		this.chromosomes = GeneticSaveHandler.INSTANCE.readTag(karyotype, compound);
+	@Nullable
+	public static IGenome fromNbt(IKaryotype karyotype, CompoundTag compound) {
+		IChromosome[] chromosomes = GeneticSaveHandler.INSTANCE.readTag(karyotype, compound);
+		return chromosomes == null ? null : new Genome(karyotype, chromosomes);
 	}
 
 	public Genome(IKaryotype karyotype, IChromosome[] chromosomes) {

@@ -1,8 +1,12 @@
 package genetics.api.individual;
 
+import com.google.common.base.MoreObjects;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
+
+import forestry.Forestry;
 
 import genetics.api.GeneticsAPI;
 
@@ -30,11 +34,14 @@ public abstract class Individual implements IIndividual {
 
 	public Individual(CompoundTag compound) {
 		IKaryotype karyotype = getRoot().getKaryotype();
+		IGenome genome = null;
 		if (compound.contains(NBT_GENOME)) {
 			genome = GeneticsAPI.apiInstance.getGeneticFactory().createGenome(karyotype, compound.getCompound(NBT_GENOME));
-		} else {
-			genome = karyotype.getDefaultGenome();
 		}
+		if (genome == null) {
+			Forestry.LOGGER.warn("Could not read genome from individual NBT: {}", compound);
+		}
+		this.genome = MoreObjects.firstNonNull(genome, karyotype.getDefaultGenome());
 
 		if (compound.contains(NBT_MATE)) {
 			mate = GeneticsAPI.apiInstance.getGeneticFactory().createGenome(karyotype, compound.getCompound(NBT_MATE));

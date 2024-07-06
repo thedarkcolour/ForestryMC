@@ -44,6 +44,7 @@ import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.EntityUtil;
 import forestry.core.utils.GeneticsUtil;
+import forestry.lepidopterology.blocks.BlockCocoon;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.lepidopterology.features.LepidopterologyEntities;
@@ -127,8 +128,8 @@ public class ButterflyRoot extends IndividualRoot<IButterfly> implements IButter
 		if (pos == BlockPos.ZERO) {
 			return pos;
 		}
-		BlockState state = LepidopterologyBlocks.COCOON.defaultState();
-		boolean placed = world.setBlock(pos, state, 18);
+		BlockState state = LepidopterologyBlocks.COCOON.defaultState().setValue(BlockCocoon.AGE, age);
+		boolean placed = world.setBlock(pos, state, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
 		if (!placed) {
 			return BlockPos.ZERO;
 		}
@@ -146,7 +147,6 @@ public class ButterflyRoot extends IndividualRoot<IButterfly> implements IButter
 
 		cocoon.setCaterpillar(caterpillar);
 		cocoon.getOwnerHandler().setOwner(owner);
-		cocoon.setAge(age);
 
 		return pos;
 	}
@@ -224,7 +224,7 @@ public class ButterflyRoot extends IndividualRoot<IButterfly> implements IButter
 
 	@Override
 	public IAlyzerPlugin getAlyzerPlugin() {
-		return FlutterlyzerPlugin.INSTANCE;
+		return ButterflyAlyzerPlugin.INSTANCE;
 	}
 
 	@Override

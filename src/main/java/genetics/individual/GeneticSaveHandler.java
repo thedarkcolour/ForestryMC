@@ -48,9 +48,13 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 		return tagCompound;
 	}
 
+	@Nullable
 	@Override
 	public IChromosome[] readTag(IKaryotype karyotype, CompoundTag tagCompound) {
 		IChromosomeType[] geneTypes = karyotype.getChromosomeTypes();
+		if (!tagCompound.contains(CHROMOSOMES_TAG)) {
+			return null;
+		}
 		ListTag chromosomesNBT = tagCompound.getList(CHROMOSOMES_TAG, Tag.TAG_COMPOUND);
 		IChromosome[] chromosomes = new IChromosome[geneTypes.length];
 		ResourceLocation primaryTemplateIdentifier = null;
@@ -128,19 +132,15 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 	@Override
 	public IChromosome getSpecificChromosome(CompoundTag genomeNBT, IChromosomeType chromosomeType) {
 		IChromosome[] chromosomes = readTag(chromosomeType.getRoot().getKaryotype(), genomeNBT);
+		if (chromosomes == null) {
+			throw new IllegalStateException("Failed to read specific chromosome from NBT");
+		}
 		return chromosomes[chromosomeType.getIndex()];
 	}
 
-	/**
-	 * Tries to load a specific chromosome and creates it if it is absent.
-	 */
 	@Override
 	public IChromosome getSpecificChromosome(ItemStack itemStack, IOrganismType type, IChromosomeType chromosomeType) {
-		CompoundTag nbtTagCompound = itemStack.getTag();
-		if (nbtTagCompound == null) {
-			nbtTagCompound = new CompoundTag();
-			itemStack.setTag(nbtTagCompound);
-		}
+		itemStack.getOrCreateTag();
 
 		CompoundTag individualNBT = getIndividualData(itemStack, type, chromosomeType.getRoot());
 		CompoundTag genomeNBT = individualNBT.getCompound(GENOME_TAG);

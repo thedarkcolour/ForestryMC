@@ -1,5 +1,6 @@
 package genetics;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
@@ -51,9 +52,10 @@ public enum GeneticFactory implements IGeneticFactory {
 		return new AlleleTemplate(Arrays.copyOf(alleles, alleles.length), karyotype);
 	}
 
+	@Nullable
 	@Override
 	public IGenome createGenome(IKaryotype karyotype, CompoundTag compound) {
-		return new Genome(karyotype, compound);
+		return Genome.fromNbt(karyotype, compound);
 	}
 
 	@Override

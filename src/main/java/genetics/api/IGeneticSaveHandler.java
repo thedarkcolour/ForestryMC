@@ -34,7 +34,9 @@ public interface IGeneticSaveHandler {
 	 *
 	 * @param karyotype   The karyotype of the chromosomes that the NBT-Data contains.
 	 * @param tagCompound The NBT-Data that contain the information of the chromosomes
+	 * @return The saved chromosomes, or {@code null} if there was an error reading from NBT
 	 */
+	@Nullable
 	IChromosome[] readTag(IKaryotype karyotype, CompoundTag tagCompound);
 
 	/**
@@ -43,7 +45,7 @@ public interface IGeneticSaveHandler {
 	 * @param genomeNBT      The NBT-Data that contains the information about the chromosome
 	 * @param chromosomeType The gene type of the chromosome.
 	 * @param active         if the returned allele should be the active one.
-	 * @return The active or inactive allele of the chromosome if the chromosome is present.
+	 * @return The active or inactive allele of the chromosome if present, {@code null} otherwise.
 	 */
 	@Nullable
 	IAllele getAlleleDirectly(CompoundTag genomeNBT, IChromosomeType chromosomeType, boolean active);
@@ -52,7 +54,7 @@ public interface IGeneticSaveHandler {
 	 * Quickly gets the allele without loading the whole genome. And without creating absent chromosomes.
 	 *
 	 * @param itemStack      The stack that contains the information about the chromosome
-	 * @param type
+	 * @param type			 Type of organism this stack is.
 	 * @param chromosomeType The gene type of the chromosome.   @return The active or inactive allele of the chromosome if the chromosome is present.
 	 * @param active         if the returned allele should be the active one.
 	 */
@@ -63,7 +65,7 @@ public interface IGeneticSaveHandler {
 	 * Tries to load the chromosome of the given type and creates it if it is absent.
 	 *
 	 * @param itemStack      The stack that contains the information about the chromosome
-	 * @param type
+	 * @param type			 Type of organism this stack is.
 	 * @param chromosomeType The gene type of the chromosome.
 	 * @param active         if the returned allele should be the active one.   @return The active or inactive allele of the chromosome.
 	 */
@@ -75,6 +77,7 @@ public interface IGeneticSaveHandler {
 	 * @param genomeNBT      The NBT-Data that contains the information about the chromosome
 	 * @param chromosomeType The gene type of the chromosome.
 	 * @return The chromosome.
+	 * @throws IllegalStateException If the chromosome was not found in NBT.
 	 */
 	IChromosome getSpecificChromosome(CompoundTag genomeNBT, IChromosomeType chromosomeType);
 
@@ -82,8 +85,10 @@ public interface IGeneticSaveHandler {
 	 * Tries to load a specific chromosome and creates it if it is absent.
 	 *
 	 * @param itemStack      The stack that contains the information about the chromosome
-	 * @param type
-	 * @param chromosomeType The gene type of the chromosome.  @return The chromosome.
+	 * @param type           Type of organism this stack is.
+	 * @param chromosomeType The gene type of the chromosome.
+	 * @return The chromosome.
+	 * @throws IllegalStateException If the chromosome was not found in NBT.
 	 */
 	IChromosome getSpecificChromosome(ItemStack itemStack, IOrganismType type, IChromosomeType chromosomeType);
 

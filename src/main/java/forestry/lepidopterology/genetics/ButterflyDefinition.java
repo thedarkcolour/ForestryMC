@@ -335,7 +335,6 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 			.setBinomial(binomial)
 			.setSerumColour(serumColor)
 			.setRarity(rarity);
-		speciesBuilder.setRarity(rarity);
 		setSpeciesProperties(speciesBuilder);
 		this.species = speciesBuilder.build();
 	}

@@ -81,7 +81,6 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 		return ButterflyHelper.getRoot();
 	}
 
-	// todo finish
 	@Override
 	public void addTooltip(List<Component> list) {
 		ToolTip toolTip = new ToolTip();

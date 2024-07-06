@@ -36,12 +36,12 @@ import genetics.api.individual.IGenome;
 import genetics.api.organism.IOrganism;
 import genetics.api.organism.IOrganismType;
 
-public class BeeAlyzerPlugin implements IAlyzerPlugin {
-	public static final BeeAlyzerPlugin INSTANCE = new BeeAlyzerPlugin();
+public enum BeeAlyzerPlugin implements IAlyzerPlugin {
+	INSTANCE;
 
-	protected final Map<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
+	private final Map<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
 
-	private BeeAlyzerPlugin() {
+	BeeAlyzerPlugin() {
 		NonNullList<ItemStack> beeList = NonNullList.create();
 		ApicultureItems.BEE_DRONE.item().addCreativeItems(beeList, false);
 		for (ItemStack beeStack : beeList) {

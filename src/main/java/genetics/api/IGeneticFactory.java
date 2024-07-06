@@ -1,5 +1,6 @@
 package genetics.api;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +61,9 @@ public interface IGeneticFactory {
 	 * @param compound  The NBT-Data that contains the information about the genome. You can use
 	 *                  {@link IGenome#writeToNBT(CompoundNBT)} or
 	 *                  {@link IGeneticSaveHandler#writeTag(IChromosome[], IKaryotype, CompoundNBT)} to get the data.
+	 * @return The saved genome, {@code null} if reading from NBT failed
 	 */
+	@Nullable
 	IGenome createGenome(IKaryotype karyotype, CompoundTag compound);
 
 	/**
