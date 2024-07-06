@@ -70,13 +70,14 @@ public abstract class ItemGE extends ItemForestry {
 		IIndividual individual = GeneticHelper.getIndividual(stack);
 		if (individual != null && individual.isAnalyzed()) {
 			if (Screen.hasShiftDown()) {
-				ToolTip helper = new ToolTip(tooltip);
+				ToolTip helper = new ToolTip();
 				DisplayHelper.getInstance()
 						.getTooltips(individual.getRoot().getUID(), organismType)
 						.forEach(provider -> provider.addTooltip(helper, individual.getGenome(), individual));
 				if (helper.isEmpty()) {
 					individual.addTooltip(tooltip);
 				}
+				tooltip.addAll(helper.getLines());
 			} else {
 				tooltip.add(Component.translatable("for.gui.tooltip.tmi", "< %s >").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 			}

@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -220,14 +221,9 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		if (tagCompound == null) {
 			return 0;
 		}
-		return tagCompound.getInt(NBT_AGE);
+		return Mth.clamp(tagCompound.getInt(NBT_AGE), 0, 2);
 	}
 
-	/**
-	 * Register butterfly item sprites
-	 *
-	 * @param registry
-	 */
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerSprites(ISpriteRegistry registry) {

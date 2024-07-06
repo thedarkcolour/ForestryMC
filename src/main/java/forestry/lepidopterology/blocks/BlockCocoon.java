@@ -38,13 +38,11 @@ import forestry.lepidopterology.items.ItemButterflyGE;
 import forestry.lepidopterology.tiles.TileCocoon;
 
 public class BlockCocoon extends Block implements EntityBlock {
-	public static final VoxelShape BOUNDING_BOX = Block.box(0.3125F, 0.3125F, 0.3125F, 0.6875F, 1F, 0.6875F);
+	public static final VoxelShape BOUNDING_BOX = Block.box(5f, 5f, 5f, 11f, 16F, 11f);
 	public static final IntegerProperty AGE = IntegerProperty.create("age", 0, 2);
 
 	public BlockCocoon() {
-		super(Block.Properties.of(MaterialCocoon.INSTANCE)
-				.randomTicks()
-				.sound(SoundType.GRAVEL));
+		super(Block.Properties.of(MaterialCocoon.INSTANCE).randomTicks().sound(SoundType.GRAVEL));
 		registerDefaultState(getStateDefinition().any().setValue(AGE, 0));
 	}
 
@@ -54,13 +52,9 @@ public class BlockCocoon extends Block implements EntityBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
+	public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
 		TileCocoon tileCocoon = TileUtil.getTile(world, pos, TileCocoon.class);
-		if (tileCocoon == null) {
-			return;
-		}
-
-		if (tileCocoon.isRemoved()) {
+		if (tileCocoon == null || tileCocoon.isRemoved()) {
 			return;
 		}
 
@@ -88,7 +82,7 @@ public class BlockCocoon extends Block implements EntityBlock {
 		}
 
 		IButterfly caterpillar = tile.getCaterpillar();
-		int age = tile.getAge();
+		int age = state.getValue(AGE);
 
 		ItemStack stack = ButterflyManager.butterflyRoot.getTypes().createStack(caterpillar, EnumFlutterType.COCOON);
 		if (!stack.isEmpty() && stack.getTag() != null) {
@@ -97,16 +91,8 @@ public class BlockCocoon extends Block implements EntityBlock {
 		return stack;
 	}
 
-	//TODO automatically determined from shape?
-	//	@Override
-	//	public boolean isFullCube(BlockState state) {
-	//		return false;
-	//	}
-
-	//other shapes (collision etc) defer to this in block I believe
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return BOUNDING_BOX;
 	}
-
 }

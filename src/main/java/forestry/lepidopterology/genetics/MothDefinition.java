@@ -39,6 +39,7 @@ import forestry.core.config.Constants;
 import forestry.core.genetics.alleles.EnumAllele;
 import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 
+// todo implement moths
 public enum MothDefinition implements IButterflyDefinition {
 	Brimstone(ButterflyBranchDefinition.OPISTHOGRAPTIS, "brimstone", "luteolata", new Color(0xffea40), true, 1.0f),
 	LatticedHeath(ButterflyBranchDefinition.CHIASMIA, "latticedHeath", "clathrata", new Color(0xf2f0be), true, 0.5f) {

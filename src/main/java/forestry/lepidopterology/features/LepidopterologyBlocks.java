@@ -26,7 +26,4 @@ public class LepidopterologyBlocks {
 	// used only in world generation
 	public static final FeatureBlock<BlockCocoon, BlockItem> COCOON = REGISTRY.block(BlockCocoon::new, "cocoon");
 	public static final FeatureBlock<BlockSolidCocoon, BlockItem> COCOON_SOLID = REGISTRY.block(BlockSolidCocoon::new, "cocoon_solid");
-
-	private LepidopterologyBlocks() {
-	}
 }

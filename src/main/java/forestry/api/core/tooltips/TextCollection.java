@@ -8,17 +8,9 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 
 public class TextCollection implements ITextInstance<TextCollection, TextCompound, TextCollection> {
-	private final List<Component> lines;
+	private final List<Component> lines = new ArrayList<>();
 	@Nullable
 	private Component last;
-
-	public TextCollection() {
-		this(new ArrayList<>());
-	}
-
-	public TextCollection(List<Component> lines) {
-		this.lines = lines;
-	}
 
 	@Override
 	public TextCompound singleLine() {
