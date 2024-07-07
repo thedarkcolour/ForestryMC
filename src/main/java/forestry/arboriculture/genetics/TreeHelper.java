@@ -13,9 +13,6 @@ import forestry.arboriculture.genetics.alleles.AlleleLeafEffects;
 import forestry.core.genetics.alleles.EnumAllele;
 
 public class TreeHelper {
-	private TreeHelper() {
-	}
-
 	public static ITreeRoot getRoot() {
 		return TreeManager.treeRoot;
 	}

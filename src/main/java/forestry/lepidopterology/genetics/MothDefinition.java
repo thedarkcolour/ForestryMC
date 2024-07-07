@@ -59,7 +59,7 @@ public enum MothDefinition implements IButterflyDefinition {
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(ButterflyChromosomes.SIZE, EnumAllele.Size.SMALLEST);
 			template.set(ButterflyChromosomes.SPEED, EnumAllele.Speed.SLOWER);
-			template.set(ButterflyChromosomes.METABOLISM, 4);
+			template.set(ButterflyChromosomes.METABOLISM, EnumAllele.Metabolism.SLOW);
 			template.set(ButterflyChromosomes.COCOON, ButterflyAlleles.SILK_COCOON);
 		}
 

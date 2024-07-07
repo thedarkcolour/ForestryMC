@@ -4,18 +4,15 @@ import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
 import genetics.api.individual.IKaryotype;
 
+import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterflyRoot;
 import forestry.core.genetics.alleles.EnumAllele;
-import forestry.lepidopterology.ButterflyPlugin;
 import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 
 public class ButterflyHelper {
-	private ButterflyHelper() {
-	}
-
 	public static IButterflyRoot getRoot() {
-		return ButterflyPlugin.ROOT.get();
+		return ButterflyManager.butterflyRoot;
 	}
 
 	public static IKaryotype getKaryotype() {
@@ -30,7 +27,7 @@ public class ButterflyHelper {
 		return templateBuilder.set(ButterflyChromosomes.SIZE, EnumAllele.Size.SMALL)
 			.set(ButterflyChromosomes.SPEED, EnumAllele.Speed.SLOWEST)
 			.set(ButterflyChromosomes.LIFESPAN, EnumAllele.Lifespan.SHORTER)
-			.set(ButterflyChromosomes.METABOLISM, 3)
+			.set(ButterflyChromosomes.METABOLISM, EnumAllele.Metabolism.SLOWER)
 			.set(ButterflyChromosomes.FERTILITY, 3)
 			.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, EnumAllele.Tolerance.NONE)
 			.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, EnumAllele.Tolerance.NONE)

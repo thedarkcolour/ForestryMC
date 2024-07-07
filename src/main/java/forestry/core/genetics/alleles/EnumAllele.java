@@ -222,7 +222,7 @@ public class EnumAllele {
 
 		@Override
 		public String getName() {
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ENGLISH);
 		}
 	}
 
@@ -313,24 +313,18 @@ public class EnumAllele {
 	}
 
 	public enum Saplings implements IAlleleData<Float> {
-		LOWEST(0.01f, true),
-		LOWER(0.025f, true),
-		LOW(0.035f, true),
-		AVERAGE(0.05f, true),
-		HIGH(0.1f, true),
-		HIGHER(0.2f, true),
-		HIGHEST(0.3f, true);
+		LOWEST(0.01f),
+		LOWER(0.025f),
+		LOW(0.035f),
+		AVERAGE(0.05f),
+		HIGH(0.1f),
+		HIGHER(0.2f),
+		HIGHEST(0.3f);
 
 		private final float value;
-		private final boolean dominant;
 
 		Saplings(float value) {
-			this(value, false);
-		}
-
-		Saplings(float value, boolean dominant) {
 			this.value = value;
-			this.dominant = dominant;
 		}
 
 		@Override
@@ -340,7 +334,7 @@ public class EnumAllele {
 
 		@Override
 		public boolean isDominant() {
-			return dominant;
+			return true;
 		}
 
 		@Override
@@ -430,6 +424,44 @@ public class EnumAllele {
 		@Override
 		public String getCategory() {
 			return "size";
+		}
+
+		@Override
+		public String getName() {
+			return name().toLowerCase(Locale.ENGLISH);
+		}
+	}
+
+	public enum Metabolism implements IAlleleData<Integer> {
+		SLOWEST(1),
+		SLOWER(2),
+		SLOW(3),
+		NORMAL(5),
+		FAST(7),
+		FASTER(8),
+		FASTEST(10),
+		;
+
+		private final Integer value;
+
+		Metabolism(Integer value) {
+			this.value = value;
+		}
+
+		@Override
+		public Integer getValue() {
+			return value;
+		}
+
+		@Override
+		public boolean isDominant() {
+			// According to old registration (alongside TreeChromosomes.GIRTH and ButterflyChromosomes.FERTILITY), all are dominant
+			return true;
+		}
+
+		@Override
+		public String getCategory() {
+			return "metabolism";
 		}
 
 		@Override

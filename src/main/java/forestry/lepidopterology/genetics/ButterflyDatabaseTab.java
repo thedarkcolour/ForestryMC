@@ -16,12 +16,9 @@ import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.EnumFlutterType;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.core.genetics.GenericRatings;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
 import forestry.core.gui.elements.GuiElementFactory;
-
-import genetics.api.alleles.IAlleleValue;
 
 @OnlyIn(Dist.CLIENT)
 public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
@@ -51,7 +48,7 @@ public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
 
 		database.addLine(Component.translatable("for.gui.speed"), ButterflyChromosomes.SPEED);
 
-		database.addLine(Component.translatable("for.gui.metabolism"), (IAlleleValue<Integer> allele, Boolean a) -> GenericRatings.rateMetabolism(allele.getValue()), ButterflyChromosomes.METABOLISM);
+		database.addLine(Component.translatable("for.gui.metabolism"), ButterflyChromosomes.METABOLISM);
 
 		database.addFertilityLine(Component.translatable("for.gui.fertility"), ButterflyChromosomes.FERTILITY, 8);
 

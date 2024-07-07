@@ -98,7 +98,7 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 			template.set(ButterflyChromosomes.SPEED, EnumAllele.Speed.SLOWER);
 			template.set(ButterflyChromosomes.SIZE, EnumAllele.Size.LARGE);
 			template.set(ButterflyChromosomes.FERTILITY, 10);
-			template.set(ButterflyChromosomes.METABOLISM, 8);
+			template.set(ButterflyChromosomes.METABOLISM, EnumAllele.Metabolism.FASTER);
 			template.set(ButterflyChromosomes.LIFESPAN, EnumAllele.Lifespan.SHORTER);
 			template.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, EnumAllele.Tolerance.DOWN_1);
 			template.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, EnumAllele.Tolerance.DOWN_1);
@@ -253,7 +253,7 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(ButterflyChromosomes.SIZE, EnumAllele.Size.AVERAGE);
-			template.set(ButterflyChromosomes.METABOLISM, 5);
+			template.set(ButterflyChromosomes.METABOLISM, EnumAllele.Metabolism.NORMAL);
 		}
 	},
 	Monarch(ButterflyBranchDefinition.DANAUS, "monarch", "plexippus", new Color(0xffa722), true, 0.2f) {

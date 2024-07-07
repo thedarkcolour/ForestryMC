@@ -14,24 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public class GenericRatings {
-	public static MutableComponent rateMetabolism(int metabolism) {
-		if (metabolism >= 19) {
-			return Component.translatable("forestry.allele.highest");
-		} else if (metabolism >= 16) {
-			return Component.translatable("forestry.allele.higher");
-		} else if (metabolism >= 13) {
-			return Component.translatable("forestry.allele.high");
-		} else if (metabolism >= 10) {
-			return Component.translatable("forestry.allele.average");
-		} else if (metabolism >= 7) {
-			return Component.translatable("forestry.allele.slow");
-		} else if (metabolism >= 4) {
-			return Component.translatable("forestry.allele.slower");
-		} else {
-			return Component.translatable("forestry.allele.slowest");
-		}
-	}
-
 	public static MutableComponent rateActivityTime(boolean neverSleeps, boolean naturalNocturnal) {
 		MutableComponent active = naturalNocturnal ? Component.translatable("for.gui.nocturnal") : Component.translatable("for.gui.diurnal");
 		if (neverSleeps) {

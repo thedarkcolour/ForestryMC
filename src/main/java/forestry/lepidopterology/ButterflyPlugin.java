@@ -12,6 +12,7 @@ import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IResearchHandler;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.core.config.Constants;
+import forestry.core.genetics.alleles.EnumAllele;
 import forestry.core.genetics.root.IResearchPlugin;
 import forestry.core.genetics.root.ResearchHandler;
 import forestry.lepidopterology.features.LepidopterologyItems;
@@ -23,7 +24,6 @@ import forestry.lepidopterology.genetics.MothDefinition;
 import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 
 import genetics.api.GeneticPlugin;
-import genetics.api.GeneticsAPI;
 import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticFactory;
 import genetics.api.IGeneticPlugin;
@@ -35,14 +35,11 @@ import genetics.api.organism.IOrganismTypes;
 import genetics.api.root.IGeneticListenerRegistry;
 import genetics.api.root.IIndividualRoot;
 import genetics.api.root.IIndividualRootBuilder;
-import genetics.api.root.IRootDefinition;
 import genetics.api.root.IRootManager;
 import genetics.api.root.components.ComponentKeys;
 
 @GeneticPlugin(modId = Constants.MOD_ID)
 public class ButterflyPlugin implements IGeneticPlugin {
-	public static final IRootDefinition<ButterflyRoot> ROOT = GeneticsAPI.apiInstance.getRoot(ButterflyRoot.UID);
-
 	@Override
 	public void registerClassifications(IClassificationRegistry registry) {
 		ButterflyBranchDefinition.createClassifications(registry);
@@ -56,6 +53,8 @@ public class ButterflyPlugin implements IGeneticPlugin {
 
 	@Override
 	public void registerAlleles(IAlleleRegistry registry) {
+		registry.registerAlleles(EnumAllele.Size.values(), ButterflyChromosomes.SIZE);
+		registry.registerAlleles(EnumAllele.Metabolism.values(), ButterflyChromosomes.METABOLISM);
 		ButterflyAlleles.registerAlleles(registry);
 	}
 

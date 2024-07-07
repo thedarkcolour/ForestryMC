@@ -12,10 +12,6 @@ import forestry.apiculture.genetics.alleles.AlleleEffects;
 import forestry.core.genetics.alleles.EnumAllele;
 
 public class BeeHelper {
-
-	private BeeHelper() {
-	}
-
 	public static IKaryotype getKaryotype() {
 		return BeeManager.beeRoot.getKaryotype();
 	}
