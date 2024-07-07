@@ -83,6 +83,8 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 		super.setItem(index, itemStack);
 		if (index == SLOT_SPECIMEN) {
 			analyzeSpecimen(itemStack);
+		} else if (index == SLOT_ENERGY) {
+			analyzeSpecimen(getItem(SLOT_SPECIMEN));
 		}
 	}
 
