@@ -8,9 +8,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class ForgeUtils {
 	private static final Lazy<IEventBus> MOD_BUS = Lazy.of(() -> FMLJavaModLoadingContext.get().getModEventBus());
 
-	private ForgeUtils() {
-	}
-
 	public static void postEvent(Event event) {
 		modBus().post(event);
 	}

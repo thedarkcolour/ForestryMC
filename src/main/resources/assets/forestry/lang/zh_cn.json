@@ -820,7 +820,7 @@
   "for.chat.command.forestry.bee.give.help": "给予指定玩家一只雄蜂，公主蜂，蜂后或幼蜂。",
   "for.chat.command.forestry.bee.give.format": "格式： /%s <species-name> <bee-type> [<player-name>]",
   "for.chat.command.forestry.bee.give.available": "可用蜜蜂类型： %s",
-  "for.chat.command.forestry.bee.give.given": "给予%1$s一只%2$s%3$s。",
+  "for.chat.command.forestry.bee.give.given": "给予%1$s一只%2$s。",
   "for.chat.command.forestry.bee.mode.desc": "- %s：养蜂模式相关命令",
   "for.chat.command.forestry.bee.mode.help": "与养蜂模式相关的命令。",
   "for.chat.command.forestry.bee.mode.format": "格式：/%s <sub-command>",

@@ -18,6 +18,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
@@ -64,9 +65,10 @@ public class CommandBeeGive {
 		}
 
 		ItemStack beeStack = BeeManager.beeRoot.createStack(beeCopy, type);
-		player.drop(beeStack, false, true);
+		Component displayName = beeStack.getDisplayName();
+		player.getInventory().add(beeStack);
 
-		CommandHelpers.sendLocalizedChatMessage(source, "for.chat.command.forestry.bee.give.given", player.getName(), bee.getGenome().getPrimary().getDisplayName().getString(), type.getName());
+		CommandHelpers.sendLocalizedChatMessage(source, "for.chat.command.forestry.bee.give.given", player.getName(), displayName);
 		return 1;
 	}
 

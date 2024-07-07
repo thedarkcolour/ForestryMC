@@ -695,7 +695,7 @@
   "for.chat.command.forestry.bee.give.help": "Даёт игроку трутней, принцесс, королев или личинок.",
   "for.chat.command.forestry.bee.give.format": "Формат: /%s <название вида> <вид пчелы> [<имя игрока>]",
   "for.chat.command.forestry.bee.give.available": "Доступные виды пчёл: %s",
-  "for.chat.command.forestry.bee.give.given": "%1$s получил %2$s %3$s.",
+  "for.chat.command.forestry.bee.give.given": "%1$s получил %2$s.",
   "for.chat.command.forestry.bee.mode.desc": "- %s : Команды режимов пчеловодства",
   "for.chat.command.forestry.bee.mode.help": "Команды, относящиеся к режимам пчеловодства.",
   "for.chat.command.forestry.bee.mode.format": "Формат: /%s <подкоманда>",

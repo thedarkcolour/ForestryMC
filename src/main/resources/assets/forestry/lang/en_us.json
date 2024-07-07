@@ -827,7 +827,7 @@
   "for.chat.command.forestry.bee.give.help": "Give a player drones, princesses, queens, or larvae.",
   "for.chat.command.forestry.bee.give.format": "Format: /%s <species-name> <bee-type> [<player-name>]",
   "for.chat.command.forestry.bee.give.available": "Available bee types: %s",
-  "for.chat.command.forestry.bee.give.given": "%1$s was given a %2$s %3$s.",
+  "for.chat.command.forestry.bee.give.given": "%1$s was given a %2$s.",
   "for.chat.command.forestry.bee.mode.desc": "- %s : Beekeeping Mode Commands",
   "for.chat.command.forestry.bee.mode.help": "Commands relating to Beekeeping Modes.",
   "for.chat.command.forestry.bee.mode.format": "Format: /%s <sub-command>",

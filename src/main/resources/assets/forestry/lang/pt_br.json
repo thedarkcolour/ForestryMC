@@ -695,7 +695,7 @@
   "for.chat.command.forestry.bee.give.help": "Da ao jogador zangões, princesas, rainhas ou larvas.",
   "for.chat.command.forestry.bee.give.format": "Formato: /%s <species-name> <bee-type> [<player-name>]",
   "for.chat.command.forestry.bee.give.available": "Tipos de abelha disponíveis: %s",
-  "for.chat.command.forestry.bee.give.given": "%1$s foi dada uma %2$s %3$s.",
+  "for.chat.command.forestry.bee.give.given": "%1$s foi dada uma %2$s.",
   "for.chat.command.forestry.bee.mode.desc": "- %s : Comandos do Modo de Apicultura",
   "for.chat.command.forestry.bee.mode.help": "Comandos relativos ao modo de apicultura.",
   "for.chat.command.forestry.bee.mode.format": "Formato: /%s <sub-command>",

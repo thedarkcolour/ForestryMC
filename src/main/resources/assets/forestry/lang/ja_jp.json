@@ -793,7 +793,7 @@
   "for.chat.command.forestry.bee.give.help": "プレイヤーに雄、新女王、女王、幼虫を与えます。",
   "for.chat.command.forestry.bee.give.format": "Format: /%s <種名> <蜂タイプ> [<プレイヤー名>]",
   "for.chat.command.forestry.bee.give.available": "使用可能な蜂タイプ: %s",
-  "for.chat.command.forestry.bee.give.given": "%1$s に %2$s %3$s を与えました。",
+  "for.chat.command.forestry.bee.give.given": "%1$s に %2$s を与えました。",
   "for.chat.command.forestry.bee.mode.desc": "- %s : 養蜂モードコマンド",
   "for.chat.command.forestry.bee.mode.help": "養蜂モードに関するコマンド。",
   "for.chat.command.forestry.bee.mode.format": "書式: /%s <サブコマンド>",

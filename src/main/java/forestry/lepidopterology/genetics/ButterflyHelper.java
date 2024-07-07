@@ -1,18 +1,21 @@
 package forestry.lepidopterology.genetics;
 
+import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
 import genetics.api.individual.IKaryotype;
+import genetics.api.root.IRootDefinition;
 
-import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterflyRoot;
 import forestry.core.genetics.alleles.EnumAllele;
 import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 
 public class ButterflyHelper {
+	public static final IRootDefinition<ButterflyRoot> ROOT = GeneticsAPI.apiInstance.getRoot(ButterflyRoot.UID);
+
 	public static IButterflyRoot getRoot() {
-		return ButterflyManager.butterflyRoot;
+		return ROOT.get();
 	}
 
 	public static IKaryotype getKaryotype() {

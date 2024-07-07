@@ -773,7 +773,7 @@
   "for.chat.command.forestry.bee.give.help": "Donnes à un joueur des ouvrières, des princesses, des reines, ou des crisalides.",
   "for.chat.command.forestry.bee.give.format": "Format: /%s <espèce> <type> [<joueur>]",
   "for.chat.command.forestry.bee.give.available": "Type d'abeille valable : %s",
-  "for.chat.command.forestry.bee.give.given": "%1$s a recu une %2$s %3$s.",
+  "for.chat.command.forestry.bee.give.given": "%1$s a recu une %2$s.",
   "for.chat.command.forestry.bee.mode.desc": "- %s : Commandes de mode d'apiculture",
   "for.chat.command.forestry.bee.mode.help": "Commandes relative aux modes d'apiculture.",
   "for.chat.command.forestry.bee.mode.format": "Format: /%s <sous-commande>",
