@@ -105,7 +105,7 @@ import genetics.api.root.components.ComponentKeys;
 import genetics.api.root.components.IRootComponent;
 
 public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSubtype {
-	Oak(TreeBranchDefinition.QUERCUS, "appleOak", "robur", false, EnumLeafType.DECIDUOUS, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.OAK) {
+	Oak(TreeBranchDefinition.QUERCUS, "appleOak", "robur", false, EnumLeafType.OAK, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.OAK) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureOak(tree);
@@ -133,7 +133,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	DarkOak(TreeBranchDefinition.QUERCUS, "darkOak", "velutina", false, EnumLeafType.DECIDUOUS, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.DARK_OAK) {
+	DarkOak(TreeBranchDefinition.QUERCUS, "darkOak", "velutina", false, EnumLeafType.OAK, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.DARK_OAK) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureDarkOak(tree);
@@ -156,7 +156,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Birch(TreeBranchDefinition.BETULA, "silverBirch", "pendula", false, EnumLeafType.DECIDUOUS, new Color(8431445), new Color(0xb0c648), EnumVanillaWoodType.BIRCH) {
+	Birch(TreeBranchDefinition.BETULA, "silverBirch", "pendula", false, EnumLeafType.BIRCH, new Color(8431445), new Color(0xb0c648), EnumVanillaWoodType.BIRCH) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureBirch(tree);
@@ -178,7 +178,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Lime(TreeBranchDefinition.TILIA, "silverLime", "pendula", true, EnumLeafType.DECIDUOUS, new Color(0x5ea107), new Color(0x5ea107).brighter(), EnumForestryWoodType.LIME) {
+	Lime(TreeBranchDefinition.TILIA, "silverLime", "pendula", true, EnumLeafType.BIRCH, new Color(0x5ea107), new Color(0x5ea107).brighter(), EnumForestryWoodType.LIME) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureSilverLime(tree);
@@ -204,7 +204,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Birch, Oak, 15);
 		}
 	},
-	Walnut(TreeBranchDefinition.JUGLANS, "commonWalnut", "regia", true, EnumLeafType.DECIDUOUS, new Color(0x798c55), new Color(0xb0c648), EnumForestryWoodType.WALNUT) {
+	Walnut(TreeBranchDefinition.JUGLANS, "commonWalnut", "regia", true, EnumLeafType.ACACIA, new Color(0x798c55), new Color(0xb0c648), EnumForestryWoodType.WALNUT) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureWalnut(tree);
@@ -237,7 +237,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Chestnut(TreeBranchDefinition.CASTANEA, "sweetChestnut", "sativa", true, EnumLeafType.DECIDUOUS, new Color(0x5ea107), new Color(0xb0c648), EnumForestryWoodType.CHESTNUT) {
+	Chestnut(TreeBranchDefinition.CASTANEA, "sweetChestnut", "sativa", true, EnumLeafType.BIRCH, new Color(0x5ea107), new Color(0xb0c648), EnumForestryWoodType.CHESTNUT) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureChestnut(tree);
@@ -270,7 +270,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Cherry(TreeBranchDefinition.PRUNUS, "hillCherry", "serrulata", true, EnumLeafType.DECIDUOUS, new Color(0xe691da), new Color(0xe63e59), EnumForestryWoodType.CHERRY) {
+	Cherry(TreeBranchDefinition.PRUNUS, "hillCherry", "serrulata", true, EnumLeafType.BIRCH, new Color(0xe691da), new Color(0xe63e59), EnumForestryWoodType.CHERRY) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureCherry(tree);
@@ -302,7 +302,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Lemon(TreeBranchDefinition.CITRUS, "lemon", "limon", true, EnumLeafType.DECIDUOUS, new Color(0x88af54), new Color(0xa3b850), EnumForestryWoodType.CITRUS) {
+	Lemon(TreeBranchDefinition.CITRUS, "lemon", "limon", true, EnumLeafType.OAK, new Color(0x88af54), new Color(0xa3b850), EnumForestryWoodType.CITRUS) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureLemon(tree);
@@ -332,7 +332,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Plum(TreeBranchDefinition.PRUNUS, "plum", "domestica", true, EnumLeafType.DECIDUOUS, new Color(0x589246), new Color(0xa3b850), EnumForestryWoodType.PLUM) {
+	Plum(TreeBranchDefinition.PRUNUS, "plum", "domestica", true, EnumLeafType.OAK, new Color(0x589246), new Color(0xa3b850), EnumForestryWoodType.PLUM) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePlum(tree);
@@ -386,7 +386,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Spruce, Larch, 5);
 		}
 	},
-	Spruce(TreeBranchDefinition.PICEA, "redSpruce", "abies", false, EnumLeafType.CONIFERS, new Color(6396257), new Color(0x539d12), EnumVanillaWoodType.SPRUCE) {
+	Spruce(TreeBranchDefinition.PICEA, "redSpruce", "abies", false, EnumLeafType.SPRUCE, new Color(6396257), new Color(0x539d12), EnumVanillaWoodType.SPRUCE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureSpruce(tree);
@@ -409,7 +409,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Larch(TreeBranchDefinition.LARIX, "mundaneLarch", "decidua", true, EnumLeafType.CONIFERS, new Color(0x698f90), new Color(0x569896), EnumForestryWoodType.LARCH) {
+	Larch(TreeBranchDefinition.LARIX, "mundaneLarch", "decidua", true, EnumLeafType.SPRUCE, new Color(0x698f90), new Color(0x569896), EnumForestryWoodType.LARCH) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureLarch(tree);
@@ -433,7 +433,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Spruce, Oak, 10);
 		}
 	},
-	Pine(TreeBranchDefinition.PINUS, "bullPine", "sabiniana", true, EnumLeafType.CONIFERS, new Color(0xfeff8f), new Color(0xffd98f), EnumForestryWoodType.PINE) {
+	Pine(TreeBranchDefinition.PINUS, "bullPine", "sabiniana", true, EnumLeafType.SPRUCE, new Color(0xfeff8f), new Color(0xffd98f), EnumForestryWoodType.PINE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePine(tree);
@@ -456,7 +456,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Spruce, Larch, 10);
 		}
 	},
-	Sequoia(TreeBranchDefinition.SEQUOIA, "coastSequoia", "sempervirens", false, EnumLeafType.CONIFERS, new Color(0x418e71), new Color(0x569896), EnumForestryWoodType.SEQUOIA) {
+	Sequoia(TreeBranchDefinition.SEQUOIA, "coastSequoia", "sempervirens", false, EnumLeafType.SPRUCE, new Color(0x418e71), new Color(0x569896), EnumForestryWoodType.SEQUOIA) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureSequoia(tree);
@@ -481,7 +481,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Larch, Pine, 5);
 		}
 	},
-	Gigant(TreeBranchDefinition.SEQUOIADENDRON, "giantSequoia", "giganteum", false, EnumLeafType.CONIFERS, new Color(0x738434), new Color(0x738434).brighter(), EnumForestryWoodType.GIGANTEUM) {
+	Gigant(TreeBranchDefinition.SEQUOIADENDRON, "giantSequoia", "giganteum", false, EnumLeafType.SPRUCE, new Color(0x738434), new Color(0x738434).brighter(), EnumForestryWoodType.GIGANTEUM) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureGiganteum(tree);
@@ -668,7 +668,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Kapok, Ebony, 10);
 		}
 	},
-	AcaciaVanilla(TreeBranchDefinition.ACACIA, "acacia", "aneura", true, EnumLeafType.DECIDUOUS, new Color(0x616101), new Color(0xb3b302), EnumVanillaWoodType.ACACIA) {
+	AcaciaVanilla(TreeBranchDefinition.ACACIA, "acacia", "aneura", true, EnumLeafType.ACACIA, new Color(0x616101), new Color(0xb3b302), EnumVanillaWoodType.ACACIA) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureAcaciaVanilla(tree);
@@ -690,7 +690,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Acacia(TreeBranchDefinition.ACACIA, "desertAcacia", "erioloba", true, EnumLeafType.DECIDUOUS, new Color(0x748C1C), new Color(0xb3b302), EnumForestryWoodType.ACACIA_DESERT) {
+	Acacia(TreeBranchDefinition.ACACIA, "desertAcacia", "erioloba", true, EnumLeafType.ACACIA, new Color(0x748C1C), new Color(0xb3b302), EnumForestryWoodType.ACACIA_DESERT) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureAcacia(tree);
@@ -712,7 +712,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Teak, Balsa, 10);
 		}
 	},
-	Padauk(TreeBranchDefinition.PTEROCARPUS, "padauk", "soyauxii", true, EnumLeafType.DECIDUOUS, new Color(0xd0df8c), new Color(0x435c32), EnumForestryWoodType.PADAUK) {
+	Padauk(TreeBranchDefinition.PTEROCARPUS, "padauk", "soyauxii", true, EnumLeafType.ACACIA, new Color(0xd0df8c), new Color(0x435c32), EnumForestryWoodType.PADAUK) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePadauk(tree);
@@ -734,7 +734,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(AcaciaVanilla, Jungle, 10);
 		}
 	},
-	Balsa(TreeBranchDefinition.OCHROMA, "balsa", "pyramidale", true, EnumLeafType.DECIDUOUS, new Color(0x59ac00), new Color(0xfeff8f), EnumForestryWoodType.BALSA) {
+	Balsa(TreeBranchDefinition.OCHROMA, "balsa", "pyramidale", true, EnumLeafType.ACACIA, new Color(0x59ac00), new Color(0xfeff8f), EnumForestryWoodType.BALSA) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureBalsa(tree);
@@ -758,7 +758,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Teak, AcaciaVanilla, 10);
 		}
 	},
-	Cocobolo(TreeBranchDefinition.DALBERGIA, "cocobolo", "retusa", false, EnumLeafType.DECIDUOUS, new Color(0x6aa17a), new Color(0x487d4c), EnumForestryWoodType.COCOBOLO) {
+	Cocobolo(TreeBranchDefinition.DALBERGIA, "cocobolo", "retusa", false, EnumLeafType.MANGROVE, new Color(0x6aa17a), new Color(0x487d4c), EnumForestryWoodType.COCOBOLO) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureCocobolo(tree);
@@ -779,7 +779,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Acacia, DarkOak, 10);
 		}
 	},
-	Wenge(TreeBranchDefinition.MILLETTIA, "wenge", "laurentii", true, EnumLeafType.DECIDUOUS, new Color(0xada157), new Color(0xad8a57), EnumForestryWoodType.WENGE) {
+	Wenge(TreeBranchDefinition.MILLETTIA, "wenge", "laurentii", true, EnumLeafType.OAK, new Color(0xada157), new Color(0xad8a57), EnumForestryWoodType.WENGE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureWenge(tree);
@@ -802,7 +802,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Cocobolo, Balsa, 10);
 		}
 	},
-	Baobab(TreeBranchDefinition.ADANSONIA, "grandidierBaobab", "digitata", true, EnumLeafType.DECIDUOUS, new Color(0xfeff8f), new Color(0xffd98f), EnumForestryWoodType.BAOBAB) {
+	Baobab(TreeBranchDefinition.ADANSONIA, "grandidierBaobab", "digitata", true, EnumLeafType.ACACIA, new Color(0xfeff8f), new Color(0xffd98f), EnumForestryWoodType.BAOBAB) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureBaobab(tree);
@@ -827,7 +827,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Balsa, Wenge, 10);
 		}
 	},
-	Mahoe(TreeBranchDefinition.TALIPARITI, "blueMahoe", "elatum", true, EnumLeafType.DECIDUOUS, new Color(0xa0ba1b), new Color(0x79a175), EnumForestryWoodType.MAHOE) {
+	Mahoe(TreeBranchDefinition.TALIPARITI, "blueMahoe", "elatum", true, EnumLeafType.OAK, new Color(0xa0ba1b), new Color(0x79a175), EnumForestryWoodType.MAHOE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureMahoe(tree);
@@ -886,7 +886,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 				.restrictHumidity(EnumHumidity.DAMP);
 		}
 	},
-	Sipiri(TreeBranchDefinition.CHLOROCARDIUM, "sipiri", "rodiei", true, EnumLeafType.DECIDUOUS, new Color(0x678911), new Color(0x79a175), EnumForestryWoodType.GREENHEART) {
+	Sipiri(TreeBranchDefinition.CHLOROCARDIUM, "sipiri", "rodiei", true, EnumLeafType.MANGROVE, new Color(0x678911), new Color(0x79a175), EnumForestryWoodType.GREENHEART) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureGreenheart(tree);
@@ -963,7 +963,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Jungle, Papaya, 5);
 		}
 	},
-	Poplar(TreeBranchDefinition.POPULUS, "whitePoplar", "alba", true, EnumLeafType.DECIDUOUS, new Color(0xa3b8a5), new Color(0x539d12), EnumForestryWoodType.POPLAR) {
+	Poplar(TreeBranchDefinition.POPULUS, "whitePoplar", "alba", true, EnumLeafType.BIRCH, new Color(0xa3b8a5), new Color(0x539d12), EnumForestryWoodType.POPLAR) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePoplar(tree);

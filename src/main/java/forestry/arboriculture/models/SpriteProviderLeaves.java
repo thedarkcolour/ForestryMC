@@ -19,12 +19,12 @@ import forestry.api.arboriculture.ILeafSpriteProvider;
 
 public class SpriteProviderLeaves implements ILeafSpriteProvider {
 
-	private final TextureLeaves leafTexture;
+	private final LeafTexture leafTexture;
 	private final int color;
 	private final int colorPollinated;
 
 	public SpriteProviderLeaves(EnumLeafType leafType, Color color, Color colorPollinated) {
-		this.leafTexture = TextureLeaves.get(leafType);
+		this.leafTexture = LeafTexture.get(leafType);
 		this.color = color.getRGB();
 		this.colorPollinated = colorPollinated.getRGB();
 	}

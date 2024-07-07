@@ -30,7 +30,7 @@ import forestry.arboriculture.models.ModelDefaultLeaves;
 import forestry.arboriculture.models.ModelDefaultLeavesFruit;
 import forestry.arboriculture.models.ModelLeaves;
 import forestry.arboriculture.models.SaplingModelLoader;
-import forestry.arboriculture.models.TextureLeaves;
+import forestry.arboriculture.models.LeafTexture;
 import forestry.core.models.ClientManager;
 import forestry.modules.IClientModuleHandler;
 
@@ -66,7 +66,7 @@ public class ProxyArboricultureClient extends ProxyArboriculture implements ICli
 		if (event.getAtlas().location() != InventoryMenu.BLOCK_ATLAS) {
 			return;
 		}
-		TextureLeaves.registerAllSprites(event);
+		LeafTexture.registerAllSprites(event);
 		for (IAlleleFruit alleleFruit : AlleleFruits.getFruitAlleles()) {
 			alleleFruit.getProvider().registerSprites(event);
 		}
@@ -82,11 +82,6 @@ public class ProxyArboricultureClient extends ProxyArboriculture implements ICli
 		ArboricultureBlocks.LEAVES_DECORATIVE.getBlocks().forEach((block) -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped()));
 		ItemBlockRenderTypes.setRenderLayer(ArboricultureBlocks.SAPLING_GE.block(), RenderType.cutout());
 		ArboricultureBlocks.DOORS.getBlocks().forEach((block) -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent()));
-
-		//AlleleUtils.forEach(TreeChromosomes.SPECIES, (treeSpecies) -> {
-		//	ForgeModelBakery.addSpecialModel(treeSpecies.getBlockModel());
-		//	ForgeModelBakery.addSpecialModel(treeSpecies.getItemModel());
-		//});
 	}
 
 	@Override

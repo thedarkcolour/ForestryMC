@@ -5,6 +5,18 @@
  ******************************************************************************/
 package forestry.api.arboriculture;
 
+/**
+ * Used for leaf textures
+ */
+// todo extensible leaf types
 public enum EnumLeafType {
-	DECIDUOUS, CONIFERS, JUNGLE, WILLOW, MAPLE, PALM
+	OAK,
+	BIRCH,
+	SPRUCE,
+	JUNGLE,
+	ACACIA,
+	MANGROVE,
+	WILLOW,
+	MAPLE,
+	PALM,
 }

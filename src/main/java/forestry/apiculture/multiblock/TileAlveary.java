@@ -72,10 +72,6 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 			level.setBlockAndUpdate(getBlockPos(), ((BlockAlveary) block).getNewState(this));
 		}
 		level.updateNeighborsAt(getBlockPos(), block);
-		// Re-render this block on the client
-		if (level.isClientSide) {
-			RenderUtil.markForUpdate(getBlockPos());
-		}
 	}
 
 	@Override
