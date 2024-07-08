@@ -28,4 +28,6 @@ public interface ITextureManager {
 	 * Get a texture atlas sprite that has been registered by Forestry, for Forestry's Gui Texture Map.
 	 */
 	TextureAtlasSprite getDefault(String ident);
+
+	TextureAtlasSprite getDefault(ResourceLocation location);
 }

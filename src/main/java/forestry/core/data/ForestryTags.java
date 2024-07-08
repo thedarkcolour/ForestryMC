@@ -1,17 +1,18 @@
 package forestry.core.data;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
 import forestry.core.config.Constants;
 
 public class ForestryTags {
 	public static class Blocks {
-
 		public static final TagKey<Block> MINEABLE_SCOOP = tag("scoop");
 		public static final TagKey<Block> MINEABLE_GRAFTER = tag("grafter");
 
@@ -42,7 +43,6 @@ public class ForestryTags {
 	}
 
 	public static class Items {
-
 		public static final TagKey<Item> CHARCOAL_BLOCK = forgeTag("storage_blocks/charcoal");
 
 		public static final TagKey<Item> BEE_COMBS = tag("combs");
@@ -108,11 +108,24 @@ public class ForestryTags {
 		private static TagKey<Item> forgeTag(String name) {
 			return ItemTags.create(new ResourceLocation("forge", name));
 		}
-
-		private Items() {
-		}
 	}
 
-	private ForestryTags() {
+	public static class Biomes {
+		// Used in EnumHumidity
+		public static final TagKey<Biome> ARID_HUMIDITY = tag("humidity/arid");
+		public static final TagKey<Biome> NORMAL_HUMIDITY = tag("humidity/normal");
+		public static final TagKey<Biome> DAMP_HUMIDITY = tag("humidity/damp");
+
+		// Used in EnumTemperature
+		public static final TagKey<Biome> ICY_TEMPERATURE = tag("temperature/icy");
+		public static final TagKey<Biome> COLD_TEMPERATURE = tag("temperature/cold");
+		public static final TagKey<Biome> NORMAL_TEMPERATURE = tag("temperature/normal");
+		public static final TagKey<Biome> WARM_TEMPERATURE = tag("temperature/warm");
+		public static final TagKey<Biome> HOT_TEMPERATURE = tag("temperature/hot");
+		public static final TagKey<Biome> HELLISH_TEMPERATURE = tag("temperature/hellish");
+
+		private static TagKey<Biome> tag(String path) {
+			return TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(Constants.MOD_ID, path));
+		}
 	}
 }

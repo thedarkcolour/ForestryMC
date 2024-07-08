@@ -235,8 +235,6 @@ public class ClimateUtil implements IClimateHelper {
 			case WARM -> 0xcd9b1d;
 			case HOT -> 0xdf512e;
 			case HELLISH -> 0x9c433e;
-			case NONE -> 0x011f4b;
-			default -> 0xFFFFFF;
 		};
 	}
 }

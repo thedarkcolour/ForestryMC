@@ -78,6 +78,12 @@ public enum TextureManagerForestry implements ITextureManager {
 	}
 
 	@Override
+	public TextureAtlasSprite getDefault(ResourceLocation location) {
+		return spriteUploader.getSprite(location);
+	}
+
+
+	@Override
 	public ResourceLocation getGuiTextureMap() {
 		return LOCATION_FORESTRY_TEXTURE;
 	}

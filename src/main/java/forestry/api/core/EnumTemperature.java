@@ -8,10 +8,15 @@ package forestry.api.core;
 import deleteme.BiomeCategory;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import forestry.core.config.Constants;
+import forestry.core.data.ForestryTags;
 
 /**
  * Many things Forestry use temperature and humidity of a biome to determine whether they can or how they can work or spawn at a given location.
@@ -19,23 +24,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * This enum concerns temperature.
  */
 public enum EnumTemperature {
-	NONE("None", "habitats/ocean", 0x808080), ICY("Icy", "habitats/snow", 0xaafff0), COLD("Cold", "habitats/taiga", 0x72ddf7),
-	NORMAL("Normal", "habitats/plains", 0xffd013), WARM("Warm", "habitats/jungle", 0xfb8a24), HOT("Hot", "habitats/desert", 0xd61439), HELLISH("Hellish", "habitats/nether", 0x81032d);
+	ICY(ForestryTags.Biomes.ICY_TEMPERATURE, "habitats/snow", 0xaafff0),
+	COLD(ForestryTags.Biomes.COLD_TEMPERATURE, "habitats/taiga", 0x72ddf7),
+	NORMAL(ForestryTags.Biomes.NORMAL_TEMPERATURE, "habitats/plains", 0xffd013),
+	WARM(ForestryTags.Biomes.WARM_TEMPERATURE, "habitats/jungle", 0xfb8a24),
+	HOT(ForestryTags.Biomes.HOT_TEMPERATURE, "habitats/desert", 0xd61439),
+	HELLISH(ForestryTags.Biomes.HELLISH_TEMPERATURE, "habitats/nether", 0x81032d);
 
 	public static EnumTemperature[] VALUES = values();
 
-	public final String name;
-	public final String iconIndex;
+	public final TagKey<Biome> tag;
+	public final ResourceLocation iconIndex;
 	public final int color;
 
-	EnumTemperature(String name, String iconIndex, int color) {
-		this.name = name;
-		this.iconIndex = iconIndex;
+	EnumTemperature(TagKey<Biome> tag, String iconTexture, int color) {
+		this.tag = tag;
+		this.iconIndex = new ResourceLocation(Constants.MOD_ID, iconTexture);
 		this.color = color;
-	}
-
-	public String getName() {
-		return this.name;
 	}
 
 	@OnlyIn(Dist.CLIENT)
