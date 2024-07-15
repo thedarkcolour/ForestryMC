@@ -5,6 +5,11 @@
  ******************************************************************************/
 package forestry.api.climate;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+
 import forestry.api.core.ILocatable;
 
 /**
@@ -21,13 +26,12 @@ public interface IClimateTransformer extends ILocatable {
 	/**
 	 * Updates the transformer and adds it to the world at the first time this method gets called.
 	 */
-	void update();
+	void onAdded(ServerLevel level, BlockPos pos);
 
 	/**
-	 * Removes the transformer from the world. Called at the moment that the block that contains the transformer gets
-	 * removed / harvested.
+	 * Called when the containing block entity is removed from the world.
 	 */
-	void removeTransformer();
+	void onRemoved(ServerLevel level);
 
 	/**
 	 * @return The parent of this transformer.
@@ -84,36 +88,35 @@ public interface IClimateTransformer extends ILocatable {
 	/**
 	 * @return The targeted state of this transformer.
 	 */
-	IClimateState getTarget();
+	@Nullable
+	ClimateState getTarget();
 
 	/**
 	 * Sets the targeted state of this transformer.
-	 * <p>
-	 * The state automatically gets clamped between 0.0F and 2.0F and transformed into a immutable {@link IClimateState}.
 	 */
-	void setTarget(IClimateState target);
+	void setTarget(@Nullable ClimateState target);
 
 	/**
 	 * @return The immutable current state of the transformer.
 	 */
-	IClimateState getCurrent();
+	@Nullable
+	ClimateState getCurrent();
 
 	/**
-	 * Sets the current value of the transformer.
-	 * <p>
-	 * The state automatically gets clamped between 0.0F and 2.0F and transformed into a immutable {@link IClimateState}.
+	 * Sets the current climate state of the transformer.
 	 */
-	void setCurrent(IClimateState state);
+	void setCurrent(ClimateState state);
 
 	/**
-	 * @return The immutable {@link IClimateState} of the biome in that the transformer is located.
+	 * @return The unmodified climate of the biome where this transformer is located.
 	 */
-	IClimateState getDefault();
+	@Nullable
+	ClimateState getDefault();
 
 	/**
 	 * A helper interface that can be usd to manipulate the state of this logic.
 	 *
 	 * @return A helper interface that can be usd to manipulate the state of this logic.
 	 */
-	IClimateManipulatorBuilder createManipulator(ClimateType type);
+	IClimateManipulator createManipulator(ClimateType type, boolean allowBackwards);
 }

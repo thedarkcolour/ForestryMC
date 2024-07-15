@@ -18,13 +18,8 @@ import forestry.core.tiles.TileEscritoire;
 import forestry.core.tiles.TileMill;
 import forestry.core.tiles.TileNaturalistChest;
 import forestry.energy.tiles.EngineBlockEntity;
-import forestry.modules.ISidedModuleHandler;
 
-public class ProxyRender implements ISidedModuleHandler {
-
-	public boolean fancyGraphicsEnabled() {
-		return false;
-	}
+public class ProxyRender {
 
 	public void initRendering() {
 	}

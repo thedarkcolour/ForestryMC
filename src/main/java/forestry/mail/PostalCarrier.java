@@ -27,7 +27,7 @@ import forestry.api.mail.IPostalCarrier;
 import forestry.api.mail.IPostalState;
 import forestry.api.mail.ITradeStation;
 import forestry.api.mail.PostManager;
-import forestry.core.render.TextureManagerForestry;
+import forestry.core.render.ForestryTextureManager;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.PlayerUtil;
 import forestry.mail.network.packets.PacketPOBoxInfoResponse;
@@ -56,7 +56,7 @@ public class PostalCarrier implements IPostalCarrier {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public TextureAtlasSprite getSprite() {
-		return TextureManagerForestry.INSTANCE.getDefault(iconID);
+		return ForestryTextureManager.INSTANCE.getDefault(iconID);
 	}
 
 	@Override

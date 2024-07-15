@@ -5,14 +5,14 @@ import com.google.common.base.MoreObjects;
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 import forestry.Forestry;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
 
 import genetics.api.GeneticsAPI;
 
-/**
- * A simple abstract default implementation of {@link IIndividual}.
- */
 public abstract class Individual implements IIndividual {
 	private static final String NBT_GENOME = "Genome";
 	private static final String NBT_MATE = "Mate";
@@ -33,7 +33,7 @@ public abstract class Individual implements IIndividual {
 	}
 
 	public Individual(CompoundTag compound) {
-		IKaryotype karyotype = getRoot().getKaryotype();
+		IChromosome[] karyotype = getRoot().getKaryotype();
 		IGenome genome = null;
 		if (compound.contains(NBT_GENOME)) {
 			genome = GeneticsAPI.apiInstance.getGeneticFactory().createGenome(karyotype, compound.getCompound(NBT_GENOME));
@@ -51,8 +51,8 @@ public abstract class Individual implements IIndividual {
 	}
 
 	@Override
-	public String getIdentifier() {
-		return genome.getActiveAllele(getRoot().getKaryotype().getSpeciesType()).getRegistryName().toString();
+	public ResourceLocation getId() {
+		return genome.getActiveAllele(getRoot()).getId();
 	}
 
 	@Override
@@ -76,13 +76,13 @@ public abstract class Individual implements IIndividual {
 	}
 
 	@Override
-	public boolean isPureBred(IChromosomeType geneType) {
-		return genome.isPureBred(geneType);
+	public boolean isPureBred(IChromosome chromosomeType) {
+		return genome.getActiveAllele(chromosomeType).id().equals(genome.getInactiveAllele(chromosomeType).id());
 	}
 
 	@Override
 	public boolean isGeneticEqual(IIndividual other) {
-		return genome.isGeneticEqual(other.getGenome());
+		return genome.equals(other.getGenome());
 	}
 
 	@Override

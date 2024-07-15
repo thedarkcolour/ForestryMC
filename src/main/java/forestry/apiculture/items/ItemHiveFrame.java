@@ -30,7 +30,7 @@ import forestry.api.apiculture.hives.IHiveFrame;
 import forestry.api.core.ItemGroups;
 import forestry.core.items.ItemForestry;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class ItemHiveFrame extends ItemForestry implements IHiveFrame {
 

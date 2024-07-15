@@ -4,58 +4,55 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import forestry.api.client.ForestrySprites;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
-import forestry.core.render.TextureManagerForestry;
 
 public enum DefaultFilterRuleType implements IFilterRuleType {
-	CLOSED(false) {
+	CLOSED(false, ForestrySprites.ANALYZER_CLOSED) {
 		@Override
 		public boolean isValid(ItemStack itemStack, IFilterData data) {
 			return false;
 		}
 	},
-	ANYTHING(false) {
+	ANYTHING(false, ForestrySprites.ANALYZER_ANYTHING) {
 		@Override
 		public boolean isValid(ItemStack itemStack, IFilterData data) {
 			return true;
 		}
 	},
-	ITEM(false) {
+	ITEM(false, ForestrySprites.ANALYZER_ITEM) {
 		@Override
 		public boolean isValid(ItemStack itemStack, IFilterData data) {
 			return !data.isPresent();
 		}
 	},
-	PURE_BREED,
-	NOCTURNAL,
-	PURE_NOCTURNAL,
-	FLYER,
-	PURE_FLYER,
-	CAVE,
-	PURE_CAVE,
-	/*FIREPROOF,
-	PURE_FIREPROOF*/;
+	PURE_BREED(ForestrySprites.ANALYZER_PURE_BREED),
+	NOCTURNAL(ForestrySprites.ANALYZER_NOCTURNAL),
+	PURE_NOCTURNAL(ForestrySprites.ANALYZER_PURE_NOCTURNAL),
+	FLYER(ForestrySprites.ANALYZER_FLYER),
+	PURE_FLYER(ForestrySprites.ANALYZER_PURE_FLYER),
+	CAVE(ForestrySprites.ANALYZER_CAVE),
+	PURE_CAVE(ForestrySprites.ANALYZER_PURE_CAVE),
+	;
 
-	private final String uid;
+	private final String id;
 	private final Set<IFilterRule> logic;
 	private final boolean isContainer;
+	private final ResourceLocation sprite;
 
-	DefaultFilterRuleType() {
-		this(true);
+	DefaultFilterRuleType(ResourceLocation sprite) {
+		this(true, sprite);
 	}
 
-	DefaultFilterRuleType(boolean isContainer) {
-		this.uid = "forestry.default." + name().toLowerCase(Locale.ENGLISH);
+	DefaultFilterRuleType(boolean isContainer, ResourceLocation sprite) {
+		this.sprite = sprite;
+		this.id = "forestry.default." + name().toLowerCase(Locale.ENGLISH);
 		this.logic = new HashSet<>();
 		this.isContainer = isContainer;
 	}
@@ -76,6 +73,7 @@ public enum DefaultFilterRuleType implements IFilterRuleType {
 		return false;
 	}
 
+	// todo this is suspicious
 	@Override
 	public void addLogic(IFilterRule logic) {
 		if (logic == this) {
@@ -86,24 +84,16 @@ public enum DefaultFilterRuleType implements IFilterRuleType {
 
 	@Override
 	public boolean isContainer() {
-		return isContainer;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public TextureAtlasSprite getSprite() {
-		return TextureManagerForestry.INSTANCE.getDefault("analyzer/" + name().toLowerCase(Locale.ENGLISH));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public ResourceLocation getTextureMap() {
-		return TextureManagerForestry.LOCATION_FORESTRY_TEXTURE;
+		return this.isContainer;
 	}
 
 	@Override
-	public String getUID() {
-		return uid;
+	public ResourceLocation getSprite() {
+		return this.sprite;
 	}
 
+	@Override
+	public String getId() {
+		return this.id;
+	}
 }

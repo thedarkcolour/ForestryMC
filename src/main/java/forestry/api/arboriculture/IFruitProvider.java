@@ -24,13 +24,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
-import forestry.api.arboriculture.genetics.ITreeRoot;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.core.ISetupListener;
 import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.products.IProductList;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 /**
  * Provides all information that is needed to spawn a fruit leaves / pod block in the world.
@@ -72,7 +72,7 @@ public interface IFruitProvider extends ISetupListener {
 	 * @return The chance that this leaves contains fruits or the chance that a pod block spawns.
 	 */
 	default float getFruitChance(IGenome genome, LevelAccessor world, BlockPos pos) {
-		ITreeRoot treeRoot = TreeManager.treeRoot;
+		ITreeSpeciesType treeRoot = TreeManager.treeRoot;
 		if (treeRoot == null) {
 			return 0.0F;
 		}

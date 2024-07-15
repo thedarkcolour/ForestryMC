@@ -7,7 +7,8 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.gui.elements;
 
 import net.minecraft.client.gui.screens.Screen;
@@ -21,7 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.climate.ClimateType;
-import forestry.api.climate.IClimateState;
+import forestry.api.climate.IClimatised;
 import forestry.api.climate.IClimateTransformer;
 import forestry.climatology.gui.GuiHabitatFormer;
 import forestry.core.gui.elements.GuiElement;
@@ -41,11 +42,12 @@ public class ClimateBarElement extends GuiElement {
 		this.transformer = transformer;
 		this.type = type;
 
-		/*addSelfEventHandler(GuiEvent.DownEvent.class, event -> {
+		*/
+/*addSelfEventHandler(GuiEvent.DownEvent.class, event -> {
 			if (Screen.hasControlDown()) {
 				GuiHabitatFormer former = (GuiHabitatFormer) getWindow().getGui();
 				IClimateState climateState = former.getClimate();
-				IClimateState newState = climateState.toImmutable().setClimate(type, transformer.getDefault().getTemperature());
+				IClimateState newState = climateState.toImmutable().setClimate(type, transformer.getDefault().temperature());
 				former.setClimate(newState);
 				former.sendClimateUpdate();
 				return;
@@ -59,11 +61,12 @@ public class ClimateBarElement extends GuiElement {
 				GuiHabitatFormer former = (GuiHabitatFormer) getWindow().getGui();
 				former.sendClimateUpdate();
 			}
-		});*/
+		});*//*
+
 		addTooltip((tooltip, element, mouseX, mouseY) -> {
-			IClimateState targetedState = transformer.getTarget();
-			IClimateState state = transformer.getCurrent();
-			IClimateState defaultState = transformer.getDefault();
+			IClimatised targetedState = transformer.getTarget();
+			IClimatised state = transformer.getCurrent();
+			IClimatised defaultState = transformer.getDefault();
 			tooltip.add(Component.translatable("for.gui.habitat_former.climate.target", StringUtil.floatAsPercent(targetedState.getClimate(type))));
 			tooltip.add(Component.translatable("for.gui.habitat_former.climate.value", StringUtil.floatAsPercent(state.getClimate(type))));
 			tooltip.add(Component.translatable("for.gui.habitat_former.climate.default", StringUtil.floatAsPercent(defaultState.getClimate(type))));
@@ -74,8 +77,8 @@ public class ClimateBarElement extends GuiElement {
 	public boolean onMouseClicked(double mouseX, double mouseY, int mouseButton) {
 		if (Screen.hasControlDown()) {
 			GuiHabitatFormer former = (GuiHabitatFormer) getWindow().getGui();
-			IClimateState climateState = former.getClimate();
-			IClimateState newState = climateState.toImmutable().setClimate(type, transformer.getDefault().getTemperature());
+			IClimatised climateState = former.getClimate();
+			IClimatised newState = climateState.toImmutable().setClimate(type, transformer.getDefault().getTemperature());
 			former.setClimate(newState);
 			former.sendClimateUpdate();
 			return true;
@@ -147,10 +150,11 @@ public class ClimateBarElement extends GuiElement {
 		final float quotient = Mth.clamp((mouseX - 1) / (float) (preferredSize.width - 3), 0.0F, 1.0F);
 		final float value = MAX_VALUE * quotient;
 		GuiHabitatFormer former = (GuiHabitatFormer) getWindow().getGui();
-		IClimateState climateState = former.getClimate();
+		IClimatised climateState = former.getClimate();
 
-		IClimateState newState = climateState.toImmutable().setClimate(type, value);
+		IClimatised newState = climateState.toImmutable().setClimate(type, value);
 		former.setClimate(newState);
 		return true;
 	}
 }
+*/

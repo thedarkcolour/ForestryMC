@@ -8,7 +8,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.core.features.CoreItems;
 import forestry.core.gui.slots.SlotAnalyzer;
 import forestry.core.gui.slots.SlotLockable;
@@ -16,10 +16,7 @@ import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.utils.GeneticsUtil;
 import forestry.database.inventory.InventoryDatabaseAnalyzer;
 
-import deleteme.Todos;
-import genetics.api.GeneticHelper;
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IRootDefinition;
 import genetics.utils.RootUtils;
 
 public class ContainerAnalyzerProviderHelper {
@@ -82,36 +79,32 @@ public class ContainerAnalyzerProviderHelper {
 			specimen = convertedSpecimen;
 		}
 
-		IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = RootUtils.getRoot(specimen);
+		IForestrySpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(specimen);
 		// No individual, abort
-		if (!definition.isPresent()) {
+		if (speciesRoot == null) {
 			return;
 		}
-		IForestrySpeciesRoot<IIndividual> speciesRoot = definition.get();
 
 		IIndividual individual = speciesRoot.create(specimen);
 
 		// Analyze if necessary
 		if (individual != null) {
 			if (!individual.isAnalyzed()) {
-				final boolean requiresEnergy = Todos.isApicultureEnabled();
 				ItemStack energyStack = alyzerInventory.getItem(InventoryDatabaseAnalyzer.SLOT_ENERGY);
-				if (requiresEnergy && !ItemInventoryAlyzer.isAlyzingFuel(energyStack)) {
+				if (!ItemInventoryAlyzer.isAlyzingFuel(energyStack)) {
 					return;
 				}
 
 				if (individual.analyze()) {
 					IBreedingTracker breedingTracker = speciesRoot.getBreedingTracker(player.level, player.getGameProfile());
-					breedingTracker.registerSpecies(individual.getGenome().getPrimary());
-					breedingTracker.registerSpecies(individual.getGenome().getSecondary());
+					breedingTracker.registerSpecies(individual.getGenome().getPrimarySpecies());
+					breedingTracker.registerSpecies(individual.getGenome().getSecondarySpecies());
 
 					specimen = specimen.copy();
-					GeneticHelper.setIndividual(specimen, individual);
+					individual.copyTo(specimen);
 
-					if (requiresEnergy) {
-						// Decrease energy
-						alyzerInventory.removeItem(InventoryDatabaseAnalyzer.SLOT_ENERGY, 1);
-					}
+					// Decrease energy
+					alyzerInventory.removeItem(InventoryDatabaseAnalyzer.SLOT_ENERGY, 1);
 				}
 				specimenSlot.set(specimen);
 			}

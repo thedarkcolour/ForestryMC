@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.core.ItemGroups;
-import forestry.core.data.ForestryTags;
+import forestry.api.ForestryTags;
 import forestry.core.items.ItemForestry;
 
 public class ItemScoop extends ItemForestry {

@@ -28,10 +28,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleFruit;
 import forestry.api.genetics.IFruitBearer;
 import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.alleles.ForestryAlleles;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.products.IProductList;
 import forestry.api.genetics.products.Product;
 import forestry.arboriculture.features.ArboricultureTiles;
@@ -41,18 +44,18 @@ import forestry.core.utils.BlockUtil;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.RenderUtil;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 import genetics.utils.AlleleUtils;
 
 public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamable {
 
 	private static final short MAX_MATURITY = 2;
 	private static final IGenome defaultGenome = TreeManager.treeRoot.getKaryotype().getDefaultGenome();
-	private static final IAlleleFruit defaultAllele = AlleleFruits.fruitCocoa;
+	private static final IAlleleFruit defaultAllele = ForestryAlleles.FRUIT_COCOA;
 
 	private IGenome genome = defaultGenome;
-	private IAlleleFruit allele = defaultAllele;
+	private IValueAllele<IFruitProvider> allele = defaultAllele;
 	private short maturity;
 	private float yield;
 
@@ -86,7 +89,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	@Override
 	public void saveAdditional(CompoundTag compoundNBT) {
 		super.saveAdditional(compoundNBT);
-		compoundNBT.putString("UID", allele.getRegistryName().toString());
+		compoundNBT.putString("UID", allele.id().toString());
 		compoundNBT.putShort("MT", maturity);
 		compoundNBT.putFloat("SP", yield);
 	}
@@ -201,7 +204,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	@Override
 	public void writeData(FriendlyByteBuf data) {
 		if (allele != defaultAllele) {
-			data.writeUtf(allele.getRegistryName().toString());
+			data.writeUtf(allele.getId().toString());
 		} else {
 			data.writeUtf("");
 		}

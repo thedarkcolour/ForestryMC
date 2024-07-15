@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -28,6 +27,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.recipes.ICarpenterManager;
 import forestry.api.recipes.ICarpenterRecipe;
+import forestry.core.utils.ModUtil;
 
 public class CarpenterRecipeManager extends AbstractCraftingProvider<ICarpenterRecipe> implements ICarpenterManager {
 
@@ -96,7 +96,7 @@ public class CarpenterRecipeManager extends AbstractCraftingProvider<ICarpenterR
 		return getRecipes(recipeManager)
 				.map(ICarpenterRecipe::getFluidResource)
 				.filter(fluidStack -> !fluidStack.isEmpty())
-				.map(fluidStack -> RegistryNameFinder.getRegistryName(fluidStack.getFluid()))
+				.map(fluidStack -> ModUtil.getRegistryName(fluidStack.getFluid()))
 				.collect(Collectors.toSet());
 	}
 }

@@ -26,8 +26,6 @@ public interface IFilterRegistry {
 
 	int getId(IFilterRuleType rule);
 
-	IFilterLogic createLogic(ILocatable locatable, IFilterLogic.INetworkHandler networkHandler);
-
 	default IFilterRuleType getRuleOrDefault(String uid) {
 		IFilterRuleType rule = getRule(uid);
 		return rule != null ? rule : getDefaultRule();

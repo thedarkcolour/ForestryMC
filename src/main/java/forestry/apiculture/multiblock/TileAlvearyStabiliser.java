@@ -13,7 +13,7 @@ package forestry.apiculture.multiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 import forestry.api.apiculture.DefaultBeeModifier;
 import forestry.api.apiculture.IBeeModifier;

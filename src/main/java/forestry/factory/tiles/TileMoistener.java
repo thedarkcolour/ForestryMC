@@ -41,7 +41,7 @@ import forestry.api.fuels.MoistenerFuel;
 import forestry.api.recipes.IMoistenerRecipe;
 import forestry.api.recipes.RecipeManagers;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.TankManager;
@@ -155,7 +155,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 
 		// Not working in broad daylight
 		boolean gloomy = lightvalue <= 11;
-		if (errorLogic.setCondition(!gloomy, EnumErrorCode.NOT_DARK)) {
+		if (errorLogic.setCondition(!gloomy, ForestryError.NOT_DARK)) {
 			return;
 		}
 
@@ -175,7 +175,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 		if (burnTime > 0 && pendingProduct == null) {
 			// Not working if there is no water available.
 			boolean hasLiquid = resourceTank.getFluidAmount() > 0;
-			if (errorLogic.setCondition(!hasLiquid, EnumErrorCode.NO_RESOURCE_LIQUID)) {
+			if (errorLogic.setCondition(!hasLiquid, ForestryError.NO_RESOURCE_LIQUID)) {
 				return;
 			}
 
@@ -218,7 +218,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 			}
 		}
 
-		errorLogic.setCondition(currentRecipe == null, EnumErrorCode.NO_RECIPE);
+		errorLogic.setCondition(currentRecipe == null, ForestryError.NO_RECIPE);
 	}
 
 	private boolean tryAddPending() {
@@ -227,7 +227,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 		}
 
 		boolean added = InventoryUtil.tryAddStack(this, pendingProduct, InventoryMoistener.SLOT_PRODUCT, 1, true);
-		getErrorLogic().setCondition(!added, EnumErrorCode.NO_SPACE_INVENTORY);
+		getErrorLogic().setCondition(!added, ForestryError.NO_SPACE_INVENTORY);
 
 		if (added) {
 			pendingProduct = null;
@@ -248,7 +248,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 			resetRecipe();
 		}
 
-		getErrorLogic().setCondition(currentRecipe == null, EnumErrorCode.NO_RECIPE);
+		getErrorLogic().setCondition(currentRecipe == null, ForestryError.NO_RECIPE);
 	}
 
 	private void resetRecipe() {
@@ -342,7 +342,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 
 			int targetSlot = getFreeReservoirSlot(deposit);
 			// We stop the whole thing, if we don't have any room anymore.
-			if (errorLogic.setCondition(targetSlot < 0, EnumErrorCode.NO_SPACE_INVENTORY)) {
+			if (errorLogic.setCondition(targetSlot < 0, ForestryError.NO_SPACE_INVENTORY)) {
 				return false;
 			}
 
@@ -362,7 +362,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 		// Let's look for a new resource to put into the working slot.
 		int resourceSlot = getNextResourceSlot(InventoryMoistener.SLOT_RESERVOIR_1, InventoryMoistener.SLOT_RESERVOIR_1 + InventoryMoistener.SLOT_RESERVOIR_COUNT);
 		// Nothing found, stop.
-		if (errorLogic.setCondition(resourceSlot < 0, EnumErrorCode.NO_RESOURCE)) {
+		if (errorLogic.setCondition(resourceSlot < 0, ForestryError.NO_RESOURCE)) {
 			return false;
 		}
 

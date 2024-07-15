@@ -1,11 +1,11 @@
 package forestry.arboriculture.charcoal.jei;
 
+import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.ICharcoalManager;
 import forestry.api.arboriculture.ICharcoalPileWall;
 import forestry.api.arboriculture.TreeManager;
 import forestry.arboriculture.features.CharcoalBlocks;
-import forestry.core.config.Constants;
-import forestry.modules.ForestryModuleUids;
+import forestry.api.modules.ForestryModuleIds;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -18,11 +18,11 @@ import net.minecraft.resources.ResourceLocation;
 @JeiPlugin
 public class CharcoalJeiPlugin implements IModPlugin {
 
-	public static final RecipeType<ICharcoalPileWall> RECIPE_TYPE = RecipeType.create(Constants.MOD_ID, "charcoal.pile", ICharcoalPileWall.class);
+	public static final RecipeType<ICharcoalPileWall> RECIPE_TYPE = RecipeType.create(ForestryConstants.MOD_ID, "charcoal.pile", ICharcoalPileWall.class);
 
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.CHARCOAL);
+		return new ResourceLocation(ForestryConstants.MOD_ID, ForestryModuleIds.CHARCOAL);
 	}
 
 	@Override

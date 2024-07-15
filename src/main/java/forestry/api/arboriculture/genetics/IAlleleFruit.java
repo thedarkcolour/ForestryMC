@@ -16,8 +16,4 @@ import forestry.api.genetics.alleles.IAlleleProperty;
 public interface IAlleleFruit extends IAlleleProperty<IAlleleFruit> {
 
 	IFruitProvider getProvider();
-
-	@Nullable
-	String getModelName();
-
 }

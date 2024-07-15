@@ -42,9 +42,9 @@ import net.minecraftforge.client.model.geometry.StandaloneGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 import net.minecraftforge.fluids.FluidUtil;
 
-import forestry.storage.models.FilledCrateModel;
+import forestry.core.utils.ModUtil;
+import forestry.storage.client.FilledCrateModel;
 
-import deleteme.RegistryNameFinder;
 import org.jetbrains.annotations.Nullable;
 
 // fixes issue in the DynamicFluidContainerModel where fluids have edges
@@ -170,7 +170,7 @@ public class FluidContainerModel implements IUnbakedGeometry<FluidContainerModel
 			return FluidUtil.getFluidContained(stack)
 					.map(fluidStack -> {
 						Fluid fluid = fluidStack.getFluid();
-						String name = RegistryNameFinder.getRegistryName(fluid).toString();
+						String name = ModUtil.getRegistryName(fluid).toString();
 
 						if (!cache.containsKey(name)) {
 							FluidContainerModel unbaked = this.parent.withFluid(fluid);

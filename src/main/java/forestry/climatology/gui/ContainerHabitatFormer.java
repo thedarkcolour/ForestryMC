@@ -7,8 +7,13 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.gui;
+
+import javax.annotation.Nullable;
+
+import java.util.Objects;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,12 +25,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.IFluidTank;
 
-import forestry.api.climate.IClimateState;
+import forestry.api.climate.IClimatised;
 import forestry.api.climate.IClimateTransformer;
 import forestry.climatology.features.ClimatologyMenuTypes;
 import forestry.climatology.inventory.InventoryHabitatFormer;
 import forestry.climatology.tiles.TileHabitatFormer;
-import forestry.core.climate.ClimateStateHelper;
 import forestry.core.gui.ContainerLiquidTanksHelper;
 import forestry.core.gui.ContainerTile;
 import forestry.core.gui.IContainerLiquidTanks;
@@ -41,9 +45,12 @@ public class ContainerHabitatFormer extends ContainerTile<TileHabitatFormer> imp
 	static final int REQUEST_ID_RANGE = 1;
 
 	//Gui Update
-	private IClimateState previousState = ClimateStateHelper.INSTANCE.absent();
-	private IClimateState previousTarget = ClimateStateHelper.INSTANCE.absent();
-	private IClimateState previousDefault = ClimateStateHelper.INSTANCE.absent();
+	@Nullable
+	private IClimatised previousState = null;
+	@Nullable
+	private IClimatised previousTarget = null;
+	@Nullable
+	private IClimatised previousDefault = null;
 	private int previousRange;
 	private boolean previousCircular;
 
@@ -69,20 +76,20 @@ public class ContainerHabitatFormer extends ContainerTile<TileHabitatFormer> imp
 		boolean guiNeedsUpdate = false;
 		IClimateTransformer transformer = tile.getTransformer();
 
-		IClimateState state = transformer.getCurrent();
-		if (!previousState.equals(state)) {
+		IClimatised state = transformer.getCurrent();
+		if (!Objects.equals(previousState, state)) {
 			previousState = state;
 			guiNeedsUpdate = true;
 		}
 
-		IClimateState target = transformer.getTarget();
-		if (!previousTarget.equals(target)) {
+		IClimatised target = transformer.getTarget();
+		if (!Objects.equals(previousTarget, target)) {
 			previousTarget = target;
 			guiNeedsUpdate = true;
 		}
 
-		IClimateState defaultState = transformer.getDefault();
-		if (!previousDefault.equals(defaultState)) {
+		IClimatised defaultState = transformer.getDefault();
+		if (!Objects.equals(previousDefault, defaultState)) {
 			previousDefault = defaultState;
 			guiNeedsUpdate = true;
 		}
@@ -146,3 +153,4 @@ public class ContainerHabitatFormer extends ContainerTile<TileHabitatFormer> imp
 		return tile.getTankManager().getTank(slot);
 	}
 }
+*/

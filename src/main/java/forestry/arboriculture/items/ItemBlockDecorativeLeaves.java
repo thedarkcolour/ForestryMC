@@ -8,15 +8,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.IFruitProvider;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.core.ItemGroups;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDecorativeLeaves;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.items.ItemBlockForestry;
 import forestry.core.items.definitions.IColoredItem;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class ItemBlockDecorativeLeaves extends ItemBlockForestry<BlockDecorativeLeaves> implements IColoredItem {
 	public ItemBlockDecorativeLeaves(BlockDecorativeLeaves block) {
@@ -26,7 +26,7 @@ public class ItemBlockDecorativeLeaves extends ItemBlockForestry<BlockDecorative
 	@Override
 	public Component getName(ItemStack itemStack) {
 		BlockDecorativeLeaves block = getBlock();
-		TreeDefinition treeDefinition = block.getDefinition();
+		TreeDefinition treeDefinition = block.getGenome();
 		return ItemBlockLeaves.getDisplayName(treeDefinition.createIndividual());
 	}
 
@@ -34,7 +34,7 @@ public class ItemBlockDecorativeLeaves extends ItemBlockForestry<BlockDecorative
 	@OnlyIn(Dist.CLIENT)
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
 		BlockDecorativeLeaves block = getBlock();
-		TreeDefinition treeDefinition = block.getDefinition();
+		TreeDefinition treeDefinition = block.getGenome();
 
 		IGenome genome = treeDefinition.getGenome();
 

@@ -20,8 +20,10 @@ import net.minecraft.network.chat.Component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.inventory.ItemInventoryImprinter;
 import forestry.core.config.Constants;
@@ -30,10 +32,9 @@ import forestry.core.gui.GuiUtil;
 import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.Translator;
 
 import genetics.api.GeneticHelper;
-import genetics.api.organism.IOrganism;
+import genetics.api.organism.IIndividualCapability;
 
 public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 	private final ItemInventoryImprinter itemInventory;
@@ -52,12 +53,12 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 		NonNullList<ItemStack> beeList = NonNullList.create();
 		ApicultureItems.BEE_DRONE.item().addCreativeItems(beeList, false);
 		for (ItemStack beeStack : beeList) {
-			IOrganism<?> organism = GeneticHelper.getOrganism(beeStack);
+			IIndividualCapability<?> organism = GeneticHelper.getOrganism(beeStack);
 			if (organism.isEmpty()) {
 				continue;
 			}
-			IAlleleBeeSpecies species = organism.getAllele(BeeChromosomes.SPECIES, true);
-			iconStacks.put(species.getRegistryName().toString(), beeStack);
+			IAlleleBeeSpecies species = organism.getAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES, true);
+			iconStacks.put(species.getId().toString(), beeStack);
 		}
 	}
 
@@ -83,7 +84,7 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 	}
 
 	private void drawBeeSpeciesIcon(PoseStack transform, IAlleleBeeSpecies bee, int x, int y) {
-		GuiUtil.drawItemStack(transform, this, iconStacks.get(bee.getRegistryName().toString()), x, y);
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(bee.getId().toString()), x, y);
 	}
 
 	private static int getHabitatSlotAtPosition(double i, double j) {

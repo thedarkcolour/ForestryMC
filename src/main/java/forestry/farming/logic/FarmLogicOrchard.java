@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
@@ -63,7 +63,7 @@ public class FarmLogicOrchard extends FarmLogic {
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing housing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level world, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = housing.getValidPosition(direction, pos, extent, pos.above());
 		Collection<ICrop> crops = getHarvestBlocks(world, position);
 		housing.increaseExtent(direction, pos, extent);

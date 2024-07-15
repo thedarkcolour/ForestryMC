@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Random;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.individual.IIndividual;
 import genetics.api.individual.IKaryotype;
@@ -12,7 +13,7 @@ import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.IRootComponent;
 
 /**
- * The ITemplateContainer contains all templates of the {@link IIndividualRoot} that were added with the
+ * The ITemplateContainer contains all templates of the {@link ISpeciesType} that were added with the
  * {@link IIndividualRootBuilder}.
  */
 public interface ITemplateContainer<I extends IIndividual> extends IRootComponent<I> {
@@ -30,8 +31,8 @@ public interface ITemplateContainer<I extends IIndividual> extends IRootComponen
 	/**
 	 * Retrieves a registered template using the passed species unique identifier.
 	 *
-	 * @param identifier the {@link IAllele#getRegistryName()} of the active allele at the
-	 *                   {@link IKaryotype#getSpeciesType()} of the {@link #getKaryotype()}.
+	 * @param identifier the {@link IAllele#id()} of the active allele at the
+	 *                   {@link IKaryotype#getSpeciesChromosome()} of the {@link #getKaryotype()}.
 	 * @return Array of {@link IAllele} representing a genome. The array is empty if no template was registered for the
 	 * given identifier.
 	 */

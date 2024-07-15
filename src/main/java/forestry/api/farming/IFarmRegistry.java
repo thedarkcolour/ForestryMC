@@ -51,7 +51,6 @@ public interface IFarmRegistry {
 	 */
 	int getFertilizeValue(ItemStack stack);
 
-
 	/**
 	 * @since Forestry 5.8
 	 */

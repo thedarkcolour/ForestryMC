@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.core.circuits.ItemCircuitBoard;
 import forestry.core.gui.IContainerSocketed;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 
 public record PacketChipsetClick(int slot) implements IForestryPacketServer {

@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.fuels.FuelManager;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.features.CoreItems;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.tiles.TemperatureState;
@@ -87,7 +87,7 @@ public class PeatEngineBlockEntity extends EngineBlockEntity implements WorldlyC
 		if (updateOnInterval(40)) {
 			int fuelSlot = getFuelSlot();
 			boolean hasFuel = fuelSlot >= 0 && determineBurnDuration(getInternalInventory().getItem(fuelSlot)) > 0;
-			getErrorLogic().setCondition(!hasFuel, EnumErrorCode.NO_FUEL);
+			getErrorLogic().setCondition(!hasFuel, ForestryError.NO_FUEL);
 		}
 	}
 

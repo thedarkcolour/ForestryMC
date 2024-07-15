@@ -26,7 +26,7 @@ import forestry.api.farming.IFarmPropertiesBuilder;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.IFarmableInfo;
 import forestry.api.farming.Soil;
-import forestry.farming.FarmRegistry;
+import forestry.farming.ForestryFarmRegistry;
 
 public final class FarmProperties implements IFarmProperties {
 	private final Set<Soil> soils;
@@ -45,7 +45,7 @@ public final class FarmProperties implements IFarmProperties {
 		Preconditions.checkNotNull(builder.waterConsumption);
 		Preconditions.checkNotNull(builder.fertilizerConsumption);
 		Preconditions.checkNotNull(builder.translationKey);
-		FarmRegistry registry = FarmRegistry.INSTANCE;
+		ForestryFarmRegistry registry = ForestryFarmRegistry.INSTANCE;
 		this.manualLogic = builder.factory.apply(this, true);
 		this.managedLogic = builder.factory.apply(this, false);
 		this.soils = ImmutableSet.copyOf(builder.soils);
@@ -81,7 +81,7 @@ public final class FarmProperties implements IFarmProperties {
 	@Override
 	public boolean isAcceptedSoil(BlockState ground) {
 		for (Soil soil : soils) {
-			BlockState soilState = soil.getSoilState();
+			BlockState soilState = soil.soilState();
 			if (soilState.getBlock() == ground.getBlock()) {
 				return true;
 			}
@@ -92,7 +92,7 @@ public final class FarmProperties implements IFarmProperties {
 	@Override
 	public boolean isAcceptedResource(ItemStack itemstack) {
 		for (Soil soil : soils) {
-			if (soil.getResource().sameItem(itemstack)) {
+			if (soil.resource().sameItem(itemstack)) {
 				return true;
 			}
 		}
@@ -168,7 +168,7 @@ public final class FarmProperties implements IFarmProperties {
 
 		public Builder(String identifier) {
 			this.identifier = identifier;
-			this.defaultInfo = FarmRegistry.INSTANCE.getFarmableInfo(identifier);
+			this.defaultInfo = ForestryFarmRegistry.INSTANCE.getFarmableInfo(identifier);
 		}
 
 		@Override
@@ -254,7 +254,7 @@ public final class FarmProperties implements IFarmProperties {
 
 		@Override
 		public IFarmProperties create() {
-			return FarmRegistry.INSTANCE.registerProperties("farm" + WordUtils.capitalize(identifier), new FarmProperties(this));
+			return ForestryFarmRegistry.INSTANCE.registerProperties("farm" + WordUtils.capitalize(identifier), new FarmProperties(this));
 		}
 	}
 }

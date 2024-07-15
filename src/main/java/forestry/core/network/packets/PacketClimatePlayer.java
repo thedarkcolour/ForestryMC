@@ -1,16 +1,18 @@
 package forestry.core.network.packets;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-import forestry.api.climate.IClimateState;
+import forestry.api.climate.ClimateState;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.ClimateHandlerClient;
-import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.core.utils.NetworkUtil;
 
-public record PacketClimatePlayer(IClimateState state) implements IForestryPacketClient {
+public record PacketClimatePlayer(@Nullable ClimateState state) implements IForestryPacketClient {
 	@Override
 	public ResourceLocation id() {
 		return PacketIdClient.CLIMATE_PLAYER;

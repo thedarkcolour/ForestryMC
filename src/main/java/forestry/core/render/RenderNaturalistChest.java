@@ -16,6 +16,8 @@ import com.mojang.math.Vector3f;
 import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TileNaturalistChest;
+import forestry.core.utils.ModUtil;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -45,7 +47,7 @@ public class RenderNaturalistChest implements IForestryRenderer<TileNaturalistCh
 		this.lid = root.getChild(LID);
 		this.base = root.getChild(BASE);
 		this.lock = root.getChild(LOCK);
-		texture = new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/" + textureName + ".png");
+		this.texture = ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/" + textureName + ".png");
 	}
 	
 	public static LayerDefinition createBodyLayer() {

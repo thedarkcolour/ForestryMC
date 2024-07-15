@@ -14,7 +14,8 @@ import java.util.EnumSet;
 
 import net.minecraft.world.entity.player.Player;
 
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 
 public class AIButterflyFlee extends AIButterflyMovement {
 	public AIButterflyFlee(EntityButterfly entity) {

@@ -2,21 +2,20 @@ package forestry.core;
 
 import net.minecraftforge.eventbus.api.EventPriority;
 
+import forestry.api.ForestryConstants;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.apiculture.DisplayHelper;
-import forestry.core.config.Constants;
 import forestry.core.genetics.DefaultDisplayHandler;
 import forestry.core.genetics.alleles.GeneticRegistry;
 
 import genetics.api.GeneticPlugin;
 import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticPlugin;
-import genetics.api.alleles.IAlleleRegistry;
-import genetics.api.classification.IClassificationRegistry;
+import forestry.api.genetics.IAlleleRegistry;
+import forestry.api.genetics.IClassificationRegistry;
 import genetics.api.root.IRootManager;
 
-@SuppressWarnings("unused")
-@GeneticPlugin(modId = Constants.MOD_ID, priority = EventPriority.HIGH)
+@GeneticPlugin(modId = ForestryConstants.MOD_ID, priority = EventPriority.HIGH)
 public class CorePlugin implements IGeneticPlugin {
 	@Override
 	public void registerClassifications(IClassificationRegistry registry) {

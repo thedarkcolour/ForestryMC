@@ -21,12 +21,13 @@ import genetics.utils.AlleleUtils;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IApiaristTracker;
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.core.commands.IStatsSaveHelper;
 import forestry.core.utils.StringUtil;
-import forestry.core.utils.Translator;
 
 public class BeeStatsSaveHelper implements IStatsSaveHelper {
 
@@ -53,7 +54,7 @@ public class BeeStatsSaveHelper implements IStatsSaveHelper {
 
 	@Override
 	public Collection<IAlleleBeeSpecies> getSpecies() {
-		return AlleleUtils.filteredAlleles(BeeChromosomes.SPECIES);
+		return AlleleUtils.filteredAlleles((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
 	}
 
 	@Override

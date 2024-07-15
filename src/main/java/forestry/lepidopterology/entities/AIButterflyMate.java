@@ -13,8 +13,8 @@ package forestry.lepidopterology.entities;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.IButterflyNursery;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.core.utils.GeneticsUtil;
 
 public class AIButterflyMate extends AIButterflyInteract {

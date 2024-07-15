@@ -5,42 +5,64 @@
  ******************************************************************************/
 package forestry.api.core;
 
-import net.minecraft.network.FriendlyByteBuf;
+import java.util.Set;
+
+import forestry.api.IForestryApi;
 
 /**
- * Keeps track of all the IErrorStates for an object.
- * Create a new IErrorLogic instance for your object with ForestryAPI.errorStateRegistry.createErrorLogic().
+ * Keeps track of all errors for an object.
+ * Create new instances using {@link IErrorManager#createErrorLogic()}.
  */
 public interface IErrorLogic extends IErrorSource {
-
 	/**
-	 * Sets the errorState when condition is true, and unsets it when condition is false.
+	 * Adds the error when condition is true, removes it when condition is false.
 	 *
-	 * @return condition
+	 * @return The value of condition.
 	 */
-	boolean setCondition(boolean condition, IErrorState errorState);
+	boolean setCondition(boolean condition, IError error);
 
 	/**
-	 * @return true if the error state is active.
+	 * @return {@code true} If this error logic currently has the given error.
 	 */
-	boolean contains(IErrorState state);
+	boolean contains(IError error);
 
 	/**
-	 * @return true if there are any active error states.
+	 * @return {@code true} if this error logic currently has any errors.
 	 */
 	boolean hasErrors();
 
 	/**
-	 * Sets all active error states to false
+	 * Removes all current errors.
 	 */
 	void clearErrors();
 
 	/**
-	 * Network serialization for syncing errors to the client from the server.
+	 * @return The current errors as an array of numeric IDs. Used for network serialization.
 	 */
-	void writeData(FriendlyByteBuf data);
+	default short[] toArray() {
+		IErrorManager manager = IForestryApi.INSTANCE.getErrorManager();
+		Set<IError> errors = getErrors();
+		short[] statesArray = new short[errors.size()];
+		int i = 0;
+		for (IError error : errors) {
+			statesArray[i] = manager.getNumericId(error);
+			i++;
+		}
+		return statesArray;
+	}
 
-	void readData(FriendlyByteBuf data);
-
-	void copy(IErrorLogic errorLogic);
+	/**
+	 * Sets this logic's errors using the specified errors array. Unknown errors are discarded.
+	 * @param errorArray An array of numeric IDs that correspond to different errors.
+	 */
+	default void fromArray(short[] errorArray) {
+		clearErrors();
+		IErrorManager manager = IForestryApi.INSTANCE.getErrorManager();
+		for (short errorId : errorArray) {
+			IError error = manager.getError(errorId);
+			if (error != null) {
+				setCondition(true, error);
+			}
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package forestry.energy;
 
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -8,7 +9,7 @@ import net.minecraft.world.level.material.Fluids;
 import forestry.api.fuels.EngineBronzeFuel;
 import forestry.api.fuels.EngineCopperFuel;
 import forestry.api.fuels.FuelManager;
-import forestry.api.modules.ForestryModule;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 import forestry.core.fluids.ForestryFluids;
@@ -18,24 +19,26 @@ import forestry.energy.features.EnergyMenus;
 import forestry.energy.screen.BiogasEngineScreen;
 import forestry.energy.screen.PeatEngineScreen;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.ENERGY, name = "Energy", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.energy.description")
 public class ModuleEnergy extends BlankForestryModule {
+	@Override
+	public ResourceLocation getId() {
+		return ForestryModuleIds.ENERGY;
+	}
 
 	@Override
-	public void registerGuiFactories() {
+	public void registerMenuScreens() {
 		MenuScreens.register(EnergyMenus.ENGINE_BIOGAS.menuType(), BiogasEngineScreen::new);
 		MenuScreens.register(EnergyMenus.ENGINE_PEAT.menuType(), PeatEngineScreen::new);
 	}
 
 	@Override
-	public void disabledSetupAPI() {
+	public void setupFallbackApi() {
 		setupFuelManager();
 	}
 
 	@Override
-	public void setupAPI() {
+	public void setupApi() {
 		setupFuelManager();
 	}
 

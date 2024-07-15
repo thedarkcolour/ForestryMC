@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmLogic;
@@ -68,7 +69,7 @@ public abstract class FarmLogic implements IFarmLogic {
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing housing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level world, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
 		Stack<ICrop> crops = new Stack<>();
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos.above(), direction, i);
@@ -118,8 +119,8 @@ public abstract class FarmLogic implements IFarmLogic {
 		return block == Blocks.ICE;
 	}
 
-	protected final BlockPos translateWithOffset(BlockPos pos, FarmDirection farmDirection, int step) {
-		return VectUtil.scale(farmDirection.getFacing().getNormal(), step).offset(pos);
+	protected final BlockPos translateWithOffset(BlockPos pos, Direction farmDirection, int step) {
+		return VectUtil.scale(farmDirection.getNormal(), step).offset(pos);
 	}
 
 	private static AABB getHarvestBox(Level world, IFarmHousing farmHousing, boolean toWorldHeight) {

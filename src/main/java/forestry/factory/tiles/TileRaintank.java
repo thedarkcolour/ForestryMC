@@ -38,7 +38,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import forestry.api.core.IErrorLogic;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.ContainerFiller;
 import forestry.core.fluids.DrainOnlyFluidHandlerWrapper;
 import forestry.core.fluids.FilteredTank;
@@ -107,13 +107,13 @@ public class TileRaintank extends TileBase implements WorldlyContainer, ILiquidT
 			IErrorLogic errorLogic = getErrorLogic();
 
 			Biome biome = level.getBiome(pos).value();
-			errorLogic.setCondition(!(biome.getPrecipitation() == Biome.Precipitation.RAIN), EnumErrorCode.NO_RAIN_BIOME);
+			errorLogic.setCondition(!(biome.getPrecipitation() == Biome.Precipitation.RAIN), ForestryError.NO_RAIN_BIOME);
 
 			BlockPos posAbove = pos.above();
 			boolean hasSky = level.canSeeSkyFromBelowWater(posAbove);
-			errorLogic.setCondition(!hasSky, EnumErrorCode.NO_SKY_RAIN_TANK);
+			errorLogic.setCondition(!hasSky, ForestryError.NO_SKY_RAIN_TANK);
 
-			errorLogic.setCondition(!level.isRainingAt(posAbove), EnumErrorCode.NOT_RAINING);
+			errorLogic.setCondition(!level.isRainingAt(posAbove), ForestryError.NOT_RAINING);
 
 			if (!errorLogic.hasErrors()) {
 				resourceTank.fillInternal(WATER_PER_UPDATE, IFluidHandler.FluidAction.EXECUTE);

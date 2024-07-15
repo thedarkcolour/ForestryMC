@@ -13,20 +13,20 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.core.IBlockSubtype;
 
-public class FeatureBlockGroup<B extends Block, S extends IBlockSubtype> extends FeatureGroup<FeatureBlockGroup.Builder<B, S>, FeatureBlock<B, BlockItem>, S> {
+public class FeatureBlockGroup<B extends Block, S extends IBlockSubtype> extends FeatureGroup<FeatureBlockGroup.Builder<B, S>, IBlockFeature<B, BlockItem>, S> {
 
 	private FeatureBlockGroup(Builder<B, S> builder) {
 		super(builder);
 	}
 
 	@Override
-	protected FeatureBlock<B, BlockItem> createFeature(Builder<B, S> builder, S type) {
+	protected IBlockFeature<B, BlockItem> createFeature(Builder<B, S> builder, S type) {
 		return builder.registry.block(() -> builder.constructor.apply(type), builder.itemConstructor != null ? (block) -> builder.itemConstructor.apply(block, type) : null, builder.getIdentifier(type));
 	}
 
 	public Collection<B> getBlocks() {
 		ArrayList<B> blocks = new ArrayList<>(featureByType.size());
-		for (FeatureBlock<B, BlockItem> value : featureByType.values()) {
+		for (IBlockFeature<B, BlockItem> value : featureByType.values()) {
 			blocks.add(value.block());
 		}
 		return blocks;
@@ -34,7 +34,7 @@ public class FeatureBlockGroup<B extends Block, S extends IBlockSubtype> extends
 
 	public Collection<BlockItem> getItems() {
 		ArrayList<BlockItem> items = new ArrayList<>(featureByType.size());
-		for (FeatureBlock<B, BlockItem> value : featureByType.values()) {
+		for (IBlockFeature<B, BlockItem> value : featureByType.values()) {
 			items.add(value.item());
 		}
 		return items;
@@ -42,11 +42,11 @@ public class FeatureBlockGroup<B extends Block, S extends IBlockSubtype> extends
 
 	@Nullable
 	public BlockState findState(String typeName) {
-		Optional<FeatureBlock> block = featureByType.entrySet().stream()
+		Optional<IBlockFeature<?, ?>> block = featureByType.entrySet().stream()
 				.filter(e -> e.getKey().getSerializedName().equals(typeName))
 				.findFirst()
 				.flatMap(e -> Optional.of(e.getValue()));
-		return block.map(FeatureBlock::defaultState).orElse(null);
+		return block.map(IBlockFeature::defaultState).orElse(null);
 	}
 
 	public boolean blockEqual(BlockState state) {

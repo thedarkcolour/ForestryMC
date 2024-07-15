@@ -27,12 +27,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.genetics.EnumTolerance;
+import forestry.api.core.ToleranceType;
 import forestry.api.genetics.IAlyzerPlugin;
-import forestry.api.genetics.alleles.AlleleManager;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ForestryChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.products.Product;
 import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.config.Config;
@@ -41,10 +44,10 @@ import forestry.core.gui.TextLayoutHelper;
 import forestry.lepidopterology.features.LepidopterologyItems;
 
 import genetics.api.GeneticHelper;
-import genetics.api.alleles.IAlleleValue;
-import genetics.api.individual.IGenome;
-import genetics.api.organism.IOrganism;
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.IGenome;
+import genetics.api.organism.IIndividualCapability;
+import forestry.api.genetics.ILifeStage;
 
 public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
@@ -55,12 +58,12 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 		NonNullList<ItemStack> butterflyList = NonNullList.create();
 		LepidopterologyItems.BUTTERFLY_GE.item().addCreativeItems(butterflyList, false);
 		for (ItemStack butterflyStack : butterflyList) {
-			IOrganism<?> organism = GeneticHelper.getOrganism(butterflyStack);
+			IIndividualCapability<?> organism = GeneticHelper.getOrganism(butterflyStack);
 			if (organism.isEmpty()) {
 				continue;
 			}
 			IAlleleButterflySpecies species = organism.getAllele(ButterflyChromosomes.SPECIES, true);
-			iconStacks.put(species.getRegistryName(), butterflyStack);
+			iconStacks.put(species.getId(), butterflyStack);
 		}
 	}
 
@@ -72,7 +75,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			if (butterfly == null) {
 				return;
 			}
-			IOrganismType type = ButterflyManager.butterflyRoot.getTypes().getType(stack);
+			ILifeStage type = ButterflyManager.butterflyRoot.getTypes().getType(stack);
 			if (type == null) {
 				return;
 			}
@@ -104,10 +107,10 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			textLayout.newLine();
 
 			textLayout.drawLine(transform, Component.translatable("for.gui.fertility"), GuiAlyzer.COLUMN_0);
-			IAlleleValue<Integer> primaryFertility = genome.getActiveAllele(ButterflyChromosomes.FERTILITY);
-			IAlleleValue<Integer> secondaryFertility = genome.getInactiveAllele(ButterflyChromosomes.FERTILITY);
-			guiAlyzer.drawFertilityInfo(transform, primaryFertility.getValue(), GuiAlyzer.COLUMN_1, guiAlyzer.getColorCoding(primaryFertility.isDominant()), 8);
-			guiAlyzer.drawFertilityInfo(transform, secondaryFertility.getValue(), GuiAlyzer.COLUMN_2, guiAlyzer.getColorCoding(secondaryFertility.isDominant()), 8);
+			IValueAllele<Integer> primaryFertility = genome.getActiveAllele(ButterflyChromosomes.FERTILITY);
+			IValueAllele<Integer> secondaryFertility = genome.getInactiveAllele(ButterflyChromosomes.FERTILITY);
+			guiAlyzer.drawFertilityInfo(transform, primaryFertility.value(), GuiAlyzer.COLUMN_1, guiAlyzer.getColorCoding(primaryFertility.dominant()), 8);
+			guiAlyzer.drawFertilityInfo(transform, secondaryFertility.value(), GuiAlyzer.COLUMN_2, guiAlyzer.getColorCoding(secondaryFertility.dominant()), 8);
 			textLayout.newLine();
 
 			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.flowers"), butterfly, ButterflyChromosomes.FLOWER_PROVIDER);
@@ -128,7 +131,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			if (butterfly == null) {
 				return;
 			}
-			IOrganismType type = ButterflyManager.butterflyRoot.getTypes().getType(stack);
+			ILifeStage type = ButterflyManager.butterflyRoot.getTypes().getType(stack);
 			if (type == null) {
 				return;
 			}
@@ -148,13 +151,13 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			textLayout.newLine();
 
 			guiAlyzer.drawRow(transform, Component.translatable("for.gui.climate"),
-					AlleleManager.climateHelper.toDisplay(primaryAllele.getTemperature()),
-					AlleleManager.climateHelper.toDisplay(secondaryAllele.getTemperature()), butterfly, ButterflyChromosomes.SPECIES);
+					ClimateHelper.toDisplay(primaryAllele.getTemperature()),
+					ClimateHelper.toDisplay(secondaryAllele.getTemperature()), butterfly, ButterflyChromosomes.SPECIES);
 			textLayout.newLine();
 
 			Component indentedTolerance = Component.literal("  ").append(Component.translatable("for.gui.tolerance"));
-			IAlleleValue<EnumTolerance> tempToleranceActive = genome.getActiveAllele(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
-			IAlleleValue<EnumTolerance> tempToleranceInactive = genome.getInactiveAllele(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
+			IValueAllele<ToleranceType> tempToleranceActive = genome.getActiveAllele(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
+			IValueAllele<ToleranceType> tempToleranceInactive = genome.getInactiveAllele(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
 
 			textLayout.drawLine(transform, indentedTolerance, GuiAlyzer.COLUMN_0);
 			guiAlyzer.drawToleranceInfo(transform, tempToleranceActive, GuiAlyzer.COLUMN_1);
@@ -163,12 +166,12 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			textLayout.newLine();
 
 			guiAlyzer.drawRow(transform, Component.translatable("for.gui.humidity"),
-					AlleleManager.climateHelper.toDisplay(primaryAllele.getHumidity()),
-					AlleleManager.climateHelper.toDisplay(secondaryAllele.getHumidity()), butterfly, ButterflyChromosomes.SPECIES);
+					ClimateHelper.toDisplay(primaryAllele.getHumidity()),
+					ClimateHelper.toDisplay(secondaryAllele.getHumidity()), butterfly, ButterflyChromosomes.SPECIES);
 			textLayout.newLine();
 
-			IAlleleValue<EnumTolerance> humidToleranceActive = genome.getActiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
-			IAlleleValue<EnumTolerance> humidToleranceInactive = genome.getInactiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
+			IValueAllele<ToleranceType> humidToleranceActive = genome.getActiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
+			IValueAllele<ToleranceType> humidToleranceInactive = genome.getInactiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
 			textLayout.drawLine(transform, indentedTolerance, GuiAlyzer.COLUMN_0);
 			guiAlyzer.drawToleranceInfo(transform, humidToleranceActive, GuiAlyzer.COLUMN_1);
 			guiAlyzer.drawToleranceInfo(transform, humidToleranceInactive, GuiAlyzer.COLUMN_2);
@@ -180,13 +183,13 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			Component no = Component.translatable("for.no");
 
 			Component diurnal0, diurnal1, nocturnal0, nocturnal1;
-			if (genome.getActiveValue(ButterflyChromosomes.NOCTURNAL)) {
+			if (genome.getActiveValue(ButterflyChromosomes.NEVER_SLEEPS)) {
 				nocturnal0 = diurnal0 = yes;
 			} else {
 				nocturnal0 = primaryAllele.isNocturnal() ? yes : no;
 				diurnal0 = !primaryAllele.isNocturnal() ? yes : no;
 			}
-			if (genome.getActiveValue(ButterflyChromosomes.NOCTURNAL)) {
+			if (genome.getActiveValue(ButterflyChromosomes.NEVER_SLEEPS)) {
 				nocturnal1 = diurnal1 = yes;
 			} else {
 				nocturnal1 = secondaryAllele.isNocturnal() ? yes : no;
@@ -209,10 +212,10 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			guiAlyzer.drawRow(transform, Component.translatable("for.gui.flyer"), primary, secondary, butterfly, ButterflyChromosomes.TOLERATES_RAIN);
 			textLayout.newLine();
 
-			primary = genome.getActiveValue(ButterflyChromosomes.FIRE_RESIST) ? yes : no;
-			secondary = genome.getInactiveValue(ButterflyChromosomes.FIRE_RESIST) ? yes : no;
+			primary = genome.getActiveValue(ButterflyChromosomes.FIRE_RESISTANT) ? yes : no;
+			secondary = genome.getInactiveValue(ButterflyChromosomes.FIRE_RESISTANT) ? yes : no;
 
-			guiAlyzer.drawRow(transform, Component.translatable("for.gui.fireresist"), primary, secondary, butterfly, ButterflyChromosomes.FIRE_RESIST);
+			guiAlyzer.drawRow(transform, Component.translatable("for.gui.fireresist"), primary, secondary, butterfly, ButterflyChromosomes.FIRE_RESISTANT);
 
 			textLayout.endPage(transform);
 		}
@@ -239,7 +242,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			int guiTop = guiAlyzer.getGuiTop();
 			int x = GuiAlyzer.COLUMN_0;
 
-			for (Product product : butterfly.getGenome().getPrimary(IAlleleButterflySpecies.class).getButterflyLoot().getPossibleProducts()) {
+			for (Product product : butterfly.getGenome().getPrimarySpecies(IAlleleButterflySpecies.class).getButterflyLoot().getPossibleProducts()) {
 				itemRenderer.renderGuiItem(product.getStack(), guiLeft + x, guiTop + textLayout.getLineY());
 				x += 18;
 				if (x > 148) {
@@ -255,7 +258,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			textLayout.newLine();
 
 			x = GuiAlyzer.COLUMN_0;
-			for (Product product : butterfly.getGenome().getPrimary(IAlleleButterflySpecies.class).getCaterpillarLoot().getPossibleProducts()) {
+			for (Product product : butterfly.getGenome().getPrimarySpecies(IAlleleButterflySpecies.class).getCaterpillarLoot().getPossibleProducts()) {
 				itemRenderer.renderGuiItem(product.getStack(), guiLeft + x, guiTop + textLayout.getLineY());
 				x += 18;
 				if (x > 148) {

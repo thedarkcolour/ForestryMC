@@ -8,12 +8,12 @@ package forestry.api.core;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.arboriculture.ArboricultureCapabilities;
+import forestry.api.ForestryCapabilities;
 
 /**
  * Naturalist armor allows players to see pollinated tree leaves.
  *
- * @see ArboricultureCapabilities#ARMOR_NATURALIST
+ * @see ForestryCapabilities#ARMOR_NATURALIST
  */
 public interface IArmorNaturalist {
 

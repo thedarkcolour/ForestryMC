@@ -18,25 +18,31 @@ import java.util.Locale;
 
 import net.minecraft.world.item.ItemStack;
 
-import genetics.api.alleles.IAlleleRegistry;
+import forestry.api.genetics.IAlleleRegistry;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
-import genetics.api.classification.IClassification;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 import genetics.api.root.ITemplateContainer;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.ComponentKeys;
 import genetics.api.root.components.IRootComponent;
 
+import forestry.api.ForestryConstants;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ForestryChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpeciesBuilder;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflyMutationBuilder;
-import forestry.core.config.Constants;
-import forestry.core.genetics.alleles.EnumAllele;
+import forestry.core.genetics.alleles.MetabolismAllele;
+import forestry.core.genetics.alleles.SizeAllele;
+import forestry.core.genetics.alleles.SpeedAllele;
 import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 
 // todo implement moths
@@ -45,21 +51,21 @@ public enum MothDefinition implements IButterflyDefinition {
 	LatticedHeath(ButterflyBranchDefinition.CHIASMIA, "latticedHeath", "clathrata", new Color(0xf2f0be), true, 0.5f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, EnumAllele.Size.SMALLEST);
+			template.set(ButterflyChromosomes.SIZE, SizeAllele.SMALLEST);
 		}
 	},
 	Atlas(ButterflyBranchDefinition.ATTACUS, "atlas", "atlas", new Color(0xd96e3d), false, 0.1f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, EnumAllele.Size.LARGEST);
+			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGEST);
 		}
 	},
 	BombyxMori(ButterflyBranchDefinition.BOMBYX, "bombyxMori", "bombyxMori", new Color(0xDADADA), false, 0.0f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, EnumAllele.Size.SMALLEST);
-			template.set(ButterflyChromosomes.SPEED, EnumAllele.Speed.SLOWER);
-			template.set(ButterflyChromosomes.METABOLISM, EnumAllele.Metabolism.SLOW);
+			template.set(ButterflyChromosomes.SIZE, SizeAllele.SMALLEST);
+			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWER);
+			template.set(ButterflyChromosomes.METABOLISM, MetabolismAllele.SLOW);
 			template.set(ButterflyChromosomes.COCOON, ButterflyAlleles.SILK_COCOON);
 		}
 
@@ -82,18 +88,18 @@ public enum MothDefinition implements IButterflyDefinition {
 
 		String uid = "moth_" + CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name());
 
-		IClassification parent = branch.getBranch().getParent();
-		String unlocalizedName = "for.butterflies.species." + parent.getUID().substring(parent.getLevel().name().toLowerCase(Locale.ENGLISH).length() + 1) + '.' + speciesName;
+		String parent = branch.getGenus().getParent();
+		String unlocalizedName = "for.butterflies.species." + parent.getId().substring(parent.rank().name().toLowerCase(Locale.ENGLISH).length() + 1) + '.' + speciesName;
 		String unlocalizedDescription = "for.description." + uid;
 
 		String texture = "butterflies/" + uid;
 
-		IAlleleButterflySpeciesBuilder speciesBuilder = ButterflyManager.butterflyFactory.createSpecies(Constants.MOD_ID, uid, speciesName)
+		IAlleleButterflySpeciesBuilder speciesBuilder = ButterflyManager.butterflyFactory.createSpecies(ForestryConstants.MOD_ID, uid, speciesName)
 			.setDescriptionKey(unlocalizedDescription)
 			.setTranslationKey(unlocalizedName)
 			.setTexture(texture)
 			.setDominant(dominant)
-			.setBranch(branchDefinition.getBranch())
+			.setBranch(branchDefinition.getGenus())
 			.setBinomial(binomial)
 			.setSerumColour(serumColor)
 			.setRarity(rarity)
@@ -182,13 +188,13 @@ public enum MothDefinition implements IButterflyDefinition {
 	}
 
 	@Override
-	public final ItemStack getMemberStack(EnumFlutterType flutterType) {
+	public final ItemStack getMemberStack(ButterflyLifeStage flutterType) {
 		IButterfly butterfly = createIndividual();
 		return ButterflyHelper.getRoot().getTypes().createStack(butterfly, flutterType);
 	}
 
 	@Override
-	public IAlleleButterflySpecies getSpecies() {
+	public ISpeciesType<IButterfly> getSpecies() {
 		return species;
 	}
 }

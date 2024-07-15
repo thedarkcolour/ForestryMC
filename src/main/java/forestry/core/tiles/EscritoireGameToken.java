@@ -18,15 +18,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 
 import forestry.api.core.INbtWritable;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.ColourUtil;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.utils.AlleleUtils;
 
 public class EscritoireGameToken implements INbtWritable, IStreamable {
@@ -74,10 +74,10 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		IAllele allele = AlleleUtils.getAllele(speciesUid);
 
 		if (allele instanceof IAlleleForestrySpecies species) {
-			IIndividualRoot<IIndividual> root = (IIndividualRoot<IIndividual>) species.getRoot();
-			IAllele[] template = root.getTemplates().getTemplate(species.getRegistryName().toString());
+			ISpeciesType<IIndividual> root = (ISpeciesType<IIndividual>) species.getSpecies();
+			IAllele[] template = root.getTemplates().getTemplate(species.getId().toString());
 			this.tokenIndividual = root.templateAsIndividual(template);
-			this.tokenStack = root.getTypes().createStack(this.tokenIndividual, ((IForestrySpeciesRoot<IIndividual>) root).getIconType());
+			this.tokenStack = root.getTypes().createStack(this.tokenIndividual, ((IForestrySpeciesType<IIndividual>) root).getIconType());
 		}
 	}
 
@@ -126,7 +126,7 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 			return 0xffffff;
 		}
 
-		int iconColor = tokenIndividual.getGenome().getPrimary(IAlleleForestrySpecies.class).getSpriteColour(0);
+		int iconColor = tokenIndividual.getGenome().getPrimarySpecies(IAlleleForestrySpecies.class).getSpriteColour(0);
 
 		if (state == State.MATCHED) {
 			return ColourUtil.multiplyRGBComponents(iconColor, 0.7f);
@@ -157,7 +157,7 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		CompoundNBT.putInt("state", state.ordinal());
 
 		if (tokenIndividual != null) {
-			CompoundNBT.putString("tokenSpecies", tokenIndividual.getGenome().getPrimary().getRegistryName().toString());
+			CompoundNBT.putString("tokenSpecies", tokenIndividual.getGenome().getPrimarySpecies().id().toString());
 		}
 		return CompoundNBT;
 	}
@@ -168,7 +168,7 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		NetworkUtil.writeEnum(data, state);
 		if (tokenIndividual != null) {
 			data.writeBoolean(true);
-			data.writeUtf(tokenIndividual.getGenome().getPrimary().getRegistryName().toString());
+			data.writeUtf(tokenIndividual.getGenome().getPrimarySpecies().id().toString());
 		} else {
 			data.writeBoolean(false);
 		}

@@ -14,16 +14,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 import genetics.api.alleles.AlleleCategorized;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
+import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.genetics.IAlleleLeafEffect;
 import forestry.api.genetics.IEffectData;
-import forestry.core.config.Constants;
 
 public class AlleleLeafEffect extends AlleleCategorized implements IAlleleLeafEffect {
-
 	protected AlleleLeafEffect(String valueName, boolean isDominant) {
-		super(Constants.MOD_ID, "leaves", valueName, isDominant);
+		super(ForestryConstants.MOD_ID, "leaves", valueName, isDominant);
 	}
 
 	@Override

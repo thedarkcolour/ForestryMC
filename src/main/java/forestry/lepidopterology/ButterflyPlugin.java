@@ -1,5 +1,10 @@
 package forestry.lepidopterology;
 
+import forestry.api.ForestryConstants;
+import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ForestryChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.lepidopterology.genetics.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -11,15 +16,15 @@ import com.mojang.authlib.GameProfile;
 import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IResearchHandler;
 import forestry.api.lepidopterology.ButterflyManager;
-import forestry.core.config.Constants;
-import forestry.core.genetics.alleles.EnumAllele;
+import forestry.core.genetics.alleles.MetabolismAllele;
+import forestry.core.genetics.alleles.SizeAllele;
 import forestry.core.genetics.root.IResearchPlugin;
 import forestry.core.genetics.root.ResearchHandler;
 import forestry.lepidopterology.features.LepidopterologyItems;
 import forestry.lepidopterology.genetics.ButterflyBranchDefinition;
 import forestry.lepidopterology.genetics.ButterflyDefinition;
 import forestry.lepidopterology.genetics.ButterflyHelper;
-import forestry.lepidopterology.genetics.ButterflyRoot;
+import forestry.lepidopterology.genetics.ButterflySpeciesType;
 import forestry.lepidopterology.genetics.MothDefinition;
 import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 
@@ -27,18 +32,18 @@ import genetics.api.GeneticPlugin;
 import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticFactory;
 import genetics.api.IGeneticPlugin;
-import genetics.api.alleles.IAlleleRegistry;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.classification.IClassificationRegistry;
+import forestry.api.genetics.IAlleleRegistry;
+import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.IClassificationRegistry;
 import genetics.api.individual.IIndividual;
 import genetics.api.organism.IOrganismTypes;
 import genetics.api.root.IGeneticListenerRegistry;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IIndividualRootBuilder;
 import genetics.api.root.IRootManager;
 import genetics.api.root.components.ComponentKeys;
 
-@GeneticPlugin(modId = Constants.MOD_ID)
+@GeneticPlugin(modId = ForestryConstants.MOD_ID)
 public class ButterflyPlugin implements IGeneticPlugin {
 	@Override
 	public void registerClassifications(IClassificationRegistry registry) {
@@ -47,28 +52,28 @@ public class ButterflyPlugin implements IGeneticPlugin {
 
 	@Override
 	public void registerListeners(IGeneticListenerRegistry registry) {
-		registry.add(ButterflyRoot.UID, ButterflyDefinition.values());
-		registry.add(ButterflyRoot.UID, MothDefinition.values());
+		registry.add(ForestrySpeciesType.BUTTERFLY, ButterflyDefinition.values());
+		registry.add(ForestrySpeciesType.BUTTERFLY, MothDefinition.values());
 	}
 
 	@Override
 	public void registerAlleles(IAlleleRegistry registry) {
-		registry.registerAlleles(EnumAllele.Size.values(), ButterflyChromosomes.SIZE);
-		registry.registerAlleles(EnumAllele.Metabolism.values(), ButterflyChromosomes.METABOLISM);
+		registry.registerAlleles(SizeAllele.values(), ButterflyChromosomes.SIZE);
+		registry.registerAlleles(MetabolismAllele.values(), ButterflyChromosomes.METABOLISM);
 		ButterflyAlleles.registerAlleles(registry);
 	}
 
 	@Override
 	public void createRoot(IRootManager rootManager, IGeneticFactory geneticFactory) {
-		IIndividualRootBuilder<IButterfly> rootBuilder = rootManager.createRoot(ButterflyRoot.UID);
+		IIndividualRootBuilder<IButterfly> rootBuilder = rootManager.createRoot(ForestrySpeciesType.BUTTERFLY);
 		rootBuilder
-			.setRootFactory(ButterflyRoot::new)
+			.setRootFactory(ButterflySpeciesType::new)
 			.setSpeciesType(ButterflyChromosomes.SPECIES)
 			.addListener(ComponentKeys.TYPES, (IOrganismTypes<IButterfly> builder) -> {
-				builder.registerType(EnumFlutterType.SERUM, LepidopterologyItems.SERUM_GE::stack);
-				builder.registerType(EnumFlutterType.CATERPILLAR, LepidopterologyItems.CATERPILLAR_GE::stack);
-				builder.registerType(EnumFlutterType.COCOON, LepidopterologyItems.COCOON_GE::stack);
-				builder.registerType(EnumFlutterType.BUTTERFLY, LepidopterologyItems.BUTTERFLY_GE::stack);
+				builder.registerType(ButterflyLifeStage.SERUM, LepidopterologyItems.SERUM_GE::stack);
+				builder.registerType(ButterflyLifeStage.CATERPILLAR, LepidopterologyItems.CATERPILLAR_GE::stack);
+				builder.registerType(ButterflyLifeStage.COCOON, LepidopterologyItems.COCOON_GE::stack);
+				builder.registerType(ButterflyLifeStage.BUTTERFLY, LepidopterologyItems.BUTTERFLY_GE::stack);
 			})
 			.addComponent(ComponentKeys.TRANSLATORS)
 			.addComponent(ComponentKeys.MUTATIONS)
@@ -100,7 +105,7 @@ public class ButterflyPlugin implements IGeneticPlugin {
 
 					@Override
 					public NonNullList<ItemStack> getResearchBounty(IAlleleSpecies species, Level world, GameProfile researcher, IIndividual individual, int bountyLevel) {
-						ItemStack serum = ((IIndividualRoot<IIndividual>) species.getRoot()).getTypes().createStack(individual.copy(), EnumFlutterType.SERUM);
+						ItemStack serum = ((ISpeciesType<IIndividual>) species.getSpecies()).getTypes().createStack(individual.copy(), ButterflyLifeStage.SERUM);
 						NonNullList<ItemStack> bounty = NonNullList.create();
 						bounty.add(serum);
 						return bounty;
@@ -112,6 +117,6 @@ public class ButterflyPlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		ButterflyManager.butterflyRoot = instance.<IButterflyRoot>getRoot(ButterflyRoot.UID).get();
+		ButterflyManager.butterflyRoot = instance.<IButterflySpeciesType>getRoot(ForestrySpeciesType.BUTTERFLY).get();
 	}
 }

@@ -32,8 +32,8 @@ import java.util.Locale;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3f;
 
+import forestry.api.ForestryConstants;
 import forestry.core.blocks.BlockBase;
-import forestry.core.config.Constants;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.tiles.IRenderableTile;
 import forestry.core.tiles.TileBase;
@@ -63,16 +63,16 @@ public class RenderMachine implements IForestryRenderer<TileBase> {
 		resourceTank = root.getChild(RESOURCE_TANK);
 		productTank = root.getChild(PRODUCT_TANK);
 		
-		textureBase = new ResourceLocation(Constants.MOD_ID, baseTexture + "base.png");
-		textureProductTank = new ResourceLocation(Constants.MOD_ID, baseTexture + "tank_product_empty.png");
-		textureResourceTank = new ResourceLocation(Constants.MOD_ID, baseTexture + "tank_resource_empty.png");
+		textureBase = new ResourceLocation(ForestryConstants.MOD_ID, baseTexture + "base.png");
+		textureProductTank = new ResourceLocation(ForestryConstants.MOD_ID, baseTexture + "tank_product_empty.png");
+		textureResourceTank = new ResourceLocation(ForestryConstants.MOD_ID, baseTexture + "tank_resource_empty.png");
 
 		for (EnumTankLevel tankLevel : EnumTankLevel.values()) {
 			if (tankLevel == EnumTankLevel.EMPTY) {
 				continue;
 			}
 			String tankLevelString = tankLevel.toString().toLowerCase(Locale.ENGLISH);
-			texturesTankLevels.put(tankLevel, new ResourceLocation(Constants.MOD_ID, "textures/block/machine_tank_" + tankLevelString + ".png"));
+			texturesTankLevels.put(tankLevel, new ResourceLocation(ForestryConstants.MOD_ID, "textures/block/machine_tank_" + tankLevelString + ".png"));
 		}
 	}
 	

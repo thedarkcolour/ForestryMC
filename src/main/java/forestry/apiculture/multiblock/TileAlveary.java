@@ -12,6 +12,7 @@ package forestry.apiculture.multiblock;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.player.Player;
@@ -32,16 +33,16 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
+import forestry.api.ForestryCapabilities;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.climate.ClimateCapabilities;
 import forestry.api.climate.IClimateListener;
 import forestry.api.climate.IClimatised;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.core.IErrorLogic;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.api.multiblock.IMultiblockController;
@@ -106,7 +107,7 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 				return LazyOptional.of(() -> invWrapper).cast();
 			}
 		}
-		if (capability == ClimateCapabilities.CLIMATE_LISTENER) {
+		if (capability == ForestryCapabilities.CLIMATE_LISTENER) {
 			IClimateListener listener = getMultiblockLogic().getController().getClimateListener();
 			return LazyOptional.of(() -> listener).cast();
 		}
@@ -115,7 +116,7 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 
 	/* IHousing */
 	@Override
-	public Biome getBiome() {
+	public Holder<Biome> getBiome() {
 		return getMultiblockLogic().getController().getBiome();
 	}
 
@@ -147,13 +148,13 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 
 	/* IClimatised */
 	@Override
-	public EnumTemperature getTemperature() {
-		return getMultiblockLogic().getController().getTemperature();
+	public TemperatureType temperature() {
+		return getMultiblockLogic().getController().temperature();
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return getMultiblockLogic().getController().getHumidity();
+	public HumidityType humidity() {
+		return getMultiblockLogic().getController().humidity();
 	}
 
 	@Override
@@ -189,17 +190,6 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 	@Override
 	public String getUnlocalizedTitle() {
 		return unlocalizedTitle;
-	}
-
-	/* IClimatised */
-	@Override
-	public float getExactTemperature() {
-		return getMultiblockLogic().getController().getExactTemperature();
-	}
-
-	@Override
-	public float getExactHumidity() {
-		return getMultiblockLogic().getController().getExactHumidity();
 	}
 
 	/* IStreamableGui */

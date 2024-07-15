@@ -7,7 +7,8 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.gui.elements;
 
 import java.util.function.Consumer;
@@ -48,3 +49,4 @@ public class HabitatFormerButton extends ButtonElement {
 		GuiUtil.drawItemStack(transform, fontRenderer, iconStack, 3, 3);
 	}
 }
+*/

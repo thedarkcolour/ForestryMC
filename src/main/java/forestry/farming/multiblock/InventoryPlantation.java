@@ -10,11 +10,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 
+import forestry.api.IForestryApi;
 import forestry.core.config.Preference;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-import forestry.api.core.ForestryAPI;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
@@ -146,7 +146,7 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 			return false;
 		}
 
-		return ForestryAPI.farmRegistry.getFertilizeValue(stack) > 0;
+		return IForestryApi.INSTANCE.getFarmRegistry().getFertilizeValue(stack) > 0;
 	}
 
 	@Override
@@ -212,7 +212,7 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 			return 0;
 		}
 
-		int fertilizerValue = ForestryAPI.farmRegistry.getFertilizeValue(fertilizerStack);
+		int fertilizerValue = IForestryApi.INSTANCE.getFarmRegistry().getFertilizeValue(fertilizerStack);
 		if (fertilizerValue > 0) {
 			return fertilizerValue * FERTILIZER_MODIFIER;
 		}

@@ -31,8 +31,8 @@ import forestry.core.items.ItemForestry;
 import genetics.api.GeneticHelper;
 import genetics.api.individual.IHasSecrets;
 import genetics.api.individual.IIndividual;
-import genetics.api.organism.IOrganismType;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.ISpeciesType;
 
 public abstract class ItemGE extends ItemForestry {
 	protected ItemGE(Item.Properties properties) {
@@ -41,7 +41,7 @@ public abstract class ItemGE extends ItemForestry {
 
 	protected abstract IAlleleForestrySpecies getSpecies(ItemStack itemStack);
 
-	protected abstract IOrganismType getType();
+	protected abstract ILifeStage getType();
 
 	@Override
 	public Component getName(ItemStack itemStack) {
@@ -62,7 +62,7 @@ public abstract class ItemGE extends ItemForestry {
 		return species.hasEffect();
 	}
 
-	public static void appendGeneticsTooltip(ItemStack stack, IOrganismType organismType, List<Component> tooltip) {
+	public static void appendGeneticsTooltip(ItemStack stack, ILifeStage organismType, List<Component> tooltip) {
 		if (!stack.hasTag()) {
 			return;
 		}
@@ -72,7 +72,7 @@ public abstract class ItemGE extends ItemForestry {
 			if (Screen.hasShiftDown()) {
 				ToolTip helper = new ToolTip();
 				DisplayHelper.getInstance()
-						.getTooltips(individual.getRoot().getUID(), organismType)
+						.getTooltips(individual.getRoot().id(), organismType)
 						.forEach(provider -> provider.addTooltip(helper, individual.getGenome(), individual));
 				if (helper.isEmpty()) {
 					individual.addTooltip(tooltip);
@@ -94,10 +94,10 @@ public abstract class ItemGE extends ItemForestry {
 	@Override
 	public String getCreatorModId(ItemStack itemStack) {
 		IAlleleForestrySpecies species = getSpecies(itemStack);
-		return species.getRegistryName().getNamespace();
+		return species.getId().getNamespace();
 	}
 
-	public static <I extends IIndividual & IHasSecrets> void addCreativeItems(Item item, NonNullList<ItemStack> subItems, boolean hideSecrets, IIndividualRoot<I> speciesRoot) {
+	public static <I extends IIndividual & IHasSecrets> void addCreativeItems(Item item, NonNullList<ItemStack> subItems, boolean hideSecrets, ISpeciesType<I> speciesRoot) {
 		for (I individual : speciesRoot.getIndividualTemplates()) {
 			// Don't show secrets unless ordered to.
 			if (hideSecrets && individual.isSecret() && !Config.isDebug) {
@@ -105,7 +105,7 @@ public abstract class ItemGE extends ItemForestry {
 			}
 
 			ItemStack stack = new ItemStack(item);
-			GeneticHelper.setIndividual(stack, individual);
+			individual.copyTo(stack);
 			subItems.add(stack);
 		}
 	}

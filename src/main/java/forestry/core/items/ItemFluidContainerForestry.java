@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.core.items;
 
-import deleteme.RegistryNameFinder;
 import forestry.api.core.ItemGroups;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
@@ -20,6 +19,7 @@ import forestry.core.items.definitions.EnumContainerType;
 import forestry.core.items.definitions.FluidHandlerItemForestry;
 import forestry.core.items.definitions.IColoredItem;
 import forestry.core.models.FluidContainerModel;
+import forestry.core.utils.ModUtil;
 import forestry.core.utils.Translator;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -106,7 +106,7 @@ public class ItemFluidContainerForestry extends ItemForestry implements IColored
 		if (item instanceof ItemFluidContainerForestry) {
 			FluidStack fluid = getContained(stack);
 			if (!fluid.isEmpty()) {
-				String exactTranslationKey = Constants.TRANSLATION_KEY_ITEM + type.getSerializedName() + '.' + RegistryNameFinder.getRegistryName(fluid.getFluid());
+				String exactTranslationKey = Constants.TRANSLATION_KEY_ITEM + type.getSerializedName() + '.' + ModUtil.getRegistryName(fluid.getFluid());
 				return Translator.tryTranslate(exactTranslationKey, () -> {
 					String grammarKey = Constants.TRANSLATION_KEY_ITEM + type.getSerializedName() + ".grammar";
 					return Component.translatable(grammarKey, fluid.getDisplayName());

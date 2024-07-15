@@ -7,7 +7,7 @@ package forestry.api.arboriculture.genetics;
 
 import java.awt.Color;
 
-import forestry.api.arboriculture.EnumLeafType;
+import forestry.api.arboriculture.LeafType;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 
 public interface ITreeFactory {
@@ -25,5 +25,5 @@ public interface ITreeFactory {
 	/**
 	 * Get one of the built-in Forestry leaf types. Default type is deciduous.
 	 */
-	ILeafSpriteProvider getLeafIconProvider(EnumLeafType enumLeafType, Color color, Color colorPollinated);
+	ILeafSpriteProvider getLeafIconProvider(LeafType leafType, Color color, Color colorPollinated);
 }

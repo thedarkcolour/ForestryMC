@@ -1,6 +1,8 @@
 package forestry.factory.recipes.jei.squeezer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.recipes.ISqueezerRecipe;
 import forestry.core.config.Constants;
 import forestry.core.recipes.jei.ChanceTooltipCallback;
@@ -28,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public class SqueezerRecipeCategory extends ForestryRecipeCategory<ISqueezerRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/squeezersocket.png");
+	private static final ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/squeezersocket.png");
 
 	private final IDrawableAnimated arrow;
 	private final IDrawable tankOverlay;

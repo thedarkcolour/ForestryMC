@@ -1,14 +1,15 @@
 package forestry.apiculture.villagers;
 
 import com.google.common.collect.ImmutableSet;
-import forestry.api.apiculture.genetics.EnumBeeType;
+
+import forestry.api.ForestryConstants;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.apiculture.blocks.BlockTypeApiculture;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.genetics.BeeDefinition;
 import forestry.apiculture.items.EnumPropolis;
 import forestry.apiculture.items.ItemHoneyComb;
-import forestry.core.config.Constants;
 import forestry.core.registration.VillagerTrade;
 import forestry.core.utils.ForgeUtils;
 import forestry.modules.features.FeatureProvider;
@@ -35,10 +36,10 @@ import java.util.Set;
 
 @FeatureProvider
 public class RegisterVillager {
-	public static final ResourceLocation BEEKEEPER = new ResourceLocation(Constants.MOD_ID, "beekeeper");
+	public static final ResourceLocation BEEKEEPER = new ResourceLocation(ForestryConstants.MOD_ID, "beekeeper");
 
-	private static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, Constants.MOD_ID);
-	private static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, Constants.MOD_ID);
+	private static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ForestryConstants.MOD_ID);
+	private static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, ForestryConstants.MOD_ID);
 
 	public static final RegistryObject<PoiType> POI_APIARY = POINTS_OF_INTEREST.register("apiary", () -> new PoiType(Set.copyOf(ApicultureBlocks.BASE.get(BlockTypeApiculture.APIARY).block().getStateDefinition().getPossibleStates()), 1, 1));
 	public static final RegistryObject<VillagerProfession> PROF_BEEKEEPER = PROFESSIONS.register(BEEKEEPER.getPath(), () -> new VillagerProfession(BEEKEEPER.toString(), e -> e.is(POI_APIARY.getKey()), e -> e.is(POI_APIARY.getKey()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_FISHERMAN));
@@ -64,8 +65,8 @@ public class RegisterVillager {
 			event.getTrades().get(3).add(new VillagerTrade.GiveItemForEmeralds(ApicultureItems.FRAME_PROVEN.item(), new VillagerTrade.PriceInterval(1, 2), new VillagerTrade.PriceInterval(1, 6), 8, 10));
 			event.getTrades().get(3).add(new VillagerTrade.GiveItemForLogAndEmerald(new VillagerTrade.PriceInterval(32, 64), new VillagerTrade.PriceInterval(16, 32), ApicultureBlocks.BASE.get(BlockTypeApiculture.APIARY).stack().getItem(), new VillagerTrade.PriceInterval(1, 1), 8, 10));
 
-			event.getTrades().get(4).add(new VillagerTrade.GiveItemForItemAndEmerald(ApicultureItems.BEE_PRINCESS.item(), new VillagerTrade.PriceInterval(1, 1), new VillagerTrade.PriceInterval(10, 64), BeeDefinition.MONASTIC.getMemberStack(EnumBeeType.DRONE).getItem(), new VillagerTrade.PriceInterval(1, 1), 8, 15));
-			event.getTrades().get(4).add(new VillagerTrade.GiveItemForTwoItems(ApicultureItems.BEE_DRONE.item(), new VillagerTrade.PriceInterval(1, 1), Items.ENDER_EYE, new VillagerTrade.PriceInterval(12, 16), BeeDefinition.ENDED.getMemberStack(EnumBeeType.DRONE).getItem(), new VillagerTrade.PriceInterval(1, 1), 8, 15));
+			event.getTrades().get(4).add(new VillagerTrade.GiveItemForItemAndEmerald(ApicultureItems.BEE_PRINCESS.item(), new VillagerTrade.PriceInterval(1, 1), new VillagerTrade.PriceInterval(10, 64), BeeDefinition.MONASTIC.getMemberStack(BeeLifeStage.DRONE).getItem(), new VillagerTrade.PriceInterval(1, 1), 8, 15));
+			event.getTrades().get(4).add(new VillagerTrade.GiveItemForTwoItems(ApicultureItems.BEE_DRONE.item(), new VillagerTrade.PriceInterval(1, 1), Items.ENDER_EYE, new VillagerTrade.PriceInterval(12, 16), BeeDefinition.ENDED.getMemberStack(BeeLifeStage.DRONE).getItem(), new VillagerTrade.PriceInterval(1, 1), 8, 15));
 		}
 	}
 
@@ -90,7 +91,7 @@ public class RegisterVillager {
 		@Override
 		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
 			BeeDefinition[] forestryMundane = new BeeDefinition[]{BeeDefinition.FOREST, BeeDefinition.MEADOWS, BeeDefinition.MODEST, BeeDefinition.WINTRY, BeeDefinition.TROPICAL, BeeDefinition.MARSHY};
-			ItemStack randomHiveDrone = forestryMundane[rand.nextInt(forestryMundane.length)].getMemberStack(EnumBeeType.DRONE);
+			ItemStack randomHiveDrone = forestryMundane[rand.nextInt(forestryMundane.length)].getMemberStack(BeeLifeStage.DRONE);
 			randomHiveDrone.setCount(sellingPriceInfo.getPrice(rand));
 
 			return new MerchantOffer(new ItemStack(buying, buyingPriceInfo.getPrice(rand)), randomHiveDrone, maxUses, xp, priceMult);

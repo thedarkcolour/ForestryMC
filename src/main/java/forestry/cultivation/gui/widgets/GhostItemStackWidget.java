@@ -12,7 +12,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.render.ColourProperties;
@@ -27,9 +27,9 @@ public class GhostItemStackWidget extends ItemStackWidget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		if (!slot.hasItem()) {
-			super.draw(transform, startY, startX);
+			super.draw(transform, startX, startY);
 		}
 		// RenderSystem.disableLighting();
 		RenderSystem.disableDepthTest();
@@ -57,7 +57,7 @@ public class GhostItemStackWidget extends ItemStackWidget {
 			return Component.empty();
 		}
 		int index = slot.getSlotIndex() % 4;
-		FarmDirection direction = FarmDirection.values()[index];
+		HorizontalDirection direction = HorizontalDirection.values()[index];
 		String directionString = direction.toString().toLowerCase(Locale.ENGLISH);
 		return Component.translatable("for.gui.planter." + directionString);
 	}

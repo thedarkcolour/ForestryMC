@@ -51,7 +51,7 @@ public class ItemBlockLeaves extends ItemBlockForestry<BlockAbstractLeaves> impl
 	}
 
 	public static Component getDisplayName(ITree tree) {
-		IAlleleTreeSpecies primary = (IAlleleTreeSpecies) tree.getGenome().getPrimary();
+		IAlleleTreeSpecies primary = tree.getGenome().getPrimarySpecies();
 		String customTreeKey = "for.trees.custom.leaves." + primary.getSpeciesIdentifier();
 		return Translator.tryTranslate(customTreeKey, () -> {
 			Component leaves = Component.translatable("for.trees.grammar.leaves.type");

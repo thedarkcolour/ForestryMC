@@ -10,30 +10,22 @@
  ******************************************************************************/
 package forestry.mail;
 
-import net.minecraft.client.gui.screens.MenuScreens;
+import java.util.function.Consumer;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.ResourceLocation;
+
 import net.minecraftforge.common.MinecraftForge;
 
 import forestry.api.mail.EnumAddressee;
 import forestry.api.mail.PostManager;
-import forestry.api.modules.ForestryModule;
 import forestry.core.ISaveEventHandler;
 import forestry.core.ModuleCore;
 import forestry.core.config.Config;
-import forestry.core.config.Constants;
-import forestry.core.network.IPacketRegistry;
+import forestry.api.modules.IPacketRegistry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
+import forestry.mail.client.MailClientHandler;
 import forestry.mail.commands.CommandMail;
-import forestry.mail.features.MailMenuTypes;
-import forestry.mail.gui.GuiCatalogue;
-import forestry.mail.gui.GuiLetter;
-import forestry.mail.gui.GuiMailbox;
-import forestry.mail.gui.GuiStampCollector;
-import forestry.mail.gui.GuiTradeName;
-import forestry.mail.gui.GuiTrader;
 import forestry.mail.network.packets.PacketLetterInfoRequest;
 import forestry.mail.network.packets.PacketLetterInfoResponsePlayer;
 import forestry.mail.network.packets.PacketLetterInfoResponseTrader;
@@ -42,27 +34,20 @@ import forestry.mail.network.packets.PacketPOBoxInfoResponse;
 import forestry.mail.network.packets.PacketTraderAddressRequest;
 import forestry.mail.network.packets.PacketTraderAddressResponse;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
+import forestry.api.modules.ForestryModuleIds;
+import forestry.api.client.IClientModuleHandler;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.MAIL, name = "Mail", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.mail.description")
 public class ModuleMail extends BlankForestryModule {
-
 	@Override
-	public void setupAPI() {
-		PostManager.postRegistry = new PostRegistry();
-		PostManager.postRegistry.registerCarrier(new PostalCarrier(EnumAddressee.PLAYER));
-		PostManager.postRegistry.registerCarrier(new PostalCarrier(EnumAddressee.TRADER));
+	public ResourceLocation getId() {
+		return ForestryModuleIds.MAIL;
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerGuiFactories() {
-		MenuScreens.register(MailMenuTypes.CATALOGUE.menuType(), GuiCatalogue::new);
-		MenuScreens.register(MailMenuTypes.LETTER.menuType(), GuiLetter::new);
-		MenuScreens.register(MailMenuTypes.MAILBOX.menuType(), GuiMailbox::new);
-		MenuScreens.register(MailMenuTypes.STAMP_COLLECTOR.menuType(), GuiStampCollector::new);
-		MenuScreens.register(MailMenuTypes.TRADE_NAME.menuType(), GuiTradeName::new);
-		MenuScreens.register(MailMenuTypes.TRADER.menuType(), GuiTrader::new);
+	public void setupApi() {
+		PostManager.postRegistry = new PostRegistry();
+		PostManager.postRegistry.registerCarrier(new PostalCarrier(EnumAddressee.PLAYER));
+		PostManager.postRegistry.registerCarrier(new PostalCarrier(EnumAddressee.TRADER));
 	}
 
 	@Override
@@ -89,5 +74,10 @@ public class ModuleMail extends BlankForestryModule {
 	@Override
 	public ISaveEventHandler getSaveEventHandler() {
 		return new SaveEventHandlerMail();
+	}
+
+	@Override
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new MailClientHandler());
 	}
 }

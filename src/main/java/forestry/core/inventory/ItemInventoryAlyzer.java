@@ -10,24 +10,21 @@
  ******************************************************************************/
 package forestry.core.inventory;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.core.IErrorSource;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.apiculture.features.ApicultureItems;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.utils.GeneticsUtil;
 
-import deleteme.Todos;
-import genetics.api.GeneticHelper;
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IRootDefinition;
 import genetics.utils.RootUtils;
 
 public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
@@ -49,7 +46,6 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 		}
 
 		return ApicultureItems.HONEY_DROPS.itemEqual(itemstack) || ApicultureItems.HONEYDEW.itemEqual(itemstack);
-
 	}
 
 	@Override
@@ -64,11 +60,10 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 		}
 
 		itemStack = GeneticsUtil.convertToGeneticEquivalent(itemStack);
-		IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = RootUtils.getRoot(itemStack);
-		if (!definition.isPresent()) {
+		IForestrySpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(itemStack);
+		if (speciesRoot == null) {
 			return false;
 		}
-		IForestrySpeciesRoot<IIndividual> speciesRoot = definition.get();
 
 		if (slotIndex == SLOT_SPECIMEN) {
 			return true;
@@ -99,33 +94,28 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 			specimen = convertedSpecimen;
 		}
 
-		IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = RootUtils.getRoot(specimen);
+		IForestrySpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(specimen);
 		// No individual, abort
-		if (!definition.isPresent()) {
+		if (speciesRoot == null) {
 			return;
 		}
-		IForestrySpeciesRoot<IIndividual> speciesRoot = definition.get();
 
 		IIndividual individual = speciesRoot.create(specimen);
 
 		// Analyze if necessary
 		if (individual != null) {
 			if (!individual.isAnalyzed()) {
-				final boolean requiresEnergy = Todos.isApicultureEnabled();
-
-				if (requiresEnergy) {
-					// Requires energy
-					if (!isAlyzingFuel(getItem(SLOT_ENERGY))) {
-						return;
-					}
+				// Requires energy
+				if (!isAlyzingFuel(getItem(SLOT_ENERGY))) {
+					return;
 				}
 
 				if (individual.analyze()) {
 					IBreedingTracker breedingTracker = speciesRoot.getBreedingTracker(player.level, player.getGameProfile());
-					breedingTracker.registerSpecies(individual.getGenome().getPrimary());
-					breedingTracker.registerSpecies(individual.getGenome().getSecondary());
+					breedingTracker.registerSpecies(individual.getGenome().getPrimarySpecies());
+					breedingTracker.registerSpecies(individual.getGenome().getSecondarySpecies());
 
-					GeneticHelper.setIndividual(specimen, individual);
+					individual.copyTo(specimen);
 
 					// Decrease energy
 					removeItem(SLOT_ENERGY, 1);
@@ -138,19 +128,17 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 	}
 
 	@Override
-	public final ImmutableSet<IErrorState> getErrorStates() {
-		ImmutableSet.Builder<IErrorState> errorStates = ImmutableSet.builder();
-
+	public Set<IError> getErrors() {
 		if (!hasSpecimen()) {
-			errorStates.add(EnumErrorCode.NO_SPECIMEN);
+			return Set.of(ForestryError.NO_SPECIMEN);
 		} else {
-			IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = RootUtils.getRoot(getSpecimen());
-			if (definition.isPresent() && !isAlyzingFuel(getItem(SLOT_ENERGY))) {
-				errorStates.add(EnumErrorCode.NO_HONEY);
+			IForestrySpeciesType<IIndividual> definition = RootUtils.getRoot(getSpecimen());
+			if (definition != null && !isAlyzingFuel(getItem(SLOT_ENERGY))) {
+				return Set.of(ForestryError.NO_HONEY);
 			}
 		}
 
-		return errorStates.build();
+		return Set.of();
 	}
 
 	public ItemStack getSpecimen() {

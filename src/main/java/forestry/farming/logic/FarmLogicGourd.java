@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmable;
@@ -27,7 +27,7 @@ public class FarmLogicGourd extends FarmLogicWatered {
 	}
 
 	@Override
-	protected boolean maintainCrops(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	protected boolean maintainCrops(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
 			if (!world.hasChunkAt(position)) {
@@ -49,7 +49,7 @@ public class FarmLogicGourd extends FarmLogicWatered {
 		return false;
 	}
 
-	private boolean trySetCrop(Level world, IFarmHousing farmHousing, BlockPos position, FarmDirection direction) {
+	private boolean trySetCrop(Level world, IFarmHousing farmHousing, BlockPos position, HorizontalDirection direction) {
 		for (IFarmable candidate : getFarmables()) {
 			if (farmHousing.plantGermling(candidate, world, position, direction)) {
 				return true;
@@ -60,7 +60,7 @@ public class FarmLogicGourd extends FarmLogicWatered {
 	}
 
 	@Override
-	protected boolean isValidPosition(IFarmHousing housing, FarmDirection direction, BlockPos position, CultivationType type) {
+	protected boolean isValidPosition(IFarmHousing housing, HorizontalDirection direction, BlockPos position, CultivationType type) {
 		BlockPos farmLocation = housing.getFarmCorner(direction).relative(direction.getFacing());
 		int xVal = farmLocation.getX() & 1;
 		int zVal = farmLocation.getZ() & 1;

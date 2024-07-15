@@ -8,7 +8,6 @@ import java.util.Set;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -17,13 +16,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import forestry.api.arboriculture.EnumForestryWoodType;
+import forestry.api.ForestryConstants;
+import forestry.api.ForestryTags;
+import forestry.api.arboriculture.ForestryWoodType;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.CharcoalBlocks;
-import forestry.climatology.features.ClimatologyBlocks;
 import forestry.core.blocks.EnumResourceType;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
 import forestry.database.features.DatabaseBlocks;
 import forestry.factory.features.FactoryBlocks;
@@ -36,7 +35,7 @@ import forestry.modules.features.FeatureBlockGroup;
 
 public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 	public ForestryBlockTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
-		super(generator, Constants.MOD_ID, existingFileHelper);
+		super(generator, ForestryConstants.MOD_ID, existingFileHelper);
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 			tag(BlockTags.MINEABLE_WITH_AXE).add(ArboricultureBlocks.TREE_CHEST.block());
 			tag(BlockTags.MINEABLE_WITH_AXE).add(CharcoalBlocks.WOOD_PILE.block());
-			tag(BlockTags.MINEABLE_WITH_AXE).add(ClimatologyBlocks.HABITATFORMER.block());
+			//tag(BlockTags.MINEABLE_WITH_AXE).add(ClimatologyBlocks.HABITATFORMER.block());
 
 			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.APATITE_ORE.block());
 			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.DEEPSLATE_APATITE_ORE.block());
@@ -149,8 +148,8 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 		tag(ForestryTags.Blocks.STORAGE_BLOCKS_TIN).add(CoreBlocks.RESOURCE_STORAGE.get(EnumResourceType.TIN).block());
 		tag(ForestryTags.Blocks.STORAGE_BLOCKS_BRONZE).add(CoreBlocks.RESOURCE_STORAGE.get(EnumResourceType.BRONZE).block());
 
-		tag(ForestryTags.Blocks.PALM_LOGS).add(ArboricultureBlocks.LOGS.get(EnumForestryWoodType.PALM).block());
-		tag(ForestryTags.Blocks.PAPAYA_LOGS).add(ArboricultureBlocks.LOGS.get(EnumForestryWoodType.PAPAYA).block());
+		tag(ForestryTags.Blocks.PALM_LOGS).add(ArboricultureBlocks.LOGS.get(ForestryWoodType.PALM).block());
+		tag(ForestryTags.Blocks.PAPAYA_LOGS).add(ArboricultureBlocks.LOGS.get(ForestryWoodType.PAPAYA).block());
 
 		tag(BlockTags.DIRT).add(CoreBlocks.HUMUS.block());
 	}

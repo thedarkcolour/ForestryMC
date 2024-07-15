@@ -1,5 +1,6 @@
 package forestry.apiculture.features;
 
+import forestry.api.modules.ForestryModuleIds;
 import forestry.apiculture.ModuleApiculture;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.blocks.BlockTypeApiculture;
@@ -21,7 +22,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class ApicultureTiles {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleApiculture.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.APICULTURE);
 
 	public static final FeatureTileType<TileHive> HIVE = REGISTRY.tile(TileHive::new, "hive", ApicultureBlocks.BEEHIVE::getBlocks);
 	public static final FeatureTileType<TileApiary> APIARY = REGISTRY.tile(TileApiary::new, "apiary", () -> ApicultureBlocks.BASE.get(BlockTypeApiculture.APIARY).collect());

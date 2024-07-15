@@ -7,9 +7,9 @@ package forestry.api.lepidopterology.genetics;
 
 import net.minecraft.world.level.Level;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 
 import forestry.api.lepidopterology.IButterflyNursery;
 

@@ -24,7 +24,7 @@ import forestry.core.blocks.IMachinePropertiesTesr;
 import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.config.Constants;
 import forestry.core.proxy.Proxies;
-import forestry.core.tiles.ForestryTicker;
+import forestry.core.tiles.IForestryTicker;
 import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileMill;
 import forestry.factory.features.FactoryTiles;
@@ -32,7 +32,6 @@ import forestry.factory.tiles.TileBottler;
 import forestry.factory.tiles.TileCarpenter;
 import forestry.factory.tiles.TileCentrifuge;
 import forestry.factory.tiles.TileFermenter;
-import forestry.factory.tiles.TileMillRainmaker;
 import forestry.factory.tiles.TileMoistener;
 import forestry.factory.tiles.TileSqueezer;
 import forestry.factory.tiles.TileStill;
@@ -52,7 +51,7 @@ public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
 
 	private final IMachinePropertiesTesr<?> machineProperties;
 
-	<T extends TileBase> BlockTypeFactoryTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, @Nullable ForestryTicker<T> serverTicker) {
+	<T extends TileBase> BlockTypeFactoryTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, @Nullable IForestryTicker<T> serverTicker) {
 		final VoxelShape nsBase = Block.box(2D, 2D, 4D, 14, 14, 12);
 		final VoxelShape nsFront = Block.box(0D, 0D, 0D, 16, 16, 4);
 		final VoxelShape nsBack = Block.box(0D, 0D, 12D, 16, 16, 16);

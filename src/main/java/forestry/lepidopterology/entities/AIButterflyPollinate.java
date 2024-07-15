@@ -12,7 +12,8 @@ package forestry.lepidopterology.entities;
 
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IPollinatable;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.core.utils.GeneticsUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 

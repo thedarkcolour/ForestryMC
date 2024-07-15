@@ -7,7 +7,8 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.inventory;
 
 import java.util.Optional;
@@ -36,3 +37,4 @@ public class InventoryHabitatFormer extends InventoryAdapterTile<TileHabitatForm
 		return false;
 	}
 }
+*/

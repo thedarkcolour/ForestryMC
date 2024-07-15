@@ -12,7 +12,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 
 /**
  * The Backpack Interface allows you to add items to Forestry backpacks or create your own backpacks.
@@ -39,7 +39,7 @@ public interface IBackpackInterface {
 	Item createBackpack(IBackpackDefinition definition, EnumBackpackType type);
 
 	/**
-	 * Create a backpack that can hold items from a specific {@link IForestrySpeciesRoot}.
+	 * Create a backpack that can hold items from a specific {@link IForestrySpeciesType}.
 	 *
 	 * @param definition The backpack definition.
 	 * @param rootUid    The species root.
@@ -49,10 +49,10 @@ public interface IBackpackInterface {
 	Item createNaturalistBackpack(IBackpackDefinition definition, String rootUid, CreativeModeTab tab);
 
 	/**
-	 * Makes a new naturalist backpack filter. Only accepts items from a specific {@link IForestrySpeciesRoot}.
+	 * Makes a new naturalist backpack filter. Only accepts items from a specific {@link IForestrySpeciesType}.
 	 * Useful for implementing {@link IBackpackDefinition} for naturalist's backpacks.
 	 *
-	 * @param speciesRootUid The species root's unique ID. See {@link IForestrySpeciesRoot#getUID()}.
+	 * @param speciesRootUid The species root's unique ID. See {@link IForestrySpeciesType#id()}.
 	 * @return a new backpack filter for the specified species root
 	 * @see #createNaturalistBackpack(IBackpackDefinition, String, CreativeModeTab)
 	 */

@@ -11,7 +11,6 @@
 package forestry.farming.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -20,23 +19,21 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmProperties;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiUtil;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
-import forestry.core.render.RenderHelper;
-import forestry.core.utils.RenderUtil;
 import forestry.farming.multiblock.IFarmControllerInternal;
 
 public class FarmLogicSlot extends Widget {
 
 	private final IFarmControllerInternal farmController;
-	private final FarmDirection farmDirection;
+	private final HorizontalDirection farmDirection;
 
-	public FarmLogicSlot(IFarmControllerInternal farmController, WidgetManager manager, int xPos, int yPos, FarmDirection farmDirection) {
+	public FarmLogicSlot(IFarmControllerInternal farmController, WidgetManager manager, int xPos, int yPos, HorizontalDirection farmDirection) {
 		super(manager, xPos, yPos);
 		this.farmController = farmController;
 		this.farmDirection = farmDirection;
@@ -55,7 +52,7 @@ public class FarmLogicSlot extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		if (!getStackIndex().isEmpty()) {
 			Minecraft minecraft = Minecraft.getInstance();
 			RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);

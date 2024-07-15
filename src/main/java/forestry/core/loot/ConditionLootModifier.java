@@ -2,7 +2,9 @@ package forestry.core.loot;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import forestry.core.config.Constants;
+
+import forestry.api.ForestryConstants;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +70,7 @@ public class ConditionLootModifier extends LootModifier {
 		operates = true;
 
 		for (String extension : extensions) {
-			ResourceLocation location = new ResourceLocation(Constants.MOD_ID, tableLocation.getPath() + "/" + extension);
+			ResourceLocation location = new ResourceLocation(ForestryConstants.MOD_ID, tableLocation.getPath() + "/" + extension);
 			LootTable table = context.getLootTable(location);
 
 			if (table != LootTable.EMPTY) {

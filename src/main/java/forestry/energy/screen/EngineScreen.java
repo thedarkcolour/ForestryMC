@@ -10,7 +10,7 @@ import forestry.core.config.Config;
 import forestry.core.gui.GuiForestryTitled;
 import forestry.core.gui.ledgers.Ledger;
 import forestry.core.gui.ledgers.LedgerManager;
-import forestry.core.render.TextureManagerForestry;
+import forestry.core.render.ForestryTextureManager;
 import forestry.energy.tiles.EngineBlockEntity;
 
 public class EngineScreen<M extends AbstractContainerMenu, E extends EngineBlockEntity> extends GuiForestryTitled<M> {
@@ -35,7 +35,7 @@ public class EngineScreen<M extends AbstractContainerMenu, E extends EngineBlock
 		public void draw(PoseStack transform, int y, int x) {
 			drawBackground(transform, y, x);
 
-			drawSprite(transform, TextureManagerForestry.INSTANCE.getDefault("misc/energy"), x + 3, y + 4);
+			drawSprite(transform, ForestryTextureManager.INSTANCE.getDefault("misc/energy"), x + 3, y + 4);
 
 			if (isFullyOpened()) {
 				drawHeader(transform, Component.translatable("for.gui.energy"), x + 22, y + 8);

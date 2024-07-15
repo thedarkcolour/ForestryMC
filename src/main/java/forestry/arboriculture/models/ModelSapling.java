@@ -37,12 +37,12 @@ import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.arboriculture.tiles.TileSapling;
 
 import genetics.api.GeneticHelper;
-import genetics.api.organism.IOrganism;
+import genetics.api.organism.IIndividualCapability;
 import genetics.utils.AlleleUtils;
 
 public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
@@ -157,7 +157,7 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 			@Nullable
 			@Override
 			public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int p_173469_) {
-				IOrganism<ITree> organism = GeneticHelper.getOrganism(stack);
+				IIndividualCapability<ITree> organism = GeneticHelper.getOrganism(stack);
 				if (organism.isEmpty()) {
 					return model;
 				}

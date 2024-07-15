@@ -16,7 +16,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 import forestry.core.tiles.IFilterSlotDelegate;
 
 /**
@@ -26,7 +26,7 @@ public class SlotFiltered extends SlotWatched implements ISlotTextured {
 	private final IFilterSlotDelegate filterSlotDelegate;
 	@Nullable
 	private ResourceLocation backgroundTexture = null;
-	private ResourceLocation blockedTexture = new ResourceLocation(Constants.MOD_ID, "slots/blocked");
+	private ResourceLocation blockedTexture = new ResourceLocation(ForestryConstants.MOD_ID, "slots/blocked");
 
 	public <T extends Container & IFilterSlotDelegate> SlotFiltered(T inventory, int slotIndex, int xPos, int yPos) {
 		super(inventory, slotIndex, xPos, yPos);
@@ -41,12 +41,12 @@ public class SlotFiltered extends SlotWatched implements ISlotTextured {
 	}
 
 	public SlotFiltered setBlockedTexture(String ident) {
-		blockedTexture = new ResourceLocation(Constants.MOD_ID, ident);
+		blockedTexture = new ResourceLocation(ForestryConstants.MOD_ID, ident);
 		return this;
 	}
 
 	public SlotFiltered setBackgroundTexture(String backgroundTexture) {
-		this.backgroundTexture = new ResourceLocation(Constants.MOD_ID, backgroundTexture);
+		this.backgroundTexture = new ResourceLocation(ForestryConstants.MOD_ID, backgroundTexture);
 		return this;
 	}
 

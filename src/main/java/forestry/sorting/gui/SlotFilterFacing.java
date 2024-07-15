@@ -5,10 +5,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 import forestry.core.gui.slots.ISlotTextured;
 
 public class SlotFilterFacing extends Slot implements ISlotTextured {
+	private static final ResourceLocation SPRITE = new ResourceLocation(ForestryConstants.MOD_ID, "slots/bee");
 
 	public SlotFilterFacing(Container inventoryIn, int index, int xPosition, int yPosition) {
 		super(inventoryIn, index, xPosition, yPosition);
@@ -21,6 +22,6 @@ public class SlotFilterFacing extends Slot implements ISlotTextured {
 
 	@Override
 	public ResourceLocation getBackgroundTexture() {
-		return new ResourceLocation(Constants.MOD_ID, "slots/bee");
+		return SPRITE;
 	}
 }

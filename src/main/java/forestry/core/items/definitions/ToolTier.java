@@ -6,7 +6,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.util.LazyLoadedValue;
 
-import forestry.core.data.ForestryTags;
+import forestry.api.ForestryTags;
 
 public enum ToolTier implements Tier {
 	SURVIVALIST(3, 200, 7.0F, 2.5F, 10, () -> {

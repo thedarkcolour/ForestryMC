@@ -32,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.ICircuit;
 import forestry.api.circuits.ICircuitLayout;
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 import forestry.core.config.Config;
 import forestry.core.items.definitions.EnumElectronTube;
 import forestry.core.utils.ItemTooltipUtil;
@@ -42,7 +42,7 @@ public class ItemElectronTube extends ItemOverlay {
 	private final EnumElectronTube type;
 
 	public ItemElectronTube(EnumElectronTube type) {
-		super(ItemGroupForestry.tabForestry, type);
+		super(ItemGroups.tabForestry, type);
 		this.type = type;
 	}
 

@@ -17,45 +17,37 @@ import java.util.function.Function;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
-import genetics.api.alleles.IAllele;
+import genetics.ApiInstance;
+import genetics.alleles.AlleleTemplateBuilder;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
-import genetics.api.events.RootBuilderEvents;
 import genetics.api.events.RootEvent;
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.individual.IIndividual;
 import genetics.api.individual.IKaryotype;
-import genetics.api.root.IGeneticListener;
-import genetics.api.root.IIndividualRoot;
 import genetics.api.root.IIndividualRootBuilder;
 import genetics.api.root.IIndividualRootFactory;
-import genetics.api.root.IRootContext;
-import genetics.api.root.SimpleIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.ComponentKeys;
 import genetics.api.root.components.IRootComponent;
 import genetics.api.root.components.IRootComponentFactory;
-
-import genetics.ApiInstance;
-import genetics.alleles.AlleleTemplateBuilder;
 import genetics.individual.Karyotype;
-import genetics.individual.RootDefinition;
 
 public class IndividualRootBuilder<I extends IIndividual> implements IIndividualRootBuilder<I> {
 	public final String uid;
-	private final List<IChromosomeType> chromosomeTypes = new ArrayList<>();
+	private final List<IChromosome> chromosomeTypes = new ArrayList<>();
 	@Nullable
-	private IChromosomeType speciesType;
+	private IChromosome speciesType;
 	private final Multimap<ComponentKey, Consumer> componentListeners = HashMultimap.create();
 	private final Map<ComponentKey, IRootComponentFactory> componentFactories = new HashMap<>();
-	private final RootDefinition<IIndividualRoot<I>> definition;
+	private final ISpeciesType<I> definition;
 	private BiFunction<IKaryotype, IAllele[], IAlleleTemplateBuilder> templateFactory = AlleleTemplateBuilder::new;
 	@Nullable
 	private Function<IAlleleTemplateBuilder, IAlleleTemplate> defaultTemplate;
 	@Nullable
-	private IIndividualRootFactory<I, IIndividualRoot<I>> rootFactory;
+	private IIndividualRootFactory<I, ISpeciesType<I>> rootFactory;
 
 	IndividualRootBuilder(String uid) {
 		this.uid = uid;
@@ -65,7 +57,7 @@ public class IndividualRootBuilder<I extends IIndividual> implements IIndividual
 	}
 
 	@Override
-	public IIndividualRootBuilder<I> addChromosome(IChromosomeType type) {
+	public IIndividualRootBuilder<I> addChromosome(IChromosome type) {
 		chromosomeTypes.add(type);
 		if (speciesType == null) {
 			speciesType = type;
@@ -74,7 +66,7 @@ public class IndividualRootBuilder<I extends IIndividual> implements IIndividual
 	}
 
 	@Override
-	public IIndividualRootBuilder<I> addChromosome(IChromosomeType... types) {
+	public IIndividualRootBuilder<I> addChromosome(IChromosome... types) {
 		if (speciesType == null && types.length > 0) {
 			speciesType = types[0];
 		}
@@ -83,7 +75,7 @@ public class IndividualRootBuilder<I extends IIndividual> implements IIndividual
 	}
 
 	@Override
-	public IIndividualRootBuilder<I> setSpeciesType(IChromosomeType speciesType) {
+	public IIndividualRootBuilder<I> setSpeciesType(IChromosome speciesType) {
 		this.speciesType = speciesType;
 		if (!chromosomeTypes.contains(speciesType)) {
 			addChromosome(speciesType);
@@ -92,25 +84,14 @@ public class IndividualRootBuilder<I extends IIndividual> implements IIndividual
 	}
 
 	@Override
-	public IIndividualRootBuilder<I> setRootFactory(IIndividualRootFactory<I, IIndividualRoot<I>> rootFactory) {
+	public IIndividualRootBuilder<I> setRootFactory(IIndividualRootFactory<I, ISpeciesType<I>> rootFactory) {
 		this.rootFactory = rootFactory;
 		return this;
 	}
 
 	@Override
-	public IIndividualRootBuilder<I> setRootFactory(Class<? extends I> individualClass) {
-		return setRootFactory((IRootContext<I> context) -> new SimpleIndividualRoot<>(context, individualClass));
-	}
-
-	@Override
 	public IIndividualRootBuilder<I> setDefaultTemplate(Function<IAlleleTemplateBuilder, IAlleleTemplate> defaultTemplate) {
 		this.defaultTemplate = defaultTemplate;
-		return this;
-	}
-
-	@Override
-	public IIndividualRootBuilder<I> setTemplateFactory(BiFunction<IKaryotype, IAllele[], IAlleleTemplateBuilder> templateFactory) {
-		this.templateFactory = templateFactory;
 		return this;
 	}
 
@@ -124,18 +105,14 @@ public class IndividualRootBuilder<I extends IIndividual> implements IIndividual
 		definition.setRoot(rootFactory.createRoot(new RootContext<>(karyotype, listeners, componentListeners, root -> {
 			Map<ComponentKey, IRootComponent<I>> components = new HashMap<>();
 			componentFactories.forEach((componentKey, factory) -> components.put(componentKey, factory.create(root)));
-			components.forEach((componentKey, builder) -> {
-				FMLJavaModLoadingContext.get().getModEventBus().post(new RootBuilderEvents.CreateComponent<>(this, componentKey, builder));
-				components.put(componentKey, builder);
-			});
 			return components;
 		})));
 		MinecraftForge.EVENT_BUS.post(new RootEvent.CreationEvent<>(definition));
 	}
 
 	@SuppressWarnings("unchecked")
-	public <R extends IIndividualRoot<I>> RootDefinition<R> getDefinition() {
-		return (RootDefinition<R>) definition;
+	public <R extends ISpeciesType<I>> R getDefinition() {
+		return (R) definition;
 	}
 
 	@Override

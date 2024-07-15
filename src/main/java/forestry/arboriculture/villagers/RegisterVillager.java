@@ -1,21 +1,22 @@
 package forestry.arboriculture.villagers;
 
 import com.google.common.collect.ImmutableSet;
-import forestry.api.arboriculture.EnumForestryWoodType;
+
+import forestry.api.ForestryConstants;
+import forestry.api.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.ArboricultureItems;
-import forestry.core.config.Constants;
 import forestry.core.genetics.alleles.AlleleForestrySpecies;
 import forestry.core.registration.VillagerTrade;
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.ILifeStage;
 import genetics.utils.AlleleUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -41,10 +42,10 @@ import java.util.Set;
 
 public class RegisterVillager {
 
-	public static final ResourceLocation ARBORIST = new ResourceLocation(Constants.MOD_ID, "arborist");
+	public static final ResourceLocation ARBORIST = new ResourceLocation(ForestryConstants.MOD_ID, "arborist");
 
-	public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, Constants.MOD_ID);
-	public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, Constants.MOD_ID);
+	public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ForestryConstants.MOD_ID);
+	public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, ForestryConstants.MOD_ID);
 
 	public static final RegistryObject<PoiType> POI_TREE_CHEST = POINTS_OF_INTEREST.register("tree_chest", () -> new PoiType(Set.copyOf(ArboricultureBlocks.TREE_CHEST.block().getStateDefinition().getPossibleStates()), 1, 1));
 	public static final RegistryObject<VillagerProfession> PROF_BEEKEEPER = PROFESSIONS.register(ARBORIST.getPath(), () -> new VillagerProfession(ARBORIST.toString(), e -> e.is(POI_TREE_CHEST.getKey()), e -> e.is(POI_TREE_CHEST.getKey()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_FISHERMAN));
@@ -52,18 +53,18 @@ public class RegisterVillager {
 	public static void villagerTrades(VillagerTradesEvent event) {
 		if (event.getType().equals(PROF_BEEKEEPER.get())) {
 			event.getTrades().get(1).add(new GivePlanksForEmeralds(new VillagerTrade.PriceInterval(1, 4), new VillagerTrade.PriceInterval(10, 32), 8, 2, 0F));
-			event.getTrades().get(1).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(1, 1), new VillagerTrade.PriceInterval(1, 3), EnumGermlingType.SAPLING, 4, 8, 2, 0F));
+			event.getTrades().get(1).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(1, 1), new VillagerTrade.PriceInterval(1, 3), TreeLifeStage.SAPLING, 4, 8, 2, 0F));
 
 			event.getTrades().get(2).add(new GivePlanksForEmeralds(new VillagerTrade.PriceInterval(1, 4), new VillagerTrade.PriceInterval(10, 32), 8, 6, 0F));
-			event.getTrades().get(2).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(2, 3), new VillagerTrade.PriceInterval(1, 1), EnumGermlingType.POLLEN, 6, 8, 6, 0F));
+			event.getTrades().get(2).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(2, 3), new VillagerTrade.PriceInterval(1, 1), TreeLifeStage.POLLEN, 6, 8, 6, 0F));
 			event.getTrades().get(2).add(new VillagerTrade.GiveItemForEmeralds(ArboricultureItems.GRAFTER_PROVEN.item(), new VillagerTrade.PriceInterval(1, 1), new VillagerTrade.PriceInterval(1, 4), 8, 6));
 
 			event.getTrades().get(3).add(new GiveLogsForEmeralds(new VillagerTrade.PriceInterval(2, 5), new VillagerTrade.PriceInterval(6, 18), 8, 2, 0F));
 
 			event.getTrades().get(3).add(new GiveLogsForEmeralds(new VillagerTrade.PriceInterval(2, 5), new VillagerTrade.PriceInterval(6, 18), 8, 2, 0F));
 
-			event.getTrades().get(4).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(5, 20), new VillagerTrade.PriceInterval(1, 1), EnumGermlingType.POLLEN, 10, 8, 15, 0F));
-			event.getTrades().get(4).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(5, 20), new VillagerTrade.PriceInterval(1, 1), EnumGermlingType.SAPLING, 10, 8, 15, 0F));
+			event.getTrades().get(4).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(5, 20), new VillagerTrade.PriceInterval(1, 1), TreeLifeStage.POLLEN, 10, 8, 15, 0F));
+			event.getTrades().get(4).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(5, 20), new VillagerTrade.PriceInterval(1, 1), TreeLifeStage.SAPLING, 10, 8, 15, 0F));
 		}
 	}
 
@@ -73,7 +74,7 @@ public class RegisterVillager {
 
 		@Override
 		public MerchantOffer getOffer(@NotNull Entity trader, @NotNull RandomSource rand) {
-			EnumForestryWoodType woodType = EnumForestryWoodType.getRandom(rand);
+			ForestryWoodType woodType = ForestryWoodType.getRandom(rand);
 			ItemStack sellStack = TreeManager.woodAccess.getStack(woodType, WoodBlockKind.PLANKS, false);
 			sellStack.setCount(sellingPriceInfo.getPrice(rand));
 
@@ -87,7 +88,7 @@ public class RegisterVillager {
 
 		@Override
 		public MerchantOffer getOffer(@NotNull Entity trader, @NotNull RandomSource rand) {
-			EnumForestryWoodType woodType = EnumForestryWoodType.getRandom(rand);
+			ForestryWoodType woodType = ForestryWoodType.getRandom(rand);
 			ItemStack sellStack = TreeManager.woodAccess.getStack(woodType, WoodBlockKind.LOG, false);
 			sellStack.setCount(sellingPriceInfo.getPrice(rand));
 
@@ -96,14 +97,14 @@ public class RegisterVillager {
 	}
 
 	private record GivePollenForEmeralds(VillagerTrade.PriceInterval buyingPriceInfo,
-										 VillagerTrade.PriceInterval sellingPriceInfo, IOrganismType type,
+										 VillagerTrade.PriceInterval sellingPriceInfo, ILifeStage type,
 										 int maxComplexity, int maxUses, int xp,
 										 float priceMult) implements VillagerTrades.ItemListing {
 
 		@Nullable
 		@Override
 		public MerchantOffer getOffer(@NotNull Entity trader, @NotNull RandomSource rand) {
-			IChromosomeType treeSpeciesType = TreeChromosomes.SPECIES;
+			IChromosome treeSpeciesType = TreeChromosomes.SPECIES;
 			Collection<IAllele> registeredSpecies = AlleleUtils.getAllelesByType(treeSpeciesType);
 			List<IAlleleSpecies> potentialSpecies = new ArrayList<>();
 			for (IAllele allele : registeredSpecies) {
@@ -119,7 +120,7 @@ public class RegisterVillager {
 			}
 
 			IAlleleSpecies chosenSpecies = potentialSpecies.get(rand.nextInt(potentialSpecies.size()));
-			IAllele[] template = TreeManager.treeRoot.getTemplate(chosenSpecies.getRegistryName().toString());
+			IAllele[] template = TreeManager.treeRoot.getTemplate(chosenSpecies.getId().toString());
 			ITree individual = TreeManager.treeRoot.templateAsIndividual(template);
 
 			ItemStack sellStack = TreeManager.treeRoot.createStack(individual, type);

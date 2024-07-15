@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.core.gui.IContainerLiquidTanks;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 
 public record PacketPipetteClick(int slot) implements IForestryPacketServer {

@@ -1,10 +1,6 @@
 package forestry.api.genetics.filter;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IFilterRuleType extends IFilterRule {
 	void addLogic(IFilterRule logic);
@@ -17,11 +13,7 @@ public interface IFilterRuleType extends IFilterRule {
 	/**
 	 * @return A unique identifier for the rule.
 	 */
-	String getUID();
+	String getId();
 
-	@OnlyIn(Dist.CLIENT)
-	TextureAtlasSprite getSprite();
-
-	@OnlyIn(Dist.CLIENT)
-	ResourceLocation getTextureMap();
+	ResourceLocation getSprite();
 }

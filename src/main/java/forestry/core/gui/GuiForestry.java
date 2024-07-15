@@ -33,6 +33,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
+import forestry.api.client.ForestrySprites;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.climate.IClimatised;
 import forestry.api.core.IErrorLogicSource;
 import forestry.api.core.IErrorSource;
@@ -49,7 +51,7 @@ import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.render.ColourProperties;
-import forestry.core.render.ForestryResource;
+import forestry.core.utils.ModUtil;
 import forestry.energy.ForestryEnergyStorage;
 
 public abstract class GuiForestry<C extends AbstractContainerMenu> extends AbstractContainerScreen<C> implements IGuiSizable {
@@ -60,7 +62,7 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 	protected final WindowGui<?> window;
 
 	protected GuiForestry(String texture, C menu, Inventory inv, Component title) {
-		this(new ForestryResource(texture), menu, inv, title);
+		this(ModUtil.modLoc(texture), menu, inv, title);
 	}
 
 	protected GuiForestry(ResourceLocation texture, C menu, Inventory inv, Component title) {
@@ -278,9 +280,8 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 			if (stack.isEmpty() && slot.isActive()) {
 				ResourceLocation location = textured.getBackgroundTexture();
 				if (location != null) {
-					TextureAtlasSprite sprite = textured.getBackgroundAtlas().apply(location);
-					RenderSystem.setShaderTexture(0, sprite.atlas().location());
-					blit(transform, slot.x, slot.y, this.getBlitOffset(), 16, 16, sprite);
+					RenderSystem.setShaderTexture(0, ForestrySprites.TEXTURE_ATLAS);
+					blit(transform, slot.x, slot.y, this.getBlitOffset(), 16, 16, IForestryClientApi.INSTANCE.getTextureManager().getSprite(location));
 				}
 			}
 		}

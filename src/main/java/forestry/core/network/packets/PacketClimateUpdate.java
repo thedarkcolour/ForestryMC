@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import forestry.api.climate.IClimateHousing;
 import forestry.api.climate.IClimateTransformer;
 import forestry.core.climate.ClimateTransformer;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 

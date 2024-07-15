@@ -13,7 +13,6 @@ package forestry.apiculture.particles;
 import javax.annotation.Nonnull;
 import java.util.Locale;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
@@ -23,6 +22,8 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import forestry.core.utils.ModUtil;
 
 public class BeeTargetParticleData implements ParticleOptions {
 
@@ -76,6 +77,6 @@ public class BeeTargetParticleData implements ParticleOptions {
 	@Nonnull
 	@Override
 	public String writeToString() {
-		return String.format(Locale.ROOT, "%s %d %d", RegistryNameFinder.getRegistryName(getType()), entity, color);
+		return String.format(Locale.ROOT, "%s %d %d", ModUtil.getRegistryName(getType()), entity, color);
 	}
 }

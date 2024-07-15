@@ -123,8 +123,8 @@ public class EscritoireGame implements INbtWritable, INbtReadable, IStreamable {
 			bountyLevel--;
 		}
 
-		IAlleleForestrySpecies species = individual.getGenome().getPrimary(IAlleleForestrySpecies.class);
-		IResearchHandler handler = species.getRoot().getComponent(ForestryComponentKeys.RESEARCH);
+		IAlleleForestrySpecies species = individual.getGenome().getPrimarySpecies(IAlleleForestrySpecies.class);
+		IResearchHandler handler = species.getSpecies().getComponent(ForestryComponentKeys.RESEARCH);
 		gameBoard.hideProbedTokens();
 
 		int revealCount = getSampleSize(slotCount);

@@ -19,13 +19,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
@@ -54,7 +55,7 @@ public class FarmLogicArboreal extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing farmHousing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level world, IFarmHousing farmHousing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = farmHousing.getValidPosition(direction, pos, extent, pos.above());
 		Collection<ICrop> crops = harvestBlocks(world, position);
 		farmHousing.increaseExtent(direction, pos, extent);
@@ -116,7 +117,7 @@ public class FarmLogicArboreal extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
 
@@ -131,7 +132,7 @@ public class FarmLogicArboreal extends FarmLogicHomogeneous {
 		return false;
 	}
 
-	private boolean plantSapling(Level world, IFarmHousing farmHousing, BlockPos position, FarmDirection direction) {
+	private boolean plantSapling(Level world, IFarmHousing farmHousing, BlockPos position, HorizontalDirection direction) {
 		Collections.shuffle(getFarmables());
 		for (IFarmable candidate : getFarmables()) {
 			if (farmHousing.plantGermling(candidate, world, position, direction)) {

@@ -6,13 +6,15 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.lepidopterology.genetics.IAlleleButterflyCocoon;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.models.AbstractItemModel;
 import forestry.lepidopterology.items.ItemButterflyGE;
 import genetics.api.GeneticHelper;
-import genetics.api.organism.IOrganism;
+import genetics.api.organism.IIndividualCapability;
 import genetics.utils.AlleleUtils;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -38,7 +40,7 @@ public class CocoonItemModel extends AbstractItemModel {
 	@Override
 	protected BakedModel getOverride(BakedModel model, ItemStack stack) {
 		int age = Mth.clamp(stack.getOrCreateTag().getInt(ItemButterflyGE.NBT_AGE), 0, ItemButterflyGE.MAX_AGE);
-		IOrganism<IButterfly> organism = GeneticHelper.getOrganism(stack);
+		IIndividualCapability<IButterfly> organism = GeneticHelper.getOrganism(stack);
 		IAlleleButterflyCocoon alleleCocoon = organism.getAllele(ButterflyChromosomes.COCOON, true);
 		return bakedModel.getOrDefault(alleleCocoon.getCocoonName(), ImmutableList.of()).get(age);
 	}

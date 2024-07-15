@@ -1,17 +1,16 @@
 package forestry.apiculture;
 
-import forestry.apiculture.genetics.BeeHelper;
 import net.minecraft.world.item.ItemStack;
 
-import genetics.api.individual.IIndividual;
-
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.sorting.DefaultFilterRuleType;
+
+import genetics.api.individual.IIndividual;
 
 public enum ApicultureFilterRule implements IFilterRule {
 	PURE_BREED(DefaultFilterRuleType.PURE_BREED) {
@@ -69,7 +68,7 @@ public enum ApicultureFilterRule implements IFilterRule {
 		if (!data.isPresent()) {
 			return false;
 		}
-		IIndividual individual = data.getIndividual();
+		IIndividual individual = data.individual();
 		if (!(individual instanceof IBee)) {
 			return false;
 		}
@@ -82,7 +81,7 @@ public enum ApicultureFilterRule implements IFilterRule {
 
 	@Override
 	public String getRootUID() {
-		return BeeManager.beeRoot.getUID();
+		return BeeManager.beeRoot.id();
 	}
 
 }

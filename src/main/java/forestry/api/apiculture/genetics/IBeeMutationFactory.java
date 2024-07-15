@@ -5,7 +5,7 @@
  ******************************************************************************/
 package forestry.api.apiculture.genetics;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 
 public interface IBeeMutationFactory {
 	/**

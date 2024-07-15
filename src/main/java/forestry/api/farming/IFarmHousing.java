@@ -14,7 +14,6 @@ import net.minecraft.world.level.Level;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.climate.IClimatised;
 import forestry.api.core.IErrorLogicSource;
 
 /**
@@ -23,7 +22,7 @@ import forestry.api.core.IErrorLogicSource;
  * It contains methods to interact with the farm itself.
  * Can be used in {@link IFarmLogic}'s to remove fluid or add products.
  */
-public interface IFarmHousing extends IErrorLogicSource, IExtentCache, IClimatised {
+public interface IFarmHousing extends IErrorLogicSource, IExtentCache {
 
 	/**
 	 * Position of the farm. Mostly used by internal logic.
@@ -71,7 +70,7 @@ public interface IFarmHousing extends IErrorLogicSource, IExtentCache, IClimatis
 	 *
 	 * @return true if planting was successful, false otherwise.
 	 */
-	boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, FarmDirection direction);
+	boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, HorizontalDirection direction);
 
 	default boolean isValidPlatform(Level world, BlockPos pos) {
 		return false;
@@ -118,14 +117,14 @@ public interface IFarmHousing extends IErrorLogicSource, IExtentCache, IClimatis
 	 * @param direction The direction of the farm to be set
 	 * @param logic     The farm logic that direction should be set to
 	 */
-	void setFarmLogic(FarmDirection direction, IFarmLogic logic);
+	void setFarmLogic(HorizontalDirection direction, IFarmLogic logic);
 
 	/**
 	 * Resets the farm logic off the given direction to the default logic (ARBOREAL).
 	 *
 	 * @param direction The direction to reset
 	 */
-	void resetFarmLogic(FarmDirection direction);
+	void resetFarmLogic(HorizontalDirection direction);
 
 	/**
 	 * Receives the logic of the given direction.
@@ -133,7 +132,7 @@ public interface IFarmHousing extends IErrorLogicSource, IExtentCache, IClimatis
 	 * @param direction The direction of the logic to get.
 	 * @return The logic that is located on this side of the farm.
 	 */
-	IFarmLogic getFarmLogic(FarmDirection direction);
+	IFarmLogic getFarmLogic(HorizontalDirection direction);
 
 	/**
 	 * Receives a collection with all logics of this farm.
@@ -160,5 +159,5 @@ public interface IFarmHousing extends IErrorLogicSource, IExtentCache, IClimatis
 	 * @param direction The direction to receive
 	 * @return The position of the direction corner.
 	 */
-	BlockPos getFarmCorner(FarmDirection direction);
+	BlockPos getFarmCorner(HorizontalDirection direction);
 }

@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
  * Interface for things, that have a location.
  * Must not be named "getWorld" and "getPos" to avoid
  * SpecialSource issue https://github.com/md-5/SpecialSource/issues/12
- * TODO rename to getBlockPos, getLevel in 1.20.4
+ * TODO rename to getBlockPos, getLevel in 1.21
  */
 public interface ILocatable {
 	BlockPos getCoordinates();

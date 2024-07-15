@@ -32,14 +32,14 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleFruit;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.products.IProductList;
-import forestry.core.data.ForestryTags;
+import forestry.api.ForestryTags;
 import forestry.core.genetics.ProductListWrapper;
 import forestry.core.utils.BlockUtil;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class FruitProviderPod extends FruitProviderNone {
 

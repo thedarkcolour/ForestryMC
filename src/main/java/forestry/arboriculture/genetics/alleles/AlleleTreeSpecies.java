@@ -15,7 +15,6 @@ import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -31,15 +30,13 @@ import forestry.api.arboriculture.ILeafProvider;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.ITreeGenerator;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpeciesBuilder;
-import forestry.api.arboriculture.genetics.ITreeRoot;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.genetics.IFruitFamily;
 import forestry.arboriculture.genetics.ClimateGrowthProvider;
 import forestry.core.genetics.alleles.AlleleForestrySpecies;
-
-import forestry.core.genetics.alleles.AlleleForestrySpecies.AbstractBuilder;
 
 public class AlleleTreeSpecies extends AlleleForestrySpecies implements IAlleleTreeSpecies {
 	private final ITreeGenerator generator;
@@ -66,7 +63,7 @@ public class AlleleTreeSpecies extends AlleleForestrySpecies implements IAlleleT
 	}
 
 	@Override
-	public ITreeRoot getRoot() {
+	public ITreeSpeciesType getSpecies() {
 		return TreeManager.treeRoot;
 	}
 
@@ -120,7 +117,7 @@ public class AlleleTreeSpecies extends AlleleForestrySpecies implements IAlleleT
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int getGermlingColour(EnumGermlingType type, int renderPass) {
+	public int getGermlingColour(TreeLifeStage type, int renderPass) {
 		return germlingModelProvider.getSpriteColor(type, renderPass);
 	}
 

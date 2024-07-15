@@ -26,9 +26,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonParseException;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -41,7 +40,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
@@ -57,17 +55,20 @@ import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.ForestryConstants;
+import forestry.api.genetics.alleles.ForestryChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.core.config.Constants;
 import forestry.core.models.AbstractBakedModel;
 import forestry.core.models.TRSRBakedModel;
 import forestry.core.utils.ResourceUtil;
 
 import genetics.api.GeneticHelper;
-import genetics.api.alleles.IAlleleValue;
-import genetics.api.organism.IOrganism;
+import forestry.api.genetics.alleles.IValueAllele;
+import genetics.api.organism.IIndividualCapability;
 import genetics.utils.AlleleUtils;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
@@ -94,18 +95,18 @@ public class ButterflyItemModel extends AbstractBakedModel {
 
 		@Override
 		public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int p_173469_) {
-			IOrganism<IButterfly> organism = GeneticHelper.getOrganism(stack);
+			IIndividualCapability<IButterfly> organism = GeneticHelper.getOrganism(stack);
 			IAlleleButterflySpecies species = organism.getAllele(ButterflyChromosomes.SPECIES, true);
-			IAlleleValue<Float> size = organism.getAllele(ButterflyChromosomes.SIZE, true);
+			IValueAllele<Float> size = organism.getAllele(ButterflyChromosomes.SIZE, true);
 			Preconditions.checkNotNull(species);
 			Preconditions.checkNotNull(size);
-			BakedModel bakedModel = cache.getIfPresent(Pair.of(species.getRegistryName().getPath(), size));
+			BakedModel bakedModel = cache.getIfPresent(Pair.of(species.getId().getPath(), size));
 			if (bakedModel != null) {
 				return bakedModel;
 			}
 			float scale = 1F / 16F;
-			float sizeValue = size.getValue();
-			String identifier = species.getRegistryName().getPath();
+			float sizeValue = size.value();
+			String identifier = species.getId().getPath();
 			ModelState transform = new SimpleModelState(Transformation.identity()/*getTransformations(sizeValue)*/);//-0.03125F, 0.25F - sizeValue * 0.37F, -0.03125F + sizeValue * scale, sizeValue * 1.4F
 			bakedModel = new SeparateTransformsModel.Baked(false, true, false, ResourceUtil.getMissingTexture(), ItemOverrides.EMPTY, new TRSRBakedModel(subModels.get(identifier), 0, 0, 0, 1), ImmutableMap.of());
 			cache.put(Pair.of(identifier, sizeValue), bakedModel);
@@ -141,7 +142,7 @@ public class ButterflyItemModel extends AbstractBakedModel {
 
 		@Override
 		public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
-			UnbakedModel modelButterfly = bakery.getModel(new ResourceLocation(Constants.MOD_ID, "item/butterfly"));
+			UnbakedModel modelButterfly = bakery.getModel(new ResourceLocation(ForestryConstants.MOD_ID, "item/butterfly"));
 			if (!(modelButterfly instanceof BlockModel modelBlock)) {
 				return null;
 			}
@@ -151,8 +152,8 @@ public class ButterflyItemModel extends AbstractBakedModel {
 				String texture = subModel.getValue();
 
 				BlockModel model = new BlockModel(modelBlock.getParentLocation(), modelBlock.getElements(), ImmutableMap.of("butterfly", Either.left(new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(texture)))), modelBlock.hasAmbientOcclusion, modelBlock.getGuiLight(), modelBlock.getTransforms(), modelBlock.getOverrides());
-				ResourceLocation location = new ResourceLocation(Constants.MOD_ID, "item/butterfly");
-				ModelState transform = ResourceUtil.loadTransform(new ResourceLocation(Constants.MOD_ID, "item/butterfly"));
+				ResourceLocation location = new ResourceLocation(ForestryConstants.MOD_ID, "item/butterfly");
+				ModelState transform = ResourceUtil.loadTransform(new ResourceLocation(ForestryConstants.MOD_ID, "item/butterfly"));
 				subModelBuilder.put(identifier, model.bake(bakery, model, spriteGetter, transform, location, true));
 			}
 			return new ButterflyItemModel(subModelBuilder.build());
@@ -170,7 +171,7 @@ public class ButterflyItemModel extends AbstractBakedModel {
 		public ButterflyItemModel.Geometry read(JsonObject modelContents, JsonDeserializationContext context) throws JsonParseException {
 			ImmutableMap.Builder<String, String> subModels = new ImmutableMap.Builder<>();
 			AlleleUtils.forEach(ButterflyChromosomes.SPECIES, (butterfly) -> {
-				ResourceLocation registryName = butterfly.getRegistryName();
+				ResourceLocation registryName = butterfly.id();
 				subModels.put(registryName.getPath(), butterfly.getItemTexture().toString());
 			});
 			return new ButterflyItemModel.Geometry(subModels.build());

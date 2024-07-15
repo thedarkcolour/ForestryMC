@@ -5,47 +5,24 @@
  ******************************************************************************/
 package forestry.api.climate;
 
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 
 /**
- * Provides exact climate information about an object (tile entity or multiblock)
+ * Provides climate information about an object (tile entity or multiblock)
  */
-public interface IClimatised extends IRoughClimateProvider {
-
+public interface IClimatised {
 	/**
 	 * The current temperature of this object represented by an enum.
 	 * <p>
-	 * {@link EnumTemperature#HELLISH} if the biome of the object is based in the nether.
+	 * {@link forestry.api.ForestryTags.Biomes#HELLISH_TEMPERATURE} if the biome of the object is based in the nether.
 	 *
 	 * @return An enum value based on the temperature of this object.
 	 */
-	default EnumTemperature getTemperature() {
-		return EnumTemperature.getFromValue(getExactTemperature());
-	}
+	TemperatureType temperature();
 
 	/**
-	 * The current humidity of this object represented by an enum.
-	 *
-	 * @return An enum value based on the humidity of this object.
+	 * @return The current humidity.
 	 */
-	default EnumHumidity getHumidity() {
-		return EnumHumidity.getFromValue(getExactHumidity());
-	}
-
-	/**
-	 * The current temperature value of this object.
-	 * The range is based on the vanilla values of the biomes.
-	 *
-	 * @return A value between 0.0f and 2.0f.
-	 */
-	float getExactTemperature();
-
-	/**
-	 * The current humidity value of this object.
-	 * The range is based on the vanilla values of the biomes.
-	 *
-	 * @return A value between 0.0f and 2.0f.
-	 */
-	float getExactHumidity();
+	HumidityType humidity();
 }

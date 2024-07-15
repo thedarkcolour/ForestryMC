@@ -11,6 +11,7 @@
 package forestry.factory;
 
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -26,7 +27,6 @@ import forestry.api.fuels.FermenterFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.api.fuels.MoistenerFuel;
 import forestry.api.fuels.RainSubstrate;
-import forestry.api.modules.ForestryModule;
 import forestry.api.recipes.RecipeManagers;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.circuits.Circuits;
@@ -36,7 +36,7 @@ import forestry.core.features.CoreItems;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
-import forestry.core.network.IPacketRegistry;
+import forestry.api.modules.IPacketRegistry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
 import forestry.core.utils.datastructures.DummyMap;
@@ -64,12 +64,16 @@ import forestry.factory.recipes.SqueezerContainerRecipeManager;
 import forestry.factory.recipes.SqueezerRecipeManager;
 import forestry.factory.recipes.StillRecipeManager;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
+import forestry.api.modules.ForestryModuleIds;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.FACTORY, name = "Factory", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.factory.description", lootTable = "factory")
 public class ModuleFactory extends BlankForestryModule {
 	@Override
-	public void setupAPI() {
+	public ResourceLocation getId() {
+		return ForestryModuleIds.FACTORY;
+	}
+
+	@Override
+	public void setupApi() {
 		RecipeManagers.carpenterManager = machineEnabled() ? new CarpenterRecipeManager() : new DummyManagers.DummyCarpenterManager();
 		RecipeManagers.centrifugeManager = machineEnabled() ? new CentrifugeRecipeManager() : new DummyManagers.DummyCentrifugeManager();
 		RecipeManagers.fabricatorManager = machineEnabled() ? new FabricatorRecipeManager() : new DummyManagers.DummyFabricatorManager();
@@ -84,7 +88,7 @@ public class ModuleFactory extends BlankForestryModule {
 	}
 
 	@Override
-	public void disabledSetupAPI() {
+	public void setupFallbackApi() {
 		RecipeManagers.carpenterManager = new DummyManagers.DummyCarpenterManager();
 		RecipeManagers.centrifugeManager = new DummyManagers.DummyCentrifugeManager();
 		RecipeManagers.fabricatorManager = new DummyManagers.DummyFabricatorManager();
@@ -105,7 +109,7 @@ public class ModuleFactory extends BlankForestryModule {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void registerGuiFactories() {
+	public void registerMenuScreens() {
 		MenuScreens.register(FactoryMenuTypes.BOTTLER.menuType(), GuiBottler::new);
 		MenuScreens.register(FactoryMenuTypes.CARPENTER.menuType(), GuiCarpenter::new);
 		MenuScreens.register(FactoryMenuTypes.CENTRIFUGE.menuType(), GuiCentrifuge::new);

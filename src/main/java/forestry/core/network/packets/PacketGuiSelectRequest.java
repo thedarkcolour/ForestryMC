@@ -16,7 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import forestry.core.gui.IGuiSelectable;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 
 public record PacketGuiSelectRequest(int primaryIndex, int secondaryIndex) implements IForestryPacketServer {

@@ -16,22 +16,22 @@ public interface IClimateManipulator {
 	/**
 	 * @return The current climate state of this manipulator.
 	 */
-	IClimateState getCurrent();
+	IClimatised getCurrent();
 
 	/**
-	 * @return The climate state that was set with {@link IClimateManipulatorBuilder#setCurrent(IClimateState)}.
+	 * @return The climate state that was set with {@link IClimateManipulatorBuilder#setCurrent(IClimatised)}.
 	 */
-	IClimateState getStart();
+	IClimatised getStart();
 
 	/**
-	 * @return The targeted state of this manipulator and was set with {@link IClimateManipulatorBuilder#setTarget(IClimateState)}.
+	 * @return The targeted state of this manipulator and was set with {@link IClimateManipulatorBuilder#setTarget(IClimatised)}.
 	 */
-	IClimateState getTarget();
+	IClimatised getTarget();
 
 	/**
-	 * @return The default state of this manipulator and was set with {@link IClimateManipulatorBuilder#setDefault(IClimateState)} (IClimateState)}.
+	 * @return The default state of this manipulator and was set with {@link IClimateManipulatorBuilder#setDefault(IClimatised)} (IClimateState)}.
 	 */
-	IClimateState getDefault();
+	IClimatised getDefault();
 
 	/**
 	 * @return If the manipulator is allowed to go into the opposite direction. (to negate the change value that was
@@ -52,7 +52,7 @@ public interface IClimateManipulator {
 	 * @return The difference between the new current state and the current state before the change was added. Both
 	 * values are zero if nothing was / would have been added.
 	 */
-	IClimateState addChange(boolean simulated);
+	IClimatised addChange(boolean simulated);
 
 	/**
 	 * Tries to remove the change value from the current state of this transformer. Automatically rounds if the new state would be
@@ -62,7 +62,7 @@ public interface IClimateManipulator {
 	 * @return The difference between the new current state and the current state before the change was removed. Both
 	 * values are zero if nothing was / would have been removed.
 	 */
-	IClimateState removeChange(boolean simulated);
+	IClimatised removeChange(boolean simulated);
 
 	/**
 	 * @return If the change value has the right sign to bring the current climate state closer to the targeted state.

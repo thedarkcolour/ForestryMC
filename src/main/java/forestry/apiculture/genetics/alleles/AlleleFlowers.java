@@ -12,27 +12,26 @@ package forestry.apiculture.genetics.alleles;
 
 import net.minecraft.network.chat.MutableComponent;
 
-import genetics.api.alleles.AlleleCategorizedValue;
+import genetics.api.alleles.AlleleCategorized;
 
 import forestry.api.genetics.alleles.IAlleleFlowers;
 import forestry.api.genetics.flowers.IFlowerProvider;
 
-public class AlleleFlowers<P extends IFlowerProvider> extends AlleleCategorizedValue<P> implements IAlleleFlowers {
-
+public class AlleleFlowers extends AlleleCategorized implements IAlleleFlowers {
 	private final IFlowerProvider provider;
 
-	public AlleleFlowers(String modId, String category, String name, P provider, boolean isDominant) {
-		super(modId, category, name, provider, isDominant);
+	public AlleleFlowers(String modId, String category, String name, IFlowerProvider provider, boolean isDominant) {
+		super(modId, category, name, isDominant);
 		this.provider = provider;
 	}
 
 	@Override
-	public IFlowerProvider getProvider() {
+	public IFlowerProvider getType() {
 		return provider;
 	}
 
 	@Override
 	public MutableComponent getDisplayName() {
-		return getProvider().getDescription();
+		return getType().getDescription();
 	}
 }

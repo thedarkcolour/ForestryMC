@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import forestry.core.blocks.IBlockType;
 import forestry.core.blocks.IMachineProperties;
 import forestry.core.blocks.MachineProperties;
-import forestry.core.tiles.ForestryTicker;
+import forestry.core.tiles.IForestryTicker;
 import forestry.core.tiles.TileForestry;
 import forestry.mail.features.MailTiles;
 import forestry.mail.tiles.TileStampCollector;
@@ -32,7 +32,7 @@ public enum BlockTypeMail implements IBlockType {
 
 	private final IMachineProperties machineProperties;
 
-	<T extends TileForestry> BlockTypeMail(Supplier<FeatureTileType<? extends T>> teClass, String name, @Nullable ForestryTicker<T> serverTicker) {
+	<T extends TileForestry> BlockTypeMail(Supplier<FeatureTileType<? extends T>> teClass, String name, @Nullable IForestryTicker<T> serverTicker) {
 		this.machineProperties = new MachineProperties.Builder<>(teClass, name).setServerTicker(serverTicker).create();
 	}
 

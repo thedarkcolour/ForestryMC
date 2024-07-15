@@ -6,20 +6,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.core.tooltips.ITextInstance;
 import forestry.api.core.tooltips.ToolTip;
+import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.alyzer.IAlleleDisplayHandler;
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
 import forestry.apiculture.genetics.IGeneticTooltipProvider;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleValue;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IValueAllele;
 import genetics.api.individual.IChromosomeAllele;
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.individual.IChromosomeValue;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 	SAPPINESS(TreeChromosomes.SAPPINESS, ChatFormatting.GOLD, "S: %1$s"),
@@ -57,7 +58,7 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 		}
 	};
 
-	final IChromosomeType type;
+	final IChromosome type;
 	@Nullable
 	final String alyzerCaption;
 	final int alyzerIndex;
@@ -77,15 +78,15 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 		this.groupPair = groupPair;
 	}
 
-	TreeDisplayHandler(IChromosomeType type, int alyzerIndex, int tooltipIndex) {
+	TreeDisplayHandler(IChromosome type, int alyzerIndex, int tooltipIndex) {
 		this(type, alyzerIndex, tooltipIndex, null);
 	}
 
-	TreeDisplayHandler(IChromosomeType type, int alyzerIndex, @Nullable String alyzerCaption) {
+	TreeDisplayHandler(IChromosome type, int alyzerIndex, @Nullable String alyzerCaption) {
 		this(type, alyzerIndex, -1, alyzerCaption);
 	}
 
-	TreeDisplayHandler(IChromosomeType type, ChatFormatting color, String formattingText) {
+	TreeDisplayHandler(IChromosome type, ChatFormatting color, String formattingText) {
 		this.type = type;
 		this.alyzerCaption = "";
 		this.alyzerIndex = -1;
@@ -95,7 +96,7 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 		this.groupPair = new int[0];
 	}
 
-	TreeDisplayHandler(IChromosomeType type, int tooltipIndex) {
+	TreeDisplayHandler(IChromosome type, int tooltipIndex) {
 		this.type = type;
 		this.alyzerCaption = "";
 		this.alyzerIndex = -1;
@@ -105,7 +106,7 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 		this.groupPair = new int[0];
 	}
 
-	TreeDisplayHandler(IChromosomeType type, int alyzerIndex, int tooltipIndex, @Nullable String alyzerCaption) {
+	TreeDisplayHandler(IChromosome type, int alyzerIndex, int tooltipIndex, @Nullable String alyzerCaption) {
 		this.type = type;
 		this.alyzerCaption = alyzerCaption;
 		this.alyzerIndex = alyzerIndex;
@@ -119,11 +120,11 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 		for (TreeDisplayHandler handler : values()) {
 			int tooltipIndex = handler.tooltipIndex;
 			if (tooltipIndex >= 0) {
-				helper.addTooltip(handler, TreeRoot.UID, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesType.TREE, tooltipIndex * 10);
 			}
 			int alyzerIndex = handler.alyzerIndex;
 			if (alyzerIndex >= 0) {
-				helper.addAlyzer(handler, TreeRoot.UID, alyzerIndex * 10);
+				helper.addAlyzer(handler, ForestrySpeciesType.TREE, alyzerIndex * 10);
 			}
 		}
 	}
@@ -148,12 +149,12 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 		}
 	}
 
-	<V> IAlleleValue<V> getActive(IGenome genome) {
+	<V> IValueAllele<V> getActive(IGenome genome) {
 		//noinspection unchecked
 		return genome.getActiveAllele((IChromosomeValue<V>) type);
 	}
 
-	<V> IAlleleValue<V> getInactive(IGenome genome) {
+	<V> IValueAllele<V> getInactive(IGenome genome) {
 		//noinspection unchecked
 		return genome.getInactiveAllele((IChromosomeValue<V>) type);
 	}

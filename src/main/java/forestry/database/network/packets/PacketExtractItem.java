@@ -9,7 +9,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 import forestry.database.gui.ContainerDatabase;
 

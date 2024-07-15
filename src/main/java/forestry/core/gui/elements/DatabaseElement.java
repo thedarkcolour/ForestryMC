@@ -8,12 +8,9 @@ import java.util.function.Function;
 
 import deleteme.Todos;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Style;
 
 import forestry.api.genetics.IBreedingTracker;
@@ -21,12 +18,12 @@ import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.core.gui.elements.layouts.ContainerElement;
 import forestry.core.gui.elements.layouts.FlexLayout;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleValue;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.IMutation;
 
 public class DatabaseElement extends ContainerElement {
 	private DatabaseMode mode = DatabaseMode.ACTIVE;
@@ -58,28 +55,28 @@ public class DatabaseElement extends ContainerElement {
 		return individual.getGenome();
 	}
 
-	public void addFertilityLine(Component chromosomeName, IChromosomeType chromosome, int texOffset) {
+	public void addFertilityLine(Component chromosomeName, IChromosome chromosome, int texOffset) {
 		IGenome genome = getGenome();
 		IAllele activeAllele = genome.getActiveAllele(chromosome);
 		IAllele inactiveAllele = genome.getInactiveAllele(chromosome);
 		if (mode == DatabaseMode.BOTH) {
-			if (!(activeAllele instanceof IAlleleValue) || !(inactiveAllele instanceof IAlleleValue)) {
+			if (!(activeAllele instanceof IValueAllele) || !(inactiveAllele instanceof IValueAllele)) {
 				return;
 			}
-			addLine(chromosomeName, GuiElementFactory.INSTANCE.createFertilityInfo((IAlleleValue<Integer>) activeAllele, texOffset), GuiElementFactory.INSTANCE.createFertilityInfo((IAlleleValue<Integer>) inactiveAllele, texOffset));
+			addLine(chromosomeName, GuiElementFactory.INSTANCE.createFertilityInfo((IValueAllele<Integer>) activeAllele, texOffset), GuiElementFactory.INSTANCE.createFertilityInfo((IValueAllele<Integer>) inactiveAllele, texOffset));
 		} else {
 			boolean active = mode == DatabaseMode.ACTIVE;
 			IAllele allele = active ? activeAllele : inactiveAllele;
-			if (!(allele instanceof IAlleleValue)) {
+			if (!(allele instanceof IValueAllele)) {
 				return;
 			}
-			addLine(chromosomeName, GuiElementFactory.INSTANCE.createFertilityInfo((IAlleleValue<Integer>) allele, texOffset));
+			addLine(chromosomeName, GuiElementFactory.INSTANCE.createFertilityInfo((IValueAllele<Integer>) allele, texOffset));
 		}
 	}
 
-	public void addToleranceLine(IChromosomeType chromosome) {
+	public void addToleranceLine(IChromosome chromosome) {
 		IAllele allele = getGenome().getActiveAllele(chromosome);
-		if (allele instanceof IAlleleValue value) {
+		if (allele instanceof IValueAllele value) {
 			addLine(Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiElementFactory.INSTANCE.createToleranceInfo(value));
 		}
 	}
@@ -119,16 +116,16 @@ public class DatabaseElement extends ContainerElement {
 			GuiElementFactory.INSTANCE.getStateStyle(individual.getGenome().getInactiveAllele(chromosome).isDominant()));
 	}*/
 
-	public void addLine(Component leftText, Function<Boolean, Component> toText, IChromosomeType chromosome) {
+	public void addLine(Component leftText, Function<Boolean, Component> toText, IChromosome chromosome) {
 		IGenome genome = getGenome();
 		IAllele activeAllele = genome.getActiveAllele(chromosome);
 		IAllele inactiveAllele = genome.getInactiveAllele(chromosome);
 		if (mode == DatabaseMode.BOTH) {
-			addLine(leftText, toText.apply(true), toText.apply(false), activeAllele.isDominant(), inactiveAllele.isDominant());
+			addLine(leftText, toText.apply(true), toText.apply(false), activeAllele.dominant(), inactiveAllele.dominant());
 		} else {
 			boolean active = mode == DatabaseMode.ACTIVE;
 			IAllele allele = active ? activeAllele : inactiveAllele;
-			addLine(leftText, toText.apply(active), allele.isDominant());
+			addLine(leftText, toText.apply(active), allele.dominant());
 		}
 	}
 
@@ -137,7 +134,7 @@ public class DatabaseElement extends ContainerElement {
 		Todos.todo();
 	}
 
-	public final void addLine(Component chromosomeName, IChromosomeType chromosome) {
+	public final void addLine(Component chromosomeName, IChromosome chromosome) {
 		addLine(chromosomeName, (allele, b) -> allele.getDisplayName(), chromosome);
 	}
 
@@ -189,29 +186,29 @@ public class DatabaseElement extends ContainerElement {
 		second.setXPosition(secondColumn);
 	}
 
-	public <A extends IAllele> void addLine(Component chromosomeName, BiFunction<A, Boolean, Component> toText, IChromosomeType chromosome) {
+	public <A extends IAllele> void addLine(Component chromosomeName, BiFunction<A, Boolean, Component> toText, IChromosome chromosome) {
 		addAlleleRow(chromosomeName, toText, chromosome, null);
 	}
 
-	public <A extends IAllele> void addLine(Component chromosomeName, BiFunction<A, Boolean, Component> toText, IChromosomeType chromosome, boolean dominant) {
+	public <A extends IAllele> void addLine(Component chromosomeName, BiFunction<A, Boolean, Component> toText, IChromosome chromosome, boolean dominant) {
 		addAlleleRow(chromosomeName, toText, chromosome, dominant);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <A extends IAllele> void addAlleleRow(Component chromosomeName, BiFunction<A, Boolean, Component> toString, IChromosomeType chromosome, @Nullable Boolean dominant) {
+	private <A extends IAllele> void addAlleleRow(Component chromosomeName, BiFunction<A, Boolean, Component> toString, IChromosome chromosome, @Nullable Boolean dominant) {
 		IGenome genome = getGenome();
 		A activeAllele = (A) genome.getActiveAllele(chromosome);
 		A inactiveAllele = (A) genome.getInactiveAllele(chromosome);
 		if (mode == DatabaseMode.BOTH) {
-			addLine(chromosomeName, toString.apply(activeAllele, true), toString.apply(inactiveAllele, false), dominant != null ? dominant : activeAllele.isDominant(), dominant != null ? dominant : inactiveAllele.isDominant());
+			addLine(chromosomeName, toString.apply(activeAllele, true), toString.apply(inactiveAllele, false), dominant != null ? dominant : activeAllele.dominant(), dominant != null ? dominant : inactiveAllele.dominant());
 		} else {
 			boolean active = mode == DatabaseMode.ACTIVE;
 			A allele = active ? activeAllele : inactiveAllele;
-			addLine(chromosomeName, toString.apply(allele, active), dominant != null ? dominant : allele.isDominant());
+			addLine(chromosomeName, toString.apply(allele, active), dominant != null ? dominant : allele.dominant());
 		}
 	}
 
-	public void addSpeciesLine(String firstText, @Nullable String secondText, IChromosomeType chromosome) {
+	public void addSpeciesLine(String firstText, @Nullable String secondText, IChromosome chromosome) {
 		/*IAlleleSpecies primary = individual.getGenome().getPrimary();
 		IAlleleSpecies secondary = individual.getGenome().getSecondary();
 
@@ -220,8 +217,8 @@ public class DatabaseElement extends ContainerElement {
 
 		Map<String, ItemStack> iconStacks = chromosome.getSpeciesRoot().getAlyzerPlugin().getIconStacks();
 
-		GuiUtil.drawItemStack(this, iconStacks.get(primary.getUID()), guiLeft + textLayout.column1 + columnwidth - 20, guiTop + 10);
-		GuiUtil.drawItemStack(this, iconStacks.get(secondary.getUID()), guiLeft + textLayout.column2 + columnwidth - 20, guiTop + 10);
+		GuiUtil.drawItemStack(this, iconStacks.get(primary.getIdString()), guiLeft + textLayout.column1 + columnwidth - 20, guiTop + 10);
+		GuiUtil.drawItemStack(this, iconStacks.get(secondary.getIdString()), guiLeft + textLayout.column2 + columnwidth - 20, guiTop + 10);
 
 		String primaryName = customPrimaryName == null ? primary.getAlleleName() : customPrimaryName;
 		String secondaryName = customSecondaryName == null ? secondary.getAlleleName() : customSecondaryName;

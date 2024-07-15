@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
@@ -53,10 +54,12 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	private IInventoryAdapter inventory = FakeInventoryAdapter.instance();
 
 	// package private for ForestryTicker
-	final TickHelper tickHelper = new TickHelper();
+	final TickHelper tickHelper;
 
 	public TileForestry(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
 		super(tileEntityTypeIn, pos, state);
+
+		this.tickHelper = new TickHelper(pos.hashCode());
 	}
 
 	protected AdjacentTileCache getTileCache() {
@@ -138,7 +141,8 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 
 	}
 
-	public void onRemoval() {
+	// serverside only, called when the block is destroyed and its inventory is spilled into the world
+	public void onDropContents(ServerLevel level) {
 	}
 
 	@Override

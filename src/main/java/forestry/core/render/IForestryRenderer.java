@@ -4,14 +4,16 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import forestry.core.utils.ModUtil;
+
 /**
  * Handler for the rendering of a forestry tile entity and its item.
  *
  * @param <T> The type of the tile entity
  */
 public interface IForestryRenderer<T extends BlockEntity> {
-	public static ModelLayerLocation register(String name) {
-		return new ModelLayerLocation(new ForestryResource(name), "main");
+	static ModelLayerLocation register(String name) {
+		return new ModelLayerLocation(ModUtil.modLoc(name), "main");
 	}
 
 	/**

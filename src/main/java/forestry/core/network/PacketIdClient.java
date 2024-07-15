@@ -21,7 +21,6 @@ public class PacketIdClient {
 	// Core Gui
 	public static final ResourceLocation ERROR_UPDATE = ModUtil.modLoc("error_update");
 	public static final ResourceLocation GUI_UPDATE = ModUtil.modLoc("gui_update");
-	public static final ResourceLocation GUI_FILTER_UPDATE = ModUtil.modLoc("gui_filter_update");
 	public static final ResourceLocation GUI_LAYOUT_SELECT = ModUtil.modLoc("gui_layout_select");
 	public static final ResourceLocation GUI_ENERGY = ModUtil.modLoc("gui_energy");
 	public static final ResourceLocation SOCKET_UPDATE = ModUtil.modLoc("socket_update");

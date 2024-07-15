@@ -37,7 +37,7 @@ import forestry.api.core.IErrorLogic;
 import forestry.api.fuels.EngineBronzeFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.StandardTank;
@@ -95,10 +95,10 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 		IErrorLogic errorLogic = getErrorLogic();
 
 		boolean hasHeat = getHeatLevel() > 0.2 || heatingTank.getFluidAmount() > 0;
-		errorLogic.setCondition(!hasHeat, EnumErrorCode.NO_HEAT);
+		errorLogic.setCondition(!hasHeat, ForestryError.NO_HEAT);
 
 		boolean hasFuel = burnTank.getFluidAmount() > 0 || fuelTank.getFluidAmount() > 0;
-		errorLogic.setCondition(!hasFuel, EnumErrorCode.NO_FUEL);
+		errorLogic.setCondition(!hasFuel, ForestryError.NO_FUEL);
 	}
 
 	/**

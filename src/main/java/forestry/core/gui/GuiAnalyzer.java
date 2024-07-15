@@ -20,6 +20,7 @@ import forestry.core.gui.widgets.TankWidget;
 import forestry.core.render.EnumTankLevel;
 import forestry.core.tiles.TileAnalyzer;
 
+// The block form of the analyzer
 public class GuiAnalyzer extends GuiForestryTitled<ContainerAnalyzer> {
 	private final TileAnalyzer tile;
 

@@ -14,7 +14,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.genetics.filter.IFilterLogic;
 import forestry.core.gui.GuiForestry;
@@ -26,8 +26,8 @@ import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.gui.ISelectableProvider;
 
 import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
 import genetics.api.root.IRootDefinition;
 import genetics.utils.AlleleUtils;
@@ -50,7 +50,7 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<IAllele
 		this.gui = gui;
 		ImmutableSet.Builder<IAlleleSpecies> entries = ImmutableSet.builder();
 		for (IRootDefinition<?> definition : GeneticsAPI.apiInstance.getRoots().values()) {
-			if (!definition.isPresent() || !(definition.get() instanceof IForestrySpeciesRoot<?> root)) {
+			if (!definition.isPresent() || !(definition.get() instanceof IForestrySpeciesType<?> root)) {
 				continue;
 			}
 			IBreedingTracker tracker = root.getBreedingTracker(manager.minecraft.level, manager.minecraft.player.getGameProfile());
@@ -64,7 +64,7 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<IAllele
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		int x = xPos + startX;
 		int y = yPos + startY;
 		IFilterLogic logic = gui.getLogic();
@@ -126,7 +126,7 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<IAllele
 			IIndividual individual = RootUtils.getIndividual(stack);
 			if (individual != null) {
 				IGenome genome = individual.getGenome();
-				onSelect(mouseButton == 0 ? genome.getPrimary() : genome.getSecondary());
+				onSelect(mouseButton == 0 ? genome.getPrimarySpecies() : genome.getSecondarySpecies());
 				return;
 			}
 		}
@@ -141,13 +141,13 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<IAllele
 	private static ImmutableMap<IAlleleSpecies, ItemStack> createEntries() {
 		ImmutableMap.Builder<IAlleleSpecies, ItemStack> entries = ImmutableMap.builder();
 		for (IRootDefinition definition : GeneticsAPI.apiInstance.getRoots().values()) {
-			if (!definition.isPresent() || !(definition.get() instanceof IForestrySpeciesRoot)) {
+			if (!definition.isPresent() || !(definition.get() instanceof IForestrySpeciesType)) {
 				continue;
 			}
-			IForestrySpeciesRoot<IIndividual> root = (IForestrySpeciesRoot<IIndividual>) definition.get();
+			IForestrySpeciesType<IIndividual> root = (IForestrySpeciesType<IIndividual>) definition.get();
 			for (IIndividual individual : root.getIndividualTemplates()) {
-				IAlleleSpecies species = individual.getGenome().getPrimary();
-				ItemStack itemStack = root.getTypes().createStack(root.templateAsIndividual(root.getTemplates().getTemplate(species.getRegistryName().toString())), root.getIconType());
+				IAlleleSpecies species = individual.getGenome().getPrimarySpecies();
+				ItemStack itemStack = root.getTypes().createStack(root.templateAsIndividual(root.getTemplates().getTemplate(species.getId().toString())), root.getIconType());
 				entries.put(species, itemStack);
 			}
 		}

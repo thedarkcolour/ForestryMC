@@ -29,10 +29,10 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.genetics.TreeDefinition;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.api.individual.IIndividual;
 import genetics.commands.PermLevel;
 
@@ -65,7 +65,7 @@ public final class CommandTreeSpawn {
 			return SharedSuggestionProvider.suggest(TreeManager.treeRoot.getIndividualTemplates().stream()
 					.map(IIndividual::getGenome)
 					.map(a -> a.getActiveAllele(TreeChromosomes.SPECIES))
-					.map(IAllele::getRegistryName)
+					.map(IAllele::id)
 					.map(ResourceLocation::toString), builder);
 		}
 
@@ -74,7 +74,7 @@ public final class CommandTreeSpawn {
 			return TreeManager.treeRoot.getIndividualTemplates().stream()
 					.map(IIndividual::getGenome)
 					.map(a -> a.getActiveAllele(TreeChromosomes.SPECIES))
-					.map(IAllele::getRegistryName)
+					.map(IAllele::id)
 					.map(ResourceLocation::toString)
 					.collect(Collectors.toList());
 		}

@@ -1,3 +1,4 @@
+/*
 package forestry.climatology.features;
 
 import forestry.climatology.ModuleClimatology;
@@ -16,3 +17,4 @@ public class ClimatologyItems {
 	private ClimatologyItems() {
 	}
 }
+*/

@@ -19,9 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
 import forestry.api.core.IErrorSource;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.api.mail.ILetter;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.inventory.ItemInventory;
 import forestry.core.items.ItemWithGui;
 import forestry.core.utils.SlotUtil;
@@ -110,16 +110,16 @@ public class ItemInventoryLetter extends ItemInventory implements IErrorSource {
 
 	/* IErrorSource */
 	@Override
-	public ImmutableSet<IErrorState> getErrorStates() {
+	public ImmutableSet<IError> getErrors() {
 
-		ImmutableSet.Builder<IErrorState> errorStates = ImmutableSet.builder();
+		ImmutableSet.Builder<IError> errorStates = ImmutableSet.builder();
 
 		if (!letter.hasRecipient()) {
-			errorStates.add(EnumErrorCode.NO_RECIPIENT);
+			errorStates.add(ForestryError.NO_RECIPIENT);
 		}
 
 		if (!letter.isProcessed() && !letter.isPostPaid()) {
-			errorStates.add(EnumErrorCode.NOT_POST_PAID);
+			errorStates.add(ForestryError.NOT_POST_PAID);
 		}
 
 		return errorStates.build();

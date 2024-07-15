@@ -28,7 +28,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.core.config.Constants;
 import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.gui.buttons.GuiBetterButton;
@@ -37,16 +37,16 @@ import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.IMutation;
 import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
 
 public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalistMenu> extends GuiForestry<C> {
-	private final IForestrySpeciesRoot<IIndividual> speciesRoot;
+	private final IForestrySpeciesType<IIndividual> speciesRoot;
 	private final IBreedingTracker breedingTracker;
 	private final HashMap<String, ItemStack> iconStacks = new HashMap<>();
 	private final int pageCurrent, pageMax;
@@ -64,7 +64,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 		imageHeight = 202;
 
 		for (IIndividual individual : speciesRoot.getIndividualTemplates()) {
-			iconStacks.put(individual.getIdentifier(), speciesRoot.getTypes().createStack(individual, speciesRoot.getIconType()));
+			iconStacks.put(individual.getId(), speciesRoot.getTypes().createStack(individual, speciesRoot.getIconType()));
 		}
 
 		breedingTracker = speciesRoot.getBreedingTracker(playerInv.player.level, playerInv.player.getGameProfile());
@@ -87,12 +87,12 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 			textLayout.startPage(transform);
 
 			IGenome genome = individual.getGenome();
-			IChromosomeType speciesType = individual.getRoot().getKaryotype().getSpeciesType();
+			IChromosome speciesType = individual.getRoot().getKaryotype().getSpeciesChromosome();
 			boolean pureBred = individual.isPureBred(speciesType);
 
-			displaySpeciesInformation(transform, true, genome.getPrimary(), iconStacks.get(individual.getIdentifier()), 10, pureBred ? 25 : 10);
+			displaySpeciesInformation(transform, true, genome.getPrimarySpecies(), iconStacks.get(individual.getId()), 10, pureBred ? 25 : 10);
 			if (!pureBred) {
-				displaySpeciesInformation(transform, individual.isAnalyzed(), genome.getSecondary(), iconStacks.get(genome.getSecondary().getRegistryName().toString()), 10, 10);
+				displaySpeciesInformation(transform, individual.isAnalyzed(), genome.getSecondarySpecies(), iconStacks.get(genome.getSecondarySpecies().id().toString()), 10, 10);
 			}
 
 			textLayout.endPage(transform);
@@ -205,7 +205,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 	}
 
 	private void drawMutationIcon(PoseStack transform, IMutation combination, IAlleleSpecies species, int x) {
-		GuiUtil.drawItemStack(transform, this, iconStacks.get(combination.getPartner(species).getRegistryName().toString()), leftPos + x, topPos + textLayout.getLineY());
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(combination.getPartner(species).id().toString()), leftPos + x, topPos + textLayout.getLineY());
 
 		int line = 48;
 		int column;

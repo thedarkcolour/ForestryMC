@@ -18,13 +18,14 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
-import forestry.api.apiculture.genetics.EnumBeeType;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.ForestryConstants;
+import forestry.api.ForestryTags;
+import forestry.api.apiculture.genetics.BeeLifeStage;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.genetics.BeeDefinition;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.arboriculture.genetics.TreeDefinition;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 import forestry.core.loot.OrganismFunction;
 import forestry.storage.features.BackpackItems;
@@ -188,7 +189,7 @@ public class LootTableHelper {
 						.add(beeLoot(BeeDefinition.MONASTIC).setWeight(6))
 						.add(EmptyLootItem.emptyItem().setWeight(3))
 				));
-		add(new ResourceLocation(Constants.MOD_ID, "chests/village_naturalist"), "arboriculture",
+		add(new ResourceLocation(ForestryConstants.MOD_ID, "chests/village_naturalist"), "arboriculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_arboriculture_items")
 						.setRolls(ConstantValue.exactly(3))
@@ -199,7 +200,7 @@ public class LootTableHelper {
 						.add(saplingLoot(TreeDefinition.Teak))
 						.add(saplingLoot(TreeDefinition.Padauk))
 				));
-		add(new ResourceLocation(Constants.MOD_ID, "chests/village_naturalist"), "apiculture",
+		add(new ResourceLocation(ForestryConstants.MOD_ID, "chests/village_naturalist"), "apiculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_items")
 						.setRolls(ConstantValue.exactly(4))
@@ -217,31 +218,31 @@ public class LootTableHelper {
 	}
 
 	private LootPoolSingletonContainer.Builder<?> saplingLoot(TreeDefinition definition) {
-		return saplingLoot(EnumGermlingType.SAPLING, definition);
+		return saplingLoot(TreeLifeStage.SAPLING, definition);
 	}
 
-	private LootPoolSingletonContainer.Builder<?> saplingLoot(EnumGermlingType type, TreeDefinition definition) {
+	private LootPoolSingletonContainer.Builder<?> saplingLoot(TreeLifeStage type, TreeDefinition definition) {
 		return LootItem.lootTableItem(saplingItem(type))
 				.apply(OrganismFunction.fromDefinition(definition));
 	}
 
 	private LootPoolSingletonContainer.Builder<?> beeLoot(BeeDefinition definition) {
-		return beeLoot(EnumBeeType.DRONE, definition);
+		return beeLoot(BeeLifeStage.DRONE, definition);
 	}
 
-	private LootPoolSingletonContainer.Builder<?> beeLoot(EnumBeeType type, BeeDefinition definition) {
+	private LootPoolSingletonContainer.Builder<?> beeLoot(BeeLifeStage type, BeeDefinition definition) {
 		return LootItem.lootTableItem(beeItem(type))
 				.apply(OrganismFunction.fromDefinition(definition));
 	}
 
-	private Item saplingItem(EnumGermlingType type) {
+	private Item saplingItem(TreeLifeStage type) {
 		return switch (type) {
 			case POLLEN -> ArboricultureItems.POLLEN_FERTILE.item();
 			case SAPLING -> ArboricultureItems.SAPLING.item();
 		};
 	}
 
-	private Item beeItem(EnumBeeType type) {
+	private Item beeItem(BeeLifeStage type) {
 		return switch (type) {
 			case QUEEN -> ApicultureItems.BEE_QUEEN.item();
 			case LARVAE -> ApicultureItems.BEE_LARVAE.item();
@@ -267,7 +268,7 @@ public class LootTableHelper {
 		}
 
 		public ResourceLocation getLocation() {
-			return new ResourceLocation(Constants.MOD_ID, defaultLocation.getPath() + "/" + extension);
+			return new ResourceLocation(ForestryConstants.MOD_ID, defaultLocation.getPath() + "/" + extension);
 		}
 	}
 }

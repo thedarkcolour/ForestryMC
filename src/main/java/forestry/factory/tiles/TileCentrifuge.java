@@ -39,7 +39,7 @@ import forestry.api.recipes.ICentrifugeRecipe;
 import forestry.api.recipes.RecipeManagers;
 import forestry.core.circuits.ISocketable;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.inventory.InventoryAdapter;
 import forestry.core.tiles.IItemStackDisplay;
@@ -180,7 +180,7 @@ public class TileCentrifuge extends TilePowered implements ISocketable, WorldlyC
 			}
 		}
 
-		getErrorLogic().setCondition(!added, EnumErrorCode.NO_SPACE_INVENTORY);
+		getErrorLogic().setCondition(!added, ForestryError.NO_SPACE_INVENTORY);
 		return added;
 	}
 
@@ -204,7 +204,7 @@ public class TileCentrifuge extends TilePowered implements ISocketable, WorldlyC
 		boolean hasResource = !getItem(InventoryCentrifuge.SLOT_RESOURCE).isEmpty();
 
 		IErrorLogic errorLogic = getErrorLogic();
-		errorLogic.setCondition(!hasResource, EnumErrorCode.NO_RESOURCE);
+		errorLogic.setCondition(!hasResource, ForestryError.NO_RESOURCE);
 
 		return hasResource;
 	}

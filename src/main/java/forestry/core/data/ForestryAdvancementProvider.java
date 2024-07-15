@@ -1,10 +1,11 @@
 package forestry.core.data;
 
 import com.google.common.collect.Sets;
+
+import forestry.api.ForestryConstants;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.genetics.BeeDefinition;
-import forestry.core.config.Constants;
-import genetics.api.GeneticHelper;
+
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.FrameType;
@@ -56,15 +57,15 @@ public class ForestryAdvancementProvider implements DataProvider {
 
 	private void build(Consumer<Advancement> consumer) {
 		ItemStack icon = new ItemStack(ApicultureItems.BEE_QUEEN.item());
-		GeneticHelper.setIndividual(icon, BeeDefinition.INDUSTRIOUS.createIndividual());
+		BeeDefinition.INDUSTRIOUS.createIndividual().copyTo(icon);
 
 		Advancement.Builder.advancement()
 				.display(icon, Component.translatable("advancements.forestry.root.title"), Component.translatable("advancements.forestry.root.description"), new ResourceLocation("textures/block/honeycomb_block.png"), FrameType.TASK, false, false, false)
 				.addCriterion("tick", InventoryChangeTrigger.TriggerInstance.hasItems(ApicultureItems.BEE_COMBS.itemArray()))
 				.rewards(new AdvancementRewards(0, new ResourceLocation[]{
-						new ResourceLocation(Constants.MOD_ID, "grant_guide")
+						new ResourceLocation(ForestryConstants.MOD_ID, "grant_guide")
 				}, new ResourceLocation[0], CommandFunction.CacheableFunction.NONE))
-				.save(consumer, Constants.MOD_ID + ":root");
+				.save(consumer, ForestryConstants.MOD_ID + ":root");
 	}
 
 	private static Path createPath(Path outputFolder, Advancement advancement) {

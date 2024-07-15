@@ -31,7 +31,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.tiles.TileUtil;
 import forestry.lepidopterology.items.ItemButterflyGE;
@@ -84,7 +84,7 @@ public class BlockCocoon extends Block implements EntityBlock {
 		IButterfly caterpillar = tile.getCaterpillar();
 		int age = state.getValue(AGE);
 
-		ItemStack stack = ButterflyManager.butterflyRoot.getTypes().createStack(caterpillar, EnumFlutterType.COCOON);
+		ItemStack stack = ButterflyManager.butterflyRoot.getTypes().createStack(caterpillar, ButterflyLifeStage.COCOON);
 		if (!stack.isEmpty() && stack.getTag() != null) {
 			stack.getTag().putInt(ItemButterflyGE.NBT_AGE, age);
 		}

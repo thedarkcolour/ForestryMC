@@ -7,7 +7,6 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.Translator;
 
 public abstract class RectangularMultiblockControllerBase extends MultiblockControllerForestry {
 
@@ -70,7 +69,7 @@ public abstract class RectangularMultiblockControllerBase extends MultiblockCont
 				for (int z = minimumCoord.getZ(); z <= maximumCoord.getZ(); z++) {
 					// Okay, figure out what sort of block this should be.
 					BlockPos pos = new BlockPos(x, y, z);
-					te = TileUtil.getTile(world, pos);
+					te = TileUtil.getTile(level, pos);
 					if (te instanceof IMultiblockComponent) {
 						part = (IMultiblockComponent) te;
 
@@ -112,13 +111,13 @@ public abstract class RectangularMultiblockControllerBase extends MultiblockCont
 						if (part != null) {
 							isGoodForExteriorLevel(part, exteriorLevel);
 						} else {
-							isBlockGoodForExteriorLevel(exteriorLevel, this.world, pos);
+							isBlockGoodForExteriorLevel(exteriorLevel, this.level, pos);
 						}
 					} else {
 						if (part != null) {
 							isGoodForInterior(part);
 						} else {
-							isBlockGoodForInterior(this.world, pos);
+							isBlockGoodForInterior(this.level, pos);
 						}
 					}
 				}

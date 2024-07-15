@@ -9,16 +9,18 @@ import java.util.PriorityQueue;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import net.minecraft.resources.ResourceLocation;
+
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
 import forestry.api.genetics.alyzer.IAlyzerDisplayProvider;
 import forestry.apiculture.genetics.IGeneticTooltipProvider;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.ILifeStage;
 
 public class DisplayHelper implements IAlleleDisplayHelper {
-	private final Map<String, PriorityQueue<OrderedPair<IGeneticTooltipProvider<?>>>> tooltips = new HashMap<>();
-	private final Map<String, PriorityQueue<OrderedPair<IAlyzerDisplayProvider>>> alyzers = new HashMap<>();
+	private final Map<ResourceLocation, PriorityQueue<OrderedPair<IGeneticTooltipProvider<?>>>> tooltips = new HashMap<>();
+	private final Map<ResourceLocation, PriorityQueue<OrderedPair<IAlyzerDisplayProvider>>> alyzers = new HashMap<>();
 
 	@Nullable
 	private static DisplayHelper instance;
@@ -31,21 +33,21 @@ public class DisplayHelper implements IAlleleDisplayHelper {
 	}
 
 	@Override
-	public void addTooltip(IGeneticTooltipProvider<?> provider, String rootUID, int orderingInfo) {
-		tooltips.computeIfAbsent(rootUID, (root) -> new PriorityQueue<>()).add(new OrderedPair<>(provider, orderingInfo, null));
+	public void addTooltip(IGeneticTooltipProvider<?> provider, ResourceLocation id, int orderingInfo) {
+		this.tooltips.computeIfAbsent(id, (root) -> new PriorityQueue<>()).add(new OrderedPair<>(provider, orderingInfo, null));
 	}
 
 	@Override
-	public void addTooltip(IGeneticTooltipProvider<?> provider, String rootUID, int orderingInfo, Predicate<IOrganismType> typeFilter) {
-		tooltips.computeIfAbsent(rootUID, (root) -> new PriorityQueue<>()).add(new OrderedPair<>(provider, orderingInfo, typeFilter));
+	public void addTooltip(IGeneticTooltipProvider<?> provider, ResourceLocation id, int orderingInfo, Predicate<ILifeStage> typeFilter) {
+		this.tooltips.computeIfAbsent(id, (root) -> new PriorityQueue<>()).add(new OrderedPair<>(provider, orderingInfo, typeFilter));
 	}
 
 	@Override
-	public void addAlyzer(IAlyzerDisplayProvider provider, String rootUID, int orderingInfo) {
-		alyzers.computeIfAbsent(rootUID, (root) -> new PriorityQueue<>()).add(new OrderedPair<>(provider, orderingInfo, null));
+	public void addAlyzer(IAlyzerDisplayProvider provider, ResourceLocation id, int orderingInfo) {
+		this.alyzers.computeIfAbsent(id, (root) -> new PriorityQueue<>()).add(new OrderedPair<>(provider, orderingInfo, null));
 	}
 
-	public <I extends IIndividual> Collection<IGeneticTooltipProvider<I>> getTooltips(String rootUID, IOrganismType type) {
+	public <I extends IIndividual> Collection<IGeneticTooltipProvider<I>> getTooltips(String rootUID, ILifeStage type) {
 		if (!tooltips.containsKey(rootUID)) {
 			return Collections.emptyList();
 		}
@@ -59,15 +61,15 @@ public class DisplayHelper implements IAlleleDisplayHelper {
 		private final T value;
 		private final int info;
 		@Nullable
-		private final Predicate<IOrganismType> filter;
+		private final Predicate<ILifeStage> filter;
 
-		private OrderedPair(T value, int info, @Nullable Predicate<IOrganismType> filter) {
+		private OrderedPair(T value, int info, @Nullable Predicate<ILifeStage> filter) {
 			this.value = value;
 			this.info = info;
 			this.filter = filter;
 		}
 
-		public boolean hasValue(IOrganismType type) {
+		public boolean hasValue(ILifeStage type) {
 			return filter == null || filter.test(type);
 		}
 

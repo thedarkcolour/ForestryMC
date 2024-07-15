@@ -13,8 +13,6 @@ package forestry.core.multiblock;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +22,7 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.core.ForestryAPI;
+import forestry.api.IForestryApi;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
 import forestry.api.core.ILocatable;
@@ -43,7 +41,7 @@ public abstract class MultiblockControllerForestry extends MultiblockControllerB
 		super(world);
 
 		this.ownerHandler = new OwnerHandler();
-		this.errorLogic = ForestryAPI.errorStateRegistry.createErrorLogic();
+		this.errorLogic = IForestryApi.INSTANCE.getErrorManager().createErrorLogic();
 	}
 
 	@Override
@@ -57,15 +55,15 @@ public abstract class MultiblockControllerForestry extends MultiblockControllerB
 	}
 
 	@Override
-	public @Nullable Level getWorldObj() {
-		return world;
+	public Level getWorldObj() {
+		return level;
 	}
 
 	@Override
 	protected void onMachineAssembled() {
 		super.onMachineAssembled();
 
-		if (world.isClientSide) {
+		if (level.isClientSide) {
 			return;
 		}
 

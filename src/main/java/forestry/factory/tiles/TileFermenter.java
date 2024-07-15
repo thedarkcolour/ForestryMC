@@ -41,7 +41,7 @@ import forestry.api.recipes.IFermenterRecipe;
 import forestry.api.recipes.IVariableFermentable;
 import forestry.api.recipes.RecipeManagers;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.TankManager;
@@ -243,11 +243,11 @@ public class TileFermenter extends TilePowered implements WorldlyContainer, ILiq
 		}
 
 		IErrorLogic errorLogic = getErrorLogic();
-		errorLogic.setCondition(!hasRecipe, EnumErrorCode.NO_RECIPE);
-		errorLogic.setCondition(!hasFuel, EnumErrorCode.NO_FUEL);
-		errorLogic.setCondition(!hasResource, EnumErrorCode.NO_RESOURCE);
-		errorLogic.setCondition(!hasFluidResource, EnumErrorCode.NO_RESOURCE_LIQUID);
-		errorLogic.setCondition(!hasFluidSpace, EnumErrorCode.NO_SPACE_TANK);
+		errorLogic.setCondition(!hasRecipe, ForestryError.NO_RECIPE);
+		errorLogic.setCondition(!hasFuel, ForestryError.NO_FUEL);
+		errorLogic.setCondition(!hasResource, ForestryError.NO_RESOURCE);
+		errorLogic.setCondition(!hasFluidResource, ForestryError.NO_RESOURCE_LIQUID);
+		errorLogic.setCondition(!hasFluidSpace, ForestryError.NO_SPACE_TANK);
 
 		return hasRecipe && hasFuel && hasResource && hasFluidResource && hasFluidSpace;
 	}

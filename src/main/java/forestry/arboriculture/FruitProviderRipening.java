@@ -25,7 +25,7 @@ import forestry.api.genetics.products.IProductList;
 import forestry.api.genetics.products.Product;
 import forestry.core.genetics.ProductListWrapper;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class FruitProviderRipening extends FruitProviderNone {
 	private int colourCallow = 0xffffff;

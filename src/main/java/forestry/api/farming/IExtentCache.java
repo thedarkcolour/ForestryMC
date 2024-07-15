@@ -16,7 +16,7 @@ public interface IExtentCache {
 	 * @param pos       The position the logic starts to operate on
 	 * @return The current extent for the given direction and position.
 	 */
-	int getExtents(FarmDirection direction, BlockPos pos);
+	int getExtents(HorizontalDirection direction, BlockPos pos);
 
 	/**
 	 * Sets the current extent for the given direction and position.
@@ -25,7 +25,7 @@ public interface IExtentCache {
 	 * @param pos       The position the logic starts to operate on
 	 * @param extend    The extent
 	 */
-	void setExtents(FarmDirection direction, BlockPos pos, int extend);
+	void setExtents(HorizontalDirection direction, BlockPos pos, int extend);
 
 	/**
 	 * Clears the cache for the given direction.
@@ -34,7 +34,7 @@ public interface IExtentCache {
 	 *
 	 * @param direction The direction that should be cleared
 	 */
-	void cleanExtents(FarmDirection direction);
+	void cleanExtents(HorizontalDirection direction);
 
 	/**
 	 * Gets the current extend but returns 0 if the extend is bigger given maximal extent
@@ -45,7 +45,7 @@ public interface IExtentCache {
 	 *                  will be returned.
 	 * @return The current extend but returns 0 if the extend is bigger given maximal extent.
 	 */
-	default int getValidExtent(FarmDirection direction, BlockPos pos, int maxExtend) {
+	default int getValidExtent(HorizontalDirection direction, BlockPos pos, int maxExtend) {
 		int lastExtents = getExtents(direction, pos);
 		if (lastExtents > maxExtend) {
 			lastExtents = 0;
@@ -62,7 +62,7 @@ public interface IExtentCache {
 	 * @param baseLocation The location that will be offset by the extent
 	 * @return The base location offset in the given direction by the valid extent of the logic position.
 	 */
-	default BlockPos getValidPosition(FarmDirection direction, BlockPos pos, int maxExtend, BlockPos baseLocation) {
+	default BlockPos getValidPosition(HorizontalDirection direction, BlockPos pos, int maxExtend, BlockPos baseLocation) {
 		int extent = getValidExtent(direction, pos, maxExtend);
 		return baseLocation.relative(direction.getFacing(), extent);
 	}
@@ -75,7 +75,7 @@ public interface IExtentCache {
 	 * @param maxExtend The maximal extent as defined in "getValidExtent"
 	 * @return The valid position increased by one.
 	 */
-	default int increaseExtent(FarmDirection direction, BlockPos pos, int maxExtend) {
+	default int increaseExtent(HorizontalDirection direction, BlockPos pos, int maxExtend) {
 		int validExtent = getValidExtent(direction, pos, maxExtend);
 		setExtents(direction, pos, ++validExtent);
 		return validExtent;

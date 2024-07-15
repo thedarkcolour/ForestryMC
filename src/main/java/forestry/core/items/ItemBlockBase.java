@@ -2,7 +2,7 @@ package forestry.core.items;
 
 import java.util.function.Consumer;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.render.RenderForestryItemProperties;
 import net.minecraft.world.level.block.Block;
@@ -17,7 +17,7 @@ public class ItemBlockBase<B extends Block> extends ItemBlockForestry<B> {
 	}
 
 	public ItemBlockBase(B block, final IBlockTypeTesr blockTypeTesr) {
-		super(block, new Properties().tab(ItemGroupForestry.tabForestry));
+		super(block, new Properties().tab(ItemGroups.tabForestry));
 		this.blockTypeTesr = blockTypeTesr;
 	}
 

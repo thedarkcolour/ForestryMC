@@ -4,11 +4,13 @@ import net.minecraft.world.item.ItemStack;
 
 import genetics.api.individual.IIndividual;
 
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.sorting.DefaultFilterRuleType;
 
@@ -22,13 +24,13 @@ public enum LepidopterologyFilterRule implements IFilterRule {
 	NOCTURNAL(DefaultFilterRuleType.NOCTURNAL) {
 		@Override
 		protected boolean isValid(IButterfly butterfly) {
-			return butterfly.getGenome().getActiveValue(ButterflyChromosomes.NOCTURNAL);
+			return butterfly.getGenome().getActiveValue(ButterflyChromosomes.NEVER_SLEEPS);
 		}
 	},
 	PURE_NOCTURNAL(DefaultFilterRuleType.PURE_NOCTURNAL) {
 		@Override
 		protected boolean isValid(IButterfly butterfly) {
-			return butterfly.getGenome().getActiveValue(ButterflyChromosomes.NOCTURNAL) && butterfly.isPureBred(ButterflyChromosomes.NOCTURNAL);
+			return butterfly.getGenome().getActiveValue(ButterflyChromosomes.NEVER_SLEEPS) && butterfly.isPureBred(ButterflyChromosomes.NEVER_SLEEPS);
 		}
 	},
 	FLYER(DefaultFilterRuleType.FLYER) {
@@ -56,7 +58,7 @@ public enum LepidopterologyFilterRule implements IFilterRule {
 		if (!data.isPresent()) {
 			return false;
 		}
-		IIndividual individual = data.getIndividual();
+		IIndividual individual = data.individual();
 		if (!(individual instanceof IButterfly)) {
 			return false;
 		}
@@ -69,7 +71,7 @@ public enum LepidopterologyFilterRule implements IFilterRule {
 
 	@Override
 	public String getRootUID() {
-		return ButterflyManager.butterflyRoot.getUID();
+		return ButterflyManager.butterflyRoot.id();
 	}
 
 }

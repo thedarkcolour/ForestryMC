@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.ICircuitLayout;
 import forestry.core.circuits.ContainerSolderingIron;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 
 public record PacketGuiLayoutSelect(String layoutUid) implements IForestryPacketClient {

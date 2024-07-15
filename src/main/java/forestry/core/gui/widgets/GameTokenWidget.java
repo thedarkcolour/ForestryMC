@@ -26,7 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.gui.GuiUtil;
 import forestry.core.network.packets.PacketGuiSelectRequest;
-import forestry.core.render.TextureManagerForestry;
+import forestry.core.render.ForestryTextureManager;
 import forestry.core.tiles.EscritoireGame;
 import forestry.core.tiles.EscritoireGameToken;
 import forestry.core.utils.NetworkUtil;
@@ -53,7 +53,7 @@ public class GameTokenWidget extends Widget {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 
 		EscritoireGameToken token = getToken();
 		if (token == null) {
@@ -81,9 +81,9 @@ public class GameTokenWidget extends Widget {
 		GuiUtil.drawItemStack(transform, manager.gui, tokenStack, startX + xPos + 3, startY + yPos + 3);
 
 		RenderSystem.disableDepthTest();
-		TextureManagerForestry.INSTANCE.bindGuiTextureMap();
+		ForestryTextureManager.INSTANCE.bindGuiTextureMap();
 		for (String ident : token.getOverlayIcons()) {
-			TextureAtlasSprite icon = TextureManagerForestry.INSTANCE.getDefault(ident);
+			TextureAtlasSprite icon = ForestryTextureManager.INSTANCE.getDefault(ident);
 			GuiComponent.blit(transform, startX + xPos + 3, startY + yPos + 3, manager.gui.getBlitOffset(), 16, 16, icon);
 		}
 		RenderSystem.enableDepthTest();

@@ -15,16 +15,16 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
-import forestry.api.arboriculture.EnumForestryWoodType;
+import forestry.api.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.WoodBlockKind;
 import forestry.arboriculture.IWoodTyped;
 
 public class BlockForestryDoor extends DoorBlock implements IWoodTyped {
 
-	private final EnumForestryWoodType woodType;
+	private final ForestryWoodType woodType;
 
-	public BlockForestryDoor(EnumForestryWoodType woodType) {
+	public BlockForestryDoor(ForestryWoodType woodType) {
 		super(Block.Properties.of(Material.WOOD)
 				.strength(woodType.getHardness(), woodType.getHardness() * 1.5F)
 				.sound(SoundType.WOOD)

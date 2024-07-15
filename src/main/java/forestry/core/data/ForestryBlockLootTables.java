@@ -41,7 +41,7 @@ import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
 import forestry.core.loot.OrganismFunction;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
-import forestry.modules.ModuleManager;
+import forestry.modules.ForestryModuleManager;
 import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureBlockGroup;
 import forestry.modules.features.IModFeature;
@@ -54,19 +54,19 @@ public class ForestryBlockLootTables extends BlockLoot {
 	@Override
 	public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
 		for (BlockDecorativeLeaves leaves : ArboricultureBlocks.LEAVES_DECORATIVE.getBlocks()) {
-			this.add(leaves, (block) -> droppingWithChances(block, leaves.getDefinition(), NORMAL_LEAVES_SAPLING_CHANCES));
+			add(leaves, block -> droppingWithChances(block, leaves.getDefinition(), NORMAL_LEAVES_SAPLING_CHANCES));
 		}
 		for (BlockDefaultLeaves leaves : ArboricultureBlocks.LEAVES_DEFAULT.getBlocks()) {
-			this.add(leaves, (block) -> droppingWithChances(block, leaves.getTreeDefinition(), NORMAL_LEAVES_SAPLING_CHANCES));
+			add(leaves, block -> droppingWithChances(block, leaves.getDefinition(), NORMAL_LEAVES_SAPLING_CHANCES));
 		}
 		for (Map.Entry<TreeDefinition, FeatureBlock<BlockDefaultLeavesFruit, BlockItem>> entry : ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.getFeatureByType().entrySet()) {
 			FeatureBlock<BlockDefaultLeaves, BlockItem> defaultLeaves = ArboricultureBlocks.LEAVES_DEFAULT.get(entry.getKey());
 			Block defaultLeavesBlock = defaultLeaves.block();
 			Block fruitLeavesBlock = entry.getValue().block();
-			this.add(fruitLeavesBlock, (block) -> droppingWithChances(defaultLeavesBlock, entry.getKey(), NORMAL_LEAVES_SAPLING_CHANCES));
+			add(fruitLeavesBlock, (block) -> droppingWithChances(defaultLeavesBlock, entry.getKey(), NORMAL_LEAVES_SAPLING_CHANCES));
 		}
 		for (BlockForestryDoor door : ArboricultureBlocks.DOORS.getBlocks()) {
-			this.add(door, BlockLoot.createDoorTable(door));
+			add(door, BlockLoot.createDoorTable(door));
 		}
 		registerLootTable(CharcoalBlocks.ASH, (block) -> LootTable.lootTable().setParamSet(LootContextParamSets.BLOCK)
 				.withPool(LootPool.lootPool().add(LootItem.lootTableItem(CoreItems.ASH)).apply(SetItemCountFunction.setCount(BinomialDistributionGenerator.binomial(2, 1.0f / 3.0f))))
@@ -90,7 +90,7 @@ public class ForestryBlockLootTables extends BlockLoot {
 		//TODO: Hives
 
 		Set<ResourceLocation> visited = Sets.newHashSet();
-		for (IModFeature feature : ModuleManager.moduleHandler.getFeatures(Registry.BLOCK_REGISTRY)) {
+		for (IModFeature feature : ForestryModuleManager.moduleHandler.getFeatures(Registry.BLOCK_REGISTRY)) {
 			if (feature instanceof FeatureBlock<?,?> blockFeature) {
 				Block block = blockFeature.block();
 				ResourceLocation resourcelocation = block.getLootTable();

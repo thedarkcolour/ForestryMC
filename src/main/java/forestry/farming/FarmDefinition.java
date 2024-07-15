@@ -11,10 +11,9 @@ import net.minecraft.util.StringRepresentable;
 
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.ITreeRoot;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.ICircuit;
 import forestry.api.circuits.ICircuitLayout;
@@ -22,6 +21,7 @@ import forestry.api.farming.FarmPropertiesEvent;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmPropertiesBuilder;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.core.circuits.Circuits;
 import forestry.core.features.CoreBlocks;
@@ -41,7 +41,7 @@ import forestry.farming.logic.FarmLogicOrchard;
 import forestry.farming.logic.FarmLogicPeat;
 import forestry.farming.logic.FarmLogicReeds;
 import forestry.farming.logic.FarmLogicSucculent;
-import forestry.modules.ForestryModuleUids;
+import forestry.api.modules.ForestryModuleIds;
 
 public enum FarmDefinition implements StringRepresentable {
 	CROPS("crops", EnumElectronTube.BRONZE, FarmLogicCrops::new) {
@@ -132,12 +132,12 @@ public enum FarmDefinition implements StringRepresentable {
 			properties.setFertilizer(10)
 				.setWater(hydrationModifier -> (int) (40 * hydrationModifier))
 				.setIcon(() -> CoreItems.FRUITS.stack(ItemFruit.EnumFruit.CHERRY));
-			ITreeRoot treeRoot = TreeManager.treeRoot;
+			ITreeSpeciesType treeRoot = TreeManager.treeRoot;
 			if (treeRoot != null) {
 				for (ITree tree : treeRoot.getIndividualTemplates()) {
 					IFruitProvider fruitProvider = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 					if (fruitProvider != AlleleFruits.fruitNone.getProvider()) {
-						properties.addSeedlings(treeRoot.getTypes().createStack(tree, EnumGermlingType.SAPLING))
+						properties.addSeedlings(treeRoot.getTypes().createStack(tree, TreeLifeStage.SAPLING))
 							.addProducts(fruitProvider.getProducts().getPossibleStacks())
 							.addProducts(fruitProvider.getSpecialty().getPossibleStacks());
 					}
@@ -189,12 +189,12 @@ public enum FarmDefinition implements StringRepresentable {
 	private final ICircuit manual;
 
 	FarmDefinition(String identifier, EnumElectronTube tube, BiFunction<IFarmProperties, Boolean, IFarmLogic> factory) {
-		this(identifier, tube, factory, ForestryModuleUids.FARMING);
+		this(identifier, tube, factory, ForestryModuleIds.FARMING);
 	}
 
 	FarmDefinition(String identifier, EnumElectronTube tube, BiFunction<IFarmProperties, Boolean, IFarmLogic> factory, String module) {
 		String camelCase = WordUtils.capitalize(identifier);
-		IFarmPropertiesBuilder builder = FarmRegistry.INSTANCE.getPropertiesBuilder(identifier)
+		IFarmPropertiesBuilder builder = ForestryFarmRegistry.INSTANCE.getPropertiesBuilder(identifier)
 			.setFactory(factory)
 			.setTranslationKey("for.farm." + identifier)
 			.addFarmables("farm" + camelCase);

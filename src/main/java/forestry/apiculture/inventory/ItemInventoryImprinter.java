@@ -17,16 +17,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.genetics.IBeeRoot;
+import forestry.api.apiculture.genetics.IBeeSpeciesType;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.genetics.Bee;
 import forestry.core.inventory.ItemInventory;
 
-import genetics.api.GeneticHelper;
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 
 public class ItemInventoryImprinter extends ItemInventory {
 	private static final short specimenSlot = 0;
@@ -72,20 +73,20 @@ public class ItemInventoryImprinter extends ItemInventory {
 	}
 
 	public IAlleleBeeSpecies getPrimary() {
-		return BeeManager.beeRoot.getIndividualTemplates().get(primaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
+		return BeeManager.beeRoot.getIndividualTemplates().get(primaryIndex).getGenome().getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
 	}
 
 	public IAlleleBeeSpecies getSecondary() {
-		return BeeManager.beeRoot.getIndividualTemplates().get(secondaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
+		return BeeManager.beeRoot.getIndividualTemplates().get(secondaryIndex).getGenome().getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
 	}
 
 	public IBee getSelectedBee() {
-		IBeeRoot beeRoot = BeeManager.beeRoot;
+		IBeeSpeciesType beeRoot = BeeManager.beeRoot;
 		List<IBee> individualTemplates = beeRoot.getIndividualTemplates();
 		Map<String, IAllele[]> genomeTemplates = beeRoot.getTemplates().getGenomeTemplates();
-		IAllele[] templateActive = genomeTemplates.get(individualTemplates.get(primaryIndex).getIdentifier());
-		IAllele[] templateInactive = genomeTemplates.get(individualTemplates.get(secondaryIndex).getIdentifier());
-		IGenome genome = beeRoot.getKaryotype().templateAsGenome(templateActive, templateInactive);
+		IAllele[] templateActive = genomeTemplates.get(individualTemplates.get(primaryIndex).getId());
+		IAllele[] templateInactive = genomeTemplates.get(individualTemplates.get(secondaryIndex).getId());
+		IGenome genome = beeRoot.templateAsGenome(templateActive, templateInactive);
 		return new Bee(genome);
 	}
 
@@ -124,7 +125,7 @@ public class ItemInventoryImprinter extends ItemInventory {
 
 		IBee imprint = getSelectedBee();
 
-		GeneticHelper.setIndividual(specimen, imprint);
+		imprint.copyTo(specimen);
 
 		setItem(imprintedSlot, specimen);
 		setItem(specimenSlot, ItemStack.EMPTY);

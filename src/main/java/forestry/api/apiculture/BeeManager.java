@@ -14,11 +14,9 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.genetics.IBeeFactory;
 import forestry.api.apiculture.genetics.IBeeMutationFactory;
-import forestry.api.apiculture.genetics.IBeeRoot;
+import forestry.api.apiculture.genetics.IBeeSpeciesType;
 
-import genetics.api.GeneticsAPI;
-import genetics.api.individual.IGenome;
-import genetics.api.root.IRootDefinition;
+import forestry.api.genetics.IGenome;
 
 /**
  * Some miscellaneous lists and settings for bees.
@@ -46,7 +44,7 @@ public class BeeManager {
 	 *
 	 * @implNote Only null if the "apiculture" module is not enabled.
 	 */
-	public static IBeeRoot beeRoot;
+	public static IBeeSpeciesType beeRoot;
 
 	/**
 	 * Used to create new bees.

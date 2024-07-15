@@ -5,19 +5,27 @@ import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.ForestryCapabilities;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+
+import genetics.api.GeneticHelper;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.ISpeciesType;
 
 /**
  * An actual individual organism with genetic information.
  */
 public interface IIndividual {
 	/**
-	 * @return The {@link IAllele#getRegistryName()} of the allele that is at the {@link IKaryotype#getSpeciesType()}
+	 * @return The {@link IAllele#id()} of the allele that is at the {@link IKaryotype#getSpeciesChromosome()}
 	 * of the {@link IGenome} of this individual.
 	 */
-	String getIdentifier();
+	ResourceLocation getId();
 
 	/**
 	 * Adds some information about the individual to the list.
@@ -27,7 +35,7 @@ public interface IIndividual {
 	/**
 	 * @return The definition that describes this organism.
 	 */
-	IIndividualRoot getRoot();
+	ISpeciesType<?> getRoot();
 
 	/**
 	 * @return The genetic data of this individual.
@@ -68,7 +76,7 @@ public interface IIndividual {
 	/**
 	 * @return true if this organism has the same active and inactive allele at the position.
 	 */
-	boolean isPureBred(IChromosomeType geneType);
+	boolean isPureBred(IChromosome chromosomeType);
 
 	/**
 	 * Check whether the genetic makeup of two IIndividuals is identical. Ignores additional data like generations, irregular mating, etc..
@@ -93,4 +101,19 @@ public interface IIndividual {
 	 * @return true if the IIndividual has been analyzed previously.
 	 */
 	boolean isAnalyzed();
+
+	default boolean isSecret() {
+		return getGenome().getPrimarySpecies(IAlleleForestrySpecies.class).isSecret();
+	}
+
+	/**
+	 * Copies this individual's genetic info to the given item.
+	 */
+	default void copyTo(ItemStack stack) {
+		stack.getCapability(ForestryCapabilities.INDIVIDUAL).ifPresent(otherIndividual -> {
+			otherIndividual.setGenome();
+		});
+		IIndividualCapability organism = GeneticHelper.getOrganism(stack);
+		organism.setIndividual(this);
+	}
 }

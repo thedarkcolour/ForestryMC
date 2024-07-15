@@ -17,6 +17,8 @@ import com.mojang.math.Vector3f;
 import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TileEscritoire;
+import forestry.core.utils.ModUtil;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -33,7 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class RenderEscritoire implements IForestryRenderer<TileEscritoire> {
 	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("escritoire");
 
-	private static final ResourceLocation TEXTURE = new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/escritoire.png");
+	private static final ResourceLocation TEXTURE = ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/escritoire.png");
 
 	private enum Parts {
 		DESK, STANDRB, STANDRF, STANDLB, STANDLF, DRAWERS, STANDLOWLF, STANDLOWRB, STANDLOWRF, STANDLOWLB

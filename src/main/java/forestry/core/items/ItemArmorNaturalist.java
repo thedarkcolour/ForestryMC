@@ -26,7 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.ForestryConstants;
+import forestry.api.core.ItemGroups;
 import forestry.core.config.Constants;
 import forestry.core.utils.ItemTooltipUtil;
 
@@ -35,12 +36,12 @@ public class ItemArmorNaturalist extends ArmorItem {
 	public ItemArmorNaturalist() {
 		super(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, (new Item.Properties())
 				.durability(100)
-				.tab(ItemGroupForestry.tabForestry));
+				.tab(ItemGroups.tabForestry));
 	}
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-		return Constants.MOD_ID + ":" + Constants.TEXTURE_NATURALIST_ARMOR_PRIMARY;
+		return ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_NATURALIST_ARMOR_PRIMARY;
 	}
 
 	@Override

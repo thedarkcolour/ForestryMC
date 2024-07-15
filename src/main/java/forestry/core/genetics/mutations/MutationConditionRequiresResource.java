@@ -15,11 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.climate.IClimateProvider;
+import forestry.api.climate.ClimateState;
 import forestry.api.genetics.IMutationCondition;
 import forestry.core.tiles.TileUtil;
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 
 import net.minecraft.client.GameNarrator;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,14 +37,14 @@ public class MutationConditionRequiresResource implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level world, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
+	public float getChance(Level level, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, ClimateState climate) {
 		BlockEntity tile;
 		do {
 			pos = pos.below();
-			tile = TileUtil.getTile(world, pos);
+			tile = TileUtil.getTile(level, pos);
 		} while (tile instanceof IBeeHousing);
 
-		BlockState blockState = world.getBlockState(pos);
+		BlockState blockState = level.getBlockState(pos);
 		return this.acceptedBlockStates.contains(blockState) ? 1 : 0;
 	}
 

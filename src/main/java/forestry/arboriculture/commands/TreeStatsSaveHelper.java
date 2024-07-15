@@ -18,8 +18,8 @@ import com.mojang.authlib.GameProfile;
 
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.commands.IStatsSaveHelper;
 
 import genetics.utils.AlleleUtils;

@@ -20,8 +20,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.ILocatable;
 import forestry.api.multiblock.IMultiblockComponent;
@@ -150,13 +150,13 @@ public interface FakeMultiblockController extends IMultiblockControllerInternal,
 	}
 
 	@Override
-	default EnumTemperature getTemperature() {
-		return EnumTemperature.NORMAL;
+	default TemperatureType temperature() {
+		return TemperatureType.NORMAL;
 	}
 
 	@Override
-	default EnumHumidity getHumidity() {
-		return EnumHumidity.NORMAL;
+	default HumidityType humidity() {
+		return HumidityType.NORMAL;
 	}
 
 	@Override

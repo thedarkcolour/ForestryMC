@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.BucketItem;
@@ -30,12 +29,14 @@ import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.core.ModuleFluids;
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.items.definitions.DrinkProperties;
+import forestry.core.utils.ModUtil;
 import forestry.modules.features.FeatureFluid;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureProvider;
+import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
@@ -87,7 +88,7 @@ public enum ForestryFluids {
 
 	static {
 		for (ForestryFluids fluidDefinition : ForestryFluids.values()) {
-			tagToFluid.put(new ResourceLocation(Constants.MOD_ID, fluidDefinition.feature.getIdentifier()), fluidDefinition);
+			tagToFluid.put(new ResourceLocation(ForestryConstants.MOD_ID, fluidDefinition.feature.getName()), fluidDefinition);
 		}
 	}
 
@@ -105,7 +106,8 @@ public enum ForestryFluids {
 	}
 
 	ForestryFluids(Color particleColor, int density, int viscosity, int flammability) {
-		this.feature = ModFeatureRegistry.get(ModuleFluids.class)
+		IFeatureRegistry registry = ModFeatureRegistry.get(ForestryModuleIds.FLUIDS);
+		this.feature = registry
 				.fluid(name().toLowerCase(Locale.ENGLISH))
 				.flammability(flammability)
 				.viscosity(viscosity)
@@ -115,7 +117,7 @@ public enum ForestryFluids {
 				.bucket(this::getBucket)
 				.create();
 		if (hasBucket()) {
-			this.bucket = ModFeatureRegistry.get(ModuleFluids.class)
+			this.bucket = registry
 					.item(() -> new BucketItem(this::getFluid, new Item.Properties()
 									.craftRemainder(Items.BUCKET)
 									.stacksTo(1)
@@ -123,9 +125,9 @@ public enum ForestryFluids {
 							"bucket_" + name().toLowerCase(Locale.ENGLISH)
 					);
 		} else {
-			bucket = null;
+			this.bucket = null;
 		}
-		this.tag = new ResourceLocation(Constants.MOD_ID, feature.getIdentifier());
+		this.tag = new ResourceLocation(ForestryConstants.MOD_ID, feature.getName());
 	}
 
 	protected boolean hasBucket() {
@@ -188,13 +190,13 @@ public enum ForestryFluids {
 
 	@Nullable
 	public static ForestryFluids getFluidDefinition(Fluid fluid) {
-		return tagToFluid.get(RegistryNameFinder.getRegistryName(fluid));
+		return tagToFluid.get(ModUtil.getRegistryName(fluid));
 	}
 
 	@Nullable
-	public static ForestryFluids getFluidDefinition(FluidStack fluidStack) {
-		if (!fluidStack.isEmpty()) {
-			return getFluidDefinition(fluidStack.getFluid());
+	public static ForestryFluids getFluidDefinition(FluidStack stack) {
+		if (!stack.isEmpty()) {
+			return getFluidDefinition(stack.getFluid());
 		}
 
 		return null;

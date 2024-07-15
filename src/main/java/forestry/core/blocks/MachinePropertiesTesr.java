@@ -7,16 +7,15 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 import forestry.core.render.IForestryRendererProvider;
 import forestry.core.render.RenderForestryTile;
-import forestry.core.tiles.ForestryTicker;
+import forestry.core.tiles.IForestryTicker;
 import forestry.core.tiles.TileForestry;
 import forestry.modules.features.FeatureTileType;
 
@@ -32,7 +31,7 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 	@OnlyIn(Dist.CLIENT)
 	private IForestryRendererProvider<? super T> renderer;
 
-	public MachinePropertiesTesr(Supplier<FeatureTileType<? extends T>> teType, String name, IShapeProvider shape, @Nullable ForestryTicker<? extends T> clientTicker, @Nullable ForestryTicker<? extends T> serverTicker, @Nullable ResourceLocation particleTexture) {
+	public MachinePropertiesTesr(Supplier<FeatureTileType<? extends T>> teType, String name, IShapeProvider shape, @Nullable IForestryTicker<? extends T> clientTicker, @Nullable IForestryTicker<? extends T> serverTicker, @Nullable ResourceLocation particleTexture) {
 		super(teType, name, shape, clientTicker, serverTicker);
 		this.particleTexture = particleTexture;
 	}
@@ -76,7 +75,7 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 		}
 
 		public Builder<T> setParticleTexture(String particleTexture) {
-			return setParticleTexture(new ResourceLocation(Constants.MOD_ID, "block/" + particleTexture));
+			return setParticleTexture(new ResourceLocation(ForestryConstants.MOD_ID, "block/" + particleTexture));
 		}
 
 		public Builder<T> setParticleTexture(ResourceLocation particleTexture) {

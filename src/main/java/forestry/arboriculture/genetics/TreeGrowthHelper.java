@@ -13,7 +13,7 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.arboriculture.tiles.TileSapling;
 import forestry.core.tiles.TileUtil;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class TreeGrowthHelper {
 	@Nullable
@@ -104,6 +104,6 @@ public class TreeGrowthHelper {
 		}
 
 		ITree tree = sapling.getTree();
-		return tree != null && tree.getGenome().getPrimary().getRegistryName().equals(genome.getPrimary().getRegistryName());
+		return tree != null && tree.getGenome().getPrimarySpecies().id().equals(genome.getPrimarySpecies().id());
 	}
 }

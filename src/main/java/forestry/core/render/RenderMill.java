@@ -13,6 +13,8 @@ package forestry.core.render;
 import com.mojang.math.Vector3f;
 
 import forestry.core.tiles.TileMill;
+import forestry.core.utils.ModUtil;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -30,7 +32,6 @@ public class RenderMill implements IForestryRenderer<TileMill> {
 	private enum Textures {PEDESTAL, EXTENSION, BLADE_1, BLADE_2, CHARGE}
 	
 	private final ResourceLocation[] textures;
-
 	private final ModelPart pedestal;
 	private final ModelPart column;
 	private final ModelPart extension;
@@ -44,15 +45,15 @@ public class RenderMill implements IForestryRenderer<TileMill> {
 		this.blade1 = root.getChild(Textures.BLADE_1.name());
 		this.blade2 = root.getChild(Textures.BLADE_2.name());
 		
-		textures = new ResourceLocation[12];
+		this.textures = new ResourceLocation[12];
 
-		textures[Textures.PEDESTAL.ordinal()] = new ForestryResource(baseTexture + "pedestal.png");
-		textures[Textures.EXTENSION.ordinal()] = new ForestryResource(baseTexture + "extension.png");
-		textures[Textures.BLADE_1.ordinal()] = new ForestryResource(baseTexture + "blade1.png");
-		textures[Textures.BLADE_2.ordinal()] = new ForestryResource(baseTexture + "blade2.png");
+		this.textures[Textures.PEDESTAL.ordinal()] = ModUtil.modLoc(baseTexture + "pedestal.png");
+		this.textures[Textures.EXTENSION.ordinal()] = ModUtil.modLoc(baseTexture + "extension.png");
+		this.textures[Textures.BLADE_1.ordinal()] = ModUtil.modLoc(baseTexture + "blade1.png");
+		this.textures[Textures.BLADE_2.ordinal()] = ModUtil.modLoc(baseTexture + "blade2.png");
 
 		for (int i = 0; i < 8; i++) {
-			textures[Textures.CHARGE.ordinal() + i] = new ForestryResource(baseTexture + "column_" + i + ".png");
+			this.textures[Textures.CHARGE.ordinal() + i] = ModUtil.modLoc(baseTexture + "column_" + i + ".png");
 		}
 	}
 	

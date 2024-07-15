@@ -5,15 +5,15 @@
  ******************************************************************************/
 package forestry.api.apiculture.genetics;
 
-import genetics.api.individual.IGenome;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 
 import forestry.api.apiculture.IBeeHousing;
 
 public interface IBeeMutation extends IMutation {
 
 	@Override
-	IBeeRoot getRoot();
+	IBeeSpeciesType getRoot();
 
 	/**
 	 * @return float representing the chance for mutation to occur. note that this is 0 - 100 based, since it was an integer previously!

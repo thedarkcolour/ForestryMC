@@ -13,9 +13,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -28,14 +26,13 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.utils.BlockUtil;
-
-import genetics.api.individual.IGenome;
 
 /**
  * Genetic leaves with no tile entity, used for worldgen trees.
@@ -45,11 +42,6 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 	private final TreeDefinition definition;
 
 	public BlockDefaultLeavesFruit(TreeDefinition definition) {
-		super(Block.Properties.of(Material.LEAVES)
-				.strength(0.2f)
-				.sound(SoundType.GRASS)
-				.randomTicks()
-				.noOcclusion());
 		this.definition = definition;
 	}
 
@@ -88,7 +80,7 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 		List<ITree> saplings = tree.getSaplings(world, playerProfile, pos, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				drops.add(TreeManager.treeRoot.getTypes().createStack(sapling, EnumGermlingType.SAPLING));
+				drops.add(TreeManager.treeRoot.getTypes().createStack(sapling, TreeLifeStage.SAPLING));
 			}
 		}
 
@@ -102,34 +94,13 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 	}
 
 	public TreeDefinition getDefinition() {
-		return definition;
+		return this.definition;
 	}
 
 	@Override
 	protected ITree getTree(BlockGetter world, BlockPos pos) {
-		return definition.createIndividual();
+		return this.definition.createIndividual();
 	}
-
-	/* RENDERING */
-	//	@Override
-	//	public final boolean isOpaqueCube(BlockState state) {
-	//		if (!Proxies.render.fancyGraphicsEnabled()) {
-	//			PropertyTreeTypeFruit.LeafVariant treeDefinition = state.getValue(getVariant());
-	//			return !TreeDefinition.Willow.equals(treeDefinition.definition);
-	//		}
-	//		return false;
-	//	}
-	//
-	//	@Override
-	//	@OnlyIn(Dist.CLIENT)
-	//	public void registerModel(Item item, IModelManager manager) {
-	//		for (BlockState state : blockState.getValidStates()) {
-	//			int meta = getMetaFromState(state);
-	//			ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation("forestry:leaves.default." + blockNumber, "inventory"));
-	//		}
-	//	}
-
-	/* RENDERING */
 
 	@Override
 	@OnlyIn(Dist.CLIENT)

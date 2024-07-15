@@ -24,12 +24,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.hives.IHiveTile;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.particles.ParticleSnow;
-import forestry.apiculture.genetics.alleles.AlleleEffect;
+import forestry.apiculture.genetics.alleles.BeeEffect;
 import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.particles.BeeParticleData;
 import forestry.apiculture.particles.BeeTargetParticleData;
@@ -38,7 +40,7 @@ import forestry.core.entities.ParticleIgnition;
 import forestry.core.entities.ParticleSmoke;
 import forestry.core.utils.VectUtil;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 @OnlyIn(Dist.CLIENT)
 public class ParticleRender {
@@ -81,13 +83,13 @@ public class ParticleRender {
 			return;
 		}
 
-		int color = genome.getActiveAllele(BeeChromosomes.SPECIES).getSpriteColour(0);
+		int color = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES).getSpriteColour(0);
 
 		int randomInt = world.random.nextInt(100);
 
 		if (housing instanceof IHiveTile) {
 			if (((IHiveTile) housing).isAngry() || randomInt >= 85) {
-				List<LivingEntity> entitiesInRange = AlleleEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
+				List<LivingEntity> entitiesInRange = BeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
 				if (!entitiesInRange.isEmpty()) {
 					LivingEntity entity = entitiesInRange.get(world.random.nextInt(entitiesInRange.size()));
 					//Particle particle = new ParticleBeeTargetEntity(world, particleStart, entity, color);
@@ -104,7 +106,7 @@ public class ParticleRender {
 			//effectRenderer.add(particle);
 			world.addParticle(new BeeParticleData(ApicultureParticles.BEE_ROUND_TRIP_PARTICLE.get(), destination, color), particleStart.x, particleStart.y, particleStart.z, 0, 0, 0);
 		} else {
-			Vec3i area = AlleleEffect.getModifiedArea(genome, housing);
+			Vec3i area = BeeEffect.getModifiedArea(genome, housing);
 			Vec3i offset = housing.getCoordinates().offset(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
 			BlockPos destination = VectUtil.getRandomPositionInArea(world.random, area).offset(offset);
 			world.addParticle(new BeeParticleData(ApicultureParticles.BEE_EXPLORER_PARTICLE.get(), destination, color), particleStart.x, particleStart.y, particleStart.z, 0, 0, 0);
@@ -122,7 +124,7 @@ public class ParticleRender {
 		//		effectRenderer.addEffect(new ParticleHoneydust(world, x, y, z, 0, 0, 0));
 	}
 
-	public static void addClimateParticles(Level worldIn, BlockPos pos, RandomSource rand, EnumTemperature temperature, EnumHumidity humidity) {
+	public static void addClimateParticles(Level worldIn, BlockPos pos, RandomSource rand, TemperatureType temperature, HumidityType humidity) {
 		if (!shouldSpawnParticle(worldIn)) {
 			return;
 		}

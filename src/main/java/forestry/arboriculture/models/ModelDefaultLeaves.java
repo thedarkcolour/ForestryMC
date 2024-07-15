@@ -14,13 +14,14 @@ import com.google.common.base.Preconditions;
 
 import java.util.Objects;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,16 +29,15 @@ import net.minecraftforge.client.model.data.ModelData;
 
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDefaultLeaves;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.models.baker.ModelBaker;
-import forestry.core.proxy.Proxies;
 import forestry.core.utils.ResourceUtil;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, ModelDefaultLeaves.Key> {
@@ -76,7 +76,7 @@ public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, Mod
 		Block block = Block.byItem(stack.getItem());
 		Preconditions.checkArgument(block instanceof BlockDefaultLeaves, "ItemStack must be for default leaves.");
 		BlockDefaultLeaves bBlock = (BlockDefaultLeaves) block;
-		return new Key(bBlock.getTreeDefinition(), Proxies.render.fancyGraphicsEnabled());
+		return new Key(bBlock.getDefinition(), Minecraft.useFancyGraphics());
 	}
 
 	@Override
@@ -84,9 +84,9 @@ public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, Mod
 		Block block = state.getBlock();
 		Preconditions.checkArgument(block instanceof BlockDefaultLeaves, "state must be for default leaves.");
 		BlockDefaultLeaves bBlock = (BlockDefaultLeaves) block;
-		TreeDefinition treeDefinition = bBlock.getTreeDefinition(state);
+		TreeDefinition treeDefinition = bBlock.getDefinition();
 		Preconditions.checkNotNull(treeDefinition);
-		return new ModelDefaultLeaves.Key(treeDefinition, Proxies.render.fancyGraphicsEnabled());
+		return new ModelDefaultLeaves.Key(treeDefinition, Minecraft.useFancyGraphics());
 	}
 
 	@Override

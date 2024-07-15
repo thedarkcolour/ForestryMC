@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 import forestry.api.arboriculture.ITreekeepingMode;
 

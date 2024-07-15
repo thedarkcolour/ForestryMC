@@ -18,6 +18,7 @@ import com.mojang.math.Vector3f;
 
 import forestry.core.config.Constants;
 import forestry.core.tiles.TemperatureState;
+import forestry.core.utils.ModUtil;
 import forestry.energy.blocks.EngineBlock;
 import forestry.energy.tiles.EngineBlockEntity;
 
@@ -52,14 +53,14 @@ public class RenderEngine implements IForestryRenderer<EngineBlockEntity> {
 		this.extension = root.getChild("extension");
 
 		this.textures = new ResourceLocation[]{
-				new ForestryResource(baseTexture + "base.png"),
-				new ForestryResource(baseTexture + "piston.png"),
-				new ForestryResource(baseTexture + "extension.png"),
-				new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_highest.png"),
-				new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_higher.png"),
-				new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_high.png"),
-				new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_medium.png"),
-				new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_low.png"),
+				ModUtil.modLoc(baseTexture + "base.png"),
+				ModUtil.modLoc(baseTexture + "piston.png"),
+				ModUtil.modLoc(baseTexture + "extension.png"),
+				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_highest.png"),
+				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_higher.png"),
+				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_high.png"),
+				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_medium.png"),
+				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_low.png"),
 		};
 	}
 

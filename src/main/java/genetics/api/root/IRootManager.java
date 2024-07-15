@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticPlugin;
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.individual.IIndividual;
 
 public interface IRootManager {
@@ -13,14 +13,14 @@ public interface IRootManager {
 	 * Creates a {@link IIndividualRootBuilder} with the given parameters.
 	 * Later before {@link IGeneticPlugin#onFinishRegistration(IRootManager, IGeneticApiInstance)} is passed to your genetic plugin the
 	 * definition will be build and registered.
-	 * You can get a instance of the definition with {@link IGeneticApiInstance#getRoot(String)}.
+	 * You can get a instance of the definition with {@link IGeneticApiInstance#getRoot(net.minecraft.resources.ResourceLocation)}.
 	 *
 	 * @param uid The uid of the root.
 	 * @param <I> The type of the individual that the root that the definition contains defines.
 	 */
 	<I extends IIndividual> IIndividualRootBuilder<I> createRoot(String uid);
 
-	<I extends IIndividual, T extends Enum<T> & IChromosomeType> IIndividualRootBuilder<I> createRoot(String uid, Class<? extends T> enumClass);
+	<I extends IIndividual, T extends Enum<T> & IChromosome> IIndividualRootBuilder<I> createRoot(String uid, Class<? extends T> enumClass);
 
 	/**
 	 * Gets an IGeneticDefinitionBuilder

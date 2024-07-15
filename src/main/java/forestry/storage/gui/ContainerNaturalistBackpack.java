@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.core.config.Constants;
 import forestry.core.gui.ContainerItemInventory;
 import forestry.core.gui.ContainerNaturalistInventory;
@@ -30,7 +30,7 @@ import genetics.api.individual.IIndividual;
 
 public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInventoryBackpackPaged> implements IGuiSelectable, INaturalistMenu {
 	private final int currentPage;
-	private final IForestrySpeciesRoot<IIndividual> speciesRoot;
+	private final IForestrySpeciesType<IIndividual> speciesRoot;
 
 	public ContainerNaturalistBackpack(int windowId, Inventory inv, ItemInventoryBackpackPaged inventory, int selectedPage, String rootUid) {
 		super(windowId, inventory, inv, 18, 120, BackpackMenuTypes.NATURALIST_BACKPACK.menuType());
@@ -38,7 +38,7 @@ public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInve
 		ContainerNaturalistInventory.addInventory(this, inventory, selectedPage);
 
 		this.currentPage = selectedPage;
-		this.speciesRoot = (IForestrySpeciesRoot<IIndividual>) GeneticsAPI.apiInstance.getRoot(rootUid).get();
+		this.speciesRoot = (IForestrySpeciesType<IIndividual>) GeneticsAPI.apiInstance.getRoot(rootUid).get();
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInve
 	}
 
 	@Override
-	public IForestrySpeciesRoot<IIndividual> getSpeciesRoot() {
+	public IForestrySpeciesType<IIndividual> getSpeciesRoot() {
 		return this.speciesRoot;
 	}
 

@@ -16,17 +16,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
-import forestry.core.errors.ErrorLogic;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;
 
-public record PacketErrorUpdate(BlockPos pos, IErrorLogic errorLogic) implements IForestryPacketClient {
+public record PacketErrorUpdate(BlockPos pos, short[] errorStates) implements IForestryPacketClient {
 	public PacketErrorUpdate(BlockEntity tile, IErrorLogicSource errorLogicSource) {
-		this(tile.getBlockPos(), errorLogicSource.getErrorLogic());
+		this(tile.getBlockPos(), errorLogicSource.getErrorLogic().toArray());
 	}
 
 	@Override
@@ -36,18 +34,17 @@ public record PacketErrorUpdate(BlockPos pos, IErrorLogic errorLogic) implements
 
 	@Override
 	public void write(FriendlyByteBuf buffer) {
-		buffer.writeBlockPos(pos);
-		errorLogic.writeData(buffer);
+		buffer.writeBlockPos(this.pos);
+		NetworkUtil.writeShortArray(buffer, this.errorStates);
 	}
 
 	public static PacketErrorUpdate decode(FriendlyByteBuf buffer) {
-		return new PacketErrorUpdate(buffer.readBlockPos(), new ErrorLogic(buffer));
+		BlockPos pos = buffer.readBlockPos();
+		short[] errorStats = NetworkUtil.readShortArray(buffer);
+		return new PacketErrorUpdate(pos, errorStats);
 	}
 
 	public static void handle(PacketErrorUpdate msg, Player player) {
-		TileUtil.actOnTile(player.level, msg.pos, IErrorLogicSource.class, errorSourceTile -> {
-			errorSourceTile.getErrorLogic().copy(msg.errorLogic);
-		});
-
+		TileUtil.actOnTile(player.level, msg.pos, IErrorLogicSource.class, errorSourceTile -> errorSourceTile.getErrorLogic().fromArray(msg.errorStates));
 	}
 }

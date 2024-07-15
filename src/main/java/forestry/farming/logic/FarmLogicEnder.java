@@ -15,7 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
@@ -39,7 +39,7 @@ public class FarmLogicEnder extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing farmHousing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level world, IFarmHousing farmHousing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = farmHousing.getValidPosition(direction, pos, extent, pos.above());
 		Collection<ICrop> crops = harvestBlocks(world, position);
 		farmHousing.increaseExtent(direction, pos, extent);
@@ -93,7 +93,7 @@ public class FarmLogicEnder extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
 			BlockState state = world.getBlockState(position);

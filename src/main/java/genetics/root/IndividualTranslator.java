@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.ComponentKeys;
 import genetics.api.root.translator.IBlockTranslator;
@@ -18,16 +18,16 @@ import genetics.api.root.translator.IIndividualTranslator;
 import genetics.api.root.translator.IItemTranslator;
 
 public class IndividualTranslator<I extends IIndividual> implements IIndividualTranslator<I> {
-	private final IIndividualRoot<I> root;
+	private final ISpeciesType<I> root;
 	private final Map<Item, IItemTranslator<I>> itemTranslators = new HashMap<>();
 	private final Map<Block, IBlockTranslator<I>> blockTranslators = new HashMap<>();
 
-	public IndividualTranslator(IIndividualRoot<I> root) {
+	public IndividualTranslator(ISpeciesType<I> root) {
 		this.root = root;
 	}
 
 	@Override
-	public IIndividualRoot<I> getRoot() {
+	public ISpeciesType<I> getRoot() {
 		return root;
 	}
 

@@ -9,12 +9,12 @@ import java.util.List;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import genetics.api.alleles.IAlleleRegistry;
+import forestry.api.genetics.IAlleleRegistry;
 
 import genetics.utils.AlleleUtils;
 
 import forestry.api.arboriculture.genetics.IAlleleFruit;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.FruitProviderNone;
 import forestry.arboriculture.FruitProviderPod;
 import forestry.arboriculture.FruitProviderPod.EnumPodType;

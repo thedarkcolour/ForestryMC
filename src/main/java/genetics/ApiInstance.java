@@ -6,26 +6,25 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
+
+import net.minecraft.resources.ResourceLocation;
 
 import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticFactory;
 import genetics.api.IGeneticSaveHandler;
 import genetics.api.alleles.IAlleleHelper;
-import genetics.api.alleles.IAlleleRegistry;
+import forestry.api.genetics.IAlleleRegistry;
 import genetics.api.individual.IChromosomeList;
-import genetics.api.individual.IKaryotype;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IIndividualRootHelper;
-import genetics.api.root.IRootDefinition;
 import genetics.api.root.components.IRootComponentRegistry;
 
 import genetics.alleles.AlleleHelper;
 import genetics.alleles.AlleleRegistry;
-import genetics.classification.ClassificationRegistry;
+import forestry.core.genetics.ClassificationRegistry;
 import genetics.individual.ChromosomeList;
 import genetics.individual.GeneticSaveHandler;
-import genetics.individual.RootDefinition;
 import genetics.root.IndividualRootHelper;
 import genetics.root.RootComponentRegistry;
 
@@ -39,7 +38,7 @@ public enum ApiInstance implements IGeneticApiInstance {
 	@Nullable
 	public AlleleRegistry alleleRegistry;
 
-	private final Map<String, RootDefinition> rootDefinitionByUID = new HashMap<>();
+	private final Map<ResourceLocation, ISpeciesType<?>> rootDefinitionByUID = new HashMap<>();
 	private final Map<String, IChromosomeList> chromosomeListByUID = new HashMap<>();
 
 	@Override
@@ -88,21 +87,14 @@ public enum ApiInstance implements IGeneticApiInstance {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <R extends IIndividualRoot> RootDefinition<R> getRoot(String rootUID) {
-		Preconditions.checkNotNull(rootUID, "The uid of a root definition can't be null.");
-		return rootDefinitionByUID.computeIfAbsent(rootUID, uid -> new RootDefinition<>());
+	public <R extends ISpeciesType<?>> R getRoot(ResourceLocation rootId) {
+		return (R) Objects.requireNonNull(rootDefinitionByUID.get(rootId), "No species root registered with ID " + rootId);
 	}
 
 	@Override
 	public IChromosomeList getChromosomeList(String rootUID) {
 		Preconditions.checkNotNull(rootUID, "The uid of a root definition can't be null.");
 		return chromosomeListByUID.computeIfAbsent(rootUID, uid -> new ChromosomeList(rootUID));
-	}
-
-	@Override
-	public Optional<IKaryotype> getKaryotype(String rootUID) {
-		return Optional.empty();
 	}
 
 	@Override

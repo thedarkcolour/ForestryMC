@@ -1,6 +1,8 @@
 package forestry.factory.recipes.jei.fermenter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.fuels.FermenterFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.api.recipes.IFermenterRecipe;
@@ -31,7 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class FermenterRecipeCategory extends ForestryRecipeCategory<IFermenterRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/fermenter.png");
+	private static final ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/fermenter.png");
 
 	private final IDrawableAnimated progressBar0;
 	private final IDrawableAnimated progressBar1;

@@ -11,10 +11,9 @@ import java.util.Collections;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IAlleleSpecies;
 import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
 
 import forestry.api.apiculture.IBeekeepingMode;
 
@@ -77,7 +76,7 @@ public interface IBreedingTracker {
 	boolean isDiscovered(IAlleleSpecies species);
 
 	/**
-	 * @return A collection that contains the {@link IAllele#getRegistryName()}s of all discovered species.
+	 * @return A collection that contains the {@link IAllele#id()}s of all discovered species.
 	 */
 	default Collection<String> getDiscoveredSpecies() {
 		return Collections.emptyList();

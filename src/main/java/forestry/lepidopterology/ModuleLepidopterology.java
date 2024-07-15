@@ -12,9 +12,10 @@ package forestry.lepidopterology;
 
 import com.google.common.collect.Maps;
 
-import java.util.HashSet;
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Supplier;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -29,10 +30,8 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.modules.ForestryModule;
 import forestry.core.ClientsideCode;
 import forestry.core.ModuleCore;
-import forestry.core.config.Constants;
 import forestry.lepidopterology.commands.CommandButterfly;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyEntities;
@@ -44,12 +43,10 @@ import forestry.lepidopterology.genetics.MothDefinition;
 import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 import forestry.lepidopterology.proxy.ProxyLepidopterology;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
-import forestry.modules.ISidedModuleHandler;
+import forestry.api.modules.ForestryModuleIds;
+import forestry.api.client.IClientModuleHandler;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.LEPIDOPTEROLOGY, name = "Lepidopterology", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.lepidopterology.description")
 public class ModuleLepidopterology extends BlankForestryModule {
-
 	public static final ProxyLepidopterology PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyLepidopterology() : new ProxyLepidopterology();
 	private static final String CONFIG_CATEGORY = "lepidopterology";
 	public static int maxDistance = 64;
@@ -76,7 +73,12 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	}
 
 	@Override
-	public void setupAPI() {
+	public ResourceLocation getId() {
+		return ForestryModuleIds.LEPIDOPTEROLOGY;
+	}
+
+	@Override
+	public void setupApi() {
 		ButterflyManager.butterflyFactory = new ButterflyFactory();
 		ButterflyManager.butterflyMutationFactory = new ButterflyMutationFactory();
 	}
@@ -93,11 +95,8 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	}
 
 	@Override
-	public Set<ResourceLocation> getDependencyUids() {
-		Set<ResourceLocation> dependencyUids = new HashSet<>();
-		dependencyUids.add(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.CORE));
-		dependencyUids.add(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.ARBORICULTURE));
-		return dependencyUids;
+	public List<ResourceLocation> getModuleDependencies() {
+		return List.of(ForestryModuleIds.CORE, ForestryModuleIds.ARBORICULTURE);
 	}
 
 	@Override
@@ -111,27 +110,7 @@ public class ModuleLepidopterology extends BlankForestryModule {
 		if (spawnButterflysFromLeaves) {
 			TreeManager.treeRoot.registerLeafTickHandler(new ButterflySpawner());
 		}
-
-		//TODO recipes
-		//		RecipeSorter.register("forestry:lepidopterologymating", MatingRecipe.class, RecipeSorter.Category.SHAPELESS,
-		//				"before:minecraft:shapeless");
 	}
-
-	@Override
-	public void postInit() {
-	}
-
-	@Override
-	public void registerRecipes() {
-		//		ForgeRegistries.RECIPES.register(new MatingRecipe());    //TODO - JSON this?
-	}
-	//
-	//	@Override
-	//	public void getHiddenItems(List<ItemStack> hiddenItems) {
-	//		// cocoon itemBlock is different from the normal item
-	//		hiddenItems.add(new ItemStack(blocks.cocoon));
-	//		hiddenItems.add(new ItemStack(blocks.solidCocoon));
-	//	}
 
 	public static boolean isPollinationAllowed() {
 		return allowPollination;
@@ -158,7 +137,7 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	}
 
 	@Override
-	public ISidedModuleHandler getModuleHandler() {
+	public @Nullable Supplier<IClientModuleHandler> getClientHandler() {
 		return PROXY;
 	}
 

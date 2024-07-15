@@ -1,8 +1,10 @@
 package genetics.api.root;
 
+import forestry.api.genetics.ISpeciesType;
+
 import genetics.api.individual.IIndividual;
 
-public interface IIndividualRootFactory<I extends IIndividual, R extends IIndividualRoot<I>> {
+public interface IIndividualRootFactory<I extends IIndividual, R extends ISpeciesType<I>> {
 	/**
 	 * Creates a new root.
 	 * <p>

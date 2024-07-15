@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import genetics.api.GeneticsAPI;
 import genetics.api.IGeneTemplate;
-import genetics.api.organism.IOrganism;
+import genetics.api.organism.IIndividualCapability;
 import genetics.api.root.IRootDefinition;
 import genetics.api.root.components.DefaultStage;
 import genetics.commands.CommandListAlleles;
@@ -12,9 +12,6 @@ import genetics.plugins.PluginManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -24,13 +21,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.registries.RegisterEvent;
 
 public class Genetics {
-	/**
-	 * Capability for {@link IOrganism}.
-	 */
-	public static Capability<IOrganism<?>> ORGANISM = CapabilityManager.get(new CapabilityToken<>() {
-	});
-	public static Capability<IGeneTemplate> GENE_TEMPLATE = CapabilityManager.get(new CapabilityToken<>() {
-	});
 
 	public static void initGenetics(IEventBus modBus) {
 		GeneticsAPI.apiInstance = ApiInstance.INSTANCE;
@@ -46,7 +36,7 @@ public class Genetics {
     }
 
 	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.register(IOrganism.class);
+		event.register(IIndividualCapability.class);
 		event.register(IGeneTemplate.class);
 	}
 

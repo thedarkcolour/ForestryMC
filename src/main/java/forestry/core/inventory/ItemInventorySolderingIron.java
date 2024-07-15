@@ -20,12 +20,12 @@ import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.ICircuit;
 import forestry.api.circuits.ICircuitLayout;
 import forestry.api.core.IErrorSource;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.api.recipes.ISolderRecipe;
 import forestry.core.circuits.CircuitRegistry;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.circuits.ItemCircuitBoard;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.utils.datastructures.RevolvingList;
 
 import java.util.Optional;
@@ -136,17 +136,17 @@ public class ItemInventorySolderingIron extends ItemInventory implements IErrorS
 	}
 
 	@Override
-	public ImmutableSet<IErrorState> getErrorStates() {
-		ImmutableSet.Builder<IErrorState> errorStates = ImmutableSet.builder();
+	public ImmutableSet<IError> getErrors() {
+		ImmutableSet.Builder<IError> errorStates = ImmutableSet.builder();
 
 		if (layouts.getCurrent() == CircuitRegistry.DUMMY_LAYOUT) {
-			errorStates.add(EnumErrorCode.NO_CIRCUIT_LAYOUT);
+			errorStates.add(ForestryError.NO_CIRCUIT_LAYOUT);
 		}
 
 		ItemStack blankCircuitBoard = getItem(inputCircuitBoardSlot);
 
 		if (blankCircuitBoard.isEmpty()) {
-			errorStates.add(EnumErrorCode.NO_CIRCUIT_BOARD);
+			errorStates.add(ForestryError.NO_CIRCUIT_BOARD);
 		} else {
 			Item item = blankCircuitBoard.getItem();
 			if (!(item instanceof ItemCircuitBoard)) {
@@ -162,11 +162,11 @@ public class ItemInventorySolderingIron extends ItemInventory implements IErrorS
 			}
 
 			if (circuitCount != type.getSockets()) {
-				errorStates.add(EnumErrorCode.CIRCUIT_MISMATCH);
+				errorStates.add(ForestryError.CIRCUIT_MISMATCH);
 			} else {
 				int count = getCircuitCount();
 				if (count != type.getSockets()) {
-					errorStates.add(EnumErrorCode.NO_CIRCUIT_LAYOUT);
+					errorStates.add(ForestryError.NO_CIRCUIT_LAYOUT);
 				}
 			}
 		}

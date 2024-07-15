@@ -8,15 +8,16 @@ import net.minecraft.world.item.ItemStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.client.IForestryClientApi;
 import forestry.core.gui.widgets.ItemStackWidgetBase;
 import forestry.core.gui.widgets.WidgetManager;
-import forestry.core.render.TextureManagerForestry;
+import forestry.core.render.ForestryTextureManager;
 import forestry.core.utils.SoundUtil;
 import forestry.worktable.recipes.RecipeMemory;
 import forestry.worktable.screens.WorktableMenu;
 
 public class MemorizedRecipeSlot extends ItemStackWidgetBase {
-	private static final TextureAtlasSprite LOCK_ICON = TextureManagerForestry.INSTANCE.getDefault("slots/locked");
+	private static final TextureAtlasSprite LOCK_ICON = ForestryTextureManager.INSTANCE.getDefault("slots/locked");
 	private final RecipeMemory memory;
 	private final int slotIndex;
 
@@ -32,13 +33,13 @@ public class MemorizedRecipeSlot extends ItemStackWidgetBase {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
-		super.draw(transform, startY, startX);
+	public void draw(PoseStack transform, int startX, int startY) {
+		super.draw(transform, startX, startY);
 
 		RenderSystem.disableDepthTest();
 
 		if (memory.isLocked(slotIndex)) {
-			TextureManagerForestry.INSTANCE.bindGuiTextureMap();
+			IForestryClientApi.INSTANCE.getTextureManager().bindGuiTextureMap();
 			GuiComponent.blit(transform, startX + xPos, startY + yPos, manager.gui.getBlitOffset(), 16, 16, LOCK_ICON);
 		}
 

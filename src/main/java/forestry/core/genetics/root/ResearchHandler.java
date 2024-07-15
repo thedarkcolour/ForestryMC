@@ -14,30 +14,30 @@ import com.mojang.authlib.GameProfile;
 
 import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.api.genetics.IResearchHandler;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.core.utils.ItemStackUtil;
 
-import genetics.api.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IAlleleSpecies;
 import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.IMutation;
 import genetics.api.mutation.IMutationContainer;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.ComponentKeys;
 
 public class ResearchHandler<I extends IIndividual> implements IResearchHandler<I> {
 	private final Map<ItemStack, Float> catalysts = new LinkedHashMap<>();
 	private final List<IResearchPlugin> plugins = new LinkedList<>();
-	private final IIndividualRoot<I> root;
+	private final ISpeciesType<I> root;
 
-	public ResearchHandler(IIndividualRoot<I> root) {
+	public ResearchHandler(ISpeciesType<I> root) {
 		this.root = root;
 	}
 
 	@Override
-	public IIndividualRoot<I> getRoot() {
+	public ISpeciesType<I> getRoot() {
 		return root;
 	}
 
@@ -91,7 +91,7 @@ public class ResearchHandler<I extends IIndividual> implements IResearchHandler<
 			List<? extends IMutation> allMutations = container.getCombinations(species);
 			if (!allMutations.isEmpty()) {
 				List<IMutation> unresearchedMutations = new ArrayList<>();
-				IBreedingTracker tracker = ((IForestrySpeciesRoot<I>) root).getBreedingTracker(world, gameProfile);
+				IBreedingTracker tracker = ((IForestrySpeciesType<I>) root).getBreedingTracker(world, gameProfile);
 				for (IMutation mutation : allMutations) {
 					if (!tracker.isResearched(mutation)) {
 						unresearchedMutations.add(mutation);

@@ -2,6 +2,7 @@ package forestry.core.climate;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -13,15 +14,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import forestry.api.climate.IClimateListener;
-import forestry.api.climate.IClimateState;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.climate.IClimatised;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 
 public enum FakeClimateListener implements IClimateListener {
 	INSTANCE;
 
 	@Override
-	public IClimateState getClimateState() {
+	public IClimatised getClimateState() {
 		return AbsentClimateState.INSTANCE;
 	}
 
@@ -32,22 +33,22 @@ public enum FakeClimateListener implements IClimateListener {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void setClimateState(IClimateState climateState) {
+	public void setClimateState(IClimatised climateState) {
 	}
 
 	@Override
-	public Biome getBiome() {
+	public Holder<Biome> getBiome() {
 		return ForgeRegistries.BIOMES.getDelegateOrThrow(Biomes.PLAINS).value();
 	}
 
 	@Override
-	public EnumTemperature getTemperature() {
-		return EnumTemperature.NORMAL;
+	public TemperatureType temperature() {
+		return TemperatureType.NORMAL;
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return EnumHumidity.NORMAL;
+	public HumidityType humidity() {
+		return HumidityType.NORMAL;
 	}
 
 	@Override

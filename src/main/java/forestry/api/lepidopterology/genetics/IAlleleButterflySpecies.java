@@ -5,12 +5,11 @@
  ******************************************************************************/
 package forestry.api.lepidopterology.genetics;
 
-import java.util.Set;
-
-import deleteme.BiomeCategory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 
-import forestry.api.core.ISpriteRegister;
+import forestry.api.client.ISpriteRegister;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.genetics.products.IDynamicProductList;
 
@@ -20,7 +19,7 @@ public interface IAlleleButterflySpecies extends IAlleleForestrySpecies, ISprite
 	 * @return the IButterflyRoot
 	 */
 	@Override
-	IButterflyRoot getRoot();
+	IButterflySpeciesType getSpecies();
 
 	/**
 	 * @return Path of the texture to use for entity rendering.
@@ -33,15 +32,12 @@ public interface IAlleleButterflySpecies extends IAlleleForestrySpecies, ISprite
 	ResourceLocation getItemTexture();
 
 	/**
-	 * Allows butterflies to restrict random spawns beyond the restrictions set by getTemperature() and getHumidity().
+	 * Allows butterflies to restrict random spawns beyond the restrictions set by temperature() and humidity().
 	 *
-	 * @return EnumSet of biome tags this butterfly species can be spawned in.
+	 * @return Biome tag this butterfly species can be spawned in.
 	 */
-	Set<BiomeCategory> getSpawnBiomes();
+	TagKey<Biome> getSpawnBiomes();
 
-	/**
-	 * @return true if a prospective spawn biome must not match a biome tag outside of getSpawnBiomes.
-	 */
 	boolean strictSpawnMatch();
 
 	/**

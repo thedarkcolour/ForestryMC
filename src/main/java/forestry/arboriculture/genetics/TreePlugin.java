@@ -11,11 +11,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import genetics.api.GeneticHelper;
-import genetics.api.organism.IOrganism;
+import genetics.api.organism.IIndividualCapability;
 
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.core.config.Config;
@@ -40,12 +40,12 @@ public class TreePlugin extends DatabasePlugin<ITree> {
 		NonNullList<ItemStack> treeList = NonNullList.create();
 		ItemGE.addCreativeItems(ArboricultureItems.SAPLING.item(), treeList, false, TreeHelper.getRoot());
 		for (ItemStack treeStack : treeList) {
-			IOrganism<?> organism = GeneticHelper.getOrganism(treeStack);
+			IIndividualCapability<?> organism = GeneticHelper.getOrganism(treeStack);
 			if (organism.isEmpty()) {
 				continue;
 			}
 			IAlleleTreeSpecies species = organism.getAllele(TreeChromosomes.SPECIES, true);
-			iconStacks.put(species.getRegistryName().toString(), treeStack);
+			iconStacks.put(species.getId().toString(), treeStack);
 		}
 	}
 

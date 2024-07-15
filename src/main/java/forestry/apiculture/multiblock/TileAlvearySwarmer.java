@@ -26,15 +26,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.gui.ContainerAlvearySwarmer;
 import forestry.apiculture.inventory.InventorySwarmer;
-import forestry.apiculture.worldgen.Hive;
-import forestry.apiculture.worldgen.HiveDecorator;
-import forestry.apiculture.worldgen.HiveDescriptionSwarmer;
+import forestry.apiculture.hives.Hive;
+import forestry.apiculture.hives.HiveDecorator;
+import forestry.apiculture.hives.HiveDefinitionSwarmer;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
@@ -96,7 +96,7 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		// Queue swarm spawn
 		IBee princess = BeeManager.beeRoot.create(princessStack);
 		princess.setIsNatural(false);
-		pendingSpawns.push(BeeManager.beeRoot.getTypes().createStack(princess, EnumBeeType.PRINCESS));
+		pendingSpawns.push(BeeManager.beeRoot.getTypes().createStack(princess, BeeLifeStage.PRINCESS));
 	}
 
 	@Override
@@ -130,9 +130,8 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 	}
 
 	private void trySpawnSwarm() {
-
 		ItemStack toSpawn = pendingSpawns.peek();
-		HiveDescriptionSwarmer hiveDescription = new HiveDescriptionSwarmer(toSpawn);
+		HiveDefinitionSwarmer hiveDescription = new HiveDefinitionSwarmer(toSpawn);
 		Hive hive = new Hive(hiveDescription);
 
 		int x = getBlockPos().getX() + level.random.nextInt(40 * 2) - 40;

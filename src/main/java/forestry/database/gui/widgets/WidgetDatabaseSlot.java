@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.config.Constants;
 import forestry.core.gui.Drawable;
@@ -28,7 +29,7 @@ import forestry.database.network.packets.PacketInsertItem;
 
 @OnlyIn(Dist.CLIENT)
 public class WidgetDatabaseSlot extends Widget {
-	public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/database_inventory.png");
+	public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/database_inventory.png");
 
 	public static final Drawable SLOT = new Drawable(TEXTURE_LOCATION, 218, 0, 22, 22);
 	public static final Drawable SLOT_SELECTED = new Drawable(TEXTURE_LOCATION, 218, 22, 22, 22);
@@ -63,7 +64,7 @@ public class WidgetDatabaseSlot extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
 

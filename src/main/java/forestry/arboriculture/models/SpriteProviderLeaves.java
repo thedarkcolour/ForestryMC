@@ -14,7 +14,7 @@ import java.awt.Color;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.arboriculture.EnumLeafType;
+import forestry.api.arboriculture.LeafType;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 
 public class SpriteProviderLeaves implements ILeafSpriteProvider {
@@ -23,7 +23,7 @@ public class SpriteProviderLeaves implements ILeafSpriteProvider {
 	private final int color;
 	private final int colorPollinated;
 
-	public SpriteProviderLeaves(EnumLeafType leafType, Color color, Color colorPollinated) {
+	public SpriteProviderLeaves(LeafType leafType, Color color, Color colorPollinated) {
 		this.leafTexture = LeafTexture.get(leafType);
 		this.color = color.getRGB();
 		this.colorPollinated = colorPollinated.getRGB();

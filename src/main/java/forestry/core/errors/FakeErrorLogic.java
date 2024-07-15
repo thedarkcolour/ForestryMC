@@ -10,23 +10,21 @@
  ******************************************************************************/
 package forestry.core.errors;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
-import net.minecraft.network.FriendlyByteBuf;
-
+import forestry.api.core.IError;
 import forestry.api.core.IErrorLogic;
-import forestry.api.core.IErrorState;
 
 public enum FakeErrorLogic implements IErrorLogic {
 	INSTANCE;
 
 	@Override
-	public boolean setCondition(boolean condition, IErrorState errorState) {
+	public boolean setCondition(boolean condition, IError error) {
 		return false;
 	}
 
 	@Override
-	public boolean contains(IErrorState state) {
+	public boolean contains(IError error) {
 		return false;
 	}
 
@@ -40,19 +38,7 @@ public enum FakeErrorLogic implements IErrorLogic {
 	}
 
 	@Override
-	public void writeData(FriendlyByteBuf data) {
-	}
-
-	@Override
-	public void readData(FriendlyByteBuf data) {
-	}
-
-	@Override
-	public void copy(IErrorLogic errorLogic) {
-	}
-
-	@Override
-	public ImmutableSet<IErrorState> getErrorStates() {
-		return ImmutableSet.of();
+	public Set<IError> getErrors() {
+		return Set.of();
 	}
 }

@@ -5,13 +5,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import forestry.api.climate.IClimateState;
-import forestry.core.climate.ClimateRoot;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.climate.IClimatised;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.core.utils.NetworkUtil;
 
-public record PacketClimateListenerUpdate(BlockPos pos, IClimateState state) implements IForestryPacketClient {
+public record PacketClimateListenerUpdate(BlockPos pos, IClimatised state) implements IForestryPacketClient {
 	@Override
 	public ResourceLocation id() {
 		return PacketIdClient.CLIMATE_LISTENER_UPDATE;

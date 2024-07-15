@@ -20,6 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+// todo does this actually improve performance?
 /**
  * A helper class that caches adjacent tiles for a given tile entity.
  * <p>
@@ -28,10 +29,10 @@ import net.minecraft.world.level.Level;
  * @author CovertJaguar <http://www.railcraft.info>
  */
 public final class AdjacentTileCache {
-
 	private static final int DELAY_MIN = 20;
 	private static final int DELAY_MAX = 2400;
 	private static final int DELAY_STEP = 2;
+
 	private final Timer[] timer = new Timer[6];
 	private final BlockEntity[] cache = new BlockEntity[6];
 	private final int[] delay = new int[6];
@@ -42,7 +43,6 @@ public final class AdjacentTileCache {
 	 * Listener that listens for adjacent tile changes.
 	 */
 	public interface ICacheListener {
-
 		/**
 		 * Called at the moment the tile registers an adjacent tile change.
 		 */
@@ -52,7 +52,6 @@ public final class AdjacentTileCache {
 		 * Calle if the tile entity gets removed to clean the cached data.
 		 */
 		void purge();
-
 	}
 
 	public AdjacentTileCache(BlockEntity tile) {

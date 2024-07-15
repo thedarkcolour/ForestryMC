@@ -36,12 +36,14 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraftforge.server.command.EnumArgument;
 
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.BeeChromosomes;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.genetics.BeeDefinition;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.api.individual.IIndividual;
 import genetics.commands.CommandHelpers;
 import genetics.commands.PermLevel;
@@ -50,17 +52,17 @@ public class CommandBeeGive {
 	public static LiteralArgumentBuilder<CommandSourceStack> register() {
 		return Commands.literal("give").requires(PermLevel.ADMIN)
 				.then(Commands.argument("bee", BeeArgument.beeArgument())
-						.then(Commands.argument("type", EnumArgument.enumArgument(EnumBeeType.class))
+						.then(Commands.argument("type", EnumArgument.enumArgument(BeeLifeStage.class))
 								.then(Commands.argument("player", EntityArgument.player())
-										.executes(a -> execute(a.getSource(), a.getArgument("bee", IBee.class), a.getArgument("type", EnumBeeType.class), EntityArgument.getPlayer(a, "player"))))
-								.executes(a -> execute(a.getSource(), a.getArgument("bee", IBee.class), a.getArgument("type", EnumBeeType.class), a.getSource().getPlayerOrException())))
-						.executes(a -> execute(a.getSource(), a.getArgument("bee", IBee.class), EnumBeeType.QUEEN, a.getSource().getPlayerOrException())))
-				.executes(a -> execute(a.getSource(), BeeDefinition.FOREST.createIndividual(), EnumBeeType.QUEEN, a.getSource().getPlayerOrException()));
+										.executes(a -> execute(a.getSource(), a.getArgument("bee", IBee.class), a.getArgument("type", BeeLifeStage.class), EntityArgument.getPlayer(a, "player"))))
+								.executes(a -> execute(a.getSource(), a.getArgument("bee", IBee.class), a.getArgument("type", BeeLifeStage.class), a.getSource().getPlayerOrException())))
+						.executes(a -> execute(a.getSource(), a.getArgument("bee", IBee.class), BeeLifeStage.QUEEN, a.getSource().getPlayerOrException())))
+				.executes(a -> execute(a.getSource(), BeeDefinition.FOREST.createIndividual(), BeeLifeStage.QUEEN, a.getSource().getPlayerOrException()));
 	}
 
-	public static int execute(CommandSourceStack source, IBee bee, EnumBeeType type, Player player) {
+	public static int execute(CommandSourceStack source, IBee bee, BeeLifeStage type, Player player) {
 		IBee beeCopy = (IBee) bee.copy();
-		if (type == EnumBeeType.QUEEN) {
+		if (type == BeeLifeStage.QUEEN) {
 			beeCopy.mate(beeCopy.getGenome());
 		}
 
@@ -82,15 +84,15 @@ public class CommandBeeGive {
 		public IBee parse(final StringReader reader) throws CommandSyntaxException {
 			ResourceLocation location = ResourceLocation.read(reader);
 
-			return BeeManager.beeRoot.getIndividualTemplates().stream().filter(a -> a.getGenome().getActiveAllele(BeeChromosomes.SPECIES).getRegistryName().equals(location)).findFirst().orElseThrow(() -> new SimpleCommandExceptionType(new LiteralMessage("Invalid Bee Type: " + location)).create());
+			return BeeManager.beeRoot.getIndividualTemplates().stream().filter(a -> a.getGenome().getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES).getId().equals(location)).findFirst().orElseThrow(() -> new SimpleCommandExceptionType(new LiteralMessage("Invalid Bee Type: " + location)).create());
 		}
 
 		@Override
 		public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
 			return SharedSuggestionProvider.suggest(BeeManager.beeRoot.getIndividualTemplates().stream()
 					.map(IIndividual::getGenome)
-					.map(a -> a.getActiveAllele(BeeChromosomes.SPECIES))
-					.map(IAllele::getRegistryName)
+					.map(a -> a.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES))
+					.map(IAllele::id)
 					.map(ResourceLocation::toString), builder);
 		}
 
@@ -98,8 +100,8 @@ public class CommandBeeGive {
 		public Collection<String> getExamples() {
 			return BeeManager.beeRoot.getIndividualTemplates().stream()
 					.map(IIndividual::getGenome)
-					.map(a -> a.getActiveAllele(BeeChromosomes.SPECIES))
-					.map(IAllele::getRegistryName)
+					.map(a -> a.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES))
+					.map(IAllele::id)
 					.map(ResourceLocation::toString)
 					.collect(Collectors.toList());
 		}

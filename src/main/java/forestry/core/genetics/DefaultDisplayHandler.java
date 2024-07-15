@@ -3,15 +3,13 @@ package forestry.core.genetics;
 import net.minecraft.ChatFormatting;
 
 import forestry.api.core.tooltips.ToolTip;
+import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
-import forestry.apiculture.genetics.BeeRoot;
 import forestry.apiculture.genetics.IGeneticTooltipProvider;
-import forestry.arboriculture.genetics.TreeRoot;
-import forestry.lepidopterology.genetics.ButterflyRoot;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
 
 public enum DefaultDisplayHandler implements IGeneticTooltipProvider<IIndividual> {
@@ -28,7 +26,7 @@ public enum DefaultDisplayHandler implements IGeneticTooltipProvider<IIndividual
 	}, HYBRID(-2) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IIndividual individual) {
-			IChromosomeType speciesType = individual.getRoot().getKaryotype().getSpeciesType();
+			IChromosome speciesType = individual.getRoot().getKaryotype().getSpeciesChromosome();
 			IAllele primary = genome.getActiveAllele(speciesType);
 			IAllele secondary = genome.getInactiveAllele(speciesType);
 			if (!individual.isPureBred(speciesType)) {
@@ -47,9 +45,9 @@ public enum DefaultDisplayHandler implements IGeneticTooltipProvider<IIndividual
 		for (DefaultDisplayHandler handler : values()) {
 			int tooltipIndex = handler.tooltipIndex;
 			if (tooltipIndex >= 0) {
-				helper.addTooltip(handler, BeeRoot.UID, tooltipIndex * 10);
-				helper.addTooltip(handler, TreeRoot.UID, tooltipIndex * 10);
-				helper.addTooltip(handler, ButterflyRoot.UID, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesType.BEE, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesType.TREE, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesType.BUTTERFLY, tooltipIndex * 10);
 			}
 		}
 	}

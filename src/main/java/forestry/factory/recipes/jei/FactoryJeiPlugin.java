@@ -1,6 +1,6 @@
 package forestry.factory.recipes.jei;
 
-import deleteme.RegistryNameFinder;
+import forestry.api.ForestryConstants;
 import forestry.api.fuels.FuelManager;
 import forestry.api.fuels.RainSubstrate;
 import forestry.api.recipes.ICarpenterRecipe;
@@ -12,11 +12,11 @@ import forestry.api.recipes.ISqueezerRecipe;
 import forestry.api.recipes.IStillRecipe;
 import forestry.api.recipes.RecipeManagers;
 import forestry.core.ClientsideCode;
-import forestry.core.config.Constants;
 import forestry.core.features.FluidsItems;
 import forestry.core.gui.GuiForestry;
 import forestry.core.recipes.jei.ForestryRecipeType;
 import forestry.core.utils.JeiUtil;
+import forestry.core.utils.ModUtil;
 import forestry.factory.ModuleFactory;
 import forestry.factory.blocks.BlockFactoryPlain;
 import forestry.factory.blocks.BlockTypeFactoryPlain;
@@ -43,7 +43,7 @@ import forestry.factory.recipes.jei.moistener.MoistenerRecipeCategory;
 import forestry.factory.recipes.jei.rainmaker.RainmakerRecipeCategory;
 import forestry.factory.recipes.jei.squeezer.SqueezerRecipeCategory;
 import forestry.factory.recipes.jei.still.StillRecipeCategory;
-import forestry.modules.ForestryModuleUids;
+import forestry.api.modules.ForestryModuleIds;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -79,7 +79,7 @@ import java.util.List;
 public class FactoryJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.FACTORY);
+		return new ResourceLocation(ForestryConstants.MOD_ID, ForestryModuleIds.FACTORY);
 	}
 
 	@Override
@@ -280,7 +280,7 @@ public class FactoryJeiPlugin implements IModPlugin {
 		IIngredientSubtypeInterpreter<ItemStack> subtypeInterpreter = (itemStack, context) -> {
 			LazyOptional<IFluidHandlerItem> fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
 			return fluidHandler.map(handler -> handler.getFluidInTank(0))
-					.map(fluid -> RegistryNameFinder.getRegistryName(fluid.getFluid()))
+					.map(fluid -> ModUtil.getRegistryName(fluid.getFluid()))
 					.map(ResourceLocation::toString)
 					.orElse(IIngredientSubtypeInterpreter.NONE);
 		};

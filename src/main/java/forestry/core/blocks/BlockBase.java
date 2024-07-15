@@ -11,17 +11,18 @@
 package forestry.core.blocks;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -40,18 +41,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.mojang.authlib.GameProfile;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fluids.FluidUtil;
 
-import forestry.api.core.ISpriteRegister;
-import forestry.api.core.ISpriteRegistry;
+import forestry.api.client.ISpriteRegister;
+import forestry.api.farming.HorizontalDirection;
 import forestry.core.circuits.ISocketable;
-import forestry.core.owner.IOwnedTile;
-import forestry.core.owner.IOwnerHandler;
 import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileForestry;
 import forestry.core.tiles.TileUtil;
@@ -61,7 +58,7 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	/**
 	 * use this instead of {@link net.minecraft.world.level.block.HorizontalDirectionalBlock#FACING} so the blocks rotate in a circle instead of NSWE order.
 	 */
-	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
+	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class, HorizontalDirection.VALUES);
 
 	private final boolean hasTESR;
 	public final P blockType;
@@ -170,37 +167,21 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	}
 
 	@Override
-	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-		super.playerWillDestroy(world, pos, state, player);
-		if (world.isClientSide) {
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		super.playerWillDestroy(level, pos, state, player);
+		if (level.isClientSide) {
 			return;
 		}
 
-		BlockEntity tile = TileUtil.getTile(world, pos);
+		BlockEntity tile = TileUtil.getTile(level, pos);
 		if (tile instanceof Container inventory) {
-			Containers.dropContents(world, pos, inventory);
+			Containers.dropContents(level, pos, inventory);
 		}
-		if (tile instanceof TileForestry) {
-			((TileForestry) tile).onRemoval();
+		if (tile instanceof TileForestry forestry) {
+			forestry.onDropContents((ServerLevel) level);
 		}
-		if (tile instanceof ISocketable) {
-			InventoryUtil.dropSockets((ISocketable) tile, tile.getLevel(), tile.getBlockPos());
-		}
-	}
-
-	@Override
-	public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (world.isClientSide) {
-			return;
-		}
-
-		if (placer instanceof Player) {
-			TileUtil.actOnTile(world, pos, IOwnedTile.class, tile -> {
-				IOwnerHandler ownerHandler = tile.getOwnerHandler();
-				Player player = (Player) placer;
-				GameProfile gameProfile = player.getGameProfile();
-				ownerHandler.setOwner(gameProfile);
-			});
+		if (tile instanceof ISocketable socketable) {
+			InventoryUtil.dropSockets(socketable, level, pos);
 		}
 	}
 
@@ -214,23 +195,11 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 		return state.setValue(FACING, rot.rotate(facing));
 	}
 
-	/* Particles - Client Only */
-	/*@Override
-	public boolean addHitEffects(BlockState state, World world, RayTraceResult target, ParticleManager effectRenderer) {
-		if (blockType.getMachineProperties() instanceof IMachinePropertiesTesr) {
-			if (target.getType() == RayTraceResult.Type.BLOCK) {
-				BlockRayTraceResult result = (BlockRayTraceResult) target;
-				return ParticleHelper.addBlockHitEffects(world, result.getBlockPos(), result.getDirection(), effectRenderer, particleCallback);
-			}
-		}
-		return false;
-	}*/
-
 	@Override
-	public void registerSprites(ISpriteRegistry registry) {
+	public void registerSprites(Consumer<ResourceLocation> registry) {
 		IMachineProperties<?> machineProperties = blockType.getMachineProperties();
 		if (machineProperties instanceof IMachinePropertiesTesr) {
-			registry.addSprite(((IMachinePropertiesTesr) machineProperties).getParticleTexture());
+			registry.accept(((IMachinePropertiesTesr) machineProperties).getParticleTexture());
 		}
 	}
 }

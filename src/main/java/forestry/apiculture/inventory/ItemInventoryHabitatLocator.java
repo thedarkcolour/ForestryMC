@@ -12,21 +12,20 @@ package forestry.apiculture.inventory;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Optional;
 import java.util.Set;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.core.IErrorSource;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.items.HabitatLocatorLogic;
 import forestry.apiculture.items.ItemHabitatLocator;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.inventory.ItemInventory;
 import net.minecraft.world.level.biome.Biome;
 
@@ -74,26 +73,26 @@ public class ItemInventoryHabitatLocator extends ItemInventory implements IError
 		}
 	}
 
-	public Set<Biome> getBiomesToSearch() {
-		return locatorLogic.getTargetBiomes();
+	public Set<Holder<Biome>> getBiomesToSearch() {
+		return this.locatorLogic.getTargetBiomes();
 	}
 
 	/* IErrorSource */
 	@Override
-	public ImmutableSet<IErrorState> getErrorStates() {
+	public ImmutableSet<IError> getErrors() {
 		if (!getItem(SLOT_ANALYZED).isEmpty()) {
 			return ImmutableSet.of();
 		}
 
-		ImmutableSet.Builder<IErrorState> errorStates = ImmutableSet.builder();
+		ImmutableSet.Builder<IError> errorStates = ImmutableSet.builder();
 
 		ItemStack specimen = getItem(SLOT_SPECIMEN);
 		if (!BeeManager.beeRoot.isMember(specimen)) {
-			errorStates.add(EnumErrorCode.NO_SPECIMEN);
+			errorStates.add(ForestryError.NO_SPECIMEN);
 		}
 
 		if (!isEnergy(getItem(SLOT_ENERGY))) {
-			errorStates.add(EnumErrorCode.NO_HONEY);
+			errorStates.add(ForestryError.NO_HONEY);
 		}
 
 		return errorStates.build();

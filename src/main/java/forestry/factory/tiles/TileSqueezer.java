@@ -44,7 +44,7 @@ import forestry.api.recipes.RecipeManagers;
 import forestry.core.circuits.ISocketable;
 import forestry.core.circuits.ISpeedUpgradable;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.InventoryAdapter;
@@ -201,7 +201,7 @@ public class TileSqueezer extends TilePowered implements ISocketable, WorldlyCon
 			}
 		}
 
-		getErrorLogic().setCondition(currentRecipe == null, EnumErrorCode.NO_RECIPE);
+		getErrorLogic().setCondition(currentRecipe == null, ForestryError.NO_RECIPE);
 		return currentRecipe != null;
 	}
 
@@ -227,10 +227,10 @@ public class TileSqueezer extends TilePowered implements ISocketable, WorldlyCon
 		}
 
 		IErrorLogic errorLogic = getErrorLogic();
-		errorLogic.setCondition(!hasResources, EnumErrorCode.NO_RESOURCE);
-		errorLogic.setCondition(!hasRecipe, EnumErrorCode.NO_RECIPE);
-		errorLogic.setCondition(!canFill, EnumErrorCode.NO_SPACE_TANK);
-		errorLogic.setCondition(!canAdd, EnumErrorCode.NO_SPACE_INVENTORY);
+		errorLogic.setCondition(!hasResources, ForestryError.NO_RESOURCE);
+		errorLogic.setCondition(!hasRecipe, ForestryError.NO_RECIPE);
+		errorLogic.setCondition(!canFill, ForestryError.NO_SPACE_TANK);
+		errorLogic.setCondition(!canAdd, ForestryError.NO_SPACE_INVENTORY);
 
 		return hasResources && hasRecipe && canFill && canAdd;
 	}

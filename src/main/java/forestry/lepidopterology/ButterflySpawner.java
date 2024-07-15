@@ -18,9 +18,10 @@ import net.minecraft.world.phys.Vec3;
 
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.lepidopterology.entities.EntityButterfly;
 
@@ -38,10 +39,10 @@ public class ButterflySpawner implements ILeafTickHandler {
 
 		IButterfly spawn = ButterflyManager.butterflyRoot.getIndividualTemplates().get(rand.nextInt(ButterflyManager.butterflyRoot.getIndividualTemplates().size()));
 		float rarity;
-		if (!ModuleLepidopterology.spawnRaritys.containsKey(spawn.getGenome().getPrimary().getRegistryName().getPath())) {
+		if (!ModuleLepidopterology.spawnRaritys.containsKey(spawn.getGenome().getPrimarySpecies().id().getPath())) {
 			rarity = spawn.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getRarity();
 		} else {
-			rarity = ModuleLepidopterology.spawnRaritys.get(spawn.getGenome().getPrimary().getRegistryName().getPath());
+			rarity = ModuleLepidopterology.spawnRaritys.get(spawn.getGenome().getPrimarySpecies().id().getPath());
 		}
 
 		if (rand.nextFloat() >= rarity * 0.5f) {

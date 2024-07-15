@@ -7,12 +7,9 @@ package forestry.api.arboriculture;
 
 import javax.annotation.Nullable;
 
-import genetics.api.GeneticsAPI;
-import genetics.api.root.IRootDefinition;
-
 import forestry.api.arboriculture.genetics.ITreeFactory;
 import forestry.api.arboriculture.genetics.ITreeMutationFactory;
-import forestry.api.arboriculture.genetics.ITreeRoot;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 
 public class TreeManager {
 
@@ -21,7 +18,7 @@ public class TreeManager {
 	 *
 	 * @implNote Only null if the "arboriculture" module is not enabled.
 	 */
-	public static ITreeRoot treeRoot;
+	public static ITreeSpeciesType treeRoot;
 
 	/**
 	 * Convenient access to wood items.

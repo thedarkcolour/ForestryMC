@@ -17,14 +17,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 import forestry.core.items.ItemWithGui;
 import forestry.mail.gui.ContainerCatalogue;
 
 public class ItemCatalogue extends ItemWithGui {
 
 	public ItemCatalogue() {
-		super((new Item.Properties()).tab(ItemGroupForestry.tabForestry));
+		super((new Item.Properties()).tab(ItemGroups.tabForestry));
 	}
 
 	@Nullable

@@ -13,32 +13,33 @@ package forestry.apiculture.multiblock;
 import java.util.HashSet;
 import java.util.Set;
 
-import deleteme.BiomeCategory;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryTags;
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.climate.ClimateManager;
 import forestry.api.climate.IClimateControlled;
 import forestry.api.climate.IClimateListener;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.apiculture.AlvearyBeeModifier;
@@ -71,7 +72,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 		super(world, AlvearyMultiblockSizeLimits.instance);
 		this.inventory = new InventoryBeeHousing(9);
 		this.beekeepingLogic = BeeManager.beeRoot.createBeekeepingLogic(this);
-		this.listener = ClimateManager.climateFactory.createListener(this);
+		this.listener = IForestryApi.INSTANCE.getClimateManager().createListener(this);
 
 		this.beeModifiers.add(new AlvearyBeeModifier());
 	}
@@ -174,7 +175,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 		for (int slabX = minimumCoord.getX(); slabX <= maximumCoord.getX(); slabX++) {
 			for (int slabZ = minimumCoord.getZ(); slabZ <= maximumCoord.getZ(); slabZ++) {
 				BlockPos pos = new BlockPos(slabX, slabY, slabZ);
-				BlockState state = world.getBlockState(pos);
+				BlockState state = level.getBlockState(pos);
 				if (!state.is(BlockTags.WOODEN_SLABS)) {
 					throw new MultiblockValidationException(Component.translatable("for.multiblock.alveary.error.needSlabs").getString());
 				}
@@ -190,8 +191,8 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 					continue;
 				}
 				BlockPos pos = new BlockPos(airX, airY, airZ);
-				BlockState blockState = world.getBlockState(pos);
-				if (blockState.isSolidRender(world, pos)) {
+				BlockState blockState = level.getBlockState(pos);
+				if (blockState.isSolidRender(level, pos)) {
 					throw new MultiblockValidationException(Component.translatable("for.multiblock.alveary.error.needSpace").getString());
 				}
 			}
@@ -223,7 +224,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	}
 
 	@Override
-	protected boolean updateServer(int tickCount) {
+	protected boolean serverTick(int tickCount) {
 		for (IAlvearyComponent.Active activeComponent : activeComponents) {
 			activeComponent.updateServer(tickCount);
 		}
@@ -257,7 +258,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void updateClient(int tickCount) {
+	protected void clientTick(int tickCount) {
 		for (IAlvearyComponent.Active activeComponent : activeComponents) {
 			activeComponent.updateClient(tickCount);
 		}
@@ -272,15 +273,15 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 				float fxZ = center.getZ() + 0.5F;
 				float distanceFromCenter = 1.6F;
 
-				float leftRightSpreadFromCenter = distanceFromCenter * (world.random.nextFloat() - 0.5F);
-				float upSpread = world.random.nextFloat() * 0.8F;
+				float leftRightSpreadFromCenter = distanceFromCenter * (level.random.nextFloat() - 0.5F);
+				float upSpread = level.random.nextFloat() * 0.8F;
 				fxY += upSpread;
 
 				// display fx on all 4 sides
-				ParticleRender.addEntityHoneyDustFX(world, fxX - distanceFromCenter, fxY, fxZ + leftRightSpreadFromCenter);
-				ParticleRender.addEntityHoneyDustFX(world, fxX + distanceFromCenter, fxY, fxZ + leftRightSpreadFromCenter);
-				ParticleRender.addEntityHoneyDustFX(world, fxX + leftRightSpreadFromCenter, fxY, fxZ - distanceFromCenter);
-				ParticleRender.addEntityHoneyDustFX(world, fxX + leftRightSpreadFromCenter, fxY, fxZ + distanceFromCenter);
+				ParticleRender.addEntityHoneyDustFX(level, fxX - distanceFromCenter, fxY, fxZ + leftRightSpreadFromCenter);
+				ParticleRender.addEntityHoneyDustFX(level, fxX + distanceFromCenter, fxY, fxZ + leftRightSpreadFromCenter);
+				ParticleRender.addEntityHoneyDustFX(level, fxX + leftRightSpreadFromCenter, fxY, fxZ - distanceFromCenter);
+				ParticleRender.addEntityHoneyDustFX(level, fxX + leftRightSpreadFromCenter, fxY, fxZ + distanceFromCenter);
 			}
 		}
 		listener.updateClientSide(false);
@@ -336,26 +337,20 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	}
 
 	@Override
-	public float getExactTemperature() {
-		return listener.getExactTemperature() + tempChange;
+	public HumidityType humidity() {
+		return null;
 	}
 
 	@Override
-	public float getExactHumidity() {
-		return listener.getExactHumidity() + humidChange;
-	}
-
-	@Override
-	public EnumTemperature getTemperature() {
+	public TemperatureType temperature() {
 		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(this);
-		Biome biome = getBiome();
-		if (beeModifier.isHellish() || BiomeCategory.NETHER.is(biome)) {
+		if (beeModifier.isHellish() || getBiome().is(ForestryTags.Biomes.NETHER_CATEGORY)) {
 			if (tempChange >= 0) {
-				return EnumTemperature.HELLISH;
+				return TemperatureType.HELLISH;
 			}
 		}
 
-		return EnumTemperature.getFromValue(getExactTemperature());
+		return TemperatureType.getFromValue(getExactTemperature());
 	}
 
 	@Override
@@ -369,28 +364,26 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	}
 
 	@Override
-	public Biome getBiome() {
-		BlockPos coords = getReferenceCoord();
-		return world.getBiome(coords).value();
+	public Holder<Biome> getBiome() {
+		return level.getBiome(getReferenceCoord());
 	}
 
 	@Override
 	public int getBlockLightValue() {
 		BlockPos topCenter = getTopCenterCoord();
-		//TODO light
-		return world.getMaxLocalRawBrightness(topCenter.above());
+		return level.getMaxLocalRawBrightness(topCenter.above());
 	}
 
 	@Override
 	public boolean canBlockSeeTheSky() {
 		BlockPos topCenter = getTopCenterCoord();
-		return world.canSeeSkyFromBelowWater(topCenter.offset(0, 2, 0));
+		return level.canSeeSkyFromBelowWater(topCenter.offset(0, 2, 0));
 	}
 
 	@Override
 	public boolean isRaining() {
 		BlockPos topCenter = getTopCenterCoord();
-		return world.isRainingAt(topCenter.offset(0, 2, 0));
+		return level.isRainingAt(topCenter.offset(0, 2, 0));
 	}
 
 	@Override

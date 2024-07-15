@@ -21,12 +21,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 
 public class ItemWrench extends ItemForestry {
 
 	public ItemWrench() {
-		super(new Properties().tab(ItemGroupForestry.tabForestry));
+		super(new Properties().tab(ItemGroups.tabForestry));
 	}
 
 	@Override

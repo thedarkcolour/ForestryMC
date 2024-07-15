@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import net.minecraftforge.fml.common.Mod;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 
 /**
  * In your mod, subscribe this on both the client and server sides side to handle chunk
@@ -17,7 +17,7 @@ import forestry.core.config.Constants;
  * Chunks can load asynchronously in environments like MCPC+, so we cannot
  * process any blocks that are in chunks which are still loading.
  */
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID)
+@Mod.EventBusSubscriber(modid = ForestryConstants.MOD_ID)
 public class MultiblockEventHandler {
 	@SubscribeEvent
 	public static void onChunkLoad(ChunkEvent.Load loadEvent) {

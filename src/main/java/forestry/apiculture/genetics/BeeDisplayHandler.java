@@ -6,24 +6,26 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.genetics.EnumTolerance;
-import forestry.api.genetics.alleles.AlleleManager;
+import forestry.api.core.ToleranceType;
+import forestry.api.genetics.ClimateHelper;
+import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IAlleleFlowers;
 import forestry.api.genetics.alyzer.IAlleleDisplayHandler;
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
 import forestry.core.genetics.GenericRatings;
 import forestry.core.utils.Translator;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleValue;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IValueAllele;
 import genetics.api.individual.IChromosomeAllele;
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.individual.IChromosomeValue;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 	GENERATIONS(-1) {
@@ -49,8 +51,8 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 	SPEED(BeeChromosomes.SPEED, 2, 1) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IBee individual) {
-			IAlleleValue<Integer> speedAllele = getActive(genome);
-			String customSpeedKey = "for.tooltip.worker." + speedAllele.getLocalisationKey().replaceAll("(.*)\\.", "");
+			IValueAllele<Integer> speedAllele = getActive(genome);
+			String customSpeedKey = "for.tooltip.worker." + speedAllele.getTranslationKey().replaceAll("(.*)\\.", "");
 			if (Translator.canTranslateToLocal(customSpeedKey)) {
 				toolTip.singleLine()
 						.add(Component.translatable(customSpeedKey))
@@ -82,9 +84,9 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 	TEMPERATURE_TOLERANCE(BeeChromosomes.TEMPERATURE_TOLERANCE, -1, 2) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IBee individual) {
-			IAlleleBeeSpecies primary = genome.getActiveAllele(BeeChromosomes.SPECIES);
-			IAlleleValue<EnumTolerance> tempToleranceAllele = getActive(genome);
-			Component caption = AlleleManager.climateHelper.toDisplay(primary.getTemperature());
+			IAlleleBeeSpecies primary = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+			IValueAllele<ToleranceType> tempToleranceAllele = getActive(genome);
+			Component caption = ClimateHelper.toDisplay(primary.getTemperature());
 			toolTip.singleLine()
 					.text("T: ")
 					.add(caption)
@@ -97,9 +99,9 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 	HUMIDITY_TOLERANCE(BeeChromosomes.HUMIDITY_TOLERANCE, -1, 3) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IBee individual) {
-			IAlleleBeeSpecies primary = genome.getActiveAllele(BeeChromosomes.SPECIES);
-			IAlleleValue<EnumTolerance> humidToleranceAllele = getActive(genome);
-			Component caption = AlleleManager.climateHelper.toDisplay(primary.getHumidity());
+			IAlleleBeeSpecies primary = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+			IValueAllele<ToleranceType> humidToleranceAllele = getActive(genome);
+			Component caption = ClimateHelper.toDisplay(primary.getHumidity());
 			toolTip.singleLine()
 					.text("H: ")
 					.add(caption)
@@ -109,14 +111,14 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 					.create();
 		}
 	},
-	FLOWER_PROVIDER(BeeChromosomes.FLOWER_PROVIDER, 4, 4, "flowers") {
+	FLOWER_PROVIDER(BeeChromosomes.FLOWER_TYPE, 4, 4, "flowers") {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IBee individual) {
 			IAlleleFlowers flowers = getActiveAllele(genome);
-			toolTip.add(flowers.getProvider().getDescription(), ChatFormatting.GRAY);
+			toolTip.add(flowers.getType().getDescription(), ChatFormatting.GRAY);
 		}
 	},
-	FLOWERING(BeeChromosomes.FLOWERING, 3, -1, "pollination"),
+	FLOWERING(BeeChromosomes.POLLINATION, 3, -1, "pollination"),
 	NEVER_SLEEPS(BeeChromosomes.NEVER_SLEEPS, -1, 5) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IBee individual) {
@@ -138,21 +140,21 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 	TERRITORY(BeeChromosomes.TERRITORY, 6, "area"),
 	EFFECT(BeeChromosomes.EFFECT, 7, "effect");
 
-	final IChromosomeType type;
+	final IChromosome type;
 	@Nullable
 	final String alyzerCaption;
 	final int alyzerIndex;
 	final int tooltipIndex;
 
-	BeeDisplayHandler(IChromosomeType type, int alyzerIndex) {
+	BeeDisplayHandler(IChromosome type, int alyzerIndex) {
 		this(type, alyzerIndex, -1, null);
 	}
 
-	BeeDisplayHandler(IChromosomeType type, int alyzerIndex, int tooltipIndex) {
+	BeeDisplayHandler(IChromosome type, int alyzerIndex, int tooltipIndex) {
 		this(type, alyzerIndex, tooltipIndex, null);
 	}
 
-	BeeDisplayHandler(IChromosomeType type, int alyzerIndex, @Nullable String alyzerCaption) {
+	BeeDisplayHandler(IChromosome type, int alyzerIndex, @Nullable String alyzerCaption) {
 		this(type, alyzerIndex, -1, alyzerCaption);
 	}
 
@@ -163,7 +165,7 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 		this.tooltipIndex = tooltipIndex;
 	}
 
-	BeeDisplayHandler(IChromosomeType type, int alyzerIndex, int tooltipIndex, @Nullable String alyzerCaption) {
+	BeeDisplayHandler(IChromosome type, int alyzerIndex, int tooltipIndex, @Nullable String alyzerCaption) {
 		this.type = type;
 		this.alyzerCaption = alyzerCaption;
 		this.alyzerIndex = alyzerIndex;
@@ -174,11 +176,11 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 		for (BeeDisplayHandler handler : values()) {
 			int tooltipIndex = handler.tooltipIndex;
 			if (tooltipIndex >= 0) {
-				helper.addTooltip(handler, BeeRoot.UID, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesType.BEE, tooltipIndex * 10);
 			}
 			int alyzerIndex = handler.alyzerIndex;
 			if (alyzerIndex >= 0) {
-				helper.addAlyzer(handler, BeeRoot.UID, alyzerIndex * 10);
+				helper.addAlyzer(handler, ForestrySpeciesType.BEE, alyzerIndex * 10);
 			}
 		}
 	}
@@ -188,12 +190,12 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 		//Default Implementation
 	}
 
-	<V> IAlleleValue<V> getActive(IGenome genome) {
+	<V> IValueAllele<V> getActive(IGenome genome) {
 		//noinspection unchecked
 		return genome.getActiveAllele((IChromosomeValue<V>) type);
 	}
 
-	<V> IAlleleValue<V> getInactive(IGenome genome) {
+	<V> IValueAllele<V> getInactive(IGenome genome) {
 		//noinspection unchecked
 		return genome.getInactiveAllele((IChromosomeValue<V>) type);
 	}

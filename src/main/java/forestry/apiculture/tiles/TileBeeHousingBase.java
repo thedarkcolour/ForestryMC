@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
@@ -29,13 +30,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+import forestry.api.ForestryCapabilities;
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.climate.ClimateCapabilities;
 import forestry.api.climate.IClimatised;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.apiculture.gui.IGuiBeeHousingDelegate;
 import forestry.core.climate.ClimateListener;
 import forestry.core.network.IStreamableGui;
@@ -58,8 +59,7 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 		super(type, pos, state);
 		this.hintKey = hintKey;
 		this.beeLogic = BeeManager.beeRoot.createBeekeepingLogic(this);
-
-		climateListener = new ClimateListener(this);
+		this.climateListener = new ClimateListener(this);
 	}
 
 	@Override
@@ -110,28 +110,18 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 
 	/* ICLIMATISED */
 	@Override
-	public EnumTemperature getTemperature() {
-		return climateListener.getTemperature();
+	public TemperatureType temperature() {
+		return climateListener.temperature();
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return climateListener.getHumidity();
-	}
-
-	@Override
-	public float getExactTemperature() {
-		return climateListener.getExactTemperature();
-	}
-
-	@Override
-	public float getExactHumidity() {
-		return climateListener.getExactHumidity();
+	public HumidityType humidity() {
+		return climateListener.humidity();
 	}
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-		if (capability == ClimateCapabilities.CLIMATE_LISTENER) {
+		if (capability == ForestryCapabilities.CLIMATE_LISTENER) {
 			return LazyOptional.of(() -> climateListener).cast();
 		}
 		return super.getCapability(capability, facing);
@@ -190,8 +180,8 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 
 	// / IBEEHOUSING
 	@Override
-	public Biome getBiome() {
-		return level.getBiome(getBlockPos()).value();
+	public Holder<Biome> getBiome() {
+		return level.getBiome(getBlockPos());
 	}
 
 	//TODO check this call
@@ -202,7 +192,7 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 
 	@Override
 	public boolean canBlockSeeTheSky() {
-		return level.canSeeSkyFromBelowWater(getBlockPos().above());
+		return level.canSeeSky(getBlockPos().above());
 	}
 
 	@Override

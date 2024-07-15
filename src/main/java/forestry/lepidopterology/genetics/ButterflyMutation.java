@@ -12,9 +12,9 @@ package forestry.lepidopterology.genetics;
 
 import net.minecraft.world.level.Level;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.ISpeciesType;
 
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.lepidopterology.IButterflyNursery;
@@ -43,7 +43,7 @@ public class ButterflyMutation extends Mutation implements IButterflyMutation, I
 	}
 
 	@Override
-	public IIndividualRoot getRoot() {
+	public ISpeciesType getRoot() {
 		return ButterflyHelper.getRoot();
 	}
 }

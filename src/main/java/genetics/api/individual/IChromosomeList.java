@@ -2,21 +2,20 @@ package genetics.api.individual;
 
 import java.util.Collection;
 
-import genetics.api.root.IIndividualRoot;
-import genetics.api.root.IRootDefinition;
+import forestry.api.genetics.alleles.IChromosome;
 
-public interface IChromosomeList extends Iterable<IChromosomeType> {
+import forestry.api.genetics.ISpeciesType;
+
+public interface IChromosomeList extends Iterable<IChromosome> {
 	IChromosomeTypeBuilder builder();
 
-	Collection<IChromosomeType> types();
+	Collection<IChromosome> types();
 
 	int size();
 
 	String getUID();
 
-	IIndividualRoot getRoot();
+	ISpeciesType<?> getRoot();
 
-	IRootDefinition getDefinition();
-
-	IChromosomeType[] typesArray();
+	IChromosome[] typesArray();
 }

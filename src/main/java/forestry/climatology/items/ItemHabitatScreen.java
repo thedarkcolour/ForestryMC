@@ -13,29 +13,34 @@ package forestry.climatology.items;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.IForestryApi;
+import forestry.api.climate.ClimateState;
 import forestry.api.climate.IClimateHousing;
-import forestry.api.climate.IClimateState;
+import forestry.api.climate.IClimatised;
 import forestry.api.climate.IClimateTransformer;
-import forestry.core.climate.ClimateRoot;
 import forestry.core.items.ItemForestry;
 import forestry.core.items.definitions.IColoredItem;
 import forestry.core.tiles.TileUtil;
@@ -72,21 +77,27 @@ public class ItemHabitatScreen extends ItemForestry implements IColoredItem {
 		return NbtUtils.readBlockPos(compound);
 	}
 
-	public static int getDimension(ItemStack itemStack) {
-		CompoundTag compoundNBT = itemStack.getTag();
-		if (compoundNBT == null || !compoundNBT.contains(DIMENSION_KEY)) {
-			return Integer.MAX_VALUE;
+	@Nullable
+	public static ResourceKey<Level> getDimension(ItemStack stack) {
+		CompoundTag nbt = stack.getTag();
+
+		if (nbt != null && nbt.contains(DIMENSION_KEY)) {
+			ResourceLocation id = ResourceLocation.tryParse(nbt.getString(DIMENSION_KEY));
+
+			if (id != null) {
+				return ResourceKey.create(Registry.DIMENSION_REGISTRY, id);
+			}
 		}
-		return compoundNBT.getInt(DIMENSION_KEY);
+		return null;
 	}
 
-	public static boolean isValid(ItemStack stack, @Nullable Level world) {
+	public static boolean isValid(ItemStack stack, @Nullable Level level) {
 		BlockPos pos = getPosition(stack);
-		int dimension = getDimension(stack);
-		if (pos == null || world == null || dimension == Integer.MAX_VALUE ||/* dimension != world.getDimension().getType().getId() || */!world.hasChunkAt(pos)) {
+		ResourceKey<Level> dimension = getDimension(stack);
+		if (pos == null || level == null || dimension == null || dimension != level.dimension() || !level.hasChunkAt(pos)) {
 			return false;
 		} else {
-			return TileUtil.getTile(world, pos, IClimateHousing.class) != null;
+			return TileUtil.getTile(level, pos, IClimateHousing.class) != null;
 		}
 	}
 
@@ -109,28 +120,30 @@ public class ItemHabitatScreen extends ItemForestry implements IColoredItem {
 	@Override
 	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
 		Player player = context.getPlayer();
-		Level world = context.getLevel();
+		Level level = context.getLevel();
 		BlockPos pos = context.getClickedPos();
 
 		if (player.isShiftKeyDown()) {
-			IClimateHousing housing = TileUtil.getTile(world, pos, IClimateHousing.class);
+			IClimateHousing housing = TileUtil.getTile(level, pos, IClimateHousing.class);
 			if (housing != null) {
 				ItemStack heldItem = player.getItemInHand(context.getHand());
-				heldItem.addTagElement(POSITION_KEY, NbtUtils.writeBlockPos(pos));
-				//heldItem.setTagInfo(DIMENSION_KEY, IntNBT.valueOf(world.getDimension().getType().getId()));
+				CompoundTag nbt = heldItem.getOrCreateTag();
+				nbt.put(POSITION_KEY, NbtUtils.writeBlockPos(pos));
+				nbt.putString(DIMENSION_KEY, level.dimension().location().toString());
 			}
 		}
-		if (!world.isClientSide) {
-			IClimateState state;
-			IClimateState climateState = ClimateRoot.getInstance().getState(world, pos);
+		if (!level.isClientSide) {
+			IClimatised state;
+			ClimateState climateState = IForestryApi.INSTANCE.getClimateManager().getState((ServerLevel) level, pos);
 			if (climateState.isPresent()) {
 				state = climateState;
 				if (!state.isPresent()) {
-					state = ClimateRoot.getInstance().getBiomeState(world, pos);
+					state = IForestryApi.INSTANCE.getClimateManager().getBiomeState(level, pos);
 				}
 			} else {
-				state = ClimateRoot.getInstance().getBiomeState(world, pos);
+				state = IForestryApi.INSTANCE.getClimateManager().getBiomeState(level, pos);
 			}
+			// todo this shit broken
 			if (state.isPresent()) {
 				player.displayClientMessage(Component.translatable("for.habitat_screen.status.state", ChatFormatting.GOLD.toString() + StringUtil.floatAsPercent(state.getTemperature()), ChatFormatting.BLUE.toString() + StringUtil.floatAsPercent(state.getHumidity())), true);
 			} else {
@@ -163,7 +176,7 @@ public class ItemHabitatScreen extends ItemForestry implements IColoredItem {
 		if (housing == null) {
 			return;
 		}
-		IClimateState climateState = housing.getTransformer().getCurrent();
+		IClimatised climateState = housing.getTransformer().getCurrent();
 		tooltip.add(Component.translatable("for.habitat_screen.temperature", StringUtil.floatAsPercent(climateState.getTemperature())).withStyle(ChatFormatting.GOLD));
 		tooltip.add(Component.translatable("for.habitat_screen.humidity", StringUtil.floatAsPercent(climateState.getHumidity())).withStyle(ChatFormatting.BLUE));
 	}
@@ -187,7 +200,7 @@ public class ItemHabitatScreen extends ItemForestry implements IColoredItem {
 				return 0xFFFFFF;
 			}
 			IClimateTransformer transformer = housing.getTransformer();
-			IClimateState state = transformer.getCurrent();
+			IClimatised state = transformer.getCurrent();
 			return state.getTemperatureEnum().color;
 		}
 		return 0xFFFFFF;

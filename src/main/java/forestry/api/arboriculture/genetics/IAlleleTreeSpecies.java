@@ -26,7 +26,7 @@ import forestry.api.genetics.alleles.IAlleleProperty;
 
 public interface IAlleleTreeSpecies extends IAlleleForestrySpecies, IAlleleProperty<IAlleleTreeSpecies> {
 	@Override
-	ITreeRoot getRoot();
+	ITreeSpeciesType getSpecies();
 
 	/**
 	 * @return Native plant type of this species.
@@ -63,7 +63,7 @@ public interface IAlleleTreeSpecies extends IAlleleForestrySpecies, IAllelePrope
 	ILeafSpriteProvider getLeafSpriteProvider();
 
 	@OnlyIn(Dist.CLIENT)
-	int getGermlingColour(EnumGermlingType type, int renderPass);
+	int getGermlingColour(TreeLifeStage type, int renderPass);
 
 	@OnlyIn(Dist.CLIENT)
 	ModelResourceLocation getItemModel();

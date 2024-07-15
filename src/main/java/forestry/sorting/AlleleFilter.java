@@ -2,7 +2,7 @@ package forestry.sorting;
 
 import javax.annotation.Nullable;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 
 
 public class AlleleFilter {
@@ -13,8 +13,8 @@ public class AlleleFilter {
 	public IAllele inactiveAllele;
 
 	public boolean isValid(String activeUID, String inactiveUID) {
-		return (this.activeAllele == null || activeUID.equals(this.activeAllele.getRegistryName().toString()))
-			&& (this.inactiveAllele == null || inactiveUID.equals(this.inactiveAllele.getRegistryName().toString()));
+		return (this.activeAllele == null || activeUID.equals(this.activeAllele.id().toString()))
+			&& (this.inactiveAllele == null || inactiveUID.equals(this.inactiveAllele.id().toString()));
 	}
 
 	public boolean isEmpty() {

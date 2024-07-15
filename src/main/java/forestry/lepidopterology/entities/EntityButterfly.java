@@ -52,17 +52,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.ICheckPollinatable;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ForestryChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.lepidopterology.IEntityButterfly;
 import forestry.api.lepidopterology.ILepidopteristTracker;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.api.lepidopterology.genetics.IButterflyRoot;
+import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.core.config.Config;
-import forestry.core.data.ForestryTags;
+import forestry.api.ForestryTags;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
@@ -70,11 +74,11 @@ import forestry.lepidopterology.genetics.Butterfly;
 import forestry.lepidopterology.genetics.ButterflyHelper;
 
 import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
 import genetics.api.root.EmptyRootDefinition;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IRootDefinition;
 import genetics.utils.AlleleUtils;
 
@@ -103,7 +107,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	@Nullable
 	private Vec3 flightTarget;
 	private int exhaustion;
-	private IButterfly contained = ButterflyHelper.getKaryotype().getDefaultTemplate().toIndividual(ButterflyHelper.getRoot());
+	private IButterfly contained = ButterflyHelper.getRoot().templateAsIndividual(ButterflyHelper.getRoot().getDefaultTemplate());
 	@Nullable
 	private IIndividual pollen;
 
@@ -171,7 +175,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		if (pollen != null) {
 			CompoundTag pln = new CompoundTag();
-			pln.putString(NBT_ROOT, pollen.getRoot().getUID());
+			pln.putString(NBT_ROOT, pollen.getRoot().id().toString());
 			pollen.write(pln);
 			compoundNBT.put(NBT_POLLEN, pln);
 		}
@@ -194,11 +198,13 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		if (compoundNBT.contains(NBT_POLLEN)) {
 			CompoundTag pollenNBT = compoundNBT.getCompound(NBT_POLLEN);
-			IRootDefinition<? super IIndividualRoot<?>> definition = EmptyRootDefinition.empty();
+			ISpeciesType<?> root;
 			if (pollenNBT.contains(NBT_ROOT)) {
-				definition = GeneticsAPI.apiInstance.getRoot(pollenNBT.getString(NBT_ROOT));
+				root = GeneticsAPI.apiInstance.getRoot(new ResourceLocation(pollenNBT.getString(NBT_ROOT)));
+			} else {
+				root = TreeManager.treeRoot;
 			}
-			pollen = definition.orElse(TreeManager.treeRoot).create(pollenNBT);
+			pollen = root.create(pollenNBT);
 		}
 
 		EnumButterflyState butterflyState = EnumButterflyState.VALUES[compoundNBT.getByte(NBT_STATE)];
@@ -209,7 +215,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	}
 
 	public float getWingFlap(float partialTickTime) {
-		int offset = species != null ? species.getRegistryName().toString().hashCode() : level.random.nextInt();
+		int offset = species != null ? species.getId().toString().hashCode() : level.random.nextInt();
 		return getState().getWingFlap(this, offset, partialTickTime);
 	}
 
@@ -296,7 +302,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 				if (this.pollen != null) {
 					ICheckPollinatable pollinatable = GeneticsUtil.getCheckPollinatable(level, posBelow);
-					if (pollinatable != null && pollinatable.getPollen().getIdentifier().equals(this.pollen.getIdentifier())) {
+					if (pollinatable != null && pollinatable.getPollen().getId().equals(this.pollen.getId())) {
 						isSamePollen = true;
 					}
 				}
@@ -375,7 +381,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		IGenome genome = contained.getGenome();
 
-		isImmuneToFire = genome.getActiveValue(ButterflyChromosomes.FIRE_RESIST);
+		isImmuneToFire = genome.getActiveValue(ButterflyChromosomes.FIRE_RESISTANT);
 		size = genome.getActiveValue(ButterflyChromosomes.SIZE);
 		// todo
 		//		setSize(size, 0.4f);
@@ -383,7 +389,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		if (!level.isClientSide) {
 			entityData.set(DATAWATCHER_ID_SIZE, (int) (size * 100));
-			entityData.set(DATAWATCHER_ID_SPECIES, species.getRegistryName().toString());
+			entityData.set(DATAWATCHER_ID_SPECIES, species.getId().toString());
 		} else {
 			textureResource = species.getEntityTexture();
 		}
@@ -453,9 +459,9 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		ItemStack stack = player.getItemInHand(hand);
 		if (stack.is(ForestryTags.Items.SCOOPS)) {
 			if (!level.isClientSide) {
-				IButterflyRoot root = ButterflyHelper.getRoot();
+				IButterflySpeciesType root = ButterflyHelper.getRoot();
 				ILepidopteristTracker tracker = root.getBreedingTracker(level, player.getGameProfile());
-				ItemStack itemStack = root.getTypes().createStack(contained.copy(), EnumFlutterType.BUTTERFLY);
+				ItemStack itemStack = root.getTypes().createStack(contained.copy(), ButterflyLifeStage.BUTTERFLY);
 
 				tracker.registerCatch(contained);
 				ItemStackUtil.dropItemStackAsEntity(itemStack, level, getX(), getY(), getZ());
@@ -479,12 +485,12 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		// Drop pollen if any
 		IIndividual pollen = getPollen();
 		if (pollen != null) {
-			IRootDefinition<? extends IIndividualRoot<IIndividual>> definition = GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(pollen);
-			if (!definition.isPresent()) {
+			ISpeciesType<IIndividual> definition = GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(pollen);
+			if (definition == null) {
 				return;
 			}
 			definition.ifPresent(root -> {
-				ItemStack pollenStack = root.createStack(pollen, EnumGermlingType.POLLEN);
+				ItemStack pollenStack = root.createStack(pollen, TreeLifeStage.POLLEN);
 				ItemStackUtil.dropItemStackAsEntity(pollenStack, level, getX(), getY(), getZ());
 			});
 		}
@@ -592,10 +598,10 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		if (species == null) {
 			return ItemStack.EMPTY;
 		}
-		IButterflyRoot root = species.getRoot();
-		IAllele[] template = root.getTemplates().getTemplate(species.getRegistryName().toString());
+		IButterflySpeciesType root = species.getSpecies();
+		IAllele[] template = root.getTemplates().getTemplate(species.getId().toString());
 		IButterfly butterfly = root.templateAsIndividual(template);
-		return root.getTypes().createStack(butterfly, EnumFlutterType.BUTTERFLY);
+		return root.getTypes().createStack(butterfly, ButterflyLifeStage.BUTTERFLY);
 	}
 
 	@Override

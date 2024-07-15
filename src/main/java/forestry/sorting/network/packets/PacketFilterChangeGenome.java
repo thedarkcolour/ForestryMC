@@ -8,18 +8,18 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-import forestry.api.genetics.GeneticCapabilities;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.ForestryCapabilities;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.utils.AlleleUtils;
 
 public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short index, boolean active, @Nullable IAllele allele) implements IForestryPacketServer {
 	public static void handle(PacketFilterChangeGenome msg, ServerPlayer player) {
-		TileUtil.getInterface(player.level, msg.pos(), GeneticCapabilities.FILTER_LOGIC, null).ifPresent(logic -> {
+		TileUtil.getInterface(player.level, msg.pos(), ForestryCapabilities.FILTER_LOGIC, null).ifPresent(logic -> {
 			if (logic.setGenomeFilter(msg.facing(), msg.index(), msg.active(), msg.allele())) {
 				logic.getNetworkHandler().sendToPlayers(logic, player.getLevel(), player);
 			}
@@ -34,7 +34,7 @@ public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short ind
 		buffer.writeBoolean(active);
 		if (allele != null) {
 			buffer.writeBoolean(true);
-			buffer.writeUtf(allele.getRegistryName().toString());
+			buffer.writeUtf(allele.id().toString());
 		} else {
 			buffer.writeBoolean(false);
 		}

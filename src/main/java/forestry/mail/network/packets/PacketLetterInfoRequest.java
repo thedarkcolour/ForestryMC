@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.mail.EnumAddressee;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 import forestry.core.utils.NetworkUtil;
 import forestry.mail.gui.ContainerLetter;

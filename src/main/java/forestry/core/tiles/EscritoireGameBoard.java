@@ -16,24 +16,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-import genetics.api.individual.IIndividual;
-import genetics.api.individual.IKaryotype;
-import genetics.api.root.IIndividualRoot;
-
-import genetics.utils.RootUtils;
 
 import forestry.api.core.INbtWritable;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.IValueChromosome;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.NetworkUtil;
+
+import genetics.api.individual.IIndividual;
+import genetics.api.individual.IKaryotype;
+import genetics.utils.RootUtils;
 
 public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	private static final Random rand = new Random();
@@ -72,13 +72,14 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 
 		IGenome genome = individual.getGenome();
 		IKaryotype karyotype = genome.getKaryotype();
-		IIndividualRoot root = genome.getPrimary().getRoot();
+		ISpeciesType<?> species = genome.getPrimarySpecies();
 
 		tokenCount = getTokenCount(genome);
 
 		for (int i = 0; i < tokenCount / 2; i++) {
-			IAllele[] randomTemplate = root.getTemplates().getRandomTemplate(rand);
-			String speciesUid = randomTemplate[karyotype.getSpeciesType().getIndex()].getRegistryName().toString();
+			IAllele[] randomTemplate = species.getTemplates().getRandomTemplate(rand);
+			IChromosome iChromosomeType = karyotype.getSpeciesChromosome();
+			String speciesUid = randomTemplate[iChromosomeType.ordinal()].id().toString();
 			gameTokens.add(new EscritoireGameToken(speciesUid));
 			gameTokens.add(new EscritoireGameToken(speciesUid));
 		}
@@ -179,8 +180,9 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	}
 
 	private static int getTokenCount(IGenome genome) {
-		IAlleleForestrySpecies species1 = genome.getPrimary(IAlleleForestrySpecies.class);
-		IAlleleForestrySpecies species2 = genome.getSecondary(IAlleleForestrySpecies.class);
+		IValueChromosome<? extends ISpeciesType<?>> speciesChromosome = genome.getKaryotype().getSpeciesChromosome();
+		ISpeciesType<?> species1 = genome.getPrimarySpecies(speciesChromosome);
+		ISpeciesType<?> species2 = genome.getSecondarySpecies(speciesChromosome);
 
 		int tokenCount = species1.getComplexity() + species2.getComplexity();
 

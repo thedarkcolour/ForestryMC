@@ -10,7 +10,9 @@
  ******************************************************************************/
 package forestry.apiculture.genetics;
 
-import genetics.api.classification.IClassification;
+import net.minecraft.resources.ResourceLocation;
+
+import forestry.api.genetics.ITaxon;
 
 import forestry.api.apiculture.genetics.IAlleleBeeSpeciesBuilder;
 import forestry.api.apiculture.genetics.IBeeFactory;
@@ -18,12 +20,8 @@ import forestry.apiculture.genetics.alleles.AlleleBeeSpecies;
 
 public class BeeFactory implements IBeeFactory {
 	@Override
-	public IAlleleBeeSpeciesBuilder createSpecies(String modId, String uid, String speciesIdentifier) {
-		return new AlleleBeeSpecies.Builder(modId, uid, speciesIdentifier);
+	public IAlleleBeeSpeciesBuilder createSpecies(ResourceLocation id, String speciesIdentifier) {
+		return new AlleleBeeSpecies.Builder(id, speciesIdentifier);
 	}
 
-	@Override
-	public IClassification createBranch(String uid, String scientific) {
-		return new BranchBees(uid, scientific);
-	}
 }

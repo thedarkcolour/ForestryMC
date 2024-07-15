@@ -6,14 +6,9 @@ import java.util.function.Function;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.core.render.TextureManagerForestry;
+import forestry.core.render.ForestryTextureManager;
 
 public interface ISlotTextured {
-
-	default Function<ResourceLocation, TextureAtlasSprite> getBackgroundAtlas() {
-		return TextureManagerForestry.INSTANCE.getSpriteUploader()::getSprite;
-	}
-
 	@Nullable
 	ResourceLocation getBackgroundTexture();
 }

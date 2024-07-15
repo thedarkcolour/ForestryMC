@@ -7,25 +7,22 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class ModelBlockCached<B extends Block, K> extends ModelBlockDefault<B, K> {
-	private static final Set<ModelBlockCached> CACHE_PROVIDERS = new HashSet<>();
+	private static final Set<ModelBlockCached<?, ?>> CACHE_PROVIDERS = new HashSet<>();
 
 	private final Cache<K, BakedModel> inventoryCache;
 	private final Cache<K, BakedModel> worldCache;
 
 	public static void clear() {
-		for (ModelBlockCached modelBlockCached : CACHE_PROVIDERS) {
+		for (ModelBlockCached<?, ?> modelBlockCached : CACHE_PROVIDERS) {
 			modelBlockCached.worldCache.invalidateAll();
 			modelBlockCached.inventoryCache.invalidateAll();
 		}

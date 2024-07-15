@@ -7,7 +7,8 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology;
 
 import javax.annotation.Nullable;
@@ -41,7 +42,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import forestry.api.climate.ClimateCapabilities;
 import forestry.api.climate.IClimateTransformer;
-import forestry.climatology.features.ClimatologyItems;
 import forestry.climatology.items.ItemHabitatScreen;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.TickHelper;
@@ -49,7 +49,7 @@ import forestry.core.utils.TickHelper;
 @OnlyIn(Dist.CLIENT)
 public class PreviewHandlerClient {
 
-	private final TickHelper tickHelper = new TickHelper();
+	private final TickHelper tickHelper = new TickHelper(0);
 	private final PreviewRenderer renderer = new PreviewRenderer();
 
 	@SubscribeEvent
@@ -188,3 +188,4 @@ public class PreviewHandlerClient {
 		}
 	}
 }
+*/

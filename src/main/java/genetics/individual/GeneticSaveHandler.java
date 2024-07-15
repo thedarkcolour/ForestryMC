@@ -13,17 +13,19 @@ import forestry.Forestry;
 import genetics.ApiInstance;
 import genetics.api.GeneticHelper;
 import genetics.api.IGeneticSaveHandler;
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleRegistry;
+
+import forestry.api.genetics.alleles.ChromosomePair;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IAlleleRegistry;
 import genetics.api.alleles.IAlleleTemplate;
-import genetics.api.individual.IChromosome;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.individual.IGenome;
+
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
 import genetics.api.individual.IKaryotype;
 import genetics.api.organism.IOrganismHandler;
-import genetics.api.organism.IOrganismType;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.ITemplateContainer;
 
 public enum GeneticSaveHandler implements IGeneticSaveHandler {
@@ -34,7 +36,7 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 	private static final String CHROMOSOMES_TAG = "Chromosomes";
 
 	@Override
-	public CompoundTag writeTag(IChromosome[] chromosomes, CompoundTag tagCompound) {
+	public CompoundTag writeTag(ChromosomePair[] chromosomes, CompoundTag tagCompound) {
 		ListTag tagList = new ListTag();
 		for (int i = 0; i < chromosomes.length; i++) {
 			if (chromosomes[i] != null) {
@@ -50,13 +52,13 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 
 	@Nullable
 	@Override
-	public IChromosome[] readTag(IKaryotype karyotype, CompoundTag tagCompound) {
-		IChromosomeType[] geneTypes = karyotype.getChromosomeTypes();
+	public ChromosomePair[] readTag(IKaryotype karyotype, CompoundTag tagCompound) {
+		IChromosome[] geneTypes = karyotype.getChromosomeTypes();
 		if (!tagCompound.contains(CHROMOSOMES_TAG)) {
 			return null;
 		}
 		ListTag chromosomesNBT = tagCompound.getList(CHROMOSOMES_TAG, Tag.TAG_COMPOUND);
-		IChromosome[] chromosomes = new IChromosome[geneTypes.length];
+		ChromosomePair[] chromosomes = new ChromosomePair[geneTypes.length];
 		ResourceLocation primaryTemplateIdentifier = null;
 		ResourceLocation secondaryTemplateIdentifier = null;
 
@@ -65,13 +67,13 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 			byte chromosomeOrdinal = chromosomeNBT.getByte(SLOT_TAG);
 
 			if (chromosomeOrdinal >= 0 && chromosomeOrdinal < chromosomes.length) {
-				IChromosomeType geneType = geneTypes[chromosomeOrdinal];
-				Chromosome chromosome = Chromosome.create(primaryTemplateIdentifier, secondaryTemplateIdentifier, geneType, chromosomeNBT);
+				IChromosome geneType = geneTypes[chromosomeOrdinal];
+				ChromosomePair chromosome = ChromosomePair.create(primaryTemplateIdentifier, secondaryTemplateIdentifier, geneType, chromosomeNBT);
 				chromosomes[chromosomeOrdinal] = chromosome;
 
-				if (geneType.equals(karyotype.getSpeciesType())) {
-					primaryTemplateIdentifier = chromosome.getActiveAllele().getRegistryName();
-					secondaryTemplateIdentifier = chromosome.getInactiveAllele().getRegistryName();
+				if (geneType.equals(karyotype.getSpeciesChromosome())) {
+					primaryTemplateIdentifier = chromosome.active().id();
+					secondaryTemplateIdentifier = chromosome.inactive().id();
 				}
 			}
 		}
@@ -81,16 +83,16 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 
 	@Override
 	@Nullable
-	public IAllele getAlleleDirectly(CompoundTag genomeNBT, IChromosomeType chromosomeType, boolean active) {
+	public IAllele getAlleleDirectly(CompoundTag genomeNBT, IChromosome chromosomeType, boolean active) {
 		ListTag tagList = genomeNBT.getList(CHROMOSOMES_TAG, Tag.TAG_COMPOUND);
 		if (tagList.isEmpty()) {
 			return null;
 		}
-		CompoundTag chromosomeTag = tagList.getCompound(chromosomeType.getIndex());
+		CompoundTag chromosomeTag = tagList.getCompound(chromosomeType.ordinal());
 		if (chromosomeTag.isEmpty()) {
 			return null;
 		}
-		return (active ? Chromosome.getActiveAllele(chromosomeTag) : Chromosome.getInactiveAllele(chromosomeTag));
+		return (active ? ChromosomePair.getActiveAllele(chromosomeTag) : ChromosomePair.getInactiveAllele(chromosomeTag));
 	}
 
 	/**
@@ -98,13 +100,13 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 	 */
 	@Override
 	@Nullable
-	public IAllele getAlleleDirectly(ItemStack itemStack, IOrganismType type, IChromosomeType chromosomeType, boolean active) {
+	public IAllele getAlleleDirectly(ItemStack itemStack, ILifeStage type, IChromosome chromosomeType, boolean active) {
 		CompoundTag nbtTagCompound = itemStack.getTag();
 		if (nbtTagCompound == null || nbtTagCompound.isEmpty()) {
 			return null;
 		}
 
-		CompoundTag individualNBT = getIndividualDataDirectly(itemStack, type, chromosomeType.getRoot());
+		CompoundTag individualNBT = getIndividualDataDirectly(itemStack, type, chromosomeType.getSpecies());
 		if (individualNBT == null || individualNBT.isEmpty()) {
 			return null;
 		}
@@ -124,25 +126,25 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 	// NBT RETRIEVAL
 
 	@Override
-	public IAllele getAllele(ItemStack itemStack, IOrganismType type, IChromosomeType chromosomeType, boolean active) {
-		IChromosome chromosome = getSpecificChromosome(itemStack, type, chromosomeType);
-		return active ? chromosome.getActiveAllele() : chromosome.getInactiveAllele();
+	public IAllele getAllele(ItemStack itemStack, ILifeStage type, IChromosome chromosomeType, boolean active) {
+		ChromosomePair chromosome = getSpecificChromosome(itemStack, type, chromosomeType);
+		return active ? chromosome.active() : chromosome.inactive();
 	}
 
 	@Override
-	public IChromosome getSpecificChromosome(CompoundTag genomeNBT, IChromosomeType chromosomeType) {
-		IChromosome[] chromosomes = readTag(chromosomeType.getRoot().getKaryotype(), genomeNBT);
+	public ChromosomePair getSpecificChromosome(CompoundTag genomeNBT, IChromosome chromosomeType) {
+		ChromosomePair[] chromosomes = readTag(chromosomeType.getSpecies().getKaryotype(), genomeNBT);
 		if (chromosomes == null) {
 			throw new IllegalStateException("Failed to read specific chromosome from NBT");
 		}
-		return chromosomes[chromosomeType.getIndex()];
+		return chromosomes[chromosomeType.ordinal()];
 	}
 
 	@Override
-	public IChromosome getSpecificChromosome(ItemStack itemStack, IOrganismType type, IChromosomeType chromosomeType) {
+	public ChromosomePair getSpecificChromosome(ItemStack itemStack, ILifeStage type, IChromosome chromosomeType) {
 		itemStack.getOrCreateTag();
 
-		CompoundTag individualNBT = getIndividualData(itemStack, type, chromosomeType.getRoot());
+		CompoundTag individualNBT = getIndividualData(itemStack, type, chromosomeType.getSpecies());
 		CompoundTag genomeNBT = individualNBT.getCompound(GENOME_TAG);
 
 		return getSpecificChromosome(genomeNBT, chromosomeType);
@@ -150,19 +152,13 @@ public enum GeneticSaveHandler implements IGeneticSaveHandler {
 
 	@Nullable
 	@Override
-	public CompoundTag getIndividualDataDirectly(ItemStack itemStack, IOrganismType type, IIndividualRoot<IIndividual> root) {
+	public CompoundTag getIndividualDataDirectly(ItemStack itemStack, ILifeStage type, ISpeciesType<IIndividual> root) {
 		IOrganismHandler<IIndividual> organismHandler = GeneticHelper.getOrganismHandler(root, type);
 		return organismHandler.getIndividualData(itemStack);
 	}
 
 	@Override
-	public void setIndividualData(ItemStack itemStack, IOrganismType type, IIndividualRoot<IIndividual> root, CompoundTag compound) {
-		IOrganismHandler<IIndividual> organismHandler = GeneticHelper.getOrganismHandler(root, type);
-		organismHandler.setIndividualData(itemStack, compound);
-	}
-
-	@Override
-	public CompoundTag getIndividualData(ItemStack itemStack, IOrganismType type, IIndividualRoot<IIndividual> root) {
+	public CompoundTag getIndividualData(ItemStack itemStack, ILifeStage type, ISpeciesType<IIndividual> root) {
 		IOrganismHandler<IIndividual> organismHandler = GeneticHelper.getOrganismHandler(root, type);
 		CompoundTag compound = organismHandler.getIndividualData(itemStack);
 		if (compound != null) {

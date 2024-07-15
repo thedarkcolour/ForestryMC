@@ -24,7 +24,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.NonNullList;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
@@ -33,8 +32,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.IItemSubtype;
+import forestry.api.core.ItemGroups;
 import forestry.api.mail.ILetter;
-import forestry.core.ItemGroupForestry;
 import forestry.core.items.ItemWithGui;
 import forestry.mail.Letter;
 import forestry.mail.gui.ContainerLetter;
@@ -65,7 +64,7 @@ public class ItemLetter extends ItemWithGui {
 
 	public ItemLetter(Size size, State state) {
 		super((new Item.Properties())
-				.tab(ItemGroupForestry.tabForestry)
+				.tab(ItemGroups.tabForestry)
 				.stacksTo(64));
 		this.size = size;
 		this.state = state;

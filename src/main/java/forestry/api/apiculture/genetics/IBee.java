@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IIndividualLiving;
 
@@ -63,9 +65,9 @@ public interface IBee extends IIndividualLiving {
 	 * @param housing the {@link IBeeHousing} the bee currently resides in.
 	 * @return an empty set if the queen can work, a set of error states if the queen can not work
 	 */
-	Set<IErrorState> getCanWork(IBeeHousing housing);
+	Set<IError> getCanWork(IBeeHousing housing);
 
-	List<Biome> getSuitableBiomes();
+	List<Holder.Reference<Biome>> getSuitableBiomes(Registry<Biome> registry);
 
 	NonNullList<ItemStack> getProduceList();
 

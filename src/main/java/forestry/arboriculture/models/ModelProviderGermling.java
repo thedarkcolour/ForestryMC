@@ -15,10 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.IGermlingModelProvider;
 import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
-import forestry.core.config.Constants;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.core.utils.StringUtil;
 
 public class ModelProviderGermling implements IGermlingModelProvider {
@@ -30,8 +30,8 @@ public class ModelProviderGermling implements IGermlingModelProvider {
 	public ModelProviderGermling(String uid, ILeafSpriteProvider leafSpriteProvider) {
 		String name = StringUtil.camelCaseToUnderscores(uid);
 		this.leafSpriteProvider = leafSpriteProvider;
-		itemModel = new ResourceLocation(Constants.MOD_ID, "germlings/sapling." + name);
-		blockModel = new ResourceLocation(Constants.MOD_ID, "block/germlings/sapling." + name);
+		itemModel = new ResourceLocation(ForestryConstants.MOD_ID, "germlings/sapling." + name);
+		blockModel = new ResourceLocation(ForestryConstants.MOD_ID, "block/germlings/sapling." + name);
 	}
 
 	@Override
@@ -47,8 +47,8 @@ public class ModelProviderGermling implements IGermlingModelProvider {
 	}
 
 	@Override
-	public int getSpriteColor(EnumGermlingType type, int renderPass) {
-		if (type == EnumGermlingType.POLLEN) {
+	public int getSpriteColor(TreeLifeStage type, int renderPass) {
+		if (type == TreeLifeStage.POLLEN) {
 			return leafSpriteProvider.getColor(false);
 		} else {
 			return 0xFFFFFF;

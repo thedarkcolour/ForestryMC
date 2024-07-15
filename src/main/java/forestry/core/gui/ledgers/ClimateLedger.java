@@ -11,10 +11,12 @@
 package forestry.core.gui.ledgers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.client.IForestryClientApi;
 import forestry.api.climate.IClimatised;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.TemperatureType;
 import forestry.api.genetics.alleles.AlleleManager;
-import forestry.core.utils.StringUtil;
+
 import net.minecraft.network.chat.Component;
 
 /**
@@ -33,13 +35,13 @@ public class ClimateLedger extends Ledger {
 	@Override
 	public void draw(PoseStack transform, int y, int x) {
 
-		EnumTemperature temperature = tile.getTemperature();
+		TemperatureType temperature = tile.temperature();
 
 		// Draw background
 		drawBackground(transform, y, x);
 
 		// Draw icon
-		drawSprite(transform, temperature.getSprite(), x + 3, y + 4);
+		drawSprite(transform, IForestryClientApi.INSTANCE.getTextureManager().getSprite(temperature), x + 3, y + 4);
 
 		if (!isFullyOpened()) {
 			return;
@@ -48,18 +50,18 @@ public class ClimateLedger extends Ledger {
 		drawHeader(transform, Component.translatable("for.gui.climate"), x + 22, y + 8);
 
 		drawSubheader(transform, Component.translatable("for.gui.temperature").append(":"), x + 22, y + 20);
-		drawText(transform, AlleleManager.climateHelper.toDisplay(temperature).getString() + ' ' + StringUtil.floatAsPercent(tile.getExactTemperature()), x + 22, y + 32);
+		drawText(transform, ClimateHelper.toDisplay(temperature).getString() + ' ' + tile.temperature(), x + 22, y + 32);
 
 		drawSubheader(transform, Component.translatable("for.gui.humidity").append(":"), x + 22, y + 44);
-		drawText(transform, AlleleManager.climateHelper.toDisplay(tile.getHumidity()).getString() + ' ' + StringUtil.floatAsPercent(tile.getExactHumidity()), x + 22, y + 56);
+		drawText(transform, ClimateHelper.toDisplay(tile.humidity()).getString() + ' ' + tile.humidity(), x + 22, y + 56);
 	}
 
 	@Override
 	public Component getTooltip() {
 		return Component.literal("T: ")
-			.append(AlleleManager.climateHelper.toDisplay(tile.getTemperature()))
+			.append(ClimateHelper.toDisplay(tile.temperature()))
 			.append(Component.literal(" / H: "))
-			.append(AlleleManager.climateHelper.toDisplay(tile.getHumidity()));
+			.append(ClimateHelper.toDisplay(tile.humidity()));
 	}
 
 }

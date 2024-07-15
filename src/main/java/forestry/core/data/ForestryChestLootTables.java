@@ -6,13 +6,13 @@ import net.minecraft.data.loot.ChestLoot;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 
 public class ForestryChestLootTables extends ChestLoot {
 
 	@Override
 	public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
-		consumer.accept(new ResourceLocation(Constants.MOD_ID, "chests/village_naturalist"), LootTable.lootTable());
+		consumer.accept(new ResourceLocation(ForestryConstants.MOD_ID, "chests/village_naturalist"), LootTable.lootTable());
 		for (LootTableHelper.Entry entry : LootTableHelper.getInstance().entries.values()) {
 			consumer.accept(entry.getLocation(), entry.builder);
 		}

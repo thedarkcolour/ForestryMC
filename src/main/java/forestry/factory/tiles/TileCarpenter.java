@@ -39,7 +39,7 @@ import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.ICarpenterRecipe;
 import forestry.api.recipes.RecipeManagers;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.TankManager;
@@ -222,10 +222,10 @@ public class TileCarpenter extends TilePowered implements WorldlyContainer, ILiq
 		}
 
 		IErrorLogic errorLogic = getErrorLogic();
-		errorLogic.setCondition(!hasRecipe, EnumErrorCode.NO_RECIPE);
-		errorLogic.setCondition(!hasLiquidResources, EnumErrorCode.NO_RESOURCE_LIQUID);
-		errorLogic.setCondition(!hasItemResources, EnumErrorCode.NO_RESOURCE_INVENTORY);
-		errorLogic.setCondition(!canAdd, EnumErrorCode.NO_SPACE_INVENTORY);
+		errorLogic.setCondition(!hasRecipe, ForestryError.NO_RECIPE);
+		errorLogic.setCondition(!hasLiquidResources, ForestryError.NO_RESOURCE_LIQUID);
+		errorLogic.setCondition(!hasItemResources, ForestryError.NO_RESOURCE_INVENTORY);
+		errorLogic.setCondition(!canAdd, ForestryError.NO_SPACE_INVENTORY);
 
 		return hasRecipe && hasItemResources && hasLiquidResources && canAdd;
 	}

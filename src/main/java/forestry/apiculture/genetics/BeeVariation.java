@@ -4,12 +4,14 @@ import forestry.api.apiculture.BeeManager;
 import net.minecraft.world.item.ItemStack;
 
 import genetics.api.alleles.IAlleleTemplate;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
-import forestry.api.apiculture.genetics.BeeChromosomes;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 
 public abstract class BeeVariation implements IBeeDefinition {
 
@@ -39,14 +41,14 @@ public abstract class BeeVariation implements IBeeDefinition {
 	}
 
 	@Override
-	public final ItemStack getMemberStack(EnumBeeType beeType) {
+	public final ItemStack getMemberStack(BeeLifeStage beeType) {
 		IBee bee = createIndividual();
 		return BeeManager.beeRoot.getTypes().createStack(bee, beeType);
 	}
 
 	@Override
-	public IAlleleBeeSpecies getSpecies() {
-		return genome.getActiveAllele(BeeChromosomes.SPECIES);
+	public ISpeciesType<IBee> getSpecies() {
+		return genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
 	}
 
 	public static class RainResist extends BeeVariation {

@@ -27,7 +27,7 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.ITreeRoot;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
 import forestry.api.genetics.alleles.AlleleManager;
@@ -66,7 +66,7 @@ public class FarmableGE implements IFarmable {
 
 	@Override
 	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
-		ITreeRoot treeRoot = TreeManager.treeRoot;
+		ITreeSpeciesType treeRoot = TreeManager.treeRoot;
 
 		ITree tree = treeRoot.create(germling);
 		return tree != null && treeRoot.plantSapling(level, tree, player.getGameProfile(), pos);

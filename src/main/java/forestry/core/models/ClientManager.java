@@ -37,22 +37,20 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 
 import forestry.core.blocks.IColoredBlock;
 import forestry.core.items.definitions.IColoredItem;
+import forestry.core.utils.ModUtil;
 import forestry.core.utils.ResourceUtil;
 import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureGroup;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureTable;
 
-import deleteme.RegistryNameFinder;
-
-@OnlyIn(Dist.CLIENT)
 public enum ClientManager {
 	INSTANCE;
 
 	private static final ItemColor FORESTRY_ITEM_COLOR = (stack, tintIndex) -> {
 		Item item = stack.getItem();
-		if (item instanceof IColoredItem) {
-			return ((IColoredItem) item).getColorFromItemStack(stack, tintIndex);
+		if (item instanceof IColoredItem coloredItem) {
+			return coloredItem.getColorFromItemStack(stack, tintIndex);
 		}
 		return 0xffffff;
 	};
@@ -116,7 +114,7 @@ public enum ClientManager {
 	}
 
 	public void registerModel(BakedModel model, Item item) {
-		customModels.add(new ModelEntry(new ModelResourceLocation(RegistryNameFinder.getRegistryName(item), "inventory"), model));
+		customModels.add(new ModelEntry(new ModelResourceLocation(ModUtil.getRegistryName(item), "inventory"), model));
 	}
 
 	public void onBakeModels(ModelEvent.BakingCompleted event) {
@@ -127,7 +125,7 @@ public enum ClientManager {
 				registry.put(BlockModelShaper.stateToModelLocation(state), entry.model);
 			}
 			if (entry.item != null) {
-				ResourceLocation registryName = RegistryNameFinder.getRegistryName(entry.item);
+				ResourceLocation registryName = ModUtil.getRegistryName(entry.item);
 				if (registryName == null) {
 					continue;
 				}

@@ -15,19 +15,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
@@ -45,51 +45,33 @@ import forestry.api.arboriculture.genetics.IAlleleLeafEffect;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeMutation;
-import forestry.api.arboriculture.genetics.ITreeRoot;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.products.IProductList;
 import forestry.core.config.Config;
-import forestry.core.genetics.TemplateMatcher;
 
-import genetics.api.individual.IChromosome;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.individual.IGenome;
-import genetics.api.individual.IGenomeMatcher;
+import forestry.api.genetics.alleles.ChromosomePair;
 import genetics.api.individual.Individual;
-import genetics.api.mutation.IMutation;
 import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
 import genetics.individual.Genome;
 
 public class Tree extends Individual implements ITree, IPlantable {
-
-	private final IGenomeMatcher matcher;
-
 	public Tree(IGenome genome) {
 		super(genome);
-		matcher = new TemplateMatcher(genome);
 	}
 
-	public Tree(IGenome genome, IGenome mate) {
-		super(genome, mate);
-		matcher = new TemplateMatcher(genome);
-	}
-
-	public Tree(CompoundTag compoundNBT) {
-		super(compoundNBT);
-		matcher = new TemplateMatcher(genome);
+	public Tree(CompoundTag compoundNbt) {
+		super(compoundNbt);
 	}
 
 	@Override
-	public ITreeRoot getRoot() {
+	public ITreeSpeciesType getRoot() {
 		return TreeManager.treeRoot;
-	}
-
-	@Override
-	public boolean matchesTemplateGenome() {
-		return matcher.matches();
 	}
 
 	/* EFFECTS */
@@ -203,7 +185,7 @@ public class Tree extends Individual implements ITree, IPlantable {
 		IFruitProvider provider = getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 		Collection<IFruitFamily> suitable = genome.getActiveAllele(TreeChromosomes.SPECIES).getSuitableFruit();
 		return suitable.contains(provider.getFamily()) &&
-			provider.trySpawnFruitBlock(getGenome(), world, rand, pos);
+				provider.trySpawnFruitBlock(getGenome(), world, rand, pos);
 	}
 
 	/* INFORMATION */
@@ -217,11 +199,6 @@ public class Tree extends Individual implements ITree, IPlantable {
 		CompoundTag compound = new CompoundTag();
 		this.write(compound);
 		return new Tree(compound);
-	}
-
-	@Override
-	public boolean isPureBred(IChromosomeType chromosome) {
-		return genome.getActiveAllele(chromosome).getRegistryName().equals(genome.getInactiveAllele(chromosome).getRegistryName());
 	}
 
 	@Override
@@ -285,13 +262,13 @@ public class Tree extends Individual implements ITree, IPlantable {
 	}
 
 	private ITree createOffspring(Level world, IGenome mate, @Nullable GameProfile playerProfile, BlockPos pos) {
-		IChromosome[] chromosomes = new IChromosome[genome.getChromosomes().length];
-		IChromosome[] parent1 = genome.getChromosomes();
-		IChromosome[] parent2 = mate.getChromosomes();
+		ChromosomePair[] chromosomes = new ChromosomePair[genome.getChromosomes().length];
+		ChromosomePair[] parent1 = genome.getChromosomes();
+		ChromosomePair[] parent2 = mate.getChromosomes();
 
 		// Check for mutation. Replace one of the parents with the mutation
 		// template if mutation occured.
-		IChromosome[] mutated = mutateSpecies(world, playerProfile, pos, genome, mate);
+		ChromosomePair[] mutated = mutateSpecies(world, playerProfile, pos, genome, mate);
 		if (mutated == null) {
 			mutated = mutateSpecies(world, playerProfile, pos, mate, genome);
 		}
@@ -310,9 +287,9 @@ public class Tree extends Individual implements ITree, IPlantable {
 	}
 
 	@Nullable
-	private static IChromosome[] mutateSpecies(Level world, @Nullable GameProfile playerProfile, BlockPos pos, IGenome genomeOne, IGenome genomeTwo) {
-		IChromosome[] parent1 = genomeOne.getChromosomes();
-		IChromosome[] parent2 = genomeTwo.getChromosomes();
+	private static ChromosomePair[] mutateSpecies(Level world, @Nullable GameProfile playerProfile, BlockPos pos, IGenome genomeOne, IGenome genomeTwo) {
+		ChromosomePair[] parent1 = genomeOne.getChromosomes();
+		ChromosomePair[] parent2 = genomeTwo.getChromosomes();
 
 		IGenome genome0;
 		IGenome genome1;
@@ -320,14 +297,14 @@ public class Tree extends Individual implements ITree, IPlantable {
 		IAlleleTreeSpecies allele1;
 
 		if (world.random.nextBoolean()) {
-			allele0 = (IAlleleTreeSpecies) parent1[TreeChromosomes.SPECIES.ordinal()].getActiveAllele();
-			allele1 = (IAlleleTreeSpecies) parent2[TreeChromosomes.SPECIES.ordinal()].getInactiveAllele();
+			allele0 = (IAlleleTreeSpecies) parent1[TreeChromosomes.SPECIES.ordinal()].active();
+			allele1 = (IAlleleTreeSpecies) parent2[TreeChromosomes.SPECIES.ordinal()].inactive();
 
 			genome0 = genomeOne;
 			genome1 = genomeTwo;
 		} else {
-			allele0 = (IAlleleTreeSpecies) parent2[TreeChromosomes.SPECIES.ordinal()].getActiveAllele();
-			allele1 = (IAlleleTreeSpecies) parent1[TreeChromosomes.SPECIES.ordinal()].getInactiveAllele();
+			allele0 = (IAlleleTreeSpecies) parent2[TreeChromosomes.SPECIES.ordinal()].active();
+			allele1 = (IAlleleTreeSpecies) parent1[TreeChromosomes.SPECIES.ordinal()].inactive();
 
 			genome0 = genomeTwo;
 			genome1 = genomeOne;
@@ -343,7 +320,7 @@ public class Tree extends Individual implements ITree, IPlantable {
 		for (IMutation mutation : combinations) {
 			ITreeMutation treeMutation = (ITreeMutation) mutation;
 			// Stop blacklisted species.
-			// if (BeeManager.breedingManager.isBlacklisted(mutation.getTemplate()[0].getUID())) {
+			// if (BeeManager.breedingManager.isBlacklisted(mutation.getTemplate()[0].getIdString())) {
 			// continue;
 			// }
 

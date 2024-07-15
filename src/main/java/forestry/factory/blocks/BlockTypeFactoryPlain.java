@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import forestry.core.blocks.IBlockType;
 import forestry.core.blocks.IMachineProperties;
 import forestry.core.blocks.MachineProperties;
-import forestry.core.tiles.ForestryTicker;
+import forestry.core.tiles.IForestryTicker;
 import forestry.core.tiles.TileForestry;
 import forestry.factory.features.FactoryTiles;
 import forestry.factory.tiles.TileFabricator;
@@ -30,7 +30,7 @@ public enum BlockTypeFactoryPlain implements IBlockType {
 
 	private final IMachineProperties machineProperties;
 
-	<T extends TileForestry> BlockTypeFactoryPlain(Supplier<FeatureTileType<? extends T>> teClass, String name, ForestryTicker<T> serverTicker) {
+	<T extends TileForestry> BlockTypeFactoryPlain(Supplier<FeatureTileType<? extends T>> teClass, String name, IForestryTicker<T> serverTicker) {
 		this.machineProperties = new MachineProperties.Builder<>(teClass, name).setServerTicker(serverTicker).create();
 	}
 

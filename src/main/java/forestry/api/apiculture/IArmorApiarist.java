@@ -11,10 +11,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.ForestryCapabilities;
+
 /**
  * When implemented as a capability by armor items, protects the wearer from negative bee effects.
  *
- * @see ApicultureCapabilities#ARMOR_APIARIST
+ * @see ForestryCapabilities#ARMOR_APIARIST
  */
 public interface IArmorApiarist {
 	/**

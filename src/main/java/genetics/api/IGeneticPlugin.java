@@ -1,12 +1,13 @@
 package genetics.api;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.api.alleles.IAlleleData;
-import genetics.api.alleles.IAlleleRegistry;
-import genetics.api.classification.IClassificationRegistry;
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.IAlleleRegistry;
+import forestry.core.genetics.alleles.Allele;
+
+import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.root.IGeneticListenerRegistry;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IRootManager;
 import genetics.api.root.components.IRootComponentRegistry;
 
@@ -15,13 +16,6 @@ import genetics.api.root.components.IRootComponentRegistry;
  * this class. IGeneticPlugins must have the {@link GeneticPlugin} annotation to get loaded by Genetics.
  */
 public interface IGeneticPlugin {
-	/**
-	 * Register classifications
-	 */
-	default void registerClassifications(IClassificationRegistry registry) {
-		//Default Implementation
-	}
-
 	default void registerListeners(IGeneticListenerRegistry registry) {
 		//Default Implementation
 	}
@@ -29,10 +23,10 @@ public interface IGeneticPlugin {
 	/**
 	 * This method can be used to register alleles.
 	 * <p>
-	 * {@link IAlleleRegistry#registerAllele(IAllele, IChromosomeType...)} can be use to register your own implementation
-	 * of {@link IAllele} or {@link genetics.api.alleles.Allele}.
-	 * You also can use {@link IAlleleRegistry#registerAllele(String, String, Object, boolean, IChromosomeType...)} to
-	 * register a allele that with one value or you use {@link IAlleleRegistry#registerAllele(IAlleleData, IChromosomeType...)}
+	 * {@link IAlleleRegistry#registerAllele(IAllele, IChromosome...)} can be use to register your own implementation
+	 * of {@link IAllele} or {@link Allele}.
+	 * You also can use {@link IAlleleRegistry#registerAllele(String, String, Object, boolean, IChromosome...)} to
+	 * register a allele that with one value or you use {@link IAlleleRegistry#registerAllele(IAlleleData, IChromosome...)}
 	 * if you want to keep the data in an object like an enum.
 	 */
 	default void registerAlleles(IAlleleRegistry registry) {
@@ -45,7 +39,7 @@ public interface IGeneticPlugin {
 
 	/**
 	 * This method can be used to create {@link genetics.api.root.IIndividualRootBuilder}s. They will later automatically
-	 * create the {@link IIndividualRoot}s. You can accesses the root object through the {@link genetics.api.root.IRootDefinition}
+	 * create the {@link ISpeciesType}s. You can accesses the root object through the {@link genetics.api.root.IRootDefinition}
 	 * of the root.
 	 */
 	default void createRoot(IRootManager rootManager, IGeneticFactory geneticFactory) {
@@ -61,7 +55,7 @@ public interface IGeneticPlugin {
 
 	/**
 	 * Called after the previous methods were called and every thing is registered.
-	 * Can be used to get created {@link IIndividualRoot}s.
+	 * Can be used to get created {@link ISpeciesType}s.
 	 */
 	default void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
 		//Default Implementation

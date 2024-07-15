@@ -2,8 +2,9 @@ package genetics.api.individual;
 
 import net.minecraft.resources.ResourceLocation;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.ISpeciesType;
 
 /**
  * Can be used to create a modified version of an {@link IIndividual}. At the crate of this builder all genetic
@@ -14,7 +15,7 @@ public interface IIndividualBuilder<I extends IIndividual> {
 	/**
 	 * @return The definition of the individual.
 	 */
-	IIndividualRoot<I> getRoot();
+	ISpeciesType<I> getRoot();
 
 	/**
 	 * Sets a allele at a position of the chromosome.
@@ -23,7 +24,7 @@ public interface IIndividualBuilder<I extends IIndividual> {
 	 * @param type   The position at the chromosome array.
 	 * @param active True if you want to set the active allele, false otherwise.
 	 */
-	IIndividualBuilder<I> set(IChromosomeType type, IAllele allele, boolean active);
+	IIndividualBuilder<I> set(IChromosome type, IAllele allele, boolean active);
 
 	/**
 	 * Sets a allele at a position of the chromosome.
@@ -32,7 +33,7 @@ public interface IIndividualBuilder<I extends IIndividual> {
 	 * @param type         The position at the chromosome array.
 	 * @param active       True if you want to set the active allele, false otherwise.
 	 */
-	IIndividualBuilder<I> set(IChromosomeType type, ResourceLocation registryName, boolean active);
+	IIndividualBuilder<I> set(IChromosome type, ResourceLocation registryName, boolean active);
 
 	/**
 	 * @return The {@link IIndividual} that was used to create this builder.

@@ -13,8 +13,8 @@ package forestry.apiculture.genetics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
@@ -22,7 +22,7 @@ import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeMutation;
 import forestry.api.apiculture.genetics.IBeeMutationBuilder;
-import forestry.api.apiculture.genetics.IBeeRoot;
+import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.core.genetics.mutations.Mutation;
 
 public class BeeMutation extends Mutation implements IBeeMutation, IBeeMutationBuilder {
@@ -37,7 +37,7 @@ public class BeeMutation extends Mutation implements IBeeMutation, IBeeMutationB
 	}
 
 	@Override
-	public IBeeRoot getRoot() {
+	public IBeeSpeciesType getRoot() {
 		return BeeManager.beeRoot;
 	}
 

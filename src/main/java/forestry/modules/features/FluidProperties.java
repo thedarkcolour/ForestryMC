@@ -14,7 +14,7 @@ import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.core.items.definitions.DrinkProperties;
-import forestry.core.render.ForestryResource;
+import forestry.core.utils.ModUtil;
 
 public class FluidProperties {
 	public final int density;
@@ -36,8 +36,8 @@ public class FluidProperties {
 		this.flammability = builder.flammability;
 		this.flammable = builder.flammable;
 		this.properties = builder.properties;
-		this.resources[0] = new ForestryResource("block/liquid/" + builder.identifier + "_still");
-		this.resources[1] = new ForestryResource("block/liquid/" + builder.identifier + "_flow");
+		this.resources[0] = ModUtil.modLoc("block/liquid/" + builder.identifier + "_still");
+		this.resources[1] = ModUtil.modLoc("block/liquid/" + builder.identifier + "_flow");
 		if (!resourceExists(resources[1])) {
 			this.resources[1] = resources[0];
 		}

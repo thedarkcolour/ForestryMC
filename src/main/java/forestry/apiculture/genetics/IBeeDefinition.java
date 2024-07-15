@@ -14,14 +14,11 @@ import net.minecraft.world.item.ItemStack;
 
 import genetics.api.individual.ISpeciesDefinition;
 
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
 
 public interface IBeeDefinition extends ISpeciesDefinition<IBee> {
 
-	@Override
-	IAlleleBeeSpecies getSpecies();
-
-	ItemStack getMemberStack(EnumBeeType beeType);
+	ItemStack getMemberStack(BeeLifeStage beeType);
 }

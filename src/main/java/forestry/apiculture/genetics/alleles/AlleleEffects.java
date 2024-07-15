@@ -5,59 +5,59 @@ import java.util.List;
 
 import net.minecraft.world.effect.MobEffects;
 
-import forestry.api.apiculture.genetics.BeeChromosomes;
-import forestry.api.apiculture.genetics.IAlleleBeeEffect;
+import forestry.api.apiculture.genetics.IBeeEffect;
 
-import genetics.api.alleles.IAlleleRegistry;
+import forestry.api.genetics.IAlleleRegistry;
+import forestry.api.genetics.alleles.BeeChromosomes;
 
 public class AlleleEffects {
-	public static final IAlleleBeeEffect effectNone;
-	public static final IAlleleBeeEffect effectAggressive;
-	public static final IAlleleBeeEffect effectHeroic;
-	public static final IAlleleBeeEffect effectBeatific;
-	public static final IAlleleBeeEffect effectMiasmic;
-	public static final IAlleleBeeEffect effectMisanthrope;
-	public static final IAlleleBeeEffect effectGlacial;
-	public static final IAlleleBeeEffect effectRadioactive;
-	public static final IAlleleBeeEffect effectCreeper;
-	public static final IAlleleBeeEffect effectIgnition;
-	public static final IAlleleBeeEffect effectExploration;
-	public static final IAlleleBeeEffect effectFestiveEaster;
-	public static final IAlleleBeeEffect effectSnowing;
-	public static final IAlleleBeeEffect effectDrunkard;
-	public static final IAlleleBeeEffect effectReanimation;
-	public static final IAlleleBeeEffect effectResurrection;
-	public static final IAlleleBeeEffect effectRepulsion;
-	public static final IAlleleBeeEffect effectFertile;
-	public static final IAlleleBeeEffect effectMycophilic;
-	private static final List<IAlleleBeeEffect> beeEffects;
+	public static final IBeeEffect effectNone;
+	public static final IBeeEffect effectAggressive;
+	public static final IBeeEffect effectHeroic;
+	public static final IBeeEffect effectBeatific;
+	public static final IBeeEffect effectMiasmic;
+	public static final IBeeEffect effectMisanthrope;
+	public static final IBeeEffect effectGlacial;
+	public static final IBeeEffect effectRadioactive;
+	public static final IBeeEffect effectCreeper;
+	public static final IBeeEffect effectIgnition;
+	public static final IBeeEffect effectExploration;
+	public static final IBeeEffect effectFestiveEaster;
+	public static final IBeeEffect effectSnowing;
+	public static final IBeeEffect effectDrunkard;
+	public static final IBeeEffect effectReanimation;
+	public static final IBeeEffect effectResurrection;
+	public static final IBeeEffect effectRepulsion;
+	public static final IBeeEffect effectFertile;
+	public static final IBeeEffect effectMycophilic;
+	private static final List<IBeeEffect> beeEffects;
 
 	static {
 		beeEffects = Arrays.asList(
-			effectNone = new AlleleEffectNone("none", true),
-			effectAggressive = new AlleleEffectAggressive(),
-			effectHeroic = new AlleleEffectHeroic(),
-				effectBeatific = new AlleleEffectPotion("beatific", false, MobEffects.REGENERATION, 100),
-				effectMiasmic = new AlleleEffectPotion("miasmic", false, MobEffects.POISON, 600, 100, 0.1f),
-				effectMisanthrope = new AlleleEffectMisanthrope(),
-				effectGlacial = new AlleleEffectGlacial(),
-				effectRadioactive = new AlleleEffectRadioactive(),
-				effectCreeper = new AlleleEffectCreeper(),
-				effectIgnition = new AlleleEffectIgnition(),
-				effectExploration = new AlleleEffectExploration(),
-				effectFestiveEaster = new AlleleEffectNone("festive_easter", true),
-				effectSnowing = new AlleleEffectSnowing(),
-				effectDrunkard = new AlleleEffectPotion("drunkard", false, MobEffects.CONFUSION, 100),
-				effectReanimation = new AlleleEffectResurrection("reanimation", AlleleEffectResurrection.getReanimationList()),
-				effectResurrection = new AlleleEffectResurrection("resurrection", AlleleEffectResurrection.getResurrectionList()),
-				effectRepulsion = new AlleleEffectRepulsion(),
-				effectFertile = new AlleleEffectFertile(),
-				effectMycophilic = new AlleleEffectFungification()
+			effectNone = new NoneBeeEffect("none", true),
+			effectAggressive = new AggressiveBeeEffect(),
+			effectHeroic = new HeroicBeeEffect(),
+			effectBeatific = new PotionBeeEffect("beatific", false, MobEffects.REGENERATION, 100),
+			effectMiasmic = new PotionBeeEffect("miasmic", false, MobEffects.POISON, 600, 100, 0.1f),
+			effectMisanthrope = new MisanthropeBeeEffect(),
+			effectGlacial = new GlacialBeeEffect(),
+			effectRadioactive = new RadioactiveBeeEffect(),
+			effectCreeper = new Creeper(),
+			effectIgnition = new IgnitionBeeEffect(),
+			effectExploration = new ExplorationBeeEffect(),
+			effectFestiveEaster = new NoneBeeEffect("festive_easter", true),
+			effectSnowing = new SnowingBeeEffect(),
+			effectDrunkard = new PotionBeeEffect("drunkard", false, MobEffects.CONFUSION, 100),
+			effectReanimation = new ResurrectionBeeEffect("reanimation", ResurrectionBeeEffect.getReanimationList()),
+			effectResurrection = new ResurrectionBeeEffect("resurrection", ResurrectionBeeEffect.getResurrectionList()),
+			effectRepulsion = new RepulsionBeeEffect(),
+			effectFertile = new FertileBeeEffect(),
+			effectMycophilic = new FungificationBeeEffect()
 		);
 	}
 
 	public static void registerAlleles(IAlleleRegistry registry) {
-		for (IAlleleBeeEffect beeEffect : beeEffects) {
+		for (IBeeEffect beeEffect : beeEffects) {
 			registry.registerAllele(beeEffect, BeeChromosomes.EFFECT);
 		}
 	}

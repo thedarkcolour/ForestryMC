@@ -7,15 +7,14 @@ import java.util.Map;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import genetics.api.GeneticHelper;
-import genetics.api.organism.IOrganism;
+import genetics.api.organism.IIndividualCapability;
 
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.items.EnumHoneyComb;
@@ -37,12 +36,12 @@ public class BeePlugin extends DatabasePlugin<IBee> {
 		NonNullList<ItemStack> beeList = NonNullList.create();
 		ApicultureItems.BEE_DRONE.item().addCreativeItems(beeList, false);
 		for (ItemStack beeStack : beeList) {
-			IOrganism<?> organism = GeneticHelper.getOrganism(beeStack);
+			IIndividualCapability<?> organism = GeneticHelper.getOrganism(beeStack);
 			if (organism.isEmpty()) {
 				continue;
 			}
-			IAlleleBeeSpecies species = organism.getAllele(BeeChromosomes.SPECIES, true);
-			iconStacks.put(species.getRegistryName().toString(), beeStack);
+			IAlleleBeeSpecies species = organism.getAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES, true);
+			iconStacks.put(species.getId().toString(), beeStack);
 		}
 	}
 

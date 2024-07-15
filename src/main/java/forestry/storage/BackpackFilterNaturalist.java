@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import genetics.api.GeneticsAPI;
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IRootDefinition;
 
 public class BackpackFilterNaturalist implements Predicate<ItemStack> {
@@ -18,7 +18,7 @@ public class BackpackFilterNaturalist implements Predicate<ItemStack> {
 
 	@Override
 	public boolean test(ItemStack itemStack) {
-		IRootDefinition<IIndividualRoot<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(speciesRootUid);
+		IRootDefinition<ISpeciesType<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(speciesRootUid);
 		return definition.test(root -> root.isMember(itemStack));
 	}
 

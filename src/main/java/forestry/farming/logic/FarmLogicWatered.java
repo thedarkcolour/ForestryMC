@@ -13,6 +13,7 @@ package forestry.farming.logic;
 import net.minecraftforge.fluids.FluidType;
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
@@ -21,10 +22,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.Soil;
@@ -38,7 +38,7 @@ public abstract class FarmLogicWatered extends FarmLogicSoil {
 	}
 
 	@Override
-	public boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	public boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		if (maintainSoil(world, farmHousing, pos, direction, extent)) {
 			return true;
 		}
@@ -51,18 +51,18 @@ public abstract class FarmLogicWatered extends FarmLogicSoil {
 
 	}
 
-	protected boolean isValidPosition(IFarmHousing housing, FarmDirection direction, BlockPos pos, CultivationType type) {
+	protected boolean isValidPosition(IFarmHousing housing, HorizontalDirection direction, BlockPos pos, CultivationType type) {
 		return true;
 	}
 
-	private boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	private boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
 		if (!farmHousing.canPlantSoil(isManual)) {
 			return false;
 		}
 
 		for (Soil soil : getSoils()) {
 			NonNullList<ItemStack> resources = NonNullList.create();
-			resources.add(soil.getResource());
+			resources.add(soil.resource());
 
 			for (int i = 0; i < extent; i++) {
 				BlockPos position = translateWithOffset(pos, direction, i);
@@ -87,7 +87,7 @@ public abstract class FarmLogicWatered extends FarmLogicSoil {
 				if (!BlockUtil.isReplaceableBlock(state, world, position)) {
 					BlockUtil.getBlockDrops(world, position).forEach(farmHousing::addPendingProduct);
 					world.removeBlock(position, false);    //TODO
-					return trySetSoil(world, farmHousing, position, soil.getResource(), soil.getSoilState());
+					return trySetSoil(world, farmHousing, position, soil.resource(), soil.soilState());
 				}
 
 				if (!isManual) {
@@ -95,7 +95,7 @@ public abstract class FarmLogicWatered extends FarmLogicSoil {
 						return true;
 					}
 
-					return trySetSoil(world, farmHousing, position, soil.getResource(), soil.getSoilState());
+					return trySetSoil(world, farmHousing, position, soil.resource(), soil.soilState());
 				}
 			}
 		}
@@ -103,7 +103,7 @@ public abstract class FarmLogicWatered extends FarmLogicSoil {
 		return false;
 	}
 
-	private boolean maintainWater(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	private boolean maintainWater(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
 		// Still not done, check water then
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
@@ -129,7 +129,7 @@ public abstract class FarmLogicWatered extends FarmLogicSoil {
 		return false;
 	}
 
-	protected boolean maintainCrops(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	protected boolean maintainCrops(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
 		return false;
 	}
 

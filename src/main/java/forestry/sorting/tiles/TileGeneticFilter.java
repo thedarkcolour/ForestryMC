@@ -27,8 +27,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.api.genetics.GeneticCapabilities;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.ForestryCapabilities;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.core.inventory.AdjacentInventoryCache;
 import forestry.core.network.IStreamableGui;
@@ -43,8 +43,7 @@ import forestry.sorting.inventory.InventoryFilter;
 import forestry.sorting.inventory.ItemHandlerFilter;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.organism.IOrganismType;
-import genetics.api.root.IRootDefinition;
+import forestry.api.genetics.ILifeStage;
 import genetics.utils.RootUtils;
 
 public class TileGeneticFilter extends TileForestry implements IStreamableGui, IFilterContainer {
@@ -142,11 +141,11 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 	}
 
 	public Collection<Direction> getValidDirections(ItemStack itemStack, Direction from) {
-		IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = RootUtils.getRoot(itemStack);
+		IForestrySpeciesType<IIndividual> definition = RootUtils.getRoot(itemStack);
 		IIndividual individual = null;
-		IOrganismType type = null;
-		if (definition.isPresent()) {
-			IForestrySpeciesRoot<IIndividual> root = definition.get();
+		ILifeStage type = null;
+		if (definition != null) {
+			IForestrySpeciesType<IIndividual> root = definition;
 			individual = root.create(itemStack);
 			type = root.getTypes().getType(itemStack);
 		}
@@ -191,7 +190,7 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
 		if (capability == ForgeCapabilities.ITEM_HANDLER && facing != null) {
 			return LazyOptional.of(() -> new ItemHandlerFilter(this, facing)).cast();
-		} else if (capability == GeneticCapabilities.FILTER_LOGIC) {
+		} else if (capability == ForestryCapabilities.FILTER_LOGIC) {
 			return LazyOptional.of(() -> logic).cast();
 		}
 		return super.getCapability(capability, facing);

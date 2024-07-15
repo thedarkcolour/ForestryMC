@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.apiculture.items;
 
+import forestry.api.IForestryApi;
+import forestry.api.client.ISpriteRegister;
 import forestry.api.core.*;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.apiculture.gui.ContainerHabitatLocator;
@@ -20,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,6 +36,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemHabitatLocator extends ItemWithGui implements ISpriteRegister {
 	private static final String iconName = "forestry:items/biomefinder";
@@ -58,7 +62,7 @@ public class ItemHabitatLocator extends ItemWithGui implements ISpriteRegister {
 	/* SPRITES */
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void registerSprites(ISpriteRegistry registry) {
+	public void registerSprites(Consumer<ResourceLocation> registry) {
 		//TextureAtlasSprite texture = new TextureHabitatLocator(iconName);
 		//		Minecraft.getInstance().getTextureMap().setTextureEntry(texture);
 		//TODO textures
@@ -74,11 +78,10 @@ public class ItemHabitatLocator extends ItemWithGui implements ISpriteRegister {
 		if (world != null && minecraft.player != null) {
 			LocalPlayer player = minecraft.player;
 			Holder<Biome> holder = player.level.getBiome(player.blockPosition());
-			Biome currentBiome = holder.value();
 			Component biomeName = holder.unwrap().map(key -> Component.translatable(Util.makeDescriptionId("biome", key.location())), biome -> Component.literal(biome.toString()));
 
-			EnumTemperature temperature = EnumTemperature.getFromBiome(currentBiome, player.blockPosition());
-			EnumHumidity humidity = EnumHumidity.getFromValue(currentBiome.getDownfall());
+			TemperatureType temperature = IForestryApi.INSTANCE.getClimateManager().getTemperature(holder);
+			HumidityType humidity = IForestryApi.INSTANCE.getClimateManager().getHumidity(holder);
 
 			list.add(Component.translatable("for.gui.currentBiome")
 					.append(Component.literal(": "))
@@ -86,11 +89,11 @@ public class ItemHabitatLocator extends ItemWithGui implements ISpriteRegister {
 
 			list.add(Component.translatable("for.gui.temperature")
 					.append(Component.literal(": "))
-					.append(AlleleManager.climateHelper.toDisplay(temperature)));
+					.append(ClimateHelper.toDisplay(temperature)));
 
 			list.add(Component.translatable("for.gui.humidity")
 				.append(Component.literal(": "))
-				.append(AlleleManager.climateHelper.toDisplay(humidity)));
+				.append(ClimateHelper.toDisplay(humidity)));
 		}
 	}
 

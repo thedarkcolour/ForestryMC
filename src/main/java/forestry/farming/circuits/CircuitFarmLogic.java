@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.network.chat.Component;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmCircuit;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmLogic;
@@ -74,7 +74,7 @@ public class CircuitFarmLogic extends Circuit implements IFarmCircuit {
 			return;
 		}
 
-		housing.setFarmLogic(FarmDirection.values()[slot], logic);
+		housing.setFarmLogic(HorizontalDirection.values()[slot], logic);
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class CircuitFarmLogic extends Circuit implements IFarmCircuit {
 			return;
 		}
 
-		farmHousing.resetFarmLogic(FarmDirection.values()[slot]);
+		farmHousing.resetFarmLogic(HorizontalDirection.values()[slot]);
 	}
 
 	@Override

@@ -16,13 +16,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.BeeChromosomes;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.genetics.EnumTolerance;
+import forestry.api.core.ToleranceType;
+import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IAlyzerPlugin;
-import forestry.api.genetics.alleles.AlleleManager;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
@@ -31,10 +34,10 @@ import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
 
 import genetics.api.GeneticHelper;
-import genetics.api.alleles.IAlleleValue;
-import genetics.api.individual.IGenome;
-import genetics.api.organism.IOrganism;
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.IGenome;
+import genetics.api.organism.IIndividualCapability;
+import forestry.api.genetics.ILifeStage;
 
 public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
@@ -45,12 +48,12 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 		NonNullList<ItemStack> beeList = NonNullList.create();
 		ApicultureItems.BEE_DRONE.item().addCreativeItems(beeList, false);
 		for (ItemStack beeStack : beeList) {
-			IOrganism<?> organism = GeneticHelper.getOrganism(beeStack);
+			IIndividualCapability<?> organism = GeneticHelper.getOrganism(beeStack);
 			if (organism.isEmpty()) {
 				continue;
 			}
-			IAlleleBeeSpecies species = organism.getAllele(BeeChromosomes.SPECIES, true);
-			iconStacks.put(species.getRegistryName(), beeStack);
+			IAlleleBeeSpecies species = organism.getAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES, true);
+			iconStacks.put(species.getId(), beeStack);
 		}
 	}
 
@@ -63,7 +66,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 				return;
 			}
 
-			IOrganismType type = BeeManager.beeRoot.getTypes().getType(itemStack);
+			ILifeStage type = BeeManager.beeRoot.getTypes().getType(itemStack);
 			if (type == null) {
 				return;
 			}
@@ -85,16 +88,16 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 			textLayout.newLine();
 			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.speed"), bee, BeeChromosomes.SPEED);
 			textLayout.newLine();
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.pollination"), bee, BeeChromosomes.FLOWERING);
+			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.pollination"), bee, BeeChromosomes.POLLINATION);
 			textLayout.newLine();
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.flowers"), bee, BeeChromosomes.FLOWER_PROVIDER);
+			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.flowers"), bee, BeeChromosomes.FLOWER_TYPE);
 			textLayout.newLine();
 
 			textLayout.drawLine(transform, Component.translatable("for.gui.fertility"), GuiAlyzer.COLUMN_0);
-			IAlleleValue<Integer> primaryFertility = bee.getGenome().getActiveAllele(BeeChromosomes.FERTILITY);
-			IAlleleValue<Integer> secondaryFertility = bee.getGenome().getInactiveAllele(BeeChromosomes.FERTILITY);
-			guiAlyzer.drawFertilityInfo(transform, primaryFertility.getValue(), GuiAlyzer.COLUMN_1, guiAlyzer.getColorCoding(primaryFertility.isDominant()), 0);
-			guiAlyzer.drawFertilityInfo(transform, secondaryFertility.getValue(), GuiAlyzer.COLUMN_2, guiAlyzer.getColorCoding(secondaryFertility.isDominant()), 0);
+			IIntegerAllele primaryFertility = bee.getGenome().getActiveAllele(BeeChromosomes.FERTILITY);
+			IIntegerAllele secondaryFertility = bee.getGenome().getInactiveAllele(BeeChromosomes.FERTILITY);
+			guiAlyzer.drawFertilityInfo(transform, primaryFertility.value(), GuiAlyzer.COLUMN_1, guiAlyzer.getColorCoding(primaryFertility.dominant()), 0);
+			guiAlyzer.drawFertilityInfo(transform, secondaryFertility.value(), GuiAlyzer.COLUMN_2, guiAlyzer.getColorCoding(secondaryFertility.dominant()), 0);
 			textLayout.newLine();
 
 			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.area"), bee, BeeChromosomes.TERRITORY);
@@ -116,14 +119,14 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 				return;
 			}
 
-			IOrganismType type = BeeManager.beeRoot.getTypes().getType(itemStack);
+			ILifeStage type = BeeManager.beeRoot.getTypes().getType(itemStack);
 			if (type == null) {
 				return;
 			}
 
 			IGenome genome = bee.getGenome();
-			IAlleleBeeSpecies primaryAllele = genome.getActiveAllele(BeeChromosomes.SPECIES);
-			IAlleleBeeSpecies secondaryAllele = genome.getActiveAllele(BeeChromosomes.SPECIES);
+			IAlleleBeeSpecies primaryAllele = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+			IAlleleBeeSpecies secondaryAllele = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
 
 			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
@@ -134,26 +137,26 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 
 			textLayout.newLine();
 
-			guiAlyzer.drawRow(transform, Component.translatable("for.gui.climate"), AlleleManager.climateHelper.toDisplay(primaryAllele.getTemperature()),
-					AlleleManager.climateHelper.toDisplay(secondaryAllele.getTemperature()), bee, BeeChromosomes.SPECIES);
+			guiAlyzer.drawRow(transform, Component.translatable("for.gui.climate"), ClimateHelper.toDisplay(primaryAllele.getTemperature()),
+					ClimateHelper.toDisplay(secondaryAllele.getTemperature()), bee, BeeChromosomes.SPECIES);
 
 			textLayout.newLine();
 
-			IAlleleValue<EnumTolerance> tempToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
-			IAlleleValue<EnumTolerance> tempToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
+			IValueAllele<ToleranceType> tempToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
+			IValueAllele<ToleranceType> tempToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
 			textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
 			guiAlyzer.drawToleranceInfo(transform, tempToleranceActive, GuiAlyzer.COLUMN_1);
 			guiAlyzer.drawToleranceInfo(transform, tempToleranceInactive, GuiAlyzer.COLUMN_2);
 
 			textLayout.newLine(16);
 
-			guiAlyzer.drawRow(transform, Component.translatable("for.gui.humidity"), AlleleManager.climateHelper.toDisplay(primaryAllele.getHumidity()),
-					AlleleManager.climateHelper.toDisplay(secondaryAllele.getHumidity()), bee, BeeChromosomes.SPECIES);
+			guiAlyzer.drawRow(transform, Component.translatable("for.gui.humidity"), ClimateHelper.toDisplay(primaryAllele.getHumidity()),
+					ClimateHelper.toDisplay(secondaryAllele.getHumidity()), bee, BeeChromosomes.SPECIES);
 
 			textLayout.newLine();
 
-			IAlleleValue<EnumTolerance> humidToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
-			IAlleleValue<EnumTolerance> humidToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
+			IValueAllele<ToleranceType> humidToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
+			IValueAllele<ToleranceType> humidToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
 			textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
 			guiAlyzer.drawToleranceInfo(transform, humidToleranceActive, GuiAlyzer.COLUMN_1);
 			guiAlyzer.drawToleranceInfo(transform, humidToleranceInactive, GuiAlyzer.COLUMN_2);
@@ -201,7 +204,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 
 			textLayout.newLine();
 
-			if (type == EnumBeeType.PRINCESS || type == EnumBeeType.QUEEN) {
+			if (type == BeeLifeStage.PRINCESS || type == BeeLifeStage.QUEEN) {
 				String displayTextKey = "for.bees.stock.pristine";
 				if (!bee.isNatural()) {
 					displayTextKey = "for.bees.stock.ignoble";

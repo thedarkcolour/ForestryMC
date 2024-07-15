@@ -32,7 +32,7 @@ public class WidgetSlider extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		texture.draw(transform, startY + yPos + yOffset, startX + xPos + xOffset);
 	}

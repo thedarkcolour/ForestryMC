@@ -33,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import net.minecraftforge.network.NetworkHooks;
 
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.core.gui.ContainerNaturalistInventory;
 import forestry.core.gui.IPagedInventory;
 import forestry.core.inventory.InventoryNaturalistChest;
@@ -42,12 +42,12 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 	private static final float lidAngleVariationPerTick = 0.1F;
 	public static final VoxelShape CHEST_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
-	private final IForestrySpeciesRoot speciesRoot;
+	private final IForestrySpeciesType speciesRoot;
 	public float lidAngle;
 	public float prevLidAngle;
 	private int numPlayersUsing;
 
-	public TileNaturalistChest(BlockEntityType type, BlockPos pos, BlockState state, IForestrySpeciesRoot speciesRoot) {
+	public TileNaturalistChest(BlockEntityType type, BlockPos pos, BlockState state, IForestrySpeciesType speciesRoot) {
 		super(type, pos, state);
 		this.speciesRoot = speciesRoot;
 		setInternalInventory(new InventoryNaturalistChest(this, speciesRoot));
@@ -125,7 +125,7 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 		return new ContainerNaturalistInventory(windowId, inv, this, 5);
 	}
 
-	public IForestrySpeciesRoot getSpeciesRoot() {
+	public IForestrySpeciesType getSpeciesRoot() {
 		return speciesRoot;
 	}
 

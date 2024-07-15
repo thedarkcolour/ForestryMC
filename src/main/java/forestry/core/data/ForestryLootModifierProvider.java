@@ -13,9 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.common.data.GlobalLootModifierProvider;
 
+import forestry.api.ForestryConstants;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.arboriculture.loot.GrafterLootModifier;
-import forestry.core.config.Constants;
 import forestry.core.loot.ConditionLootModifier;
 
 /**
@@ -25,7 +25,7 @@ import forestry.core.loot.ConditionLootModifier;
  */
 public class ForestryLootModifierProvider extends GlobalLootModifierProvider {
 	public ForestryLootModifierProvider(DataGenerator gen) {
-		super(gen, Constants.MOD_ID);
+		super(gen, ForestryConstants.MOD_ID);
 	}
 
 	@Override

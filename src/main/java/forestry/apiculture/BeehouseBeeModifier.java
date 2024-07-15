@@ -12,7 +12,7 @@ package forestry.apiculture;
 
 import javax.annotation.Nullable;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 import forestry.api.apiculture.DefaultBeeModifier;
 

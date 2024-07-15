@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
  * Note that all doors are fireproof (even vanilla).
  *
  * @see WoodBlockKind
- * @see EnumForestryWoodType
+ * @see ForestryWoodType
  * @see EnumVanillaWoodType
  */
 public interface IWoodAccess {

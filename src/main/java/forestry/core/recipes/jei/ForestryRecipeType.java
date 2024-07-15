@@ -1,5 +1,6 @@
 package forestry.core.recipes.jei;
 
+import forestry.api.ForestryConstants;
 import forestry.api.fuels.RainSubstrate;
 import forestry.api.recipes.ICarpenterRecipe;
 import forestry.api.recipes.ICentrifugeRecipe;
@@ -8,7 +9,6 @@ import forestry.api.recipes.IFermenterRecipe;
 import forestry.api.recipes.IMoistenerRecipe;
 import forestry.api.recipes.ISqueezerRecipe;
 import forestry.api.recipes.IStillRecipe;
-import forestry.core.config.Constants;
 import forestry.factory.MachineUIDs;
 import forestry.factory.recipes.jei.bottler.BottlerRecipe;
 import mezz.jei.api.recipe.RecipeType;
@@ -25,6 +25,6 @@ public class ForestryRecipeType {
 	public static final RecipeType<IStillRecipe> STILL = create(MachineUIDs.STILL, IStillRecipe.class);
 
 	private static <T> RecipeType<T> create(String uid, Class<? extends T> recipeClass) {
-		return RecipeType.create(Constants.MOD_ID, uid, recipeClass);
+		return RecipeType.create(ForestryConstants.MOD_ID, uid, recipeClass);
 	}
 }

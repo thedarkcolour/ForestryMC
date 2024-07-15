@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 
 /**
  * Provides icons for saplings, pollen, etc.
@@ -31,5 +31,5 @@ public interface IGermlingModelProvider {
 	 * @param renderPass renderPass of rendering
 	 * @return sapling color for renderPass
 	 */
-	int getSpriteColor(EnumGermlingType type, int renderPass);
+	int getSpriteColor(TreeLifeStage type, int renderPass);
 }

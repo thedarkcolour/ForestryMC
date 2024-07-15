@@ -24,7 +24,7 @@ import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.CircuitSocketType;
 import forestry.api.circuits.ICircuitLayout;
 import forestry.api.circuits.ICircuitSocketType;
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.recipes.ISolderRecipe;
 import forestry.core.ClientsideCode;
 import forestry.core.config.Constants;
@@ -68,7 +68,7 @@ public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
 			if (tube.isEmpty()) {
 				ICircuitSocketType socketType = layout.getSocketType();
 				if (CircuitSocketType.FARM.equals(socketType)) {
-					FarmDirection farmDirection = FarmDirection.values()[i];
+					HorizontalDirection farmDirection = HorizontalDirection.values()[i];
 					String farmDirectionString = farmDirection.toString().toLowerCase(Locale.ENGLISH);
 					Component localizedDirection = Component.translatable("for.gui.solder." + farmDirectionString);
 					getFontRenderer().draw(transform, localizedDirection, leftPos + 17, topPos + 36 + row, ColourProperties.INSTANCE.get("gui.screen"));

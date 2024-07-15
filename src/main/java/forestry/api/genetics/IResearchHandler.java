@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
-import genetics.api.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IAlleleSpecies;
 import genetics.api.individual.IIndividual;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.IRootComponent;

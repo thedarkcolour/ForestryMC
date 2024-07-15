@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
+import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.genetics.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -15,8 +16,10 @@ import net.minecraft.world.item.Items;
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.genetics.ForestryComponentKeys;
+import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.IResearchHandler;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.products.IProductList;
 import forestry.apiculture.DisplayHelper;
 import forestry.arboriculture.blocks.BlockDefaultLeaves;
@@ -27,33 +30,35 @@ import forestry.arboriculture.genetics.TreeBranchDefinition;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.arboriculture.genetics.TreeDisplayHandler;
 import forestry.arboriculture.genetics.TreeHelper;
-import forestry.arboriculture.genetics.TreeRoot;
+import forestry.arboriculture.genetics.TreeSpeciesType;
 import forestry.arboriculture.genetics.TreekeepingMode;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
-import forestry.arboriculture.genetics.alleles.AlleleLeafEffects;
-import forestry.core.config.Constants;
-import forestry.core.genetics.alleles.EnumAllele;
+import forestry.arboriculture.genetics.alleles.LeafEffectAllele;
+import forestry.core.genetics.alleles.FireproofAllele;
+import forestry.core.genetics.alleles.HeightAllele;
+import forestry.core.genetics.alleles.MaturationAllele;
+import forestry.core.genetics.alleles.SaplingsAllele;
+import forestry.core.genetics.alleles.SappinessAllele;
+import forestry.core.genetics.alleles.YieldAllele;
 import forestry.core.genetics.root.ResearchHandler;
 import forestry.modules.features.FeatureBlock;
 
 import genetics.api.GeneticPlugin;
-import genetics.api.GeneticsAPI;
 import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticFactory;
 import genetics.api.IGeneticPlugin;
-import genetics.api.alleles.IAlleleRegistry;
-import genetics.api.classification.IClassificationRegistry;
+import forestry.api.genetics.IAlleleRegistry;
+import forestry.api.genetics.IClassificationRegistry;
 import genetics.api.organism.IOrganismTypes;
 import genetics.api.root.IGeneticListenerRegistry;
 import genetics.api.root.IIndividualRootBuilder;
-import genetics.api.root.IRootDefinition;
 import genetics.api.root.IRootManager;
 import genetics.api.root.components.ComponentKeys;
 import genetics.api.root.translator.IBlockTranslator;
 import genetics.api.root.translator.IIndividualTranslator;
 import genetics.api.root.translator.IItemTranslator;
 
-@GeneticPlugin(modId = Constants.MOD_ID)
+@GeneticPlugin(modId = ForestryConstants.MOD_ID)
 public class TreePlugin implements IGeneticPlugin {
 	@Override
 	public void registerClassifications(IClassificationRegistry registry) {
@@ -62,31 +67,31 @@ public class TreePlugin implements IGeneticPlugin {
 
 	@Override
 	public void registerListeners(IGeneticListenerRegistry registry) {
-		registry.add(TreeRoot.UID, TreeDefinition.VALUES);
+		registry.add(ForestrySpeciesType.TREE, TreeDefinition.VALUES);
 	}
 
 	@Override
 	public void registerAlleles(IAlleleRegistry registry) {
-		registry.registerAlleles(EnumAllele.Height.values(), TreeChromosomes.HEIGHT);
-		registry.registerAlleles(EnumAllele.Saplings.values(), TreeChromosomes.FERTILITY);
-		registry.registerAlleles(EnumAllele.Yield.values(), TreeChromosomes.YIELD);
-		registry.registerAlleles(EnumAllele.Fireproof.values(), TreeChromosomes.FIREPROOF);
-		registry.registerAlleles(EnumAllele.Maturation.values(), TreeChromosomes.MATURATION);
-		registry.registerAlleles(EnumAllele.Sappiness.values(), TreeChromosomes.SAPPINESS);
+		registry.registerAlleles(HeightAllele.values(), TreeChromosomes.HEIGHT);
+		registry.registerAlleles(SaplingsAllele.values(), TreeChromosomes.FERTILITY);
+		registry.registerAlleles(YieldAllele.values(), TreeChromosomes.YIELD);
+		registry.registerAlleles(FireproofAllele.values(), TreeChromosomes.FIREPROOF);
+		registry.registerAlleles(MaturationAllele.values(), TreeChromosomes.MATURATION);
+		registry.registerAlleles(SappinessAllele.values(), TreeChromosomes.SAPPINESS);
 		AlleleFruits.registerAlleles(registry);
-		AlleleLeafEffects.registerAlleles(registry);
+		LeafEffectAllele.registerAlleles(registry);
 	}
 
 	@Override
 	public void createRoot(IRootManager rootManager, IGeneticFactory geneticFactory) {
 		//TODO tags?
-		IIndividualRootBuilder<ITree> rootBuilder = rootManager.createRoot(TreeRoot.UID);
+		IIndividualRootBuilder<ITree> rootBuilder = rootManager.createRoot(ForestrySpeciesType.TREE);
 		rootBuilder
-			.setRootFactory(TreeRoot::new)
+			.setRootFactory(TreeSpeciesType::new)
 			.setSpeciesType(TreeChromosomes.SPECIES)
 			.addListener(ComponentKeys.TYPES, (IOrganismTypes<ITree> builder) -> {
-				builder.registerType(EnumGermlingType.SAPLING, ArboricultureItems.SAPLING::stack);
-				builder.registerType(EnumGermlingType.POLLEN, ArboricultureItems.POLLEN_FERTILE::stack);
+				builder.registerType(TreeLifeStage.SAPLING, ArboricultureItems.SAPLING::stack);
+				builder.registerType(TreeLifeStage.POLLEN, ArboricultureItems.POLLEN_FERTILE::stack);
 			})
 			.addComponent(ComponentKeys.TRANSLATORS)
 			.addComponent(ComponentKeys.MUTATIONS)
@@ -135,7 +140,7 @@ public class TreePlugin implements IGeneticPlugin {
 
 						@Override
 						public ItemStack getGeneticEquivalent(ItemStack itemStack) {
-							return definition.getMemberStack(EnumGermlingType.SAPLING);
+							return definition.getMemberStack(TreeLifeStage.SAPLING);
 						}
 					};
 					builder.registerTranslator(leavesFactory.apply(TreeDefinition.Oak), Blocks.OAK_LEAVES);
@@ -165,7 +170,7 @@ public class TreePlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		TreeManager.treeRoot = instance.<ITreeRoot>getRoot(TreeRoot.UID).get();
+		TreeManager.treeRoot = instance.<ITreeSpeciesType>getRoot(ForestrySpeciesType.TREE).get();
 
 		// Modes
 		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.easy);

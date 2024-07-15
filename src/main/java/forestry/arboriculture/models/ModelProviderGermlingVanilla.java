@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.arboriculture.EnumVanillaWoodType;
 import forestry.api.arboriculture.IGermlingModelProvider;
 import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 
 public class ModelProviderGermlingVanilla implements IGermlingModelProvider {
 
@@ -28,8 +28,8 @@ public class ModelProviderGermlingVanilla implements IGermlingModelProvider {
 	}
 
 	@Override
-	public int getSpriteColor(EnumGermlingType type, int renderPass) {
-		if (type == EnumGermlingType.POLLEN) {
+	public int getSpriteColor(TreeLifeStage type, int renderPass) {
+		if (type == TreeLifeStage.POLLEN) {
 			return leafSpriteProvider.getColor(false);
 		} else {
 			return 0xFFFFFF;

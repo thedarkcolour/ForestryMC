@@ -13,11 +13,11 @@ package forestry.apiculture.blocks;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -35,15 +35,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.hives.IHiveDrop;
-import forestry.api.apiculture.hives.IHiveRegistry;
-import forestry.api.apiculture.hives.IHiveRegistry.HiveType;
+import forestry.api.apiculture.hives.HiveType;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.apiculture.MaterialBeehive;
-import forestry.apiculture.ModuleApiculture;
 import forestry.apiculture.features.ApicultureTiles;
 import forestry.apiculture.tiles.TileHive;
 import forestry.core.tiles.TileUtil;
@@ -87,11 +86,11 @@ public class BlockBeeHive extends BaseEntityBlock {
 	}
 
 	private List<IHiveDrop> getDropsForHive() {
-		String hiveName = type.getHiveUid();
-		if (hiveName.equals(IHiveRegistry.HiveType.SWARM.getHiveUid())) {
+		ResourceLocation hiveName = type.getId();
+		if (hiveName.equals(HiveType.SWARM.getId())) {
 			return Collections.emptyList();
 		}
-		return ModuleApiculture.getHiveRegistry().getDrops(hiveName);
+		return IForestryApi.INSTANCE.getHiveManager().getRegistry().getDrops(hiveName);
 	}
 
 	@Override
@@ -122,7 +121,7 @@ public class BlockBeeHive extends BaseEntityBlock {
 						bee.setIsNatural(false);
 					}
 
-					ItemStack princess = BeeManager.beeRoot.getTypes().createStack(bee, EnumBeeType.PRINCESS);
+					ItemStack princess = BeeManager.beeRoot.getTypes().createStack(bee, BeeLifeStage.PRINCESS);
 					drops.add(princess);
 					hasPrincess = true;
 					break;
@@ -134,7 +133,7 @@ public class BlockBeeHive extends BaseEntityBlock {
 		for (IHiveDrop drop : hiveDrops) {
 			if (random.nextDouble() < drop.getChance(world, pos, fortune)) {
 				IBee bee = drop.getBeeType(world, pos);
-				ItemStack drone = BeeManager.beeRoot.getTypes().createStack(bee, EnumBeeType.DRONE);
+				ItemStack drone = BeeManager.beeRoot.getTypes().createStack(bee, BeeLifeStage.DRONE);
 				drops.add(drone);
 				break;
 			}

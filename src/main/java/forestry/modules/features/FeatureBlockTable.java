@@ -12,14 +12,14 @@ import net.minecraft.world.item.BlockItem;
 import forestry.api.core.IBlockSubtype;
 import forestry.core.utils.datastructures.TriFunction;
 
-public class FeatureBlockTable<B extends Block, R extends IBlockSubtype, C extends IBlockSubtype> extends FeatureTable<FeatureBlockTable.Builder<B, R, C>, FeatureBlock<B, BlockItem>, R, C> {
+public class FeatureBlockTable<B extends Block, R extends IBlockSubtype, C extends IBlockSubtype> extends FeatureTable<FeatureBlockTable.Builder<B, R, C>, IBlockFeature<B, BlockItem>, R, C> {
 
 	public FeatureBlockTable(Builder<B, R, C> builder) {
 		super(builder);
 	}
 
 	@Override
-	protected FeatureBlock<B, BlockItem> createFeature(Builder<B, R, C> builder, R rowType, C columnType) {
+	protected IBlockFeature<B, BlockItem> createFeature(Builder<B, R, C> builder, R rowType, C columnType) {
 		return builder.registry.block(() -> builder.constructor.apply(rowType, columnType), (block) -> builder.itemConstructor != null ? builder.itemConstructor.apply(block, rowType, columnType) : null, builder.getIdentifier(rowType, columnType));
 	}
 

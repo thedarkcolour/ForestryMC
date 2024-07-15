@@ -28,7 +28,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,13 +36,12 @@ import net.minecraftforge.registries.RegisterEvent;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import forestry.api.climate.ClimateManager;
-import forestry.api.core.ForestryAPI;
+import forestry.api.ForestryConstants;
+import forestry.api.IForestryApi;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.core.ISetupListener;
-import forestry.api.core.ISpriteRegistry;
 import forestry.api.recipes.ICarpenterRecipe;
 import forestry.api.recipes.ICentrifugeRecipe;
 import forestry.api.recipes.IFabricatorRecipe;
@@ -60,10 +58,6 @@ import forestry.arboriculture.loot.GrafterLootModifier;
 import forestry.core.ClientsideCode;
 import forestry.core.EventHandlerCore;
 import forestry.core.circuits.CircuitRecipe;
-import forestry.core.climate.ClimateFactory;
-import forestry.core.climate.ClimateRoot;
-import forestry.core.climate.ClimateStateHelper;
-import forestry.core.config.Constants;
 import forestry.core.data.ForestryAdvancementProvider;
 import forestry.core.data.ForestryBackpackTagProvider;
 import forestry.core.data.ForestryBlockTagsProvider;
@@ -76,19 +70,16 @@ import forestry.core.data.ForestryRecipeProvider;
 import forestry.core.data.models.ForestryBlockStateProvider;
 import forestry.core.data.models.ForestryItemModelProvider;
 import forestry.core.data.models.ForestryWoodModelProvider;
-import forestry.core.errors.EnumErrorCode;
-import forestry.core.errors.ErrorStateRegistry;
 import forestry.core.loot.ConditionLootModifier;
 import forestry.core.loot.OrganismFunction;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.network.NetworkHandler;
 import forestry.core.proxy.Proxies;
 import forestry.core.proxy.ProxyCommon;
-import forestry.core.proxy.ProxyRender;
 import forestry.core.recipes.HygroregulatorRecipe;
-import forestry.core.render.TextureManagerForestry;
+import forestry.core.render.ForestryTextureManager;
 import forestry.core.utils.ForgeUtils;
-import forestry.core.worldgen.VillagerJigsaw;
+import forestry.apiculture.villagers.VillagerJigsaw;
 import forestry.factory.recipes.CarpenterRecipe;
 import forestry.factory.recipes.CentrifugeRecipe;
 import forestry.factory.recipes.FabricatorRecipe;
@@ -98,12 +89,11 @@ import forestry.factory.recipes.MoistenerRecipe;
 import forestry.factory.recipes.SqueezerContainerRecipe;
 import forestry.factory.recipes.SqueezerRecipe;
 import forestry.factory.recipes.StillRecipe;
-import forestry.modules.ForestryModules;
-import forestry.modules.ModuleManager;
+import forestry.modules.ForestryModuleManager;
 import forestry.modules.features.ModFeatureRegistry;
 
 import genetics.Genetics;
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.utils.AlleleUtils;
 
 /**
@@ -111,44 +101,27 @@ import genetics.utils.AlleleUtils;
  *
  * @author SirSengir
  */
-@Mod(Constants.MOD_ID)
+@Mod(ForestryConstants.MOD_ID)
 public class Forestry {
-	public static final Logger LOGGER = LogManager.getLogger(Constants.MOD_ID);
+	public static final Logger LOGGER = LogManager.getLogger(ForestryConstants.MOD_ID);
 
 	public Forestry() {
-		ForestryAPI.errorStateRegistry = new ErrorStateRegistry();
-		ClimateManager.climateRoot = ClimateRoot.getInstance();
-		ClimateManager.climateFactory = ClimateFactory.INSTANCE;
-		ClimateManager.stateHelper = ClimateStateHelper.INSTANCE;
-		EnumErrorCode.init();
-
-		ModuleManager moduleManager = ModuleManager.INSTANCE;
-		ForestryAPI.moduleManager = moduleManager;
-		moduleManager.registerContainers(new ForestryModules());
-		ModuleManager.runSetup();
+		ForestryModuleManager moduleManager = (ForestryModuleManager) IForestryApi.INSTANCE.getModuleManager();
+		moduleManager.init();
 		NetworkHandler.register();
 		IEventBus modEventBus = ForgeUtils.modBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::registerCapabilities);
-		//		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-		modEventBus.addListener(this::processIMCMessages);
 		modEventBus.addListener(this::clientSetupRenderers);
 		modEventBus.addListener(this::gatherData);
 		MinecraftForge.EVENT_BUS.register(EventHandlerCore.class);
 		MinecraftForge.EVENT_BUS.register(this);
-		Proxies.render = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyRender() : new ProxyRender();
 		Proxies.common = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyCommon() : new ProxyCommon();
 		// Modules must be set up before Genetics API
-		ModuleManager.getModuleHandler().runSetup();
 		Genetics.initGenetics(modEventBus);
-
-		// Features must be created before registry events fire
-		ModuleManager.getModuleHandler().createFeatures();
 	}
 
 	public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		ModuleManager.getModuleHandler().registerGuiFactories();
-
 		for (ModFeatureRegistry value : ModFeatureRegistry.getRegistries().values()) {
 			value.clientSetupRenderers(event);
 		}
@@ -160,14 +133,14 @@ public class Forestry {
 
 		// Register event handler
 		callSetupListeners(true);
-		ModuleManager.getModuleHandler().runPreInit();
-		ModuleManager.getModuleHandler().runInit();
+		ForestryModuleManager.getModuleHandler().runPreInit();
+		ForestryModuleManager.getModuleHandler().runInit();
 		callSetupListeners(false);
-		ModuleManager.getModuleHandler().runPostInit();
+		ForestryModuleManager.getModuleHandler().runPostInit();
 	}
 
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {
-		ModuleManager.getModuleHandler().registerCapabilities(event::register);
+		ForestryModuleManager.getModuleHandler().registerCapabilities(event::register);
 	}
 
 	private void callSetupListeners(boolean start) {
@@ -202,16 +175,12 @@ public class Forestry {
 		generator.addProvider(event.includeClient(), new ForestryItemModelProvider(generator, existingFileHelper));
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = Constants.MOD_ID)
+	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = ForestryConstants.MOD_ID)
 	public static class RegistryEvents {
-
-		private RegistryEvents() {
-		}
-
 		// should honestly go in Common
 		@SubscribeEvent(priority = EventPriority.LOW)
 		public static void createObjects(RegisterEvent event) {
-			ModuleManager.getModuleHandler().registerObjects(event);
+			ForestryModuleManager.getModuleHandler().postRegistry(event);
 		}
 
 		@SubscribeEvent
@@ -231,11 +200,11 @@ public class Forestry {
 			});
 
 			event.register(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, helper -> {
-				helper.register(new ResourceLocation(Constants.MOD_ID, "condition_modifier"), ConditionLootModifier.CODEC);
-				helper.register(new ResourceLocation(Constants.MOD_ID, "grafter_modifier"), GrafterLootModifier.CODEC);
+				helper.register(new ResourceLocation(ForestryConstants.MOD_ID, "condition_modifier"), ConditionLootModifier.CODEC);
+				helper.register(new ResourceLocation(ForestryConstants.MOD_ID, "grafter_modifier"), GrafterLootModifier.CODEC);
 
-				OrganismFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(Constants.MOD_ID, "set_species_nbt"), new LootItemFunctionType(new OrganismFunction.Serializer()));
-				CountBlockFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(Constants.MOD_ID, "count_from_block"), new LootItemFunctionType(new CountBlockFunction.Serializer()));
+				OrganismFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(ForestryConstants.MOD_ID, "set_species_nbt"), new LootItemFunctionType(new OrganismFunction.Serializer()));
+				CountBlockFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(ForestryConstants.MOD_ID, "count_from_block"), new LootItemFunctionType(new CountBlockFunction.Serializer()));
 			});
 		}
 
@@ -243,18 +212,9 @@ public class Forestry {
 		@OnlyIn(Dist.CLIENT)
 		public void handleTextureRemap(TextureStitchEvent.Pre event) {
 			if (event.getAtlas().location() == InventoryMenu.BLOCK_ATLAS) {
-				TextureManagerForestry.INSTANCE.registerSprites(ISpriteRegistry.fromEvent(event));
+				((ForestryTextureManager) IForestryClientApi.INSTANCE.getTextureManager()).registerSprites(event::addSprite);
 				ModelBlockCached.clear();
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public void registerCommands(RegisterCommandsEvent event) {
-		ModuleManager.registerCommands(event.getDispatcher());
-	}
-
-	public void processIMCMessages(InterModProcessEvent event) {
-		ModuleManager.getModuleHandler().processIMCMessages(event.getIMCStream());
 	}
 }

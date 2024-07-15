@@ -11,10 +11,12 @@
 package forestry.arboriculture.genetics;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import forestry.api.arboriculture.IArboristTracker;
 import forestry.api.arboriculture.TreeManager;
+import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.arboriculture.ModuleArboriculture;
 import forestry.core.genetics.BreedingTracker;
@@ -40,8 +42,8 @@ public class ArboristTracker extends BreedingTracker implements IArboristTracker
 	}
 
 	@Override
-	protected String speciesRootUID() {
-		return TreeRoot.UID;
+	protected ResourceLocation getSpeciesId() {
+		return ForestrySpeciesType.TREE;
 	}
 
 	@Override

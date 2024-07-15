@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
@@ -25,29 +26,29 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.apiculture.FlowerManager;
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.BeeChromosomes;
+import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.core.IBlockPosPredicate;
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.flowers.IFlowerProvider;
 import forestry.core.utils.TickHelper;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class HasFlowersCache implements INbtWritable, INbtReadable {
 	private static final String NBT_KEY = "hasFlowerCache";
 	private static final String NBT_KEY_FLOWERS = "flowers";
-	private int flowerCheckInterval;
+	private final int flowerCheckInterval;
 
-	private final TickHelper tickHelper = new TickHelper();
+	private final TickHelper tickHelper = new TickHelper(0);
 
 	public HasFlowersCache() {
 		this.flowerCheckInterval = 200;
 	}
 
 	public HasFlowersCache(int checkInterval) {
-		flowerCheckInterval = checkInterval;
+		this.flowerCheckInterval = checkInterval;
 	}
 
 	@Nullable
@@ -58,14 +59,13 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 	private boolean needsSync = false;
 
 	private static class FlowerData {
-		public final String flowerType;
+		public final IFlowerType flowerType;
 		public final Vec3i territory;
-		public final IBlockPosPredicate flowerPredicate;
+		public final BiPredicate<Level, BlockPos> flowerPredicate;
 		public Iterator<BlockPos.MutableBlockPos> areaIterator;
 
 		public FlowerData(IBee queen, IBeeHousing beeHousing) {
-			IFlowerProvider flowerProvider = queen.getGenome().getActiveAllele(BeeChromosomes.FLOWER_PROVIDER).getProvider();
-			this.flowerType = flowerProvider.getFlowerType();
+			this.flowerType = queen.getGenome().getActiveValue(BeeChromosomes.FLOWER_TYPE);
 			this.territory = queen.getGenome().getActiveValue(BeeChromosomes.TERRITORY);
 			this.flowerPredicate = FlowerManager.flowerRegistry.createAcceptedFlowerPredicate(flowerType);
 			this.areaIterator = FlowerManager.flowerRegistry.getAreaIterator(beeHousing, queen);
@@ -125,7 +125,7 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 	public void onNewQueen(IBee queen, IBeeHousing housing) {
 		if (this.flowerData != null) {
 			IGenome genome = queen.getGenome();
-			String flowerType = genome.getActiveAllele(BeeChromosomes.FLOWER_PROVIDER).getProvider().getFlowerType();
+			String flowerType = genome.getActiveAllele(BeeChromosomes.FLOWER_TYPE).getProvider().getFlowerType();
 			if (!this.flowerData.flowerType.equals(flowerType)
 				|| !this.flowerData.territory.equals(genome.getActiveValue(BeeChromosomes.TERRITORY))) {
 				flowerData = new FlowerData(queen, housing);

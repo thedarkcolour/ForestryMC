@@ -38,7 +38,7 @@ import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.IStillRecipe;
 import forestry.api.recipes.RecipeManagers;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.TankManager;
@@ -177,9 +177,9 @@ public class TileStill extends TilePowered implements WorldlyContainer, ILiquidT
 		}
 
 		IErrorLogic errorLogic = getErrorLogic();
-		errorLogic.setCondition(!hasRecipe, EnumErrorCode.NO_RECIPE);
-		errorLogic.setCondition(!hasTankSpace, EnumErrorCode.NO_SPACE_TANK);
-		errorLogic.setCondition(!hasLiquidResource, EnumErrorCode.NO_RESOURCE_LIQUID);
+		errorLogic.setCondition(!hasRecipe, ForestryError.NO_RECIPE);
+		errorLogic.setCondition(!hasTankSpace, ForestryError.NO_SPACE_TANK);
+		errorLogic.setCondition(!hasLiquidResource, ForestryError.NO_RESOURCE_LIQUID);
 
 		return hasRecipe && hasLiquidResource && hasTankSpace;
 	}

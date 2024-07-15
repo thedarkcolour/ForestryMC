@@ -7,9 +7,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.gatgets.IDatabaseTab;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
@@ -50,6 +53,6 @@ public class ButterflyProductsTab implements IDatabaseTab<IButterfly> {
 
 	@Override
 	public ItemStack getIconStack() {
-		return ButterflyDefinition.Aurora.getMemberStack(EnumFlutterType.SERUM);
+		return ButterflyDefinition.Aurora.getMemberStack(ButterflyLifeStage.SERUM);
 	}
 }

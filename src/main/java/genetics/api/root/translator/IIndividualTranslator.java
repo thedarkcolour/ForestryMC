@@ -8,7 +8,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.organism.IOrganism;
 import genetics.api.root.IIndividualRootBuilder;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.IRootComponent;
@@ -21,7 +20,7 @@ import genetics.api.root.components.IRootComponent;
 public interface IIndividualTranslator<I extends IIndividual> extends IRootComponent<I> {
 	/**
 	 * Registers a translator that translates a {@link BlockState} into a  {@link IIndividual} or an {@link ItemStack}
-	 * that contains an {@link IOrganism}.
+	 * that contains an {@link IIndividualCapability}.
 	 *
 	 * @param translatorKeys The key of the translator the block of {@link BlockState} that you want to translate
 	 *                       with the translator.
@@ -30,8 +29,8 @@ public interface IIndividualTranslator<I extends IIndividual> extends IRootCompo
 	IIndividualTranslator<I> registerTranslator(IBlockTranslator<I> translator, Block... translatorKeys);
 
 	/**
-	 * Registers a translator that translates an {@link ItemStack} that does not contain an {@link IOrganism} into a
-	 * {@link IIndividual} or another {@link ItemStack} that contains an {@link IOrganism}.
+	 * Registers a translator that translates an {@link ItemStack} that does not contain an {@link IIndividualCapability} into a
+	 * {@link IIndividual} or another {@link ItemStack} that contains an {@link IIndividualCapability}.
 	 *
 	 * @param translatorKeys The key of the translator it is the item of the {@link ItemStack} that you want to translate
 	 *                       with the translator.

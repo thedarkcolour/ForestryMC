@@ -13,16 +13,16 @@ package forestry.apiculture.genetics;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.IJubilanceFactory;
-import forestry.api.apiculture.IJubilanceProvider;
+import forestry.api.apiculture.IBeeJubilance;
 
 public class JubilanceFactory implements IJubilanceFactory {
 	@Override
-	public IJubilanceProvider getDefault() {
-		return JubilanceDefault.INSTANCE;
+	public IBeeJubilance getDefault() {
+		return DefaultBeeJubilance.INSTANCE;
 	}
 
 	@Override
-	public IJubilanceProvider getRequiresResource(BlockState... acceptedBlockStates) {
-		return new JubilanceRequiresResource(acceptedBlockStates);
+	public IBeeJubilance getRequiresResource(BlockState... acceptedBlockStates) {
+		return new RequiresResourceBeeJubilance(acceptedBlockStates);
 	}
 }

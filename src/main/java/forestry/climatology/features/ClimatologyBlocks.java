@@ -1,3 +1,4 @@
+/*
 package forestry.climatology.features;
 
 import forestry.climatology.ModuleClimatology;
@@ -18,3 +19,4 @@ public class ClimatologyBlocks {
 
 	}
 }
+*/

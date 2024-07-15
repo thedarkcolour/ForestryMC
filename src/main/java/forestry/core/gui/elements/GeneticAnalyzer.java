@@ -15,7 +15,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.lwjgl.glfw.GLFW;
 
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.ForestryConstants;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.api.genetics.gatgets.IGeneticAnalyzer;
@@ -29,13 +30,12 @@ import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.utils.NetworkUtil;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IRootDefinition;
 import genetics.utils.RootUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyzer, IScrollable {
 	/* Textures */
-	public static final ResourceLocation TEXTURE = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/analyzer_screen.png");
+	public static final ResourceLocation TEXTURE = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/analyzer_screen.png");
 
 	/* Drawables */
 	public static final Drawable SCROLLBAR_BACKGROUND = new Drawable(TEXTURE, 202, 0, 3, 142);
@@ -143,24 +143,27 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 			return;
 		}
 		ItemStack stack = provider.getSpecimen(selectedSlot);
-		IRootDefinition<IForestrySpeciesRoot> definition = RootUtils.getRoot(stack);
-		if (definition.isPresent()) {
-			IForestrySpeciesRoot root = definition.get();
+		IForestrySpeciesType<?> root = RootUtils.getRoot(stack);
+
+		if (root != null) {
 			IDatabasePlugin<?> databasePlugin = root.getSpeciesPlugin();
+
 			if (databasePlugin != null) {
 				IIndividual individual = root.create(stack);
+
 				if (individual != null) {
 					if (individual.isAnalyzed()) {
 						tabs.setPlugin(databasePlugin);
 						IDatabaseTab tab = tabs.getSelected();
-						//Clean the element area
+						// Clean the element area
 						scrollableContent.clear();
-						//Create the new elements
+						// Create the new elements
 						scrollableContent.init(tab.getMode(), individual, scrollableContent.getWidth() / 2, 0);
 						tab.createElements(scrollableContent, individual, stack);
 						scrollableContent.forceLayout();
-						//Update the scrollbar
+						// Update the scrollbar
 						int invisibleArea = scrollable.getInvisibleArea();
+
 						if (invisibleArea > 0) {
 							scrollBar.setParameters(this, 0, invisibleArea, 1);
 							scrollBar.show();
@@ -174,7 +177,7 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 				}
 			}
 		}
-		//Clean the element area
+		// Clean the element area
 		scrollableContent.clear();
 		Font fontRenderer = Minecraft.getInstance().font;
 		String key = "for.gui.portablealyzer.help";
@@ -182,7 +185,7 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 		for (FormattedCharSequence text : lines) {
 			scrollableContent.label(text);
 		}
-		//Disable the scrollbar
+		// Disable the scrollbar
 		scrollBar.hide();
 	}
 

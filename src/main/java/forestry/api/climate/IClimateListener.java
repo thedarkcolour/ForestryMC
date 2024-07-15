@@ -24,17 +24,7 @@ public interface IClimateListener extends ILocatable, IClimateProvider {
 	/**
 	 * @return Returns the climate state of this listener.
 	 */
-	IClimateState getClimateState();
-
-	/**
-	 * @return Returns the temperature value of this listener.
-	 */
-	float getExactTemperature();
-
-	/**
-	 * @return Returns the temperature value of this listener.
-	 */
-	float getExactHumidity();
+	ClimateState getClimateState();
 
 	/* CLIENT */
 
@@ -50,7 +40,7 @@ public interface IClimateListener extends ILocatable, IClimateProvider {
 	 * Sets the cached state to the given state.
 	 */
 	@OnlyIn(Dist.CLIENT)
-	void setClimateState(IClimateState climateState);
+	void setClimateState(IClimatised climateState);
 
 	/**
 	 * Sends a packet if needed to all players that are currently "watching" the chunk that the listener is located in.

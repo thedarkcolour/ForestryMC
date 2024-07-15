@@ -7,7 +7,8 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.gui;
 
 import net.minecraft.world.entity.player.Inventory;
@@ -22,8 +23,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
 import forestry.api.climate.ClimateType;
-import forestry.api.climate.IClimateState;
+import forestry.api.climate.IClimatised;
 import forestry.api.climate.IClimateTransformer;
 import forestry.climatology.gui.elements.ClimateBarElement;
 import forestry.climatology.gui.elements.HabitatSelectionElement;
@@ -42,11 +44,10 @@ import forestry.core.gui.widgets.IScrollable;
 import forestry.core.gui.widgets.TankWidget;
 import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.Translator;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiHabitatFormer extends GuiForestryTitled<ContainerHabitatFormer> implements IScrollable {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(Constants.MOD_ID, "textures/gui/habitat_former.png");
+	public static final ResourceLocation TEXTURE = new ResourceLocation(ForestryConstants.MOD_ID, "textures/gui/habitat_former.png");
 	//Drawables
 	private static final Drawable TEMPERATURE_FIELD = new Drawable(TEXTURE, 204, 22, 52, 12);
 	private static final Drawable HUMIDITY_FIELD = new Drawable(TEXTURE, 204, 34, 52, 12);
@@ -103,7 +104,7 @@ public class GuiHabitatFormer extends GuiForestryTitled<ContainerHabitatFormer> 
 	@Override
 	public void containerTick() {
 		super.containerTick();
-		IClimateState target = transformer.getTarget();
+		IClimatised target = transformer.getTarget();
 		if (!window.isFocused(humidityEdit)) {
 			humidityEdit.setValue(Integer.toString((int) (Mth.clamp(target.getHumidity(), 0.0F, 2.0F) * 100)));
 		}
@@ -138,24 +139,24 @@ public class GuiHabitatFormer extends GuiForestryTitled<ContainerHabitatFormer> 
 			value = 0;
 		}
 		float climateValue = Mth.clamp(((float) value / 100.0F), 0.0F, 2.0F);
-		IClimateState target = transformer.getTarget();
+		IClimatised target = transformer.getTarget();
 		setClimate(target.setClimate(type, climateValue));
 		sendClimateUpdate();
 	}
 
-	public void setClimate(IClimateState state) {
+	public void setClimate(IClimatised state) {
 		transformer.setTarget(state.copy());
 	}
 
 	public void sendClimateUpdate() {
-		IClimateState targetedState = transformer.getTarget();
+		IClimatised targetedState = transformer.getTarget();
 		if (targetedState.isPresent()) {
 			BlockPos pos = tile.getBlockPos();
 			NetworkUtil.sendToServer(new PacketSelectClimateTargeted(pos, targetedState));
 		}
 	}
 
-	public IClimateState getClimate() {
+	public IClimatised getClimate() {
 		return transformer.getTarget();
 	}
 
@@ -201,3 +202,4 @@ public class GuiHabitatFormer extends GuiForestryTitled<ContainerHabitatFormer> 
 		}
 	}
 }
+*/

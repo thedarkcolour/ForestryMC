@@ -12,7 +12,7 @@ package forestry.arboriculture.genetics;
 
 import java.awt.Color;
 
-import forestry.api.arboriculture.EnumLeafType;
+import forestry.api.arboriculture.LeafType;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpeciesBuilder;
 import forestry.api.arboriculture.genetics.ITreeFactory;
@@ -28,7 +28,7 @@ public class TreeFactory implements ITreeFactory {
 	}
 
 	@Override
-	public ILeafSpriteProvider getLeafIconProvider(EnumLeafType enumLeafType, Color color, Color colorPollinated) {
-		return new SpriteProviderLeaves(enumLeafType, color, colorPollinated);
+	public ILeafSpriteProvider getLeafIconProvider(LeafType leafType, Color color, Color colorPollinated) {
+		return new SpriteProviderLeaves(leafType, color, colorPollinated);
 	}
 }

@@ -5,49 +5,53 @@
  ******************************************************************************/
 package forestry.api.genetics;
 
-import deleteme.BiomeCategory;
+import java.time.Month;
+
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-
-import genetics.api.mutation.IMutation;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 
 /**
  * Set custom mutation requirements
  */
 public interface IMutationBuilder {
-
-	IMutation build();
-
-	/**
-	 * Prevent this mutation from being shown in the analyzers
-	 */
-	IMutationBuilder setIsSecret();
-
 	/**
 	 * Require a specific temperature for this mutation to occur
 	 */
-	IMutationBuilder restrictTemperature(EnumTemperature temperature);
-
-	IMutationBuilder restrictTemperature(EnumTemperature minTemperature, EnumTemperature maxTemperature);
+	IMutationBuilder restrictTemperature(TemperatureType temperature);
 
 	/**
-	 * Require a specific humidity for this mutation to occur
+	 * Require a range of temperatures for this mutation to occur.
 	 */
-	IMutationBuilder restrictHumidity(EnumHumidity humidity);
+	IMutationBuilder restrictTemperature(TemperatureType minTemperature, TemperatureType maxTemperature);
 
-	IMutationBuilder restrictHumidity(EnumHumidity minHumidity, EnumHumidity maxHumidity);
+	/**
+	 * Require a specific humidity for this mutation to occur.
+	 */
+	IMutationBuilder restrictHumidity(HumidityType humidity);
+
+	/**
+	 * Require a range of humidities for this mutation to occur.
+	 */
+	IMutationBuilder restrictHumidity(HumidityType minHumidity, HumidityType maxHumidity);
 
 	/**
 	 * Restrict this mutation to certain types of biomes.
-	 *
-	 * @param types The types of biomes this mutation can occur.
 	 */
-	IMutationBuilder restrictBiomeType(BiomeCategory... types);
+	IMutationBuilder restrictBiomeType(TagKey<Biome> types);
 
 	/**
-	 * Restrict the days of the year that this mutation can occur
+	 * Restrict the days of the year that this mutation can occur.
+	 */
+	default IMutationBuilder restrictDateRange(Month startMonth, int startDay, Month endMonth, int endDay) {
+		return restrictDateRange(startMonth.getValue(), startDay, endMonth.getValue(), endDay);
+	}
+
+	/**
+	 * Restrict the days of the year that this mutation can occur.
 	 */
 	IMutationBuilder restrictDateRange(int startMonth, int startDay, int endMonth, int endDay);
 

@@ -19,17 +19,19 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
+import forestry.api.IForestryApi;
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.IForestryModule;
-import forestry.modules.ModuleManager;
+
 import genetics.commands.CommandHelpers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -44,31 +46,15 @@ public class CommandModules {
 
 	private static int listModulesForSender(CommandContext<CommandSourceStack> context) {
 		StringBuilder pluginList = new StringBuilder();
-		for (IForestryModule module : ModuleManager.getLoadedModules()) {
-			if (pluginList.length() > 0) {
+		for (IForestryModule module : IForestryApi.INSTANCE.getModuleManager().getLoadedModules()) {
+			if (!pluginList.isEmpty()) {
 				pluginList.append(", ");
 			}
-			pluginList.append(makeListEntry(module));
+			pluginList.append(module.getId());
 		}
 		CommandHelpers.sendChatMessage(context.getSource(), Component.literal(pluginList.toString()));
 
 		return 1;
-	}
-
-	private static String makeListEntry(IForestryModule module) {
-		String entry = module.isAvailable() ? ChatFormatting.GREEN.toString() : ChatFormatting.RED.toString();
-
-		ForestryModule info = module.getClass().getAnnotation(ForestryModule.class);
-		if (info != null) {
-			entry += info.moduleID();
-			if (!info.version().isEmpty()) {
-				entry += " (" + info.version() + ")";
-			}
-		} else {
-			entry += "???";
-		}
-
-		return entry;
 	}
 
 	public static class CommandPluginsInfo {
@@ -84,18 +70,12 @@ public class CommandModules {
 				String pluginUid = reader.readUnquotedString();
 
 				IForestryModule found = null;
-				for (IForestryModule module : ModuleManager.getLoadedModules()) {
-					ForestryModule info = module.getClass().getAnnotation(ForestryModule.class);
-					if (info == null) {
-						continue;
-					}
-					String id = info.moduleID();
-					String name = info.name();
-					if (id.equalsIgnoreCase(pluginUid) || name.equalsIgnoreCase(pluginUid)) {
+				for (IForestryModule module : IForestryApi.INSTANCE.getModuleManager().getLoadedModules()) {
+					ResourceLocation id = module.getId();
+					if (id.toString().equalsIgnoreCase(pluginUid)) {
 						found = module;
 						break;
 					}
-
 				}
 
 				if (found != null) {
@@ -112,10 +92,9 @@ public class CommandModules {
 
 			@Override
 			public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-				ModuleManager.getLoadedModules().stream()
-						.map(module -> module.getClass().getAnnotation(ForestryModule.class))
-						.filter(Objects::nonNull)
-						.forEach(info -> builder.suggest(info.moduleID()));
+				for (IForestryModule module : IForestryApi.INSTANCE.getModuleManager().getLoadedModules()) {
+					builder.suggest(module.getId().toString());
+				}
 
 				return builder.buildFuture();
 			}
@@ -124,11 +103,14 @@ public class CommandModules {
 		private static int listModuleInfoForSender(CommandContext<CommandSourceStack> context) throws CommandRuntimeException {
 			IForestryModule found = context.getArgument("module", IForestryModule.class);
 
-			ChatFormatting formatting = found.isAvailable() ? ChatFormatting.GREEN : ChatFormatting.RED;
+			ChatFormatting formatting = ChatFormatting.GREEN;
 
 			ForestryModule info = found.getClass().getAnnotation(ForestryModule.class);
 			if (info != null) {
 				CommandSourceStack sender = context.getSource();
+
+				// todo replacement
+/*
 
 				CommandHelpers.sendChatMessage(sender, Component.literal("Module: " + info.name()).withStyle(formatting));
 				if (!info.version().isEmpty()) {
@@ -137,12 +119,10 @@ public class CommandModules {
 				if (!info.author().isEmpty()) {
 					CommandHelpers.sendChatMessage(sender, Component.literal("Author(s): " + info.author()).withStyle(ChatFormatting.BLUE));
 				}
-				if (!info.url().isEmpty()) {
-					CommandHelpers.sendChatMessage(sender, Component.literal("URL: " + info.url()).withStyle(ChatFormatting.BLUE));
-				}
 				if (!info.unlocalizedDescription().isEmpty()) {
 					CommandHelpers.sendChatMessage(sender, Component.translatable(info.unlocalizedDescription()));
 				}
+*/
 
 				return 1;
 			}

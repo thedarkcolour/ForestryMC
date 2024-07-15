@@ -53,7 +53,7 @@ public abstract class Widget implements IToolTipProvider {
 		return yPos;
 	}
 
-	public abstract void draw(PoseStack transform, int startY, int startX);
+	public abstract void draw(PoseStack transform, int startX, int startY);
 
 	public void update(int mouseX, int mouseY) {
 

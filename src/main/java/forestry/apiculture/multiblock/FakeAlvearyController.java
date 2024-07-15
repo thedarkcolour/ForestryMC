@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -88,7 +89,7 @@ public enum FakeAlvearyController implements FakeMultiblockController, IAlvearyC
 	}
 
 	@Override
-	public Biome getBiome() {
+	public Holder<Biome> getBiome() {
 		return BuiltinRegistries.BIOME.getOrThrow(Biomes.PLAINS);
 	}
 

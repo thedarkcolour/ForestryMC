@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 
 import forestry.api.genetics.alleles.IAlleleProperty;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.utils.AlleleUtils;
 
 public abstract class PropertyAllele<A extends IAlleleProperty<A>> extends Property<A> {

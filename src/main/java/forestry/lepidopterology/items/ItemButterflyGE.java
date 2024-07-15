@@ -12,9 +12,12 @@ package forestry.lepidopterology.items;
 
 import javax.annotation.Nullable;
 
+import java.util.function.Consumer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -30,14 +33,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import forestry.api.core.ISpriteRegister;
-import forestry.api.core.ISpriteRegistry;
+import forestry.api.client.ISpriteRegister;
 import forestry.api.core.ItemGroups;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.IButterflyNursery;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
@@ -50,18 +53,18 @@ import forestry.lepidopterology.features.LepidopterologyEntities;
 import forestry.lepidopterology.genetics.ButterflyHelper;
 
 import genetics.api.GeneticHelper;
-import genetics.api.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IAlleleSpecies;
 import genetics.api.individual.IIndividual;
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.ILifeStage;
 import genetics.utils.AlleleUtils;
 
 public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColoredItem {
 	public static final String NBT_AGE = "Age";
 	public static final int MAX_AGE = 3;
 
-	private final EnumFlutterType type;
+	private final ButterflyLifeStage type;
 
-	public ItemButterflyGE(EnumFlutterType type) {
+	public ItemButterflyGE(ButterflyLifeStage type) {
 		super(new Properties().tab(ItemGroups.tabLepidopterology));
 		this.type = type;
 	}
@@ -72,7 +75,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 	}
 
 	@Override
-	protected IOrganismType getType() {
+	protected ILifeStage getType() {
 		return type;
 	}
 
@@ -90,7 +93,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 	}
 
 	public void addCreativeItems(NonNullList<ItemStack> subItems, boolean hideSecrets) {
-		if (type == EnumFlutterType.COCOON) {
+		if (type == ButterflyLifeStage.COCOON) {
 			for (int age = 0; age < MAX_AGE; age++) {
 				for (IButterfly individual : ButterflyManager.butterflyRoot.getIndividualTemplates()) {
 					// Don't show secret butterflies unless ordered to.
@@ -119,7 +122,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 
 	@Override
 	public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entityItem) {
-		if (type != EnumFlutterType.BUTTERFLY) {
+		if (type != ButterflyLifeStage.BUTTERFLY) {
 			return false;
 		}
 		Level level = entityItem.level;
@@ -162,7 +165,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		IButterfly flutter = ButterflyManager.butterflyRoot.getTypes().createIndividual(stack);
 
 		BlockState blockState = level.getBlockState(pos);
-		if (type == EnumFlutterType.COCOON) {
+		if (type == ButterflyLifeStage.COCOON) {
 			pos = ButterflyManager.butterflyRoot.plantCocoon(level, pos, flutter, player.getGameProfile(), getAge(stack), true);
 			if (pos != BlockPos.ZERO) {
 				BlockUtil.sendPlaceSound(level, pos, blockState);
@@ -174,7 +177,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 			} else {
 				return InteractionResult.PASS;
 			}
-		} else if (type == EnumFlutterType.CATERPILLAR) {
+		} else if (type == ButterflyLifeStage.CATERPILLAR) {
 			IButterflyNursery nursery = GeneticsUtil.getOrCreateNursery(player.getGameProfile(), level, pos, true);
 			if (nursery != null) {
 				if (!nursery.canNurse(flutter)) {
@@ -200,7 +203,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		if (cocoon.isEmpty()) {
 			return;
 		}
-		if (ButterflyManager.butterflyRoot.getTypes().getType(cocoon) != EnumFlutterType.COCOON) {
+		if (ButterflyManager.butterflyRoot.getTypes().getType(cocoon) != ButterflyLifeStage.COCOON) {
 			return;
 		}
 		CompoundTag tagCompound = cocoon.getTag();
@@ -214,7 +217,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		if (cocoon.isEmpty()) {
 			return 0;
 		}
-		if (ButterflyManager.butterflyRoot.getTypes().getType(cocoon) != EnumFlutterType.COCOON) {
+		if (ButterflyManager.butterflyRoot.getTypes().getType(cocoon) != ButterflyLifeStage.COCOON) {
 			return 0;
 		}
 		CompoundTag tagCompound = cocoon.getTag();
@@ -226,7 +229,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void registerSprites(ISpriteRegistry registry) {
+	public void registerSprites(Consumer<ResourceLocation> registry) {
 		AlleleUtils.forEach(ButterflyChromosomes.SPECIES, (allele) -> allele.registerSprites(registry));
 	}
 
@@ -235,7 +238,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		if (stack.hasTag()) {
 			IIndividual individual = GeneticHelper.getIndividual(stack);
 			if (individual != null) {
-				IAlleleSpecies species = individual.getGenome().getPrimary();
+				IAlleleSpecies species = individual.getGenome().getPrimarySpecies();
 				return ((IAlleleForestrySpecies) species).getSpriteColour(tintIndex);
 			}
 		}

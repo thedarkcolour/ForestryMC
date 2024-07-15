@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.core.fluids.ITankManager;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TileUtil;

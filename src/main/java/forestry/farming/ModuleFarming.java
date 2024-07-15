@@ -10,7 +10,9 @@
  ******************************************************************************/
 package forestry.farming;
 
-import net.minecraft.client.gui.screens.MenuScreens;
+import java.util.function.Consumer;
+
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,22 +21,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-
+import forestry.api.IForestryApi;
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.CircuitSocketType;
 import forestry.api.circuits.ICircuitLayout;
-import forestry.api.core.ForestryAPI;
 import forestry.api.farming.IFarmRegistry;
-import forestry.api.modules.ForestryModule;
-import forestry.core.ClientsideCode;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.circuits.CircuitLayout;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
-import forestry.farming.features.FarmingMenuTypes;
-import forestry.farming.gui.GuiFarm;
+import forestry.farming.client.FarmingClientHandler;
 import forestry.farming.logic.ForestryFarmIdentifier;
 import forestry.farming.logic.farmables.FarmableAgingCrop;
 import forestry.farming.logic.farmables.FarmableChorus;
@@ -42,34 +37,18 @@ import forestry.farming.logic.farmables.FarmableGE;
 import forestry.farming.logic.farmables.FarmableGourd;
 import forestry.farming.logic.farmables.FarmableSapling;
 import forestry.farming.logic.farmables.FarmableStacked;
-import forestry.farming.proxy.ProxyFarming;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
-import forestry.modules.ISidedModuleHandler;
+import forestry.api.client.IClientModuleHandler;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.FARMING, name = "Farming", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.farming.description")
 public class ModuleFarming extends BlankForestryModule {
-	private static final ProxyFarming PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyProxyFarming() : new ProxyFarming();
-
 	@Override
-	public void setupAPI() {
-		ForestryAPI.farmRegistry = FarmRegistry.INSTANCE;
-	}
-
-	@Override
-	public void disabledSetupAPI() {
-		ForestryAPI.farmRegistry = new DummyFarmRegistry();
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerGuiFactories() {
-		MenuScreens.register(FarmingMenuTypes.FARM.menuType(), GuiFarm::new);
+	public ResourceLocation getId() {
+		return ForestryModuleIds.FARMING;
 	}
 
 	@Override
 	public void preInit() {
-		IFarmRegistry registry = ForestryAPI.farmRegistry;
+		IFarmRegistry registry = IForestryApi.INSTANCE.getFarmRegistry();
 		registry.registerFarmables(ForestryFarmIdentifier.ARBOREAL, new FarmableSapling(
 				new ItemStack(Blocks.OAK_SAPLING),
 				new ItemStack[]{new ItemStack(Items.APPLE), new ItemStack(Items.STICK)}
@@ -92,6 +71,10 @@ public class ModuleFarming extends BlankForestryModule {
 		));
 		registry.registerFarmables(ForestryFarmIdentifier.ARBOREAL, new FarmableSapling(
 				new ItemStack(Blocks.ACACIA_SAPLING),
+				new ItemStack[]{new ItemStack(Items.STICK)}
+		));
+		registry.registerFarmables(ForestryFarmIdentifier.ARBOREAL, new FarmableSapling(
+				new ItemStack(Blocks.MANGROVE_PROPAGULE),
 				new ItemStack[]{new ItemStack(Items.STICK)}
 		));
 		// todo 1.20.1
@@ -145,7 +128,7 @@ public class ModuleFarming extends BlankForestryModule {
 	}
 
 	@Override
-	public ISidedModuleHandler getModuleHandler() {
-		return PROXY;
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new FarmingClientHandler());
 	}
 }

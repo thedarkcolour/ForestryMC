@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -28,7 +27,7 @@ import net.minecraftforge.fluids.FluidStack;
 import forestry.api.recipes.IFermenterManager;
 import forestry.api.recipes.IFermenterRecipe;
 import forestry.api.recipes.IForestryRecipe;
-import net.minecraftforge.fluids.FluidType;
+import forestry.core.utils.ModUtil;
 
 public class FermenterRecipeManager extends AbstractCraftingProvider<IFermenterRecipe> implements IFermenterManager {
 
@@ -89,14 +88,14 @@ public class FermenterRecipeManager extends AbstractCraftingProvider<IFermenterR
 	@Override
 	public Set<ResourceLocation> getRecipeFluidInputs(@Nullable RecipeManager recipeManager) {
 		return getRecipes(recipeManager)
-				.map(recipe -> RegistryNameFinder.getRegistryName(recipe.getFluidResource().getFluid()))
+				.map(recipe -> ModUtil.getRegistryName(recipe.getFluidResource().getFluid()))
 				.collect(Collectors.toSet());
 	}
 
 	@Override
 	public Set<ResourceLocation> getRecipeFluidOutputs(@Nullable RecipeManager recipeManager) {
 		return getRecipes(recipeManager)
-				.map(recipe -> RegistryNameFinder.getRegistryName(recipe.getOutput()))
+				.map(recipe -> ModUtil.getRegistryName(recipe.getOutput()))
 				.collect(Collectors.toSet());
 	}
 }

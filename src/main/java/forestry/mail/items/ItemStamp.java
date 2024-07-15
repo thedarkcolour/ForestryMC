@@ -12,9 +12,9 @@ package forestry.mail.items;
 
 import net.minecraft.world.item.ItemStack;
 
+import forestry.api.core.ItemGroups;
 import forestry.api.mail.EnumPostage;
 import forestry.api.mail.IStamps;
-import forestry.core.ItemGroupForestry;
 import forestry.core.items.ItemOverlay;
 
 public class ItemStamp extends ItemOverlay implements IStamps {
@@ -22,7 +22,7 @@ public class ItemStamp extends ItemOverlay implements IStamps {
 	private EnumStampDefinition def;
 
 	public ItemStamp(EnumStampDefinition def) {
-		super(ItemGroupForestry.tabForestry, def);
+		super(ItemGroups.tabForestry, def);
 		this.def = def;
 	}
 

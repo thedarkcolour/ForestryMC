@@ -6,17 +6,18 @@ import net.minecraft.world.item.ItemStack;
 
 import genetics.api.GeneticsAPI;
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IRootDefinition;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.IRootComponent;
 
 public class RootUtils {
 	public static boolean hasRoot(ItemStack stack) {
-		return GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(stack).isPresent();
+		return getRoot(stack) != null;
 	}
 
-	public static <R extends IIndividualRoot> IRootDefinition<R> getRoot(ItemStack stack) {
+	@Nullable
+	public static <R extends ISpeciesType<?>> R getRoot(ItemStack stack) {
 		return GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(stack);
 	}
 
@@ -27,12 +28,6 @@ public class RootUtils {
 	@Nullable
 	public static IIndividual getIndividual(ItemStack stack) {
 		return GeneticsAPI.apiInstance.getRootHelper().getIndividual(stack);
-	}
-
-	@Nullable
-	public static IIndividual getIndividualOr(ItemStack stack, IIndividual fallback) {
-		IIndividual individual = getIndividual(stack);
-		return individual != null ? individual : fallback;
 	}
 
 	@SuppressWarnings("unchecked")

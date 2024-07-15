@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 import forestry.core.utils.JeiUtil;
 import forestry.mail.blocks.BlockTypeMail;
 import forestry.mail.features.MailBlocks;
@@ -19,7 +19,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 public class MailJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(Constants.MOD_ID);
+		return new ResourceLocation(ForestryConstants.MOD_ID);
 	}
 
 	@Override

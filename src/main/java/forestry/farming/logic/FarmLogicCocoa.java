@@ -27,7 +27,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
@@ -46,7 +46,7 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 	}
 
 	@Override
-	public boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	public boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		if (maintainSoil(world, farmHousing, pos, direction, extent)) {
 			return true;
 		}
@@ -58,7 +58,7 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 		return result;
 	}
 
-	protected boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	protected boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
 		if (!farmHousing.canPlantSoil(isManual)) {
 			return false;
 		}
@@ -67,7 +67,7 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 		int layoutExtent = LAYOUT_POSITIONS[distance % LAYOUT_POSITIONS.length];
 		for (Soil soil : getSoils()) {
 			NonNullList<ItemStack> resources = NonNullList.create();
-			resources.add(soil.getResource());
+			resources.add(soil.resource());
 
 			for (int i = 0; i < extent; i++) {
 				BlockPos position = translateWithOffset(pos, direction, i);
@@ -98,11 +98,11 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 					if (!BlockUtil.isReplaceableBlock(state, world, location)) {
 						BlockUtil.getBlockDrops(world, location).forEach(farmHousing::addPendingProduct);
 						world.setBlockAndUpdate(location, Blocks.AIR.defaultBlockState());
-						return trySetSoil(world, farmHousing, location, soil.getResource(), soil.getSoilState());
+						return trySetSoil(world, farmHousing, location, soil.resource(), soil.soilState());
 					}
 
 					if (!isManual) {
-						return trySetSoil(world, farmHousing, location, soil.getResource(), soil.getSoilState());
+						return trySetSoil(world, farmHousing, location, soil.resource(), soil.soilState());
 					}
 				}
 			}
@@ -123,7 +123,7 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 	}
 
 	//4, 1, 3, 0, 2
-	protected boolean isValidPosition(FarmDirection direction, BlockPos pos, BlockPos logicPos, int layoutExtent) {
+	protected boolean isValidPosition(HorizontalDirection direction, BlockPos pos, BlockPos logicPos, int layoutExtent) {
 		int distance = getDistanceValue(direction.getFacing(), pos, logicPos);
 		return (distance % LAYOUT_POSITIONS.length) == (layoutExtent);
 	}
@@ -142,7 +142,7 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing housing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level world, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = housing.getValidPosition(direction, pos, extent, pos.above());
 		Collection<ICrop> crops = getHarvestBlocks(world, position);
 		housing.increaseExtent(direction, pos, extent);
@@ -150,7 +150,7 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 		return crops;
 	}
 
-	private boolean tryPlantingCocoa(Level world, IFarmHousing farmHousing, BlockPos position, FarmDirection farmDirection) {
+	private boolean tryPlantingCocoa(Level world, IFarmHousing farmHousing, BlockPos position, HorizontalDirection farmDirection) {
 		BlockPos.MutableBlockPos current = new BlockPos.MutableBlockPos();
 		BlockState blockState = world.getBlockState(current.set(position));
 		while (isJungleTreeTrunk(blockState)) {

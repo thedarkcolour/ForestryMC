@@ -11,8 +11,6 @@
 
 package forestry.storage;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
@@ -28,7 +26,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 public class BackpackInterface implements IBackpackInterface {
-
 	@Override
 	public Item createBackpack(IBackpackDefinition definition, EnumBackpackType type) {
 		Preconditions.checkNotNull(definition, "definition must not be null");

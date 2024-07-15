@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 
 import forestry.api.core.IItemSubtype;
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 import forestry.core.config.Config;
 import forestry.core.items.definitions.IColoredItem;
 
@@ -43,7 +43,7 @@ public class ItemOverlay extends ItemForestry implements IColoredItem {
 	public ItemOverlay(CreativeModeTab tab, IOverlayInfo overlay) {
 		super((new Item.Properties())
 				.tab(tab)
-				.tab(ItemGroupForestry.tabForestry));
+				.tab(ItemGroups.tabForestry));
 
 		this.overlay = overlay;
 	}

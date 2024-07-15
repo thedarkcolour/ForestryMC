@@ -15,7 +15,6 @@ import com.google.common.collect.AbstractIterator;
 import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Random;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
@@ -27,16 +26,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 public final class VectUtil {
 	public static final Comparator<BlockPos> TOP_DOWN_COMPARATOR = (BlockPos a, BlockPos b) -> Integer.compare(b.getY(), a.getY());
 
-	private VectUtil() {
-	}
-
-	public static BlockPos getRandomPositionInArea(Random random, Vec3i area) {
-		int x = random.nextInt(area.getX());
-		int y = random.nextInt(area.getY());
-		int z = random.nextInt(area.getZ());
-		return new BlockPos(x, y, z);
-	}
-
 	public static BlockPos getRandomPositionInArea(RandomSource random, Vec3i area) {
 		int x = random.nextInt(area.getX());
 		int y = random.nextInt(area.getY());
@@ -44,11 +33,11 @@ public final class VectUtil {
 		return new BlockPos(x, y, z);
 	}
 
-	public static BlockPos add(Vec3i... vects) {
+	public static BlockPos sum(Vec3i... vectors) {
 		int x = 0;
 		int y = 0;
 		int z = 0;
-		for (Vec3i vect : vects) {
+		for (Vec3i vect : vectors) {
 			x += vect.getX();
 			y += vect.getY();
 			z += vect.getZ();

@@ -46,7 +46,7 @@ public class InventoryEscritoire extends InventoryAdapterTile<TileEscritoire> {
 			IIndividual individual = RootUtils.getIndividual(specimen);
 			if (individual != null) {
 				IResearchHandler handler = ((IResearchHandler) individual.getRoot().getComponent(ForestryComponentKeys.RESEARCH));
-				return handler.getResearchSuitability(individual.getGenome().getPrimary(IAlleleForestrySpecies.class), itemStack) > 0;
+				return handler.getResearchSuitability(individual.getGenome().getPrimarySpecies(IAlleleForestrySpecies.class), itemStack) > 0;
 			}
 			return false;
 		}

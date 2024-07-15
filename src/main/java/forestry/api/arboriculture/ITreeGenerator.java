@@ -16,7 +16,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 import com.mojang.authlib.GameProfile;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 /**
  * Implements the tree generation for a tree species.

@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.genetics.IIndividualLiving;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.Individual;
 
 public abstract class IndividualLiving extends Individual implements IIndividualLiving {

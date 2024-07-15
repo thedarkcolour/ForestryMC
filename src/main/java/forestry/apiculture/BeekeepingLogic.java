@@ -39,22 +39,23 @@ import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.genetics.IBeeRoot;
+import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.core.IErrorLogic;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.utils.NetworkUtil;
 
+import forestry.api.genetics.IGenome;
+
 import genetics.api.GeneticHelper;
-import genetics.api.individual.IGenome;
 import genetics.api.individual.IIndividual;
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.ILifeStage;
 import genetics.organism.OrganismHandler;
 
 public class BeekeepingLogic implements IBeekeepingLogic {
@@ -178,19 +179,19 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		IBeeHousingInventory beeInventory = housing.getBeeInventory();
 
 		boolean hasSpace = addPendingProducts(beeInventory, spawn);
-		errorLogic.setCondition(!hasSpace, EnumErrorCode.NO_SPACE_INVENTORY);
+		errorLogic.setCondition(!hasSpace, ForestryError.NO_SPACE_INVENTORY);
 
 		ItemStack queenStack = beeInventory.getQueen();
-		IOrganismType beeType = BeeManager.beeRoot.getTypes().getType(queenStack);
+		ILifeStage beeType = BeeManager.beeRoot.getTypes().getType(queenStack);
 		// check if we're breeding
-		if (beeType == EnumBeeType.PRINCESS) {
+		if (beeType == BeeLifeStage.PRINCESS) {
 			boolean hasDrone = BeeManager.beeRoot.isDrone(beeInventory.getDrone());
-			errorLogic.setCondition(!hasDrone, EnumErrorCode.NO_DRONE);
+			errorLogic.setCondition(!hasDrone, ForestryError.NO_DRONE);
 
 			setActive(false); // not active (no bee FX) when we are breeding
 			return !errorLogic.hasErrors();
 		}
-		if (beeType == EnumBeeType.QUEEN) {
+		if (beeType == BeeLifeStage.QUEEN) {
 			if (!isQueenAlive(queenStack)) {
 				IBee dyingQueen = BeeManager.beeRoot.create(queenStack);
 				if (dyingQueen != null) {
@@ -216,14 +217,14 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 			queenCanWorkCache.clear();
 		}
 
-		if (errorLogic.setCondition(queen == null, EnumErrorCode.NO_QUEEN)) {
+		if (errorLogic.setCondition(queen == null, ForestryError.NO_QUEEN)) {
 			setActive(false);
 			beeProgress = 0;
 			return false;
 		}
 
-		Set<IErrorState> queenErrors = queenCanWorkCache.queenCanWork(queen, housing);
-		for (IErrorState errorState : queenErrors) {
+		Set<IError> queenErrors = queenCanWorkCache.queenCanWork(queen, housing);
+		for (IError errorState : queenErrors) {
 			errorLogic.setCondition(true, errorState);
 		}
 
@@ -231,7 +232,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 		boolean hasFlowers = hasFlowersCache.hasFlowers();
 		boolean flowerCacheNeedsSync = hasFlowersCache.needsSync();
-		errorLogic.setCondition(!hasFlowers, EnumErrorCode.NO_FLOWER);
+		errorLogic.setCondition(!hasFlowers, ForestryError.NO_FLOWER);
 
 		boolean canWork = !errorLogic.hasErrors();
 		if (active != canWork) {
@@ -246,11 +247,11 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	public void doWork() {
 		IBeeHousingInventory beeInventory = housing.getBeeInventory();
 		ItemStack queenStack = beeInventory.getQueen();
-		IOrganismType beeType = BeeManager.beeRoot.getTypes().getType(queenStack);
+		ILifeStage beeType = BeeManager.beeRoot.getTypes().getType(queenStack);
 		if (beeType != null) {
-			if (beeType == EnumBeeType.PRINCESS) {
+			if (beeType == BeeLifeStage.PRINCESS) {
 				tickBreed();
-			} else if (beeType == EnumBeeType.QUEEN) {
+			} else if (beeType == BeeLifeStage.QUEEN) {
 				queenWorkTick(queen, queenStack);
 			}
 		}
@@ -363,10 +364,10 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		ItemStack droneStack = beeInventory.getDrone();
 		ItemStack princessStack = beeInventory.getQueen();
 
-		IBeeRoot root = BeeManager.beeRoot;
-		IOrganismType droneType = root.getTypes().getType(droneStack);
-		IOrganismType princessType = root.getTypes().getType(princessStack);
-		if (droneType != EnumBeeType.DRONE || princessType != EnumBeeType.PRINCESS) {
+		IBeeSpeciesType root = BeeManager.beeRoot;
+		ILifeStage droneType = root.getTypes().getType(droneStack);
+		ILifeStage princessType = root.getTypes().getType(princessStack);
+		if (droneType != BeeLifeStage.DRONE || princessType != BeeLifeStage.PRINCESS) {
 			beeProgress = 0;
 			return;
 		}
@@ -384,7 +385,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		princess.mate(drone.getGenome());
 
 		queenStack = ApicultureItems.BEE_QUEEN.stack();
-		GeneticHelper.setIndividual(queenStack, princess);
+		princess.copyTo(queenStack);
 
 		beeInventory.setQueen(queenStack);
 
@@ -442,7 +443,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 			count--;
 			IBee heiress = queen.spawnPrincess(beeHousing);
 			if (heiress != null) {
-				ItemStack princess = BeeManager.beeRoot.getTypes().createStack(heiress, EnumBeeType.PRINCESS);
+				ItemStack princess = BeeManager.beeRoot.getTypes().createStack(heiress, BeeLifeStage.PRINCESS);
 				breedingTracker.registerPrincess(heiress);
 				offspring.push(princess);
 			}
@@ -451,7 +452,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		// Drones
 		List<IBee> drones = queen.spawnDrones(beeHousing);
 		for (IBee drone : drones) {
-			ItemStack droneStack = BeeManager.beeRoot.getTypes().createStack(drone, EnumBeeType.DRONE);
+			ItemStack droneStack = BeeManager.beeRoot.getTypes().createStack(drone, BeeLifeStage.DRONE);
 			breedingTracker.registerDrone(drone);
 			offspring.push(droneStack);
 		}
@@ -519,10 +520,10 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	private static class QueenCanWorkCache {
 		private static final int ticksPerCheckQueenCanWork = 10;
 
-		private Set<IErrorState> queenCanWorkCached = Collections.emptySet();
+		private Set<IError> queenCanWorkCached = Collections.emptySet();
 		private int queenCanWorkCooldown = 0;
 
-		public Set<IErrorState> queenCanWork(IBee queen, IBeeHousing beeHousing) {
+		public Set<IError> queenCanWork(IBee queen, IBeeHousing beeHousing) {
 			if (queenCanWorkCooldown <= 0) {
 				queenCanWorkCached = queen.getCanWork(beeHousing);
 				queenCanWorkCooldown = ticksPerCheckQueenCanWork;

@@ -21,24 +21,24 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.apiculture.genetics.BeeChromosomes;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.ForestryConstants;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.IGeneticRegistry;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.genetics.alleles.IAlleleHandler;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.core.config.Constants;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.features.CoreItems;
 import forestry.core.genetics.ItemResearchNote.EnumNoteType;
 
-import genetics.api.alleles.AlleleCategorizedValue;
-import genetics.api.alleles.IAlleleRegistry;
-import genetics.api.alleles.IAlleleValue;
-import genetics.api.classification.IClassification;
-import genetics.api.classification.IClassification.EnumClassLevel;
-import genetics.api.classification.IClassificationRegistry;
-import genetics.api.mutation.IMutation;
+import genetics.api.alleles.CategorizedValueAllele;
+import forestry.api.genetics.IAlleleRegistry;
+import forestry.api.genetics.alleles.IValueAllele;
+
+import forestry.api.genetics.IClassificationRegistry;
+import forestry.api.genetics.IMutation;
 
 public class GeneticRegistry implements IGeneticRegistry {
 
@@ -50,42 +50,23 @@ public class GeneticRegistry implements IGeneticRegistry {
 	 */
 	private final Set<IAlleleHandler> alleleHandlers = new HashSet<>();
 
-	public void registerClassifications(IClassificationRegistry registry) {
-		registry.createAndRegisterClassification(IClassification.EnumClassLevel.DOMAIN, "archaea", "Archaea");
-		registry.createAndRegisterClassification(EnumClassLevel.DOMAIN, "bacteria", "Bacteria");
-		IClassification eukarya = registry.createAndRegisterClassification(EnumClassLevel.DOMAIN, "eukarya", "Eukarya");
-
-		eukarya.addMemberGroup(registry.createAndRegisterClassification(EnumClassLevel.KINGDOM, "animalia", "Animalia"));
-		eukarya.addMemberGroup(registry.createAndRegisterClassification(EnumClassLevel.KINGDOM, "plantae", "Plantae"));
-		eukarya.addMemberGroup(registry.createAndRegisterClassification(EnumClassLevel.KINGDOM, "fungi", "Fungi"));
-		eukarya.addMemberGroup(registry.createAndRegisterClassification(EnumClassLevel.KINGDOM, "protista", "Protista"));
-
-		registry.getClassification("kingdom.animalia")
-				.addMemberGroup(registry.createAndRegisterClassification(EnumClassLevel.PHYLUM, "arthropoda", "Arthropoda"));
-
-		// Animalia
-		registry.getClassification("phylum.arthropoda")
-				.addMemberGroup(registry.createAndRegisterClassification(EnumClassLevel.CLASS, "insecta", "Insecta"));
-
-	}
-
 	public void registerAlleles(IAlleleRegistry registry) {
-		registry.registerAlleles(EnumAllele.Speed.values(),
+		registry.registerAlleles(SpeedAllele.values(),
 				BeeChromosomes.SPEED,
 				ButterflyChromosomes.SPEED
 		);
-		registry.registerAlleles(EnumAllele.Lifespan.values(),
+		registry.registerAlleles(LifespanAllele.values(),
 				BeeChromosomes.LIFESPAN,
 				ButterflyChromosomes.LIFESPAN
 		);
-		registry.registerAlleles(EnumAllele.Tolerance.values(),
+		registry.registerAlleles(ToleranceAllele.values(),
 				BeeChromosomes.TEMPERATURE_TOLERANCE,
 				BeeChromosomes.HUMIDITY_TOLERANCE,
 				ButterflyChromosomes.TEMPERATURE_TOLERANCE,
 				ButterflyChromosomes.HUMIDITY_TOLERANCE
 		);
-		registry.registerAlleles(EnumAllele.Flowers.values(),
-				BeeChromosomes.FLOWER_PROVIDER,
+		registry.registerAlleles(FlowerTypeAllele.values(),
+				BeeChromosomes.FLOWER_TYPE,
 				ButterflyChromosomes.FLOWER_PROVIDER);
 
 		for (int i = 1; i <= 10; i++) {
@@ -95,17 +76,17 @@ public class GeneticRegistry implements IGeneticRegistry {
 			);
 		}
 
-		Map<Boolean, IAlleleValue<Boolean>> booleans = new HashMap<>();
-		booleans.put(true, new AlleleCategorizedValue<>(Constants.MOD_ID, "bool", "true", true, false));
-		booleans.put(false, new AlleleCategorizedValue<>(Constants.MOD_ID, "bool", "false", false, false));
-		for (IAlleleValue<Boolean> alleleBoolean : booleans.values()) {
+		Map<Boolean, IValueAllele<Boolean>> booleans = new HashMap<>();
+		booleans.put(true, new CategorizedValueAllele<>(ForestryConstants.MOD_ID, "bool", "true", true, false));
+		booleans.put(false, new CategorizedValueAllele<>(ForestryConstants.MOD_ID, "bool", "false", false, false));
+		for (IValueAllele<Boolean> alleleBoolean : booleans.values()) {
 			registry.registerAllele(alleleBoolean,
 					BeeChromosomes.NEVER_SLEEPS,
 					BeeChromosomes.TOLERATES_RAIN,
 					BeeChromosomes.CAVE_DWELLING,
-					ButterflyChromosomes.NOCTURNAL,
+					ButterflyChromosomes.NEVER_SLEEPS,
 					ButterflyChromosomes.TOLERATES_RAIN,
-					ButterflyChromosomes.FIRE_RESIST
+					ButterflyChromosomes.FIRE_RESISTANT
 			);
 		}
 	}

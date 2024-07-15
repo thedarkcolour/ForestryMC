@@ -14,18 +14,14 @@ import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.fluids.FluidType;
 
+import forestry.api.ForestryConstants;
 import forestry.api.core.IForestryConstants;
 
 public class Constants implements IForestryConstants {
 	// System
-	public static final String MOD_NAME = "Forestry";
-	public static final String MOD_ID = "forestry";
-	public static final String URL = "https://forestry.sengir.net/";
-
 	public static final int FLUID_PER_HONEY_DROP = 100;
 
 	public static final int[] SLOTS_NONE = new int[0];
-	public static final String[] EMPTY_STRINGS = new String[0];
 
 	public static final String TRANSLATION_KEY_ITEM = "item.forestry.";
 
@@ -38,17 +34,17 @@ public class Constants implements IForestryConstants {
 	public static final String TEXTURE_APIARIST_ARMOR_PRIMARY = TEXTURE_PATH_ITEM + "/apiarist_armor_1.png";
 	public static final String TEXTURE_APIARIST_ARMOR_SECONDARY = TEXTURE_PATH_ITEM + "/apiarist_armor_2.png";
 	public static final String TEXTURE_NATURALIST_ARMOR_PRIMARY = TEXTURE_PATH_ITEM + "/naturalist_armor_1.png";
-	public static final String TEXTURE_SKIN_BEEKPEEPER = Constants.MOD_ID + ":" + TEXTURE_PATH_ENTITIES + "/beekeeper.png";
-	public static final String TEXTURE_SKIN_ZOMBIE_BEEKPEEPER = Constants.MOD_ID + ":" + TEXTURE_PATH_ENTITIES + "/zombie_beekeeper.png";
-	public static final String TEXTURE_SKIN_LUMBERJACK = Constants.MOD_ID + ":" + TEXTURE_PATH_ENTITIES + "/lumberjack.png";
-	public static final String TEXTURE_SKIN_ZOMBIE_LUMBERJACK = Constants.MOD_ID + ":" + TEXTURE_PATH_ENTITIES + "/zombie_lumberjack.png";
+	public static final String TEXTURE_SKIN_BEEKPEEPER = ForestryConstants.MOD_ID + ":" + TEXTURE_PATH_ENTITIES + "/beekeeper.png";
+	public static final String TEXTURE_SKIN_ZOMBIE_BEEKPEEPER = ForestryConstants.MOD_ID + ":" + TEXTURE_PATH_ENTITIES + "/zombie_beekeeper.png";
+	public static final String TEXTURE_SKIN_LUMBERJACK = ForestryConstants.MOD_ID + ":" + TEXTURE_PATH_ENTITIES + "/lumberjack.png";
+	public static final String TEXTURE_SKIN_ZOMBIE_LUMBERJACK = ForestryConstants.MOD_ID + ":" + TEXTURE_PATH_ENTITIES + "/zombie_lumberjack.png";
 
 	// Villagers
-	public static final String ID_VILLAGER_APIARIST = Constants.MOD_ID + ":apiarist";
-	public static final String ID_VILLAGER_ARBORIST = Constants.MOD_ID + ":arborist";
+	public static final String ID_VILLAGER_APIARIST = ForestryConstants.MOD_ID + ":apiarist";
+	public static final String ID_VILLAGER_ARBORIST = ForestryConstants.MOD_ID + ":arborist";
 
 	// Village Loot Key
-	public static final ResourceLocation VILLAGE_NATURALIST_LOOT_KEY = new ResourceLocation(Constants.MOD_ID, "chests/village_naturalist");
+	public static final ResourceLocation VILLAGE_NATURALIST_LOOT_KEY = new ResourceLocation(ForestryConstants.MOD_ID, "chests/village_naturalist");
 
 	// Item Ids
 

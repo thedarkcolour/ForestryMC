@@ -28,7 +28,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.core.IErrorLogic;
 import forestry.core.circuits.ISpeedUpgradable;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.network.IStreamableGui;
 import forestry.core.render.TankRenderInfo;
 import forestry.energy.EnergyHelper;
@@ -111,7 +111,7 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 		IErrorLogic errorLogic = getErrorLogic();
 
 		boolean disabled = isRedstoneActivated();
-		errorLogic.setCondition(disabled, EnumErrorCode.DISABLED_BY_REDSTONE);
+		errorLogic.setCondition(disabled, ForestryError.DISABLED_BY_REDSTONE);
 		if (disabled) {
 			return;
 		}
@@ -126,13 +126,13 @@ public abstract class TilePowered extends TileBase implements IRenderableTile, I
 			int energyPerWorkCycle = getEnergyPerWorkCycle();
 			boolean consumedEnergy = EnergyHelper.consumeEnergyToDoWork(energyStorage, ticksPerWorkCycle, energyPerWorkCycle);
 			if (consumedEnergy) {
-				errorLogic.setCondition(false, EnumErrorCode.NO_POWER);
+				errorLogic.setCondition(false, ForestryError.NO_POWER);
 				workCounter++;
 				noPowerTime = 0;
 			} else {
 				noPowerTime++;
 				if (noPowerTime > 4) {
-					errorLogic.setCondition(true, EnumErrorCode.NO_POWER);
+					errorLogic.setCondition(true, ForestryError.NO_POWER);
 				}
 			}
 		}

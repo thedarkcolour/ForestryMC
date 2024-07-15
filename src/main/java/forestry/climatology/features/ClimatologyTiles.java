@@ -1,3 +1,4 @@
+/*
 package forestry.climatology.features;
 
 import forestry.climatology.ModuleClimatology;
@@ -14,3 +15,4 @@ public class ClimatologyTiles {
 	public static final FeatureTileType<TileHabitatFormer> HABITAT_FORMER = REGISTRY.tile(TileHabitatFormer::new, "habitat_former", ClimatologyBlocks.HABITATFORMER::collect);
 
 }
+*/

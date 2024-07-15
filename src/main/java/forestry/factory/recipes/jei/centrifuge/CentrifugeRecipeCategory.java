@@ -1,6 +1,8 @@
 package forestry.factory.recipes.jei.centrifuge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.recipes.ICentrifugeRecipe;
 import forestry.core.config.Constants;
 import forestry.core.recipes.jei.ChanceTooltipCallback;
@@ -27,7 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class CentrifugeRecipeCategory extends ForestryRecipeCategory<ICentrifugeRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/centrifugesocket2.png");
+	private static final ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/centrifugesocket2.png");
 
 	private final IDrawableAnimated arrow;
 	private final IDrawable icon;

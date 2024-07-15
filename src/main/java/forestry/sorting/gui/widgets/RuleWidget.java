@@ -12,6 +12,8 @@ import net.minecraft.network.chat.Component;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.client.ForestrySprites;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.api.genetics.filter.IFilterLogic;
@@ -36,7 +38,7 @@ public class RuleWidget extends Widget implements ISelectableProvider<IFilterRul
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		int x = xPos + startX;
 		int y = yPos + startY;
 		IFilterLogic logic = gui.getLogic();
@@ -56,15 +58,15 @@ public class RuleWidget extends Widget implements ISelectableProvider<IFilterRul
 
 	@Override
 	public void draw(GuiForestry gui, IFilterRuleType selectable, PoseStack transform, int y, int x) {
-		RenderSystem.setShaderTexture(0, selectable.getTextureMap());
+		RenderSystem.setShaderTexture(0, ForestrySprites.TEXTURE_ATLAS);
 
-		TextureAtlasSprite sprite = selectable.getSprite();
+		TextureAtlasSprite sprite = IForestryClientApi.INSTANCE.getTextureManager().getSprite(selectable.getSprite());
 		GuiComponent.blit(transform, x, y, gui.getBlitOffset(), 16, 16, sprite);
 	}
 
 	@Override
 	public Component getName(IFilterRuleType selectable) {
-		return Component.translatable("for.gui.filter." + selectable.getUID());
+		return Component.translatable("for.gui.filter." + selectable.getId());
 	}
 
 	@Override

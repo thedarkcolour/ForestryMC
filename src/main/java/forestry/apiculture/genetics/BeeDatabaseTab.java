@@ -10,20 +10,21 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.BeeChromosomes;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.genetics.alleles.AlleleManager;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.api.genetics.gatgets.IDatabaseTab;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
 import forestry.core.gui.elements.GuiElementFactory;
 
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.ILifeStage;
 
 @OnlyIn(Dist.CLIENT)
 public class BeeDatabaseTab implements IDatabaseTab<IBee> {
@@ -41,11 +42,11 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 
 	@Override
 	public void createElements(DatabaseElement container, IBee bee, ItemStack itemStack) {
-		IOrganismType type = BeeManager.beeRoot.getTypes().getType(itemStack);
+		ILifeStage type = BeeManager.beeRoot.getTypes().getType(itemStack);
 		if (type == null) {
 			return;
 		}
-		IAlleleBeeSpecies primarySpecies = bee.getGenome().getActiveAllele(BeeChromosomes.SPECIES);
+		IAlleleBeeSpecies primarySpecies = bee.getGenome().getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
 		IAlleleBeeSpecies secondarySpecies = bee.getGenome().getInactiveAllele(BeeChromosomes.SPECIES);
 
 		container.label(Component.translatable("for.gui.database.tab." + (mode == DatabaseMode.ACTIVE ? "active" : "inactive") + "_species"), Alignment.TOP_CENTER, GuiElementFactory.INSTANCE.databaseTitle);
@@ -54,7 +55,7 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 
 		Function<Boolean, Component> toleranceText = a -> {
 			IAlleleForestrySpecies species = a ? primarySpecies : secondarySpecies;
-			return AlleleManager.climateHelper.toDisplay(species.getTemperature());
+			return ClimateHelper.toDisplay(species.getTemperature());
 		};
 		container.addLine(Component.translatable("for.gui.climate").withStyle(GuiElementFactory.INSTANCE.guiStyle), toleranceText, BeeChromosomes.TEMPERATURE_TOLERANCE);
 		container.addToleranceLine(BeeChromosomes.TEMPERATURE_TOLERANCE);
@@ -65,8 +66,8 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 		container.addLine(Component.translatable("for.gui.lifespan"), BeeChromosomes.LIFESPAN);
 
 		container.addLine(Component.translatable("for.gui.speed"), BeeChromosomes.SPEED);
-		container.addLine(Component.translatable("for.gui.pollination"), BeeChromosomes.FLOWERING);
-		container.addLine(Component.translatable("for.gui.flowers"), BeeChromosomes.FLOWER_PROVIDER);
+		container.addLine(Component.translatable("for.gui.pollination"), BeeChromosomes.POLLINATION);
+		container.addLine(Component.translatable("for.gui.flowers"), BeeChromosomes.FLOWER_TYPE);
 
 		container.addFertilityLine(Component.translatable("for.gui.fertility"), BeeChromosomes.FERTILITY, 0);
 
@@ -85,7 +86,7 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 				diurnal = !primarySpecies.isNocturnal() ? yes : no;
 			}
 		} else {
-			if (bee.getGenome().getInactiveValue(ButterflyChromosomes.NOCTURNAL)) {
+			if (bee.getGenome().getInactiveValue(ButterflyChromosomes.NEVER_SLEEPS)) {
 				nocturnal = diurnal = yes;
 			} else {
 				nocturnal = secondarySpecies.isNocturnal() ? yes : no;
@@ -109,7 +110,7 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
         };
 		container.addLine(Component.translatable("for.gui.cave"), cave, BeeChromosomes.CAVE_DWELLING);
 
-		if (type == EnumBeeType.PRINCESS || type == EnumBeeType.QUEEN) {
+		if (type == BeeLifeStage.PRINCESS || type == BeeLifeStage.QUEEN) {
 			Component displayTextKey = Component.translatable("for.bees.stock.pristine");
 			if (!bee.isNatural()) {
 				displayTextKey = Component.translatable("for.bees.stock.ignoble");
@@ -120,6 +121,6 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 
 	@Override
 	public ItemStack getIconStack() {
-		return BeeDefinition.MEADOWS.getMemberStack(mode == DatabaseMode.ACTIVE ? EnumBeeType.PRINCESS : EnumBeeType.DRONE);
+		return BeeDefinition.MEADOWS.getMemberStack(mode == DatabaseMode.ACTIVE ? BeeLifeStage.PRINCESS : BeeLifeStage.DRONE);
 	}
 }

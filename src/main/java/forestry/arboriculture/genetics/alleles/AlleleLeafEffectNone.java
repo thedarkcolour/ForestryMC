@@ -16,7 +16,7 @@ public class AlleleLeafEffectNone extends AlleleLeafEffect {
 	}
 
 	@Override
-	public String getLocalisationKey() {
+	public String getTranslationKey() {
 		return "for.arboriculture.effect.none";
 	}
 }

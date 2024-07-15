@@ -24,9 +24,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.Forestry;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.IButterflyCocoon;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.network.IStreamable;
 import forestry.core.network.packets.PacketTileStream;
@@ -40,8 +41,8 @@ import forestry.lepidopterology.features.LepidopterologyTiles;
 import forestry.lepidopterology.genetics.Butterfly;
 import forestry.lepidopterology.genetics.ButterflyDefinition;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 
 public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, IButterflyCocoon {
 	private final OwnerHandler ownerHandler = new OwnerHandler();
@@ -84,7 +85,7 @@ public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, 
 	@Override
 	public void writeData(FriendlyByteBuf data) {
 		IButterfly caterpillar = getCaterpillar();
-		String speciesUID = caterpillar.getIdentifier();
+		String speciesUID = caterpillar.getId();
 		data.writeUtf(speciesUID);
 	}
 

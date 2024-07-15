@@ -5,12 +5,16 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -27,7 +31,7 @@ import com.mojang.authlib.GameProfile;
 
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.blocks.IColoredBlock;
 
@@ -39,8 +43,15 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 	public static final int FOLIAGE_COLOR_INDEX = 0;
 	public static final int FRUIT_COLOR_INDEX = 2;
 
-	public BlockAbstractLeaves(Properties properties) {
-		super(properties);
+	public BlockAbstractLeaves() {
+		super(Block.Properties.of(Material.LEAVES)
+				.strength(0.2f)
+				.sound(SoundType.GRASS)
+				.randomTicks()
+				.isValidSpawn((a, b, c, entityType) -> entityType == EntityType.OCELOT || entityType == EntityType.PARROT)
+				.isSuffocating((a, b, c) -> false)
+				.isViewBlocking((a, b, c) -> false)
+				.noOcclusion());
 	}
 
 	@Nullable
@@ -86,7 +97,7 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		ITree tree = getTree(worldIn, pos);
-		if (tree != null && TreeDefinition.Willow.getUID().equals(tree.getIdentifier())) {
+		if (tree != null && TreeDefinition.Willow.getId().equals(tree.getId())) {
 			return Shapes.empty();
 		}
 		return super.getCollisionShape(state, worldIn, pos, context);
@@ -101,20 +112,6 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		Vec3 motion = entityIn.getDeltaMovement();
 		entityIn.setDeltaMovement(motion.x() * 0.4D, motion.y(), motion.z() * 0.4D);
 	}
-
-	/* RENDERING */
-	//	@Override	//TODO is final method in block now
-	//	public boolean isOpaqueCube(BlockState state) {
-	//		return !Proxies.render.fancyGraphicsEnabled();
-	//	}
-
-	//TODO more hitbox stuff
-	//	@OnlyIn(Dist.CLIENT)
-	//	@Override
-	//	public final boolean shouldSideBeRendered(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-	//		return (Proxies.render.fancyGraphicsEnabled() || blockAccess.getBlockState(pos.offset(side)).getBlock() != this) &&
-	//				BlockUtil.shouldSideBeRendered(blockState, blockAccess, pos, side);
-	//	}
 
 	/* PROPERTIES */
 	@Override

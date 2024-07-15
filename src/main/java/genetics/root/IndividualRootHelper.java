@@ -9,26 +9,27 @@ import genetics.api.GeneticHelper;
 import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAlleleTemplateBuilder;
 import genetics.api.individual.IIndividual;
-import genetics.api.organism.IOrganism;
+import genetics.api.organism.IIndividualCapability;
 import genetics.api.root.EmptyRootDefinition;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IIndividualRootHelper;
 import genetics.api.root.IRootDefinition;
 
 public enum IndividualRootHelper implements IIndividualRootHelper {
 	INSTANCE;
 
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public <R extends IIndividualRoot> IRootDefinition<R> getSpeciesRoot(ItemStack stack) {
-		return (IRootDefinition<R>) getSpeciesRoot(stack, IIndividualRoot.class);
+	public <R extends ISpeciesType<?>> R getSpeciesRoot(ItemStack stack) {
+		return (R) getSpeciesRoot(stack, ISpeciesType.class);
 	}
 
+	@Nullable
 	@Override
-	@SuppressWarnings("unchecked")
-	public <R extends IIndividualRoot> IRootDefinition<R> getSpeciesRoot(ItemStack stack, Class<? extends R> rootClass) {
+	public <R extends ISpeciesType<?>> R getSpeciesRoot(ItemStack stack, Class<? extends R> rootClass) {
 		if (stack.isEmpty()) {
-			return EmptyRootDefinition.empty();
+			return null;
 		}
 
 		Map<String, IRootDefinition> definitions = GeneticsAPI.apiInstance.getRoots();
@@ -36,7 +37,7 @@ public enum IndividualRootHelper implements IIndividualRootHelper {
 			if (!definition.isPresent()) {
 				continue;
 			}
-			IIndividualRoot root = definition.get();
+			ISpeciesType root = definition.get();
 			if (!root.isMember(stack) || !rootClass.isInstance(root)) {
 				continue;
 			}
@@ -46,19 +47,19 @@ public enum IndividualRootHelper implements IIndividualRootHelper {
 	}
 
 	@Override
-	public IRootDefinition getSpeciesRoot(Class<? extends IIndividual> individualClass) {
-		return getSpeciesRoot(individualClass, IIndividualRoot.class);
+	public R getSpeciesRoot(Class<I> individualClass) {
+		return getSpeciesRoot(individualClass, ISpeciesType.class);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <R extends IIndividualRoot> IRootDefinition<R> getSpeciesRoot(Class<? extends IIndividual> individualClass, Class<? extends R> rootClass) {
+	public <R extends ISpeciesType> IRootDefinition<R> getSpeciesRoot(Class<? extends IIndividual> individualClass, Class<? extends R> rootClass) {
 		Map<String, IRootDefinition> definitions = GeneticsAPI.apiInstance.getRoots();
 		for (IRootDefinition rootDefinition : definitions.values()) {
 			if (!rootDefinition.isPresent()) {
 				continue;
 			}
-			IIndividualRoot<?> root = rootDefinition.get();
+			ISpeciesType<?> root = rootDefinition.get();
 			if (!root.getMemberClass().isAssignableFrom(individualClass) || rootClass.isInstance(root)) {
 				continue;
 			}
@@ -69,14 +70,14 @@ public enum IndividualRootHelper implements IIndividualRootHelper {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <R extends IIndividualRoot<?>> IRootDefinition<R> getSpeciesRoot(IIndividual individual) {
-		return (IRootDefinition<R>) individual.getRoot().getDefinition();
+	public <R extends ISpeciesType<?>> R getSpeciesRoot(IIndividual individual) {
+		return (R) individual.getRoot();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <R extends IIndividualRoot> IRootDefinition<R> getSpeciesRoot(IIndividual individual, Class<? extends R> rootClass) {
-		IIndividualRoot root = individual.getRoot();
+	public <R extends ISpeciesType> IRootDefinition<R> getSpeciesRoot(IIndividual individual, Class<? extends R> rootClass) {
+		ISpeciesType root = individual.getRoot();
 		return rootClass.isInstance(root) ? (IRootDefinition<R>) root.getDefinition() : EmptyRootDefinition.empty();
 	}
 
@@ -88,7 +89,7 @@ public enum IndividualRootHelper implements IIndividualRootHelper {
 	@Nullable
 	@Override
 	public IIndividual getIndividual(ItemStack stack) {
-		IOrganism<IIndividual> organism = GeneticHelper.getOrganism(stack);
+		IIndividualCapability<IIndividual> organism = GeneticHelper.getOrganism(stack);
 		return organism.getIndividual();
 	}
 

@@ -22,16 +22,14 @@ import net.minecraftforge.common.IForgeShearable;
 
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.blocks.IColoredBlock;
-import forestry.core.proxy.Proxies;
 import forestry.core.utils.BlockUtil;
 
-import genetics.api.individual.IGenome;
-
 public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForgeShearable {
-	private TreeDefinition definition;
+	private final TreeDefinition definition;
 
 	public BlockDecorativeLeaves(TreeDefinition definition) {
 		super(Properties.of(Material.LEAVES)

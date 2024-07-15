@@ -23,7 +23,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
 import forestry.api.mail.EnumPostage;
-import forestry.core.data.ForestryTags;
+import forestry.api.ForestryTags;
 import forestry.core.items.ItemOverlay;
 
 public enum EnumStampDefinition implements ItemOverlay.IOverlayInfo {

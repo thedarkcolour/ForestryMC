@@ -19,7 +19,6 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +30,7 @@ import com.mojang.math.Vector3f;
 import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TileAnalyzer;
+import forestry.core.utils.ModUtil;
 
 public class RenderAnalyzer implements IForestryRenderer<TileAnalyzer> {
 	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("analyzer");
@@ -52,10 +52,10 @@ public class RenderAnalyzer implements IForestryRenderer<TileAnalyzer> {
         this.tower1 = root.getChild(TOWER1);
         this.tower2 = root.getChild(TOWER2);
         
-        textures = new ResourceLocation[]{
-				new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/analyzer_pedestal.png"),
-				new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/analyzer_tower1.png"),
-				new ForestryResource(Constants.TEXTURE_PATH_BLOCK + "/analyzer_tower2.png"),
+        this.textures = new ResourceLocation[]{
+				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/analyzer_pedestal.png"),
+				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/analyzer_tower1.png"),
+				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/analyzer_tower2.png"),
 		};
 	}
 	

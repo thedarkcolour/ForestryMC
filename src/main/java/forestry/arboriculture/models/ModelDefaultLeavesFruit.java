@@ -28,7 +28,7 @@ import net.minecraftforge.client.model.data.ModelData;
 
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDefaultLeavesFruit;
 import forestry.arboriculture.genetics.TreeDefinition;
@@ -37,7 +37,7 @@ import forestry.core.models.baker.ModelBaker;
 import forestry.core.proxy.Proxies;
 import forestry.core.utils.ResourceUtil;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelDefaultLeavesFruit extends ModelBlockCached<BlockDefaultLeavesFruit, ModelDefaultLeavesFruit.Key> {

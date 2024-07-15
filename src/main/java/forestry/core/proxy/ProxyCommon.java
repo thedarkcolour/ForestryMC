@@ -29,5 +29,4 @@ public class ProxyCommon {
 	public File getForestryRoot() {
 		return new File(".");
 	}
-
 }

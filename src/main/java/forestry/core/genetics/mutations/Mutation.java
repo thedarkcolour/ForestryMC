@@ -11,36 +11,36 @@
 package forestry.core.genetics.mutations;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import deleteme.BiomeCategory;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.climate.IClimateProvider;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IMutationBuilder;
 import forestry.api.genetics.IMutationCondition;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IGenome;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 
 public abstract class Mutation implements IMutation, IMutationBuilder {
-
-	private final int chance;
 	private final IAlleleForestrySpecies firstParent;
 	private final IAlleleForestrySpecies secondParent;
-
 	private final IAllele[] template;
+	private final int chance;
 
 	private final List<IMutationCondition> mutationConditions = new ArrayList<>();
 	private final List<Component> specialConditions = new ArrayList<>();
@@ -52,6 +52,8 @@ public abstract class Mutation implements IMutation, IMutationBuilder {
 		this.secondParent = secondParent;
 		this.template = template;
 		this.chance = chance;
+
+		Preconditions.checkArgument(template[0] instanceof IAlleleSpecies);
 	}
 
 	@Override
@@ -61,34 +63,34 @@ public abstract class Mutation implements IMutation, IMutationBuilder {
 
 	@Override
 	public Mutation setIsSecret() {
-		isSecret = true;
+		this.isSecret = true;
 		return this;
 	}
 
 	@Override
-	public Mutation restrictTemperature(EnumTemperature temperature) {
+	public Mutation restrictTemperature(TemperatureType temperature) {
 		return restrictTemperature(temperature, temperature);
 	}
 
 	@Override
-	public Mutation restrictTemperature(EnumTemperature minTemperature, EnumTemperature maxTemperature) {
+	public Mutation restrictTemperature(TemperatureType minTemperature, TemperatureType maxTemperature) {
 		IMutationCondition mutationCondition = new MutationConditionTemperature(minTemperature, maxTemperature);
 		return addMutationCondition(mutationCondition);
 	}
 
 	@Override
-	public Mutation restrictHumidity(EnumHumidity humidity) {
+	public Mutation restrictHumidity(HumidityType humidity) {
 		return restrictHumidity(humidity, humidity);
 	}
 
 	@Override
-	public Mutation restrictHumidity(EnumHumidity minHumidity, EnumHumidity maxHumidity) {
+	public Mutation restrictHumidity(HumidityType minHumidity, HumidityType maxHumidity) {
 		IMutationCondition mutationCondition = new MutationConditionHumidity(minHumidity, maxHumidity);
 		return addMutationCondition(mutationCondition);
 	}
 
 	@Override
-	public Mutation restrictBiomeType(BiomeCategory... types) {
+	public Mutation restrictBiomeType(TagKey<Biome> types) {
 		IMutationCondition mutationCondition = new MutationConditionBiome(types);
 		return addMutationCondition(mutationCondition);
 	}
@@ -147,12 +149,12 @@ public abstract class Mutation implements IMutation, IMutationBuilder {
 
 	@Override
 	public IAlleleSpecies getResultingSpecies() {
-		return (IAlleleSpecies) template[0];//ToDo: More testing ?
+		return (IAlleleSpecies) template[0];
 	}
 
 	@Override
-	public float getBaseChance() {
-		return chance;
+	public int getBaseChance() {
+		return this.chance;
 	}
 
 	@Override
@@ -162,14 +164,14 @@ public abstract class Mutation implements IMutation, IMutationBuilder {
 
 	@Override
 	public boolean isPartner(IAllele allele) {
-		return firstParent.getRegistryName().equals(allele.getRegistryName()) || secondParent.getRegistryName().equals(allele.getRegistryName());
+		return firstParent.getId().equals(allele.id()) || secondParent.getId().equals(allele.id());
 	}
 
 	@Override
 	public IAllele getPartner(IAllele allele) {
-		if (firstParent.getRegistryName().equals(allele.getRegistryName())) {
+		if (firstParent.getId().equals(allele.id())) {
 			return secondParent;
-		} else if (secondParent.getRegistryName().equals(allele.getRegistryName())) {
+		} else if (secondParent.getId().equals(allele.id())) {
 			return firstParent;
 		} else {
 			throw new IllegalArgumentException("Tried to get partner for allele that is not part of this mutation.");
@@ -184,9 +186,9 @@ public abstract class Mutation implements IMutation, IMutationBuilder {
 	@Override
 	public String toString() {
 		MoreObjects.ToStringHelper stringHelper = MoreObjects.toStringHelper(this)
-			.add("first", firstParent)
-			.add("second", secondParent)
-			.add("result", template[0]);
+				.add("first", firstParent)
+				.add("second", secondParent)
+				.add("result", template[0]);
 		if (!specialConditions.isEmpty()) {
 			stringHelper.add("conditions", getSpecialConditions());
 		}

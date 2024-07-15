@@ -34,20 +34,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.items.ItemForestry;
 
 import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IAlleleSpecies;
 import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
-import genetics.api.mutation.IMutationContainer;
-import genetics.api.root.IIndividualRoot;
-import genetics.api.root.IRootDefinition;
-import genetics.api.root.components.ComponentKeys;
+import forestry.api.genetics.IMutation;
+
+import forestry.api.genetics.ISpeciesType;
+import genetics.api.root.SpeciesType;
 import genetics.utils.AlleleUtils;
 
 public class ItemResearchNote extends ItemForestry {
@@ -67,7 +66,7 @@ public class ItemResearchNote extends ItemForestry {
 		public static final EnumNoteType[] VALUES = values();
 
 		@Nullable
-		private static IMutation getEncodedMutation(IIndividualRoot<IIndividual> root, CompoundTag compound) {
+		private static IMutation getEncodedMutation(ISpeciesType<?> root, CompoundTag compound) {
 			IAllele allele0 = AlleleUtils.getAllele(compound.getString(NBT_ALLELE_FIRST));
 			IAllele allele1 = AlleleUtils.getAllele(compound.getString(NBT_ALLELE_SECOND));
 			if (allele0 == null || allele1 == null) {
@@ -80,11 +79,10 @@ public class ItemResearchNote extends ItemForestry {
 			}
 
 			IMutation encoded = null;
-			IMutationContainer<IIndividual, IMutation> container = root.getComponent(ComponentKeys.MUTATIONS);
-			for (IMutation mutation : container.getCombinations(allele0)) {
+			for (IMutation mutation : root.getCombinations(allele0)) {
 				if (mutation.isPartner(allele1)) {
 					if (result == null
-						|| mutation.getTemplate()[0].getRegistryName().equals(result.getRegistryName())) {
+						|| mutation.getTemplate()[0].id().equals(result.id())) {
 						encoded = mutation;
 						break;
 					}
@@ -94,19 +92,18 @@ public class ItemResearchNote extends ItemForestry {
 			return encoded;
 		}
 
-		public List<Component> getTooltip(CompoundTag compound) {
-			List<Component> tooltips = new ArrayList<>();
+		public ArrayList<Component> getTooltip(CompoundTag compound) {
+			ArrayList<Component> tooltips = new ArrayList<>();
 
 			if (this == NONE) {
 				return tooltips;
 			}
 
 			if (this == MUTATION) {
-				IRootDefinition<IIndividualRoot<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(compound.getString("ROT"));
-				if (!definition.isPresent()) {
+				ISpeciesType<IIndividual> root = GeneticsAPI.apiInstance.getRoot(compound.getString("ROT"));
+				if (root == null) {
 					return tooltips;
 				}
-				IIndividualRoot<IIndividual> root = definition.get();
 
 				IMutation encoded = getEncodedMutation(root, compound);
 				if (encoded == null) {
@@ -131,37 +128,37 @@ public class ItemResearchNote extends ItemForestry {
 				}
 			} else if (this == SPECIES) {
 				IAlleleForestrySpecies alleleFirst = AlleleUtils.getAllele(compound.getString(NBT_ALLELE_FIRST));
-				if (alleleFirst == null) {
-					return tooltips;
+
+				if (alleleFirst != null) {
+					SpeciesType<?> root = GeneticsAPI.apiInstance.getRoot(compound.getString(NBT_ROOT));
+
+					if (root != null) {
+						tooltips.add(Component.translatable("researchNote.discovered.0"));
+						tooltips.add(Component.translatable("for.researchNote.discovered.1", alleleFirst.getDisplayName(), alleleFirst.getBinomial()));
+					}
 				}
-				IRootDefinition<IIndividualRoot<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(compound.getString(NBT_ROOT));
-				definition.ifPresent(root -> {
-					tooltips.add(Component.translatable("researchNote.discovered.0"));
-					tooltips.add(Component.translatable("for.researchNote.discovered.1", alleleFirst.getDisplayName(), alleleFirst.getBinomial()));
-				});
 			}
 
 			return tooltips;
 		}
 
-		public boolean registerResults(Level world, Player player, CompoundTag compound) {
+		public boolean registerResults(Level level, Player player, CompoundTag compound) {
 			if (this == NONE) {
 				return false;
 			}
 
 			if (this == MUTATION) {
-				IRootDefinition<IIndividualRoot<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(compound.getString("ROT"));
-				if (!definition.isPresent()) {
+				ISpeciesType<?> root = GeneticsAPI.apiInstance.getRoot(compound.getString("ROT"));
+				if (root == null) {
 					return false;
 				}
-				IIndividualRoot<IIndividual> root = definition.get();
 
 				IMutation encoded = getEncodedMutation(root, compound);
 				if (encoded == null) {
 					return false;
 				}
 
-				IBreedingTracker tracker = ((IForestrySpeciesRoot) encoded.getRoot()).getBreedingTracker(world, player.getGameProfile());
+				IBreedingTracker tracker = ((IForestrySpeciesType) encoded.getRoot()).getBreedingTracker(level, player.getGameProfile());
 				if (tracker.isResearched(encoded)) {
 					player.sendSystemMessage(Component.translatable("for.chat.cannotmemorizeagain"));
 					return false;
@@ -192,10 +189,10 @@ public class ItemResearchNote extends ItemForestry {
 
 		public static ResearchNote createMutationNote(GameProfile researcher, IMutation mutation) {
 			CompoundTag compound = new CompoundTag();
-			compound.putString(NBT_ROOT, mutation.getRoot().getUID());
-			compound.putString(NBT_ALLELE_FIRST, mutation.getFirstParent().getRegistryName().toString());
-			compound.putString(NBT_ALLELE_SECOND, mutation.getSecondParent().getRegistryName().toString());
-			compound.putString(NBT_ALLELE_RESULT, mutation.getResultingSpecies().getRegistryName().toString());
+			compound.putString(NBT_ROOT, mutation.getRoot().id());
+			compound.putString(NBT_ALLELE_FIRST, mutation.getFirstParent().getId().toString());
+			compound.putString(NBT_ALLELE_SECOND, mutation.getSecondParent().getId().toString());
+			compound.putString(NBT_ALLELE_RESULT, mutation.getResultingSpecies().getId().toString());
 			return new ResearchNote(researcher, MUTATION, compound);
 		}
 
@@ -210,8 +207,8 @@ public class ItemResearchNote extends ItemForestry {
 
 		public static ResearchNote createSpeciesNote(GameProfile researcher, IAlleleForestrySpecies species) {
 			CompoundTag compound = new CompoundTag();
-			compound.putString(NBT_ROOT, species.getRoot().getUID());
-			compound.putString(NBT_ALLELE_FIRST, species.getRegistryName().toString());
+			compound.putString(NBT_ROOT, species.getSpecies().getId());
+			compound.putString(NBT_ALLELE_FIRST, species.getId().toString());
 			return new ResearchNote(researcher, SPECIES, compound);
 		}
 
@@ -266,7 +263,7 @@ public class ItemResearchNote extends ItemForestry {
 		}
 
 		public void addTooltip(List<Component> list) {
-			List<Component> tooltips = type.getTooltip(inner);
+			ArrayList<Component> tooltips = type.getTooltip(inner);
 			if (tooltips.isEmpty()) {
 				list.add(Component.translatable("for.researchNote.error.0").withStyle(ChatFormatting.RED, ChatFormatting.ITALIC));
 				list.add(Component.translatable("for.researchNote.error.1"));

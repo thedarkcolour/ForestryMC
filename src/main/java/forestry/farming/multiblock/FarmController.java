@@ -40,16 +40,16 @@ import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.CircuitSocketType;
 import forestry.api.circuits.ICircuitBoard;
 import forestry.api.circuits.ICircuitSocketType;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-import forestry.api.farming.FarmDirection;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
 import forestry.api.multiblock.IFarmComponent;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.config.Config;
-import forestry.core.data.ForestryTags;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.ForestryTags;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
@@ -73,7 +73,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	// active components are stored with a tick offset so they do not all tick together
 	private final Map<IFarmComponent.Active, Integer> farmActiveComponents = new HashMap<>();
 
-	private final Map<FarmDirection, IFarmLogic> farmLogics = new EnumMap<>(FarmDirection.class);
+	private final Map<HorizontalDirection, IFarmLogic> farmLogics = new EnumMap<>(HorizontalDirection.class);
 
 	private final InventoryAdapter sockets;
 	private final InventoryFarm inventory;
@@ -128,7 +128,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		}
 
 		if (newPart instanceof IFarmComponent.Active) {
-			farmActiveComponents.put((IFarmComponent.Active) newPart, world.random.nextInt(256));
+			farmActiveComponents.put((IFarmComponent.Active) newPart, level.random.nextInt(256));
 		}
 	}
 
@@ -191,7 +191,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	protected boolean updateServer(int tickCount) {
+	protected boolean serverTick(int tickCount) {
 		manager.getHydrationManager().updateServer();
 
 		if (updateOnInterval(20)) {
@@ -211,12 +211,12 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 		if (hasPower) {
 			noPowerTime = 0;
-			getErrorLogic().setCondition(false, EnumErrorCode.NO_POWER);
+			getErrorLogic().setCondition(false, ForestryError.NO_POWER);
 		} else {
 			if (noPowerTime <= 4) {
 				noPowerTime++;
 			} else {
-				getErrorLogic().setCondition(true, EnumErrorCode.NO_POWER);
+				getErrorLogic().setCondition(true, ForestryError.NO_POWER);
 			}
 		}
 
@@ -225,7 +225,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	protected void updateClient(int tickCount) {
+	protected void clientTick(int tickCount) {
 		for (Map.Entry<IFarmComponent.Active, Integer> entry : farmActiveComponents.entrySet()) {
 			IFarmComponent.Active farmComponent = entry.getKey();
 			int tickOffset = entry.getValue();
@@ -291,7 +291,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	private void refreshFarmLogics() {
-		for (FarmDirection direction : FarmDirection.values()) {
+		for (HorizontalDirection direction : HorizontalDirection.values()) {
 			resetFarmLogic(direction);
 		}
 
@@ -306,14 +306,14 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public EnumTemperature getTemperature() {
+	public TemperatureType temperature() {
 		BlockPos coords = getReferenceCoord();
-		return EnumTemperature.getFromBiome(getBiome(), coords);
+		return TemperatureType.getFromBiome(getBiome(), coords);
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return EnumHumidity.getFromValue(getExactHumidity());
+	public HumidityType humidity() {
+		return HumidityType.getFromValue(getExactHumidity());
 	}
 
 	@Override
@@ -332,7 +332,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		if (coords == null) {
 			return ForgeRegistries.BIOMES.getDelegateOrThrow(Biomes.PLAINS).value();
 		}
-		return world.getBiome(coords).value();
+		return level.getBiome(coords).value();
 	}
 
 	@Override
@@ -368,7 +368,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void setUpFarmlandTargets(Map<FarmDirection, List<FarmTarget>> targets) {
+	public void setUpFarmlandTargets(Map<HorizontalDirection, List<FarmTarget>> targets) {
 		BlockPos targetStart = getCoords();
 
 		BlockPos max = getMaximumCoord();
@@ -380,8 +380,8 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		// Set the maximum allowed extent.
 		allowedExtent = Math.max(sizeNorthSouth, sizeEastWest) * Config.farmSize + 1;
 
-		FarmHelper.createTargets(world, this, targets, targetStart, allowedExtent, sizeNorthSouth, sizeEastWest, min, max);
-		FarmHelper.setExtents(world, this, targets);
+		FarmHelper.createTargets(level, this, targets, targetStart, allowedExtent, sizeNorthSouth, sizeEastWest, min, max);
+		FarmHelper.setExtents(level, this, targets);
 	}
 
 	@Override
@@ -390,7 +390,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public BlockPos getFarmCorner(FarmDirection direction) {
+	public BlockPos getFarmCorner(HorizontalDirection direction) {
 		return manager.getFarmCorner(direction);
 	}
 
@@ -406,7 +406,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public boolean plantGermling(IFarmable germling, Level world, BlockPos pos, FarmDirection direction) {
+	public boolean plantGermling(IFarmable germling, Level world, BlockPos pos, HorizontalDirection direction) {
 		Player player = PlayerUtil.getFakePlayer(world, getOwnerHandler().getOwner());
 		return player != null && inventory.plantGermling(germling, player, pos);
 	}
@@ -422,7 +422,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void setFarmLogic(FarmDirection direction, IFarmLogic logic) {
+	public void setFarmLogic(HorizontalDirection direction, IFarmLogic logic) {
 		Preconditions.checkNotNull(direction);
 		Preconditions.checkNotNull(logic, "logic must not be null");
 		farmLogics.put(direction, logic);
@@ -430,12 +430,12 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void resetFarmLogic(FarmDirection direction) {
+	public void resetFarmLogic(HorizontalDirection direction) {
 		setFarmLogic(direction, FarmDefinition.ARBOREAL.getProperties().getLogic(false));
 	}
 
 	@Override
-	public IFarmLogic getFarmLogic(FarmDirection direction) {
+	public IFarmLogic getFarmLogic(HorizontalDirection direction) {
 		return farmLogics.get(direction);
 	}
 
@@ -501,17 +501,17 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public int getExtents(FarmDirection direction, BlockPos pos) {
+	public int getExtents(HorizontalDirection direction, BlockPos pos) {
 		return manager.getExtents(direction, pos);
 	}
 
 	@Override
-	public void setExtents(FarmDirection direction, BlockPos pos, int extend) {
+	public void setExtents(HorizontalDirection direction, BlockPos pos, int extend) {
 		manager.setExtents(direction, pos, extend);
 	}
 
 	@Override
-	public void cleanExtents(FarmDirection direction) {
+	public void cleanExtents(HorizontalDirection direction) {
 		manager.cleanExtents(direction);
 	}
 

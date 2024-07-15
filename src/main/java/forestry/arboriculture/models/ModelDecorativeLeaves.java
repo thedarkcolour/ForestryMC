@@ -28,7 +28,7 @@ import net.minecraftforge.client.model.data.ModelData;
 
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDecorativeLeaves;
 import forestry.arboriculture.genetics.TreeDefinition;
@@ -37,7 +37,7 @@ import forestry.core.models.baker.ModelBaker;
 import forestry.core.proxy.Proxies;
 import forestry.core.utils.ResourceUtil;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelDecorativeLeaves extends ModelBlockCached<BlockDecorativeLeaves, ModelDecorativeLeaves.Key> {
@@ -76,7 +76,7 @@ public class ModelDecorativeLeaves extends ModelBlockCached<BlockDecorativeLeave
 		Block block = Block.byItem(stack.getItem());
 		Preconditions.checkArgument(block instanceof BlockDecorativeLeaves, "ItemStack must be for decorative leaves.");
 		BlockDecorativeLeaves bBlock = (BlockDecorativeLeaves) block;
-		return new Key(bBlock.getDefinition(), Proxies.render.fancyGraphicsEnabled());
+		return new Key(bBlock.getGenome(), Proxies.render.fancyGraphicsEnabled());
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ModelDecorativeLeaves extends ModelBlockCached<BlockDecorativeLeave
 		Block block = state.getBlock();
 		Preconditions.checkArgument(block instanceof BlockDecorativeLeaves, "state must be for decorative leaves.");
 		BlockDecorativeLeaves bBlock = (BlockDecorativeLeaves) block;
-		return new Key(bBlock.getDefinition(), Proxies.render.fancyGraphicsEnabled());
+		return new Key(bBlock.getGenome(), Proxies.render.fancyGraphicsEnabled());
 	}
 
 	@Override

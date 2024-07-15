@@ -8,14 +8,14 @@ import java.util.List;
 
 import net.minecraft.resources.ResourceLocation;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.individual.IIndividual;
 import genetics.api.individual.IKaryotype;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.IMutation;
 import genetics.api.mutation.IMutationContainer;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.ComponentKeys;
 
@@ -24,23 +24,23 @@ import genetics.utils.AlleleUtils;
 public class MutationContainer<I extends IIndividual, M extends IMutation> implements IMutationContainer<I, M> {
 
 	private final List<M> mutations = new LinkedList<>();
-	private final IIndividualRoot<I> root;
+	private final ISpeciesType<I> root;
 
-	public MutationContainer(IIndividualRoot<I> root) {
+	public MutationContainer(ISpeciesType<I> root) {
 		this.root = root;
 	}
 
 	@Override
-	public IIndividualRoot<I> getRoot() {
+	public ISpeciesType<I> getRoot() {
 		return root;
 	}
 
 	@Override
 	public boolean registerMutation(M mutation) {
-		IChromosomeType speciesType = root.getKaryotype().getSpeciesType();
+		IChromosome speciesType = root.getKaryotype().getSpeciesChromosome();
 		IAllele firstParent = mutation.getFirstParent();
 		IAllele secondParent = mutation.getSecondParent();
-		IAllele resultSpecies = mutation.getTemplate()[speciesType.getIndex()];
+		IAllele resultSpecies = mutation.getTemplate()[speciesType.ordinal()];
 		if (AlleleUtils.isBlacklisted(resultSpecies)
 			|| AlleleUtils.isBlacklisted(firstParent)
 			|| AlleleUtils.isBlacklisted(secondParent)) {
@@ -74,7 +74,8 @@ public class MutationContainer<I extends IIndividual, M extends IMutation> imple
 	public List<M> getResultantMutations(IAllele other) {
 		IKaryotype karyotype = root.getKaryotype();
 		List<M> resultants = new ArrayList<>();
-		int speciesIndex = karyotype.getSpeciesType().getIndex();
+		IChromosome iChromosomeType = karyotype.getSpeciesChromosome();
+		int speciesIndex = iChromosomeType.ordinal();
 		for (M mutation : getMutations(false)) {
 			IAllele[] template = mutation.getTemplate();
 			if (template.length <= speciesIndex) {
@@ -93,11 +94,11 @@ public class MutationContainer<I extends IIndividual, M extends IMutation> imple
 	public List<M> getCombinations(IAlleleSpecies parentFirst, IAlleleSpecies parentSecond, boolean shuffle) {
 		List<M> combinations = new ArrayList<>();
 
-		ResourceLocation parentSpecies = parentSecond.getRegistryName();
+		ResourceLocation parentSpecies = parentSecond.getId();
 		for (M mutation : getMutations(shuffle)) {
 			if (mutation.isPartner(parentFirst)) {
 				IAllele partner = mutation.getPartner(parentFirst);
-				if (partner.getRegistryName().equals(parentSpecies)) {
+				if (partner.id().equals(parentSpecies)) {
 					combinations.add(mutation);
 				}
 			}
@@ -107,11 +108,11 @@ public class MutationContainer<I extends IIndividual, M extends IMutation> imple
 	}
 
 	@Override
-	public Collection<M> getPaths(IAllele result, IChromosomeType chromosomeType) {
+	public Collection<M> getPaths(IAllele result, IChromosome chromosomeType) {
 		ArrayList<M> paths = new ArrayList<>();
 		for (M mutation : getMutations(false)) {
 			IAllele[] template = mutation.getTemplate();
-			IAllele mutationResult = template[chromosomeType.getIndex()];
+			IAllele mutationResult = template[chromosomeType.ordinal()];
 			if (mutationResult == result) {
 				paths.add(mutation);
 			}

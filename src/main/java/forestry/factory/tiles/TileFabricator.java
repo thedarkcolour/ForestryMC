@@ -41,7 +41,7 @@ import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.IFabricatorRecipe;
 import forestry.api.recipes.IFabricatorSmeltingRecipe;
 import forestry.api.recipes.RecipeManagers;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.IInventoryAdapter;
@@ -249,9 +249,9 @@ public class TileFabricator extends TilePowered implements ISlotPickupWatcher, I
 		}
 
 		IErrorLogic errorLogic = getErrorLogic();
-		errorLogic.setCondition(!hasRecipe, EnumErrorCode.NO_RECIPE);
-		errorLogic.setCondition(!hasLiquidResources, EnumErrorCode.NO_RESOURCE_LIQUID);
-		errorLogic.setCondition(!hasResources, EnumErrorCode.NO_RESOURCE_INVENTORY);
+		errorLogic.setCondition(!hasRecipe, ForestryError.NO_RECIPE);
+		errorLogic.setCondition(!hasLiquidResources, ForestryError.NO_RESOURCE_LIQUID);
+		errorLogic.setCondition(!hasResources, ForestryError.NO_RESOURCE_INVENTORY);
 
 		return hasRecipe;
 	}

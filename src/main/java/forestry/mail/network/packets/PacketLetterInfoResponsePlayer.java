@@ -9,7 +9,7 @@ import com.mojang.authlib.GameProfile;
 import forestry.api.mail.EnumAddressee;
 import forestry.api.mail.IMailAddress;
 import forestry.api.mail.PostManager;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.mail.gui.ILetterInfoReceiver;
 

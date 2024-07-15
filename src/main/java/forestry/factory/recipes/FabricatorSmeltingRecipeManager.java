@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -26,6 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 import forestry.api.recipes.IFabricatorSmeltingManager;
 import forestry.api.recipes.IFabricatorSmeltingRecipe;
 import forestry.api.recipes.IForestryRecipe;
+import forestry.core.utils.ModUtil;
 
 public class FabricatorSmeltingRecipeManager extends AbstractCraftingProvider<IFabricatorSmeltingRecipe> implements IFabricatorSmeltingManager {
 
@@ -54,7 +54,7 @@ public class FabricatorSmeltingRecipeManager extends AbstractCraftingProvider<IF
 		return getRecipes(recipeManager)
 				.map(IFabricatorSmeltingRecipe::getProduct)
 				.filter(fluidStack -> !fluidStack.isEmpty())
-				.map(fluidStack -> RegistryNameFinder.getRegistryName(fluidStack.getFluid()))
+				.map(fluidStack -> ModUtil.getRegistryName(fluidStack.getFluid()))
 				.collect(Collectors.toSet());
 	}
 }

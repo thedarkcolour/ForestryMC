@@ -7,6 +7,7 @@ package forestry.api.genetics.flowers;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.BiPredicate;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -18,7 +19,6 @@ import genetics.api.individual.IIndividual;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.core.IBlockPosPredicate;
 
 // See {@link forestry.api.apiculture.FlowerManager}.FlowerType___ for basic Forestry flower types.
 // Each IFlowerProvider has one flower type, and multiple IFlowerProviders may share one type.
@@ -89,5 +89,5 @@ public interface IFlowerRegistry {
 	 *
 	 * @since Forestry 5.5.2
 	 */
-	IBlockPosPredicate createAcceptedFlowerPredicate(String flowerType);
+	BiPredicate<Level, BlockPos> createAcceptedFlowerPredicate(String flowerType);
 }

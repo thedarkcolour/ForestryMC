@@ -36,13 +36,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraftforge.fml.ModList;
 
 import forestry.Forestry;
+import forestry.api.ForestryConstants;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.core.config.Constants;
 import forestry.core.proxy.Proxies;
 import forestry.core.utils.StringUtil;
 
 import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IAlleleSpecies;
 import genetics.commands.CommandHelpers;
 
 public final class CommandSaveStats implements Command<CommandSourceStack> {
@@ -112,7 +112,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 			statistics.add(generateSpeciesListEntry(allele, tracker));
 		}
 
-		File file = new File(Proxies.common.getForestryRoot(), "config/" + Constants.MOD_ID + "/stats/" + player.getDisplayName().getString() + '-' + saveHelper.getFileSuffix() + ".log");
+		File file = new File(Proxies.common.getForestryRoot(), "config/" + ForestryConstants.MOD_ID + "/stats/" + player.getDisplayName().getString() + '-' + saveHelper.getFileSuffix() + ".log");
 		try {
 			File folder = file.getParentFile();
 			if (folder != null && !folder.exists()) {
@@ -136,7 +136,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 			FileOutputStream fileout = new FileOutputStream(file);
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fileout, StandardCharsets.UTF_8));
 
-			writer.write("# " + Constants.MOD_ID + newLine + "# " + ModList.get().getModContainerById(Constants.MOD_ID).get().getModInfo().getVersion() + newLine);
+			writer.write("# " + ForestryConstants.MOD_ID + newLine + "# " + ModList.get().getModContainerById(ForestryConstants.MOD_ID).get().getModInfo().getVersion() + newLine);
 
 			for (String line : statistics) {
 				writer.write(line + newLine);
@@ -168,7 +168,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 		}
 
 		Component blacklisted = Component.empty();
-		if (GeneticsAPI.apiInstance.getAlleleRegistry().isBlacklisted(species.getRegistryName())) {
+		if (GeneticsAPI.apiInstance.getAlleleRegistry().isBlacklisted(species.getId())) {
 			blacklisted = blacklistedSymbol;
 		}
 
@@ -177,7 +177,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 			notCounted = notCountedSymbol;
 		}
 
-		return speciesListEntry(discovered, blacklisted, notCounted, species.getRegistryName().toString(), species.getDisplayName(), species.getAuthority());
+		return speciesListEntry(discovered, blacklisted, notCounted, species.getId().toString(), species.getDisplayName(), species.getAuthority());
 	}
 
 	private static String speciesListEntry(Component discovered, Component blacklisted, Component notCounted, String UID, Component speciesName, String authority) {

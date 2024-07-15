@@ -11,18 +11,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.core.gui.GuiConstants;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
 import forestry.core.gui.elements.GuiElementFactory;
 import forestry.core.gui.elements.layouts.LayoutHelper;
-import forestry.core.utils.Translator;
 
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.IMutation;
 import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
 
@@ -34,8 +33,8 @@ public class MutationsTab extends DatabaseTab {
 	@Override
 	public void createElements(DatabaseElement container, IIndividual individual, ItemStack itemStack) {
 		IGenome genome = individual.getGenome();
-		IForestrySpeciesRoot<IIndividual> speciesRoot = (IForestrySpeciesRoot<IIndividual>) individual.getRoot();
-		IAlleleSpecies species = genome.getPrimary();
+		IForestrySpeciesType<IIndividual> speciesRoot = (IForestrySpeciesType<IIndividual>) individual.getRoot();
+		IAlleleSpecies species = genome.getPrimarySpecies();
 		IMutationContainer<IIndividual, IMutation> mutationContainer = speciesRoot.getComponent(ComponentKeys.MUTATIONS);
 
 		Player player = Minecraft.getInstance().player;

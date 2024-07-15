@@ -7,34 +7,34 @@ import java.util.List;
 
 import genetics.api.GeneticsAPI;
 import genetics.api.individual.IChromosomeList;
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.individual.IChromosomeTypeBuilder;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IRootDefinition;
 
 public class ChromosomeList implements IChromosomeList {
 	private final String rootUID;
-	private final IRootDefinition definition;
-	private final List<IChromosomeType> types = new LinkedList<>();
+	private final ISpeciesType<?> root;
+	private final List<IChromosome> types = new LinkedList<>();
 
 	public ChromosomeList(String rootUID) {
 		this.rootUID = rootUID;
-		this.definition = GeneticsAPI.apiInstance.getRoot(rootUID);
+		this.root = GeneticsAPI.apiInstance.getRoot(rootUID);
 	}
 
 	@Override
 	public IChromosomeTypeBuilder builder() {
-		return new ChromosomeTypeBuilder(this);
+		return new ChromosomeBuilder(this);
 	}
 
 	@Override
-	public Collection<IChromosomeType> types() {
+	public Collection<IChromosome> types() {
 		return types;
 	}
 
 	@Override
-	public IChromosomeType[] typesArray() {
-		return types.toArray(new IChromosomeType[0]);
+	public IChromosome[] typesArray() {
+		return types.toArray(new IChromosome[0]);
 	}
 
 	@Override
@@ -47,23 +47,18 @@ public class ChromosomeList implements IChromosomeList {
 		return rootUID;
 	}
 
-	public <T extends IChromosomeType> T add(T type) {
+	public <T extends IChromosome> T add(T type) {
 		types.add(type);
 		return type;
 	}
 
 	@Override
-	public Iterator<IChromosomeType> iterator() {
+	public Iterator<IChromosome> iterator() {
 		return types.iterator();
 	}
 
 	@Override
-	public IIndividualRoot getRoot() {
-		return definition.get();
-	}
-
-	@Override
-	public IRootDefinition getDefinition() {
-		return definition;
+	public ISpeciesType<?> getRoot() {
+		return this.root;
 	}
 }

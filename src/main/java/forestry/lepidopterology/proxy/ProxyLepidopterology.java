@@ -10,9 +10,7 @@
  ******************************************************************************/
 package forestry.lepidopterology.proxy;
 
-import forestry.modules.ISidedModuleHandler;
-
-public class ProxyLepidopterology implements ISidedModuleHandler {
+public class ProxyLepidopterology {
 
 	public void preInitializeRendering() {
 	}

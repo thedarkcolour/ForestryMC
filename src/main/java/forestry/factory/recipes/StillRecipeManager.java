@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,6 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 import forestry.api.recipes.IForestryRecipe;
 import forestry.api.recipes.IStillManager;
 import forestry.api.recipes.IStillRecipe;
+import forestry.core.utils.ModUtil;
 
 public class StillRecipeManager extends AbstractCraftingProvider<IStillRecipe> implements IStillManager {
 
@@ -60,14 +60,14 @@ public class StillRecipeManager extends AbstractCraftingProvider<IStillRecipe> i
 	@Override
 	public Set<ResourceLocation> getRecipeFluidInputs(@Nullable RecipeManager recipeManager) {
 		return getRecipes(recipeManager)
-				.map(recipe -> RegistryNameFinder.getRegistryName(recipe.getInput().getFluid()))
+				.map(recipe -> ModUtil.getRegistryName(recipe.getInput().getFluid()))
 				.collect(Collectors.toSet());
 	}
 
 	@Override
 	public Set<ResourceLocation> getRecipeFluidOutputs(@Nullable RecipeManager recipeManager) {
 		return getRecipes(recipeManager)
-				.map(recipe -> RegistryNameFinder.getRegistryName(recipe.getOutput().getFluid()))
+				.map(recipe -> ModUtil.getRegistryName(recipe.getOutput().getFluid()))
 				.collect(Collectors.toSet());
 	}
 }

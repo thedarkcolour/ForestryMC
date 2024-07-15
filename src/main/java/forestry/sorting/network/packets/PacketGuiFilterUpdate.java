@@ -5,9 +5,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import forestry.api.genetics.GeneticCapabilities;
+import forestry.api.ForestryCapabilities;
 import forestry.api.genetics.filter.IFilterRuleType;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 import forestry.sorting.AlleleFilter;
@@ -16,7 +16,7 @@ import forestry.sorting.FilterLogic;
 public record PacketGuiFilterUpdate(BlockPos pos, IFilterRuleType[] filterRules, AlleleFilter[][] genomeFilter) implements IForestryPacketClient {
 	@Override
 	public ResourceLocation id() {
-		return PacketIdClient.GUI_FILTER_UPDATE;
+		return PacketIdClient.GUI_UPDATE_FILTER;
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public record PacketGuiFilterUpdate(BlockPos pos, IFilterRuleType[] filterRules,
 	}
 
 	public static void handle(PacketGuiFilterUpdate msg, Player player) {
-		TileUtil.getInterface(player.level, msg.pos(), GeneticCapabilities.FILTER_LOGIC, null).ifPresent(l -> {
+		TileUtil.getInterface(player.level, msg.pos(), ForestryCapabilities.FILTER_LOGIC, null).ifPresent(l -> {
 			if (l instanceof FilterLogic logic) {
 				logic.readGuiUpdatePacket(msg);
 			}

@@ -11,23 +11,29 @@
 package forestry.apiculture.genetics;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IApiaristTracker;
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.genetics.IBeeRoot;
+import forestry.api.apiculture.genetics.IBeeSpeciesType;
+import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.ModuleApiculture;
 import forestry.core.genetics.BreedingTracker;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.IMutation;
 import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
 
 public class ApiaristTracker extends BreedingTracker implements IApiaristTracker {
+	private int queensTotal = 0;
+	private int dronesTotal = 0;
+	private int princessesTotal = 0;
+
 	/**
 	 * Required for creation from map storage
 	 */
@@ -43,10 +49,6 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 		dronesTotal = tag.getInt("DronesTotal");
 	}
 
-	private int queensTotal = 0;
-	private int dronesTotal = 0;
-	private int princessesTotal = 0;
-
 	@Override
 	public CompoundTag save(CompoundTag nbt) {
 		nbt.putInt("QueensTotal", queensTotal);
@@ -59,8 +61,8 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 
 	@Override
 	public void registerPickup(IIndividual individual) {
-		IBeeRoot speciesRoot = (IBeeRoot) individual.getRoot();
-		if (!speciesRoot.getUID().equals(speciesRootUID())) {
+		IBeeSpeciesType speciesRoot = (IBeeSpeciesType) individual.getRoot();
+		if (!speciesRoot.id().equals(getSpeciesId())) {
 			return;
 		}
 
@@ -69,11 +71,11 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 		}
 
 		IMutationContainer<IBee, ? extends IMutation> container = speciesRoot.getComponent(ComponentKeys.MUTATIONS);
-		if (!container.getCombinations(individual.getGenome().getPrimary()).isEmpty()) {
+		if (!container.getCombinations(individual.getGenome().getPrimarySpecies()).isEmpty()) {
 			return;
 		}
 
-		registerSpecies(individual.getGenome().getPrimary());
+		registerSpecies(individual.getGenome().getPrimarySpecies());
 	}
 
 	@Override
@@ -110,13 +112,11 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 
 	@Override
 	protected IBreedingTracker getBreedingTracker(Player player) {
-		//TODO world cast
 		return BeeManager.beeRoot.getBreedingTracker(player.level, player.getGameProfile());
 	}
 
 	@Override
-	protected String speciesRootUID() {
-		return BeeRoot.UID;
+	protected ResourceLocation getSpeciesId() {
+		return ForestrySpeciesType.BEE;
 	}
-
 }

@@ -6,18 +6,21 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import genetics.api.alleles.IAllele;
+import net.minecraft.resources.ResourceLocation;
+
+import forestry.api.genetics.alleles.ChromosomePair;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
-import genetics.api.individual.IChromosome;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.individual.IGenome;
+
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IKaryotype;
 
 public class Karyotype implements IKaryotype {
-	private final String uid;
-	private final IChromosomeType[] chromosomeTypes;
-	private final IChromosomeType speciesType;
+	private final ResourceLocation uid;
+	private final IChromosome[] chromosomeTypes;
+	private final IChromosome speciesType;
 	private final Function<IAlleleTemplateBuilder, IAlleleTemplate> defaultTemplateSupplier;
 	private final BiFunction<IKaryotype, IAllele[], IAlleleTemplateBuilder> templateFactory;
 	@Nullable
@@ -25,34 +28,34 @@ public class Karyotype implements IKaryotype {
 	@Nullable
 	private IGenome defaultGenome = null;
 
-	public Karyotype(String uid, List<IChromosomeType> chromosomeTypes, IChromosomeType speciesType, BiFunction<IKaryotype, IAllele[], IAlleleTemplateBuilder> templateFactory, Function<IAlleleTemplateBuilder, IAlleleTemplate> defaultTemplateSupplier) {
+	public Karyotype(ResourceLocation uid, List<IChromosome> chromosomeTypes, IChromosome speciesType, BiFunction<IKaryotype, IAllele[], IAlleleTemplateBuilder> templateFactory, Function<IAlleleTemplateBuilder, IAlleleTemplate> defaultTemplateSupplier) {
 		this.uid = uid;
 		this.speciesType = speciesType;
-		this.chromosomeTypes = new IChromosomeType[chromosomeTypes.size()];
+		this.chromosomeTypes = new IChromosome[chromosomeTypes.size()];
 		this.templateFactory = templateFactory;
-		for (IChromosomeType key : chromosomeTypes) {
-			this.chromosomeTypes[key.getIndex()] = key;
+		for (IChromosome key : chromosomeTypes) {
+			this.chromosomeTypes[key.ordinal()] = key;
 		}
 		this.defaultTemplateSupplier = defaultTemplateSupplier;
 	}
 
 	@Override
-	public String getUID() {
+	public ResourceLocation getId() {
 		return uid;
 	}
 
 	@Override
-	public IChromosomeType[] getChromosomeTypes() {
+	public IChromosome[] getChromosomeTypes() {
 		return chromosomeTypes;
 	}
 
 	@Override
-	public boolean contains(IChromosomeType type) {
+	public boolean contains(IChromosome type) {
 		return Arrays.asList(chromosomeTypes).contains(type);
 	}
 
 	@Override
-	public IChromosomeType getSpeciesType() {
+	public IChromosome getSpeciesChromosome() {
 		return speciesType;
 	}
 
@@ -93,13 +96,13 @@ public class Karyotype implements IKaryotype {
 	}
 
 	@Override
-	public IChromosome[] templateAsChromosomes(IAllele[] templateActive, @Nullable IAllele[] templateInactive) {
-		Chromosome[] chromosomes = new Chromosome[chromosomeTypes.length];
+	public ChromosomePair[] templateAsChromosomes(IAllele[] templateActive, @Nullable IAllele[] templateInactive) {
+		ChromosomePair[] chromosomes = new ChromosomePair[chromosomeTypes.length];
 		for (int i = 0; i < chromosomeTypes.length; i++) {
 			if (templateInactive == null) {
-				chromosomes[i] = Chromosome.create(templateActive[i], chromosomeTypes[i]);
+				chromosomes[i] = ChromosomePair.create(templateActive[i], chromosomeTypes[i]);
 			} else {
-				chromosomes[i] = Chromosome.create(templateActive[i], templateInactive[i], chromosomeTypes[i]);
+				chromosomes[i] = ChromosomePair.create(chromosomeTypes[i], templateActive[i], templateInactive[i]);
 			}
 		}
 

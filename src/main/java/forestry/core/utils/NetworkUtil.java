@@ -31,11 +31,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 
-import forestry.api.climate.IClimateState;
-import forestry.core.climate.AbsentClimateState;
-import forestry.core.climate.ClimateStateHelper;
-import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.climate.ClimateState;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
+import forestry.api.modules.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.IStreamable;
 import forestry.core.network.NetworkHandler;
 
@@ -153,22 +153,22 @@ public class NetworkUtil {
 		}
 	}
 
-	public static void writeClimateState(FriendlyByteBuf buffer, IClimateState climateState) {
-		if (climateState.isPresent()) {
+	public static void writeClimateState(FriendlyByteBuf buffer, @Nullable ClimateState climateState) {
+		if (climateState != null) {
 			buffer.writeBoolean(true);
-			buffer.writeFloat(climateState.getTemperature());
-			buffer.writeFloat(climateState.getHumidity());
-			buffer.writeBoolean(climateState.isMutable());
+			buffer.writeByte(climateState.temperature().ordinal());
+			buffer.writeByte(climateState.humidity().ordinal());
 		} else {
 			buffer.writeBoolean(false);
 		}
 	}
 
-	public static IClimateState readClimateState(FriendlyByteBuf buffer) {
+	@Nullable
+	public static ClimateState readClimateState(FriendlyByteBuf buffer) {
 		if (buffer.readBoolean()) {
-			return ClimateStateHelper.of(buffer.readFloat(), buffer.readFloat(), buffer.readBoolean());
+			return new ClimateState(TemperatureType.VALUES.get(buffer.readByte()), HumidityType.VALUES.get(buffer.readByte()));
 		} else {
-			return AbsentClimateState.INSTANCE;
+			return null;
 		}
 	}
 
@@ -190,5 +190,20 @@ public class NetworkUtil {
 			throw new IllegalArgumentException("Tried to deserialize Direction enum from network, but got invalid ordinal: " + ordinal);
 		}
 		return Direction.VALUES[ordinal];
+	}
+
+	public static void writeShortArray(FriendlyByteBuf buffer, short[] array) {
+		buffer.writeVarInt(array.length);
+		for (short value : array) {
+			buffer.writeShort(value);
+		}
+	}
+
+	public static short[] readShortArray(FriendlyByteBuf buffer) {
+		short[] array = new short[buffer.readVarInt()];
+		for (int i = 0; i < array.length; i++) {
+			array[i] = buffer.readShort();
+		}
+		return array;
 	}
 }

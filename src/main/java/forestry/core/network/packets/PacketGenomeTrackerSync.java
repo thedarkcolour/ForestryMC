@@ -21,14 +21,13 @@ import net.minecraftforge.common.MinecraftForge;
 
 import forestry.api.core.ForestryEvent;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.core.genetics.BreedingTracker;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 
 import genetics.api.GeneticsAPI;
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IRootDefinition;
 
 public record PacketGenomeTrackerSync(@Nullable CompoundTag nbt) implements IForestryPacketClient {
 	@Override
@@ -48,13 +47,13 @@ public record PacketGenomeTrackerSync(@Nullable CompoundTag nbt) implements IFor
 	public static void handle(PacketGenomeTrackerSync msg, Player player) {
 		if (msg.nbt != null) {
 			String type = msg.nbt.getString(BreedingTracker.TYPE_KEY);
+			IForestrySpeciesType<IIndividual> root = GeneticsAPI.apiInstance.getRoot(type);
 
-			IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(type);
-			definition.ifPresent(root -> {
+			if (root != null) {
 				IBreedingTracker tracker = root.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());
 				tracker.decodeFromNBT(msg.nbt);
 				MinecraftForge.EVENT_BUS.post(new ForestryEvent.SyncedBreedingTracker(tracker, player));
-			});
+			}
 		}
 	}
 }

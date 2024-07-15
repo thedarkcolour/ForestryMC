@@ -8,5 +8,5 @@ package forestry.api.climate;
 /**
  * Provides information about the climate on a specific position or of a tile entity.
  */
-public interface IClimateProvider extends IRoughClimateProvider, IBiomeProvider {
+public interface IClimateProvider extends IClimatised, IBiomeSupplier {
 }

@@ -433,16 +433,16 @@ public abstract class InventoryUtil {
 		}
 	}
 
-	public static void dropSockets(ISocketable socketable, Level world, double x, double y, double z) {
+	public static void dropSockets(ISocketable socketable, Level level, double x, double y, double z) {
 		for (int slot = 0; slot < socketable.getSocketCount(); slot++) {
 			ItemStack itemstack = socketable.getSocket(slot);
-			Containers.dropItemStack(world, x, y, z, itemstack);
+			Containers.dropItemStack(level, x, y, z, itemstack);
 			socketable.setSocket(slot, ItemStack.EMPTY);
 		}
 	}
 
-	public static void dropSockets(ISocketable socketable, Level world, BlockPos pos) {
-		dropSockets(socketable, world, pos.getX(), pos.getY(), pos.getZ());
+	public static void dropSockets(ISocketable socketable, Level level, BlockPos pos) {
+		dropSockets(socketable, level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	/* NBT */

@@ -34,7 +34,7 @@ public class ProbeButton extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0F);
 		RenderSystem.setShaderTexture(0, manager.gui.textureFile);
 		manager.gui.blit(transform, startX + xPos, startY + yPos, 228, pressed ? 47 : 22, width, height);

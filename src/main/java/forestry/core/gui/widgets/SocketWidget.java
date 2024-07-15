@@ -44,7 +44,7 @@ public class SocketWidget extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		ItemStack socketStack = tile.getSocket(slot);
 		if (!socketStack.isEmpty()) {
 			GuiUtil.drawItemStack(transform, Minecraft.getInstance().font, socketStack, xPos, yPos);

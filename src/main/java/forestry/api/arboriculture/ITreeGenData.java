@@ -14,7 +14,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 import com.mojang.authlib.GameProfile;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public interface ITreeGenData {
 

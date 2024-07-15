@@ -1,7 +1,8 @@
 package genetics.api.individual;
 
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.root.IGeneticListener;
+import forestry.api.genetics.IGenome;
+
+import forestry.api.genetics.alleles.IAlleleSpecies;
 import genetics.api.root.IIndividualRootBuilder;
 
 /**
@@ -11,17 +12,12 @@ import genetics.api.root.IIndividualRootBuilder;
  * It also can be used to register mutations or other species related data to the {@link IRootComponentBuilder}s of the
  * {@link IIndividualRootBuilder} of the root that the species belongs to.
  */
-public interface ISpeciesDefinition<I extends IIndividual> extends ITemplateProvider, IGeneticListener<I> {
+public interface ISpeciesDefinition<I extends IIndividual> extends ITemplateProvider {
 
 	/**
 	 * @return An instance of the genome that contains the default template of this species.
 	 */
 	IGenome getGenome();
-
-	/**
-	 * @return The species that is defined by this interface.
-	 */
-	IAlleleSpecies getSpecies();
 
 	/**
 	 * @return Creates a instance of the {@link IIndividual} that contains the {@link #getGenome()}.

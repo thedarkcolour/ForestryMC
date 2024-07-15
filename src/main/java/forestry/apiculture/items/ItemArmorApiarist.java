@@ -20,6 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import forestry.api.ForestryConstants;
 import forestry.api.core.ItemGroups;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.core.config.Constants;
@@ -80,9 +81,9 @@ public class ItemArmorApiarist extends ArmorItem {
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 		if (ApicultureItems.APIARIST_LEGS.itemEqual(stack)) {
-			return Constants.MOD_ID + ":" + Constants.TEXTURE_APIARIST_ARMOR_SECONDARY;
+			return ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_APIARIST_ARMOR_SECONDARY;
 		} else {
-			return Constants.MOD_ID + ":" + Constants.TEXTURE_APIARIST_ARMOR_PRIMARY;
+			return ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_APIARIST_ARMOR_PRIMARY;
 		}
 	}
 }

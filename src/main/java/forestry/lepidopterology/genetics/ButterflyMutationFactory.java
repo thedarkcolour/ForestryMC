@@ -10,8 +10,8 @@
  ******************************************************************************/
 package forestry.lepidopterology.genetics;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IMutation;
 import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
 

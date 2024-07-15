@@ -10,11 +10,14 @@
  ******************************************************************************/
 package forestry.core;
 
-import forestry.api.modules.ForestryModule;
-import forestry.core.config.Constants;
-import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
+import net.minecraft.resources.ResourceLocation;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.FLUIDS, name = "Fluids", author = "mezz", url = Constants.URL, unlocalizedDescription = "for.module.fluids.description")
+import forestry.api.modules.ForestryModuleIds;
+import forestry.modules.BlankForestryModule;
+
 public class ModuleFluids extends BlankForestryModule {
+	@Override
+	public ResourceLocation getId() {
+		return ForestryModuleIds.FLUIDS;
+	}
 }

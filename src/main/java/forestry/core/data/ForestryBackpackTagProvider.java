@@ -12,13 +12,14 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
+import forestry.api.ForestryTags;
 import forestry.core.features.CoreItems;
 
 public class ForestryBackpackTagProvider extends ItemTagsProvider {
 
 	public ForestryBackpackTagProvider(DataGenerator generator, BlockTagsProvider blockTagsProvider, @Nullable ExistingFileHelper existingFileHelper) {
-		super(generator, blockTagsProvider, Constants.MOD_ID, existingFileHelper);
+		super(generator, blockTagsProvider, ForestryConstants.MOD_ID, existingFileHelper);
 	}
 
 	@Override

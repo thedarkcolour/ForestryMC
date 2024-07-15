@@ -1,6 +1,7 @@
 package forestry.core.features;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
+
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.OrePlacements;
@@ -17,8 +18,8 @@ import java.util.List;
 
 public class CoreFeatures {
 
-	public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, Constants.MOD_ID);
-	public static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, Constants.MOD_ID);
+	public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, ForestryConstants.MOD_ID);
+	public static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, ForestryConstants.MOD_ID);
 
 	public static final RegistryObject<ConfiguredFeature<?, ?>> ORE_APATITE = CONFIGURED_FEATURES.register("ore_apatite",
 			() -> new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(List.of(

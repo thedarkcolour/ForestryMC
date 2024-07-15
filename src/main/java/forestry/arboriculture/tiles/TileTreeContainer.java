@@ -38,7 +38,7 @@ import forestry.core.owner.OwnerHandler;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.RenderUtil;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 
 /**
  * This is the base TE class for any block that needs to contain tree genome information.
@@ -83,7 +83,7 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 		String speciesUID = "";
 		ITree tree = getTree();
 		if (tree != null) {
-			speciesUID = tree.getIdentifier();
+			speciesUID = tree.getId();
 		}
 		data.writeUtf(speciesUID);
 	}

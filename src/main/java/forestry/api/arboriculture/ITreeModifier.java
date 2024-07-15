@@ -5,7 +5,7 @@
  ******************************************************************************/
 package forestry.api.arboriculture;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public interface ITreeModifier {
 

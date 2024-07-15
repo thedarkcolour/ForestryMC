@@ -11,11 +11,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import genetics.api.GeneticHelper;
-import genetics.api.organism.IOrganism;
+import genetics.api.organism.IIndividualCapability;
 
+import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.gatgets.DatabaseMode;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.config.Config;
@@ -33,16 +34,16 @@ public class ButterflyPlugin extends DatabasePlugin<IButterfly> {
 		super(new ButterflyDatabaseTab(DatabaseMode.ACTIVE),
 			new ButterflyDatabaseTab(DatabaseMode.INACTIVE),
 			new ButterflyProductsTab(),
-			new MutationsTab(() -> ButterflyDefinition.Glasswing.getMemberStack(EnumFlutterType.COCOON)));
+			new MutationsTab(() -> ButterflyDefinition.Glasswing.getMemberStack(ButterflyLifeStage.COCOON)));
 		NonNullList<ItemStack> butterflyList = NonNullList.create();
 		LepidopterologyItems.BUTTERFLY_GE.item().addCreativeItems(butterflyList, false);
 		for (ItemStack butterflyStack : butterflyList) {
-			IOrganism<?> organism = GeneticHelper.getOrganism(butterflyStack);
+			IIndividualCapability<?> organism = GeneticHelper.getOrganism(butterflyStack);
 			if (organism.isEmpty()) {
 				continue;
 			}
 			IAlleleButterflySpecies species = organism.getAllele(ButterflyChromosomes.SPECIES, true);
-			iconStacks.put(species.getRegistryName().toString(), butterflyStack);
+			iconStacks.put(species.getId().toString(), butterflyStack);
 		}
 	}
 

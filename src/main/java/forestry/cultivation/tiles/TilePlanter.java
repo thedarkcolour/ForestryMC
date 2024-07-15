@@ -31,9 +31,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import forestry.api.climate.IClimatised;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-import forestry.api.farming.FarmDirection;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmable;
@@ -54,7 +54,7 @@ import forestry.cultivation.gui.ContainerPlanter;
 import forestry.cultivation.inventory.InventoryPlanter;
 import forestry.farming.FarmHelper;
 import forestry.farming.FarmManager;
-import forestry.farming.FarmRegistry;
+import forestry.farming.ForestryFarmRegistry;
 import forestry.farming.FarmTarget;
 import forestry.farming.gui.IFarmLedgerDelegate;
 import forestry.farming.multiblock.IFarmInventoryInternal;
@@ -80,7 +80,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 
 	protected TilePlanter(BlockEntityType type, BlockPos pos, BlockState state, String identifier) {
 		super(type, pos, state, 150, 1500);
-		this.properties = Preconditions.checkNotNull(FarmRegistry.INSTANCE.getProperties(identifier));
+		this.properties = Preconditions.checkNotNull(ForestryFarmRegistry.INSTANCE.getProperties(identifier));
 		mode = BlockPlanter.Mode.MANAGED;
 		setInternalInventory(inventory = new InventoryPlanter(this));
 		this.manager = new FarmManager(this);
@@ -145,7 +145,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public void setUpFarmlandTargets(Map<FarmDirection, List<FarmTarget>> targets) {
+	public void setUpFarmlandTargets(Map<HorizontalDirection, List<FarmTarget>> targets) {
 		BlockPos targetStart = getCoords();
 		BlockPos minPos = worldPosition;
 		BlockPos maxPos = worldPosition;
@@ -217,7 +217,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, FarmDirection direction) {
+	public boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, HorizontalDirection direction) {
 		Player player = PlayerUtil.getFakePlayer(world, getOwnerHandler().getOwner());
 		return player != null && inventory.plantGermling(farmable, player, pos, direction);
 	}
@@ -248,15 +248,15 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public void setFarmLogic(FarmDirection direction, IFarmLogic logic) {
+	public void setFarmLogic(HorizontalDirection direction, IFarmLogic logic) {
 	}
 
 	@Override
-	public void resetFarmLogic(FarmDirection direction) {
+	public void resetFarmLogic(HorizontalDirection direction) {
 	}
 
 	@Override
-	public IFarmLogic getFarmLogic(FarmDirection direction) {
+	public IFarmLogic getFarmLogic(HorizontalDirection direction) {
 		return getFarmLogic();
 	}
 
@@ -287,7 +287,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 		return data;
 	}
 
-	protected final BlockPos translateWithOffset(BlockPos pos, FarmDirection farmDirection, int step) {
+	protected final BlockPos translateWithOffset(BlockPos pos, HorizontalDirection farmDirection, int step) {
 		return VectUtil.scale(farmDirection.getFacing().getNormal(), step).offset(pos);
 	}
 
@@ -301,13 +301,13 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public EnumTemperature getTemperature() {
-		return EnumTemperature.getFromValue(getExactTemperature());
+	public TemperatureType temperature() {
+		return TemperatureType.getFromValue(getExactTemperature());
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return EnumHumidity.getFromValue(getExactHumidity());
+	public HumidityType humidity() {
+		return HumidityType.getFromValue(getExactHumidity());
 	}
 
 	@Override
@@ -347,22 +347,22 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	public abstract NonNullList<ItemStack> createProductionStacks();
 
 	@Override
-	public BlockPos getFarmCorner(FarmDirection direction) {
+	public BlockPos getFarmCorner(HorizontalDirection direction) {
 		return worldPosition.below(2);
 	}
 
 	@Override
-	public int getExtents(FarmDirection direction, BlockPos pos) {
+	public int getExtents(HorizontalDirection direction, BlockPos pos) {
 		return manager.getExtents(direction, pos);
 	}
 
 	@Override
-	public void setExtents(FarmDirection direction, BlockPos pos, int extend) {
+	public void setExtents(HorizontalDirection direction, BlockPos pos, int extend) {
 		manager.setExtents(direction, pos, extend);
 	}
 
 	@Override
-	public void cleanExtents(FarmDirection direction) {
+	public void cleanExtents(HorizontalDirection direction) {
 		manager.cleanExtents(direction);
 	}
 }

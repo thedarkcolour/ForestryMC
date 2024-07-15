@@ -23,9 +23,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.apiculture.tiles.TileHive;
 import forestry.core.utils.NetworkUtil;
@@ -35,13 +35,14 @@ public class WorldgenBeekeepingLogic implements IBeekeepingLogic {
 	private final TileHive housing;
 	private final IEffectData[] effectData = new IEffectData[2];
 	private final HasFlowersCache hasFlowersCache = new HasFlowersCache(2);
-	private final TickHelper tickHelper = new TickHelper();
+	private final TickHelper tickHelper;
 
 	// Client
 	private boolean active;
 
 	public WorldgenBeekeepingLogic(TileHive housing) {
 		this.housing = housing;
+		this.tickHelper = new TickHelper(housing.getBlockPos().hashCode());
 	}
 
 	// / SAVING & LOADING

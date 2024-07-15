@@ -16,17 +16,16 @@ import java.util.List;
 
 import net.minecraft.client.renderer.Rect2i;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.core.IError;
 import forestry.api.core.IErrorSource;
-import forestry.api.core.IErrorState;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.config.SessionVars;
-import forestry.core.errors.FakeErrorSource;
 import forestry.core.gui.GuiForestry;
 import forestry.core.gui.GuiUtil;
 
@@ -38,11 +37,11 @@ public class LedgerManager {
 	private IErrorSource errorSource;
 	private int maxWidth;
 
-	public final GuiForestry gui;
+	public final GuiForestry<?> gui;
 
-	public LedgerManager(GuiForestry gui) {
+	public LedgerManager(GuiForestry<?> gui) {
 		this.gui = gui;
-		this.errorSource = FakeErrorSource.instance;
+		this.errorSource = IErrorSource.EMPTY;
 	}
 
 	public void setMaxWidth(int maxWidth) {
@@ -148,7 +147,7 @@ public class LedgerManager {
 			yPos += ledger.getHeight();
 		}
 
-		List<IErrorState> errorStates = new ArrayList<>(errorSource.getErrorStates());
+		List<IError> errorStates = new ArrayList<>(errorSource.getErrors());
 
 		yPos = 8;
 		int index = 0;
@@ -157,7 +156,7 @@ public class LedgerManager {
 				errorLedger.setState(null);
 				continue;
 			}
-			IErrorState errorState = errorStates.get(index++);
+			IError errorState = errorStates.get(index++);
 			errorLedger.setState(errorState);
 
 			errorLedger.update();

@@ -1,15 +1,24 @@
 package forestry.apiculture.genetics;
 
 import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.IBeeRoot;
+
 import genetics.ApiInstance;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
 import genetics.api.individual.IKaryotype;
 
-import forestry.api.apiculture.genetics.BeeChromosomes;
+import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.ForestryAlleles;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.genetics.alleles.AlleleEffects;
-import forestry.core.genetics.alleles.EnumAllele;
+import forestry.core.genetics.alleles.FertilityAllele;
+import forestry.core.genetics.alleles.FlowerTypeAllele;
+import forestry.core.genetics.alleles.PollinationAllele;
+import forestry.core.genetics.alleles.SpeedAllele;
+import forestry.core.genetics.alleles.TerritoryAllele;
+import forestry.core.genetics.alleles.ToleranceAllele;
 
 public class BeeHelper {
 	public static IKaryotype getKaryotype() {
@@ -17,22 +26,22 @@ public class BeeHelper {
 	}
 
 	public static IAlleleTemplateBuilder createTemplate() {
-		return ApiInstance.INSTANCE.<IBeeRoot>getRoot(BeeRoot.UID).get().getKaryotype().createTemplate();
+		return ApiInstance.INSTANCE.getRoot(ForestrySpeciesType.BEE).getKaryotype().createTemplate();
 	}
 
 	public static IAlleleTemplate createDefaultTemplate(IAlleleTemplateBuilder templateBuilder) {
-		return templateBuilder.set(BeeChromosomes.SPEED, EnumAllele.Speed.SLOWEST)
-			.set(BeeChromosomes.SPECIES, BeeDefinition.FOREST.getSpecies())
-			.set(BeeChromosomes.LIFESPAN, EnumAllele.Lifespan.SHORTER)
-			.set(BeeChromosomes.FERTILITY, EnumAllele.Fertility.NORMAL)
-			.set(BeeChromosomes.TEMPERATURE_TOLERANCE, EnumAllele.Tolerance.NONE)
+		return templateBuilder.set(BeeChromosomes.SPEED, SpeedAllele.SLOWEST)
+			.set((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES, BeeDefinition.FOREST.getSpecies())
+			.set(BeeChromosomes.LIFESPAN, ForestryAlleles.SHORTER)
+			.set(BeeChromosomes.FERTILITY, FertilityAllele.NORMAL)
+			.set(BeeChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.NONE)
 			.set(BeeChromosomes.NEVER_SLEEPS, false)
-			.set(BeeChromosomes.HUMIDITY_TOLERANCE, EnumAllele.Tolerance.NONE)
+			.set(BeeChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.NONE)
 			.set(BeeChromosomes.TOLERATES_RAIN, false)
 			.set(BeeChromosomes.CAVE_DWELLING, false)
-			.set(BeeChromosomes.FLOWER_PROVIDER, EnumAllele.Flowers.VANILLA)
-			.set(BeeChromosomes.FLOWERING, EnumAllele.Flowering.SLOWEST)
-			.set(BeeChromosomes.TERRITORY, EnumAllele.Territory.AVERAGE)
+			.set(BeeChromosomes.FLOWER_TYPE, FlowerTypeAllele.VANILLA)
+			.set(BeeChromosomes.POLLINATION, PollinationAllele.SLOWEST)
+			.set(BeeChromosomes.TERRITORY, TerritoryAllele.AVERAGE)
 			.set(BeeChromosomes.EFFECT, AlleleEffects.effectNone).build();
 	}
 }

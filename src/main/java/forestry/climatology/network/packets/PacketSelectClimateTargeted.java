@@ -7,23 +7,27 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.network.packets;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
+import forestry.api.climate.ClimateState;
 import forestry.api.climate.IClimateHousing;
-import forestry.api.climate.IClimateState;
+import forestry.api.climate.IClimatised;
 import forestry.api.climate.IClimateTransformer;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;
 
-public record PacketSelectClimateTargeted(BlockPos pos, IClimateState climateState) implements IForestryPacketServer {
+public record PacketSelectClimateTargeted(BlockPos pos, @Nullable ClimateState climateState) implements IForestryPacketServer {
 	@Override
 	public ResourceLocation id() {
 		return PacketIdServer.SELECT_CLIMATE_TARGETED;
@@ -47,3 +51,4 @@ public record PacketSelectClimateTargeted(BlockPos pos, IClimateState climateSta
 		}
 	}
 }
+*/

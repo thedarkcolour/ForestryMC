@@ -12,10 +12,11 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.genetics.EnumTolerance;
+import forestry.api.ForestryConstants;
+import forestry.api.core.ToleranceType;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.genetics.gatgets.IGeneticAnalyzer;
@@ -28,13 +29,13 @@ import forestry.core.gui.elements.layouts.ContainerElement;
 import forestry.core.gui.elements.layouts.FlexLayout;
 import forestry.core.render.ColourProperties;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleValue;
-import genetics.api.mutation.IMutation;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.IMutation;
 
 public class GuiElementFactory implements ResourceManagerReloadListener {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/database_mutation_screen.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/database_mutation_screen.png");
 
 	public Style dominantStyle = Style.EMPTY;
 	public Style recessiveStyle = Style.EMPTY;
@@ -124,25 +125,25 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 		return guiStyle;
 	}
 
-	public GuiElement createFertilityInfo(IAlleleValue<Integer> fertilityAllele, int texOffset) {
-		Component fertilityString = Component.literal(fertilityAllele.getValue() + " x");
+	public GuiElement createFertilityInfo(IValueAllele<Integer> fertilityAllele, int texOffset) {
+		Component fertilityString = Component.literal(fertilityAllele.value() + " x");
 
 		ContainerElement layout = horizontal(GuiElement.UNKNOWN_HEIGHT, 2);
-		layout.label(fertilityString, getStateStyle(fertilityAllele.isDominant()));
+		layout.label(fertilityString, getStateStyle(fertilityAllele.dominant()));
 		layout.drawable(0, -1, new Drawable(TEXTURE, 60, 240 + texOffset, 12, 8));
 		return layout;
 	}
 
-	public GuiElement createToleranceInfo(IAlleleValue<EnumTolerance> toleranceAllele, IAlleleForestrySpecies species, Component text) {
+	public GuiElement createToleranceInfo(IValueAllele<ToleranceType> toleranceAllele, IAlleleForestrySpecies species, Component text) {
 		ContainerElement layout = horizontal(GuiElement.UNKNOWN_HEIGHT, 0);
 		layout.label(text, getStateStyle(species.isDominant()));
 		layout.add(createToleranceInfo(toleranceAllele));
 		return layout;
 	}
 
-	public GuiElement createToleranceInfo(IAlleleValue<EnumTolerance> toleranceAllele) {
-		Style textStyle = getStateStyle(toleranceAllele.isDominant());
-		EnumTolerance tolerance = toleranceAllele.getValue();
+	public GuiElement createToleranceInfo(IValueAllele<ToleranceType> toleranceAllele) {
+		Style textStyle = getStateStyle(toleranceAllele.dominant());
+		ToleranceType tolerance = toleranceAllele.value();
 		Component component = null;
 
 		ContainerElement layout = horizontal(GuiElement.UNKNOWN_HEIGHT, 2);
@@ -168,11 +169,11 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 		if (breedingTracker.isDiscovered(mutation)) {
 			ContainerElement element = new ContainerElement();
 			element.setPreferredBounds(x, y, width, height);
-			IAlyzerPlugin plugin = ((IForestrySpeciesRoot) mutation.getRoot()).getAlyzerPlugin();
+			IAlyzerPlugin plugin = ((IForestrySpeciesType) mutation.getRoot()).getAlyzerPlugin();
 			Map<ResourceLocation, ItemStack> iconStacks = plugin.getIconStacks();
 
-			ItemStack firstPartner = iconStacks.get(mutation.getFirstParent().getRegistryName());
-			ItemStack secondPartner = iconStacks.get(mutation.getSecondParent().getRegistryName());
+			ItemStack firstPartner = iconStacks.get(mutation.getFirstParent().getId());
+			ItemStack secondPartner = iconStacks.get(mutation.getSecondParent().getId());
 			element.add(new ItemElement(0, 0, firstPartner), createProbabilityAdd(mutation, 21, 4), new ItemElement(33, 0, secondPartner));
 			return element;
 		}
@@ -188,14 +189,14 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 	public ContainerElement createMutation(int x, int y, int width, int height, IMutation mutation, IAllele species, IBreedingTracker breedingTracker) {
 		if (breedingTracker.isDiscovered(mutation)) {
 			ContainerElement element = pane(x, y, width, height);
-			IForestrySpeciesRoot speciesRoot = (IForestrySpeciesRoot) mutation.getRoot();
-			int speciesIndex = speciesRoot.getKaryotype().getSpeciesType().ordinal();
+			IForestrySpeciesType speciesRoot = (IForestrySpeciesType) mutation.getRoot();
+			int speciesIndex = speciesRoot.getKaryotype().getSpeciesChromosome().ordinal();
 			IDatabasePlugin plugin = speciesRoot.getSpeciesPlugin();
 			Map<String, ItemStack> iconStacks = plugin.getIndividualStacks();
 
-			ItemStack partner = iconStacks.get(mutation.getPartner(species).getRegistryName().toString());
+			ItemStack partner = iconStacks.get(mutation.getPartner(species).id().toString());
 			IAllele resultAllele = mutation.getTemplate()[speciesIndex];
-			ItemStack result = iconStacks.get(resultAllele.getRegistryName().toString());
+			ItemStack result = iconStacks.get(resultAllele.id().toString());
 			element.add(new ItemElement(0, 0, partner), new ItemElement(33, 0, result));
 			createProbabilityArrow(element, mutation, 18, 4, breedingTracker);
 			return element;

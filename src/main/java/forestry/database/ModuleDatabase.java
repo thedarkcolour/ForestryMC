@@ -1,26 +1,35 @@
 package forestry.database;
 
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-import forestry.api.modules.ForestryModule;
-import forestry.core.config.Constants;
-import forestry.core.network.IPacketRegistry;
+import forestry.api.modules.IPacketRegistry;
 import forestry.core.network.PacketIdServer;
 import forestry.database.features.DatabaseMenuTypes;
 import forestry.database.gui.GuiDatabase;
 import forestry.database.network.packets.PacketExtractItem;
 import forestry.database.network.packets.PacketInsertItem;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
+import forestry.api.modules.ForestryModuleIds;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.DATABASE, name = "Database", author = "Nedelosk", url = Constants.URL, unlocalizedDescription = "for.module.database.description")
 public class ModuleDatabase extends BlankForestryModule {
 	@Override
+	public ResourceLocation getId() {
+		return ForestryModuleIds.DATABASE;
+	}
+
+	@Override
+	public void registerEvents(IEventBus modBus) {
+		modBus.addListener();
+	}
+
+	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void registerGuiFactories() {
+	public void registerMenuScreens() {
 		MenuScreens.register(DatabaseMenuTypes.DATABASE.menuType(), GuiDatabase::new);
 	}
 

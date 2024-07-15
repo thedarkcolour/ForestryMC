@@ -15,7 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 
 public class ItemForestryFood extends Item {
 
@@ -35,7 +35,7 @@ public class ItemForestryFood extends Item {
 
 	public ItemForestryFood(int heal, float saturation, Item.Properties properties) {
 		super(properties
-				.tab(ItemGroupForestry.tabForestry)
+				.tab(ItemGroups.tabForestry)
 			.food((new FoodProperties.Builder())
 					.nutrition(heal)
 					.saturationMod(saturation)

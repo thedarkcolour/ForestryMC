@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -41,16 +42,17 @@ import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IFruitBearer;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.IPollinatable;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.IButterflyNursery;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.apiculture.ModuleApiculture;
 import forestry.arboriculture.features.ArboricultureTiles;
@@ -63,8 +65,9 @@ import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.RenderUtil;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
+
 import genetics.api.individual.IIndividual;
 import genetics.utils.AlleleUtils;
 
@@ -152,7 +155,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		IAlleleTreeSpecies primary = genome.getActiveAllele(TreeChromosomes.SPECIES);
 
 		boolean isDestroyed = isDestroyed(tree, damage);
-		for (ILeafTickHandler tickHandler : primary.getRoot().getLeafTickHandlers()) {
+		for (ILeafTickHandler tickHandler : primary.getSpecies().getLeafTickHandlers()) {
 			if (tickHandler.onRandomLeafTick(tree, level, rand, getBlockPos(), isDestroyed)) {
 				return;
 			}
@@ -398,7 +401,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		data.writeByte(leafState);
 
 		if (hasFruit) {
-			String fruitAlleleUID = getTree().getGenome().getActiveAllele(TreeChromosomes.FRUITS).getRegistryName().toString();
+			String fruitAlleleUID = getTree().getGenome().getActiveAllele(TreeChromosomes.FRUITS).id().toString();
 			int colourFruits = getFruitColour();
 
 			data.writeUtf(fruitAlleleUID);
@@ -424,7 +427,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		IAllele[] treeTemplate = TreeManager.treeRoot.getTemplates().getTemplate(speciesUID);
 		if (treeTemplate != null) {
 			if (fruitAlleleUID != null) {
-				AlleleUtils.actOn(new ResourceLocation(fruitAlleleUID), IAlleleFruit.class, fruitAllele -> treeTemplate[TreeChromosomes.FRUITS.getIndex()] = fruitAllele);
+				AlleleUtils.actOn(new ResourceLocation(fruitAlleleUID), IAlleleFruit.class, fruitAllele -> treeTemplate[TreeChromosomes.FRUITS.ordinal()] = fruitAllele);
 			}
 
 			ITree tree = TreeManager.treeRoot.templateAsIndividual(treeTemplate);
@@ -501,7 +504,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		if (species == null) {
 			return null;
 		}
-		return species.getRegistryName().toString();
+		return species.getId().toString();
 	}
 
 	/* IBUTTERFLYNURSERY */
@@ -557,19 +560,19 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	}
 
 	@Override
-	public Biome getBiome() {
+	public Holder<Biome> getBiome() {
 		Level level = Objects.requireNonNull(this.level);
 		return level.getBiome(worldPosition).value();
 	}
 
 	@Override
-	public EnumTemperature getTemperature() {
-		return EnumTemperature.getFromBiome(getBiome(), worldPosition);
+	public TemperatureType temperature() {
+		return TemperatureType.getFromBiome(getBiome(), worldPosition);
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return EnumHumidity.getFromValue(getBiome().getDownfall());
+	public HumidityType humidity() {
+		return HumidityType.getFromValue(getBiome().getDownfall());
 	}
 
 	@Override

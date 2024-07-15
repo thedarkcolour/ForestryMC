@@ -10,10 +10,10 @@ import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
 
 import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleValue;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IValueAllele;
 import genetics.api.individual.IChromosomeAllele;
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.alleles.IChromosome;
 
 public class AlleleUtils {
 
@@ -21,7 +21,7 @@ public class AlleleUtils {
 	}
 
 	public static boolean isBlacklisted(IAllele allele) {
-		return isBlacklisted(allele.getRegistryName());
+		return isBlacklisted(allele.id());
 	}
 
 	public static boolean isBlacklisted(String registryName) {
@@ -86,11 +86,11 @@ public class AlleleUtils {
 		return GeneticsAPI.apiInstance.getAlleleRegistry().getRegisteredAlleles();
 	}
 
-	public static Collection<IChromosomeType> getChromosomeTypes(IAllele allele) {
+	public static Collection<IChromosome> getChromosomeTypes(IAllele allele) {
 		return GeneticsAPI.apiInstance.getAlleleRegistry().getChromosomeTypes(allele);
 	}
 
-	public static Collection<IAllele> getAllelesByType(IChromosomeType type) {
+	public static Collection<IAllele> getAllelesByType(IChromosome type) {
 		return GeneticsAPI.apiInstance.getAlleleRegistry().getRegisteredAlleles(type);
 	}
 
@@ -104,19 +104,19 @@ public class AlleleUtils {
 
 	public static <A extends IAllele> Stream<A> filteredStream(IChromosomeAllele<A> type) {
 		return getAllelesByType(type).stream()
-			.filter(allele -> type.getAlleleClass().isInstance(allele))
+			.filter(allele -> type.getAlleleType().isInstance(allele))
 			.map(type::castAllele);
 	}
 
 	/**
-	 * @return The value of the allele if the allele is an instance of {@link IAlleleValue} and not null.
+	 * @return The value of the allele if the allele is an instance of {@link IValueAllele} and not null.
 	 * Otherwise it returns the given fallback object.
 	 */
 	public static <V> V getAlleleValue(IAllele allele, Class<? extends V> valueClass, V fallback) {
-		if (!(allele instanceof IAlleleValue<?> alleleValue)) {
+		if (!(allele instanceof IValueAllele<?> alleleValue)) {
 			return fallback;
 		}
-		Object value = alleleValue.getValue();
+		Object value = alleleValue.value();
 		if (valueClass.isInstance(value)) {
 			return valueClass.cast(value);
 		}
@@ -124,15 +124,15 @@ public class AlleleUtils {
 	}
 
 	/**
-	 * @return The value of the allele if the allele is an instance of {@link IAlleleValue} and not null.
+	 * @return The value of the allele if the allele is an instance of {@link IValueAllele} and not null.
 	 * Otherwise it returns null.
 	 */
 	@Nullable
 	public static <V> V getAlleleValue(IAllele allele, Class<? extends V> valueClass) {
-		if (!(allele instanceof IAlleleValue<?> alleleValue)) {
+		if (!(allele instanceof IValueAllele<?> alleleValue)) {
 			return null;
 		}
-		Object value = alleleValue.getValue();
+		Object value = alleleValue.value();
 		if (valueClass.isInstance(value)) {
 			return valueClass.cast(value);
 		}

@@ -2,15 +2,15 @@ package genetics.api;
 
 import javax.annotation.Nullable;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.individual.IGenome;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.ISpeciesType;
 
 /**
  * The IGeneTemplate is a interface that can be implemented as a capability if a item should represent a allele at a
- * specific {@link IChromosomeType} at the {@link IGenome} of a individual that is described by a specific
- * {@link IIndividualRoot}.
+ * specific {@link IChromosome} at the {@link IGenome} of a individual that is described by a specific
+ * {@link ISpeciesType}.
  * For example the templates of Gendustry and the Genetics Mod of Binnie Mods.
  * <p>
  * All returned values of this interface are only empty if the template is empty.
@@ -30,16 +30,16 @@ public interface IGeneTemplate {
 	 * @return The gene type at that the chromosome of the allele is positioned at the chromosome array.
 	 */
 	@Nullable
-	IChromosomeType getType();
+	IChromosome getType();
 
 	/**
-	 * @return The genetic definition that describes the definition to that the {@link IChromosomeType} belongs to.
+	 * @return The genetic definition that describes the definition to that the {@link IChromosome} belongs to.
 	 */
 	@Nullable
-	IIndividualRoot getRoot();
+	ISpeciesType getRoot();
 
 	/**
 	 * Sets the information of this template.
 	 */
-	void setAllele(@Nullable IChromosomeType type, @Nullable IAllele allele);
+	void setAllele(@Nullable IChromosome type, @Nullable IAllele allele);
 }

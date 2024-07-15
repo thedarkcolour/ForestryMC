@@ -40,15 +40,15 @@ import forestry.api.arboriculture.IGrowthProvider;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.TreeConfig;
 import forestry.arboriculture.commands.TreeGenHelper;
 import forestry.core.config.Config;
 import forestry.core.utils.BlockUtil;
 
 import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 
 public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 	private static final List<IAlleleTreeSpecies> SPECIES = new ArrayList<>();
@@ -103,10 +103,10 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 
 	private static void generateBiomeCache(WorldGenLevel world, RandomSource rand) {
 		for (IAlleleTreeSpecies species : getSpecies()) {
-			IAllele[] template = TreeManager.treeRoot.getTemplate(species.getRegistryName().toString());
+			IAllele[] template = TreeManager.treeRoot.getTemplate(species.getId().toString());
 			IGenome genome = TreeManager.treeRoot.templateAsIndividual(template).getGenome();
 			ITree tree = TreeManager.treeRoot.getTree(world.getLevel(), genome);
-			ResourceLocation treeUID = genome.getPrimary().getRegistryName();
+			ResourceLocation treeUID = genome.getPrimarySpecies().id();
 			IGrowthProvider growthProvider = species.getGrowthProvider();
 			for (Biome biome : ForgeRegistries.BIOMES) {
 				Set<ITree> trees = biomeCache.computeIfAbsent(BuiltinRegistries.BIOME.getKey(biome), k -> new HashSet<>());
@@ -141,7 +141,7 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 			Set<ITree> trees = biomeCache.computeIfAbsent(biomeName, k -> new HashSet<>());
 
 			for (ITree tree : trees) {
-				ResourceLocation treeUID = tree.getGenome().getPrimary().getRegistryName();
+				ResourceLocation treeUID = tree.getGenome().getPrimarySpecies().id();
 
 				IAlleleTreeSpecies species = tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES);
 				if (TreeConfig.getSpawnRarity() * globalRarity >= rand.nextFloat()) {

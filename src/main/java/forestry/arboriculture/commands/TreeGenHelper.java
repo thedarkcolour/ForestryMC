@@ -29,12 +29,12 @@ import net.minecraft.server.level.ServerLevel;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.utils.BlockUtil;
 import forestry.core.worldgen.FeatureBase;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 import genetics.commands.SpeciesNotFoundException;
 import genetics.utils.AlleleUtils;
 
@@ -113,7 +113,7 @@ public final class TreeGenHelper {
 			throw new SpeciesNotFoundException(speciesName);
 		}
 
-		IAllele[] template = TreeManager.treeRoot.getTemplates().getTemplate(species.getRegistryName().toString());
+		IAllele[] template = TreeManager.treeRoot.getTemplates().getTemplate(species.getId().toString());
 
 		return TreeManager.treeRoot.getKaryotype().templateAsGenome(template);
 	}

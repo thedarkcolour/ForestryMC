@@ -1,9 +1,6 @@
 package forestry.sorting;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -21,11 +18,11 @@ import forestry.sorting.network.packets.PacketFilterChangeGenome;
 import forestry.sorting.network.packets.PacketFilterChangeRule;
 import forestry.sorting.network.packets.PacketGuiFilterUpdate;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
-import genetics.api.organism.IOrganismType;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.IRootDefinition;
 import genetics.utils.AlleleUtils;
 import genetics.utils.RootUtils;
@@ -52,7 +49,7 @@ public class FilterLogic implements IFilterLogic {
 	@Override
 	public CompoundTag write(CompoundTag data) {
 		for (int i = 0; i < filterRules.length; i++) {
-			data.putString("TypeFilter" + i, filterRules[i].getUID());
+			data.putString("TypeFilter" + i, filterRules[i].getId());
 		}
 
 		for (int i = 0; i < 6; i++) {
@@ -62,10 +59,10 @@ public class FilterLogic implements IFilterLogic {
 					continue;
 				}
 				if (filter.activeAllele != null) {
-					data.putString("GenomeFilterS" + i + "-" + j + "-" + 0, filter.activeAllele.getRegistryName().toString());
+					data.putString("GenomeFilterS" + i + "-" + j + "-" + 0, filter.activeAllele.id().toString());
 				}
 				if (filter.inactiveAllele != null) {
-					data.putString("GenomeFilterS" + i + "-" + j + "-" + 1, filter.inactiveAllele.getRegistryName().toString());
+					data.putString("GenomeFilterS" + i + "-" + j + "-" + 1, filter.inactiveAllele.id().toString());
 				}
 			}
 		}
@@ -121,13 +118,13 @@ public class FilterLogic implements IFilterLogic {
 				}
 				if (filter.activeAllele != null) {
 					buffer.writeBoolean(true);
-					buffer.writeUtf(filter.activeAllele.getRegistryName().toString());
+					buffer.writeUtf(filter.activeAllele.id().toString());
 				} else {
 					buffer.writeBoolean(false);
 				}
 				if (filter.inactiveAllele != null) {
 					buffer.writeBoolean(true);
-					buffer.writeUtf(filter.inactiveAllele.getRegistryName().toString());
+					buffer.writeUtf(filter.inactiveAllele.id().toString());
 				} else {
 					buffer.writeBoolean(false);
 				}
@@ -163,35 +160,13 @@ public class FilterLogic implements IFilterLogic {
 		return genomeFilters;
 	}
 
-	public Collection<Direction> getValidDirections(ItemStack itemStack, Direction from) {
-		IRootDefinition<IIndividualRoot<IIndividual>> definition = RootUtils.getRoot(itemStack);
-		IIndividual individual = null;
-		IOrganismType type = null;
-		if (definition.isPresent()) {
-			IIndividualRoot<IIndividual> root = definition.get();
-			individual = root.create(itemStack);
-			type = root.getTypes().getType(itemStack);
-		}
-		IFilterData filterData = new FilterData(definition, individual, type);
-		List<Direction> validFacings = new LinkedList<>();
-		for (Direction facing : Direction.VALUES) {
-			if (facing == from) {
-				continue;
-			}
-			if (isValid(facing, itemStack, filterData)) {
-				validFacings.add(facing);
-			}
-		}
-		return validFacings;
-	}
-
 	@Override
 	public boolean isValid(ItemStack itemStack, Direction facing) {
-		IRootDefinition<IIndividualRoot<IIndividual>> definition = RootUtils.getRoot(itemStack);
+		IRootDefinition<ISpeciesType<IIndividual>> definition = RootUtils.getRoot(itemStack);
 		IIndividual individual = null;
-		IOrganismType type = null;
+		ILifeStage type = null;
 		if (definition.isPresent()) {
-			IIndividualRoot<IIndividual> root = definition.get();
+			ISpeciesType<IIndividual> root = definition.get();
 			individual = root.create(itemStack);
 			type = root.getTypes().getType(itemStack);
 		}
@@ -207,16 +182,16 @@ public class FilterLogic implements IFilterLogic {
 			return true;
 		}
 		String requiredRoot = rule.getRootUID();
-		if (requiredRoot != null && (!filterData.isPresent() || !filterData.getRoot().getUID().equals(requiredRoot))) {
+		if (requiredRoot != null && (!filterData.isPresent() || !filterData.root().id().equals(requiredRoot))) {
 			return false;
 		}
 		if (rule == DefaultFilterRuleType.ANYTHING || rule.isValid(itemStack, filterData)) {
 			if (filterData.isPresent()) {
-				IIndividual ind = filterData.getIndividual();
+				IIndividual ind = filterData.individual();
 				IGenome genome = ind.getGenome();
-				IAllele active = genome.getPrimary();
-				IAllele inactive = genome.getSecondary();
-				return isValidAllelePair(facing, active.getRegistryName().toString(), inactive.getRegistryName().toString());
+				IAllele active = genome.getPrimarySpecies();
+				IAllele inactive = genome.getSecondarySpecies();
+				return isValidAllelePair(facing, active.id().toString(), inactive.id().toString());
 			}
 			return true;
 		}

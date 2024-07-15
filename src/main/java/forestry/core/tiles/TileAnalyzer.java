@@ -35,9 +35,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import forestry.api.arboriculture.TreeManager;
+import forestry.api.genetics.alleles.AlleleManager;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.features.CoreTiles;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
@@ -51,8 +52,6 @@ import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.NetworkUtil;
 
-import deleteme.Todos;
-import genetics.api.GeneticHelper;
 import genetics.api.individual.IIndividual;
 import genetics.utils.RootUtils;
 
@@ -125,7 +124,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 			specimenToAnalyze.analyze();
 
-			GeneticHelper.setIndividual(stackToAnalyze, specimenToAnalyze);
+			specimenToAnalyze.copyTo(stackToAnalyze);
 		}
 
 		boolean added = InventoryUtil.tryAddStack(invOutput, stackToAnalyze, true);
@@ -143,8 +142,8 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	@Nullable
 	private Integer getInputSlotIndex() {
 		for (int slotIndex = 0; slotIndex < invInput.getContainerSize(); slotIndex++) {
-			ItemStack inputStack = invInput.getItem(slotIndex);
-			if (RootUtils.isIndividual(inputStack)) {
+			ItemStack stack = invInput.getItem(slotIndex);
+			if (AlleleManager.alleleRegistry.isIndividual(stack)) {
 				return slotIndex;
 			}
 		}
@@ -199,9 +198,9 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			}
 		}
 
-		getErrorLogic().setCondition(!hasSpecimen, EnumErrorCode.NO_SPECIMEN);
-		getErrorLogic().setCondition(!hasResource, EnumErrorCode.NO_RESOURCE_LIQUID);
-		getErrorLogic().setCondition(!hasSpace, EnumErrorCode.NO_SPACE_INVENTORY);
+		getErrorLogic().setCondition(!hasSpecimen, ForestryError.NO_SPECIMEN);
+		getErrorLogic().setCondition(!hasResource, ForestryError.NO_RESOURCE_LIQUID);
+		getErrorLogic().setCondition(!hasSpace, ForestryError.NO_SPACE_INVENTORY);
 
 		return hasSpecimen && hasResource && hasSpace;
 	}
@@ -221,7 +220,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			return;
 		}
 
-		if (Todos.isArboricultureEnabled() && !TreeManager.treeRoot.isMember(inputStack)) {
+		if (!TreeManager.treeRoot.isMember(inputStack)) {
 			inputStack = GeneticsUtil.convertToGeneticEquivalent(inputStack);
 		}
 

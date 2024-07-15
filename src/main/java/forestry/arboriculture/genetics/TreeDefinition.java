@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.Locale;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,9 +30,10 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.arboriculture.EnumForestryWoodType;
+import forestry.api.ForestryConstants;
+import forestry.api.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.EnumFruitFamily;
-import forestry.api.arboriculture.EnumLeafType;
+import forestry.api.arboriculture.LeafType;
 import forestry.api.arboriculture.EnumVanillaWoodType;
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.IGermlingModelProvider;
@@ -41,15 +43,16 @@ import forestry.api.arboriculture.ITreeGenerator;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpeciesBuilder;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeMutationBuilder;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.core.IBlockSubtype;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.arboriculture.models.ModelProviderFactory;
@@ -89,23 +92,27 @@ import forestry.arboriculture.worldgen.FeatureWalnut;
 import forestry.arboriculture.worldgen.FeatureWenge;
 import forestry.arboriculture.worldgen.FeatureWillow;
 import forestry.arboriculture.worldgen.FeatureZebrawood;
-import forestry.core.config.Constants;
 import forestry.core.genetics.TemplateMatcher;
-import forestry.core.genetics.alleles.EnumAllele;
+import forestry.core.genetics.alleles.FireproofAllele;
+import forestry.core.genetics.alleles.HeightAllele;
+import forestry.core.genetics.alleles.MaturationAllele;
+import forestry.core.genetics.alleles.SaplingsAllele;
+import forestry.core.genetics.alleles.SappinessAllele;
+import forestry.core.genetics.alleles.YieldAllele;
 import forestry.core.tiles.TileUtil;
 import forestry.modules.features.FeatureBlockGroup;
 
-import genetics.api.alleles.IAlleleRegistry;
+import forestry.api.genetics.IAlleleRegistry;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 import genetics.api.root.ITemplateContainer;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.ComponentKeys;
 import genetics.api.root.components.IRootComponent;
 
 public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSubtype {
-	Oak(TreeBranchDefinition.QUERCUS, "appleOak", "robur", false, EnumLeafType.OAK, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.OAK) {
+	Oak(TreeBranchDefinition.QUERCUS, "appleOak", "robur", false, LeafType.OAK, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.OAK) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureOak(tree);
@@ -114,8 +121,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitApple);
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.AVERAGE);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.FASTER);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.AVERAGE);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
 		}
 
 		@Override
@@ -133,7 +140,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	DarkOak(TreeBranchDefinition.QUERCUS, "darkOak", "velutina", false, EnumLeafType.OAK, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.DARK_OAK) {
+	DarkOak(TreeBranchDefinition.QUERCUS, "darkOak", "velutina", false, LeafType.OAK, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.DARK_OAK) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureDarkOak(tree);
@@ -141,8 +148,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.AVERAGE);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.FASTER);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.AVERAGE);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
 			template.set(TreeChromosomes.GIRTH, 2);
 		}
 
@@ -156,7 +163,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Birch(TreeBranchDefinition.BETULA, "silverBirch", "pendula", false, EnumLeafType.BIRCH, new Color(8431445), new Color(0xb0c648), EnumVanillaWoodType.BIRCH) {
+	Birch(TreeBranchDefinition.BETULA, "silverBirch", "pendula", false, LeafType.BIRCH, new Color(8431445), new Color(0xb0c648), EnumVanillaWoodType.BIRCH) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureBirch(tree);
@@ -164,8 +171,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.AVERAGE);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.FASTER);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.AVERAGE);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
 		}
 
 		@Override
@@ -178,7 +185,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Lime(TreeBranchDefinition.TILIA, "silverLime", "pendula", true, EnumLeafType.BIRCH, new Color(0x5ea107), new Color(0x5ea107).brighter(), EnumForestryWoodType.LIME) {
+	Lime(TreeBranchDefinition.TILIA, "silverLime", "pendula", true, LeafType.BIRCH, new Color(0x5ea107), new Color(0x5ea107).brighter(), ForestryWoodType.LIME) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureSilverLime(tree);
@@ -186,10 +193,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOW);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.YIELD, EnumAllele.Yield.LOWER);
-			//Allele.helper.set(alleles, EnumTreeChromosome.EFFECT, Allele.leavesBrimstone);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.YIELD, YieldAllele.LOWER);
 		}
 
 		@Override
@@ -204,7 +210,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Birch, Oak, 15);
 		}
 	},
-	Walnut(TreeBranchDefinition.JUGLANS, "commonWalnut", "regia", true, EnumLeafType.ACACIA, new Color(0x798c55), new Color(0xb0c648), EnumForestryWoodType.WALNUT) {
+	Walnut(TreeBranchDefinition.JUGLANS, "commonWalnut", "regia", true, LeafType.ACACIA, new Color(0x798c55), new Color(0xb0c648), ForestryWoodType.WALNUT) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureWalnut(tree);
@@ -220,10 +226,10 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitWalnut);
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOWER);
-			template.set(TreeChromosomes.YIELD, EnumAllele.Yield.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOWER);
+			template.set(TreeChromosomes.YIELD, YieldAllele.AVERAGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 			template.set(TreeChromosomes.GIRTH, 2);
 		}
 
@@ -237,7 +243,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Chestnut(TreeBranchDefinition.CASTANEA, "sweetChestnut", "sativa", true, EnumLeafType.BIRCH, new Color(0x5ea107), new Color(0xb0c648), EnumForestryWoodType.CHESTNUT) {
+	Chestnut(TreeBranchDefinition.CASTANEA, "sweetChestnut", "sativa", true, LeafType.BIRCH, new Color(0x5ea107), new Color(0xb0c648), ForestryWoodType.CHESTNUT) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureChestnut(tree);
@@ -253,9 +259,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitChestnut);
-			template.set(TreeChromosomes.YIELD, EnumAllele.Yield.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
+			template.set(TreeChromosomes.YIELD, YieldAllele.AVERAGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
 			template.set(TreeChromosomes.GIRTH, 2);
 		}
 
@@ -270,7 +276,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Cherry(TreeBranchDefinition.PRUNUS, "hillCherry", "serrulata", true, EnumLeafType.BIRCH, new Color(0xe691da), new Color(0xe63e59), EnumForestryWoodType.CHERRY) {
+	Cherry(TreeBranchDefinition.PRUNUS, "hillCherry", "serrulata", true, LeafType.BIRCH, new Color(0xe691da), new Color(0xe63e59), ForestryWoodType.CHERRY) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureCherry(tree);
@@ -285,10 +291,10 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitCherry);
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOW);
-			template.set(TreeChromosomes.YIELD, EnumAllele.Yield.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOW);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.SMALLER);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
+			template.set(TreeChromosomes.YIELD, YieldAllele.AVERAGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLER);
 		}
 
 		@Override
@@ -302,7 +308,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Lemon(TreeBranchDefinition.CITRUS, "lemon", "limon", true, EnumLeafType.OAK, new Color(0x88af54), new Color(0xa3b850), EnumForestryWoodType.CITRUS) {
+	Lemon(TreeBranchDefinition.CITRUS, "lemon", "limon", true, LeafType.OAK, new Color(0x88af54), new Color(0xa3b850), ForestryWoodType.CITRUS) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureLemon(tree);
@@ -317,9 +323,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitLemon);
-			template.set(TreeChromosomes.YIELD, EnumAllele.Yield.LOWER);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.AVERAGE);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.SMALLEST);
+			template.set(TreeChromosomes.YIELD, YieldAllele.LOWER);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.AVERAGE);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLEST);
 		}
 
 		@Override
@@ -332,7 +338,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Plum(TreeBranchDefinition.PRUNUS, "plum", "domestica", true, EnumLeafType.OAK, new Color(0x589246), new Color(0xa3b850), EnumForestryWoodType.PLUM) {
+	Plum(TreeBranchDefinition.PRUNUS, "plum", "domestica", true, LeafType.OAK, new Color(0x589246), new Color(0xa3b850), ForestryWoodType.PLUM) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePlum(tree);
@@ -341,15 +347,15 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.PRUNES)
-				.addFruitFamily(EnumFruitFamily.POMES).setRarity(0.005F).setTemperature(EnumTemperature.WARM).setHumidity(EnumHumidity.DAMP);
+				.addFruitFamily(EnumFruitFamily.POMES).setRarity(0.005F).setTemperature(TemperatureType.WARM).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitPlum);
-			template.set(TreeChromosomes.YIELD, EnumAllele.Yield.HIGH);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.AVERAGE);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.SMALLEST);
+			template.set(TreeChromosomes.YIELD, YieldAllele.HIGH);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.AVERAGE);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLEST);
 		}
 
 		@Override
@@ -362,7 +368,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			return true;
 		}
 	},
-	Maple(TreeBranchDefinition.ACER, "sugarMaple", "saccharum", true, EnumLeafType.MAPLE, new Color(0xd4f425), new Color(0x619a3c), EnumForestryWoodType.MAPLE) {
+	Maple(TreeBranchDefinition.ACER, "sugarMaple", "saccharum", true, LeafType.MAPLE, new Color(0xd4f425), new Color(0x619a3c), ForestryWoodType.MAPLE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureMaple(tree);
@@ -376,9 +382,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOW);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -386,7 +392,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Spruce, Larch, 5);
 		}
 	},
-	Spruce(TreeBranchDefinition.PICEA, "redSpruce", "abies", false, EnumLeafType.SPRUCE, new Color(6396257), new Color(0x539d12), EnumVanillaWoodType.SPRUCE) {
+	Spruce(TreeBranchDefinition.PICEA, "redSpruce", "abies", false, LeafType.SPRUCE, new Color(6396257), new Color(0x539d12), EnumVanillaWoodType.SPRUCE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureSpruce(tree);
@@ -399,9 +405,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.AVERAGE);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.FASTER);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.AVERAGE);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
 		}
 
 		@Override
@@ -409,7 +415,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Larch(TreeBranchDefinition.LARIX, "mundaneLarch", "decidua", true, EnumLeafType.SPRUCE, new Color(0x698f90), new Color(0x569896), EnumForestryWoodType.LARCH) {
+	Larch(TreeBranchDefinition.LARIX, "mundaneLarch", "decidua", true, LeafType.SPRUCE, new Color(0x698f90), new Color(0x569896), ForestryWoodType.LARCH) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureLarch(tree);
@@ -417,14 +423,14 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
-			treeSpecies.setRarity(0.0025F).setTemperature(EnumTemperature.COLD);
+			treeSpecies.setRarity(0.0025F).setTemperature(TemperatureType.COLD);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOW);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -433,7 +439,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Spruce, Oak, 10);
 		}
 	},
-	Pine(TreeBranchDefinition.PINUS, "bullPine", "sabiniana", true, EnumLeafType.SPRUCE, new Color(0xfeff8f), new Color(0xffd98f), EnumForestryWoodType.PINE) {
+	Pine(TreeBranchDefinition.PINUS, "bullPine", "sabiniana", true, LeafType.SPRUCE, new Color(0xfeff8f), new Color(0xffd98f), ForestryWoodType.PINE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePine(tree);
@@ -441,14 +447,14 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
-			treeSpecies.setRarity(0.0025F).setTemperature(EnumTemperature.COLD);
+			treeSpecies.setRarity(0.0025F).setTemperature(TemperatureType.COLD);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOW);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -456,7 +462,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Spruce, Larch, 10);
 		}
 	},
-	Sequoia(TreeBranchDefinition.SEQUOIA, "coastSequoia", "sempervirens", false, EnumLeafType.SPRUCE, new Color(0x418e71), new Color(0x569896), EnumForestryWoodType.SEQUOIA) {
+	Sequoia(TreeBranchDefinition.SEQUOIA, "coastSequoia", "sempervirens", false, LeafType.SPRUCE, new Color(0x418e71), new Color(0x569896), ForestryWoodType.SEQUOIA) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureSequoia(tree);
@@ -469,11 +475,11 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGEST);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGEST);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWER);
 			template.set(TreeChromosomes.GIRTH, 3);
-			template.set(TreeChromosomes.FIREPROOF, EnumAllele.Fireproof.TRUE);
+			template.set(TreeChromosomes.FIREPROOF, FireproofAllele.TRUE);
 		}
 
 		@Override
@@ -481,7 +487,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Larch, Pine, 5);
 		}
 	},
-	Gigant(TreeBranchDefinition.SEQUOIADENDRON, "giantSequoia", "giganteum", false, EnumLeafType.SPRUCE, new Color(0x738434), new Color(0x738434).brighter(), EnumForestryWoodType.GIGANTEUM) {
+	Gigant(TreeBranchDefinition.SEQUOIADENDRON, "giantSequoia", "giganteum", false, LeafType.SPRUCE, new Color(0x738434), new Color(0x738434).brighter(), ForestryWoodType.GIGANTEUM) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureGiganteum(tree);
@@ -494,11 +500,11 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.GIGANTIC);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWEST);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOWEST);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.GIGANTIC);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWEST);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWEST);
 			template.set(TreeChromosomes.GIRTH, 4);
-			template.set(TreeChromosomes.FIREPROOF, EnumAllele.Fireproof.TRUE);
+			template.set(TreeChromosomes.FIREPROOF, FireproofAllele.TRUE);
 		}
 
 		@Override
@@ -506,7 +512,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// only available by rare villager trade
 		}
 	},
-	Jungle(TreeBranchDefinition.TROPICAL, "jungle", "tectona", false, EnumLeafType.JUNGLE, new Color(4764952), new Color(0x658917), EnumVanillaWoodType.JUNGLE) {
+	Jungle(TreeBranchDefinition.TROPICAL, "jungle", "tectona", false, LeafType.JUNGLE, new Color(4764952), new Color(0x658917), EnumVanillaWoodType.JUNGLE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureJungle(tree);
@@ -520,8 +526,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitCocoa);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGER);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.FAST);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGER);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.FAST);
 		}
 
 		@Override
@@ -529,7 +535,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Teak(TreeBranchDefinition.TECTONA, "teak", "grandis", true, EnumLeafType.JUNGLE, new Color(0xfeff8f), new Color(0xffd98f), EnumForestryWoodType.TEAK) {
+	Teak(TreeBranchDefinition.TECTONA, "teak", "grandis", true, LeafType.JUNGLE, new Color(0xfeff8f), new Color(0xffd98f), ForestryWoodType.TEAK) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureTeak(tree);
@@ -537,12 +543,12 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
-			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.0025F).setTemperature(EnumTemperature.WARM).setHumidity(EnumHumidity.DAMP);
+			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.0025F).setTemperature(TemperatureType.WARM).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
 		}
 
 		@Override
@@ -550,7 +556,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(DarkOak, Jungle, 10);
 		}
 	},
-	Ipe(TreeBranchDefinition.TABEBUIA, "ipe", "serratifolia", true, EnumLeafType.JUNGLE, new Color(0xfdd207), new Color(0xad8f04), EnumForestryWoodType.IPE) {
+	Ipe(TreeBranchDefinition.TABEBUIA, "ipe", "serratifolia", true, LeafType.JUNGLE, new Color(0xfdd207), new Color(0xad8f04), ForestryWoodType.IPE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureIpe(tree);
@@ -563,8 +569,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
 			template.set(TreeChromosomes.GIRTH, 2);
 		}
 
@@ -573,7 +579,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Teak, DarkOak, 10);
 		}
 	},
-	Kapok(TreeBranchDefinition.CEIBA, "kapok", "pentandra", true, EnumLeafType.JUNGLE, new Color(0x89987b), new Color(0x89aa9e), EnumForestryWoodType.KAPOK) {
+	Kapok(TreeBranchDefinition.CEIBA, "kapok", "pentandra", true, LeafType.JUNGLE, new Color(0x89987b), new Color(0x89aa9e), ForestryWoodType.KAPOK) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureKapok(tree);
@@ -587,9 +593,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOW);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOW);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOW);
 		}
 
 		@Override
@@ -597,7 +603,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Jungle, Teak, 10);
 		}
 	},
-	Ebony(TreeBranchDefinition.EBONY, "myrtleEbony", "pentamera", true, EnumLeafType.JUNGLE, new Color(0xa2d24a), new Color(0xc4d24a), EnumForestryWoodType.EBONY) {
+	Ebony(TreeBranchDefinition.EBONY, "myrtleEbony", "pentamera", true, LeafType.JUNGLE, new Color(0xa2d24a), new Color(0xc4d24a), ForestryWoodType.EBONY) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureEbony(tree);
@@ -606,14 +612,14 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE)
-				.addFruitFamily(EnumFruitFamily.PRUNES).setRarity(0.0005F).setTemperature(EnumTemperature.WARM).setHumidity(EnumHumidity.DAMP);
+				.addFruitFamily(EnumFruitFamily.PRUNES).setRarity(0.0005F).setTemperature(TemperatureType.WARM).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOW);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWER);
 			template.set(TreeChromosomes.GIRTH, 3);
 		}
 
@@ -622,7 +628,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(DarkOak, Kapok, 10);
 		}
 	},
-	Zebrawood(TreeBranchDefinition.ASTRONIUM, "zebrawood", "graveolens", false, EnumLeafType.JUNGLE, new Color(0xa2d24a), new Color(0xc4d24a), EnumForestryWoodType.ZEBRAWOOD) {
+	Zebrawood(TreeBranchDefinition.ASTRONIUM, "zebrawood", "graveolens", false, LeafType.JUNGLE, new Color(0xa2d24a), new Color(0xc4d24a), ForestryWoodType.ZEBRAWOOD) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureZebrawood(tree);
@@ -630,12 +636,12 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
-			treeSpecies.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.0005F).setTemperature(EnumTemperature.WARM).setHumidity(EnumHumidity.DAMP);
+			treeSpecies.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.0005F).setTemperature(TemperatureType.WARM).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
 			template.set(TreeChromosomes.GIRTH, 2);
 		}
 
@@ -644,7 +650,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Ebony, Poplar, 5);
 		}
 	},
-	Mahogony(TreeBranchDefinition.MAHOGANY, "yellowMeranti", "gibbosa", true, EnumLeafType.JUNGLE, new Color(0x8ab154), new Color(0xa9b154), EnumForestryWoodType.MAHOGANY) {
+	Mahogony(TreeBranchDefinition.MAHOGANY, "yellowMeranti", "gibbosa", true, LeafType.JUNGLE, new Color(0x8ab154), new Color(0xa9b154), ForestryWoodType.MAHOGANY) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureMahogany(tree);
@@ -652,14 +658,14 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
-			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.0005F).setTemperature(EnumTemperature.WARM).setHumidity(EnumHumidity.DAMP);
+			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.0005F).setTemperature(TemperatureType.WARM).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOW);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOW);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOW);
 			template.set(TreeChromosomes.GIRTH, 2);
 		}
 
@@ -668,7 +674,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Kapok, Ebony, 10);
 		}
 	},
-	AcaciaVanilla(TreeBranchDefinition.ACACIA, "acacia", "aneura", true, EnumLeafType.ACACIA, new Color(0x616101), new Color(0xb3b302), EnumVanillaWoodType.ACACIA) {
+	AcaciaVanilla(TreeBranchDefinition.ACACIA, "acacia", "aneura", true, LeafType.ACACIA, new Color(0x616101), new Color(0xb3b302), EnumVanillaWoodType.ACACIA) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureAcaciaVanilla(tree);
@@ -690,7 +696,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			// vanilla
 		}
 	},
-	Acacia(TreeBranchDefinition.ACACIA, "desertAcacia", "erioloba", true, EnumLeafType.ACACIA, new Color(0x748C1C), new Color(0xb3b302), EnumForestryWoodType.ACACIA_DESERT) {
+	Acacia(TreeBranchDefinition.ACACIA, "desertAcacia", "erioloba", true, LeafType.ACACIA, new Color(0x748C1C), new Color(0xb3b302), ForestryWoodType.ACACIA_DESERT) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureAcacia(tree);
@@ -699,7 +705,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE)
-				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.005F).setTemperature(EnumTemperature.WARM).setHumidity(EnumHumidity.ARID);
+				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.005F).setTemperature(TemperatureType.WARM).setHumidity(HumidityType.ARID);
 		}
 
 		@Override
@@ -712,7 +718,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Teak, Balsa, 10);
 		}
 	},
-	Padauk(TreeBranchDefinition.PTEROCARPUS, "padauk", "soyauxii", true, EnumLeafType.ACACIA, new Color(0xd0df8c), new Color(0x435c32), EnumForestryWoodType.PADAUK) {
+	Padauk(TreeBranchDefinition.PTEROCARPUS, "padauk", "soyauxii", true, LeafType.ACACIA, new Color(0xd0df8c), new Color(0x435c32), ForestryWoodType.PADAUK) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePadauk(tree);
@@ -720,13 +726,13 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
-			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.005F).setTemperature(EnumTemperature.WARM);
+			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.005F).setTemperature(TemperatureType.WARM);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
 		}
 
 		@Override
@@ -734,7 +740,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(AcaciaVanilla, Jungle, 10);
 		}
 	},
-	Balsa(TreeBranchDefinition.OCHROMA, "balsa", "pyramidale", true, EnumLeafType.ACACIA, new Color(0x59ac00), new Color(0xfeff8f), EnumForestryWoodType.BALSA) {
+	Balsa(TreeBranchDefinition.OCHROMA, "balsa", "pyramidale", true, LeafType.ACACIA, new Color(0x59ac00), new Color(0xfeff8f), ForestryWoodType.BALSA) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureBalsa(tree);
@@ -743,14 +749,14 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE)
-				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.0005F).setHumidity(EnumHumidity.DAMP).setTemperature(EnumTemperature.WARM);
+				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.0005F).setHumidity(HumidityType.DAMP).setTemperature(TemperatureType.WARM);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.HIGH);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.HIGH);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
 		}
 
 		@Override
@@ -758,7 +764,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Teak, AcaciaVanilla, 10);
 		}
 	},
-	Cocobolo(TreeBranchDefinition.DALBERGIA, "cocobolo", "retusa", false, EnumLeafType.MANGROVE, new Color(0x6aa17a), new Color(0x487d4c), EnumForestryWoodType.COCOBOLO) {
+	Cocobolo(TreeBranchDefinition.DALBERGIA, "cocobolo", "retusa", false, LeafType.MANGROVE, new Color(0x6aa17a), new Color(0x487d4c), ForestryWoodType.COCOBOLO) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureCocobolo(tree);
@@ -766,12 +772,12 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
-			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.0005F).setTemperature(EnumTemperature.WARM);
+			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.0005F).setTemperature(TemperatureType.WARM);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGEST);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGEST);
 		}
 
 		@Override
@@ -779,7 +785,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Acacia, DarkOak, 10);
 		}
 	},
-	Wenge(TreeBranchDefinition.MILLETTIA, "wenge", "laurentii", true, EnumLeafType.OAK, new Color(0xada157), new Color(0xad8a57), EnumForestryWoodType.WENGE) {
+	Wenge(TreeBranchDefinition.MILLETTIA, "wenge", "laurentii", true, LeafType.OAK, new Color(0xada157), new Color(0xad8a57), ForestryWoodType.WENGE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureWenge(tree);
@@ -788,12 +794,12 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE)
-				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.0005F).setHumidity(EnumHumidity.DAMP).setTemperature(EnumTemperature.WARM);
+				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.0005F).setHumidity(HumidityType.DAMP).setTemperature(TemperatureType.WARM);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOWEST);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOWEST);
 			template.set(TreeChromosomes.GIRTH, 2);
 		}
 
@@ -802,7 +808,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Cocobolo, Balsa, 10);
 		}
 	},
-	Baobab(TreeBranchDefinition.ADANSONIA, "grandidierBaobab", "digitata", true, EnumLeafType.ACACIA, new Color(0xfeff8f), new Color(0xffd98f), EnumForestryWoodType.BAOBAB) {
+	Baobab(TreeBranchDefinition.ADANSONIA, "grandidierBaobab", "digitata", true, LeafType.ACACIA, new Color(0xfeff8f), new Color(0xffd98f), ForestryWoodType.BAOBAB) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureBaobab(tree);
@@ -811,14 +817,14 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE)
-				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.005F).setTemperature(EnumTemperature.HOT).setHumidity(EnumHumidity.DAMP);
+				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.005F).setTemperature(TemperatureType.HOT).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOW);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOW);
 			template.set(TreeChromosomes.GIRTH, 3);
 		}
 
@@ -827,7 +833,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Balsa, Wenge, 10);
 		}
 	},
-	Mahoe(TreeBranchDefinition.TALIPARITI, "blueMahoe", "elatum", true, EnumLeafType.OAK, new Color(0xa0ba1b), new Color(0x79a175), EnumForestryWoodType.MAHOE) {
+	Mahoe(TreeBranchDefinition.TALIPARITI, "blueMahoe", "elatum", true, LeafType.OAK, new Color(0xa0ba1b), new Color(0x79a175), ForestryWoodType.MAHOE) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureMahoe(tree);
@@ -837,14 +843,14 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE)
 				.addFruitFamily(EnumFruitFamily.POMES)
-				.addFruitFamily(EnumFruitFamily.PRUNES).setRarity(0.000005F).setTemperature(EnumTemperature.WARM);
+				.addFruitFamily(EnumFruitFamily.PRUNES).setRarity(0.000005F).setTemperature(TemperatureType.WARM);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.SMALL);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.HIGH);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOWEST);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALL);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.HIGH);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWEST);
 		}
 
 		@Override
@@ -852,7 +858,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Balsa, Acacia, 5);
 		}
 	},
-	Willow(TreeBranchDefinition.SALIX, "whiteWillow", "alba", true, EnumLeafType.WILLOW, new Color(0xa3b8a5), new Color(0xa3b850), EnumForestryWoodType.WILLOW) {
+	Willow(TreeBranchDefinition.SALIX, "whiteWillow", "alba", true, LeafType.WILLOW, new Color(0xa3b8a5), new Color(0xa3b850), ForestryWoodType.WILLOW) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureWillow(tree);
@@ -863,30 +869,30 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			treeSpecies.addFruitFamily(EnumFruitFamily.NUX)
 				.addFruitFamily(EnumFruitFamily.PRUNES)
 				.addFruitFamily(EnumFruitFamily.POMES)
-				.setRarity(0.0025F).setHumidity(EnumHumidity.DAMP);
+				.setRarity(0.0025F).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOW);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.FASTER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
 		}
 
 		@Override
 		protected void registerMutations() {
 			registerMutation(Oak, Birch, 10)
-				.restrictTemperature(EnumTemperature.WARM, EnumTemperature.HOT)
-				.restrictHumidity(EnumHumidity.DAMP);
+				.restrictTemperature(TemperatureType.WARM, TemperatureType.HOT)
+				.restrictHumidity(HumidityType.DAMP);
 			registerMutation(Oak, Lime, 10)
-				.restrictTemperature(EnumTemperature.WARM, EnumTemperature.HOT)
-				.restrictHumidity(EnumHumidity.DAMP);
+				.restrictTemperature(TemperatureType.WARM, TemperatureType.HOT)
+				.restrictHumidity(HumidityType.DAMP);
 			registerMutation(Lime, Birch, 10)
-				.restrictTemperature(EnumTemperature.WARM, EnumTemperature.HOT)
-				.restrictHumidity(EnumHumidity.DAMP);
+				.restrictTemperature(TemperatureType.WARM, TemperatureType.HOT)
+				.restrictHumidity(HumidityType.DAMP);
 		}
 	},
-	Sipiri(TreeBranchDefinition.CHLOROCARDIUM, "sipiri", "rodiei", true, EnumLeafType.MANGROVE, new Color(0x678911), new Color(0x79a175), EnumForestryWoodType.GREENHEART) {
+	Sipiri(TreeBranchDefinition.CHLOROCARDIUM, "sipiri", "rodiei", true, LeafType.MANGROVE, new Color(0x678911), new Color(0x79a175), ForestryWoodType.GREENHEART) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureGreenheart(tree);
@@ -894,25 +900,25 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
-			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.0025F).setTemperature(EnumTemperature.WARM)
-				.setHumidity(EnumHumidity.DAMP);
+			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE).setRarity(0.0025F).setTemperature(TemperatureType.WARM)
+				.setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.LARGE);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOW);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOW);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOW);
 		}
 
 		@Override
 		protected void registerMutations() {
 			registerMutation(Kapok, Mahogony, 10)
-				.restrictTemperature(EnumTemperature.WARM, EnumTemperature.HOT)
-				.restrictHumidity(EnumHumidity.DAMP);
+				.restrictTemperature(TemperatureType.WARM, TemperatureType.HOT)
+				.restrictHumidity(HumidityType.DAMP);
 		}
 	},
-	Papaya(TreeBranchDefinition.CARICA, "papaya", "papaya", true, EnumLeafType.PALM, new Color(0x6d9f58), new Color(0x75E675), EnumForestryWoodType.PAPAYA) {
+	Papaya(TreeBranchDefinition.CARICA, "papaya", "papaya", true, LeafType.PALM, new Color(0x6d9f58), new Color(0x75E675), ForestryWoodType.PAPAYA) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePapaya(tree);
@@ -921,15 +927,15 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE)
-				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.005F).setTemperature(EnumTemperature.WARM).setHumidity(EnumHumidity.DAMP);
+				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.005F).setTemperature(TemperatureType.WARM).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitPapaya);
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOW);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOWER);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -937,7 +943,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Jungle, Cherry, 5);
 		}
 	},
-	Date(TreeBranchDefinition.PHOENIX, "datePalm", "dactylifera", true, EnumLeafType.PALM, new Color(0xcbcd79), new Color(0xB3F370), EnumForestryWoodType.PALM) {
+	Date(TreeBranchDefinition.PHOENIX, "datePalm", "dactylifera", true, LeafType.PALM, new Color(0xcbcd79), new Color(0xB3F370), ForestryWoodType.PALM) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeatureDate(tree);
@@ -946,16 +952,16 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		@Override
 		protected void setSpeciesProperties(IAlleleTreeSpeciesBuilder treeSpecies) {
 			treeSpecies.addFruitFamily(EnumFruitFamily.JUNGLE)
-				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.005F).setTemperature(EnumTemperature.WARM).setHumidity(EnumHumidity.DAMP);
+				.addFruitFamily(EnumFruitFamily.NUX).setRarity(0.005F).setTemperature(TemperatureType.WARM).setHumidity(HumidityType.DAMP);
 		}
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
 			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitDates);
-			template.set(TreeChromosomes.FERTILITY, EnumAllele.Saplings.LOW);
-			template.set(TreeChromosomes.YIELD, EnumAllele.Yield.LOW);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOW);
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.AVERAGE);
+			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
+			template.set(TreeChromosomes.YIELD, YieldAllele.LOW);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -963,7 +969,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			registerMutation(Jungle, Papaya, 5);
 		}
 	},
-	Poplar(TreeBranchDefinition.POPULUS, "whitePoplar", "alba", true, EnumLeafType.BIRCH, new Color(0xa3b8a5), new Color(0x539d12), EnumForestryWoodType.POPLAR) {
+	Poplar(TreeBranchDefinition.POPULUS, "whitePoplar", "alba", true, LeafType.BIRCH, new Color(0xa3b8a5), new Color(0x539d12), ForestryWoodType.POPLAR) {
 		@Override
 		public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
 			return new FeaturePoplar(tree);
@@ -977,9 +983,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, EnumAllele.Height.SMALL);
-			template.set(TreeChromosomes.SAPPINESS, EnumAllele.Sappiness.LOW);
-			template.set(TreeChromosomes.MATURATION, EnumAllele.Maturation.SLOWER);
+			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALL);
+			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
+			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWER);
 		}
 
 		@Override
@@ -1002,7 +1008,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 	@Nullable
 	private IGenome genome;
 
-	TreeDefinition(TreeBranchDefinition branch, String speciesName, String binomial, boolean dominant, EnumLeafType leafType, Color primary, Color secondary, IWoodType woodType) {
+	TreeDefinition(TreeBranchDefinition branch, String speciesName, String binomial, boolean dominant, LeafType leafType, Color primary, Color secondary, IWoodType woodType) {
 		String uid = "tree_" + getSerializedName();
 		String unlocalizedDescription = "for.description.tree" + this;
 		String unlocalizedName = "for.trees.species." + speciesName;
@@ -1012,11 +1018,11 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		ILeafSpriteProvider leafIconProvider = TreeManager.treeFactory.getLeafIconProvider(leafType, primary, secondary);
 		IGermlingModelProvider germlingIconProvider = ModelProviderFactory.create(woodType, uid, leafIconProvider);
 
-		IAlleleTreeSpeciesBuilder speciesBuilder = TreeManager.treeFactory.createSpecies(Constants.MOD_ID, uid, speciesName)
+		IAlleleTreeSpeciesBuilder speciesBuilder = TreeManager.treeFactory.createSpecies(ForestryConstants.MOD_ID, uid, speciesName)
 				.setDescriptionKey(unlocalizedDescription)
 				.setTranslationKey(unlocalizedName)
 				.setDominant(dominant)
-				.setBranch(branch.getBranch())
+				.setBranch(branch.getGenus())
 				.setBinomial(binomial)
 				.setLeafSprite(leafIconProvider)
 				.setModel(germlingIconProvider)
@@ -1048,7 +1054,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 	@Override
 	public boolean setLeaves(IGenome genome, LevelAccessor world, @Nullable GameProfile owner, BlockPos pos, RandomSource rand) {
-		if (owner == null && new TemplateMatcher(genome).matches()) {
+		if (owner == null && genome.matchesTemplateGenome()) {
 			IFruitProvider fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 			BlockState defaultLeaves;
 			FeatureBlockGroup<? extends Block, TreeDefinition> leavesGroup;
@@ -1121,16 +1127,20 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 	}
 
 	@Override
-	public IAlleleTreeSpecies getSpecies() {
+	public ISpeciesType<ITree> getSpecies() {
 		return species;
 	}
 
-	public final String getUID() {
-		return species.getRegistryName().toString();
+	public final String getIdString() {
+		return species.getId().toString();
+	}
+
+	public final ResourceLocation getId() {
+		return species.getId();
 	}
 
 	public final String getUnlocalizedName() {
-		return species.getLocalisationKey();
+		return species.getTranslationKey();
 	}
 
 	@Override
@@ -1139,7 +1149,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 	}
 
 	@Override
-	public final ItemStack getMemberStack(EnumGermlingType treeType) {
+	public final ItemStack getMemberStack(TreeLifeStage treeType) {
 		ITree tree = createIndividual();
 		return TreeManager.treeRoot.getTypes().createStack(tree, treeType);
 	}

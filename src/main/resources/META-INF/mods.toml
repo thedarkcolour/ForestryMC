@@ -8,13 +8,12 @@ license="GNU Lesser Public License v3"
 	modId="forestry"
 	version="${version}"
 	displayName="Forestry"
-	# TODO - old has http://minecraft.curseforge.com/projects/forestry. Does this work?
 	#updateJSONURL="http://myurl.me/"
 	#also TODO - is this the best website to choose?
 	displayURL="https://forestryforminecraft.info/"
 	logoFile="forestry_logo.png"
-	credits="mistaqur, Binnie, CovertJaguar, MysteriousAges, Nirek, Nedelosk, Temp1011"
-	authors="SirSengir, mezz, Nedelosk"
+	credits="mistaqur, Binnie, CovertJaguar, MysteriousAges, Nirek, Temp1011, ramidzkh"
+	authors="SirSengir, mezz, Nedelosk, thedarkcolour"
 	description='''
 	Trees, bees and more.
 	'''

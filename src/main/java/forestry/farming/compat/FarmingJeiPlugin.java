@@ -7,9 +7,9 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
 import forestry.core.ClientsideCode;
 import forestry.core.circuits.EnumCircuitBoardType;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 
 import mezz.jei.api.IModPlugin;
@@ -27,7 +27,7 @@ import java.util.List;
 public class FarmingJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(Constants.MOD_ID, "farming");
+		return new ResourceLocation(ForestryConstants.MOD_ID, "farming");
 	}
 
 	@Override

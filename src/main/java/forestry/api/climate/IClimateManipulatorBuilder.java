@@ -21,7 +21,7 @@ public interface IClimateManipulatorBuilder {
 	/**
 	 * Sets the consumer that gets called at {@link IClimateManipulator#finish()}.
 	 */
-	IClimateManipulatorBuilder setOnFinish(Consumer<IClimateState> onFinish);
+	IClimateManipulatorBuilder setOnFinish(Consumer<IClimatised> onFinish);
 
 	/**
 	 * Sets the {@link BiFunction} that supplies the change value of the manipulator.
@@ -31,17 +31,17 @@ public interface IClimateManipulatorBuilder {
 	/**
 	 * Sets the targeted state of this manipulator.
 	 */
-	IClimateManipulatorBuilder setTarget(IClimateState state);
+	IClimateManipulatorBuilder setTarget(IClimatised state);
 
 	/**
 	 * Sets the default state of this manipulator. (The state of the manipulator without any change)
 	 */
-	IClimateManipulatorBuilder setDefault(IClimateState state);
+	IClimateManipulatorBuilder setDefault(IClimatised state);
 
 	/**
 	 * Sets the state at that the manipulator starts to manipulate.
 	 */
-	IClimateManipulatorBuilder setCurrent(IClimateState state);
+	IClimateManipulatorBuilder setCurrent(IClimatised state);
 
 	/**
 	 * Creates the manipulator based on the data that was supplied to this builder.

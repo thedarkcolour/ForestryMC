@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.core.config.Config;
-import forestry.core.render.TextureManagerForestry;
+import forestry.core.render.ForestryTextureManager;
 import forestry.energy.ForestryEnergyStorage;
 
 public class PowerLedger extends Ledger {
@@ -33,7 +33,7 @@ public class PowerLedger extends Ledger {
 		drawBackground(transform, y, x);
 
 		// Draw icon
-		drawSprite(transform, TextureManagerForestry.INSTANCE.getDefault("misc/energy"), x + 3, y + 4);
+		drawSprite(transform, ForestryTextureManager.INSTANCE.getDefault("misc/energy"), x + 3, y + 4);
 
 		if (!isFullyOpened()) {
 			return;

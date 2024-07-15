@@ -13,19 +13,18 @@ package forestry.arboriculture.genetics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+import forestry.api.IForestryApi;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITreeMutation;
 import forestry.api.arboriculture.genetics.ITreeMutationBuilder;
-import forestry.api.arboriculture.genetics.ITreeRoot;
-import forestry.api.climate.ClimateManager;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.core.genetics.mutations.Mutation;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 
 public class TreeMutation extends Mutation implements ITreeMutation, ITreeMutationBuilder {
-
 	public TreeMutation(IAlleleTreeSpecies allele0, IAlleleTreeSpecies allele1, IAllele[] template, int chance) {
 		super(allele0, allele1, template, chance);
 	}
@@ -36,13 +35,13 @@ public class TreeMutation extends Mutation implements ITreeMutation, ITreeMutati
 	}
 
 	@Override
-	public ITreeRoot getRoot() {
+	public ITreeSpeciesType getRoot() {
 		return TreeManager.treeRoot;
 	}
 
 	@Override
 	public float getChance(Level world, BlockPos pos, IAlleleTreeSpecies allele0, IAlleleTreeSpecies allele1, IGenome genome0, IGenome genome1) {
-		float processedChance = super.getChance(world, pos, allele0, allele1, genome0, genome1, ClimateManager.climateRoot.getDefaultClimate(world, pos));
+		float processedChance = super.getChance(world, pos, allele0, allele1, genome0, genome1, IForestryApi.INSTANCE.getClimateManager().getDefaultClimate(world, pos));
 		if (processedChance <= 0) {
 			return 0;
 		}

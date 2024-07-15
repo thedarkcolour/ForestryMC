@@ -35,7 +35,7 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.IStreamable;
 import forestry.core.network.packets.PacketTankLevelUpdate;
 import forestry.core.tiles.ILiquidTankTile;

@@ -1,5 +1,6 @@
 package forestry.apiculture;
 
+import forestry.api.ForestryConstants;
 import forestry.api.apiculture.genetics.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,80 +11,53 @@ import com.mojang.authlib.GameProfile;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.genetics.ForestryComponentKeys;
+import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.IResearchHandler;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.features.ApicultureItems;
-import forestry.apiculture.genetics.BeeBranchDefinition;
 import forestry.apiculture.genetics.BeeDefinition;
 import forestry.apiculture.genetics.BeeDisplayHandler;
 import forestry.apiculture.genetics.BeeHelper;
-import forestry.apiculture.genetics.BeeRoot;
-import forestry.apiculture.genetics.BeekeepingMode;
-import forestry.apiculture.genetics.alleles.AlleleEffects;
+import forestry.apiculture.genetics.BeeSpeciesType;
 import forestry.apiculture.items.ItemHoneyComb;
-import forestry.core.config.Constants;
-import forestry.core.genetics.alleles.EnumAllele;
 import forestry.core.genetics.root.IResearchPlugin;
 import forestry.core.genetics.root.ResearchHandler;
 import forestry.core.items.ItemOverlay;
 import forestry.core.utils.ItemStackUtil;
 
 import genetics.api.GeneticPlugin;
-import genetics.api.GeneticsAPI;
 import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticFactory;
 import genetics.api.IGeneticPlugin;
-import genetics.api.alleles.IAlleleRegistry;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.classification.IClassification;
-import genetics.api.classification.IClassification.EnumClassLevel;
-import genetics.api.classification.IClassificationRegistry;
+
+import forestry.api.genetics.alleles.IAlleleSpecies;
+
 import genetics.api.individual.IIndividual;
 import genetics.api.organism.IOrganismTypes;
 import genetics.api.root.IGeneticListenerRegistry;
 import genetics.api.root.IIndividualRootBuilder;
-import genetics.api.root.IRootDefinition;
 import genetics.api.root.IRootManager;
 import genetics.api.root.components.ComponentKeys;
 
-@GeneticPlugin(modId = Constants.MOD_ID)
+@GeneticPlugin(modId = ForestryConstants.MOD_ID)
 public class BeePlugin implements IGeneticPlugin {
-	@Override
-	public void registerClassifications(IClassificationRegistry registry) {
-		IClassification hymnoptera = registry.createAndRegisterClassification(EnumClassLevel.ORDER, "hymnoptera", "Hymnoptera");
-		registry.getClassification("class.insecta").addMemberGroup(hymnoptera);
-
-		IClassification apidae = registry.createAndRegisterClassification(EnumClassLevel.FAMILY, "apidae", "Apidae");
-		hymnoptera.addMemberGroup(apidae);
-
-		for (BeeBranchDefinition beeBranch : BeeBranchDefinition.values()) {
-			apidae.addMemberGroup(beeBranch.getBranch());
-		}
-	}
 
 	@Override
 	public void registerListeners(IGeneticListenerRegistry registry) {
-		registry.add(BeeRoot.UID, BeeDefinition.values());
-	}
-
-	@Override
-	public void registerAlleles(IAlleleRegistry registry) {
-		registry.registerAlleles(EnumAllele.Fertility.values(), BeeChromosomes.FERTILITY);
-		registry.registerAlleles(EnumAllele.Flowering.values(), BeeChromosomes.FLOWERING);
-		registry.registerAlleles(EnumAllele.Territory.values(), BeeChromosomes.TERRITORY);
-		AlleleEffects.registerAlleles(registry);
+		registry.add(ForestrySpeciesType.BEE, BeeDefinition.values());
 	}
 
 	@Override
 	public void createRoot(IRootManager rootManager, IGeneticFactory geneticFactory) {
-		IIndividualRootBuilder<IBee> rootBuilder = rootManager.createRoot(BeeRoot.UID);
+		IIndividualRootBuilder<IBee> rootBuilder = rootManager.createRoot(ForestrySpeciesType.BEE);
 		rootBuilder
-			.setRootFactory(BeeRoot::new)
+			.setRootFactory(BeeSpeciesType::new)
 			.setSpeciesType(BeeChromosomes.SPECIES)
 			.addListener(ComponentKeys.TYPES, (IOrganismTypes<IBee> builder) -> {
-				builder.registerType(EnumBeeType.DRONE, ApicultureItems.BEE_DRONE::stack);
-				builder.registerType(EnumBeeType.PRINCESS, ApicultureItems.BEE_PRINCESS::stack);
-				builder.registerType(EnumBeeType.QUEEN, ApicultureItems.BEE_QUEEN::stack);
-				builder.registerType(EnumBeeType.LARVAE, ApicultureItems.BEE_LARVAE::stack);
+				builder.registerType(BeeLifeStage.DRONE, ApicultureItems.BEE_DRONE::stack);
+				builder.registerType(BeeLifeStage.PRINCESS, ApicultureItems.BEE_PRINCESS::stack);
+				builder.registerType(BeeLifeStage.QUEEN, ApicultureItems.BEE_QUEEN::stack);
+				builder.registerType(BeeLifeStage.LARVAE, ApicultureItems.BEE_LARVAE::stack);
 			})
 			.addComponent(ComponentKeys.TRANSLATORS)
 			.addComponent(ComponentKeys.MUTATIONS)
@@ -136,14 +110,7 @@ public class BeePlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		BeeManager.beeRoot = instance.<IBeeRoot>getRoot(BeeRoot.UID).get();
-
-		// Modes
-		BeeManager.beeRoot.registerBeekeepingMode(BeekeepingMode.easy);
-		BeeManager.beeRoot.registerBeekeepingMode(BeekeepingMode.normal);
-		BeeManager.beeRoot.registerBeekeepingMode(BeekeepingMode.hard);
-		BeeManager.beeRoot.registerBeekeepingMode(BeekeepingMode.hardcore);
-		BeeManager.beeRoot.registerBeekeepingMode(BeekeepingMode.insane);
+		BeeManager.beeRoot = instance.getRoot(ForestrySpeciesType.BEE);
 
 		BeeDisplayHandler.init(DisplayHelper.getInstance());
 	}

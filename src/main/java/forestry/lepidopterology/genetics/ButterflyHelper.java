@@ -4,17 +4,25 @@ import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
 import genetics.api.individual.IKaryotype;
-import genetics.api.root.IRootDefinition;
 
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
-import forestry.api.lepidopterology.genetics.IButterflyRoot;
-import forestry.core.genetics.alleles.EnumAllele;
+import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ForestryAlleles;
+import forestry.api.genetics.alleles.ForestryChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.lepidopterology.genetics.ButterflyChromosome;
+import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
+import forestry.core.genetics.alleles.FlowerTypeAllele;
+import forestry.core.genetics.alleles.MetabolismAllele;
+import forestry.core.genetics.alleles.SizeAllele;
+import forestry.core.genetics.alleles.SpeedAllele;
+import forestry.core.genetics.alleles.ToleranceAllele;
 import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
 
 public class ButterflyHelper {
-	public static final IRootDefinition<ButterflyRoot> ROOT = GeneticsAPI.apiInstance.getRoot(ButterflyRoot.UID);
+	public static final ButterflySpeciesType ROOT = GeneticsAPI.apiInstance.getRoot(ForestrySpeciesType.BUTTERFLY);
 
-	public static IButterflyRoot getRoot() {
+	public static IButterflySpeciesType getRoot() {
 		return ROOT.get();
 	}
 
@@ -27,17 +35,17 @@ public class ButterflyHelper {
 	}
 
 	public static IAlleleTemplate createDefaultTemplate(IAlleleTemplateBuilder templateBuilder) {
-		return templateBuilder.set(ButterflyChromosomes.SIZE, EnumAllele.Size.SMALL)
-			.set(ButterflyChromosomes.SPEED, EnumAllele.Speed.SLOWEST)
-			.set(ButterflyChromosomes.LIFESPAN, EnumAllele.Lifespan.SHORTER)
-			.set(ButterflyChromosomes.METABOLISM, EnumAllele.Metabolism.SLOWER)
+		return templateBuilder.set(ButterflyChromosomes.SIZE, SizeAllele.SMALL)
+			.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWEST)
+			.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.SHORTER)
+			.set(ButterflyChromosomes.METABOLISM, MetabolismAllele.SLOWER)
 			.set(ButterflyChromosomes.FERTILITY, 3)
-			.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, EnumAllele.Tolerance.NONE)
-			.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, EnumAllele.Tolerance.NONE)
-			.set(ButterflyChromosomes.NOCTURNAL, false)
+			.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.NONE)
+			.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.NONE)
+			.set(ButterflyChromosomes.NEVER_SLEEPS, false)
 			.set(ButterflyChromosomes.TOLERATES_RAIN, false)
-			.set(ButterflyChromosomes.FIRE_RESIST, false)
-			.set(ButterflyChromosomes.FLOWER_PROVIDER, EnumAllele.Flowers.VANILLA)
+			.set(ButterflyChromosomes.FIRE_RESISTANT, false)
+			.set(ButterflyChromosomes.FLOWER_PROVIDER, FlowerTypeAllele.VANILLA)
 			.set(ButterflyChromosomes.EFFECT, ButterflyAlleles.butterflyNone)
 			.set(ButterflyChromosomes.COCOON, ButterflyAlleles.DEFAULT_COCOON)
 			.set(ButterflyChromosomes.SPECIES, ButterflyDefinition.Monarch.getSpecies())

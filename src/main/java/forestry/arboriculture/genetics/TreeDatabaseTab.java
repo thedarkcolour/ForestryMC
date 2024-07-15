@@ -12,12 +12,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.EnumFruitFamily;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.IAlleleFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
@@ -26,7 +26,7 @@ import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
 import forestry.core.gui.elements.GuiElementFactory;
 
-import genetics.api.alleles.IAlleleValue;
+import forestry.api.genetics.alleles.IValueAllele;
 
 @OnlyIn(Dist.CLIENT)
 public class TreeDatabaseTab implements IDatabaseTab<ITree> {
@@ -55,7 +55,7 @@ public class TreeDatabaseTab implements IDatabaseTab<ITree> {
 		container.addLine(Component.translatable("for.gui.maturity"), TreeChromosomes.MATURATION);
 		container.addLine(Component.translatable("for.gui.height"), TreeChromosomes.HEIGHT);
 
-		container.addLine(Component.translatable("for.gui.girth"), (IAlleleValue<Integer> girth, Boolean active) -> Component.literal(String.format("%sx%s", girth.getValue(), girth.getValue())), TreeChromosomes.GIRTH);
+		container.addLine(Component.translatable("for.gui.girth"), (IValueAllele<Integer> girth, Boolean active) -> Component.literal(String.format("%sx%s", girth.value(), girth.value())), TreeChromosomes.GIRTH);
 
 		container.addLine(Component.translatable("for.gui.yield"), TreeChromosomes.YIELD);
 		container.addLine(Component.translatable("for.gui.sappiness"), TreeChromosomes.SAPPINESS);
@@ -72,7 +72,7 @@ public class TreeDatabaseTab implements IDatabaseTab<ITree> {
 		}
 
 		IAlleleFruit fruit = mode == DatabaseMode.ACTIVE ? tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS) : tree.getGenome().getInactiveAllele(TreeChromosomes.FRUITS);
-		Style textStyle = GuiElementFactory.INSTANCE.getStateStyle(tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).isDominant());
+		Style textStyle = GuiElementFactory.INSTANCE.getStateStyle(tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).dominant());
 
 		container.translated("for.gui.fruits").setStyle(GuiConstants.UNDERLINED_STYLE).setAlign(Alignment.TOP_CENTER);
 		Style fruitStyle = textStyle;
@@ -94,6 +94,6 @@ public class TreeDatabaseTab implements IDatabaseTab<ITree> {
 	@Override
 	public ItemStack getIconStack() {
         // todo revert to Cherry
-		return TreeDefinition.Oak.getMemberStack(mode == DatabaseMode.ACTIVE ? EnumGermlingType.SAPLING : EnumGermlingType.POLLEN);
+		return TreeDefinition.Oak.getMemberStack(mode == DatabaseMode.ACTIVE ? TreeLifeStage.SAPLING : TreeLifeStage.POLLEN);
 	}
 }

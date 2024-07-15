@@ -7,6 +7,7 @@ package forestry.api.farming;
 
 import java.util.Collection;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
@@ -43,7 +44,7 @@ public interface IFarmLogic {
 	 *                    The positions of the next blocks are having a offset in the given direction.
 	 * @return True if the logic has cultivated any block.
 	 */
-	default boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	default boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		return false;
 	}
 
@@ -51,14 +52,14 @@ public interface IFarmLogic {
 	 * Tries to harvest one or more blocks at the given position and with the given extent.
 	 *
 	 * @param world     The world of the farm.
-	 * @param housing
+	 * @param housing   The farm that uses this logic.
 	 * @param direction The direction of the extension.
 	 * @param extent    How many blocks this logic tries to harvest after it has tried to harvested the block at the given position.
 	 *                  The positions of the next blocks are having a offset in the given direction.
 	 * @param pos       The position at that the logic should start to harvest.
 	 * @return True if the logic has cultivated any block.
 	 */
-	Collection<ICrop> harvest(Level world, IFarmHousing housing, FarmDirection direction, int extent, BlockPos pos);
+	Collection<ICrop> harvest(Level world, IFarmHousing housing, Direction direction, int extent, BlockPos pos);
 
 	/**
 	 * Returns the {@link IFarmProperties} that created this logic.

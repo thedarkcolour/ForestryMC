@@ -17,9 +17,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 
@@ -30,15 +31,14 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import forestry.api.core.ForestryEvent;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.IMutation;
 import forestry.core.network.packets.PacketGenomeTrackerSync;
 import forestry.core.utils.NetworkUtil;
 
 import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.IAlleleSpecies;
 import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
-import genetics.api.root.IIndividualRoot;
-import genetics.api.root.IRootDefinition;
+import forestry.api.genetics.ISpeciesType;
 
 public abstract class BreedingTracker extends SavedData implements IBreedingTracker {
 	private static final String SPECIES_COUNT_KEY = "SpeciesCount";
@@ -109,7 +109,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	/**
 	 * Tag stored in NBT to identify the type of the tracker being synced
 	 */
-	protected abstract String speciesRootUID();
+	protected abstract ResourceLocation getSpeciesId();
 
 	@Override
 	public void synchToPlayer(Player player) {
@@ -169,7 +169,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 			CompoundNBT.putString(MODE_NAME_KEY, modeName);
 		}
 
-		CompoundNBT.putString(TYPE_KEY, speciesRootUID());
+		CompoundNBT.putString(TYPE_KEY, getSpeciesId());
 
 		writeValuesToNBT(CompoundNBT, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
 		writeValuesToNBT(CompoundNBT, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
@@ -203,9 +203,9 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	}
 
 	private static String getMutationString(IMutation mutation) {
-		String species0 = mutation.getFirstParent().getRegistryName().toString();
-		String species1 = mutation.getSecondParent().getRegistryName().toString();
-		String resultSpecies = mutation.getResultingSpecies().getRegistryName().toString();
+		String species0 = mutation.getFirstParent().getId().toString();
+		String species1 = mutation.getSecondParent().getId().toString();
+		String resultSpecies = mutation.getResultingSpecies().getId().toString();
 		return String.format(MUTATION_FORMAT, species0, species1, resultSpecies);
 	}
 
@@ -216,7 +216,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 			discoveredMutations.add(mutationString);
 			setDirty();
 
-			IRootDefinition<IIndividualRoot<?>> speciesRoot = GeneticsAPI.apiInstance.getRoot(speciesRootUID());
+			ISpeciesType<?> speciesRoot = GeneticsAPI.apiInstance.getRoot(getSpeciesId());
 			ForestryEvent event = new ForestryEvent.MutationDiscovered(speciesRoot, username, mutation, this);
 			MinecraftForge.EVENT_BUS.post(event);
 
@@ -232,7 +232,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 
 	@Override
 	public boolean isDiscovered(IAlleleSpecies species) {
-		return discoveredSpecies.contains(species.getRegistryName().toString());
+		return discoveredSpecies.contains(species.getId().toString());
 	}
 
 	@Override
@@ -247,17 +247,17 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 
 	@Override
 	public void registerBirth(IIndividual individual) {
-		registerSpecies(individual.getGenome().getPrimary());
-		registerSpecies(individual.getGenome().getSecondary());
+		registerSpecies(individual.getGenome().getPrimarySpecies());
+		registerSpecies(individual.getGenome().getSecondarySpecies());
 	}
 
 	@Override
 	public void registerSpecies(IAlleleSpecies species) {
-		String registryName = species.getRegistryName().toString();
+		String registryName = species.getId().toString();
 		if (!discoveredSpecies.contains(registryName)) {
 			discoveredSpecies.add(registryName);
 
-			IRootDefinition speciesRoot = GeneticsAPI.apiInstance.getRoot(speciesRootUID());
+			ISpeciesType<?> speciesRoot = GeneticsAPI.apiInstance.getRoot(getSpeciesId());
 			ForestryEvent event = new ForestryEvent.SpeciesDiscovered(speciesRoot, username, species, this);
 			MinecraftForge.EVENT_BUS.post(event);
 

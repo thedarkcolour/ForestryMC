@@ -1,11 +1,11 @@
 package forestry.core.gui;
 
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 
 import genetics.api.individual.IIndividual;
 
 public interface INaturalistMenu {
-	IForestrySpeciesRoot<IIndividual> getSpeciesRoot();
+	IForestrySpeciesType<IIndividual> getSpeciesRoot();
 
 	int getCurrentPage();
 

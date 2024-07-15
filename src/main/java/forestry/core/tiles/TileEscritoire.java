@@ -39,7 +39,7 @@ import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.NetworkUtil;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IIndividualRoot;
+import forestry.api.genetics.ISpeciesType;
 import genetics.utils.RootUtils;
 
 public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotPickupWatcher, IStreamableGui, IItemStackDisplay {
@@ -86,8 +86,8 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 			return;
 		}
 
-		IAlleleForestrySpecies species = individual.getGenome().getPrimary(IAlleleForestrySpecies.class);
-		IIndividualRoot<IIndividual> root = (IIndividualRoot<IIndividual>) species.getRoot();
+		IAlleleForestrySpecies species = individual.getGenome().getPrimarySpecies(IAlleleForestrySpecies.class);
+		ISpeciesType<IIndividual> root = (ISpeciesType<IIndividual>) species.getSpecies();
 		IResearchHandler<IIndividual> handler = root.getComponent(ForestryComponentKeys.RESEARCH);
 		for (ItemStack itemstack : handler.getResearchBounty(species, level, gameProfile, individual, game.getBountyLevel())) {
 			InventoryUtil.addStack(getInternalInventory(), itemstack, InventoryEscritoire.SLOT_RESULTS_1, InventoryEscritoire.SLOTS_RESULTS_COUNT, true);

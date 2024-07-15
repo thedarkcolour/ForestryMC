@@ -8,13 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import forestry.api.core.ILocatable;
-import forestry.api.genetics.filter.IFilterLogic;
 import forestry.api.genetics.filter.IFilterRegistry;
 import forestry.api.genetics.filter.IFilterRuleType;
 
 public class FilterRegistry implements IFilterRegistry {
-	private static final Comparator<IFilterRuleType> FILTER_COMPARATOR = (f, s) -> f.getUID().compareToIgnoreCase(s.getUID());
+	private static final Comparator<IFilterRuleType> FILTER_COMPARATOR = (f, s) -> f.getId().compareToIgnoreCase(s.getId());
 
 	private final HashMap<String, IFilterRuleType> filterByName = new LinkedHashMap<>();
 	private final HashMap<String, Integer> filterIDByName = new LinkedHashMap<>();
@@ -25,7 +23,7 @@ public class FilterRegistry implements IFilterRegistry {
 		if (!filterByID.isEmpty()) {
 			return;
 		}
-		filterByName.put(rule.getUID(), rule);
+		filterByName.put(rule.getId(), rule);
 	}
 
 	public void init() {
@@ -33,7 +31,7 @@ public class FilterRegistry implements IFilterRegistry {
 		rules.sort(FILTER_COMPARATOR);
 		for (int i = 0; i < rules.size(); i++) {
 			IFilterRuleType rule = rules.get(i);
-			filterIDByName.put(rule.getUID(), i);
+			filterIDByName.put(rule.getId(), i);
 			filterByID.put(i, rule);
 		}
 	}
@@ -56,12 +54,7 @@ public class FilterRegistry implements IFilterRegistry {
 
 	@Override
 	public int getId(IFilterRuleType rule) {
-		return filterIDByName.get(rule.getUID());
-	}
-
-	@Override
-	public IFilterLogic createLogic(ILocatable locatable, IFilterLogic.INetworkHandler networkHandler) {
-		return new FilterLogic(locatable, networkHandler);
+		return filterIDByName.get(rule.getId());
 	}
 
 	@Nullable

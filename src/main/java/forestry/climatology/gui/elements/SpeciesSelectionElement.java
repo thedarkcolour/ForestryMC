@@ -21,12 +21,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
+import forestry.api.climate.ClimateState;
 import forestry.api.climate.IClimateTransformer;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
-import forestry.core.climate.ClimateStateHelper;
-import forestry.core.config.Constants;
 import forestry.core.gui.elements.GuiElement;
 
 import genetics.api.individual.IIndividual;
@@ -53,8 +53,8 @@ public class SpeciesSelectionElement extends GuiElement {
 			}
 			IIndividual individual = optional.get();
 			IAlleleForestrySpecies primary = individual.getGenome().getPrimary(IAlleleForestrySpecies.class);
-			EnumTemperature temperature = primary.getTemperature();
-			EnumHumidity humidity = primary.getHumidity();
+			EnumTemperature temperature = primary.temperature();
+			EnumHumidity humidity = primary.humidity();
 			float temp;
 			float humid;
 			switch (temperature) {
@@ -105,32 +105,17 @@ public class SpeciesSelectionElement extends GuiElement {
 		if (individual == null) {
 			return false;
 		}
-		IAlleleForestrySpecies primary = individual.getGenome().getPrimary(IAlleleForestrySpecies.class);
-		EnumTemperature temperature = primary.getTemperature();
-		EnumHumidity humidity = primary.getHumidity();
-		float temp;
-		float humid;
-		temp = switch (temperature) {
-			case HELLISH -> 2.0F;
-			case HOT -> 1.25F;
-			case WARM -> 0.9F;
-			case COLD -> 0.15F;
-			case ICY -> 0.0F;
-			default -> 0.79F;
-		};
-		humid = switch (humidity) {
-			case DAMP -> 0.9F;
-			case ARID -> 0.2F;
-			case NORMAL -> 0.4F;
-		};
-		transformer.setTarget(ClimateStateHelper.INSTANCE.create(temp, humid));
+		IAlleleForestrySpecies primary = individual.getGenome().getPrimarySpecies(IAlleleForestrySpecies.class);
+		TemperatureType temperature = primary.getTemperature();
+		HumidityType humidity = primary.getHumidity();
+		transformer.setTarget(new ClimateState(temperature, humidity));
 		return true;
 	}
 
 	@Override
 	public void drawElement(PoseStack transform, int mouseX, int mouseY) {
 		super.drawElement(transform, mouseX, mouseY);
-		RenderSystem.setShaderTexture(0, new ResourceLocation(Constants.MOD_ID, "textures/gui/habitat_former.png"));
+		RenderSystem.setShaderTexture(0, new ResourceLocation(ForestryConstants.MOD_ID, "textures/gui/habitat_former.png"));
 		// RenderSystem.enableAlphaTest();
 		blit(transform, 0, 0, 224, 46, 22, 22);
 		// RenderSystem.disableAlphaTest();

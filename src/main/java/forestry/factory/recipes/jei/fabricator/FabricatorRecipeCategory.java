@@ -1,5 +1,6 @@
 package forestry.factory.recipes.jei.fabricator;
 
+import forestry.api.ForestryConstants;
 import forestry.api.recipes.IFabricatorRecipe;
 import forestry.api.recipes.IFabricatorSmeltingRecipe;
 import forestry.api.recipes.RecipeManagers;
@@ -38,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FabricatorRecipeCategory extends ForestryRecipeCategory<IFabricatorRecipe> {
-	private final static ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/fabricator.png");
+	private final static ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/fabricator.png");
 	private final IDrawable icon;
 	@Nullable
 	private final RecipeManager manager;

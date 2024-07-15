@@ -10,19 +10,17 @@
  ******************************************************************************/
 package forestry.apiculture;
 
-import java.util.Optional;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousingInventory;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.core.inventory.InventoryAdapterRestricted;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.SlotUtil;
 
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.ILifeStage;
 
 public class InventoryBeeHousing extends InventoryAdapterRestricted implements IBeeHousingInventory {
 	public static final int SLOT_QUEEN = 0;
@@ -36,12 +34,12 @@ public class InventoryBeeHousing extends InventoryAdapterRestricted implements I
 
 	@Override
 	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		IOrganismType beeType = BeeManager.beeRoot.getType(itemStack);
+		ILifeStage beeType = BeeManager.beeRoot.getLifeStage(itemStack);
 
 		if (slotIndex == SLOT_QUEEN) {
-			return beeType == EnumBeeType.QUEEN || beeType == EnumBeeType.PRINCESS;
+			return beeType == BeeLifeStage.QUEEN || beeType == BeeLifeStage.PRINCESS;
 		} else if (slotIndex == SLOT_DRONE) {
-			return beeType == EnumBeeType.DRONE;
+			return beeType == BeeLifeStage.DRONE;
 		}
 		return false;
 	}

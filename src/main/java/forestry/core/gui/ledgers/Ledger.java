@@ -26,12 +26,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.client.ForestrySprites;
+import forestry.api.client.IForestryClientApi;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.config.SessionVars;
 import forestry.core.gui.GuiForestry;
-import forestry.core.render.ForestryResource;
-import forestry.core.render.TextureManagerForestry;
+import forestry.core.utils.ModUtil;
 
 /**
  * Side ledger for guis
@@ -45,8 +46,8 @@ public abstract class Ledger {
 	protected final int maxTextWidth;
 	protected int maxHeight = 24;
 
-	private static final ResourceLocation ledgerTextureRight = new ForestryResource(Constants.TEXTURE_PATH_GUI + "/ledger.png");
-	private static final ResourceLocation ledgerTextureLeft = new ForestryResource(Constants.TEXTURE_PATH_GUI + "/ledger_left.png");
+	private static final ResourceLocation ledgerTextureRight = ModUtil.modLoc(Constants.TEXTURE_PATH_GUI + "/ledger.png");
+	private static final ResourceLocation ledgerTextureLeft = ModUtil.modLoc(Constants.TEXTURE_PATH_GUI + "/ledger_left.png");
 
 	protected final LedgerManager manager;
 
@@ -221,8 +222,12 @@ public abstract class Ledger {
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0F);
 	}
 
+	protected void drawSprite(PoseStack transform, ResourceLocation path, int x, int y) {
+		drawSprite(transform, IForestryClientApi.INSTANCE.getTextureManager().getSprite(path), x, y);
+	}
+
 	protected void drawSprite(PoseStack transform, TextureAtlasSprite sprite, int x, int y) {
-		drawSprite(transform, sprite, x, y, TextureManagerForestry.INSTANCE.getGuiTextureMap());
+		drawSprite(transform, sprite, x, y, ForestrySprites.TEXTURE_ATLAS);
 	}
 
 	protected void drawSprite(PoseStack transform, TextureAtlasSprite sprite, int x, int y, ResourceLocation textureMap) {

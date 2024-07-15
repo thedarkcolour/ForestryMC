@@ -1,6 +1,8 @@
 package forestry.farming.compat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.circuits.ICircuit;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmableInfo;
@@ -30,7 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInfoRecipe> {
-	public static final RecipeType<FarmingInfoRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "farming", FarmingInfoRecipe.class);
+	public static final RecipeType<FarmingInfoRecipe> TYPE = RecipeType.create(ForestryConstants.MOD_ID, "farming", FarmingInfoRecipe.class);
 	private final IDrawable slotDrawable;
 	private final IDrawable addition;
 	private final IDrawable arrow;
@@ -39,7 +41,7 @@ public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInf
 	public FarmingInfoRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper.createBlankDrawable(144, 90), "for.jei.farming");
 		this.slotDrawable = guiHelper.getSlotDrawable();
-		ResourceLocation resourceLocation = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/jei/recipes.png");
+		ResourceLocation resourceLocation = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/jei/recipes.png");
 		addition = guiHelper.createDrawable(resourceLocation, 44, 0, 15, 15);
 		arrow = guiHelper.createDrawable(resourceLocation, 59, 0, 15, 15);
 		ItemStack intricateCircuitboard = new ItemStack(CoreItems.CIRCUITBOARDS.get(EnumCircuitBoardType.INTRICATE));
@@ -67,7 +69,7 @@ public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInf
 
 		{
 			List<ItemStack> soils = properties.getSoils().stream()
-					.map(Soil::getResource)
+					.map(Soil::resource)
 					.toList();
 
 			List<IRecipeSlotBuilder> soilSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 1, 55, 18);

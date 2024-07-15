@@ -33,9 +33,9 @@ import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.core.config.Config;
@@ -46,9 +46,9 @@ import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
 
 import genetics.api.GeneticHelper;
-import genetics.api.individual.IGenome;
-import genetics.api.organism.IOrganism;
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.IGenome;
+import genetics.api.organism.IIndividualCapability;
+import forestry.api.genetics.ILifeStage;
 
 public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
@@ -59,12 +59,12 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 		NonNullList<ItemStack> treeList = NonNullList.create();
 		ItemGE.addCreativeItems(ArboricultureItems.SAPLING.item(), treeList, false, TreeHelper.getRoot());
 		for (ItemStack treeStack : treeList) {
-			IOrganism<?> organism = GeneticHelper.getOrganism(treeStack);
+			IIndividualCapability<?> organism = GeneticHelper.getOrganism(treeStack);
 			if (organism.isEmpty()) {
 				continue;
 			}
 			IAlleleTreeSpecies species = organism.getAllele(TreeChromosomes.SPECIES, true);
-			iconStacks.put(species.getRegistryName(), treeStack);
+			iconStacks.put(species.getId(), treeStack);
 		}
 	}
 
@@ -75,7 +75,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 			if (tree == null) {
 				return;
 			}
-			IOrganismType type = TreeManager.treeRoot.getTypes().getType(itemStack);
+			ILifeStage type = TreeManager.treeRoot.getTypes().getType(itemStack);
 			if (type == null) {
 				return;
 			}
@@ -141,7 +141,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 			textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
 
 			int speciesDominance0 = guiAlyzer.getColorCoding(primary.isDominant());
-			int speciesDominance1 = guiAlyzer.getColorCoding(genome.getSecondary().isDominant());
+			int speciesDominance1 = guiAlyzer.getColorCoding(genome.getSecondarySpecies().isDominant());
 
 			textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
 			textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);

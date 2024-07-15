@@ -21,14 +21,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 import forestry.core.utils.ItemTooltipUtil;
 
 public class ItemForestry extends Item {
 	private final int burnTime;
 
 	public ItemForestry() {
-		this(ItemGroupForestry.tabForestry);
+		this(ItemGroups.tabForestry);
 	}
 
 	public ItemForestry(CreativeModeTab group) {

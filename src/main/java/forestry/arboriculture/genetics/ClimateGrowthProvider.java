@@ -6,26 +6,26 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.ClimateHelper;
+import forestry.api.genetics.IGenome;
 
 import forestry.api.arboriculture.IGrowthProvider;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-import forestry.api.genetics.EnumTolerance;
-import forestry.api.genetics.alleles.AlleleManager;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
+import forestry.api.core.ToleranceType;
+import forestry.api.genetics.alleles.TreeChromosomes;
 
 public class ClimateGrowthProvider implements IGrowthProvider {
 
 	@Nullable
-	private EnumTemperature temperature;
+	private TemperatureType temperature;
 	@Nullable
-	private EnumHumidity humidity;
-	private final EnumTolerance temperatureTolerance;
-	private final EnumTolerance humidityTolerance;
+	private HumidityType humidity;
+	private final ToleranceType temperatureTolerance;
+	private final ToleranceType humidityTolerance;
 
-	public ClimateGrowthProvider(EnumTemperature temperature, EnumTolerance temperatureTolerance, EnumHumidity humidity, EnumTolerance humidityTolerance) {
+	public ClimateGrowthProvider(TemperatureType temperature, ToleranceType temperatureTolerance, HumidityType humidity, ToleranceType humidityTolerance) {
 		this.temperature = temperature;
 		this.temperatureTolerance = temperatureTolerance;
 		this.humidity = humidity;
@@ -34,9 +34,9 @@ public class ClimateGrowthProvider implements IGrowthProvider {
 
 	public ClimateGrowthProvider() {
 		this.temperature = null;
-		this.temperatureTolerance = EnumTolerance.NONE;
+		this.temperatureTolerance = ToleranceType.NONE;
 		this.humidity = null;
-		this.humidityTolerance = EnumTolerance.NONE;
+		this.humidityTolerance = ToleranceType.NONE;
 	}
 
 	@Override
@@ -46,8 +46,8 @@ public class ClimateGrowthProvider implements IGrowthProvider {
 
 	@Override
 	public boolean isBiomeValid(ITree tree, Biome biome) {
-		EnumTemperature biomeTemperature = EnumTemperature.getFromBiome(biome);
-		EnumHumidity biomeHumidity = EnumHumidity.getFromValue(biome.getDownfall());
+		TemperatureType biomeTemperature = TemperatureType.getFromBiome(biome);
+		HumidityType biomeHumidity = HumidityType.getFromValue(biome.getDownfall());
 		IGenome genome = tree.getGenome();
 		if (temperature == null) {
 			temperature = genome.getActiveAllele(TreeChromosomes.SPECIES).getTemperature();
@@ -55,7 +55,7 @@ public class ClimateGrowthProvider implements IGrowthProvider {
 		if (humidity == null) {
 			humidity = genome.getActiveAllele(TreeChromosomes.SPECIES).getHumidity();
 		}
-		return AlleleManager.climateHelper.isWithinLimits(biomeTemperature, biomeHumidity, temperature, temperatureTolerance, humidity, humidityTolerance);
+		return ClimateHelper.isWithinLimits(biomeTemperature, biomeHumidity, temperature, temperatureTolerance, humidity, humidityTolerance);
 	}
 
 }

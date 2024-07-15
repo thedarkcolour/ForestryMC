@@ -6,14 +6,13 @@
 package forestry.api.lepidopterology.genetics;
 
 import java.awt.Color;
-import java.util.Collection;
 
-import deleteme.BiomeCategory;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.genetics.alleles.IAlleleSpeciesBuilder;
 
 public interface IAlleleButterflySpeciesBuilder extends IAlleleSpeciesBuilder<IAlleleButterflySpeciesBuilder> {
-
 	@Override
 	IAlleleButterflySpecies build();
 
@@ -38,7 +37,5 @@ public interface IAlleleButterflySpeciesBuilder extends IAlleleSpeciesBuilder<IA
 
 	IAlleleButterflySpeciesBuilder setNocturnal();
 
-	IAlleleButterflySpeciesBuilder addSpawnBiomes(Collection<BiomeCategory> biomeTags);
-
-	IAlleleButterflySpeciesBuilder addSpawnBiome(BiomeCategory biomeTag);
+	IAlleleButterflySpeciesBuilder setSpawnBiomes(TagKey<Biome> biomeTag);
 }

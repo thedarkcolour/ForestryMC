@@ -23,14 +23,15 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.core.gui.slots.SlotForestry;
 import forestry.core.gui.slots.SlotLocked;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SlotUtil;
 
 public abstract class ContainerForestry extends AbstractContainerMenu {
 	public static final int PLAYER_HOTBAR_OFFSET = 27;
 	public static final int PLAYER_INV_SLOTS = PLAYER_HOTBAR_OFFSET + 9;
-	private int transferCount = 0; // number of items that have been shift-click-transfered during this click
+	// number of items that have been shift-click-transfered during this click
+	private int transferCount = 0;
 	// null on client side
 	@Nullable
 	private final ServerPlayer player;

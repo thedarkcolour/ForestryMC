@@ -3,8 +3,8 @@ package forestry.apiculture.compat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.api.ForestryConstants;
 import forestry.apiculture.features.ApicultureItems;
-import forestry.core.config.Constants;
 import forestry.core.utils.JeiUtil;
 
 import genetics.api.GeneticHelper;
@@ -20,14 +20,14 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 public class ApicultureJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(Constants.MOD_ID);
+		return new ResourceLocation(ForestryConstants.MOD_ID);
 	}
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
 		IIngredientSubtypeInterpreter<ItemStack> beeSubtypeInterpreter = (itemStack, context) -> {
 			IIndividual individual = GeneticHelper.getIndividual(itemStack);
-			return individual == null ? IIngredientSubtypeInterpreter.NONE : individual.getGenome().getPrimary().getBinomial();
+			return individual == null ? IIngredientSubtypeInterpreter.NONE : individual.getGenome().getPrimarySpecies().getBinomial();
 		};
 
 		subtypeRegistry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, ApicultureItems.BEE_DRONE.item(), beeSubtypeInterpreter);

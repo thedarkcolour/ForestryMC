@@ -14,14 +14,14 @@ import net.minecraft.world.item.ItemStack;
 
 import genetics.api.individual.ISpeciesDefinition;
 
-import forestry.api.arboriculture.genetics.EnumGermlingType;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.genetics.ISpeciesType;
 
 public interface ITreeDefinition extends ISpeciesDefinition<ITree> {
 
 	@Override
-	IAlleleTreeSpecies getSpecies();
+	ISpeciesType<ITree> getSpecies();
 
-	ItemStack getMemberStack(EnumGermlingType treeType);
+	ItemStack getMemberStack(TreeLifeStage treeType);
 }

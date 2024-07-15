@@ -7,13 +7,9 @@ package forestry.api.lepidopterology;
 
 import javax.annotation.Nullable;
 
-import forestry.lepidopterology.genetics.ButterflyRoot;
-import genetics.api.GeneticsAPI;
-import genetics.api.root.IRootDefinition;
-
 import forestry.api.lepidopterology.genetics.IButterflyFactory;
 import forestry.api.lepidopterology.genetics.IButterflyMutationFactory;
-import forestry.api.lepidopterology.genetics.IButterflyRoot;
+import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 
 public class ButterflyManager {
 
@@ -22,7 +18,7 @@ public class ButterflyManager {
 	 *
 	 * @implNote Only null if the "lepidopterology" module is not enabled.
 	 */
-	public static IButterflyRoot butterflyRoot;
+	public static IButterflySpeciesType butterflyRoot;
 
 	/**
 	 * Used to create new butterflies.

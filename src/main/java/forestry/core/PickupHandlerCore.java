@@ -10,40 +10,31 @@
  ******************************************************************************/
 package forestry.core;
 
-import java.util.Optional;
-
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IForestrySpeciesType;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.root.IRootDefinition;
 import genetics.utils.RootUtils;
 
-public class PickupHandlerCore implements IPickupHandler {
+public class PickupHandlerCore {
+	public static void onItemPickup(Player player, ItemEntity itemEntity) {
+		ItemStack stack = itemEntity.getItem();
 
-	@Override
-	public boolean onItemPickup(Player PlayerEntity, ItemEntity entityitem) {
-		ItemStack itemstack = entityitem.getItem();
-		if (itemstack.isEmpty()) {
-			return false;
-		}
+		if (!stack.isEmpty()) {
+			IForestrySpeciesType<IIndividual> root = RootUtils.getRoot(stack);
+			if (root != null) {
+				IIndividual individual = root.create(stack);
 
-		IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = RootUtils.getRoot(itemstack);
-		if (definition.isPresent()) {
-			IForestrySpeciesRoot<IIndividual> root = definition.get();
-			IIndividual individual = root.create(itemstack);
-
-			if (individual != null) {
-				IBreedingTracker tracker = root.getBreedingTracker(entityitem.level, PlayerEntity.getGameProfile());
-				tracker.registerPickup(individual);
+				if (individual != null) {
+					IBreedingTracker tracker = root.getBreedingTracker(itemEntity.level, player.getGameProfile());
+					tracker.registerPickup(individual);
+				}
 			}
 		}
-
-		return false;
 	}
 
 }

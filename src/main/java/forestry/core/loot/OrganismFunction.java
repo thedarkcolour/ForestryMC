@@ -12,12 +12,11 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-import genetics.api.alleles.IAllele;
+import forestry.api.genetics.alleles.IAllele;
 import genetics.api.individual.IIndividual;
 import genetics.api.individual.ISpeciesDefinition;
-import genetics.api.organism.IOrganismType;
-import genetics.api.root.IIndividualRoot;
-import genetics.api.root.IRootDefinition;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.ISpeciesType;
 import genetics.utils.RootUtils;
 
 /**
@@ -34,7 +33,7 @@ public class OrganismFunction extends LootItemConditionalFunction {
 	}
 
 	public static LootItemConditionalFunction.Builder<?> fromDefinition(ISpeciesDefinition<?> definition) {
-		return fromUID(definition.getSpecies().getRegistryName());
+		return fromUID(definition.getSpecies().getId());
 	}
 
 	public static LootItemConditionalFunction.Builder<?> fromUID(ResourceLocation speciesUid) {
@@ -43,10 +42,9 @@ public class OrganismFunction extends LootItemConditionalFunction {
 
 	@Override
 	protected ItemStack run(ItemStack stack, LootContext lootContext) {
-		IRootDefinition<IIndividualRoot<IIndividual>> definition = RootUtils.getRoot(stack);
-		if (definition.isPresent()) {
-			IIndividualRoot<IIndividual> root = definition.get();
-			IOrganismType type = root.getType(stack);
+		ISpeciesType<IIndividual> root = RootUtils.getRoot(stack);
+		if (root != null) {
+			ILifeStage type = root.getLifeStage(stack);
 
 			if (type != null) {
 				IAllele[] template = root.getTemplate(speciesUid.toString());

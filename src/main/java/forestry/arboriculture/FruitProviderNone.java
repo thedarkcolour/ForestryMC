@@ -28,13 +28,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
+import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.products.EmptyProductList;
 import forestry.api.genetics.products.IProductList;
-import forestry.core.config.Constants;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class FruitProviderNone implements IFruitProvider {
 
@@ -44,7 +44,7 @@ public class FruitProviderNone implements IFruitProvider {
 
 		public OverlayType(String ident) {
 			this.ident = ident;
-			this.sprite = new ResourceLocation(Constants.MOD_ID, "block/leaves/fruits." + ident);
+			this.sprite = new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/fruits." + ident);
 		}
 	}
 
@@ -165,6 +165,6 @@ public class FruitProviderNone implements IFruitProvider {
 
 	@Override
 	public String getModID() {
-		return Constants.MOD_ID;
+		return ForestryConstants.MOD_ID;
 	}
 }

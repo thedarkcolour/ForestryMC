@@ -29,7 +29,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import forestry.api.core.IToolPipette;
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 import forestry.core.fluids.PipetteContents;
 
 //import net.minecraft.client.renderer.ItemMeshDefinition;
@@ -41,7 +41,7 @@ public class ItemPipette extends ItemForestry implements IToolPipette {
 	public ItemPipette() {
 		super((new Item.Properties())
 				.stacksTo(1)
-				.tab(ItemGroupForestry.tabForestry));
+				.tab(ItemGroups.tabForestry));
 		//addPropertyOverride(new ResourceLocation("state"), (itemStack, world, livingEntity) -> FluidUtil.getFluidContained(itemStack).isPresent() ? 1 : 0);
 		//		setFull3D();
 	}

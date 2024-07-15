@@ -7,11 +7,11 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.blocks;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -24,7 +24,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.TemperatureType;
 import forestry.climatology.tiles.TileHabitatFormer;
 import forestry.core.blocks.BlockBase;
 import forestry.core.blocks.IColoredBlock;
@@ -41,7 +41,7 @@ public class BlockHabitatFormer extends BlockBase<BlockTypeClimatology> implemen
 	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource rand) {
 		TileHabitatFormer former = TileUtil.getTile(worldIn, pos, TileHabitatFormer.class);
 		if (former != null) {
-			ParticleRender.addClimateParticles(worldIn, pos, rand, former.getTemperature(), former.getHumidity());
+			ParticleRender.addClimateParticles(worldIn, pos, rand, former.temperature(), former.humidity());
 		}
 	}
 
@@ -52,9 +52,10 @@ public class BlockHabitatFormer extends BlockBase<BlockTypeClimatology> implemen
 		}
 		TileHabitatFormer former = TileUtil.getTile(worldIn, pos, TileHabitatFormer.class);
 		if (former != null) {
-			EnumTemperature temperature = former.getTemperature();
+			TemperatureType temperature = former.temperature();
 			return temperature.color;
 		}
 		return 0x912237;
 	}
 }
+*/

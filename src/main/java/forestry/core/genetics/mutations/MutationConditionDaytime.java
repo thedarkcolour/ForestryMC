@@ -14,11 +14,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-import forestry.api.climate.IClimateProvider;
+import forestry.api.climate.ClimateState;
 import forestry.api.genetics.IMutationCondition;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.IGenome;
 
 public class MutationConditionDaytime implements IMutationCondition {
 
@@ -29,8 +29,8 @@ public class MutationConditionDaytime implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level world, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
-		if (world.isDay() == daytime) {
+	public float getChance(Level level, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, ClimateState climate) {
+		if (level.isDay() == daytime) {
 			return 1;
 		}
 		return 0;

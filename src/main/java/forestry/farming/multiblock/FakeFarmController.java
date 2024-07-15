@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.circuits.CircuitSocketType;
 import forestry.api.circuits.ICircuitSocketType;
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
 import forestry.core.fluids.FakeTankManager;
@@ -35,7 +35,7 @@ import forestry.core.fluids.ITankManager;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.FakeMultiblockController;
-import forestry.farming.FarmRegistry;
+import forestry.farming.ForestryFarmRegistry;
 import forestry.farming.FarmTarget;
 import forestry.farming.gui.IFarmLedgerDelegate;
 import forestry.farming.logic.ForestryFarmIdentifier;
@@ -73,7 +73,7 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, FarmDirection direction) {
+	public boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, HorizontalDirection direction) {
 		return false;
 	}
 
@@ -83,7 +83,7 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public void setUpFarmlandTargets(Map<FarmDirection, List<FarmTarget>> targets) {
+	public void setUpFarmlandTargets(Map<HorizontalDirection, List<FarmTarget>> targets) {
 	}
 
 	@Override
@@ -101,13 +101,13 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public void setFarmLogic(FarmDirection direction, IFarmLogic logic) {
+	public void setFarmLogic(HorizontalDirection direction, IFarmLogic logic) {
 	}
 
 	//TODO: Empty / fake farm property, this is a stupid work around
 	@Override
-	public IFarmLogic getFarmLogic(FarmDirection direction) {
-		return FarmRegistry.INSTANCE.getProperties(ForestryFarmIdentifier.ARBOREAL).getLogic(false);
+	public IFarmLogic getFarmLogic(HorizontalDirection direction) {
+		return ForestryFarmRegistry.INSTANCE.getProperties(ForestryFarmIdentifier.ARBOREAL).getLogic(false);
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public void resetFarmLogic(FarmDirection direction) {
+	public void resetFarmLogic(HorizontalDirection direction) {
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public BlockPos getFarmCorner(FarmDirection direction) {
+	public BlockPos getFarmCorner(HorizontalDirection direction) {
 		return null;
 	}
 
@@ -174,16 +174,16 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public int getExtents(FarmDirection direction, BlockPos pos) {
+	public int getExtents(HorizontalDirection direction, BlockPos pos) {
 		return 0;
 	}
 
 	@Override
-	public void setExtents(FarmDirection direction, BlockPos pos, int extend) {
+	public void setExtents(HorizontalDirection direction, BlockPos pos, int extend) {
 	}
 
 	@Override
-	public void cleanExtents(FarmDirection direction) {
+	public void cleanExtents(HorizontalDirection direction) {
 	}
 
 	private enum FakeFarmInventory implements IFarmInventoryInternal {

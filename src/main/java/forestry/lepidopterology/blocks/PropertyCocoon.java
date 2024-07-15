@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.lepidopterology.genetics.IAlleleButterflyCocoon;
 import forestry.core.blocks.properties.PropertyAllele;
 

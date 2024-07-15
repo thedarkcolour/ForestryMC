@@ -14,14 +14,14 @@ import net.minecraft.world.item.ItemStack;
 
 import genetics.api.individual.ISpeciesDefinition;
 
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 
 public interface IButterflyDefinition extends ISpeciesDefinition<IButterfly> {
 
 	@Override
-	IAlleleButterflySpecies getSpecies();
+	ISpeciesType<IButterfly> getSpecies();
 
-	ItemStack getMemberStack(EnumFlutterType flutterType);
+	ItemStack getMemberStack(ButterflyLifeStage flutterType);
 }

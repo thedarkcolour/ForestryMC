@@ -25,18 +25,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.ITreeGenData;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.products.IProductList;
 
-import genetics.api.individual.IChromosomeType;
+import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.individual.IIndividual;
 import genetics.api.individual.IHasSecrets;
 
 public interface ITree extends IIndividual, ITreeGenData, IHasSecrets {
 
 	@Override
-	ITreeRoot getRoot();
-
-	boolean matchesTemplateGenome();
+	ITreeSpeciesType getRoot();
 
 	IEffectData[] doEffect(IEffectData[] storedData, Level world, BlockPos pos);
 
@@ -90,7 +89,7 @@ public interface ITree extends IIndividual, ITreeGenData, IHasSecrets {
 	@Override
 	ITree copy();
 
-	boolean isPureBred(IChromosomeType chromosome);
+	boolean isPureBred(IChromosome chromosomeType);
 
 	boolean canBearFruit();
 

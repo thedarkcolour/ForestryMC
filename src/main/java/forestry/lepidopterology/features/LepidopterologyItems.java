@@ -1,6 +1,6 @@
 package forestry.lepidopterology.features;
 
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.items.ItemButterflyGE;
 import forestry.modules.features.FeatureItem;
@@ -12,8 +12,8 @@ import forestry.modules.features.ModFeatureRegistry;
 public class LepidopterologyItems {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleLepidopterology.class);
 
-	public static final FeatureItem<ItemButterflyGE> BUTTERFLY_GE = REGISTRY.item(() -> new ItemButterflyGE(EnumFlutterType.BUTTERFLY), "butterfly_ge");
-	public static final FeatureItem<ItemButterflyGE> SERUM_GE = REGISTRY.item(() -> new ItemButterflyGE(EnumFlutterType.SERUM), "serum_ge");
-	public static final FeatureItem<ItemButterflyGE> CATERPILLAR_GE = REGISTRY.item(() -> new ItemButterflyGE(EnumFlutterType.CATERPILLAR), "caterpillar_ge");
-	public static final FeatureItem<ItemButterflyGE> COCOON_GE = REGISTRY.item(() -> new ItemButterflyGE(EnumFlutterType.COCOON), "cocoon_ge");
+	public static final FeatureItem<ItemButterflyGE> BUTTERFLY_GE = REGISTRY.item(() -> new ItemButterflyGE(ButterflyLifeStage.BUTTERFLY), "butterfly_ge");
+	public static final FeatureItem<ItemButterflyGE> SERUM_GE = REGISTRY.item(() -> new ItemButterflyGE(ButterflyLifeStage.SERUM), "serum_ge");
+	public static final FeatureItem<ItemButterflyGE> CATERPILLAR_GE = REGISTRY.item(() -> new ItemButterflyGE(ButterflyLifeStage.CATERPILLAR), "caterpillar_ge");
+	public static final FeatureItem<ItemButterflyGE> COCOON_GE = REGISTRY.item(() -> new ItemButterflyGE(ButterflyLifeStage.COCOON), "cocoon_ge");
 }

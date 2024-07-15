@@ -1,6 +1,8 @@
 package forestry.factory.recipes.jei.moistener;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.fuels.FuelManager;
 import forestry.api.fuels.MoistenerFuel;
 import forestry.api.recipes.IMoistenerRecipe;
@@ -30,7 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class MoistenerRecipeCategory extends ForestryRecipeCategory<IMoistenerRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/moistener.png");
+	private static final ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/moistener.png");
 
 	private final IDrawableAnimated arrow;
 	private final IDrawableAnimated progressBar;

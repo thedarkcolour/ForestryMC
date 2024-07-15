@@ -1,3 +1,4 @@
+/*
 package forestry.climatology.features;
 
 
@@ -15,3 +16,4 @@ public class ClimatologyMenuTypes {
 	public static final FeatureMenuType<ContainerHabitatFormer> HABITAT_FORMER = REGISTRY.menuType(ContainerHabitatFormer::fromNetwork, "habitat_former");
 
 }
+*/

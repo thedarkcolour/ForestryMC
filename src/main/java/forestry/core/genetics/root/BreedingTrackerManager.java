@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelAccessor;
 
 import com.mojang.authlib.GameProfile;
@@ -25,8 +26,8 @@ public enum BreedingTrackerManager implements IBreedingTrackerManager {
 	private static final SidedHandler BREEDING_HANDLER = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newBreedingHandler() : new ServerBreedingHandler();
 
 	@Override
-	public void registerTracker(String rootUID, IBreedingTrackerHandler handler) {
-		factories.put(rootUID, handler);
+	public void registerTracker(ResourceLocation id, IBreedingTrackerHandler handler) {
+		factories.put(id, handler);
 	}
 
 	@Override

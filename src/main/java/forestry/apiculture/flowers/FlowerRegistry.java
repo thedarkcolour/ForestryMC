@@ -22,11 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
+import java.util.function.BiPredicate;
 
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.core.utils.TagUtil;
-import net.minecraft.core.Holder;
+
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
@@ -43,9 +44,7 @@ import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.FlowerManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.core.IBlockPosPredicate;
 import forestry.api.genetics.flowers.IFlowerAcceptableRule;
 import forestry.api.genetics.flowers.IFlowerGrowthHelper;
 import forestry.api.genetics.flowers.IFlowerGrowthRule;
@@ -54,7 +53,7 @@ import forestry.core.utils.VectUtil;
 import forestry.core.utils.datastructures.BlockStateSet;
 import forestry.core.utils.datastructures.WeightedCollection;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 import genetics.api.individual.IIndividual;
 
 public final class FlowerRegistry implements IFlowerRegistry, IFlowerGrowthHelper {
@@ -175,7 +174,7 @@ public final class FlowerRegistry implements IFlowerRegistry, IFlowerGrowthHelpe
 	}
 
 	@Override
-	public IBlockPosPredicate createAcceptedFlowerPredicate(String flowerType) {
+	public BiPredicate<Level, BlockPos> createAcceptedFlowerPredicate(String flowerType) {
 		Set<IFlowerAcceptableRule> acceptableRules = this.registeredRules.get(flowerType);
 		Set<BlockState> acceptedBlockStates = this.getAcceptedBlockStates(flowerType);
 		Set<Block> acceptedBlocks = this.acceptableBlocks.get(flowerType);
@@ -265,7 +264,7 @@ public final class FlowerRegistry implements IFlowerRegistry, IFlowerGrowthHelpe
 		return blockState != null && world.setBlockAndUpdate(pos, blockState);
 	}
 
-	private static class AcceptedFlowerPredicate implements IBlockPosPredicate {
+	private static class AcceptedFlowerPredicate implements BiPredicate<Level, BlockPos> {
 		private final String flowerType;
 		private final Set<IFlowerAcceptableRule> acceptableRules;
 		private final Set<Block> acceptedBlocks;

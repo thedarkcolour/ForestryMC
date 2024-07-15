@@ -15,15 +15,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.storage.IBackpackDefinition;
-import forestry.core.IPickupHandler;
 import forestry.storage.gui.ContainerBackpack;
 import forestry.storage.gui.ContainerNaturalistBackpack;
 import forestry.storage.items.ItemBackpack;
 
-public class PickupHandlerStorage implements IPickupHandler {
+public class PickupHandlerStorage {
 
-	@Override
-	public boolean onItemPickup(Player player, ItemEntity entityitem) {
+	public static boolean onItemPickup(Player player, ItemEntity entityitem) {
 
 		ItemStack itemstack = entityitem.getItem();
 		if (itemstack.isEmpty()) {

@@ -7,7 +7,8 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.blocks;
 
 import java.util.function.Supplier;
@@ -39,3 +40,4 @@ public enum BlockTypeClimatology implements IBlockTypeCustom {
 		return getMachineProperties().getSerializedName();
 	}
 }
+*/

@@ -38,7 +38,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import forestry.api.core.IErrorLogic;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.FluidHelper.FillStatus;
 import forestry.core.fluids.StandardTank;
@@ -323,9 +323,9 @@ public class TileBottler extends TilePowered implements WorldlyContainer, ILiqui
 			return true;
 		}
 
-		errorLogic.setCondition(fillStatus == FluidHelper.FillStatus.NO_FLUID, EnumErrorCode.NO_RESOURCE_LIQUID);
-		errorLogic.setCondition(fillStatus == FluidHelper.FillStatus.NO_SPACE, EnumErrorCode.NO_SPACE_INVENTORY);
-		errorLogic.setCondition(emptyStatus == FluidHelper.FillStatus.NO_SPACE_FLUID, EnumErrorCode.NO_SPACE_TANK);
+		errorLogic.setCondition(fillStatus == FluidHelper.FillStatus.NO_FLUID, ForestryError.NO_RESOURCE_LIQUID);
+		errorLogic.setCondition(fillStatus == FluidHelper.FillStatus.NO_SPACE, ForestryError.NO_SPACE_INVENTORY);
+		errorLogic.setCondition(emptyStatus == FluidHelper.FillStatus.NO_SPACE_FLUID, ForestryError.NO_SPACE_TANK);
 		if (emptyStatus == FillStatus.INVALID_INPUT || fillStatus == FillStatus.INVALID_INPUT || errorLogic.hasErrors()) {
 			currentRecipe = null;
 			return false;

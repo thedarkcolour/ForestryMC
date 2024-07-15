@@ -18,7 +18,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 
 import java.util.function.Supplier;
 
@@ -28,7 +28,7 @@ public class ItemAssemblyKit extends ItemForestry {
 	public ItemAssemblyKit(Supplier<ItemStack> assembled) {
 		super((new Item.Properties())
 				.stacksTo(24)
-				.tab(ItemGroupForestry.tabForestry));
+				.tab(ItemGroups.tabForestry));
 		this.assembled = assembled;
 	}
 

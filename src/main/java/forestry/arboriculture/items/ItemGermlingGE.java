@@ -33,13 +33,13 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.core.ItemGroups;
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IPollinatable;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.recipes.IVariableFermentable;
 import forestry.arboriculture.genetics.TreeHelper;
 import forestry.core.genetics.ItemGE;
@@ -48,18 +48,18 @@ import forestry.core.utils.BlockUtil;
 import forestry.core.utils.GeneticsUtil;
 
 import genetics.api.GeneticHelper;
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.ILifeStage;
 
 public class ItemGermlingGE extends ItemGE implements IVariableFermentable, IColoredItem {
-	private final EnumGermlingType type;
+	private final TreeLifeStage type;
 
-	public ItemGermlingGE(EnumGermlingType type) {
+	public ItemGermlingGE(TreeLifeStage type) {
 		super(new Item.Properties().tab(ItemGroups.tabArboriculture));
 		this.type = type;
 	}
 
 	@Override
-	protected final IOrganismType getType() {
+	protected final ILifeStage getType() {
 		return type;
 	}
 
@@ -96,11 +96,11 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 			if (tree != null) {
 				BlockPos pos = traceResult.getBlockPos();
 
-				if (type == EnumGermlingType.SAPLING) {
+				if (type == TreeLifeStage.SAPLING) {
 					BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(playerIn, handIn, traceResult));
 
 					return onItemRightClickSapling(stack, worldIn, playerIn, pos, tree, context);
-				} else if (type == EnumGermlingType.POLLEN) {
+				} else if (type == TreeLifeStage.POLLEN) {
 					return onItemRightClickPollen(stack, worldIn, playerIn, pos, tree);
 				}
 			}

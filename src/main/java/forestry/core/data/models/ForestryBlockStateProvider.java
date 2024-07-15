@@ -1,10 +1,7 @@
 package forestry.core.data.models;
 
-import java.util.List;
-
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -14,12 +11,13 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import forestry.api.ForestryConstants;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.TreeDefinition;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
 import forestry.core.fluids.ForestryFluids;
+import forestry.core.utils.ModUtil;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
 import forestry.cultivation.features.CultivationBlocks;
@@ -27,15 +25,10 @@ import forestry.farming.blocks.BlockFarm;
 import forestry.farming.blocks.EnumFarmBlockType;
 import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
-import forestry.lepidopterology.blocks.BlockCocoon;
-import forestry.lepidopterology.features.LepidopterologyBlocks;
-import forestry.modules.features.FeatureBlock;
-
-import deleteme.RegistryNameFinder;
 
 public class ForestryBlockStateProvider extends BlockStateProvider {
 	public ForestryBlockStateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
-		super(gen, Constants.MOD_ID, exFileHelper);
+		super(gen, ForestryConstants.MOD_ID, exFileHelper);
 	}
 
 	@Override
@@ -102,7 +95,7 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 			generic3d(defaultFruitBlock, defaultBlock);
 			generic3d(decorativeBlock, defaultBlock);
 		}
-		getVariantBuilder(ArboricultureBlocks.LEAVES.block()).partialState().modelForState().modelFile(particleOnly(ArboricultureBlocks.LEAVES.getIdentifier(), blockTexture(Blocks.OAK_LEAVES))).addModel();
+		getVariantBuilder(ArboricultureBlocks.LEAVES.block()).partialState().modelForState().modelFile(particleOnly(ArboricultureBlocks.LEAVES.getName(), blockTexture(Blocks.OAK_LEAVES))).addModel();
 
 		// Cocoons
 		/*for (FeatureBlock<BlockCocoon, BlockItem> cocoon : List.of(LepidopterologyBlocks.COCOON, LepidopterologyBlocks.COCOON)) {
@@ -180,7 +173,7 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 	}
 
 	public static String path(Block block) {
-		return RegistryNameFinder.getRegistryName(block).getPath();
+		return ModUtil.getRegistryName(block).getPath();
 	}
 
 	public static ModelFile.UncheckedModelFile file(ResourceLocation resourceLoc) {
@@ -204,7 +197,7 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 	}
 
 	public void generic2d(ItemLike item) {
-		generic2d(RegistryNameFinder.getRegistryName(item.asItem()));
+		generic2d(ModUtil.getRegistryName(item.asItem()));
 	}
 
 	/**

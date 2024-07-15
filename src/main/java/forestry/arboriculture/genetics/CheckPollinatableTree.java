@@ -15,8 +15,8 @@ import net.minecraftforge.common.PlantType;
 import genetics.api.individual.IIndividual;
 
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.genetics.ICheckPollinatable;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.apiculture.ModuleApiculture;
 
 public class CheckPollinatableTree implements ICheckPollinatable {

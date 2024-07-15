@@ -2,7 +2,7 @@ package forestry.arboriculture;
 
 import net.minecraft.network.chat.Component;
 
-import forestry.api.arboriculture.EnumForestryWoodType;
+import forestry.api.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.EnumVanillaWoodType;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.TreeManager;
@@ -16,7 +16,7 @@ public class WoodHelper {
 
 		Component displayName;
 
-		if (woodType instanceof EnumForestryWoodType) {
+		if (woodType instanceof ForestryWoodType) {
 			String customUnlocalizedName = "block.forestry." + blockKind + "." + woodType;
 			if (Translator.canTranslateToLocal(customUnlocalizedName)) {
 				displayName = Component.translatable(customUnlocalizedName);

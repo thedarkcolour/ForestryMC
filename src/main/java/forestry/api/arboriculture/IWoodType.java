@@ -8,7 +8,7 @@ package forestry.api.arboriculture;
 import forestry.api.core.IBlockSubtype;
 
 /**
- * @see EnumForestryWoodType
+ * @see ForestryWoodType
  * @see EnumVanillaWoodType
  */
 public interface IWoodType extends IBlockSubtype {

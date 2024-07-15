@@ -8,9 +8,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.minecraftforge.common.util.LazyOptional;
 
-import forestry.api.climate.ClimateCapabilities;
+import forestry.api.ForestryCapabilities;
 import forestry.api.climate.IClimateListener;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 
 public record PacketClimateListenerUpdateRequest(BlockPos pos) implements IForestryPacketServer {
@@ -31,7 +31,7 @@ public record PacketClimateListenerUpdateRequest(BlockPos pos) implements IFores
 	public static void handle(PacketClimateListenerUpdateRequest msg, ServerPlayer player) {
 		BlockEntity tileEntity = player.level.getBlockEntity(msg.pos());
 		if (tileEntity != null) {
-			LazyOptional<IClimateListener> listener = tileEntity.getCapability(ClimateCapabilities.CLIMATE_LISTENER);
+			LazyOptional<IClimateListener> listener = tileEntity.getCapability(ForestryCapabilities.CLIMATE_LISTENER);
 			listener.ifPresent(l -> l.syncToClient(player));
 		}
 	}

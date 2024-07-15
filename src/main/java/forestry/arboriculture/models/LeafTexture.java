@@ -18,19 +18,19 @@ import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.client.event.TextureStitchEvent;
 
-import forestry.api.arboriculture.EnumLeafType;
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
+import forestry.api.arboriculture.LeafType;
 
 public record LeafTexture(ResourceLocation fast, ResourceLocation fancy, ResourceLocation pollinatedFast, ResourceLocation pollinatedFancy) {
-	private static final Map<EnumLeafType, LeafTexture> leafTextures = new EnumMap<>(EnumLeafType.class);
+	private static final Map<LeafType, LeafTexture> leafTextures = new EnumMap<>(LeafType.class);
 
 	static {
-		for (EnumLeafType leafType : EnumLeafType.values()) {
+		for (LeafType leafType : LeafType.values()) {
 			leafTextures.put(leafType, LeafTexture.create(leafType));
 		}
 	}
 
-	public static LeafTexture get(EnumLeafType leafType) {
+	public static LeafTexture get(LeafType leafType) {
 		return leafTextures.get(leafType);
 	}
 
@@ -40,14 +40,14 @@ public record LeafTexture(ResourceLocation fast, ResourceLocation fancy, Resourc
 		}
 	}
 
-	private static LeafTexture create(EnumLeafType enumLeafType) {
-		String id = enumLeafType.toString().toLowerCase(Locale.ENGLISH);
+	private static LeafTexture create(LeafType leafType) {
+		String id = leafType.toString().toLowerCase(Locale.ENGLISH);
 
 		return new LeafTexture(
-				new ResourceLocation(Constants.MOD_ID, "block/leaves/" + id + "_fast"),
-				new ResourceLocation(Constants.MOD_ID, "block/leaves/" + id),
-				new ResourceLocation(Constants.MOD_ID, "block/leaves/" + id + "_pollinated_fast"),
-				new ResourceLocation(Constants.MOD_ID, "block/leaves/" + id + "_pollinated")
+				new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/" + id + "_fast"),
+				new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/" + id),
+				new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/" + id + "_pollinated_fast"),
+				new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/" + id + "_pollinated")
 		);
 	}
 

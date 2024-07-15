@@ -32,14 +32,17 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegisterEvent;
 
 public interface IFeatureRegistry {
-
 	String getModId();
 
-	<V> DeferredRegister<V> getRegistry(ResourceKey<? extends Registry<V>> registryKey);
+	/**
+	 * @return The internal deferred registry instance managed by this feature registry.
+	 * If a deferred registry does not exist for the given registry, then one is created.
+	 */
+	<V> DeferredRegister<V> getRegistry(ResourceKey<? extends Registry<V>> registry);
 
-	<B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, String identifier);
+	<B extends Block, I extends BlockItem> IBlockFeature<B, I> block(Supplier<B> constructor, String name);
 
-	<B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, @Nullable Function<B, I> itemConstructor, String identifier);
+	<B extends Block, I extends BlockItem> IBlockFeature<B, I> block(Supplier<B> constructor, @Nullable Function<B, I> itemConstructor, String name);
 
 	<B extends Block, S extends IBlockSubtype> FeatureBlockGroup.Builder<B, S> blockGroup(Function<S, B> constructor, Class<? extends S> typeClass);
 
@@ -63,7 +66,7 @@ public interface IFeatureRegistry {
 
 	<B extends Block, R extends IBlockSubtype, C extends IBlockSubtype> FeatureBlockTable.Builder<B, R, C> blockTable(BiFunction<R, C, B> constructor, R[] rowTypes, C[] columnTypes);
 
-	<T extends BlockEntity> FeatureTileType<T> tile(BlockEntityType.BlockEntitySupplier<T> constuctor, String identifier, Supplier<Collection<? extends Block>> validBlocks);
+	<T extends BlockEntity> FeatureTileType<T> tile(BlockEntityType.BlockEntitySupplier<T> constructor, String identifier, Supplier<Collection<? extends Block>> validBlocks);
 
 	<C extends AbstractContainerMenu> FeatureMenuType<C> menuType(IContainerFactory<C> factory, String identifier);
 

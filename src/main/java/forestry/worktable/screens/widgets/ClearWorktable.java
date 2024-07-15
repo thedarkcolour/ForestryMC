@@ -15,7 +15,7 @@ public class ClearWorktable extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 	}
 
 	@Override
