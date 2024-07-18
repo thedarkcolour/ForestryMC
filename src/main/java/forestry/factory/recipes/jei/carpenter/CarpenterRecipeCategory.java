@@ -31,7 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.List;
 
 public class CarpenterRecipeCategory extends ForestryRecipeCategory<ICarpenterRecipe> {
-	private final static ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/carpenter.png");
+	private final static ResourceLocation guiTexture = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/carpenter.png");
 	private final ICraftingGridHelper craftingGridHelper;
 	private final IDrawableAnimated arrow;
 	private final IDrawable tankOverlay;

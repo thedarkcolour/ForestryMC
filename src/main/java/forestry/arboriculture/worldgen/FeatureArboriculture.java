@@ -36,7 +36,7 @@ import forestry.api.arboriculture.ITreeGenData;
 import forestry.arboriculture.blocks.BlockSapling;
 import forestry.arboriculture.tiles.TileTreeContainer;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 import forestry.core.worldgen.FeatureBase;
 
 public abstract class FeatureArboriculture extends FeatureBase {
@@ -67,7 +67,7 @@ public abstract class FeatureArboriculture extends FeatureBase {
 		if (genPos != null) {
 			clearSaplings(world, genPos);
 			List<BlockPos> branchEnds = new ArrayList<>(generateTrunk(world, rand, wood, genPos));
-			branchEnds.sort(VectUtil.TOP_DOWN_COMPARATOR);
+			branchEnds.sort(VecUtil.TOP_DOWN_COMPARATOR);
 			TreeContour.Impl contour = new TreeContour.Impl(branchEnds);
 			generateLeaves(world, rand, leaf, contour, genPos);
 			generateExtras(world, rand, genPos);

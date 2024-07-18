@@ -115,7 +115,7 @@ public class SpeciesSelectionElement extends GuiElement {
 	@Override
 	public void drawElement(PoseStack transform, int mouseX, int mouseY) {
 		super.drawElement(transform, mouseX, mouseY);
-		RenderSystem.setShaderTexture(0, new ResourceLocation(ForestryConstants.MOD_ID, "textures/gui/habitat_former.png"));
+		RenderSystem.setShaderTexture(0, ForestryConstants.forestry("textures/gui/habitat_former.png"));
 		// RenderSystem.enableAlphaTest();
 		blit(transform, 0, 0, 224, 46, 22, 22);
 		// RenderSystem.disableAlphaTest();

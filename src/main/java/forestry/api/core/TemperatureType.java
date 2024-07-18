@@ -36,7 +36,7 @@ public enum TemperatureType {
 
 	TemperatureType(TagKey<Biome> tag, String iconTexture, int color) {
 		this.tag = tag;
-		this.iconTexture = new ResourceLocation(ForestryConstants.MOD_ID, iconTexture);
+		this.iconTexture = ForestryConstants.forestry(iconTexture);
 		this.color = color;
 	}
 

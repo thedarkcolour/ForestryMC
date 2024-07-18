@@ -5,7 +5,7 @@
  ******************************************************************************/
 package forestry.api.arboriculture.genetics;
 
-import forestry.api.genetics.IMutationBuilder;
+import forestry.api.plugin.IMutationBuilder;
 
 public interface ITreeMutationBuilder extends IMutationBuilder {
 	@Override

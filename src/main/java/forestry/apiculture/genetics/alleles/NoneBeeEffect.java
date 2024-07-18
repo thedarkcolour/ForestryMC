@@ -10,5 +10,19 @@
  ******************************************************************************/
 package forestry.apiculture.genetics.alleles;
 
-public class NoneBeeEffect extends BeeEffect {
+import net.minecraft.resources.ResourceLocation;
+
+import forestry.api.apiculture.genetics.IBeeEffect;
+
+import static forestry.api.ForestryConstants.forestry;
+
+public enum NoneBeeEffect implements IBeeEffect {
+	INSTANCE;
+
+	public static final ResourceLocation ID = forestry("bee_effect_none");
+
+	@Override
+	public ResourceLocation id(boolean dominant) {
+		return ID;
+	}
 }

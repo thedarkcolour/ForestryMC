@@ -26,10 +26,10 @@ import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmListener;
 import forestry.api.farming.IFarmLogic;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 
 public class FarmHelper {
-	public static final Comparator<ICrop> TOP_DOWN_COMPARATOR = (o1, o2) -> VectUtil.TOP_DOWN_COMPARATOR.compare(o1.getPosition(), o2.getPosition());
+	public static final Comparator<ICrop> TOP_DOWN_COMPARATOR = (o1, o2) -> VecUtil.TOP_DOWN_COMPARATOR.compare(o1.getPosition(), o2.getPosition());
 
 	public enum Stage {
 		CULTIVATE, HARVEST;

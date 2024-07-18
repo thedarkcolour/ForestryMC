@@ -39,7 +39,7 @@ import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.ITreekeepingMode;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IAlleleFruit;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.HumidityType;
@@ -49,7 +49,6 @@ import forestry.api.genetics.IFruitBearer;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.IButterflyNursery;
@@ -427,7 +426,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		IAllele[] treeTemplate = TreeManager.treeRoot.getTemplates().getTemplate(speciesUID);
 		if (treeTemplate != null) {
 			if (fruitAlleleUID != null) {
-				AlleleUtils.actOn(new ResourceLocation(fruitAlleleUID), IAlleleFruit.class, fruitAllele -> treeTemplate[TreeChromosomes.FRUITS.ordinal()] = fruitAllele);
+				AlleleUtils.actOn(new ResourceLocation(fruitAlleleUID), IFruit.class, fruitAllele -> treeTemplate[TreeChromosomes.FRUITS.ordinal()] = fruitAllele);
 			}
 
 			ITree tree = TreeManager.treeRoot.templateAsIndividual(treeTemplate);

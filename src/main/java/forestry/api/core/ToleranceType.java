@@ -5,12 +5,19 @@
  ******************************************************************************/
 package forestry.api.core;
 
+import java.util.Locale;
+
+import net.minecraft.resources.ResourceLocation;
+
+import forestry.api.ForestryConstants;
+import forestry.api.genetics.alleles.INamedValue;
+
 /**
  * Used to determine the range of acceptable alternatives to an ideal {@link forestry.api.core.TemperatureType} or {@link forestry.api.core.HumidityType}.
  * For example, a bee whose ideal humidity is NORMAL and has a tolerance of BOTH_1 can tolerate DAMP, NORMAL, and ARID humidity,
  * or a bee whose ideal humidity is ARID and has a tolerance of UP_1 can tolerate ARID and NORMAL humidity.
  */
-public enum ToleranceType {
+public enum ToleranceType implements INamedValue {
 	NONE(0, 0),
 	BOTH_1(1, 1),
 	BOTH_2(2, 2),
@@ -34,5 +41,15 @@ public enum ToleranceType {
 	ToleranceType(int up, int down) {
 		this.up = up;
 		this.down = down;
+	}
+
+	@Override
+	public ResourceLocation id(boolean dominant) {
+		StringBuilder builder = new StringBuilder("tolerance_");
+		builder.append(name().toLowerCase(Locale.ROOT));
+		if (dominant) {
+			builder.append('d');
+		}
+		return ForestryConstants.forestry(builder.toString());
 	}
 }

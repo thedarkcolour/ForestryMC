@@ -44,7 +44,7 @@ public class Constants implements IForestryConstants {
 	public static final String ID_VILLAGER_ARBORIST = ForestryConstants.MOD_ID + ":arborist";
 
 	// Village Loot Key
-	public static final ResourceLocation VILLAGE_NATURALIST_LOOT_KEY = new ResourceLocation(ForestryConstants.MOD_ID, "chests/village_naturalist");
+	public static final ResourceLocation VILLAGE_NATURALIST_LOOT_KEY = ForestryConstants.forestry("chests/village_naturalist");
 
 	// Item Ids
 

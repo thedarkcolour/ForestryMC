@@ -127,14 +127,14 @@ public enum HiveDefinition implements IHiveDefinition {
 
 	@Override
 	public boolean isGoodHumidity(HumidityType humidity) {
-		HumidityType idealHumidity = beeGenome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES).getHumidity();
+		HumidityType idealHumidity = beeGenome.getActiveAllele(BeeChromosomes.SPECIES).getHumidity();
 		ToleranceType humidityTolerance = beeGenome.getActiveValue(BeeChromosomes.HUMIDITY_TOLERANCE);
 		return ClimateHelper.isWithinLimits(humidity, idealHumidity, humidityTolerance);
 	}
 
 	@Override
 	public boolean isGoodTemperature(TemperatureType temperature) {
-		TemperatureType idealTemperature = beeGenome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES).getTemperature();
+		TemperatureType idealTemperature = beeGenome.getActiveAllele(BeeChromosomes.SPECIES).getTemperature();
 		ToleranceType temperatureTolerance = beeGenome.getActiveValue(BeeChromosomes.TEMPERATURE_TOLERANCE);
 		return ClimateHelper.isWithinLimits(temperature, idealTemperature, temperatureTolerance);
 	}

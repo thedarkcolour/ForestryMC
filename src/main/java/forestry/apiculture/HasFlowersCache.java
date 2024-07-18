@@ -31,7 +31,6 @@ import forestry.api.apiculture.genetics.IBee;
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.flowers.IFlowerProvider;
 import forestry.core.utils.TickHelper;
 
 import forestry.api.genetics.IGenome;
@@ -64,11 +63,10 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 		public final BiPredicate<Level, BlockPos> flowerPredicate;
 		public Iterator<BlockPos.MutableBlockPos> areaIterator;
 
-		public FlowerData(IBee queen, IBeeHousing beeHousing) {
+		public FlowerData(IBee queen, IBeeHousing housing) {
 			this.flowerType = queen.getGenome().getActiveValue(BeeChromosomes.FLOWER_TYPE);
 			this.territory = queen.getGenome().getActiveValue(BeeChromosomes.TERRITORY);
-			this.flowerPredicate = FlowerManager.flowerRegistry.createAcceptedFlowerPredicate(flowerType);
-			this.areaIterator = FlowerManager.flowerRegistry.getAreaIterator(beeHousing, queen);
+			this.areaIterator = queen.getAreaIterator(housing);
 		}
 
 		public void resetIterator(IBee queen, IBeeHousing beeHousing) {

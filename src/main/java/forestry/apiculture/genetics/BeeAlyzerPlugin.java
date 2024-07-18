@@ -22,9 +22,7 @@ import forestry.api.apiculture.genetics.IBee;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IAlyzerPlugin;
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.core.config.Config;
@@ -52,7 +50,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 			if (organism.isEmpty()) {
 				continue;
 			}
-			IAlleleBeeSpecies species = organism.getAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES, true);
+			IAlleleBeeSpecies species = organism.getAllele(BeeChromosomes.SPECIES, true);
 			iconStacks.put(species.getId(), beeStack);
 		}
 	}
@@ -125,8 +123,8 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 			}
 
 			IGenome genome = bee.getGenome();
-			IAlleleBeeSpecies primaryAllele = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
-			IAlleleBeeSpecies secondaryAllele = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+			IAlleleBeeSpecies primaryAllele = genome.getActiveAllele(BeeChromosomes.SPECIES);
+			IAlleleBeeSpecies secondaryAllele = genome.getActiveAllele(BeeChromosomes.SPECIES);
 
 			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
@@ -206,7 +204,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 
 			if (type == BeeLifeStage.PRINCESS || type == BeeLifeStage.QUEEN) {
 				String displayTextKey = "for.bees.stock.pristine";
-				if (!bee.isNatural()) {
+				if (!bee.isPristine()) {
 					displayTextKey = "for.bees.stock.ignoble";
 				}
 				Component displayText = Component.translatable(displayTextKey);

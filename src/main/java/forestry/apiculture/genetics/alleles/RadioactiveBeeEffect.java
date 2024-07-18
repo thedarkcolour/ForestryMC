@@ -30,7 +30,7 @@ import forestry.apiculture.blocks.BlockAlveary;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.DamageSourceForestry;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 
 import forestry.api.genetics.IGenome;
 
@@ -69,12 +69,12 @@ public class RadioactiveBeeEffect extends ThrottledBeeEffect {
 		Level world = housing.getWorldObj();
 		RandomSource rand = world.random;
 
-		Vec3i area = VectUtil.scale(genome.getActiveValue(BeeChromosomes.TERRITORY), 2);
-		Vec3i offset = VectUtil.scale(area, -1 / 2.0f);
+		Vec3i area = VecUtil.scale(genome.getActiveValue(BeeChromosomes.TERRITORY), 2);
+		Vec3i offset = VecUtil.scale(area, -1 / 2.0f);
 		BlockPos posHousing = housing.getCoordinates();
 
 		for (int i = 0; i < 20; i++) {
-			BlockPos randomPos = VectUtil.getRandomPositionInArea(rand, area);
+			BlockPos randomPos = VecUtil.getRandomPositionInArea(rand, area);
 			BlockPos posBlock = randomPos.offset(posHousing);
 			posBlock = posBlock.offset(offset);
 

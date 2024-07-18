@@ -84,7 +84,7 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 	TEMPERATURE_TOLERANCE(BeeChromosomes.TEMPERATURE_TOLERANCE, -1, 2) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IBee individual) {
-			IAlleleBeeSpecies primary = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+			IAlleleBeeSpecies primary = genome.getActiveAllele(BeeChromosomes.SPECIES);
 			IValueAllele<ToleranceType> tempToleranceAllele = getActive(genome);
 			Component caption = ClimateHelper.toDisplay(primary.getTemperature());
 			toolTip.singleLine()
@@ -99,7 +99,7 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 	HUMIDITY_TOLERANCE(BeeChromosomes.HUMIDITY_TOLERANCE, -1, 3) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IBee individual) {
-			IAlleleBeeSpecies primary = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+			IAlleleBeeSpecies primary = genome.getActiveAllele(BeeChromosomes.SPECIES);
 			IValueAllele<ToleranceType> humidToleranceAllele = getActive(genome);
 			Component caption = ClimateHelper.toDisplay(primary.getHumidity());
 			toolTip.singleLine()

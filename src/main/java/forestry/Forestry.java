@@ -200,11 +200,11 @@ public class Forestry {
 			});
 
 			event.register(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, helper -> {
-				helper.register(new ResourceLocation(ForestryConstants.MOD_ID, "condition_modifier"), ConditionLootModifier.CODEC);
-				helper.register(new ResourceLocation(ForestryConstants.MOD_ID, "grafter_modifier"), GrafterLootModifier.CODEC);
+				helper.register(ForestryConstants.forestry("condition_modifier"), ConditionLootModifier.CODEC);
+				helper.register(ForestryConstants.forestry("grafter_modifier"), GrafterLootModifier.CODEC);
 
-				OrganismFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(ForestryConstants.MOD_ID, "set_species_nbt"), new LootItemFunctionType(new OrganismFunction.Serializer()));
-				CountBlockFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(ForestryConstants.MOD_ID, "count_from_block"), new LootItemFunctionType(new CountBlockFunction.Serializer()));
+				OrganismFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, ForestryConstants.forestry("set_species_nbt"), new LootItemFunctionType(new OrganismFunction.Serializer()));
+				CountBlockFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, ForestryConstants.forestry("count_from_block"), new LootItemFunctionType(new CountBlockFunction.Serializer()));
 			});
 		}
 

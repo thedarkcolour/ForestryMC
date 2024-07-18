@@ -52,6 +52,7 @@ import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.IBlockSubtype;
 import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
@@ -120,9 +121,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitApple);
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.AVERAGE);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitApple);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
 		}
 
 		@Override
@@ -134,11 +135,6 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 		protected void registerMutations() {
 			// vanilla
 		}
-
-		@Override
-		public boolean hasFruitLeaves() {
-			return true;
-		}
 	},
 	DarkOak(TreeBranchDefinition.QUERCUS, "darkOak", "velutina", false, LeafType.OAK, new Color(4764952), new Color(4764952).brighter(), EnumVanillaWoodType.DARK_OAK) {
 		@Override
@@ -148,9 +144,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.AVERAGE);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
-			template.set(TreeChromosomes.GIRTH, 2);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_2);
 		}
 
 		@Override
@@ -171,8 +167,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.AVERAGE);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
 		}
 
 		@Override
@@ -193,9 +189,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.YIELD, YieldAllele.LOWER);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_LOWER);
 		}
 
 		@Override
@@ -225,12 +221,12 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitWalnut);
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOWER);
-			template.set(TreeChromosomes.YIELD, YieldAllele.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
-			template.set(TreeChromosomes.GIRTH, 2);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitWalnut);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOWER);
+			genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_AVERAGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_2);
 		}
 
 		@Override
@@ -258,11 +254,11 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitChestnut);
-			template.set(TreeChromosomes.YIELD, YieldAllele.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
-			template.set(TreeChromosomes.GIRTH, 2);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitChestnut);
+			genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_AVERAGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_2);
 		}
 
 		@Override
@@ -290,11 +286,11 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitCherry);
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
-			template.set(TreeChromosomes.YIELD, YieldAllele.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLER);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitCherry);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
+			genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_AVERAGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLER);
 		}
 
 		@Override
@@ -322,10 +318,10 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitLemon);
-			template.set(TreeChromosomes.YIELD, YieldAllele.LOWER);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.AVERAGE);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLEST);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitLemon);
+			genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_LOWER);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_AVERAGE);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLEST);
 		}
 
 		@Override
@@ -352,10 +348,10 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitPlum);
-			template.set(TreeChromosomes.YIELD, YieldAllele.HIGH);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.AVERAGE);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLEST);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitPlum);
+			genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_HIGH);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_AVERAGE);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.SMALLEST);
 		}
 
 		@Override
@@ -382,9 +378,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -405,9 +401,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.AVERAGE);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
 		}
 
 		@Override
@@ -428,9 +424,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -452,9 +448,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -475,11 +471,11 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGEST);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWER);
-			template.set(TreeChromosomes.GIRTH, 3);
-			template.set(TreeChromosomes.FIREPROOF, FireproofAllele.TRUE);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGEST);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOWER);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_3);
+			genome.set(TreeChromosomes.FIREPROOF, FireproofAllele.TRUE);
 		}
 
 		@Override
@@ -500,11 +496,11 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.GIGANTIC);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWEST);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWEST);
-			template.set(TreeChromosomes.GIRTH, 4);
-			template.set(TreeChromosomes.FIREPROOF, FireproofAllele.TRUE);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.GIGANTIC);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWEST);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOWEST);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_4);
+			genome.set(TreeChromosomes.FIREPROOF, FireproofAllele.TRUE);
 		}
 
 		@Override
@@ -525,9 +521,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitCocoa);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGER);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.FAST);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitCocoa);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGER);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FAST);
 		}
 
 		@Override
@@ -548,7 +544,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
 		}
 
 		@Override
@@ -569,9 +565,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
-			template.set(TreeChromosomes.GIRTH, 2);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_2);
 		}
 
 		@Override
@@ -593,9 +589,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOW);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOW);
 		}
 
 		@Override
@@ -617,10 +613,10 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWER);
-			template.set(TreeChromosomes.GIRTH, 3);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOWER);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_3);
 		}
 
 		@Override
@@ -641,8 +637,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
-			template.set(TreeChromosomes.GIRTH, 2);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_2);
 		}
 
 		@Override
@@ -663,10 +659,10 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOW);
-			template.set(TreeChromosomes.GIRTH, 2);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOW);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_2);
 		}
 
 		@Override
@@ -731,8 +727,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
 		}
 
 		@Override
@@ -754,9 +750,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.HIGH);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_HIGH);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
 		}
 
 		@Override
@@ -777,7 +773,7 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGEST);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGEST);
 		}
 
 		@Override
@@ -799,8 +795,8 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOWEST);
-			template.set(TreeChromosomes.GIRTH, 2);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOWEST);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_2);
 		}
 
 		@Override
@@ -822,10 +818,10 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOW);
-			template.set(TreeChromosomes.GIRTH, 3);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOW);
+			genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_3);
 		}
 
 		@Override
@@ -848,9 +844,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALL);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.HIGH);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWEST);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.SMALL);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_HIGH);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOWEST);
 		}
 
 		@Override
@@ -874,9 +870,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.FASTER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
 		}
 
 		@Override
@@ -906,9 +902,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOW);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.LARGE);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOW);
 		}
 
 		@Override
@@ -932,10 +928,10 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitPapaya);
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOWER);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitPapaya);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -957,11 +953,11 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.FRUITS, AlleleFruits.fruitDates);
-			template.set(TreeChromosomes.FERTILITY, SaplingsAllele.LOW);
-			template.set(TreeChromosomes.YIELD, YieldAllele.LOW);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
+			genome.set(TreeChromosomes.FRUITS, AlleleFruits.fruitDates);
+			genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
+			genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_LOW);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.AVERAGE);
 		}
 
 		@Override
@@ -983,9 +979,9 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(TreeChromosomes.HEIGHT, HeightAllele.SMALL);
-			template.set(TreeChromosomes.SAPPINESS, SappinessAllele.LOW);
-			template.set(TreeChromosomes.MATURATION, MaturationAllele.SLOWER);
+			genome.set(TreeChromosomes.HEIGHT, HeightAllele.SMALL);
+			genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
+			genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOWER);
 		}
 
 		@Override
@@ -1039,10 +1035,6 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 
 	protected abstract void registerMutations();
 
-	public boolean hasFruitLeaves() {
-		return false;
-	}
-
 	@Override
 	public boolean setLogBlock(IGenome genome, LevelAccessor world, BlockPos pos, Direction facing) {
 		boolean fireproof = genome.getActiveValue(TreeChromosomes.FIREPROOF);
@@ -1083,12 +1075,6 @@ public enum TreeDefinition implements ITreeDefinition, ITreeGenerator, IBlockSub
 			}
 			tileLeaves.setTree(new Tree(genome));
 			return true;
-		}
-	}
-
-	public static void initTrees() {
-		for (TreeDefinition tree : values()) {
-			tree.registerMutations();
 		}
 	}
 

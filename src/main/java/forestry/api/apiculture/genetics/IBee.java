@@ -6,6 +6,7 @@
 package forestry.api.apiculture.genetics;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -35,9 +36,9 @@ import genetics.api.individual.IIndividual;
 public interface IBee extends IIndividualLiving {
 
 	/**
-	 * @return true if the individual is originally of natural origin.
+	 * @return true if the individual is originally of pristine/natural origin.
 	 */
-	boolean isNatural();
+	boolean isPristine();
 
 	/**
 	 * @return generation this individual is removed from the original individual.
@@ -96,4 +97,5 @@ public interface IBee extends IIndividualLiving {
 
 	boolean pollinateRandom(IBeeHousing housing, IIndividual pollen);
 
+	Iterator<BlockPos.MutableBlockPos> getAreaIterator(IBeeHousing housing);
 }

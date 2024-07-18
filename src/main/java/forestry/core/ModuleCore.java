@@ -43,7 +43,7 @@ import forestry.core.circuits.SolderManager;
 import forestry.core.climate.ForestryClimateManager;
 import forestry.core.commands.CommandModules;
 import forestry.core.features.CoreFeatures;
-import forestry.core.genetics.alleles.AlleleRegistry;
+import forestry.core.genetics.alleles.AlleleManager;
 import forestry.core.multiblock.MultiblockLogicFactory;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
@@ -128,7 +128,7 @@ public class ModuleCore extends BlankForestryModule {
 		ChipsetManager.circuitRegistry = new CircuitRegistry();
 
 		AlleleManager.alleleRegistry = new genetics.alleles.AlleleRegistry();
-		AlleleManager.alleleFactory = new AlleleRegistry();
+		AlleleManager.alleleFactory = new AlleleManager();
 
 		MultiblockManager.logicFactory = new MultiblockLogicFactory();
 

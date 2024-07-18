@@ -30,14 +30,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.Soil;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 
 public abstract class FarmLogic implements IFarmLogic {
 	private final EntitySelectorFarm entitySelectorFarm;
@@ -120,7 +119,7 @@ public abstract class FarmLogic implements IFarmLogic {
 	}
 
 	protected final BlockPos translateWithOffset(BlockPos pos, Direction farmDirection, int step) {
-		return VectUtil.scale(farmDirection.getNormal(), step).offset(pos);
+		return VecUtil.scale(farmDirection.getNormal(), step).offset(pos);
 	}
 
 	private static AABB getHarvestBox(Level world, IFarmHousing farmHousing, boolean toWorldHeight) {

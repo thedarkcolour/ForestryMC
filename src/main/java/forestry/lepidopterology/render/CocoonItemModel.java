@@ -8,8 +8,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.lepidopterology.genetics.IAlleleButterflyCocoon;
+import forestry.api.lepidopterology.genetics.IButterflyCocoon;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.models.AbstractItemModel;
 import forestry.lepidopterology.items.ItemButterflyGE;
@@ -41,7 +40,7 @@ public class CocoonItemModel extends AbstractItemModel {
 	protected BakedModel getOverride(BakedModel model, ItemStack stack) {
 		int age = Mth.clamp(stack.getOrCreateTag().getInt(ItemButterflyGE.NBT_AGE), 0, ItemButterflyGE.MAX_AGE);
 		IIndividualCapability<IButterfly> organism = GeneticHelper.getOrganism(stack);
-		IAlleleButterflyCocoon alleleCocoon = organism.getAllele(ButterflyChromosomes.COCOON, true);
+		IButterflyCocoon alleleCocoon = organism.getAllele(ButterflyChromosomes.COCOON, true);
 		return bakedModel.getOrDefault(alleleCocoon.getCocoonName(), ImmutableList.of()).get(age);
 	}
 

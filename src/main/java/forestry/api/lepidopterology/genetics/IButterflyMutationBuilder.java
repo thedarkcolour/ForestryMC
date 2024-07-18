@@ -5,7 +5,7 @@
  ******************************************************************************/
 package forestry.api.lepidopterology.genetics;
 
-import forestry.api.genetics.IMutationBuilder;
+import forestry.api.plugin.IMutationBuilder;
 
 public interface IButterflyMutationBuilder extends IMutationBuilder {
 	@Override

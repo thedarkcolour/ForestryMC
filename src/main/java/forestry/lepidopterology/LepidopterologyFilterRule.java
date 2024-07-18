@@ -5,7 +5,6 @@ import net.minecraft.world.item.ItemStack;
 import genetics.api.individual.IIndividual;
 
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;

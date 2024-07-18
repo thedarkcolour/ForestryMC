@@ -22,7 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class BottlerRecipeCategory extends ForestryRecipeCategory<BottlerRecipe> {
-	private final static ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/bottler.png");
+	private final static ResourceLocation guiTexture = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/bottler.png");
 
 	private final IDrawable icon;
 	private final IDrawable slot;

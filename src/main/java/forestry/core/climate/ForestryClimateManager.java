@@ -25,10 +25,6 @@ import forestry.core.DefaultClimateProvider;
 import org.jetbrains.annotations.ApiStatus;
 
 public class ForestryClimateManager implements IClimateManager {
-	static final String TEMPERATURE_NBT_KEY = "TEMP";
-	static final String HUMIDITY_NBT_KEY = "HUMID";
-	static final String MUTABLE_NBT_KEY = "MUTABLE";
-
 	private final HashMap<ResourceKey<Biome>, TemperatureType> temperatures = new HashMap<>();
 	private final HashMap<ResourceKey<Biome>, HumidityType> humidities = new HashMap<>();
 

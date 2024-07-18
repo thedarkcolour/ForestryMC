@@ -23,7 +23,7 @@ import forestry.api.modules.IForestryPacketServer;
 import forestry.api.modules.IPacketRegistry;
 
 public class NetworkHandler {
-	public static final ResourceLocation CHANNEL_ID = new ResourceLocation(ForestryConstants.MOD_ID, "channel");
+	public static final ResourceLocation CHANNEL_ID = ForestryConstants.forestry("channel");
 	// todo correspond to mod version
 	public static final String VERSION = "1.0.0";
 	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(CHANNEL_ID, () -> VERSION, VERSION::equals, VERSION::equals);

@@ -57,7 +57,7 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 			if (organism.isEmpty()) {
 				continue;
 			}
-			IAlleleBeeSpecies species = organism.getAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES, true);
+			IAlleleBeeSpecies species = organism.getAllele(BeeChromosomes.SPECIES, true);
 			iconStacks.put(species.getId().toString(), beeStack);
 		}
 	}

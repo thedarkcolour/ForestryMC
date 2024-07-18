@@ -44,11 +44,11 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 	@Override
 	protected void registerModels() {
 		withExistingParent(LepidopterologyItems.CATERPILLAR_GE.getName(), mcLoc("item/generated"))
-				.texture("layer0", new ResourceLocation(ForestryConstants.MOD_ID, "item/caterpillar.body2"))
-				.texture("layer1", new ResourceLocation(ForestryConstants.MOD_ID, "item/caterpillar.body"));
+				.texture("layer0", ForestryConstants.forestry("item/caterpillar.body2"))
+				.texture("layer1", ForestryConstants.forestry("item/caterpillar.body"));
 		withExistingParent(LepidopterologyItems.SERUM_GE.getName(), mcLoc("item/generated"))
-				.texture("layer0", new ResourceLocation(ForestryConstants.MOD_ID, "item/liquids/jar.bottle"))
-				.texture("layer1", new ResourceLocation(ForestryConstants.MOD_ID, "item/liquids/jar.contents"));
+				.texture("layer0", ForestryConstants.forestry("item/liquids/jar.bottle"))
+				.texture("layer1", ForestryConstants.forestry("item/liquids/jar.contents"));
 
 		for (FeatureItem<ItemCrated> featureCrated : CrateItems.getCrates()) {
 			Item containedItem = featureCrated.get().getContained().getItem();
@@ -81,7 +81,7 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 
 		for (Table.Cell<BlockTypePlanter, BlockPlanter.Mode, FeatureBlock<BlockPlanter, BlockItem>> cell : CultivationBlocks.PLANTER.getFeatureByTypes().cellSet()) {
 			Block block = cell.getValue().block();
-			withExistingParent(ForestryBlockStateProvider.path(block), new ResourceLocation(ForestryConstants.MOD_ID, "block/" + cell.getRowKey().getSerializedName()));
+			withExistingParent(ForestryBlockStateProvider.path(block), ForestryConstants.forestry("block/" + cell.getRowKey().getSerializedName()));
 		}
 
 		// Buckets

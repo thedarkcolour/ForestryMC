@@ -1,9 +1,11 @@
 package forestry.core.genetics;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
 import forestry.apiculture.genetics.IGeneticTooltipProvider;
 
@@ -26,11 +28,11 @@ public enum DefaultDisplayHandler implements IGeneticTooltipProvider<IIndividual
 	}, HYBRID(-2) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IIndividual individual) {
-			IChromosome speciesType = individual.getRoot().getKaryotype().getSpeciesChromosome();
-			IAllele primary = genome.getActiveAllele(speciesType);
-			IAllele secondary = genome.getInactiveAllele(speciesType);
+			ISpeciesChromosome<?> speciesType = individual.getRoot().getKaryotype().getSpeciesChromosome();
+			Component primary = genome.getActiveName(speciesType);
+			Component secondary = genome.getActiveName(speciesType);
 			if (!individual.isPureBred(speciesType)) {
-				toolTip.translated("for.bees.hybrid", primary.getDisplayName(), secondary.getDisplayName()).style(ChatFormatting.BLUE);
+				toolTip.add(Component.translatable("for.bees.hybrid", primary, secondary).withStyle(ChatFormatting.BLUE));
 			}
 		}
 	};

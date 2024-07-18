@@ -60,7 +60,7 @@ public abstract class ModUtil {
 
 	// Creates a Forestry resource location
 	public static ResourceLocation modLoc(String path) {
-		return new ResourceLocation(ForestryConstants.MOD_ID, path);
+		return ForestryConstants.forestry(path);
 	}
 
 	public static ResourceLocation getRegistryName(Fluid o) {

@@ -5,11 +5,52 @@
  ******************************************************************************/
 package forestry.api.apiculture.genetics;
 
+import java.util.List;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
+
+import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.IBeeModifier;
+import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.INamedValue;
+import forestry.core.render.ParticleRender;
+import forestry.core.utils.VecUtil;
 
-public interface IBeeEffect extends IEffect {
+public interface IBeeEffect extends IEffect, INamedValue {
+	static AABB getBounding(IBeeHousing housing, IGenome genome) {
+		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		float territoryModifier = beeModifier.getTerritoryModifier(genome, 1.0f);
+
+		Vec3i area = VecUtil.scale(genome.getActiveValue(BeeChromosomes.TERRITORY), territoryModifier);
+		Vec3i offset = VecUtil.scale(area, -1 / 2.0f);
+
+		BlockPos min = housing.getCoordinates().offset(offset);
+		BlockPos max = min.offset(area);
+
+		return new AABB(min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ());
+	}
+
+	static <T extends Entity> List<T> getEntitiesInRange(IGenome genome, IBeeHousing housing, Class<T> entityClass) {
+		AABB boundingBox = getBounding(housing, genome);
+		return housing.getWorldObj().getEntitiesOfClass(entityClass, boundingBox);
+	}
+
+	@Override
+	default IEffectData validateStorage(IEffectData storedData) {
+		return storedData;
+	}
+
+	@Override
+	default boolean isCombinable() {
+		return false;
+	}
 
 	/**
 	 * Called by apiaries to cause an effect in the world. (server)
@@ -19,7 +60,9 @@ public interface IBeeEffect extends IEffect {
 	 * @param housing    {@link IBeeHousing} the bee currently resides in.
 	 * @return storedData, may have been manipulated.
 	 */
-	IEffectData doEffect(IGenome genome, IEffectData storedData, IBeeHousing housing);
+	default IEffectData doEffect(IGenome genome, IEffectData storedData, IBeeHousing housing) {
+		return storedData;
+	}
 
 	/**
 	 * Called on the client side to produce visual bee effects.
@@ -29,6 +72,11 @@ public interface IBeeEffect extends IEffect {
 	 * @param housing    {@link IBeeHousing} the bee currently resides in.
 	 * @return storedData, may have been manipulated.
 	 */
-	IEffectData doFX(IGenome genome, IEffectData storedData, IBeeHousing housing);
+	default IEffectData doFX(IGenome genome, IEffectData storedData, IBeeHousing housing) {
+		IBeekeepingLogic beekeepingLogic = housing.getBeekeepingLogic();
+		List<BlockPos> flowerPositions = beekeepingLogic.getFlowerPositions();
 
+		ParticleRender.addBeeHiveFX(housing, genome, flowerPositions);
+		return storedData;
+	}
 }

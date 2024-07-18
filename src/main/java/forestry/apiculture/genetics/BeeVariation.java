@@ -48,7 +48,7 @@ public abstract class BeeVariation implements IBeeDefinition {
 
 	@Override
 	public ISpeciesType<IBee> getSpecies() {
-		return genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+		return genome.getActiveAllele(BeeChromosomes.SPECIES);
 	}
 
 	public static class RainResist extends BeeVariation {

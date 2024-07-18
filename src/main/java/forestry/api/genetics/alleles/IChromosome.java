@@ -1,7 +1,5 @@
 package forestry.api.genetics.alleles;
 
-import java.util.Set;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -15,24 +13,26 @@ import forestry.api.IForestryApi;
  * Register your chromosomes with {@link forestry.api.plugin.IGeneticRegistration#registerChromosome}.
  */
 public interface IChromosome<A extends IAllele> {
-	Codec<IChromosome<?>> CODEC = IForestryApi.INSTANCE.getGeneticManager().chromosomeCodec();
-	/**
-	 * @return A set of alleles that this chromosome can have. Alleles not in this set are not allowed.
-	 * @see {@link forestry.api.plugin.IGeneticRegistration#modifyChromosome} to add more values.
-	 */
-	Set<A> getValidAlleles();
+	// todo is this circular?
+	Codec<IChromosome<?>> CODEC = IForestryApi.INSTANCE.getAlleleManager().chromosomeCodec();
 
 	/**
 	 * @return Unique ID for this chromosome.
 	 */
-	ResourceLocation getId();
+	ResourceLocation id();
 
 	/**
 	 * The translation key of this allele, for use in {@link Component#translatable(String)}.
 	 */
-	String getTranslationKey(A allele);
+	default String getTranslationKey(A allele) {
+		ResourceLocation alleleId = allele.id();
+		// ex: allele.forestry.bee_species.meadows
+		return "allele." + alleleId.getNamespace() + '.' + id().getPath() + '.' + alleleId.getPath();
+	}
 
 	default MutableComponent getDisplayName(A allele) {
 		return Component.translatable(getTranslationKey(allele));
 	}
+
+	Class<?> valueClass();
 }

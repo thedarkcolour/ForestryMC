@@ -31,7 +31,7 @@ import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
 import forestry.api.genetics.alleles.AlleleManager;
-import forestry.api.genetics.products.Product;
+import forestry.api.genetics.Product;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.farming.logic.crops.CropDestroy;
 

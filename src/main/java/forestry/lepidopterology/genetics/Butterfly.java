@@ -36,10 +36,8 @@ import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.products.IProductList;
-import forestry.api.genetics.products.Product;
+import forestry.api.genetics.Product;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.IButterflyNursery;
@@ -57,12 +55,12 @@ import forestry.lepidopterology.ModuleLepidopterology;
 
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IValueAllele;
-import forestry.api.genetics.alleles.ChromosomePair;
+import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.IGenome;
 import genetics.api.mutation.IMutationContainer;
 import forestry.api.genetics.ISpeciesType;
 import genetics.api.root.components.ComponentKeys;
-import genetics.individual.Genome;
+import forestry.core.genetics.Genome;
 import org.jetbrains.annotations.NotNull;
 
 public class Butterfly extends IndividualLiving implements IButterfly {
@@ -209,17 +207,17 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 			return null;
 		}
 
-		ChromosomePair[] chromosomes = new ChromosomePair[genome.getChromosomes().length];
-		ChromosomePair[] parent1 = genome.getChromosomes();
-		ChromosomePair[] parent2 = mate.getChromosomes();
+		AllelePair[] chromosomes = new AllelePair[genome.getAllelePairs().length];
+		AllelePair[] parent1 = genome.getAllelePairs();
+		AllelePair[] parent2 = mate.getAllelePairs();
 
 		// Check for mutation. Replace one of the parents with the mutation
 		// template if mutation occured.
-		ChromosomePair[] mutated1 = mutateSpecies(level, nursery, genome, mate);
+		AllelePair[] mutated1 = mutateSpecies(level, nursery, genome, mate);
 		if (mutated1 != null) {
 			parent1 = mutated1;
 		}
-		ChromosomePair[] mutated2 = mutateSpecies(level, nursery, mate, genome);
+		AllelePair[] mutated2 = mutateSpecies(level, nursery, mate, genome);
 		if (mutated2 != null) {
 			parent2 = mutated2;
 		}
@@ -234,10 +232,10 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 	}
 
 	@Nullable
-	private static ChromosomePair[] mutateSpecies(Level world, IButterflyNursery nursery, IGenome genomeOne, IGenome genomeTwo) {
+	private static AllelePair[] mutateSpecies(Level world, IButterflyNursery nursery, IGenome genomeOne, IGenome genomeTwo) {
 
-		ChromosomePair[] parent1 = genomeOne.getChromosomes();
-		ChromosomePair[] parent2 = genomeTwo.getChromosomes();
+		AllelePair[] parent1 = genomeOne.getAllelePairs();
+		AllelePair[] parent2 = genomeTwo.getAllelePairs();
 
 		IGenome genome0;
 		IGenome genome1;

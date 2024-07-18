@@ -1,28 +1,28 @@
 package forestry.api.genetics;
 
-import net.minecraft.nbt.CompoundTag;
+import com.google.common.collect.ImmutableList;
 
-import forestry.api.genetics.alleles.ChromosomePair;
+import net.minecraft.network.chat.MutableComponent;
+
+import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IBooleanChromosome;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IFloatChromosome;
 import forestry.api.genetics.alleles.IIntegerChromosome;
+import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.IValueChromosome;
 
-import genetics.api.individual.IGenomeWrapper;
-import genetics.api.individual.IKaryotype;
-
 /**
- * Holds the {@link ChromosomePair}s which comprise the traits of a given individual.
+ * Holds the {@link AllelePair}s which comprise the traits of a given individual.
  */
 public interface IGenome {
 
 	/**
 	 * @return A array with all chromosomes of this genome.
 	 */
-	ChromosomePair[] getChromosomes();
+	ImmutableList<AllelePair<?>> getAllelePairs();
 
 	/**
 	 * @return The active allele of the chromosome with the given type.
@@ -101,7 +101,7 @@ public interface IGenome {
 	/**
 	 * @return The chromosome with the given type.
 	 */
-	ChromosomePair getChromosome(IChromosome chromosomeType);
+	<A extends IAllele> AllelePair<A> getChromosome(IChromosome<A> chromosomeType);
 
 	@Override
 	boolean equals(Object other);
@@ -112,13 +112,37 @@ public interface IGenome {
 	 */
 	IKaryotype getKaryotype();
 
-	<W extends IGenomeWrapper> W asWrapper(Class<? extends W> wrapperClass);
+	int size();
 
-	/**
-	 * Writes the data of this genome to the NBT-Data.
-	 * <p>
-	 */
-	CompoundTag writeToNBT(CompoundTag compound);
+	default MutableComponent getActiveName(IFloatChromosome chromosome) {
+		return chromosome.getDisplayName(getActiveAllele(chromosome));
+	}
 
-	boolean matchesTemplateGenome();
+	default MutableComponent getActiveName(IBooleanChromosome chromosome) {
+		return chromosome.getDisplayName(getActiveAllele(chromosome));
+	}
+
+	default MutableComponent getActiveName(IIntegerChromosome chromosome) {
+		return chromosome.getDisplayName(getActiveAllele(chromosome));
+	}
+
+	default <V> MutableComponent getActiveName(IValueChromosome<V> chromosome) {
+		return chromosome.getDisplayName(getActiveAllele(chromosome));
+	}
+
+	default MutableComponent getInactiveName(IFloatChromosome chromosome) {
+		return chromosome.getDisplayName(getInactiveAllele(chromosome));
+	}
+
+	default MutableComponent getInactiveName(IBooleanChromosome chromosome) {
+		return chromosome.getDisplayName(getInactiveAllele(chromosome));
+	}
+
+	default MutableComponent getInactiveName(IIntegerChromosome chromosome) {
+		return chromosome.getDisplayName(getInactiveAllele(chromosome));
+	}
+
+	default <V> MutableComponent getInactiveName(IValueChromosome<V> chromosome) {
+		return chromosome.getDisplayName(getInactiveAllele(chromosome));
+	}
 }

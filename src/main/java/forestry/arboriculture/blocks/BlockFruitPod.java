@@ -13,7 +13,6 @@ package forestry.arboriculture.blocks;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,7 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 
-import forestry.api.arboriculture.genetics.IAlleleFruit;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.arboriculture.tiles.TileFruitPod;
 import forestry.core.tiles.TileUtil;
@@ -45,16 +44,16 @@ public class BlockFruitPod extends CocoaBlock implements EntityBlock {
 
 	public static List<BlockFruitPod> create() {
 		List<BlockFruitPod> blocks = new ArrayList<>();
-		for (IAlleleFruit fruit : AlleleFruits.getFruitAllelesWithModels()) {
+		for (IFruit fruit : AlleleFruits.getFruitAllelesWithModels()) {
 			BlockFruitPod block = new BlockFruitPod(fruit);
 			blocks.add(block);
 		}
 		return blocks;
 	}
 
-	private final IAlleleFruit fruit;
+	private final IFruit fruit;
 
-	public BlockFruitPod(IAlleleFruit fruit) {
+	public BlockFruitPod(IFruit fruit) {
 		super(BlockSapling.Properties.of(Material.PLANT)
 				.randomTicks()
 				.strength(0.2f, 3.0f)
@@ -62,7 +61,7 @@ public class BlockFruitPod extends CocoaBlock implements EntityBlock {
 		this.fruit = fruit;
 	}
 
-	public IAlleleFruit getFruit() {
+	public IFruit getFruit() {
 		return fruit;
 	}
 

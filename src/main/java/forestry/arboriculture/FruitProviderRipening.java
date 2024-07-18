@@ -22,7 +22,7 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.products.IProductList;
-import forestry.api.genetics.products.Product;
+import forestry.api.genetics.Product;
 import forestry.core.genetics.ProductListWrapper;
 
 import forestry.api.genetics.IGenome;

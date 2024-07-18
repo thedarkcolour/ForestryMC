@@ -43,7 +43,7 @@ import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.ITreekeepingMode;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.arboriculture.genetics.IAlleleFruit;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
@@ -173,7 +173,7 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 	}
 
 	@Override
-	public boolean setFruitBlock(LevelAccessor world, IGenome genome, IAlleleFruit allele, float yield, BlockPos pos) {
+	public boolean setFruitBlock(LevelAccessor world, IGenome genome, IFruit allele, float yield, BlockPos pos) {
 		IFruitProvider provider = allele.getProvider();
 		Direction facing = BlockUtil.getValidPodFacing(world, pos, provider.getLogTag());
 

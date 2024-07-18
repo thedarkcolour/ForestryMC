@@ -41,7 +41,7 @@ import net.minecraftforge.common.PlantType;
 import forestry.api.arboriculture.IArboristTracker;
 import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IAlleleLeafEffect;
+import forestry.api.arboriculture.genetics.ILeafEffect;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeMutation;
@@ -54,11 +54,11 @@ import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.products.IProductList;
 import forestry.core.config.Config;
 
-import forestry.api.genetics.alleles.ChromosomePair;
+import forestry.api.genetics.alleles.AllelePair;
 import genetics.api.individual.Individual;
 import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
-import genetics.individual.Genome;
+import forestry.core.genetics.Genome;
 
 public class Tree extends Individual implements ITree, IPlantable {
 	public Tree(IGenome genome) {
@@ -77,7 +77,7 @@ public class Tree extends Individual implements ITree, IPlantable {
 	/* EFFECTS */
 	@Override
 	public IEffectData[] doEffect(IEffectData[] storedData, Level world, BlockPos pos) {
-		IAlleleLeafEffect effect = getGenome().getActiveAllele(TreeChromosomes.EFFECT);
+		ILeafEffect effect = this.genome.getActiveValue(TreeChromosomes.EFFECT);
 
 		storedData[0] = doEffect(effect, storedData[0], world, pos);
 
@@ -86,7 +86,7 @@ public class Tree extends Individual implements ITree, IPlantable {
 			return storedData;
 		}
 
-		IAlleleLeafEffect secondary = getGenome().getInactiveAllele(TreeChromosomes.EFFECT);
+		ILeafEffect secondary = this.genome.getInactiveValue(TreeChromosomes.EFFECT);
 		if (!secondary.isCombinable()) {
 			return storedData;
 		}
@@ -96,7 +96,7 @@ public class Tree extends Individual implements ITree, IPlantable {
 		return storedData;
 	}
 
-	private IEffectData doEffect(IAlleleLeafEffect effect, IEffectData storedData, Level world, BlockPos pos) {
+	private IEffectData doEffect(ILeafEffect effect, IEffectData storedData, Level world, BlockPos pos) {
 		storedData = effect.validateStorage(storedData);
 		return effect.doEffect(getGenome(), storedData, world, pos);
 	}
@@ -150,7 +150,7 @@ public class Tree extends Individual implements ITree, IPlantable {
 
 	@Override
 	public int getResilience() {
-		int base = (int) (getGenome().getActiveValue(TreeChromosomes.FERTILITY) * getGenome().getActiveValue(TreeChromosomes.SAPPINESS) * 100);
+		int base = (int) (getGenome().getActiveValue(TreeChromosomes.SAPLINGS) * getGenome().getActiveValue(TreeChromosomes.SAPPINESS) * 100);
 		return (Math.max(base, 1)) * 10;
 	}
 
@@ -248,11 +248,11 @@ public class Tree extends Individual implements ITree, IPlantable {
 	public List<ITree> getSaplings(Level world, @Nullable GameProfile playerProfile, BlockPos pos, float modifier) {
 		List<ITree> prod = new ArrayList<>();
 
-		float chance = genome.getActiveValue(TreeChromosomes.FERTILITY) * modifier;
+		float chance = genome.getActiveValue(TreeChromosomes.SAPLINGS) * modifier;
 
 		if (world.random.nextFloat() <= chance) {
 			if (mate == null) {
-				prod.add(TreeManager.treeRoot.getTree(world, new Genome(TreeManager.treeRoot.getKaryotype(), genome.getChromosomes())));
+				prod.add(TreeManager.treeRoot.getTree(world, new Genome(TreeManager.treeRoot.getKaryotype(), genome.getAllelePairs())));
 			} else {
 				prod.add(createOffspring(world, mate, playerProfile, pos));
 			}
@@ -262,13 +262,13 @@ public class Tree extends Individual implements ITree, IPlantable {
 	}
 
 	private ITree createOffspring(Level world, IGenome mate, @Nullable GameProfile playerProfile, BlockPos pos) {
-		ChromosomePair[] chromosomes = new ChromosomePair[genome.getChromosomes().length];
-		ChromosomePair[] parent1 = genome.getChromosomes();
-		ChromosomePair[] parent2 = mate.getChromosomes();
+		AllelePair[] chromosomes = new AllelePair[genome.getAllelePairs().length];
+		AllelePair[] parent1 = genome.getAllelePairs();
+		AllelePair[] parent2 = mate.getAllelePairs();
 
 		// Check for mutation. Replace one of the parents with the mutation
 		// template if mutation occured.
-		ChromosomePair[] mutated = mutateSpecies(world, playerProfile, pos, genome, mate);
+		AllelePair[] mutated = mutateSpecies(world, playerProfile, pos, genome, mate);
 		if (mutated == null) {
 			mutated = mutateSpecies(world, playerProfile, pos, mate, genome);
 		}
@@ -287,9 +287,9 @@ public class Tree extends Individual implements ITree, IPlantable {
 	}
 
 	@Nullable
-	private static ChromosomePair[] mutateSpecies(Level world, @Nullable GameProfile playerProfile, BlockPos pos, IGenome genomeOne, IGenome genomeTwo) {
-		ChromosomePair[] parent1 = genomeOne.getChromosomes();
-		ChromosomePair[] parent2 = genomeTwo.getChromosomes();
+	private static AllelePair[] mutateSpecies(Level world, @Nullable GameProfile playerProfile, BlockPos pos, IGenome genomeOne, IGenome genomeTwo) {
+		AllelePair[] parent1 = genomeOne.getAllelePairs();
+		AllelePair[] parent2 = genomeTwo.getAllelePairs();
 
 		IGenome genome0;
 		IGenome genome1;

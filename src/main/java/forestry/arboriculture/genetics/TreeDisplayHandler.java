@@ -29,7 +29,7 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 	HEIGHT(TreeChromosomes.HEIGHT, ChatFormatting.LIGHT_PURPLE, "H: %1$s"),
 	GIRTH(TreeChromosomes.GIRTH, ChatFormatting.AQUA, "G: %1$sx%2$s"),
 	GROUP_1(1, 3, 4),
-	SAPLINGS(TreeChromosomes.FERTILITY, ChatFormatting.YELLOW, "S: %1$s"),
+	SAPLINGS(TreeChromosomes.SAPLINGS, ChatFormatting.YELLOW, "S: %1$s"),
 	YIELD(TreeChromosomes.YIELD, ChatFormatting.WHITE, "Y: %1$s"),
 	GROUP_2(2, 6, 7),
 	FIREPROOF(TreeChromosomes.FIREPROOF, 3) {

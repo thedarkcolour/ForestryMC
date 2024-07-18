@@ -23,22 +23,22 @@ import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.IBeeModifier;
+import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.particles.ParticleSnow;
-import forestry.apiculture.genetics.alleles.BeeEffect;
 import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.particles.BeeParticleData;
 import forestry.apiculture.particles.BeeTargetParticleData;
 import forestry.core.config.Config;
 import forestry.core.entities.ParticleIgnition;
 import forestry.core.entities.ParticleSmoke;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 
 import forestry.api.genetics.IGenome;
 
@@ -83,13 +83,13 @@ public class ParticleRender {
 			return;
 		}
 
-		int color = genome.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES).getSpriteColour(0);
+		int color = genome.getActiveAllele(BeeChromosomes.SPECIES).getSpriteColour(0);
 
 		int randomInt = world.random.nextInt(100);
 
 		if (housing instanceof IHiveTile) {
 			if (((IHiveTile) housing).isAngry() || randomInt >= 85) {
-				List<LivingEntity> entitiesInRange = BeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
+				List<LivingEntity> entitiesInRange = IBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
 				if (!entitiesInRange.isEmpty()) {
 					LivingEntity entity = entitiesInRange.get(world.random.nextInt(entitiesInRange.size()));
 					//Particle particle = new ParticleBeeTargetEntity(world, particleStart, entity, color);
@@ -106,9 +106,9 @@ public class ParticleRender {
 			//effectRenderer.add(particle);
 			world.addParticle(new BeeParticleData(ApicultureParticles.BEE_ROUND_TRIP_PARTICLE.get(), destination, color), particleStart.x, particleStart.y, particleStart.z, 0, 0, 0);
 		} else {
-			Vec3i area = BeeEffect.getModifiedArea(genome, housing);
+			Vec3i area = getModifiedArea(genome, housing);
 			Vec3i offset = housing.getCoordinates().offset(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
-			BlockPos destination = VectUtil.getRandomPositionInArea(world.random, area).offset(offset);
+			BlockPos destination = VecUtil.getRandomPositionInArea(world.random, area).offset(offset);
 			world.addParticle(new BeeParticleData(ApicultureParticles.BEE_EXPLORER_PARTICLE.get(), destination, color), particleStart.x, particleStart.y, particleStart.z, 0, 0, 0);
 			//Particle particle = new ParticleBeeExplore(world, particleStart, destination, color);
 			//effectRenderer.add(particle);
@@ -271,5 +271,27 @@ public class ParticleRender {
 		if (particle != null) {
 			effectRenderer.add(particle);
 		}
+	}
+
+	public static Vec3i getModifiedArea(IGenome genome, IBeeHousing housing) {
+		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		float territoryModifier = beeModifier.getTerritoryModifier(genome, 1f);
+
+		Vec3i area = VecUtil.scale(genome.getActiveValue(BeeChromosomes.TERRITORY), territoryModifier);
+		int x = area.getX();
+		int y = area.getY();
+		int z = area.getZ();
+
+		if (x < 1) {
+			x = 1;
+		}
+		if (y < 1) {
+			y = 1;
+		}
+		if (z < 1) {
+			z = 1;
+		}
+
+		return new Vec3i(x, y, z);
 	}
 }

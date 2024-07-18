@@ -9,7 +9,7 @@ public class TreeTaxonomy {
 			phylum.defineSubTaxon(ForestryTaxa.CLASS_ASTERIDS, klass -> {
 				klass.defineSubTaxon(ForestryTaxa.ORDER_ERICALES, order -> {
 					order.defineSubTaxon(ForestryTaxa.FAMILY_EBENACEAE, family -> {
-						family.defineSubTaxon(ForestryTaxa.GENUS_EBONY);
+						family.defineSubTaxon(ForestryTaxa.GENUS_DIOSPYROS);
 					});
 					order.defineSubTaxon(ForestryTaxa.FAMILY_FABACEAE, family -> {
 						family.defineSubTaxon(ForestryTaxa.GENUS_ACACIA);

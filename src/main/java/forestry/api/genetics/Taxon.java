@@ -2,8 +2,6 @@ package forestry.api.genetics;
 
 import java.util.List;
 
-import forestry.api.genetics.alleles.IAlleleSpecies;
-
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -16,6 +14,6 @@ import org.jetbrains.annotations.Nullable;
  * @param species  The member species of this group.
  * @param parent   The parent taxon, or {@code null} if this is a {@link TaxonomicRank#DOMAIN}.
  */
-public record Taxon(String name, TaxonomicRank rank, List<Taxon> children, List<IAlleleSpecies> species,
+public record Taxon(String name, TaxonomicRank rank, List<Taxon> children, List<ISpecies<?>> species,
 					@Nullable Taxon parent) {
 }

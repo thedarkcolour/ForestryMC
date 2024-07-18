@@ -9,7 +9,7 @@ import forestry.api.ForestryConstants;
 import forestry.core.gui.slots.ISlotTextured;
 
 public class SlotFilterFacing extends Slot implements ISlotTextured {
-	private static final ResourceLocation SPRITE = new ResourceLocation(ForestryConstants.MOD_ID, "slots/bee");
+	private static final ResourceLocation SPRITE = ForestryConstants.forestry("slots/bee");
 
 	public SlotFilterFacing(Container inventoryIn, int index, int xPosition, int yPosition) {
 		super(inventoryIn, index, xPosition, yPosition);

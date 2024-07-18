@@ -12,7 +12,7 @@ public class ForestryChestLootTables extends ChestLoot {
 
 	@Override
 	public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
-		consumer.accept(new ResourceLocation(ForestryConstants.MOD_ID, "chests/village_naturalist"), LootTable.lootTable());
+		consumer.accept(ForestryConstants.forestry("chests/village_naturalist"), LootTable.lootTable());
 		for (LootTableHelper.Entry entry : LootTableHelper.getInstance().entries.values()) {
 			consumer.accept(entry.getLocation(), entry.builder);
 		}

@@ -1,9 +1,9 @@
 package forestry.api.genetics.alleles;
 
-import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.ISpecies;
 
 /**
  * Special chromosome type used in certain method overloads to reduce boilerplate.
  */
-public interface ISpeciesChromosome<S extends ISpeciesType<?>> extends IValueChromosome<S> {
+public interface ISpeciesChromosome<S extends ISpecies<?>> extends IValueChromosome<S> {
 }

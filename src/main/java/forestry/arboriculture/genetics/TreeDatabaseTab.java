@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.EnumFruitFamily;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.arboriculture.genetics.IAlleleFruit;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.IFruitFamily;
@@ -51,7 +51,7 @@ public class TreeDatabaseTab implements IDatabaseTab<ITree> {
 
 		container.addLine(Component.translatable("for.gui.species"), TreeChromosomes.SPECIES);
 
-		container.addLine(Component.translatable("for.gui.saplings"), TreeChromosomes.FERTILITY);
+		container.addLine(Component.translatable("for.gui.saplings"), TreeChromosomes.SAPLINGS);
 		container.addLine(Component.translatable("for.gui.maturity"), TreeChromosomes.MATURATION);
 		container.addLine(Component.translatable("for.gui.height"), TreeChromosomes.HEIGHT);
 
@@ -71,7 +71,7 @@ public class TreeDatabaseTab implements IDatabaseTab<ITree> {
 			container.label(fruitFamily.getName(), Alignment.TOP_CENTER, speciesStyle);
 		}
 
-		IAlleleFruit fruit = mode == DatabaseMode.ACTIVE ? tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS) : tree.getGenome().getInactiveAllele(TreeChromosomes.FRUITS);
+		IFruit fruit = mode == DatabaseMode.ACTIVE ? tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS) : tree.getGenome().getInactiveAllele(TreeChromosomes.FRUITS);
 		Style textStyle = GuiElementFactory.INSTANCE.getStateStyle(tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).dominant());
 
 		container.translated("for.gui.fruits").setStyle(GuiConstants.UNDERLINED_STYLE).setAlign(Alignment.TOP_CENTER);

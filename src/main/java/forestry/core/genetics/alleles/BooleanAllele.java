@@ -11,6 +11,6 @@ public record BooleanAllele(ResourceLocation id, boolean value, boolean dominant
 	}
 
 	private static ResourceLocation createId(boolean value, boolean dominant) {
-		return new ResourceLocation(ForestryConstants.MOD_ID, dominant ? Boolean.toString(value) + 'd' : Boolean.toString(value));
+		return ForestryConstants.forestry(dominant ? Boolean.toString(value) + 'd' : Boolean.toString(value));
 	}
 }

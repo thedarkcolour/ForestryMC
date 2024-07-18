@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.client.ForestrySprites;
-import forestry.api.genetics.alleles.AlleleManager;
+import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
@@ -69,7 +69,7 @@ public enum ApicultureFilterRuleType implements IFilterRuleType {
 
 	@Override
 	public String getRootUID() {
-		return BeeManager.beeRoot.id();
+		return ForestrySpeciesType.BEE;
 	}
 
 	@Override

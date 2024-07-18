@@ -10,18 +10,19 @@
  ******************************************************************************/
 package forestry.apiculture.genetics.alleles;
 
+import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IGenome;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.IEffectData;
 import forestry.core.genetics.EffectData;
 
-public abstract class ThrottledBeeEffect extends BeeEffect {
+public abstract class ThrottledBeeEffect implements IBeeEffect {
 	private boolean isCombinable;
 	private final int throttle;
 	private boolean requiresWorkingQueen;
 
-	protected ThrottledBeeEffect(int throttle, boolean requiresWorking, boolean isCombinable) {
+	protected ThrottledBeeEffect(String modId, String name, int throttle, boolean requiresWorking, boolean isCombinable) {
 		this.throttle = throttle;
 		this.isCombinable = isCombinable;
 		this.requiresWorkingQueen = requiresWorking;
@@ -50,8 +51,7 @@ public abstract class ThrottledBeeEffect extends BeeEffect {
 	}
 
 	private boolean isThrottled(IEffectData storedData, IBeeHousing housing) {
-
-		if (requiresWorkingQueen && housing.getErrorLogic().hasErrors()) {
+		if (this.requiresWorkingQueen && housing.getErrorLogic().hasErrors()) {
 			return true;
 		}
 

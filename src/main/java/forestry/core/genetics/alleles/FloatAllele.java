@@ -11,6 +11,6 @@ record FloatAllele(ResourceLocation id, float value, boolean dominant) implement
 	}
 
 	private static ResourceLocation createId(float value, boolean dominant) {
-		return new ResourceLocation(ForestryConstants.MOD_ID, value + (dominant ? "fd" : "f"));
+		return ForestryConstants.forestry(value + (dominant ? "fd" : "f"));
 	}
 }

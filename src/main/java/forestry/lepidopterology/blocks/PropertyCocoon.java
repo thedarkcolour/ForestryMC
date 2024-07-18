@@ -16,36 +16,35 @@ import java.util.Map;
 import java.util.Optional;
 
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.lepidopterology.genetics.IAlleleButterflyCocoon;
+import forestry.api.lepidopterology.genetics.IButterflyCocoon;
 import forestry.core.blocks.properties.PropertyAllele;
 
 import genetics.utils.AlleleUtils;
 
-public class PropertyCocoon extends PropertyAllele<IAlleleButterflyCocoon> {
-	private static final Map<String, IAlleleButterflyCocoon> namesMap = new HashMap<>();
+public class PropertyCocoon extends PropertyAllele<IButterflyCocoon> {
+	private static final Map<String, IButterflyCocoon> namesMap = new HashMap<>();
 
 	public PropertyCocoon(String name) {
-		super(name, IAlleleButterflyCocoon.class);
+		super(name, IButterflyCocoon.class);
 	}
 
 	@Override
-	public Class<IAlleleButterflyCocoon> getValueClass() {
-		return IAlleleButterflyCocoon.class;
+	public Class<IButterflyCocoon> getValueClass() {
+		return IButterflyCocoon.class;
 	}
 
 	@Override
-	public Collection<IAlleleButterflyCocoon> getPossibleValues() {
+	public Collection<IButterflyCocoon> getPossibleValues() {
 		return AlleleUtils.filteredAlleles(ButterflyChromosomes.COCOON);
 	}
 
 	@Override
-	public String getName(IAlleleButterflyCocoon value) {
+	public String getName(IButterflyCocoon value) {
 		return value.getCocoonName();
 	}
 
 	@Override
-	public Optional<IAlleleButterflyCocoon> getValue(String value) {
+	public Optional<IButterflyCocoon> getValue(String value) {
 		if (namesMap.isEmpty()) {
 			// Using the stream here so we can save one 'collect' call in 'getRegisteredAlleles()'
 			AlleleUtils.filteredStream(ButterflyChromosomes.COCOON).forEach(cocoon -> {

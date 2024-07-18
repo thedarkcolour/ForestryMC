@@ -23,7 +23,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-import forestry.api.arboriculture.genetics.IAlleleFruit;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.arboriculture.models.ModelDecorativeLeaves;
@@ -72,7 +72,7 @@ public class ProxyArboricultureClient extends ProxyArboriculture implements ICli
 			return;
 		}
 		LeafTexture.registerAllSprites(event);
-		for (IAlleleFruit alleleFruit : AlleleFruits.getFruitAlleles()) {
+		for (IFruit alleleFruit : AlleleFruits.getFruitAlleles()) {
 			alleleFruit.getProvider().registerSprites(event);
 		}
 	}

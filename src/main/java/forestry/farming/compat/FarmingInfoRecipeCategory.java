@@ -41,7 +41,7 @@ public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInf
 	public FarmingInfoRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper.createBlankDrawable(144, 90), "for.jei.farming");
 		this.slotDrawable = guiHelper.getSlotDrawable();
-		ResourceLocation resourceLocation = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/jei/recipes.png");
+		ResourceLocation resourceLocation = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/jei/recipes.png");
 		addition = guiHelper.createDrawable(resourceLocation, 44, 0, 15, 15);
 		arrow = guiHelper.createDrawable(resourceLocation, 59, 0, 15, 15);
 		ItemStack intricateCircuitboard = new ItemStack(CoreItems.CIRCUITBOARDS.get(EnumCircuitBoardType.INTRICATE));

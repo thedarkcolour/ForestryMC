@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public class SqueezerRecipeCategory extends ForestryRecipeCategory<ISqueezerRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/squeezersocket.png");
+	private static final ResourceLocation guiTexture = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/squeezersocket.png");
 
 	private final IDrawableAnimated arrow;
 	private final IDrawable tankOverlay;

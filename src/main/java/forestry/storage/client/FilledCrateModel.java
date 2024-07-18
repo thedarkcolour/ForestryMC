@@ -76,7 +76,7 @@ public class FilledCrateModel implements IUnbakedGeometry<FilledCrateModel> {
 	}
 
 	public static class Loader implements IGeometryLoader<FilledCrateModel> {
-		private static final ResourceLocation FILLED_CRATE_LOCATION = new ResourceLocation(ForestryConstants.MOD_ID, "item/filled_crate");
+		private static final ResourceLocation FILLED_CRATE_LOCATION = ForestryConstants.forestry("item/filled_crate");
 
 		@Override
 		public FilledCrateModel read(JsonObject json, JsonDeserializationContext ctx) {

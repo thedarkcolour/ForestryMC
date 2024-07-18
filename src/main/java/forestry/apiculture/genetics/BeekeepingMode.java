@@ -85,7 +85,7 @@ public class BeekeepingMode implements IBeekeepingMode {
 			return false;
 		}
 
-		if (queen.isNatural()) {
+		if (queen.isPristine()) {
 			return false;
 		}
 
@@ -108,8 +108,8 @@ public class BeekeepingMode implements IBeekeepingMode {
 	}
 
 	@Override
-	public boolean isNaturalOffspring(IBee queen) {
-		return queen.isNatural();
+	public boolean isOffspringPristine(IBee queen) {
+		return queen.isPristine();
 	}
 
 	@Override

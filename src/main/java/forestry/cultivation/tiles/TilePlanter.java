@@ -46,7 +46,7 @@ import forestry.core.owner.OwnerHandler;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
 import forestry.core.utils.PlayerUtil;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 import forestry.cultivation.IFarmHousingInternal;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
@@ -288,7 +288,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	protected final BlockPos translateWithOffset(BlockPos pos, HorizontalDirection farmDirection, int step) {
-		return VectUtil.scale(farmDirection.getFacing().getNormal(), step).offset(pos);
+		return VecUtil.scale(farmDirection.getFacing().getNormal(), step).offset(pos);
 	}
 
 	@Override

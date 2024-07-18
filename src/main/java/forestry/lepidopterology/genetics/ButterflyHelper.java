@@ -3,13 +3,12 @@ package forestry.lepidopterology.genetics;
 import genetics.api.GeneticsAPI;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
-import genetics.api.individual.IKaryotype;
+import forestry.api.genetics.alleles.IKaryotype;
 
 import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.ForestryChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.core.genetics.alleles.FlowerTypeAllele;
@@ -44,8 +43,8 @@ public class ButterflyHelper {
 			.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.NONE)
 			.set(ButterflyChromosomes.NEVER_SLEEPS, false)
 			.set(ButterflyChromosomes.TOLERATES_RAIN, false)
-			.set(ButterflyChromosomes.FIRE_RESISTANT, false)
-			.set(ButterflyChromosomes.FLOWER_PROVIDER, FlowerTypeAllele.VANILLA)
+			.set(ButterflyChromosomes.FIREPROOF, false)
+			.set(ButterflyChromosomes.FLOWER_TYPE, FlowerTypeAllele.VANILLA)
 			.set(ButterflyChromosomes.EFFECT, ButterflyAlleles.butterflyNone)
 			.set(ButterflyChromosomes.COCOON, ButterflyAlleles.DEFAULT_COCOON)
 			.set(ButterflyChromosomes.SPECIES, ButterflyDefinition.Monarch.getSpecies())

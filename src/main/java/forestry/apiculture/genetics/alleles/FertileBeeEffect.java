@@ -24,6 +24,7 @@ import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.IEffectData;
 
 import forestry.api.genetics.IGenome;
+import forestry.core.render.ParticleRender;
 
 public class FertileBeeEffect extends ThrottledBeeEffect {
 
@@ -38,7 +39,7 @@ public class FertileBeeEffect extends ThrottledBeeEffect {
 
 		Level world = housing.getWorldObj();
 		BlockPos housingCoordinates = housing.getCoordinates();
-		Vec3i area = getModifiedArea(genome, housing);
+		Vec3i area = ParticleRender.getModifiedArea(genome, housing);
 
 		int blockX = getRandomOffset(world.random, housingCoordinates.getX(), area.getX());
 		int blockZ = getRandomOffset(world.random, housingCoordinates.getZ(), area.getZ());

@@ -63,16 +63,16 @@ public class RenderMachine implements IForestryRenderer<TileBase> {
 		resourceTank = root.getChild(RESOURCE_TANK);
 		productTank = root.getChild(PRODUCT_TANK);
 		
-		textureBase = new ResourceLocation(ForestryConstants.MOD_ID, baseTexture + "base.png");
-		textureProductTank = new ResourceLocation(ForestryConstants.MOD_ID, baseTexture + "tank_product_empty.png");
-		textureResourceTank = new ResourceLocation(ForestryConstants.MOD_ID, baseTexture + "tank_resource_empty.png");
+		textureBase = ForestryConstants.forestry(baseTexture + "base.png");
+		textureProductTank = ForestryConstants.forestry(baseTexture + "tank_product_empty.png");
+		textureResourceTank = ForestryConstants.forestry(baseTexture + "tank_resource_empty.png");
 
 		for (EnumTankLevel tankLevel : EnumTankLevel.values()) {
 			if (tankLevel == EnumTankLevel.EMPTY) {
 				continue;
 			}
 			String tankLevelString = tankLevel.toString().toLowerCase(Locale.ENGLISH);
-			texturesTankLevels.put(tankLevel, new ResourceLocation(ForestryConstants.MOD_ID, "textures/block/machine_tank_" + tankLevelString + ".png"));
+			texturesTankLevels.put(tankLevel, ForestryConstants.forestry("textures/block/machine_tank_" + tankLevelString + ".png"));
 		}
 	}
 	

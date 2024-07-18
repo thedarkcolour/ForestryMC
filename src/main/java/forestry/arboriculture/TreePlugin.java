@@ -73,7 +73,7 @@ public class TreePlugin implements IGeneticPlugin {
 	@Override
 	public void registerAlleles(IAlleleRegistry registry) {
 		registry.registerAlleles(HeightAllele.values(), TreeChromosomes.HEIGHT);
-		registry.registerAlleles(SaplingsAllele.values(), TreeChromosomes.FERTILITY);
+		registry.registerAlleles(SaplingsAllele.values(), TreeChromosomes.SAPLINGS);
 		registry.registerAlleles(YieldAllele.values(), TreeChromosomes.YIELD);
 		registry.registerAlleles(FireproofAllele.values(), TreeChromosomes.FIREPROOF);
 		registry.registerAlleles(MaturationAllele.values(), TreeChromosomes.MATURATION);

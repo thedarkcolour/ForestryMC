@@ -12,9 +12,7 @@ import forestry.api.genetics.ILifeStage;
 public enum ButterflyLifeStage implements ILifeStage {
 	BUTTERFLY, SERUM, CATERPILLAR, COCOON;
 
-	public static final ButterflyLifeStage[] VALUES = values();
-
 	public String getName() {
-		return toString().toLowerCase(Locale.ENGLISH);
+		return toString().toLowerCase(Locale.ROOT);
 	}
 }

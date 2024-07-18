@@ -35,7 +35,7 @@ public class TreeMutation extends Mutation implements ITreeMutation, ITreeMutati
 	}
 
 	@Override
-	public ITreeSpeciesType getRoot() {
+	public ITreeSpeciesType getType() {
 		return TreeManager.treeRoot;
 	}
 
@@ -46,7 +46,7 @@ public class TreeMutation extends Mutation implements ITreeMutation, ITreeMutati
 			return 0;
 		}
 
-		processedChance *= getRoot().getTreekeepingMode(world).getMutationModifier(genome0, genome1, 1f);
+		processedChance *= this.getType().getTreekeepingMode(world).getMutationModifier(genome0, genome1, 1f);
 
 		return processedChance;
 	}

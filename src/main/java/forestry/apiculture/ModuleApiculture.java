@@ -85,14 +85,6 @@ public class ModuleApiculture extends BlankForestryModule {
 
 	@Override
 	public void setupApi() {
-		FlowerManager.flowerRegistry = new FlowerRegistry();
-
-		BeeManager.commonVillageBees = new ArrayList<>();
-		BeeManager.uncommonVillageBees = new ArrayList<>();
-
-		BeeManager.beeFactory = new BeeFactory();
-		BeeManager.beeMutationFactory = new BeeMutationFactory();
-		BeeManager.jubilanceFactory = new JubilanceFactory();
 		BeeManager.armorApiaristHelper = new ArmorApiaristHelper();
 	}
 

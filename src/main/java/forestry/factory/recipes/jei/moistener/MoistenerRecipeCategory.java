@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class MoistenerRecipeCategory extends ForestryRecipeCategory<IMoistenerRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/moistener.png");
+	private static final ResourceLocation guiTexture = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/moistener.png");
 
 	private final IDrawableAnimated arrow;
 	private final IDrawableAnimated progressBar;

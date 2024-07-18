@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.alleles.INamedValue;
 
 /**
  * The Backpack Interface allows you to add items to Forestry backpacks or create your own backpacks.
@@ -52,7 +53,7 @@ public interface IBackpackInterface {
 	 * Makes a new naturalist backpack filter. Only accepts items from a specific {@link IForestrySpeciesType}.
 	 * Useful for implementing {@link IBackpackDefinition} for naturalist's backpacks.
 	 *
-	 * @param speciesRootUid The species root's unique ID. See {@link IForestrySpeciesType#id()}.
+	 * @param speciesRootUid The species root's unique ID. See {@link INamedValue#id(boolean)}.
 	 * @return a new backpack filter for the specified species root
 	 * @see #createNaturalistBackpack(IBackpackDefinition, String, CreativeModeTab)
 	 */

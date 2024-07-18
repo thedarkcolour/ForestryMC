@@ -11,6 +11,6 @@ record IntegerAllele(ResourceLocation id, int value, boolean dominant) implement
 	}
 
 	private static ResourceLocation createId(int value, boolean dominant) {
-		return new ResourceLocation(ForestryConstants.MOD_ID, value + (dominant ? "id" : "i"));
+		return ForestryConstants.forestry(value + (dominant ? "id" : "i"));
 	}
 }

@@ -16,7 +16,7 @@ public interface IFlowerType extends INamedValue {
 	/**
 	 * Checks if the flower at the specified position is accepted by this rule.
 	 */
-	boolean isAcceptableFlower(Level level, BlockPos pos, BlockState state);
+	boolean isAcceptableFlower(Level level, BlockPos pos);
 
 	/**
 	 * Tries to plant a random flower at a position near a hive.

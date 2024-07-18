@@ -43,7 +43,7 @@ public class ButterflyMutation extends Mutation implements IButterflyMutation, I
 	}
 
 	@Override
-	public ISpeciesType getRoot() {
+	public ISpeciesType getType() {
 		return ButterflyHelper.getRoot();
 	}
 }

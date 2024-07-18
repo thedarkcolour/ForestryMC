@@ -88,7 +88,7 @@ public enum ForestryFluids {
 
 	static {
 		for (ForestryFluids fluidDefinition : ForestryFluids.values()) {
-			tagToFluid.put(new ResourceLocation(ForestryConstants.MOD_ID, fluidDefinition.feature.getName()), fluidDefinition);
+			tagToFluid.put(ForestryConstants.forestry(fluidDefinition.feature.getName()), fluidDefinition);
 		}
 	}
 
@@ -127,7 +127,7 @@ public enum ForestryFluids {
 		} else {
 			this.bucket = null;
 		}
-		this.tag = new ResourceLocation(ForestryConstants.MOD_ID, feature.getName());
+		this.tag = ForestryConstants.forestry(feature.getName());
 	}
 
 	protected boolean hasBucket() {

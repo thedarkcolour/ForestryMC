@@ -2,7 +2,7 @@ package forestry.api.arboriculture;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.ForestryConstants;
+import static forestry.api.ForestryConstants.forestry;
 
 /**
  * IDs of all tree species registered by base Forestry.
@@ -30,7 +30,7 @@ public class ForestryTreeSpecies {
 	public static final ResourceLocation EBONY = forestry("ebony");
 	public static final ResourceLocation ZEBRAWOOD = forestry("zebrawood");
 	public static final ResourceLocation MAHOGONY = forestry("mahogony");
-	public static final ResourceLocation ACACIA = forestry("acacia");
+	public static final ResourceLocation ACACIA_VANILLA = forestry("acacia");
 	public static final ResourceLocation DESERT_ACACIA = forestry("desert_acacia");
 	public static final ResourceLocation PADAUK = forestry("padauk");
 	public static final ResourceLocation BALSA = forestry("balsa");
@@ -43,8 +43,4 @@ public class ForestryTreeSpecies {
 	public static final ResourceLocation PAPAYA = forestry("papaya");
 	public static final ResourceLocation DATE = forestry("date");
 	public static final ResourceLocation POPLAR = forestry("poplar");
-
-	private static ResourceLocation forestry(String path) {
-		return new ResourceLocation(ForestryConstants.MOD_ID, path);
-	}
 }

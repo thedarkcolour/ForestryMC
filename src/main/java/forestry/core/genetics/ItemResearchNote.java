@@ -158,7 +158,7 @@ public class ItemResearchNote extends ItemForestry {
 					return false;
 				}
 
-				IBreedingTracker tracker = ((IForestrySpeciesType) encoded.getRoot()).getBreedingTracker(level, player.getGameProfile());
+				IBreedingTracker tracker = ((IForestrySpeciesType) encoded.getType()).getBreedingTracker(level, player.getGameProfile());
 				if (tracker.isResearched(encoded)) {
 					player.sendSystemMessage(Component.translatable("for.chat.cannotmemorizeagain"));
 					return false;
@@ -189,7 +189,7 @@ public class ItemResearchNote extends ItemForestry {
 
 		public static ResearchNote createMutationNote(GameProfile researcher, IMutation mutation) {
 			CompoundTag compound = new CompoundTag();
-			compound.putString(NBT_ROOT, mutation.getRoot().id());
+			compound.putString(NBT_ROOT, mutation.getType().id());
 			compound.putString(NBT_ALLELE_FIRST, mutation.getFirstParent().getId().toString());
 			compound.putString(NBT_ALLELE_SECOND, mutation.getSecondParent().getId().toString());
 			compound.putString(NBT_ALLELE_RESULT, mutation.getResultingSpecies().getId().toString());

@@ -5,13 +5,11 @@ import forestry.api.apiculture.BeeManager;
 import genetics.ApiInstance;
 import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
-import genetics.api.individual.IKaryotype;
+import forestry.api.genetics.alleles.IKaryotype;
 
 import forestry.api.genetics.ForestrySpeciesType;
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ForestryAlleles;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.genetics.alleles.AlleleEffects;
 import forestry.core.genetics.alleles.FertilityAllele;
 import forestry.core.genetics.alleles.FlowerTypeAllele;
@@ -31,7 +29,7 @@ public class BeeHelper {
 
 	public static IAlleleTemplate createDefaultTemplate(IAlleleTemplateBuilder templateBuilder) {
 		return templateBuilder.set(BeeChromosomes.SPEED, SpeedAllele.SLOWEST)
-			.set((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES, BeeDefinition.FOREST.getSpecies())
+			.set(BeeChromosomes.SPECIES, BeeDefinition.FOREST.getSpecies())
 			.set(BeeChromosomes.LIFESPAN, ForestryAlleles.SHORTER)
 			.set(BeeChromosomes.FERTILITY, FertilityAllele.NORMAL)
 			.set(BeeChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.NONE)

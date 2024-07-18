@@ -18,7 +18,7 @@ import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.gui.ISelectableProvider;
 
 public class SelectionWidget extends Widget {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/filter_selection.png");
+	public static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/filter_selection.png");
 	final WidgetScrollBar scrollBar;
 	@Nullable
 	private SelectionLogic logic;

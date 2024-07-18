@@ -24,7 +24,7 @@ public enum HiveType implements IBlockSubtype {
 	private final String speciesUid;
 
 	HiveType(String id, String speciesUid) {
-		this.id = new ResourceLocation(ForestryConstants.MOD_ID, id);
+		this.id = ForestryConstants.forestry(id);
 		this.speciesUid = speciesUid;
 	}
 

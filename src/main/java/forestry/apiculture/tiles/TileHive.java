@@ -52,6 +52,7 @@ import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.apiculture.hives.HiveType;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.api.core.HumidityType;
@@ -62,7 +63,6 @@ import forestry.apiculture.WorldgenBeekeepingLogic;
 import forestry.apiculture.blocks.BlockBeeHive;
 import forestry.apiculture.features.ApicultureTiles;
 import forestry.apiculture.genetics.BeeDefinition;
-import forestry.apiculture.genetics.alleles.BeeEffect;
 import forestry.core.config.Config;
 import forestry.core.inventory.InventoryAdapter;
 import forestry.core.network.packets.PacketActiveUpdate;
@@ -120,7 +120,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 				if (calmTime == 0) {
 					if (canWork) {
 						if (angry && ModuleApiculture.hiveDamageOnAttack && (level.getLevelData().getDifficulty() != Difficulty.PEACEFUL || ModuleApiculture.hivesDamageOnPeaceful)) {
-							AABB boundingBox = BeeEffect.getBounding(getContainedBee().getGenome(), this);
+							AABB boundingBox = IBeeEffect.getBounding(this, getContainedBee().getGenome());
 							List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, boundingBox, beeTargetPredicate);
 							if (!entities.isEmpty()) {
 								Collections.shuffle(entities);

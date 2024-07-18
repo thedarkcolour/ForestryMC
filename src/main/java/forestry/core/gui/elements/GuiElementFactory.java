@@ -35,7 +35,7 @@ import forestry.api.genetics.IMutation;
 
 public class GuiElementFactory implements ResourceManagerReloadListener {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/database_mutation_screen.png");
+	private static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/database_mutation_screen.png");
 
 	public Style dominantStyle = Style.EMPTY;
 	public Style recessiveStyle = Style.EMPTY;
@@ -169,7 +169,7 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 		if (breedingTracker.isDiscovered(mutation)) {
 			ContainerElement element = new ContainerElement();
 			element.setPreferredBounds(x, y, width, height);
-			IAlyzerPlugin plugin = ((IForestrySpeciesType) mutation.getRoot()).getAlyzerPlugin();
+			IAlyzerPlugin plugin = ((IForestrySpeciesType) mutation.getType()).getAlyzerPlugin();
 			Map<ResourceLocation, ItemStack> iconStacks = plugin.getIconStacks();
 
 			ItemStack firstPartner = iconStacks.get(mutation.getFirstParent().getId());
@@ -189,7 +189,7 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 	public ContainerElement createMutation(int x, int y, int width, int height, IMutation mutation, IAllele species, IBreedingTracker breedingTracker) {
 		if (breedingTracker.isDiscovered(mutation)) {
 			ContainerElement element = pane(x, y, width, height);
-			IForestrySpeciesType speciesRoot = (IForestrySpeciesType) mutation.getRoot();
+			IForestrySpeciesType speciesRoot = (IForestrySpeciesType) mutation.getType();
 			int speciesIndex = speciesRoot.getKaryotype().getSpeciesChromosome().ordinal();
 			IDatabasePlugin plugin = speciesRoot.getSpeciesPlugin();
 			Map<String, ItemStack> iconStacks = plugin.getIndividualStacks();

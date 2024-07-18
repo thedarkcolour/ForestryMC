@@ -13,11 +13,9 @@ import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.core.gui.elements.Alignment;
@@ -46,7 +44,7 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 		if (type == null) {
 			return;
 		}
-		IAlleleBeeSpecies primarySpecies = bee.getGenome().getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+		IAlleleBeeSpecies primarySpecies = bee.getGenome().getActiveAllele(BeeChromosomes.SPECIES);
 		IAlleleBeeSpecies secondarySpecies = bee.getGenome().getInactiveAllele(BeeChromosomes.SPECIES);
 
 		container.label(Component.translatable("for.gui.database.tab." + (mode == DatabaseMode.ACTIVE ? "active" : "inactive") + "_species"), Alignment.TOP_CENTER, GuiElementFactory.INSTANCE.databaseTitle);
@@ -112,7 +110,7 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 
 		if (type == BeeLifeStage.PRINCESS || type == BeeLifeStage.QUEEN) {
 			Component displayTextKey = Component.translatable("for.bees.stock.pristine");
-			if (!bee.isNatural()) {
+			if (!bee.isPristine()) {
 				displayTextKey = Component.translatable("for.bees.stock.ignoble");
 			}
 			container.label(displayTextKey, Alignment.TOP_CENTER, GuiElementFactory.INSTANCE.binomial);

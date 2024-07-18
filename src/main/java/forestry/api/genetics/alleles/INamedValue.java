@@ -9,5 +9,5 @@ public interface INamedValue {
 	/**
 	 * @return The value to be returned in {@link IValueAllele#id()}
 	 */
-	ResourceLocation id();
+	ResourceLocation id(boolean dominant);
 }

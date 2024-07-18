@@ -54,46 +54,46 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 	CabbageWhite(ForestryTaxa.GENUS_PIERIS, "cabbageWhite", "rapae", new Color(0xccffee), true, 1.0f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.AVERAGE);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_AVERAGE);
 		}
 	},
 	Brimstone(ForestryTaxa.GENUS_GONEPTERYX, "brimstone", "rhamni", new Color(0xf0ee38), true, 1.0f),
 	Aurora(ForestryTaxa.GENUS_ANTHOCHARIS, "orangeTip", "cardamines", new Color(0xe34f05), true, 0.5f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.SMALLER);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_SMALLER);
 		}
 	},
 	Postillion(ForestryTaxa.GENUS_COLIAS, "postillion", "croceus", new Color(0xd77e04), true, 0.5f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOW);
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOW);
 		}
 	},
 	PalaenoSulphur(ForestryTaxa.GENUS_COLIAS, "palaenoSulphur", "palaeno", new Color(0xf8fba3), true, 0.4f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWER);
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
 		}
 	},
 	Reseda(ForestryTaxa.GENUS_PONTIA, "reseda", "edusa", new Color(0x747d48), true, 0.3f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWER);
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
 		}
 	},
 	SpringAzure(ForestryTaxa.GENUS_CELASTRINA, "springAzure", "argiolus", new Color(0xb8cae2), true, 0.3f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.SMALLER);
-			template.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.SHORT);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_SMALLER);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORT);
 		}
 	},
 	GozoraAzure(ForestryTaxa.GENUS_CELASTRINA, "gozoraAzure", "gozora", new Color(0x6870e7), true, 0.2f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.SMALLER);
-			template.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.SHORT);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_SMALLER);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORT);
 		}
 	},
 	CitrusSwallow(ForestryTaxa.GENUS_PAPILIO, "swallowtailC", "demodocus", new Color(0xeae389), false, 1.0f) {
@@ -105,13 +105,13 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWER);
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGE);
-			template.set(ButterflyChromosomes.FERTILITY, 10);
-			template.set(ButterflyChromosomes.METABOLISM, MetabolismAllele.FASTER);
-			template.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.SHORTER);
-			template.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.DOWN_1);
-			template.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.DOWN_1);
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_LARGE);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 10);
+			karyotype.set(ButterflyChromosomes.METABOLISM, MetabolismAllele.FASTER);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORTER);
+			karyotype.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.DOWN_1);
+			karyotype.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.DOWN_1);
 		}
 	},
 	EmeraldPeacock(ForestryTaxa.GENUS_PAPILIO, "emeraldPeacock", "palinurus", new Color(0x7cfe80), true, 0.1f) {
@@ -123,11 +123,11 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGE);
-			template.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.NORMAL);
-			template.set(ButterflyChromosomes.FERTILITY, 5);
-			template.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.DOWN_1);
-			template.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.DOWN_1);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_LARGE);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_NORMAL);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 5);
+			karyotype.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.DOWN_1);
+			karyotype.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.DOWN_1);
 		}
 	},
 	ThoasSwallow(ForestryTaxa.GENUS_PAPILIO, "swallowtailT", "thoas", new Color(0xeac783), false, 0.2f) {
@@ -139,32 +139,32 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWER);
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGE);
-			template.set(ButterflyChromosomes.LIFESPAN, new LifespanAllele("shortest", 10));
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_LARGE);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORTEST);
 		}
 	},
 	Spicebush(ForestryTaxa.GENUS_PAPILIO, "swallowtailS", "troilus", new Color(0xeefeff), true, 0.5f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.AVERAGE);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_AVERAGE);
 		}
 	},
 	BlackSwallow(ForestryTaxa.GENUS_PAPILIO, "swallowtailB", "polyxenes", new Color(0xeac783), true, 1.0f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOW);
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGE);
-			template.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.SHORTER);
-			template.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.DOWN_1);
-			template.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.DOWN_1);
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOW);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_LARGE);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORTER);
+			karyotype.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_DOWN_1);
+			karyotype.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ForestryAlleles.TOLERANCE_DOWN_1);
 		}
 	},
 	ZebraSwallow(ForestryTaxa.GENUS_PROTOGRAPHIUM, "swallowtailZ", "marcellus", new Color(0xeafeff), true, 0.5f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWER);
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.AVERAGE);
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_AVERAGE);
 		}
 	},
 	Glasswing(ForestryTaxa.GENUS_GRETA, "glasswing", "oto", new Color(0x583732), true, 0.1f) {
@@ -175,28 +175,28 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.SMALLER);
-			template.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.SHORT);
-			template.set(ButterflyChromosomes.FERTILITY, 5);
-			template.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.DOWN_1);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_SMALLER);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORT);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 5);
+			karyotype.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_DOWN_1);
 		}
 	},
 	SpeckledWood(ForestryTaxa.GENUS_PARARGE, "speckledWood", "aegeria", new Color(0x947245), true, 1.0f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.FERTILITY, 2);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 2);
 		}
 	},
 	MSpeckledWood(ForestryTaxa.GENUS_PARARGE, "speckledWoodM", "xiphia", new Color(0x402919), true, 0.5f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.FERTILITY, 2);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 2);
 		}
 	},
 	CSpeckledWood(ForestryTaxa.GENUS_PARARGE, "speckledWoodC", "xiphioides", new Color(0x51372a), true, 0.5f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.FERTILITY, 2);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 2);
 		}
 	},
 	MBlueMorpho(ForestryTaxa.GENUS_MORPHO, "blueMorphoM", "menelaus", new Color(0x72e1fd), true, 0.5f) {
@@ -208,9 +208,9 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGER);
-			template.set(ButterflyChromosomes.LIFESPAN, new LifespanAllele("shortest", 10));
-			template.set(ButterflyChromosomes.FERTILITY, 2);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_LARGER);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORTEST);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 2);
 		}
 	},
 	PBlueMorpho(ForestryTaxa.GENUS_MORPHO, "blueMorphoP", "peleides", new Color(0x6ecce8), true, 0.25f) {
@@ -222,9 +222,9 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGER);
-			template.set(ButterflyChromosomes.LIFESPAN, new LifespanAllele("shortest", 10));
-			template.set(ButterflyChromosomes.FERTILITY, 2);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_LARGER);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORTEST);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 2);
 		}
 	},
 	RBlueMorpho(ForestryTaxa.GENUS_MORPHO, "blueMorphoR", "rhetenor", new Color(0x00bef8), true, 0.1f) {
@@ -236,15 +236,15 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGER);
-			template.set(ButterflyChromosomes.LIFESPAN, new LifespanAllele("shortest", 10));
-			template.set(ButterflyChromosomes.FERTILITY, 2);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_LARGER);
+			karyotype.set(ButterflyChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORTEST);
+			karyotype.set(ButterflyChromosomes.FERTILITY, 2);
 		}
 	},
 	Comma(ForestryTaxa.GENUS_POLYGONIA, "comma", "c-album", new Color(0xf89505), true, 0.3f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWER);
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
 		}
 	},
 	Batesia(ForestryTaxa.GENUS_BATESIA, "paintedBeauty", "hypochlora", new Color(0xfe7763), true, 0.3f) {
@@ -256,20 +256,20 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.LARGE);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_LARGE);
 		}
 	},
 	BlueWing(ForestryTaxa.GENUS_MYSCELIA, "blueWing", "ethusa", new Color(0x3a93cc), true, 0.3f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.AVERAGE);
-			template.set(ButterflyChromosomes.METABOLISM, MetabolismAllele.NORMAL);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_AVERAGE);
+			karyotype.set(ButterflyChromosomes.METABOLISM, MetabolismAllele.NORMAL);
 		}
 	},
 	Monarch(ForestryTaxa.GENUS_DANAUS, "monarch", "plexippus", new Color(0xffa722), true, 0.2f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.AVERAGE);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_AVERAGE);
 		}
 	},
 	BlueDuke(ForestryTaxa.GENUS_BASSARONA, "blueDuke", "durga", new Color(0x304240), true, 0.5f) {
@@ -280,13 +280,13 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.BOTH_1);
+			karyotype.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_BOTH_1);
 		}
 	},
 	GlassyTiger(ForestryTaxa.GENUS_PARANTICA, "glassyTiger", "aglea", new Color(0x5b3935), true, 0.3f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.AVERAGE);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_AVERAGE);
 		}
 	},
 	Postman(ForestryTaxa.GENUS_HELICONIUS, "postman", "melpomene", new Color(0xf7302d), true, 0.3f),
@@ -299,23 +299,23 @@ public enum ButterflyDefinition implements IButterflyDefinition {
 
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.AVERAGE);
-			template.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.DOWN_1);
-			template.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.DOWN_1);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_AVERAGE);
+			karyotype.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_DOWN_1);
+			karyotype.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ForestryAlleles.TOLERANCE_DOWN_1);
 		}
 	},
 	LLacewing(ForestryTaxa.GENUS_CETHOSIA, "leopardLacewing", "cyane", new Color(0xfb8a06), true, 0.7f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ToleranceAllele.UP_1);
-			template.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ToleranceAllele.UP_1);
+			karyotype.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_UP_1);
+			karyotype.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ForestryAlleles.TOLERANCE_UP_1);
 		}
 	},
 	DianaFrit(ForestryTaxa.GENUS_SPEYERIA, "dianaFritillary", "diana", new Color(0xffac05), true, 0.6f) {
 		@Override
 		protected void setAlleles(IAlleleTemplateBuilder template) {
-			template.set(ButterflyChromosomes.SPEED, SpeedAllele.SLOWER);
-			template.set(ButterflyChromosomes.SIZE, SizeAllele.SMALLER);
+			karyotype.set(ButterflyChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
+			karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_SMALLER);
 		}
 	};
 

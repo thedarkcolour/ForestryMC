@@ -45,9 +45,9 @@ public interface IBeekeepingMode {
 	boolean isDegenerating(IBee queen, IBee offspring, IBeeHousing housing);
 
 	/**
-	 * @return true if an offspring of this queen is considered a natural
+	 * @return {@code true} if an offspring of this queen is considered pristine
 	 */
-	boolean isNaturalOffspring(IBee queen);
+	boolean isOffspringPristine(IBee queen);
 
 	/**
 	 * @return true if this mode allows the passed queen or princess to be multiplied

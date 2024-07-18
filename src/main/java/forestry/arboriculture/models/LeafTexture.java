@@ -44,10 +44,10 @@ public record LeafTexture(ResourceLocation fast, ResourceLocation fancy, Resourc
 		String id = leafType.toString().toLowerCase(Locale.ENGLISH);
 
 		return new LeafTexture(
-				new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/" + id + "_fast"),
-				new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/" + id),
-				new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/" + id + "_pollinated_fast"),
-				new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/" + id + "_pollinated")
+				ForestryConstants.forestry("block/leaves/" + id + "_fast"),
+				ForestryConstants.forestry("block/leaves/" + id),
+				ForestryConstants.forestry("block/leaves/" + id + "_pollinated_fast"),
+				ForestryConstants.forestry("block/leaves/" + id + "_pollinated")
 		);
 	}
 

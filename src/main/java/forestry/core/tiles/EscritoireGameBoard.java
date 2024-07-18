@@ -32,7 +32,7 @@ import forestry.core.network.IStreamable;
 import forestry.core.utils.NetworkUtil;
 
 import genetics.api.individual.IIndividual;
-import genetics.api.individual.IKaryotype;
+import forestry.api.genetics.alleles.IKaryotype;
 import genetics.utils.RootUtils;
 
 public class EscritoireGameBoard implements INbtWritable, IStreamable {

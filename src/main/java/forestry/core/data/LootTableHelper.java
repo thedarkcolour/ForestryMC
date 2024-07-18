@@ -189,7 +189,7 @@ public class LootTableHelper {
 						.add(beeLoot(BeeDefinition.MONASTIC).setWeight(6))
 						.add(EmptyLootItem.emptyItem().setWeight(3))
 				));
-		add(new ResourceLocation(ForestryConstants.MOD_ID, "chests/village_naturalist"), "arboriculture",
+		add(ForestryConstants.forestry("chests/village_naturalist"), "arboriculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_arboriculture_items")
 						.setRolls(ConstantValue.exactly(3))
@@ -200,7 +200,7 @@ public class LootTableHelper {
 						.add(saplingLoot(TreeDefinition.Teak))
 						.add(saplingLoot(TreeDefinition.Padauk))
 				));
-		add(new ResourceLocation(ForestryConstants.MOD_ID, "chests/village_naturalist"), "apiculture",
+		add(ForestryConstants.forestry("chests/village_naturalist"), "apiculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_items")
 						.setRolls(ConstantValue.exactly(4))
@@ -268,7 +268,7 @@ public class LootTableHelper {
 		}
 
 		public ResourceLocation getLocation() {
-			return new ResourceLocation(ForestryConstants.MOD_ID, defaultLocation.getPath() + "/" + extension);
+			return ForestryConstants.forestry(defaultLocation.getPath() + "/" + extension);
 		}
 	}
 }

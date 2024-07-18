@@ -31,9 +31,7 @@ import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.core.ItemGroups;
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
@@ -56,7 +54,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 
 	@Override
 	protected IAlleleBeeSpecies getSpecies(ItemStack itemStack) {
-		return GeneticHelper.getOrganism(itemStack).getAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES, true);
+		return GeneticHelper.getOrganism(itemStack).getAllele(BeeChromosomes.SPECIES, true);
 	}
 
 	@Override
@@ -71,7 +69,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 				return;
 			}
 
-			if (individual.isNatural()) {
+			if (individual.isPristine()) {
 				list.add(Component.translatable("for.bees.stock.pristine").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC));
 			} else {
 				list.add(Component.translatable("for.bees.stock.ignoble").withStyle(ChatFormatting.YELLOW));

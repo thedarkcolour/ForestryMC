@@ -13,7 +13,7 @@ import forestry.api.apiculture.IBeeHousing;
 public interface IBeeMutation extends IMutation {
 
 	@Override
-	IBeeSpeciesType getRoot();
+	IBeeSpeciesType getType();
 
 	/**
 	 * @return float representing the chance for mutation to occur. note that this is 0 - 100 based, since it was an integer previously!

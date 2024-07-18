@@ -341,14 +341,14 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 	}
 
 	public void drawMutationInfo(PoseStack transform, IMutation combination, IAllele species, int x, IBreedingTracker breedingTracker) {
-		Map<ResourceLocation, ItemStack> iconStacks = ((IForestrySpeciesType) combination.getRoot()).getAlyzerPlugin().getIconStacks();
+		Map<ResourceLocation, ItemStack> iconStacks = ((IForestrySpeciesType) combination.getType()).getAlyzerPlugin().getIconStacks();
 
 		ItemStack partnerBee = iconStacks.get(combination.getPartner(species).id());
 		widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), partnerBee));
 
 		drawProbabilityArrow(transform, combination, leftPos + x + 18, topPos + textLayout.getLineY() + 4, breedingTracker);
 
-		IAllele result = combination.getTemplate()[((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES).ordinal()];
+		IAllele result = combination.getTemplate()[(BeeChromosomes.SPECIES).ordinal()];
 		ItemStack resultBee = iconStacks.get(result.id());
 		widgetManager.add(new ItemStackWidget(widgetManager, x + 33, textLayout.getLineY(), resultBee));
 	}

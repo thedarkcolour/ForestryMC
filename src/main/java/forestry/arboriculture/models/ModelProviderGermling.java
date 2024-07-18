@@ -30,8 +30,8 @@ public class ModelProviderGermling implements IGermlingModelProvider {
 	public ModelProviderGermling(String uid, ILeafSpriteProvider leafSpriteProvider) {
 		String name = StringUtil.camelCaseToUnderscores(uid);
 		this.leafSpriteProvider = leafSpriteProvider;
-		itemModel = new ResourceLocation(ForestryConstants.MOD_ID, "germlings/sapling." + name);
-		blockModel = new ResourceLocation(ForestryConstants.MOD_ID, "block/germlings/sapling." + name);
+		itemModel = ForestryConstants.forestry("germlings/sapling." + name);
+		blockModel = ForestryConstants.forestry("block/germlings/sapling." + name);
 	}
 
 	@Override

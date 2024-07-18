@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.EnumFruitFamily;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IAlleleFruit;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.IAlyzerPlugin;
@@ -94,7 +94,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 			guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), tree, TreeChromosomes.SPECIES, type);
 			textLayout.newLine();
 
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.saplings"), tree, TreeChromosomes.FERTILITY);
+			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.saplings"), tree, TreeChromosomes.SAPLINGS);
 			textLayout.newLineCompressed();
 			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.maturity"), tree, TreeChromosomes.MATURATION);
 			textLayout.newLineCompressed();
@@ -131,8 +131,8 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 			IGenome genome = tree.getGenome();
 			IAlleleTreeSpecies primary = genome.getActiveAllele(TreeChromosomes.SPECIES);
 			IAlleleTreeSpecies secondary = genome.getInactiveAllele(TreeChromosomes.SPECIES);
-			IAlleleFruit activeFruit = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS);
-			IAlleleFruit inactiveFruit = tree.getGenome().getInactiveAllele(TreeChromosomes.FRUITS);
+			IFruit activeFruit = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS);
+			IFruit inactiveFruit = tree.getGenome().getInactiveAllele(TreeChromosomes.FRUITS);
 			IFruitFamily primaryFamily = activeFruit.getProvider().getFamily();
 			IFruitFamily secondaryFamily = inactiveFruit.getProvider().getFamily();
 

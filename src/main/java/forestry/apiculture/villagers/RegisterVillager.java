@@ -36,7 +36,7 @@ import java.util.Set;
 
 @FeatureProvider
 public class RegisterVillager {
-	public static final ResourceLocation BEEKEEPER = new ResourceLocation(ForestryConstants.MOD_ID, "beekeeper");
+	public static final ResourceLocation BEEKEEPER = ForestryConstants.forestry("beekeeper");
 
 	private static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ForestryConstants.MOD_ID);
 	private static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, ForestryConstants.MOD_ID);

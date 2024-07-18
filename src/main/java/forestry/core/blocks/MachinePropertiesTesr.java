@@ -75,7 +75,7 @@ public class MachinePropertiesTesr<T extends TileForestry> extends MachineProper
 		}
 
 		public Builder<T> setParticleTexture(String particleTexture) {
-			return setParticleTexture(new ResourceLocation(ForestryConstants.MOD_ID, "block/" + particleTexture));
+			return setParticleTexture(ForestryConstants.forestry("block/" + particleTexture));
 		}
 
 		public Builder<T> setParticleTexture(ResourceLocation particleTexture) {

@@ -42,7 +42,7 @@ import java.util.Set;
 
 public class RegisterVillager {
 
-	public static final ResourceLocation ARBORIST = new ResourceLocation(ForestryConstants.MOD_ID, "arborist");
+	public static final ResourceLocation ARBORIST = ForestryConstants.forestry("arborist");
 
 	public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ForestryConstants.MOD_ID);
 	public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, ForestryConstants.MOD_ID);

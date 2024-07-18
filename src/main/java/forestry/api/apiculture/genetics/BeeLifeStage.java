@@ -12,16 +12,14 @@ import forestry.api.genetics.ILifeStage;
 public enum BeeLifeStage implements ILifeStage {
 	DRONE, PRINCESS, QUEEN, LARVAE;
 
-	public static final BeeLifeStage[] VALUES = values();
-
 	private final String name;
 
 	BeeLifeStage() {
-		this.name = this.toString().toLowerCase(Locale.ENGLISH);
+		this.name = name().toLowerCase(Locale.ROOT);
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
 }

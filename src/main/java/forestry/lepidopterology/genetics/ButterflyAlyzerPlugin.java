@@ -31,9 +31,7 @@ import forestry.api.core.ToleranceType;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
-import forestry.api.genetics.products.Product;
+import forestry.api.genetics.Product;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
@@ -113,7 +111,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			guiAlyzer.drawFertilityInfo(transform, secondaryFertility.value(), GuiAlyzer.COLUMN_2, guiAlyzer.getColorCoding(secondaryFertility.dominant()), 8);
 			textLayout.newLine();
 
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.flowers"), butterfly, ButterflyChromosomes.FLOWER_PROVIDER);
+			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.flowers"), butterfly, ButterflyChromosomes.FLOWER_TYPE);
 			textLayout.newLine();
 
 			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.effect"), butterfly, ButterflyChromosomes.EFFECT);
@@ -212,10 +210,10 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			guiAlyzer.drawRow(transform, Component.translatable("for.gui.flyer"), primary, secondary, butterfly, ButterflyChromosomes.TOLERATES_RAIN);
 			textLayout.newLine();
 
-			primary = genome.getActiveValue(ButterflyChromosomes.FIRE_RESISTANT) ? yes : no;
-			secondary = genome.getInactiveValue(ButterflyChromosomes.FIRE_RESISTANT) ? yes : no;
+			primary = genome.getActiveValue(ButterflyChromosomes.FIREPROOF) ? yes : no;
+			secondary = genome.getInactiveValue(ButterflyChromosomes.FIREPROOF) ? yes : no;
 
-			guiAlyzer.drawRow(transform, Component.translatable("for.gui.fireresist"), primary, secondary, butterfly, ButterflyChromosomes.FIRE_RESISTANT);
+			guiAlyzer.drawRow(transform, Component.translatable("for.gui.fireresist"), primary, secondary, butterfly, ButterflyChromosomes.FIREPROOF);
 
 			textLayout.endPage(transform);
 		}

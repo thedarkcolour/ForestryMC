@@ -70,7 +70,7 @@ public class ConditionLootModifier extends LootModifier {
 		operates = true;
 
 		for (String extension : extensions) {
-			ResourceLocation location = new ResourceLocation(ForestryConstants.MOD_ID, tableLocation.getPath() + "/" + extension);
+			ResourceLocation location = ForestryConstants.forestry(tableLocation.getPath() + "/" + extension);
 			LootTable table = context.getLootTable(location);
 
 			if (table != LootTable.EMPTY) {

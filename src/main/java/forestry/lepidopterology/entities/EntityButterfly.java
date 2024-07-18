@@ -56,8 +56,6 @@ import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.lepidopterology.IEntityButterfly;
 import forestry.api.lepidopterology.ILepidopteristTracker;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
@@ -381,7 +379,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		IGenome genome = contained.getGenome();
 
-		isImmuneToFire = genome.getActiveValue(ButterflyChromosomes.FIRE_RESISTANT);
+		isImmuneToFire = genome.getActiveValue(ButterflyChromosomes.FIREPROOF);
 		size = genome.getActiveValue(ButterflyChromosomes.SIZE);
 		// todo
 		//		setSize(size, 0.4f);

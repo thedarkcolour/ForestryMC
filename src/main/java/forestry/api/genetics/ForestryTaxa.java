@@ -2,8 +2,8 @@ package forestry.api.genetics;
 
 /**
  * Names of all taxa defined by base Forestry.
- *
  * Domains and Kingdoms follow the seven kingdom model from Ruggiero et al. 2015.
+ * Feel free to make up unrealistic names.
  */
 public class ForestryTaxa {
 	// Domains
@@ -96,7 +96,7 @@ public class ForestryTaxa {
 	public static final String GENUS_BOGGY = "paludapis";
 	public static final String GENUS_MONASTIC = "monapis";
 	// Tree Genera
-	public static final String GENUS_EBONY = "ebony";
+	public static final String GENUS_DIOSPYROS = "diospyros";
 	public static final String GENUS_ACACIA = "acacia";
 	public static final String GENUS_DALBERGIA = "dalbergia";
 	public static final String GENUS_MILLETTIA = "millettia";
@@ -126,6 +126,7 @@ public class ForestryTaxa {
 	public static final String GENUS_LARIX = "larix";
 	public static final String GENUS_SEQUOIA = "sequoia";
 	public static final String GENUS_SEQUOIADENDRON = "sequoiadendron";
+	public static final String GENUS_CARICA = "carica";
 	// Butterfly Genera
 	public static final String GENUS_ANTHOCHARIS = "anthocharis";
 	public static final String GENUS_ATTACUS = "attacus";
@@ -204,7 +205,7 @@ public class ForestryTaxa {
 	public static final String SPECIES_OAK = "robur";
 	public static final String SPECIES_DARK_OAK = "velutina";
 	public static final String SPECIES_BIRCH = "pendula";
-	public static final String SPECIES_LIME = "pendula";
+	public static final String SPECIES_LIME = "tomentosa";
 	public static final String SPECIES_WALNUT = "regia";
 	public static final String SPECIES_CHESTNUT = "sativa";
 	public static final String SPECIES_CHERRY = "serrulata";
@@ -236,4 +237,40 @@ public class ForestryTaxa {
 	public static final String SPECIES_PAPAYA = "papaya";
 	public static final String SPECIES_DATE = "dactylifera";
 	public static final String SPECIES_POPLAR = "alba";
+	// Butterfly Species
+	public static final String SPECIES_CABBAGE_WHITE;
+	public static final String SPECIES_BRIMSTONE;
+	public static final String SPECIES_AURORA;
+	public static final String SPECIES_POSTILLION;
+	public static final String SPECIES_PALAENO_SULPHUR;
+	public static final String SPECIES_RESEDA;
+	public static final String SPECIES_SPRING_AZURE;
+	public static final String SPECIES_GOZORA_AZURE;
+	public static final String SPECIES_CITRUS_SWALLOWTAIL;
+	public static final String SPECIES_EMERALD_PEACOCK;
+	public static final String SPECIES_THOAS_SWALLOWTAIL;
+	public static final String SPECIES_SPICEBUSH_SWALLOWTAIL;
+	public static final String SPECIES_BLACK_SWALLOWTAIL;
+	public static final String SPECIES_ZEBRA_SWALLOWTAIL;
+	public static final String SPECIES_GLASSWING;
+	public static final String SPECIES_SPECKLED_WOOD;
+	public static final String SPECIES_MADEIRAN_SPECKLED_WOOD;
+	public static final String SPECIES_CANARY_SPECKLED_WOOD;
+	public static final String SPECIES_MENELAUS_BLUE_MORPHO;
+	public static final String SPECIES_PELEIDES_BLUE_MORPHO;
+	public static final String SPECIES_RHETENOR_BLUE_MORPHO;
+	public static final String SPECIES_COMMA;
+	public static final String SPECIES_BATESIA;
+	public static final String SPECIES_BLUE_WING;
+	public static final String SPECIES_MONARCH;
+	public static final String SPECIES_BLUE_DUKE;
+	public static final String SPECIES_GLASSY_TIGER;
+	public static final String SPECIES_POSTMAN;
+	public static final String SPECIES_MALACHITE;
+	public static final String SPECIES_LEOPARD_LACEWING;
+	public static final String SPECIES_DIANA_FRITILLARY;
+	public static final String SPECIES_BRIMSTONE_MOTH;
+	public static final String SPECIES_LATTICED_HEATH;
+	public static final String SPECIES_ATLAS;
+	public static final String SPECIES_BOMBYX_MORI;
 }

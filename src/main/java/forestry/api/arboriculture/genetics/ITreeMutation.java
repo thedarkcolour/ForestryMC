@@ -19,7 +19,7 @@ public interface ITreeMutation extends IMutation {
 	 * @return {@link IForestrySpeciesType} this mutation is associated with.
 	 */
 	@Override
-	ITreeSpeciesType getRoot();
+	ITreeSpeciesType getType();
 
 	/**
 	 * @return float representing the percent chance for mutation to occur, from 0.0 to 100.0.

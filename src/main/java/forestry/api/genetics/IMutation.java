@@ -4,47 +4,33 @@ import java.util.Collection;
 
 import net.minecraft.network.chat.Component;
 
+import forestry.api.apiculture.IBeeSpecies;
 import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IAlleleSpecies;
-import genetics.api.mutation.IMutationContainer;
-import genetics.api.root.components.ComponentKey;
+
 
 /**
- * A mutation provides a type of progression to the genetic system under the right conditions an offspring of the
- * two {@link IAlleleSpecies} can mutate into a completely new {@link IAlleleSpecies}.
- * <p>
- * In forestry the newly created {@link genetics.api.individual.IIndividual} that contains the new species contains
- * the default template of the species.
- * <p>
- * Mutations can be registered at the {@link IMutationContainerBuilder} with the
- * {@link IMutationContainerBuilder#registerMutation(IMutation)} method. As an example the
- * {@link genetics.api.individual.ISpeciesDefinition#onComponent(ComponentKey, IRootComponentBuilder)}
- * method can be used to do this without any complex implementation.
- *
- * @see IMutationContainer
- * @see IMutationContainerBuilder
  */
-public interface IMutation {
+public interface IMutation<S extends ISpecies<?>> {
 
 	/**
 	 * @return {@link ISpeciesType} this mutation is associated with.
 	 */
-	ISpeciesType getRoot();
+	ISpeciesType<S> getType();
 
 	/**
 	 * @return first of the alleles implementing IAlleleSpecies required for this mutation.
 	 */
-	IAlleleSpecies getFirstParent();
+	S getFirstParent();
 
 	/**
 	 * @return second of the alleles implementing IAlleleSpecies required for this mutation.
 	 */
-	IAlleleSpecies getSecondParent();
+	S getSecondParent();
 
 	/**
 	 * @return the allele implementing IAlleleSpecies the resulted of this mutation.
 	 */
-	IAlleleSpecies getResultingSpecies();
+	S getResultingSpecies();
 
 	/**
 	 * @return Array of {@link IAllele} representing the full default genome of the mutated side.

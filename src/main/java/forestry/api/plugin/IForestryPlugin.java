@@ -1,5 +1,7 @@
 package forestry.api.plugin;
 
+import net.minecraft.resources.ResourceLocation;
+
 /**
  * Entry point for registering things to the Forestry API. Forestry uses {@link java.util.ServiceLoader} to
  * load IForestryPlugin classes, so your mod jar must include a file named:
@@ -27,12 +29,21 @@ public interface IForestryPlugin {
 	/**
 	 * Override to register your bee species, mutations, etc. at the correct time.
 	 */
-	default void registerApiculture(IApicultureRegistration apiculture, IGeneticRegistration genetics) {
+	default void registerApiculture(IApicultureRegistration apiculture) {
 	}
 
-	default void registerArboriculture(IArboricultureRegistration arboriculture, IGeneticRegistration genetics) {
+	default void registerArboriculture(IArboricultureRegistration arboriculture) {
 	}
 
-	default void registerLepidopterology(IGeneticRegistration genetics) {
+	default void registerLepidopterology(ILepidopterologyRegistration lepidopterology) {
+	}
+
+	ResourceLocation id();
+
+	/**
+	 * @return Whether this plugin should have any of its registerGenetics, registerApiculture, etc. methods called.
+	 */
+	default boolean shouldLoad() {
+		return true;
 	}
 }

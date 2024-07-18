@@ -44,7 +44,7 @@ public class FruitProviderNone implements IFruitProvider {
 
 		public OverlayType(String ident) {
 			this.ident = ident;
-			this.sprite = new ResourceLocation(ForestryConstants.MOD_ID, "block/leaves/fruits." + ident);
+			this.sprite = ForestryConstants.forestry("block/leaves/fruits." + ident);
 		}
 	}
 

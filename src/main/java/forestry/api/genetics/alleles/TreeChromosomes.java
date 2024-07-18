@@ -1,14 +1,8 @@
 package forestry.api.genetics.alleles;
 
-import net.minecraftforge.common.PlantType;
-
-import forestry.api.arboriculture.IFruitProvider;
-import forestry.api.arboriculture.genetics.IAlleleFruit;
-import forestry.api.arboriculture.genetics.IAlleleLeafEffect;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
-import forestry.api.arboriculture.genetics.ITreeSpeciesType;
-import forestry.api.genetics.IFruitFamily;
-import forestry.core.genetics.alleles.BooleanChromosome;
+import forestry.api.arboriculture.ITreeSpecies;
+import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.arboriculture.genetics.ILeafEffect;
 import forestry.core.genetics.alleles.FloatChromosome;
 import forestry.core.genetics.alleles.IntegerChromosome;
 import forestry.core.genetics.alleles.SpeciesChromosome;
@@ -18,22 +12,21 @@ import static forestry.api.ForestryConstants.forestry;
 
 public class TreeChromosomes {
 	/**
-	 * Determines the following: - WorldGen, including the used wood blocks - {@link IFruitFamily}s supported. Limits which {@link IFruitProvider}
-	 * will actually yield fruit with this species. - Native {@link PlantType} for this tree. Combines with the PLANT chromosome.
+	 * The species of a tree.
 	 */
-	public static final IValueChromosome<ITreeSpeciesType> SPECIES = new SpeciesChromosome<>(forestry("species"));
+	public static final ISpeciesChromosome<ITreeSpecies> SPECIES = new SpeciesChromosome<>(forestry("species"), ITreeSpecies.class);
 	/**
-	 * A float modifying the height of the tree. Taken into account at worldgen.
+	 * Modifies the height of a tree.
 	 */
 	public static final IFloatChromosome HEIGHT = new FloatChromosome(forestry("height"));
 	/**
 	 * Chance for saplings.
 	 */
-	public static final IFloatChromosome FERTILITY = new FloatChromosome(forestry("fertility"));
+	public static final IFloatChromosome SAPLINGS = new FloatChromosome(forestry("saplings"));
 	/**
-	 * {@link IFruitProvider}, determines if and what fruits are grown on the tree. Limited by the {@link IFruitFamily}s the species supports.
+	 * Determines what fruits are grown on the tree.
 	 */
-	public static final IValueChromosome<IAlleleFruit> FRUITS = new ValueChromosome<>(forestry("fruits"));
+	public static final IValueChromosome<IFruit> FRUITS = new ValueChromosome<>(forestry("fruits"), IFruit.class);
 	/**
 	 * Chance for fruit leaves and/or drops.
 	 */
@@ -43,16 +36,19 @@ public class TreeChromosomes {
 	 */
 	public static final IFloatChromosome SAPPINESS = new FloatChromosome(forestry("sappiness"));
 	/**
-	 * Leaf effect. Unused.
+	 * Leaf effect. All trees added by base Forestry have {@link ForestryAlleles#TREE_EFFECT_NONE}.
 	 */
-	public static final IValueChromosome<IAlleleLeafEffect> EFFECT = new ValueChromosome<>(forestry("effect"));
+	public static final IValueChromosome<ILeafEffect> EFFECT = new ValueChromosome<>(forestry("effect"), ILeafEffect.class);
 	/**
 	 * Amount of random ticks which need to elapse before a sapling will grow into a tree.
 	 */
 	public static final IIntegerChromosome MATURATION = new IntegerChromosome(forestry("maturation"));
+	/**
+	 * The diameter of the tree. If the allele is 2, then the tree trunk is a 2x2 and requires four saplings to grow.
+	 */
 	public static final IIntegerChromosome GIRTH = new IntegerChromosome(forestry("girth"));
 	/**
 	 * Determines if the tree can burn.
 	 */
-	public static final IBooleanChromosome FIREPROOF = new BooleanChromosome(forestry("fireproof"));
+	public static final IBooleanChromosome FIREPROOF = ButterflyChromosomes.FIREPROOF;
 }

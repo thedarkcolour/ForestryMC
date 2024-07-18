@@ -8,10 +8,10 @@ import forestry.api.IForestryApi;
 
 /**
  * Alleles represent named values of a {@link IChromosome} in a genome.
- * Create new alleles using {@link IAlleleRegistry}. Alleles are compared by ==, not .equals().
+ * Create new alleles using {@link IAlleleManager}. Alleles are compared by ==, not .equals().
  */
 public sealed interface IAllele permits IBooleanAllele, IFloatAllele, IIntegerAllele, IValueAllele {
-	Codec<IAllele> CODEC = IForestryApi.INSTANCE.getAlleleFactory().byNameCodec();
+	Codec<IAllele> CODEC = IForestryApi.INSTANCE.getAlleleManager().alleleCodec();
 
 	/**
 	 * @return Unique ID of this allele. Dominant alleles usually have the "d" suffix.

@@ -73,11 +73,11 @@ public class ItemInventoryImprinter extends ItemInventory {
 	}
 
 	public IAlleleBeeSpecies getPrimary() {
-		return BeeManager.beeRoot.getIndividualTemplates().get(primaryIndex).getGenome().getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+		return BeeManager.beeRoot.getIndividualTemplates().get(primaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
 	}
 
 	public IAlleleBeeSpecies getSecondary() {
-		return BeeManager.beeRoot.getIndividualTemplates().get(secondaryIndex).getGenome().getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES);
+		return BeeManager.beeRoot.getIndividualTemplates().get(secondaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
 	}
 
 	public IBee getSelectedBee() {

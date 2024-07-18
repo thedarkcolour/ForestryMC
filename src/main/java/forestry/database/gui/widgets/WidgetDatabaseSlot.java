@@ -29,7 +29,7 @@ import forestry.database.network.packets.PacketInsertItem;
 
 @OnlyIn(Dist.CLIENT)
 public class WidgetDatabaseSlot extends Widget {
-	public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/database_inventory.png");
+	public static final ResourceLocation TEXTURE_LOCATION = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/database_inventory.png");
 
 	public static final Drawable SLOT = new Drawable(TEXTURE_LOCATION, 218, 0, 22, 22);
 	public static final Drawable SLOT_SELECTED = new Drawable(TEXTURE_LOCATION, 218, 22, 22, 22);

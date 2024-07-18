@@ -2,7 +2,7 @@ package forestry.api.apiculture;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.ForestryConstants;
+import static forestry.api.ForestryConstants.forestry;
 
 /**
  * IDs of all bee species registered by base Forestry.
@@ -53,8 +53,4 @@ public class ForestryBeeSpecies {
 	public static final ResourceLocation MONASTIC = forestry("monastic");
 	public static final ResourceLocation SECLUDED = forestry("secluded");
 	public static final ResourceLocation HERMITIC = forestry("hermitic");
-
-	private static ResourceLocation forestry(String path) {
-		return new ResourceLocation(ForestryConstants.MOD_ID, path);
-	}
 }

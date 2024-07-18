@@ -25,7 +25,7 @@ import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
 import forestry.core.render.ParticleRender;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 
 import forestry.api.genetics.IGenome;
 
@@ -50,12 +50,12 @@ public class SnowingBeeEffect extends ThrottledBeeEffect {
 			default:
 		}
 
-		Vec3i area = getModifiedArea(genome, housing);
-		Vec3i offset = VectUtil.scale(area, -1 / 2.0f);
+		Vec3i area = ParticleRender.getModifiedArea(genome, housing);
+		Vec3i offset = VecUtil.scale(area, -1 / 2.0f);
 
 		for (int i = 0; i < 1; i++) {
 
-			BlockPos randomPos = VectUtil.getRandomPositionInArea(world.random, area);
+			BlockPos randomPos = VecUtil.getRandomPositionInArea(world.random, area);
 
 			BlockPos posBlock = randomPos.offset(housing.getCoordinates()).offset(offset);
 
@@ -88,13 +88,13 @@ public class SnowingBeeEffect extends ThrottledBeeEffect {
 	@OnlyIn(Dist.CLIENT)
 	public IEffectData doFX(IGenome genome, IEffectData storedData, IBeeHousing housing) {
 		if (housing.getWorldObj().random.nextInt(3) == 0) {
-			Vec3i area = getModifiedArea(genome, housing);
-			Vec3i offset = VectUtil.scale(area, -0.5F);
+			Vec3i area = ParticleRender.getModifiedArea(genome, housing);
+			Vec3i offset = VecUtil.scale(area, -0.5F);
 
 			BlockPos coordinates = housing.getCoordinates();
 			Level world = housing.getWorldObj();
 
-			BlockPos spawn = VectUtil.getRandomPositionInArea(world.random, area).offset(coordinates).offset(offset);
+			BlockPos spawn = VecUtil.getRandomPositionInArea(world.random, area).offset(coordinates).offset(offset);
 			ParticleRender.addEntitySnowFX(world, spawn.getX(), spawn.getY(), spawn.getZ());
 			return storedData;
 		} else {

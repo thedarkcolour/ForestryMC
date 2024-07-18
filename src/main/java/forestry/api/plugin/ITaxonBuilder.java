@@ -12,8 +12,10 @@ import forestry.api.genetics.alleles.IChromosome;
 public interface ITaxonBuilder {
 	/**
 	 * Defines a taxon with this taxon as the its parent.
+	 * Do not use with species names, species are set by the {@link ISpeciesBuilder}.
 	 *
 	 * @param name The name of the taxon. Must be unique.
+	 * @throws UnsupportedOperationException If this taxon is a genus. Species names are set by the species builder.
 	 */
 	void defineSubTaxon(String name);
 

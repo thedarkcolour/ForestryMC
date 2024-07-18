@@ -1,18 +1,25 @@
 package forestry.plugin;
 
+import com.google.common.base.Preconditions;
+
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.function.Consumer;
 
+import net.minecraft.resources.ResourceLocation;
+
 import forestry.api.genetics.ForestryTaxa;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.ITaxonBuilder;
+import forestry.api.plugin.ISpeciesTypeBuilder;
 import forestry.api.plugin.ITaxonBuilder;
 import forestry.api.genetics.TaxonomicRank;
 import forestry.api.plugin.IChromosomeBuilder;
 import forestry.api.plugin.IGeneticRegistration;
+
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public final class GeneticRegistration implements IGeneticRegistration {
 	// Already defined taxa that have known parents
@@ -21,6 +28,8 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	private final HashMap<String, HashSet<String>> unknownTaxa = new HashMap<>();
 	// Name of taxon with missing parent -> Action
 	private final HashMap<String, Consumer<ITaxonBuilder>> unknownActions = new HashMap<>();
+	private final HashMap<ResourceLocation, ArrayList<Consumer<ISpeciesTypeBuilder>>> modifications = new HashMap<>();
+	private boolean registeredSpecies;
 
 	public GeneticRegistration() {
 		// Register default Domain and Kingdom taxa
@@ -62,6 +71,17 @@ public final class GeneticRegistration implements IGeneticRegistration {
 		}
 	}
 
+	@Override
+	public ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id) {
+		Preconditions.checkState(!this.registeredSpecies, "Species must be registered or modified in IForestryPlugin.registerGenetics.");
+	}
+
+	@Override
+	public void modifySpeciesType(ResourceLocation id, Consumer<ISpeciesTypeBuilder> action) {
+		Preconditions.checkState(!this.registeredSpecies, "Species must be registered or modified in IForestryPlugin.registerGenetics.");
+		this.modifications.computeIfAbsent(id, key -> new ArrayList<>()).add(action);
+	}
+
 	private TaxonBuilder registerTaxon(TaxonomicRank rank, String name) {
 		if (this.taxaByName.containsKey(name)) {
 			TaxonBuilder existing = this.taxaByName.get(name);
@@ -98,8 +118,13 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	}
 
 	@Override
-	public IChromosomeBuilder registerChromosome(IChromosome chromosomeType) {
+	public <A extends IAllele> IChromosomeBuilder<A> registerChromosome(IChromosome<A> chromosomeType) {
 		return null;
+	}
+
+	public void finishRegistration() {
+		Preconditions.checkState(!this.registeredSpecies, "Registration of species is already finished. Some mod is being pesky!");
+		this.registeredSpecies = true;
 	}
 
 	private static class TaxonBuilder implements ITaxonBuilder {
@@ -107,6 +132,7 @@ public final class GeneticRegistration implements IGeneticRegistration {
 		private final TaxonomicRank rank;
 		private final String name;
 		private final HashSet<TaxonBuilder> children = new HashSet<>();
+		private final Reference2ObjectOpenHashMap<IChromosome<?>, AlleleHolder> defaultChromosomes = new Reference2ObjectOpenHashMap<>();
 		// Must not be null by end of registration unless this is a domain
 		@Nullable
 		private TaxonBuilder parent;
@@ -128,6 +154,10 @@ public final class GeneticRegistration implements IGeneticRegistration {
 		}
 
 		private TaxonBuilder registerChild(String name) {
+			if (this.rank == TaxonomicRank.GENUS) {
+				throw new UnsupportedOperationException("Cannot directly add species '" + name + "' as a child of the '" + this.name + "' genus. Genera are populated by the ISpeciesBuilder.");
+			}
+
 			// defining the same child twice is fine...
 			TaxonBuilder existing = this.registration.taxaByName.get(name);
 			if (existing != null && existing.parent != this) {
@@ -144,7 +174,10 @@ public final class GeneticRegistration implements IGeneticRegistration {
 
 		@Override
 		public <A extends IAllele> void setDefaultChromosome(IChromosome<A> chromosome, A value, boolean required) {
-
+			this.defaultChromosomes.put(chromosome, new AlleleHolder(value, required));
 		}
+	}
+
+	private record AlleleHolder(IAllele allele, boolean required) {
 	}
 }

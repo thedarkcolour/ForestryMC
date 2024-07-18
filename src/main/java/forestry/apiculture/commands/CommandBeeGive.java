@@ -84,14 +84,14 @@ public class CommandBeeGive {
 		public IBee parse(final StringReader reader) throws CommandSyntaxException {
 			ResourceLocation location = ResourceLocation.read(reader);
 
-			return BeeManager.beeRoot.getIndividualTemplates().stream().filter(a -> a.getGenome().getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES).getId().equals(location)).findFirst().orElseThrow(() -> new SimpleCommandExceptionType(new LiteralMessage("Invalid Bee Type: " + location)).create());
+			return BeeManager.beeRoot.getIndividualTemplates().stream().filter(a -> a.getGenome().getActiveAllele(BeeChromosomes.SPECIES).getId().equals(location)).findFirst().orElseThrow(() -> new SimpleCommandExceptionType(new LiteralMessage("Invalid Bee Type: " + location)).create());
 		}
 
 		@Override
 		public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
 			return SharedSuggestionProvider.suggest(BeeManager.beeRoot.getIndividualTemplates().stream()
 					.map(IIndividual::getGenome)
-					.map(a -> a.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES))
+					.map(a -> a.getActiveAllele(BeeChromosomes.SPECIES))
 					.map(IAllele::id)
 					.map(ResourceLocation::toString), builder);
 		}
@@ -100,7 +100,7 @@ public class CommandBeeGive {
 		public Collection<String> getExamples() {
 			return BeeManager.beeRoot.getIndividualTemplates().stream()
 					.map(IIndividual::getGenome)
-					.map(a -> a.getActiveAllele((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES))
+					.map(a -> a.getActiveAllele(BeeChromosomes.SPECIES))
 					.map(IAllele::id)
 					.map(ResourceLocation::toString)
 					.collect(Collectors.toList());

@@ -35,7 +35,7 @@ import genetics.utils.RootUtils;
 @OnlyIn(Dist.CLIENT)
 public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyzer, IScrollable {
 	/* Textures */
-	public static final ResourceLocation TEXTURE = new ResourceLocation(ForestryConstants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/analyzer_screen.png");
+	public static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/analyzer_screen.png");
 
 	/* Drawables */
 	public static final Drawable SCROLLBAR_BACKGROUND = new Drawable(TEXTURE, 202, 0, 3, 142);

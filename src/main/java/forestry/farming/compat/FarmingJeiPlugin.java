@@ -27,7 +27,7 @@ import java.util.List;
 public class FarmingJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(ForestryConstants.MOD_ID, "farming");
+		return ForestryConstants.forestry("farming");
 	}
 
 	@Override

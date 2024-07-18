@@ -23,7 +23,7 @@ import forestry.api.arboriculture.ITreeGenData;
 import forestry.arboriculture.worldgen.ITreeBlockType;
 import forestry.arboriculture.worldgen.TreeBlockType;
 import forestry.arboriculture.worldgen.TreeContour;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 //import forestry.arboriculture.worldgen.ITreeBlockType;
 //import forestry.arboriculture.worldgen.TreeBlockType;
 
@@ -66,7 +66,7 @@ public class FeatureHelper {
 					BlockPos position = start.offset(x, y, z);
 					Vec3i treeCenter = new Vec3i(center.getX(), position.getY(), center.getZ());
 					if (position.distSqr(treeCenter) <= radius * radius + 0.01) {
-						Direction direction = VectUtil.direction(position, treeCenter);
+						Direction direction = VecUtil.direction(position, treeCenter);
 						block.setDirection(direction);
 						if (addBlock(world, position, block, replace)) {
 							contour.addLeaf(position);

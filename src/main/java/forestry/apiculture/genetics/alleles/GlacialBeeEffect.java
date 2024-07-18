@@ -20,7 +20,7 @@ import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 
 import forestry.api.genetics.IGenome;
 
@@ -45,13 +45,13 @@ public class GlacialBeeEffect extends ThrottledBeeEffect {
 		}
 
 		Vec3i area = genome.getActiveValue(BeeChromosomes.TERRITORY);
-		Vec3i offset = VectUtil.scale(area, -1 / 2.0f);
+		Vec3i offset = VecUtil.scale(area, -1 / 2.0f);
 		BlockPos housingCoords = housing.getCoordinates();
 
 		for (int i = 0; i < 10; i++) {
 
-			BlockPos randomPos = VectUtil.getRandomPositionInArea(world.random, area);
-			BlockPos posBlock = VectUtil.sum(randomPos, housingCoords, offset);
+			BlockPos randomPos = VecUtil.getRandomPositionInArea(world.random, area);
+			BlockPos posBlock = VecUtil.sum(randomPos, housingCoords, offset);
 
 			// Freeze water
 			if (world.hasChunkAt(posBlock)) {

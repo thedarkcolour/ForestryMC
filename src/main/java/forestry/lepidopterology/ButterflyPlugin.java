@@ -2,9 +2,9 @@ package forestry.lepidopterology;
 
 import forestry.api.ForestryConstants;
 import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.lepidopterology.genetics.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -46,11 +46,6 @@ import genetics.api.root.components.ComponentKeys;
 @GeneticPlugin(modId = ForestryConstants.MOD_ID)
 public class ButterflyPlugin implements IGeneticPlugin {
 	@Override
-	public void registerClassifications(IClassificationRegistry registry) {
-		ButterflyBranchDefinition.createClassifications(registry);
-	}
-
-	@Override
 	public void registerListeners(IGeneticListenerRegistry registry) {
 		registry.add(ForestrySpeciesType.BUTTERFLY, ButterflyDefinition.values());
 		registry.add(ForestrySpeciesType.BUTTERFLY, MothDefinition.values());
@@ -81,7 +76,7 @@ public class ButterflyPlugin implements IGeneticPlugin {
 			.addListener(ForestryComponentKeys.RESEARCH, (IResearchHandler<IButterfly> component) -> {
 				component.addPlugin(new IResearchPlugin() {
 					@Override
-					public float getResearchSuitability(IAlleleSpecies species, ItemStack itemstack) {
+					public float getResearchSuitability(ISpecies<?> species, ItemStack itemstack) {
 						if (itemstack.isEmpty() || !(species instanceof IAlleleButterflySpecies butterflySpecies)) {
 							return -1;
 						}
@@ -104,7 +99,7 @@ public class ButterflyPlugin implements IGeneticPlugin {
 					}
 
 					@Override
-					public NonNullList<ItemStack> getResearchBounty(IAlleleSpecies species, Level world, GameProfile researcher, IIndividual individual, int bountyLevel) {
+					public NonNullList<ItemStack> getResearchBounty(ISpecies<?> species, Level world, GameProfile researcher, IIndividual individual, int bountyLevel) {
 						ItemStack serum = ((ISpeciesType<IIndividual>) species.getSpecies()).getTypes().createStack(individual.copy(), ButterflyLifeStage.SERUM);
 						NonNullList<ItemStack> bounty = NonNullList.create();
 						bounty.add(serum);

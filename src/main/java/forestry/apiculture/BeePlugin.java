@@ -1,6 +1,7 @@
 package forestry.apiculture;
 
 import forestry.api.ForestryConstants;
+import forestry.api.apiculture.IBeeSpecies;
 import forestry.api.apiculture.genetics.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +14,8 @@ import forestry.api.apiculture.BeeManager;
 import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.IResearchHandler;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.Product;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.genetics.BeeDefinition;
@@ -43,11 +46,6 @@ import genetics.api.root.components.ComponentKeys;
 public class BeePlugin implements IGeneticPlugin {
 
 	@Override
-	public void registerListeners(IGeneticListenerRegistry registry) {
-		registry.add(ForestrySpeciesType.BEE, BeeDefinition.values());
-	}
-
-	@Override
 	public void createRoot(IRootManager rootManager, IGeneticFactory geneticFactory) {
 		IIndividualRootBuilder<IBee> rootBuilder = rootManager.createRoot(ForestrySpeciesType.BEE);
 		rootBuilder
@@ -62,10 +60,10 @@ public class BeePlugin implements IGeneticPlugin {
 			.addComponent(ComponentKeys.TRANSLATORS)
 			.addComponent(ComponentKeys.MUTATIONS)
 			.addComponent(ForestryComponentKeys.RESEARCH, ResearchHandler::new)
-			.addListener(ForestryComponentKeys.RESEARCH, (IResearchHandler<IBee> builder) -> builder.addPlugin(new IResearchPlugin() {
+			.addListener(ForestryComponentKeys.RESEARCH, (IResearchHandler<IBee> builder) -> builder.addPlugin(new IResearchPlugin<IBeeSpecies>() {
 				@Override
-				public float getResearchSuitability(IAlleleSpecies species, ItemStack itemStack) {
-					Item item = itemStack.getItem();
+				public float getResearchSuitability(IBeeSpecies species, ItemStack stack) {
+					Item item = stack.getItem();
 					if (item instanceof ItemOverlay && ApicultureItems.HONEY_DROPS.itemEqual(item)) {
 						return 0.5f;
 					} else if (ApicultureItems.HONEYDEW.itemEqual(item)) {
@@ -75,14 +73,13 @@ public class BeePlugin implements IGeneticPlugin {
 						return 0.4f;
 					}
 
-					IAlleleBeeSpecies beeSpecies = (IAlleleBeeSpecies) species;
-					for (ItemStack stack : beeSpecies.getProducts().getPossibleStacks()) {
-						if (stack.sameItem(itemStack)) {
+					for (Product product : species.getProducts()) {
+						if (stack.is(product.item())) {
 							return 1.0f;
 						}
 					}
-					for (ItemStack stack : beeSpecies.getSpecialties().getPossibleStacks()) {
-						if (stack.sameItem(itemStack)) {
+					for (Product specialty : species.getSpecialties()) {
+						if (stack.sameItem(stack)) {
 							return 1.0f;
 						}
 					}
@@ -91,8 +88,7 @@ public class BeePlugin implements IGeneticPlugin {
 				}
 
 				@Override
-				public NonNullList<ItemStack> getResearchBounty(IAlleleSpecies species, Level world, GameProfile researcher, IIndividual individual, int bountyLevel) {
-					IAlleleBeeSpecies beeSpecies = (IAlleleBeeSpecies) species;
+				public NonNullList<ItemStack> getResearchBounty(IBeeSpecies species, Level world, GameProfile researcher, IIndividual individual, int bountyLevel) {
 					NonNullList<ItemStack> bounty = NonNullList.create();
 					if (bountyLevel > 10) {
 						for (ItemStack stack : beeSpecies.getSpecialties().getPossibleStacks()) {

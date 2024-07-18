@@ -46,7 +46,7 @@ public class ForestryTags {
 		public static final TagKey<Block> PLANTABLE_FLOWERS = tag("flowers/plantable");
 
 		private static TagKey<Block> tag(String name) {
-			return BlockTags.create(new ResourceLocation(ForestryConstants.MOD_ID, name));
+			return BlockTags.create(ForestryConstants.forestry(name));
 		}
 
 		private static TagKey<Block> forgeTag(String name) {
@@ -114,7 +114,7 @@ public class ForestryTags {
 		public static final TagKey<Item> CRAFTING_TABLES = tag("crafting_tables");
 
 		private static TagKey<Item> tag(String name) {
-			return ItemTags.create(new ResourceLocation(ForestryConstants.MOD_ID, name));
+			return ItemTags.create(ForestryConstants.forestry(name));
 		}
 
 		private static TagKey<Item> forgeTag(String name) {
@@ -157,7 +157,7 @@ public class ForestryTags {
 		public static final TagKey<Biome> MOUNTAIN_CATEGORY = tag("category/mountain");
 
 		private static TagKey<Biome> tag(String path) {
-			return TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(ForestryConstants.MOD_ID, path));
+			return TagKey.create(Registry.BIOME_REGISTRY, ForestryConstants.forestry(path));
 		}
 	}
 }

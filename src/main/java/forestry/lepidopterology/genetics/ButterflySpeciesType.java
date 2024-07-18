@@ -32,7 +32,6 @@ import forestry.api.genetics.ForestrySpeciesType;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IBreedingTrackerHandler;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.ILepidopteristTracker;

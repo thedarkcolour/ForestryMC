@@ -12,8 +12,6 @@ import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryChromosomes;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
@@ -56,7 +54,7 @@ public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
 
 		database.addFertilityLine(Component.translatable("for.gui.fertility"), ButterflyChromosomes.FERTILITY, 8);
 
-		database.addLine(Component.translatable("for.gui.flowers"), ButterflyChromosomes.FLOWER_PROVIDER);
+		database.addLine(Component.translatable("for.gui.flowers"), ButterflyChromosomes.FLOWER_TYPE);
 		database.addLine(Component.translatable("for.gui.effect"), ButterflyChromosomes.EFFECT);
 
 		Function<Boolean, Component> toleranceText = a -> {
@@ -101,10 +99,10 @@ public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
 		database.addLine(Component.translatable("for.gui.flyer"), flyer, ButterflyChromosomes.TOLERATES_RAIN);
 
 		Function<Boolean, Component> fireResist = active -> {
-            boolean fireResistant = active ? butterfly.getGenome().getActiveValue(ButterflyChromosomes.FIRE_RESISTANT) : butterfly.getGenome().getInactiveValue(ButterflyChromosomes.FIRE_RESISTANT);
+            boolean fireResistant = active ? butterfly.getGenome().getActiveValue(ButterflyChromosomes.FIREPROOF) : butterfly.getGenome().getInactiveValue(ButterflyChromosomes.FIREPROOF);
 			return fireResistant ? yes : no;
         };
-		database.addLine(Component.translatable("for.gui.fireresist"), fireResist, ButterflyChromosomes.FIRE_RESISTANT);
+		database.addLine(Component.translatable("for.gui.fireresist"), fireResist, ButterflyChromosomes.FIREPROOF);
 	}
 
 	@Override

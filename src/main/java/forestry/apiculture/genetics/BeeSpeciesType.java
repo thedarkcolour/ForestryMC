@@ -68,7 +68,7 @@ public class BeeSpeciesType extends SpeciesType<IBee> implements IBeeSpeciesType
 	@Override
 	public int getSpeciesCount() {
 		if (beeSpeciesCount < 0) {
-			beeSpeciesCount = (int) AlleleUtils.filteredStream((IChromosome<ISpeciesType<?>>) BeeChromosomes.SPECIES)
+			beeSpeciesCount = (int) AlleleUtils.filteredStream(BeeChromosomes.SPECIES)
 					.filter(IAlleleBeeSpecies::isCounted).count();
 		}
 

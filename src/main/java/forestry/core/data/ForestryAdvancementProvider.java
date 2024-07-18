@@ -63,7 +63,7 @@ public class ForestryAdvancementProvider implements DataProvider {
 				.display(icon, Component.translatable("advancements.forestry.root.title"), Component.translatable("advancements.forestry.root.description"), new ResourceLocation("textures/block/honeycomb_block.png"), FrameType.TASK, false, false, false)
 				.addCriterion("tick", InventoryChangeTrigger.TriggerInstance.hasItems(ApicultureItems.BEE_COMBS.itemArray()))
 				.rewards(new AdvancementRewards(0, new ResourceLocation[]{
-						new ResourceLocation(ForestryConstants.MOD_ID, "grant_guide")
+						ForestryConstants.forestry("grant_guide")
 				}, new ResourceLocation[0], CommandFunction.CacheableFunction.NONE))
 				.save(consumer, ForestryConstants.MOD_ID + ":root");
 	}

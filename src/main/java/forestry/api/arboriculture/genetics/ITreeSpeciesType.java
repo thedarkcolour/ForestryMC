@@ -55,7 +55,7 @@ public interface ITreeSpeciesType extends IPollinatableSpeciesType<ITree> {
 
 	boolean plantSapling(Level world, ITree tree, GameProfile owner, BlockPos pos);
 
-	boolean setFruitBlock(LevelAccessor world, IGenome genome, IAlleleFruit allele, float yield, BlockPos pos);
+	boolean setFruitBlock(LevelAccessor world, IGenome genome, IFruit allele, float yield, BlockPos pos);
 
 	/* GAME MODE */
 	List<ITreekeepingMode> getTreekeepingModes();

@@ -8,14 +8,13 @@ package forestry.api.genetics;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
-
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IAlleleSpecies;
-import genetics.api.individual.IIndividual;
+import net.minecraft.world.entity.player.Player;
 
 import forestry.api.apiculture.IBeekeepingMode;
+import forestry.api.genetics.alleles.IAllele;
+
+import genetics.api.individual.IIndividual;
 
 /**
  * Keeps track of who bred, discovered, and researched which species in a world.
@@ -52,7 +51,7 @@ public interface IBreedingTracker {
 	/**
 	 * Marks a species as discovered. Should only be called from registerIndividual normally.
 	 */
-	void registerSpecies(IAlleleSpecies species);
+	void registerSpecies(ISpecies species);
 
 	/**
 	 * Register a successful mutation. Will mark it as discovered.

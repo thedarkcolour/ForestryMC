@@ -2,15 +2,14 @@ package forestry.api.genetics.alleles;
 
 import net.minecraft.core.Vec3i;
 
+import forestry.api.apiculture.IBeeSpecies;
 import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBeeEffect;
-import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ForestrySpeciesType;
 import forestry.core.genetics.alleles.BooleanChromosome;
 import forestry.core.genetics.alleles.FloatChromosome;
 import forestry.core.genetics.alleles.IntegerChromosome;
-import forestry.core.genetics.alleles.SpeciesChromosome;
 import forestry.core.genetics.alleles.ValueChromosome;
 
 import static forestry.api.ForestryConstants.forestry;
@@ -22,45 +21,53 @@ public class BeeChromosomes {
 	/**
 	 * The species of a bee.
 	 */
-	public static final ISpeciesChromosome<IBeeSpeciesType> SPECIES = new SpeciesChromosome<>(ForestrySpeciesType.BEE);
+	public static final ISpeciesChromosome<IBeeSpecies> SPECIES = ForestryAlleles.REGISTRY.speciesChromosome(ForestrySpeciesType.BEE, IBeeSpecies.class);
 	/**
 	 * Determines a queen's production speed.
 	 */
-	public static final IFloatChromosome SPEED = new FloatChromosome(forestry("bee_speed"));
+	public static final IFloatChromosome SPEED = ForestryAlleles.REGISTRY.floatChromosome(forestry("speed"));
 	/**
 	 * Determines a queen's lifespan.
 	 */
-	public static final IIntegerChromosome LIFESPAN = new IntegerChromosome(forestry("bee_lifespan"));
+	public static final IIntegerChromosome LIFESPAN = ForestryAlleles.REGISTRY.intChromosome(forestry("lifespan"));
 	/**
 	 * The number of drones given when a queen dies.
 	 */
-	public static final IIntegerChromosome FERTILITY = new IntegerChromosome(forestry("bee_fertility"));
+	public static final IIntegerChromosome FERTILITY = ForestryAlleles.REGISTRY.intChromosome(forestry("fertility"));
 	/**
 	 * Determines the acceptable range of temperatures from a bee's ideal temperature. Reused by trees and butterflies.
 	 */
-	public static final IValueChromosome<ToleranceType> TEMPERATURE_TOLERANCE = new ValueChromosome<>(forestry("temperature_tolerance"));
+	public static final IValueChromosome<ToleranceType> TEMPERATURE_TOLERANCE = ForestryAlleles.REGISTRY.valueChromosome(forestry("temperature_tolerance"), ToleranceType.class);
 	/**
 	 * Determines the acceptable range of humidities from a bee's ideal humidity. Reused by trees and butterflies.
 	 */
-	public static final IValueChromosome<ToleranceType> HUMIDITY_TOLERANCE = new ValueChromosome<>(forestry("humidity_tolerance"));
+	public static final IValueChromosome<ToleranceType> HUMIDITY_TOLERANCE = ForestryAlleles.REGISTRY.valueChromosome(forestry("humidity_tolerance"), ToleranceType.class);
 	/**
-	 * Whether diurnal bees can work during the night, or nocturnal bees can work during the day.
+	 * Whether diurnal bees can work during the night, or nocturnal bees can work during the day. Reused by butterflies.
 	 */
-	public static final IBooleanChromosome NEVER_SLEEPS = new BooleanChromosome(forestry("never_sleeps"));
-	// Bee-specific chromosomes
-	public static final IBooleanChromosome CAVE_DWELLING = new BooleanChromosome(forestry("cave_dwelling"));
-	public static final IBooleanChromosome TOLERATES_RAIN = new BooleanChromosome(forestry("tolerates_rain"));
-	public static final IValueChromosome<IFlowerType> FLOWER_TYPE = new ValueChromosome<>(forestry("flower_type"));
+	public static final IBooleanChromosome NEVER_SLEEPS = ForestryAlleles.REGISTRY.booleanChromosome(forestry("never_sleeps"));
+	/**
+	 * TODO document
+	 */
+	public static final IBooleanChromosome CAVE_DWELLING = ForestryAlleles.REGISTRY.booleanChromosome(forestry("cave_dwelling"));
+	/**
+	 * Whether this bee can work while it is raining.
+	 */
+	public static final IBooleanChromosome TOLERATES_RAIN = ForestryAlleles.REGISTRY.booleanChromosome(forestry("tolerates_rain"));
+	/**
+	 * The type of flowers this bee needs to work. Also includes flowers that a bee can plant.
+	 */
+	public static final IValueChromosome<IFlowerType> FLOWER_TYPE = ForestryAlleles.REGISTRY.valueChromosome(forestry("flower_type"), IFlowerType.class);
 	/**
 	 * Determines the effect of a bee species. Its range is determined by {@link #TERRITORY}.
 	 */
-	public static final IValueChromosome<IBeeEffect> EFFECT = new ValueChromosome<>(forestry("bee_effect"));
+	public static final IValueChromosome<IBeeEffect> EFFECT = ForestryAlleles.REGISTRY.valueChromosome(forestry("bee_effect"), IBeeEffect.class);
 	/**
 	 * Determines how fast the hive can pollinate trees and plant flowers. Range is determined by {@link #TERRITORY}.
 	 */
-	public static final IIntegerChromosome POLLINATION = new IntegerChromosome(forestry("pollination"));
+	public static final IIntegerChromosome POLLINATION = ForestryAlleles.REGISTRY.intChromosome(forestry("pollination"));
 	/**
 	 * Determines the area in which a bee can pollinate trees, grow flowers, and use its special effect.
 	 */
-	public static final IValueChromosome<Vec3i> TERRITORY = new ValueChromosome<>(forestry("territory"));
+	public static final IValueChromosome<Vec3i> TERRITORY = ForestryAlleles.REGISTRY.valueChromosome(forestry("territory"), Vec3i.class);
 }

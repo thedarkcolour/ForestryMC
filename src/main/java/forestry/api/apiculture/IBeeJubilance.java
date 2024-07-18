@@ -8,7 +8,6 @@ package forestry.api.apiculture;
 import forestry.api.genetics.IGenome;
 
 public interface IBeeJubilance {
-
 	/**
 	 * Returns true when conditions are right to make this species Jubilant.
 	 * Jubilant bees can produce their Specialty products.

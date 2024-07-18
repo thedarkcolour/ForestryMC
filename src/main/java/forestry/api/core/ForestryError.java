@@ -94,7 +94,7 @@ public enum ForestryError implements IError {
 	ForestryError(String id, String iconName) {
 		this.id = new ResourceLocation(id);
 		// todo replace the "errors/" prefix with "_error" suffix and just use the name field
-		this.sprite = new ResourceLocation(ForestryConstants.MOD_ID, "errors/" + iconName);
+		this.sprite = ForestryConstants.forestry("errors/" + iconName);
 	}
 
 	// todo remove and replace with a mod-agnostic function

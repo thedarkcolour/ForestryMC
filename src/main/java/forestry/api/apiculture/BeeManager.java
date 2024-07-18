@@ -13,7 +13,6 @@ import java.util.Map;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.genetics.IBeeFactory;
-import forestry.api.apiculture.genetics.IBeeMutationFactory;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
 
 import forestry.api.genetics.IGenome;
@@ -45,30 +44,6 @@ public class BeeManager {
 	 * @implNote Only null if the "apiculture" module is not enabled.
 	 */
 	public static IBeeSpeciesType beeRoot;
-
-	/**
-	 * Used to create new bees.
-	 *
-	 * @implNote Only null if the "apiculture" module is not enabled.
-	 */
-	@Nullable
-	public static IBeeFactory beeFactory;
-
-	/**
-	 * Used to create new bee mutations.
-	 *
-	 * @implNote Only null if the "apiculture" module is not enabled.
-	 */
-	@Nullable
-	public static IBeeMutationFactory beeMutationFactory;
-
-	/**
-	 * Used to get Forestry's jubilance implementations.
-	 *
-	 * @implNote Only null if the "apiculture" module is not enabled.
-	 */
-	@Nullable
-	public static IJubilanceFactory jubilanceFactory;
 
 	/**
 	 * Used to check whether a player is wearing Apiarist Armor.

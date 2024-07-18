@@ -31,7 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IAlleleFruit;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.products.IProductList;
@@ -91,7 +91,7 @@ public class FruitProviderPod extends FruitProviderNone {
 		if (type == EnumPodType.COCOA) {
 			return BlockUtil.tryPlantCocoaPod(world, pos);
 		} else {
-			IAlleleFruit activeAllele = genome.getActiveAllele(TreeChromosomes.FRUITS);
+			IFruit activeAllele = genome.getActiveAllele(TreeChromosomes.FRUITS);
 			return TreeManager.treeRoot.setFruitBlock(world, genome, activeAllele, genome.getActiveValue(TreeChromosomes.YIELD), pos);
 		}
 	}

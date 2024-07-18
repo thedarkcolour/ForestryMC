@@ -13,7 +13,7 @@ import forestry.api.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.EnumVanillaWoodType;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.WoodBlockKind;
-import forestry.api.arboriculture.genetics.IAlleleFruit;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.arboriculture.IWoodTyped;
 import forestry.arboriculture.WoodAccess;
@@ -93,7 +93,7 @@ public class ArboricultureBlocks {
 	public static final FeatureBlockGroup<BlockDefaultLeaves, TreeDefinition> LEAVES_DEFAULT = REGISTRY.blockGroup(BlockDefaultLeaves::new, TreeDefinition.VALUES).item(ItemBlockLeaves::new).identifier("default_leaves", FeatureGroup.IdentifierType.AFFIX).create();
 	public static final FeatureBlockGroup<BlockDefaultLeavesFruit, TreeDefinition> LEAVES_DEFAULT_FRUIT = REGISTRY.blockGroup(BlockDefaultLeavesFruit::new, TreeDefinition.VALUES).item(ItemBlockLeaves::new).identifier("default_leaves_fruit", FeatureGroup.IdentifierType.AFFIX).create();
 	public static final FeatureBlockGroup<BlockDecorativeLeaves, TreeDefinition> LEAVES_DECORATIVE = REGISTRY.blockGroup(BlockDecorativeLeaves::new, TreeDefinition.VALUES).item(ItemBlockDecorativeLeaves::new).identifier("decorative_leaves", FeatureGroup.IdentifierType.AFFIX).create();
-	public static final FeatureBlockGroup<BlockFruitPod, IAlleleFruit> PODS = REGISTRY.blockGroup(BlockFruitPod::new, AlleleFruits.getFruitAllelesWithModels()).identifier("pods").create();
+	public static final FeatureBlockGroup<BlockFruitPod, IFruit> PODS = REGISTRY.blockGroup(BlockFruitPod::new, AlleleFruits.getFruitAllelesWithModels()).identifier("pods").create();
 
 	/* MACHINES */
 	public static final IBlockFeature<BlockBase<BlockTypeArboricultureTesr>, ItemBlockBase<BlockBase<BlockTypeArboricultureTesr>>> TREE_CHEST = REGISTRY.block(() -> new BlockBase<>(BlockTypeArboricultureTesr.ARB_CHEST, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD)), (block) -> new ItemBlockBase<>(block, BlockTypeArboricultureTesr.ARB_CHEST), "tree_chest");
