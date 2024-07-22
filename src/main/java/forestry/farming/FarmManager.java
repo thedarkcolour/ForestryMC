@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -16,6 +15,7 @@ import java.util.Stack;
 
 import deleteme.Shuffler;
 
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.ItemStack;
@@ -48,8 +48,8 @@ import forestry.farming.multiblock.FarmFertilizerManager;
 import forestry.farming.multiblock.FarmHydrationManager;
 
 public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IExtentCache {
-	private final Map<HorizontalDirection, List<FarmTarget>> targets = new EnumMap<>(HorizontalDirection.class);
-	private final Table<HorizontalDirection, BlockPos, Integer> lastExtents = HashBasedTable.create();
+	private final Map<Direction, List<FarmTarget>> targets = new EnumMap<>(Direction.class);
+	private final Table<Direction, BlockPos, Integer> lastExtents = HashBasedTable.create();
 	private final IFarmHousingInternal housing;
 	@Nullable
 	private IFarmLogic harvestProvider; // The farm logic which supplied the pending crops.
@@ -135,10 +135,10 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 		// Cultivation and collection
 		FarmWorkStatus farmWorkStatus = new FarmWorkStatus();
 
-		Level world = housing.getWorldObj();
-		List<HorizontalDirection> farmDirections = Arrays.asList(HorizontalDirection.values());
-		Shuffler.shuffle(farmDirections, world.random);
-		for (HorizontalDirection farmSide : farmDirections) {
+		Level level = housing.getWorldObj();
+		List<Direction> farmDirections = HorizontalDirection.VALUES;
+		Shuffler.shuffle(farmDirections, level.random);
+		for (Direction farmSide : farmDirections) {
 			IFarmLogic logic = housing.getFarmLogic(farmSide);
 			List<FarmTarget> farmTargets = targets.get(farmSide);
 
@@ -161,7 +161,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 			}
 
 			if (stage == Stage.HARVEST) {
-				Collection<ICrop> harvested = FarmHelper.harvestTargets(world, housing, farmTargets, logic, farmListeners);
+				Collection<ICrop> harvested = FarmHelper.harvestTargets(level, housing, farmTargets, logic, farmListeners);
 				farmWorkStatus.didWork = !harvested.isEmpty();
 				if (!harvested.isEmpty()) {
 					pendingCrops.addAll(harvested);
@@ -329,7 +329,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	}
 
 	@Override
-	public int getExtents(HorizontalDirection direction, BlockPos pos) {
+	public int getExtents(Direction direction, BlockPos pos) {
 		if (!lastExtents.contains(direction, pos)) {
 			lastExtents.put(direction, pos, 0);
 			return 0;
@@ -339,12 +339,12 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	}
 
 	@Override
-	public void setExtents(HorizontalDirection direction, BlockPos pos, int extend) {
+	public void setExtents(Direction direction, BlockPos pos, int extend) {
 		lastExtents.put(direction, pos, extend);
 	}
 
 	@Override
-	public void cleanExtents(HorizontalDirection direction) {
+	public void cleanExtents(Direction direction) {
 		lastExtents.row(direction).clear();
 	}
 }

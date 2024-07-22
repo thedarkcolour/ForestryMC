@@ -27,6 +27,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.ITreekeepingMode;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
@@ -38,7 +39,7 @@ import forestry.arboriculture.worldgen.FeatureArboriculture;
 import forestry.core.worldgen.FeatureBase;
 
 public class TileSapling extends TileTreeContainer {
-	public static final ModelProperty<IAlleleTreeSpecies> TREE_SPECIES = new ModelProperty<>();
+	public static final ModelProperty<ITreeSpecies> TREE_SPECIES = new ModelProperty<>();
 
 	private int timesTicked = 0;
 

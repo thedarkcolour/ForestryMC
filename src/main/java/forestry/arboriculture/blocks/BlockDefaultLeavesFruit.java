@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.api.arboriculture.IFruitProvider;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
@@ -39,10 +39,10 @@ import forestry.core.utils.BlockUtil;
  * Similar to decorative leaves, but these will drop saplings and can be used for pollination.
  */
 public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
-	private final TreeDefinition definition;
+	private final ForestryLeafType leafType;
 
-	public BlockDefaultLeavesFruit(TreeDefinition definition) {
-		this.definition = definition;
+	public BlockDefaultLeavesFruit(ForestryLeafType leafType) {
+		this.leafType = leafType;
 	}
 
 	@Override
@@ -55,9 +55,9 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 			if (tree == null) {
 				return InteractionResult.FAIL;
 			}
-			IFruitProvider fruitProvider = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+			IFruit fruitProvider = tree.getGenome().getActiveValue(TreeChromosomes.FRUITS);
 			NonNullList<ItemStack> products = tree.produceStacks(level, pos, fruitProvider.getRipeningPeriod());
-			level.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(definition).defaultState()
+			level.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(leafType).defaultState()
 					.setValue(LeavesBlock.PERSISTENT, state.getValue(LeavesBlock.PERSISTENT))
 					.setValue(LeavesBlock.DISTANCE, state.getValue(LeavesBlock.DISTANCE)), Block.UPDATE_CLIENTS);
 			for (ItemStack fruit : products) {
@@ -86,32 +86,31 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 
 		// Add fruits
 		IGenome genome = tree.getGenome();
-		IFruitProvider fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+		IFruit fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 		if (fruitProvider.isFruitLeaf(genome, world, pos)) {
 			NonNullList<ItemStack> produceStacks = tree.produceStacks(world, pos, Integer.MAX_VALUE);
 			drops.addAll(produceStacks);
 		}
 	}
 
-	public TreeDefinition getDefinition() {
-		return this.definition;
+	public ForestryLeafType getLeafType() {
+		return this.leafType;
 	}
 
 	@Override
 	protected ITree getTree(BlockGetter world, BlockPos pos) {
-		return this.definition.createIndividual();
+		return this.leafType.getIndividual();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public int colorMultiplier(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex) {
-		IGenome genome = definition.getGenome();
 		if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
-			IFruitProvider fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
-			return fruitProvider.getDecorativeColor();
+			IFruit genome = leafType.getFruit();
+			return genome.getDecorativeColor();
 		}
 
-		ILeafSpriteProvider spriteProvider = genome.getActiveAllele(TreeChromosomes.SPECIES).getLeafSpriteProvider();
+		ILeafSpriteProvider spriteProvider = leafType.getLeafSpriteProvider();
 		return spriteProvider.getColor(false);
 	}
 }

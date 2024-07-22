@@ -13,17 +13,17 @@ package forestry.apiculture.gui;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
-import forestry.api.genetics.ISpeciesType;
+import forestry.api.ForestryCapabilities;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.inventory.ItemInventoryImprinter;
 import forestry.core.config.Constants;
@@ -33,15 +33,12 @@ import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.GeneticHelper;
-import genetics.api.organism.IIndividualCapability;
-
 public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 	private final ItemInventoryImprinter itemInventory;
 	private int startX;
 	private int startY;
 
-	private final Map<String, ItemStack> iconStacks = new HashMap<>();
+	private final Map<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
 
 	public GuiImprinter(ContainerImprinter container, Inventory inventoryplayer, Component title) {
 		super(Constants.TEXTURE_PATH_GUI + "/imprinter.png", container, inventoryplayer, title);
@@ -52,28 +49,26 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 
 		NonNullList<ItemStack> beeList = NonNullList.create();
 		ApicultureItems.BEE_DRONE.item().addCreativeItems(beeList, false);
-		for (ItemStack beeStack : beeList) {
-			IIndividualCapability<?> organism = GeneticHelper.getOrganism(beeStack);
-			if (organism.isEmpty()) {
-				continue;
-			}
-			IAlleleBeeSpecies species = organism.getAllele(BeeChromosomes.SPECIES, true);
-			iconStacks.put(species.getId().toString(), beeStack);
+		for (ItemStack stack : beeList) {
+			stack.getCapability(ForestryCapabilities.INDIVIDUAL).ifPresent(individual -> {
+				IBeeSpecies species = individual.getGenome().getActiveValue(BeeChromosomes.SPECIES);
+				iconStacks.put(species.id(), stack);
+			});
 		}
 	}
 
 	@Override
-	protected void renderBg(PoseStack transform, float partialTicks, int mouseY, int mouseX) {
-		super.renderBg(transform, partialTicks, mouseY, mouseX);
+	protected void renderBg(PoseStack transform, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(transform, partialTicks, mouseX, mouseY);
 
 		int offset = (138 - getFontRenderer().width(Component.translatable("for.gui.imprinter"))) / 2;
 		getFontRenderer().draw(transform, Component.translatable("for.gui.imprinter"), startX + 8 + offset, startY + 16, ColourProperties.INSTANCE.get("gui.screen"));
 
-		IAlleleBeeSpecies primary = itemInventory.getPrimary();
+		IBeeSpecies primary = itemInventory.getPrimary();
 		drawBeeSpeciesIcon(transform, primary, startX + 12, startY + 32);
 		getFontRenderer().draw(transform, primary.getDisplayName().getString(), startX + 32, startY + 36, ColourProperties.INSTANCE.get("gui.screen"));
 
-		IAlleleBeeSpecies secondary = itemInventory.getSecondary();
+		IBeeSpecies secondary = itemInventory.getSecondary();
 		drawBeeSpeciesIcon(transform, secondary, startX + 12, startY + 52);
 		getFontRenderer().draw(transform, secondary.getDisplayName().getString(), startX + 32, startY + 56, ColourProperties.INSTANCE.get("gui.screen"));
 
@@ -83,8 +78,8 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 
 	}
 
-	private void drawBeeSpeciesIcon(PoseStack transform, IAlleleBeeSpecies bee, int x, int y) {
-		GuiUtil.drawItemStack(transform, this, iconStacks.get(bee.getId().toString()), x, y);
+	private void drawBeeSpeciesIcon(PoseStack transform, IBeeSpecies bee, int x, int y) {
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(bee.id()), x, y);
 	}
 
 	private static int getHabitatSlotAtPosition(double i, double j) {
@@ -144,6 +139,5 @@ public class GuiImprinter extends GuiForestry<ContainerImprinter> {
 
 	@Override
 	protected void addLedgers() {
-
 	}
 }

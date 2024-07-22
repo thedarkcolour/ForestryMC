@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
+import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IGenome;
 
 import forestry.api.apiculture.IApiaristTracker;
@@ -20,10 +21,10 @@ import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 
 // todo reimplement beekeeping mode
-public interface IBeeSpeciesType extends IForestrySpeciesType<IBee> {
+public interface IBeeSpeciesType extends ISpeciesType<IBeeSpecies> {
 
 	/* BREEDING TRACKER */
 

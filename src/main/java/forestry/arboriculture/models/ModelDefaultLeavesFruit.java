@@ -76,7 +76,7 @@ public class ModelDefaultLeavesFruit extends ModelBlockCached<BlockDefaultLeaves
 		Block block = Block.byItem(stack.getItem());
 		Preconditions.checkArgument(block instanceof BlockDefaultLeavesFruit, "ItemStack must be for default fruit leaves.");
 		BlockDefaultLeavesFruit bBlock = (BlockDefaultLeavesFruit) block;
-		return new Key(bBlock.getDefinition(), Proxies.render.fancyGraphicsEnabled());
+		return new Key(bBlock.getLeafType(), Proxies.render.fancyGraphicsEnabled());
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ModelDefaultLeavesFruit extends ModelBlockCached<BlockDefaultLeaves
 		Block block = state.getBlock();
 		Preconditions.checkArgument(block instanceof BlockDefaultLeavesFruit, "state must be for default fruit leaves.");
 		BlockDefaultLeavesFruit bBlock = (BlockDefaultLeavesFruit) block;
-		return new ModelDefaultLeavesFruit.Key(bBlock.getDefinition(), Proxies.render.fancyGraphicsEnabled());
+		return new ModelDefaultLeavesFruit.Key(bBlock.getLeafType(), Proxies.render.fancyGraphicsEnabled());
 	}
 
 	@Override

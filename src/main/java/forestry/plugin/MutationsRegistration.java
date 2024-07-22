@@ -41,6 +41,7 @@ public class MutationsRegistration implements IMutationsRegistration {
 	public IMutationBuilder get(ResourceLocation firstParent, ResourceLocation secondParent) {
 		Preconditions.checkArgument(!firstParent.equals(secondParent), "Cannot have a mutation between two of the same species.");
 
+		mutations
 	}
 
 	private record MutationPair(ResourceLocation first, ResourceLocation second) {

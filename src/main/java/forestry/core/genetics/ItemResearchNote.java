@@ -34,29 +34,21 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.ISpecies;
 import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.items.ItemForestry;
 
-import genetics.api.GeneticsAPI;
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IAlleleSpecies;
-import genetics.api.individual.IIndividual;
 import forestry.api.genetics.IMutation;
-
-import forestry.api.genetics.ISpeciesType;
-import genetics.api.root.SpeciesType;
-import genetics.utils.AlleleUtils;
 
 public class ItemResearchNote extends ItemForestry {
 
-	private static final String NBT_ALLELE_FIRST = "AL0";
-	private static final String NBT_ALLELE_SECOND = "AL1";
-	private static final String NBT_ALLELE_RESULT = "RST";
-	private static final String NBT_ROOT = "ROT";
+	private static final String PARENT_0_KEY = "P0";
+	private static final String PARENT_1_KEY = "P1";
+	private static final String RESULT_KEY = "RS";
+	private static final String TYPE_KEY = "ROT";
 
-	private static final String NBT_RESEARCHER = "RES";
+	private static final String RESEARCHER_KEY = "RES";
 	private static final String NBT_TYPE = "TYP";
 	private static final String NBT_INNER = "INN";
 
@@ -66,23 +58,22 @@ public class ItemResearchNote extends ItemForestry {
 		public static final EnumNoteType[] VALUES = values();
 
 		@Nullable
-		private static IMutation getEncodedMutation(ISpeciesType<?> root, CompoundTag compound) {
-			IAllele allele0 = AlleleUtils.getAllele(compound.getString(NBT_ALLELE_FIRST));
-			IAllele allele1 = AlleleUtils.getAllele(compound.getString(NBT_ALLELE_SECOND));
-			if (allele0 == null || allele1 == null) {
+		private static IMutation<?> getEncodedMutation(ISpeciesType<?> type, CompoundTag compound) {
+			ISpecies<?> parent0 = AlleleUtil.getSpecies(type, compound, PARENT_0_KEY);
+			ISpecies<?> parent1 = AlleleUtil.getSpecies(type, compound, PARENT_1_KEY);
+			if (parent0 == null || parent1 == null) {
 				return null;
 			}
 
-			IAllele result = null;
-			if (compound.contains(NBT_ALLELE_RESULT)) {
-				result = AlleleUtils.getAllele(compound.getString(NBT_ALLELE_RESULT));
+			ISpecies<?> result = null;
+			if (compound.contains(RESULT_KEY)) {
+				result = AlleleUtil.getSpecies(type, compound, RESULT_KEY);
 			}
 
-			IMutation encoded = null;
-			for (IMutation mutation : root.getCombinations(allele0)) {
-				if (mutation.isPartner(allele1)) {
-					if (result == null
-						|| mutation.getTemplate()[0].id().equals(result.id())) {
+			IMutation<?> encoded = null;
+			for (IMutation<?> mutation : type.getMutations().getMutationsFrom(parent0)) {
+				if (mutation.isPartner(parent1)) {
+					if (result == null || mutation.getResult().id().equals(result.id())) {
 						encoded = mutation;
 						break;
 					}
@@ -105,7 +96,7 @@ public class ItemResearchNote extends ItemForestry {
 					return tooltips;
 				}
 
-				IMutation encoded = getEncodedMutation(root, compound);
+				IMutation<?> encoded = getEncodedMutation(root, compound);
 				if (encoded == null) {
 					return tooltips;
 				}
@@ -114,7 +105,7 @@ public class ItemResearchNote extends ItemForestry {
 				Component species2 = Component.literal("'").append(encoded.getSecondParent().getDisplayName()).append("'").withStyle(ChatFormatting.YELLOW);
 				String mutationChanceKey = EnumMutateChance.rateChance(encoded.getBaseChance()).toString().toLowerCase(Locale.ENGLISH);
 				Component mutationChance = Component.translatable("for.researchNote.chance." + mutationChanceKey).withStyle(ChatFormatting.BLUE);
-				Component speciesResult = encoded.getResultingSpecies().getDisplayName().copy().withStyle(ChatFormatting.LIGHT_PURPLE);
+				Component speciesResult = encoded.getResult().getDisplayName().copy().withStyle(ChatFormatting.LIGHT_PURPLE);
 
 				tooltips.add(Component.translatable("for.researchNote.discovery.0"));
 				tooltips.add(Component.translatable("for.researchNote.discovery.1", species1, species2).withStyle(ChatFormatting.GRAY));
@@ -127,10 +118,10 @@ public class ItemResearchNote extends ItemForestry {
 					}
 				}
 			} else if (this == SPECIES) {
-				IAlleleForestrySpecies alleleFirst = AlleleUtils.getAllele(compound.getString(NBT_ALLELE_FIRST));
+				IAlleleForestrySpecies alleleFirst = AlleleUtils.getAllele(compound.getString(PARENT_0_KEY));
 
 				if (alleleFirst != null) {
-					SpeciesType<?> root = GeneticsAPI.apiInstance.getRoot(compound.getString(NBT_ROOT));
+					SpeciesType<?> root = GeneticsAPI.apiInstance.getRoot(compound.getString(TYPE_KEY));
 
 					if (root != null) {
 						tooltips.add(Component.translatable("researchNote.discovered.0"));
@@ -158,15 +149,15 @@ public class ItemResearchNote extends ItemForestry {
 					return false;
 				}
 
-				IBreedingTracker tracker = ((IForestrySpeciesType) encoded.getType()).getBreedingTracker(level, player.getGameProfile());
+				IBreedingTracker tracker = ((ISpeciesType) encoded.getType()).getBreedingTracker(level, player.getGameProfile());
 				if (tracker.isResearched(encoded)) {
 					player.sendSystemMessage(Component.translatable("for.chat.cannotmemorizeagain"));
 					return false;
 				}
 
-				IAlleleSpecies speciesFirst = encoded.getFirstParent();
-				IAlleleSpecies speciesSecond = encoded.getSecondParent();
-				IAlleleSpecies speciesResult = encoded.getResultingSpecies();
+				ISpecies<?> speciesFirst = encoded.getFirstParent();
+				ISpecies<?> speciesSecond = encoded.getSecondParent();
+				ISpecies<?> speciesResult = encoded.getResult();
 
 				tracker.registerSpecies(speciesFirst);
 				tracker.registerSpecies(speciesSecond);
@@ -189,10 +180,10 @@ public class ItemResearchNote extends ItemForestry {
 
 		public static ResearchNote createMutationNote(GameProfile researcher, IMutation mutation) {
 			CompoundTag compound = new CompoundTag();
-			compound.putString(NBT_ROOT, mutation.getType().id());
-			compound.putString(NBT_ALLELE_FIRST, mutation.getFirstParent().getId().toString());
-			compound.putString(NBT_ALLELE_SECOND, mutation.getSecondParent().getId().toString());
-			compound.putString(NBT_ALLELE_RESULT, mutation.getResultingSpecies().getId().toString());
+			compound.putString(TYPE_KEY, mutation.getType().id());
+			compound.putString(PARENT_0_KEY, mutation.getFirstParent().getId().toString());
+			compound.putString(PARENT_1_KEY, mutation.getSecondParent().getId().toString());
+			compound.putString(RESULT_KEY, mutation.getResult().getId().toString());
 			return new ResearchNote(researcher, MUTATION, compound);
 		}
 
@@ -207,8 +198,8 @@ public class ItemResearchNote extends ItemForestry {
 
 		public static ResearchNote createSpeciesNote(GameProfile researcher, IAlleleForestrySpecies species) {
 			CompoundTag compound = new CompoundTag();
-			compound.putString(NBT_ROOT, species.getSpecies().getId());
-			compound.putString(NBT_ALLELE_FIRST, species.getId().toString());
+			compound.putString(TYPE_KEY, species.getSpecies().getId());
+			compound.putString(PARENT_0_KEY, species.getId().toString());
 			return new ResearchNote(researcher, SPECIES, compound);
 		}
 
@@ -237,8 +228,8 @@ public class ItemResearchNote extends ItemForestry {
 
 		public ResearchNote(@Nullable CompoundTag compound) {
 			if (compound != null) {
-				if (compound.contains(NBT_RESEARCHER)) {
-					this.researcher = NbtUtils.readGameProfile(compound.getCompound(NBT_RESEARCHER));
+				if (compound.contains(RESEARCHER_KEY)) {
+					this.researcher = NbtUtils.readGameProfile(compound.getCompound(RESEARCHER_KEY));
 				} else {
 					this.researcher = null;
 				}
@@ -255,7 +246,7 @@ public class ItemResearchNote extends ItemForestry {
 			if (this.researcher != null) {
 				CompoundTag nbt = new CompoundTag();
 				NbtUtils.writeGameProfile(nbt, researcher);
-				compound.put(NBT_RESEARCHER, nbt);
+				compound.put(RESEARCHER_KEY, nbt);
 			}
 			compound.putByte(NBT_TYPE, (byte) type.ordinal());
 			compound.put(NBT_INNER, inner);

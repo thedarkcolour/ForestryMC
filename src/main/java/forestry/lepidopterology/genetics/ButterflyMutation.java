@@ -22,7 +22,7 @@ import forestry.api.lepidopterology.genetics.IButterflyMutation;
 import forestry.api.lepidopterology.genetics.IButterflyMutationBuilder;
 import forestry.core.genetics.mutations.Mutation;
 
-public class ButterflyMutation extends Mutation implements IButterflyMutation, IButterflyMutationBuilder {
+public class ButterflyMutation extends Mutation implements IButterflyMutation {
 
 	protected ButterflyMutation(IAlleleForestrySpecies species0, IAlleleForestrySpecies species1, IAllele[] template, int chance) {
 		super(species0, species1, template, chance);

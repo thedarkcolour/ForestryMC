@@ -1,6 +1,8 @@
 package forestry.api.genetics.filter;
 
 import genetics.api.individual.IIndividual;
+
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpeciesType;
 

@@ -39,10 +39,6 @@ public class AIButterflyPollinate extends AIButterflyInteract {
 			return false;
 		}
 
-		if (!entity.getButterfly().getGenome().getActiveAllele(ButterflyChromosomes.FLOWER_TYPE).getProvider().isAcceptedPollinatable(entity.level, checkPollinatable)) {
-			return false;
-		}
-
 		return entity.getPollen() == null || checkPollinatable.canMateWith(entity.getPollen());
 	}
 

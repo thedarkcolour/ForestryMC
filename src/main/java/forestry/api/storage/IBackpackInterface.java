@@ -12,7 +12,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.INamedValue;
 
 /**
@@ -40,7 +40,7 @@ public interface IBackpackInterface {
 	Item createBackpack(IBackpackDefinition definition, EnumBackpackType type);
 
 	/**
-	 * Create a backpack that can hold items from a specific {@link IForestrySpeciesType}.
+	 * Create a backpack that can hold items from a specific {@link ISpeciesType}.
 	 *
 	 * @param definition The backpack definition.
 	 * @param rootUid    The species root.
@@ -50,7 +50,7 @@ public interface IBackpackInterface {
 	Item createNaturalistBackpack(IBackpackDefinition definition, String rootUid, CreativeModeTab tab);
 
 	/**
-	 * Makes a new naturalist backpack filter. Only accepts items from a specific {@link IForestrySpeciesType}.
+	 * Makes a new naturalist backpack filter. Only accepts items from a specific {@link ISpeciesType}.
 	 * Useful for implementing {@link IBackpackDefinition} for naturalist's backpacks.
 	 *
 	 * @param speciesRootUid The species root's unique ID. See {@link INamedValue#id(boolean)}.

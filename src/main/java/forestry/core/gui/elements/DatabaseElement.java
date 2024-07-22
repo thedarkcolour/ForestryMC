@@ -209,8 +209,8 @@ public class DatabaseElement extends ContainerElement {
 	}
 
 	public void addSpeciesLine(String firstText, @Nullable String secondText, IChromosome chromosome) {
-		/*IAlleleSpecies primary = individual.getGenome().getPrimary();
-		IAlleleSpecies secondary = individual.getGenome().getSecondary();
+		/*ISpecies<?> primary = individual.getGenome().getPrimary();
+		ISpecies<?> secondary = individual.getGenome().getSecondary();
 
 		textLayout.drawLine(text0, textLayout.column0);
 		int columnwidth = textLayout.column2 - textLayout.column1 - 2;

@@ -14,7 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.ILepidopteristTracker;
@@ -44,7 +44,7 @@ public class LepidopteristTracker extends BreedingTracker implements ILepidopter
 
 	@Override
 	protected ResourceLocation getSpeciesId() {
-		return ForestrySpeciesType.BUTTERFLY;
+		return ForestrySpeciesTypes.BUTTERFLY;
 	}
 
 	@Override

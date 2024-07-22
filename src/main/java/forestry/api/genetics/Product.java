@@ -6,8 +6,23 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.Hash;
+
 public record Product(Item item, int count, @Nullable CompoundTag nbt, float chance) {
-	public ItemStack getStack() {
+	// Hash for quick de-duping
+	public static final Hash.Strategy<Product> ITEM_ONLY_STRATEGY = new Hash.Strategy<>() {
+		@Override
+		public int hashCode(Product o) {
+			return o.item.hashCode();
+		}
+
+		@Override
+		public boolean equals(Product a, Product b) {
+			return a.item == b.item;
+		}
+	};
+
+	public ItemStack createStack() {
 		ItemStack stack = new ItemStack(item, count);
 		stack.setTag(nbt);
 		return stack;

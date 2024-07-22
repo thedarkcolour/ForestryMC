@@ -1,7 +1,7 @@
 package forestry.apiculture;
 
 import forestry.api.ForestryConstants;
-import forestry.api.apiculture.IBeeSpecies;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -12,9 +12,8 @@ import com.mojang.authlib.GameProfile;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.genetics.ForestryComponentKeys;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IResearchHandler;
-import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.Product;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.features.ApicultureItems;
@@ -33,7 +32,7 @@ import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticFactory;
 import genetics.api.IGeneticPlugin;
 
-import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.ISpecies<?>;
 
 import genetics.api.individual.IIndividual;
 import genetics.api.organism.IOrganismTypes;
@@ -47,18 +46,9 @@ public class BeePlugin implements IGeneticPlugin {
 
 	@Override
 	public void createRoot(IRootManager rootManager, IGeneticFactory geneticFactory) {
-		IIndividualRootBuilder<IBee> rootBuilder = rootManager.createRoot(ForestrySpeciesType.BEE);
+		IIndividualRootBuilder<IBee> rootBuilder = rootManager.createRoot(ForestrySpeciesTypes.BEE);
 		rootBuilder
-			.setRootFactory(BeeSpeciesType::new)
-			.setSpeciesType(BeeChromosomes.SPECIES)
-			.addListener(ComponentKeys.TYPES, (IOrganismTypes<IBee> builder) -> {
-				builder.registerType(BeeLifeStage.DRONE, ApicultureItems.BEE_DRONE::stack);
-				builder.registerType(BeeLifeStage.PRINCESS, ApicultureItems.BEE_PRINCESS::stack);
-				builder.registerType(BeeLifeStage.QUEEN, ApicultureItems.BEE_QUEEN::stack);
-				builder.registerType(BeeLifeStage.LARVAE, ApicultureItems.BEE_LARVAE::stack);
-			})
 			.addComponent(ComponentKeys.TRANSLATORS)
-			.addComponent(ComponentKeys.MUTATIONS)
 			.addComponent(ForestryComponentKeys.RESEARCH, ResearchHandler::new)
 			.addListener(ForestryComponentKeys.RESEARCH, (IResearchHandler<IBee> builder) -> builder.addPlugin(new IResearchPlugin<IBeeSpecies>() {
 				@Override
@@ -106,8 +96,8 @@ public class BeePlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		BeeManager.beeRoot = instance.getRoot(ForestrySpeciesType.BEE);
+		BeeManager.beeRoot = instance.getRoot(ForestrySpeciesTypes.BEE);
 
-		BeeDisplayHandler.init(DisplayHelper.getInstance());
+		BeeDisplayHandler.init(DisplayHelper.INSTANCE);
 	}
 }

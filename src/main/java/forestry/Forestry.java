@@ -209,7 +209,6 @@ public class Forestry {
 		}
 
 		@SubscribeEvent
-		@OnlyIn(Dist.CLIENT)
 		public void handleTextureRemap(TextureStitchEvent.Pre event) {
 			if (event.getAtlas().location() == InventoryMenu.BLOCK_ATLAS) {
 				((ForestryTextureManager) IForestryClientApi.INSTANCE.getTextureManager()).registerSprites(event::addSprite);

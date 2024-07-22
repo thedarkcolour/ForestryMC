@@ -1,12 +1,14 @@
 package forestry.api.plugin;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.genetics.ITaxonBuilder;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.IKaryotype;
 
 /**
  * Handles registration of genetic-related data. Accessed from {@link IForestryPlugin#registerGenetics(IGeneticRegistration)}.
@@ -14,6 +16,8 @@ import forestry.api.genetics.alleles.IChromosome;
 public interface IGeneticRegistration {
 	/**
 	 * Defines a new taxon under an existing parent. Taxa are displayed as classifications in the Forestry analyzer.
+	 * When defining a new tree of taxa, it is better to use {@link #defineTaxon(String, String, Consumer)}
+	 * instead of making repeated calls to this method.
 	 *
 	 * @param parent The name of the parent taxon.
 	 * @param name   The name of the taxon. Must be unique.
@@ -34,15 +38,19 @@ public interface IGeneticRegistration {
 
 	/**
 	 * Register a new type of species. Can only be called from {@link IForestryPlugin#registerGenetics}.
-	 * @param id The ID of the species.
+	 *
+	 * @param id          The ID of the species.
+	 * @param typeFactory The function to use to create the species type, given the completed karyotype.
 	 * @return A builder that can be used to define properties of the species.
 	 */
-	ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id);
+	ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id, Function<IKaryotype, ISpeciesType<?>> typeFactory, Consumer<IKaryotypeBuilder> karyotype);
 
 	/**
 	 * Modify an existing species, for example, adding an extra chromosome to bees, or adding additional permitted alleles to chromosomes.
-	 * @param id
-	 * @param action
+	 * Called after all species types are registered.
+	 *
+	 * @param id     The ID of the species to modify.
+	 * @param action The modifications to be made.
 	 */
 	void modifySpeciesType(ResourceLocation id, Consumer<ISpeciesTypeBuilder> action);
 }

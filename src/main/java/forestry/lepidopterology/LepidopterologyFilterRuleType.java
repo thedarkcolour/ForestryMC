@@ -74,7 +74,7 @@ public enum LepidopterologyFilterRuleType implements IFilterRuleType {
 	}
 
 	@Override
-	public String getRootUID() {
+	public ResourceLocation getSpeciesTypeId() {
 		return ButterflyManager.butterflyRoot.id();
 	}
 

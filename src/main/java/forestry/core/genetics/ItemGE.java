@@ -22,15 +22,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import forestry.api.ForestryCapabilities;
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ISpecies;
 import forestry.apiculture.DisplayHelper;
+import forestry.apiculture.genetics.IGeneticTooltipProvider;
 import forestry.core.config.Config;
 import forestry.core.items.ItemForestry;
 
-import genetics.api.GeneticHelper;
-import genetics.api.individual.IHasSecrets;
-import genetics.api.individual.IIndividual;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpeciesType;
 
@@ -39,7 +39,7 @@ public abstract class ItemGE extends ItemForestry {
 		super(properties.setNoRepair());
 	}
 
-	protected abstract IAlleleForestrySpecies getSpecies(ItemStack itemStack);
+	protected abstract ISpecies<?> getSpecies(ItemStack itemStack);
 
 	protected abstract ILifeStage getType();
 
@@ -67,20 +67,26 @@ public abstract class ItemGE extends ItemForestry {
 			return;
 		}
 
+		stack.getCapability(ForestryCapabilities.INDIVIDUAL).ifPresent(individual -> {
+			if (individual.isAnalyzed()) {
+				if (Screen.hasShiftDown()) {
+					ToolTip helper = new ToolTip();
+					for (IGeneticTooltipProvider<IIndividual> provider : DisplayHelper.INSTANCE.getTooltips(individual.getType().id(), organismType)) {
+						provider.addTooltip(helper, individual.getGenome(), individual);
+					}
+					if (helper.isEmpty()) {
+						individual.addTooltip(tooltip);
+					}
+					tooltip.addAll(helper.getLines());
+				} else {
+					tooltip.add(Component.translatable("for.gui.tooltip.tmi", "< %s >").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+				}
+			}
+		});
+
 		IIndividual individual = GeneticHelper.getIndividual(stack);
 		if (individual != null && individual.isAnalyzed()) {
-			if (Screen.hasShiftDown()) {
-				ToolTip helper = new ToolTip();
-				DisplayHelper.getInstance()
-						.getTooltips(individual.getRoot().id(), organismType)
-						.forEach(provider -> provider.addTooltip(helper, individual.getGenome(), individual));
-				if (helper.isEmpty()) {
-					individual.addTooltip(tooltip);
-				}
-				tooltip.addAll(helper.getLines());
-			} else {
-				tooltip.add(Component.translatable("for.gui.tooltip.tmi", "< %s >").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-			}
+
 		} else {
 			tooltip.add(Component.translatable("for.gui.unknown", "< %s >").withStyle(ChatFormatting.GRAY));
 		}

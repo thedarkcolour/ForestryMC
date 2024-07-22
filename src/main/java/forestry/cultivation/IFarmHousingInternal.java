@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmHousing;
@@ -20,7 +21,7 @@ public interface IFarmHousingInternal extends IFarmHousing, ILiquidTankTile {
 	@Override
 	IFarmInventoryInternal getFarmInventory();
 
-	void setUpFarmlandTargets(Map<HorizontalDirection, List<FarmTarget>> targets);
+	void setUpFarmlandTargets(Map<Direction, List<FarmTarget>> targets);
 
 	BlockPos getTopCoord();
 }

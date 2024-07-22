@@ -34,11 +34,13 @@ import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.IArmorNaturalist;
 import forestry.api.genetics.ICheckPollinatable;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.IPollinatableSpeciesType;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.lepidopterology.IButterflyNursery;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.arboriculture.capabilities.ArmorNaturalist;
 import forestry.core.genetics.ItemGE;
@@ -47,7 +49,7 @@ import forestry.core.tiles.TileUtil;
 import genetics.api.GeneticHelper;
 import genetics.api.GeneticsAPI;
 import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.ISpecies<?>;
 import forestry.api.genetics.alleles.IChromosome;
 import genetics.api.individual.IIndividual;
 import forestry.api.genetics.IMutation;
@@ -65,7 +67,7 @@ public class GeneticsUtil {
 			return "for.bees";
 		} else if (allele instanceof IAlleleTreeSpecies) {
 			return "for.trees";
-		} else if (allele instanceof IAlleleButterflySpecies) {
+		} else if (allele instanceof IButterflySpecies) {
 			return "for.butterflies";
 		}
 		throw new IllegalStateException();
@@ -251,15 +253,15 @@ public class GeneticsUtil {
 		return foreign;
 	}
 
-	public static int getResearchComplexity(IAlleleSpecies species, IChromosome speciesChromosome) {
+	public static int getResearchComplexity(ISpecies<?> species, IChromosome<?> speciesChromosome) {
 		return 1 + getGeneticAdvancement(species, new HashSet<>(), speciesChromosome);
 	}
 
-	private static int getGeneticAdvancement(IAlleleSpecies species, Set<IAlleleSpecies> exclude, IChromosome speciesChromosome) {
+	private static int getGeneticAdvancement(ISpecies<?> species, Set<ISpecies<?>> exclude, IChromosome speciesChromosome) {
 		int highest = 0;
 		exclude.add(species);
 
-		ISpeciesType<IIndividual> root = species.getSpecies().cast();
+		ISpeciesType<IIndividual> root = species.getType();
 		IMutationContainer<IIndividual, ? extends IMutation> container = root.getComponent(ComponentKeys.MUTATIONS);
 		for (IMutation mutation : container.getPaths(species, speciesChromosome)) {
 			highest = getHighestAdvancement(mutation.getFirstParent(), highest, exclude, speciesChromosome);
@@ -269,8 +271,8 @@ public class GeneticsUtil {
 		return 1 + highest;
 	}
 
-	private static int getHighestAdvancement(IAlleleSpecies mutationSpecies, int highest, Set<IAlleleSpecies> exclude, IChromosome speciesChromosome) {
-		if (exclude.contains(mutationSpecies) || AlleleUtils.isBlacklisted(mutationSpecies.getId().toString())) {
+	private static int getHighestAdvancement(ISpecies<?> mutationSpecies, int highest, Set<ISpecies<?>> exclude, IChromosome speciesChromosome) {
+		if (exclude.contains(mutationSpecies)) {
 			return highest;
 		}
 

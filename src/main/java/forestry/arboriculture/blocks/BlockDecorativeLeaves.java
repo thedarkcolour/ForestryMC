@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IForgeShearable;
 
-import forestry.api.arboriculture.IFruitProvider;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.TreeChromosomes;
@@ -29,9 +29,9 @@ import forestry.core.blocks.IColoredBlock;
 import forestry.core.utils.BlockUtil;
 
 public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForgeShearable {
-	private final TreeDefinition definition;
+	private final ForestryLeafType definition;
 
-	public BlockDecorativeLeaves(TreeDefinition definition) {
+	public BlockDecorativeLeaves(ForestryLeafType definition) {
 		super(Properties.of(Material.LEAVES)
 				.strength(0.2f)
 				.sound(SoundType.GRASS)
@@ -90,7 +90,7 @@ public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForg
 		IGenome genome = definition.getGenome();
 
 		if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
-			IFruitProvider fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+			IFruit fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 			return fruitProvider.getDecorativeColor();
 		}
 		ILeafSpriteProvider spriteProvider = genome.getActiveAllele(TreeChromosomes.SPECIES).getLeafSpriteProvider();

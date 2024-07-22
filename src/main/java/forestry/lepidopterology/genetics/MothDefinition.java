@@ -31,12 +31,10 @@ import forestry.api.ForestryConstants;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IAlleleButterflySpeciesBuilder;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflyMutationBuilder;
@@ -75,7 +73,7 @@ public enum MothDefinition implements IButterflyDefinition {
 		}
 	};
 
-	private final IAlleleButterflySpecies species;
+	private final IButterflySpecies species;
 	private final ButterflyBranchDefinition branch;
 
 	@Nullable
@@ -150,8 +148,8 @@ public enum MothDefinition implements IButterflyDefinition {
 	}
 
 	protected final IButterflyMutationBuilder registerMutation(IButterflyDefinition parent1, IButterflyDefinition parent2, int chance) {
-		IAlleleButterflySpecies species1;
-		IAlleleButterflySpecies species2;
+		IButterflySpecies species1;
+		IButterflySpecies species2;
 
 		if (parent1 instanceof MothDefinition) {
 			species1 = ((MothDefinition) parent1).species;

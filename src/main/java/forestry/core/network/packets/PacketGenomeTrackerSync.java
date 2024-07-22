@@ -21,7 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import forestry.api.core.ForestryEvent;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.genetics.BreedingTracker;
 import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
@@ -47,7 +47,7 @@ public record PacketGenomeTrackerSync(@Nullable CompoundTag nbt) implements IFor
 	public static void handle(PacketGenomeTrackerSync msg, Player player) {
 		if (msg.nbt != null) {
 			String type = msg.nbt.getString(BreedingTracker.TYPE_KEY);
-			IForestrySpeciesType<IIndividual> root = GeneticsAPI.apiInstance.getRoot(type);
+			ISpeciesType<IIndividual> root = GeneticsAPI.apiInstance.getRoot(type);
 
 			if (root != null) {
 				IBreedingTracker tracker = root.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());

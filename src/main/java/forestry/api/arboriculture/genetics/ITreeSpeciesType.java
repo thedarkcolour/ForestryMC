@@ -17,21 +17,26 @@ import net.minecraft.world.level.Level;
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.arboriculture.IArboristTracker;
-import forestry.api.arboriculture.IFruitProvider;
 import forestry.api.arboriculture.ILeafTickHandler;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.ITreekeepingMode;
+import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.IPollinatableSpeciesType;
 
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.ISpeciesType;
 
-public interface ITreeSpeciesType extends IPollinatableSpeciesType<ITree> {
+public interface ITreeSpeciesType extends ISpeciesType<ITreeSpecies> {
 
 	/**
 	 * @return {@link IArboristTracker} associated with the passed world.
 	 */
 	@Override
-	IArboristTracker getBreedingTracker(LevelAccessor world, @Nullable GameProfile player);
+	IBreedingTracker<ITreeSpecies> getBreedingTracker(LevelAccessor world, @Nullable GameProfile player);
 
 	/* TREE SPECIFIC */
 
@@ -69,5 +74,10 @@ public interface ITreeSpeciesType extends IPollinatableSpeciesType<ITree> {
 
 	void setTreekeepingMode(LevelAccessor world, ITreekeepingMode mode);
 
-	Collection<IFruitProvider> getFruitProvidersForFruitFamily(IFruitFamily fruitFamily);
+	Collection<IFruit> getFruitProvidersForFruitFamily(IFruitFamily fruitFamily);
+
+	ICheckPollinatable createPollinatable(IIndividual individual);
+
+	@Nullable
+	IPollinatable tryConvertToPollinatable(@Nullable GameProfile owner, Level world, final BlockPos pos, final IIndividual pollen);
 }

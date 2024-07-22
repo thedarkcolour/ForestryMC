@@ -18,35 +18,32 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.state.BlockState;
 
+import forestry.api.climate.ClimateState;
 import forestry.api.climate.IClimateProvider;
-import forestry.api.core.HumidityType;
-import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.IValueAllele;
-import forestry.api.plugin.IMutationBuilder;
 import forestry.api.genetics.IMutationCondition;
 
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IMutation;
 
-public abstract class Mutation implements IMutation {
-	private final IValueAllele<ISpecies<?>> firstParent;
-	private final IValueAllele<ISpecies<?>> secondParent;
+public abstract class Mutation<S extends ISpecies<?>> implements IMutation<S> {
+	private final S firstParent;
+	private final S secondParent;
+	private final S result;
 	private final IAllele[] template;
 	private final int chance;
 
 	private final List<IMutationCondition> mutationConditions = new ArrayList<>();
 	private final List<Component> specialConditions = new ArrayList<>();
 
-	protected Mutation(IValueAllele<ISpecies<?>> firstParent, IValueAllele<ISpecies<?>> secondParent, IAllele[] template, int chance) {
+	protected Mutation(S firstParent, S secondParent, IAllele[] template, int chance) {
 		this.firstParent = firstParent;
 		this.secondParent = secondParent;
+		this.result = ((IValueAllele<S>) template[0]).value();
 		this.template = template;
 		this.chance = chance;
 	}
@@ -56,7 +53,7 @@ public abstract class Mutation implements IMutation {
 		return specialConditions;
 	}
 
-	protected float getChance(Level world, BlockPos pos, IAllele firstParent, IAllele secondParent, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate) {
+	protected float getChance(Level world, BlockPos pos, IAllele firstParent, IAllele secondParent, IGenome firstGenome, IGenome secondGenome, ClimateState climate) {
 		float mutationChance = chance;
 		for (IMutationCondition mutationCondition : mutationConditions) {
 			mutationChance *= mutationCondition.getChance(world, pos, firstParent, secondParent, firstGenome, secondGenome, climate);
@@ -68,18 +65,18 @@ public abstract class Mutation implements IMutation {
 	}
 
 	@Override
-	public ISpecies<?> getFirstParent() {
-		return firstParent;
+	public S getFirstParent() {
+		return this.firstParent;
 	}
 
 	@Override
-	public IAlleleSpecies getSecondParent() {
-		return secondParent;
+	public S getSecondParent() {
+		return this.secondParent;
 	}
 
 	@Override
-	public IAlleleSpecies getResultingSpecies() {
-		return (IAlleleSpecies) template[0];
+	public S getResult() {
+		return this.result;
 	}
 
 	@Override
@@ -88,20 +85,15 @@ public abstract class Mutation implements IMutation {
 	}
 
 	@Override
-	public IAllele[] getTemplate() {
-		return template;
+	public boolean isPartner(ISpecies<?> other) {
+		return this.firstParent.id().equals(other.id()) || this.secondParent.id().equals(other.id());
 	}
 
 	@Override
-	public boolean isPartner(IAllele allele) {
-		return firstParent.getId().equals(allele.id()) || secondParent.getId().equals(allele.id());
-	}
-
-	@Override
-	public IAllele getPartner(IAllele allele) {
-		if (firstParent.getId().equals(allele.id())) {
+	public ISpecies<?> getPartner(ISpecies<?> allele) {
+		if (firstParent.id().equals(allele.id())) {
 			return secondParent;
-		} else if (secondParent.getId().equals(allele.id())) {
+		} else if (secondParent.id().equals(allele.id())) {
 			return firstParent;
 		} else {
 			throw new IllegalArgumentException("Tried to get partner for allele that is not part of this mutation.");
@@ -110,7 +102,7 @@ public abstract class Mutation implements IMutation {
 
 	@Override
 	public boolean isSecret() {
-		return isSecret;
+		return this.result.isSecret();
 	}
 
 	@Override

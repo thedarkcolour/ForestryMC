@@ -4,12 +4,14 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.util.StringRepresentable;
 
-import forestry.api.arboriculture.IFruitProvider;
+import forestry.api.IForestryApi;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
@@ -135,7 +137,7 @@ public enum FarmDefinition implements StringRepresentable {
 			ITreeSpeciesType treeRoot = TreeManager.treeRoot;
 			if (treeRoot != null) {
 				for (ITree tree : treeRoot.getIndividualTemplates()) {
-					IFruitProvider fruitProvider = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+					IFruit fruitProvider = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 					if (fruitProvider != AlleleFruits.fruitNone.getProvider()) {
 						properties.addSeedlings(treeRoot.getTypes().createStack(tree, TreeLifeStage.SAPLING))
 							.addProducts(fruitProvider.getProducts().getPossibleStacks())
@@ -171,20 +173,12 @@ public enum FarmDefinition implements StringRepresentable {
 				return ItemStack.EMPTY;
 			});
 		}
-	},
-	ORCHID("orchid", EnumElectronTube.ORCHID, FarmLogicOrchard::new, ForestryModuleUids.EXTRA_UTILITIES){
-		@Override
-		protected void initProperties(IFarmPropertiesBuilder properties) {
-			properties.setFertilizer(20)
-				.setWater(0)
-				.setIcon(()->PluginExtraUtilities.orchidStack);
-		}
 	}*/;
 
 	private final String name;
 	private final EnumElectronTube tube;
 	protected final IFarmProperties properties;
-	private final String module;
+	private final ResourceLocation module;
 	private final ICircuit managed;
 	private final ICircuit manual;
 
@@ -192,9 +186,9 @@ public enum FarmDefinition implements StringRepresentable {
 		this(identifier, tube, factory, ForestryModuleIds.FARMING);
 	}
 
-	FarmDefinition(String identifier, EnumElectronTube tube, BiFunction<IFarmProperties, Boolean, IFarmLogic> factory, String module) {
+	FarmDefinition(String identifier, EnumElectronTube tube, BiFunction<IFarmProperties, Boolean, IFarmLogic> factory, ResourceLocation module) {
 		String camelCase = WordUtils.capitalize(identifier);
-		IFarmPropertiesBuilder builder = ForestryFarmRegistry.INSTANCE.getPropertiesBuilder(identifier)
+		IFarmPropertiesBuilder builder = IForestryApi.INSTANCE.getFarmRegistry().getPropertiesBuilder(identifier)
 			.setFactory(factory)
 			.setTranslationKey("for.farm." + identifier)
 			.addFarmables("farm" + camelCase);

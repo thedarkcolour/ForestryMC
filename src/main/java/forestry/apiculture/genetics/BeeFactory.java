@@ -16,7 +16,7 @@ import forestry.api.genetics.ITaxon;
 
 import forestry.api.apiculture.genetics.IAlleleBeeSpeciesBuilder;
 import forestry.api.apiculture.genetics.IBeeFactory;
-import forestry.apiculture.genetics.alleles.AlleleBeeSpecies;
+import forestry.apiculture.genetics.effects.AlleleBeeSpecies;
 
 public class BeeFactory implements IBeeFactory {
 	@Override

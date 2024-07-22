@@ -12,6 +12,7 @@ package forestry.farming.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,9 +32,9 @@ import forestry.farming.multiblock.IFarmControllerInternal;
 public class FarmLogicSlot extends Widget {
 
 	private final IFarmControllerInternal farmController;
-	private final HorizontalDirection farmDirection;
+	private final Direction farmDirection;
 
-	public FarmLogicSlot(IFarmControllerInternal farmController, WidgetManager manager, int xPos, int yPos, HorizontalDirection farmDirection) {
+	public FarmLogicSlot(IFarmControllerInternal farmController, WidgetManager manager, int xPos, int yPos, Direction farmDirection) {
 		super(manager, xPos, yPos);
 		this.farmController = farmController;
 		this.farmDirection = farmDirection;

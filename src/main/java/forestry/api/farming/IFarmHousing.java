@@ -7,6 +7,7 @@ package forestry.api.farming;
 
 import java.util.Collection;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -70,7 +71,7 @@ public interface IFarmHousing extends IErrorLogicSource, IExtentCache {
 	 *
 	 * @return true if planting was successful, false otherwise.
 	 */
-	boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, HorizontalDirection direction);
+	boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, Direction direction);
 
 	default boolean isValidPlatform(Level world, BlockPos pos) {
 		return false;
@@ -117,14 +118,14 @@ public interface IFarmHousing extends IErrorLogicSource, IExtentCache {
 	 * @param direction The direction of the farm to be set
 	 * @param logic     The farm logic that direction should be set to
 	 */
-	void setFarmLogic(HorizontalDirection direction, IFarmLogic logic);
+	void setFarmLogic(Direction direction, IFarmLogic logic);
 
 	/**
 	 * Resets the farm logic off the given direction to the default logic (ARBOREAL).
 	 *
 	 * @param direction The direction to reset
 	 */
-	void resetFarmLogic(HorizontalDirection direction);
+	void resetFarmLogic(Direction direction);
 
 	/**
 	 * Receives the logic of the given direction.
@@ -132,7 +133,7 @@ public interface IFarmHousing extends IErrorLogicSource, IExtentCache {
 	 * @param direction The direction of the logic to get.
 	 * @return The logic that is located on this side of the farm.
 	 */
-	IFarmLogic getFarmLogic(HorizontalDirection direction);
+	IFarmLogic getFarmLogic(Direction direction);
 
 	/**
 	 * Receives a collection with all logics of this farm.

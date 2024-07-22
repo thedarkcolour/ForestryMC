@@ -21,7 +21,7 @@ import forestry.core.ClientsideCode;
 public enum BreedingTrackerManager implements IBreedingTrackerManager {
 	INSTANCE;
 
-	static final Map<String, IBreedingTrackerHandler> factories = new LinkedHashMap<>();
+	static final Map<ResourceLocation, IBreedingTrackerHandler> factories = new LinkedHashMap<>();
 
 	private static final SidedHandler BREEDING_HANDLER = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newBreedingHandler() : new ServerBreedingHandler();
 

@@ -5,8 +5,6 @@
  ******************************************************************************/
 package forestry.api.genetics;
 
-import genetics.api.individual.IIndividual;
-
 /**
  * Can be implemented by tile entities, if they wish to be pollinatable.
  *

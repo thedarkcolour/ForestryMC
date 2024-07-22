@@ -18,9 +18,10 @@ import net.minecraft.world.level.Level;
 import forestry.api.genetics.IIndividualLiving;
 
 import forestry.api.genetics.IGenome;
-import genetics.api.individual.Individual;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 
-public abstract class IndividualLiving extends Individual implements IIndividualLiving {
+public abstract class IndividualLiving<S extends ISpecies<?>, T extends ISpeciesType<S>> extends Individual<S, T> implements IIndividualLiving {
 	private static final String NBT_HEALTH = "Health";
 	private static final String NBT_MAX_HEALTH = "MaxH";
 
@@ -33,7 +34,8 @@ public abstract class IndividualLiving extends Individual implements IIndividual
 
 	protected IndividualLiving(IGenome genome, @Nullable IGenome mate, int newHealth) {
 		super(genome, mate);
-		health = maxHealth = newHealth;
+		this.health = newHealth;
+		this.maxHealth = newHealth;
 	}
 
 	protected IndividualLiving(CompoundTag nbt) {
@@ -80,7 +82,7 @@ public abstract class IndividualLiving extends Individual implements IIndividual
 	}
 
 	@Override
-	public void age(Level world, float lifespanModifier) {
+	public void age(Level level, float lifespanModifier) {
 
 		if (lifespanModifier < 0.001f) {
 			setHealth(0);
@@ -93,7 +95,7 @@ public abstract class IndividualLiving extends Individual implements IIndividual
 			decreaseHealth();
 			ageModifier--;
 		}
-		if (world.random.nextFloat() < ageModifier) {
+		if (level.random.nextFloat() < ageModifier) {
 			decreaseHealth();
 		}
 	}

@@ -5,10 +5,9 @@ import java.util.Locale;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.client.ForestrySprites;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
@@ -68,8 +67,8 @@ public enum ApicultureFilterRuleType implements IFilterRuleType {
 	}
 
 	@Override
-	public String getRootUID() {
-		return ForestrySpeciesType.BEE;
+	public ResourceLocation getSpeciesTypeId() {
+		return ForestrySpeciesTypes.BEE;
 	}
 
 	@Override

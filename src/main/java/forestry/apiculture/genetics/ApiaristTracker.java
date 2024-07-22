@@ -14,22 +14,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.genetics.IBeeSpeciesType;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.apiculture.genetics.IBeeSpecies;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.IMutationManager;
 import forestry.apiculture.ModuleApiculture;
 import forestry.core.genetics.BreedingTracker;
 
-import genetics.api.individual.IIndividual;
-import forestry.api.genetics.IMutation;
-import genetics.api.mutation.IMutationContainer;
-import genetics.api.root.components.ComponentKeys;
-
-public class ApiaristTracker extends BreedingTracker implements IApiaristTracker {
+public class ApiaristTracker extends BreedingTracker<IBeeSpecies> implements IApiaristTracker {
 	private int queensTotal = 0;
 	private int dronesTotal = 0;
 	private int princessesTotal = 0;
@@ -41,45 +37,41 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 		super(ModuleApiculture.beekeepingMode);
 	}
 
+	// todo get rid of this constructor and just call load
 	public ApiaristTracker(CompoundTag tag) {
 		super(ModuleApiculture.beekeepingMode, tag);
+	}
 
-		queensTotal = tag.getInt("QueensTotal");
-		princessesTotal = tag.getInt("PrincessesTotal");
-		dronesTotal = tag.getInt("DronesTotal");
+	@Override
+	protected void load(CompoundTag nbt) {
+		super.load(nbt);
+
+		this.queensTotal = nbt.getInt("QueensTotal");
+		this.princessesTotal = nbt.getInt("PrincessesTotal");
+		this.dronesTotal = nbt.getInt("DronesTotal");
 	}
 
 	@Override
 	public CompoundTag save(CompoundTag nbt) {
-		nbt.putInt("QueensTotal", queensTotal);
-		nbt.putInt("PrincessesTotal", princessesTotal);
-		nbt.putInt("DronesTotal", dronesTotal);
+		nbt.putInt("QueensTotal", this.queensTotal);
+		nbt.putInt("PrincessesTotal", this.princessesTotal);
+		nbt.putInt("DronesTotal", this.dronesTotal);
 
 		nbt = super.save(nbt);
 		return nbt;
 	}
 
 	@Override
-	public void registerPickup(IIndividual individual) {
-		IBeeSpeciesType speciesRoot = (IBeeSpeciesType) individual.getRoot();
-		if (!speciesRoot.id().equals(getSpeciesId())) {
-			return;
-		}
+	public void registerPickup(IBeeSpecies species) {
+		IMutationManager manager = IForestryApi.INSTANCE.getGeneticManager().getMutations(ForestrySpeciesTypes.BEE);
 
-		if (!individual.isPureBred(BeeChromosomes.SPECIES)) {
-			return;
+		if (manager.getMutationsFrom(species).isEmpty()) {
+			registerSpecies(species);
 		}
-
-		IMutationContainer<IBee, ? extends IMutation> container = speciesRoot.getComponent(ComponentKeys.MUTATIONS);
-		if (!container.getCombinations(individual.getGenome().getPrimarySpecies()).isEmpty()) {
-			return;
-		}
-
-		registerSpecies(individual.getGenome().getPrimarySpecies());
 	}
 
 	@Override
-	public void registerQueen(IIndividual bee) {
+	public void registerQueen(IBee bee) {
 		queensTotal++;
 	}
 
@@ -89,7 +81,7 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 	}
 
 	@Override
-	public void registerPrincess(IIndividual bee) {
+	public void registerPrincess(IBee bee) {
 		princessesTotal++;
 		registerBirth(bee);
 	}
@@ -100,7 +92,7 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 	}
 
 	@Override
-	public void registerDrone(IIndividual bee) {
+	public void registerDrone(IBee bee) {
 		dronesTotal++;
 		registerBirth(bee);
 	}
@@ -117,6 +109,6 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 
 	@Override
 	protected ResourceLocation getSpeciesId() {
-		return ForestrySpeciesType.BEE;
+		return ForestrySpeciesTypes.BEE;
 	}
 }

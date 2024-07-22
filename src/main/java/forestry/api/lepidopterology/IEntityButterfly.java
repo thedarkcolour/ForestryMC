@@ -9,8 +9,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.entity.PathfinderMob;
 
-import genetics.api.individual.IIndividual;
-
+import forestry.api.genetics.IIndividual;
 import forestry.api.lepidopterology.genetics.IButterfly;
 
 public interface IEntityButterfly {

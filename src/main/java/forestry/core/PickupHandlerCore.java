@@ -14,27 +14,18 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.api.ForestryCapabilities;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
-
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
 
 public class PickupHandlerCore {
-	public static void onItemPickup(Player player, ItemEntity itemEntity) {
-		ItemStack stack = itemEntity.getItem();
+	public static void onItemPickup(Player player, ItemEntity entity) {
+		ItemStack stack = entity.getItem();
 
 		if (!stack.isEmpty()) {
-			IForestrySpeciesType<IIndividual> root = RootUtils.getRoot(stack);
-			if (root != null) {
-				IIndividual individual = root.create(stack);
-
-				if (individual != null) {
-					IBreedingTracker tracker = root.getBreedingTracker(itemEntity.level, player.getGameProfile());
-					tracker.registerPickup(individual);
-				}
-			}
+			stack.getCapability(ForestryCapabilities.INDIVIDUAL).ifPresent(individual -> {
+				IBreedingTracker tracker = individual.getType().getBreedingTracker(entity.level, player.getGameProfile());
+				tracker.registerPickup(individual);
+			});
 		}
 	}
-
 }

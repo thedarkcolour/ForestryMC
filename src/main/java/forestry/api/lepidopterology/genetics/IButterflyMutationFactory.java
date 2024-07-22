@@ -19,5 +19,5 @@ public interface IButterflyMutationFactory {
 	 * @param chance           The chance that breeding the two parent butterfly's will result in this mutation
 	 * @return a new butterfly mutation.
 	 */
-	IButterflyMutationBuilder createMutation(IAlleleButterflySpecies parentButterfly0, IAlleleButterflySpecies parentButterfly1, IAllele[] result, int chance);
+	IButterflyMutationBuilder createMutation(IButterflySpecies parentButterfly0, IButterflySpecies parentButterfly1, IAllele[] result, int chance);
 }

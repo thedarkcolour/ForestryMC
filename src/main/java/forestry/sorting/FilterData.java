@@ -3,7 +3,7 @@ package forestry.sorting;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-import genetics.api.individual.IIndividual;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpeciesType;
 

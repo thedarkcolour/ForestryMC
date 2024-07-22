@@ -45,6 +45,7 @@ import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IIndividual;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.core.config.Constants;
@@ -53,10 +54,8 @@ import forestry.core.utils.NetworkUtil;
 
 import forestry.api.genetics.IGenome;
 
-import genetics.api.GeneticHelper;
-import genetics.api.individual.IIndividual;
 import forestry.api.genetics.ILifeStage;
-import genetics.organism.OrganismHandler;
+import forestry.core.utils.SpeciesUtil;
 
 public class BeekeepingLogic implements IBeekeepingLogic {
 	private static final int totalBreedingTime = Constants.APIARY_BREEDING_TIME;
@@ -92,34 +91,34 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	// / SAVING & LOADING
 	@Override
 	public void read(CompoundTag compoundNBT) {
-		beeProgress = compoundNBT.getInt("BreedingTime");
-		queenWorkCycleThrottle = compoundNBT.getInt("Throttle");
+		this.beeProgress = compoundNBT.getInt("BreedingTime");
+		this.queenWorkCycleThrottle = compoundNBT.getInt("Throttle");
 
 		if (compoundNBT.contains("queen")) {
 			CompoundTag queenNBT = compoundNBT.getCompound("queen");
-			queenStack = ItemStack.of(queenNBT);
-			queen = BeeManager.beeRoot.create(queenStack);
+			this.queenStack = ItemStack.of(queenNBT);
+			this.queen = BeeManager.beeRoot.create(queenStack);
 		}
 
 		setActive(compoundNBT.getBoolean("Active"));
 
-		hasFlowersCache.read(compoundNBT);
+		this.hasFlowersCache.read(compoundNBT);
 
-		ListTag nbttaglist = compoundNBT.getList("Offspring", 10);
-		for (int i = 0; i < nbttaglist.size(); i++) {
-			spawn.add(ItemStack.of(nbttaglist.getCompound(i)));
+		ListTag list = compoundNBT.getList("Offspring", 10);
+		for (int i = 0; i < list.size(); i++) {
+			this.spawn.add(ItemStack.of(list.getCompound(i)));
 		}
 	}
 
 	@Override
 	public CompoundTag write(CompoundTag compoundNBT) {
-		compoundNBT.putInt("BreedingTime", beeProgress);
-		compoundNBT.putInt("Throttle", queenWorkCycleThrottle);
+		compoundNBT.putInt("BreedingTime", this.beeProgress);
+		compoundNBT.putInt("Throttle", this.queenWorkCycleThrottle);
 
-		if (!queenStack.isEmpty()) {
-			CompoundTag queenNBT = new CompoundTag();
-			queenStack.save(queenNBT);
-			compoundNBT.put("queen", queenNBT);
+		if (!this.queenStack.isEmpty()) {
+			CompoundTag queenNbt = new CompoundTag();
+			this.queenStack.save(queenNbt);
+			compoundNBT.put("queen", queenNbt);
 		}
 
 		compoundNBT.putBoolean("Active", active);
@@ -430,20 +429,18 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	 * Creates the succeeding princess and between one and three drones.
 	 */
 	private static Collection<ItemStack> spawnOffspring(IBee queen, IBeeHousing beeHousing) {
-
-		Level world = beeHousing.getWorldObj();
-
+		Level level = beeHousing.getWorldObj();
 		Stack<ItemStack> offspring = new Stack<>();
-		IApiaristTracker breedingTracker = BeeManager.beeRoot.getBreedingTracker(world, beeHousing.getOwner());
+		IApiaristTracker breedingTracker = SpeciesUtil.BEE_TYPE.get().getBreedingTracker(level, beeHousing.getOwner());
 
 		// Princess
-		boolean secondPrincess = world.random.nextInt(10000) < ModuleApiculture.getSecondPrincessChance() * 100;
+		boolean secondPrincess = level.random.nextInt(10000) < ModuleApiculture.getSecondPrincessChance() * 100;
 		int count = secondPrincess ? 2 : 1;
 		while (count > 0) {
 			count--;
 			IBee heiress = queen.spawnPrincess(beeHousing);
 			if (heiress != null) {
-				ItemStack princess = BeeManager.beeRoot.getTypes().createStack(heiress, BeeLifeStage.PRINCESS);
+				ItemStack princess = SpeciesUtil.BEE_TYPE.get().createStack(heiress, BeeLifeStage.PRINCESS);
 				breedingTracker.registerPrincess(heiress);
 				offspring.push(princess);
 			}
@@ -549,20 +546,20 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 		public void doPollination(IBee queen, IBeeHousing beeHousing, IBeeListener beeListener) {
 			// Get pollen if none available yet
-			if (pollen == null) {
-				attemptedPollinations = 0;
-				pollen = queen.retrievePollen(beeHousing);
-				if (pollen != null) {
-					if (beeListener.onPollenRetrieved(pollen)) {
-						pollen = null;
+			if (this.pollen == null) {
+				this.attemptedPollinations = 0;
+				this.pollen = queen.retrievePollen(beeHousing);
+				if (this.pollen != null) {
+					if (beeListener.onPollenRetrieved(this.pollen)) {
+						this.pollen = null;
 					}
 				}
 			}
 
-			if (pollen != null) {
-				attemptedPollinations++;
-				if (queen.pollinateRandom(beeHousing, pollen) || attemptedPollinations >= MAX_POLLINATION_ATTEMPTS) {
-					pollen = null;
+			if (this.pollen != null) {
+				this.attemptedPollinations++;
+				if (queen.pollinateRandom(beeHousing, this.pollen) || this.attemptedPollinations >= MAX_POLLINATION_ATTEMPTS) {
+					this.pollen = null;
 				}
 			}
 		}

@@ -7,10 +7,10 @@ import genetics.api.alleles.IAlleleTemplate;
 import genetics.api.alleles.IAlleleTemplateBuilder;
 import forestry.api.genetics.alleles.IKaryotype;
 
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ForestryAlleles;
-import forestry.apiculture.genetics.alleles.AlleleEffects;
+import forestry.apiculture.genetics.effects.AlleleEffects;
 import forestry.core.genetics.alleles.FertilityAllele;
 import forestry.core.genetics.alleles.FlowerTypeAllele;
 import forestry.core.genetics.alleles.PollinationAllele;
@@ -24,7 +24,7 @@ public class BeeHelper {
 	}
 
 	public static IAlleleTemplateBuilder createTemplate() {
-		return ApiInstance.INSTANCE.getRoot(ForestrySpeciesType.BEE).getKaryotype().createTemplate();
+		return ApiInstance.INSTANCE.getRoot(ForestrySpeciesTypes.BEE).getKaryotype().createTemplate();
 	}
 
 	public static IAlleleTemplate createDefaultTemplate(IAlleleTemplateBuilder templateBuilder) {

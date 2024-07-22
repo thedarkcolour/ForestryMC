@@ -24,7 +24,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import forestry.api.ForestryTags;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.storage.IBackpackInterface;
 import forestry.core.config.Config;
@@ -36,8 +36,8 @@ public class ModuleBackpacks extends BlankForestryModule {
 	public static final IBackpackInterface BACKPACK_INTERFACE = new BackpackInterface();
 
 	// todo should there be an arborist backpack?
-	public static final BackpackDefinition APIARIST = new BackpackDefinition(new Color(0xc4923d), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(ForestrySpeciesType.BEE));
-	public static final BackpackDefinition LEPIDOPTERIST = new BackpackDefinition(new Color(0x995b31), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(ForestrySpeciesType.BUTTERFLY));
+	public static final BackpackDefinition APIARIST = new BackpackDefinition(new Color(0xc4923d), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(ForestrySpeciesTypes.BEE));
+	public static final BackpackDefinition LEPIDOPTERIST = new BackpackDefinition(new Color(0x995b31), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(ForestrySpeciesTypes.BUTTERFLY));
 	public static final BackpackDefinition MINER = new BackpackDefinition(new Color(0x36187d), Color.WHITE, new BackpackFilter(ForestryTags.Items.MINER_ALLOW, ForestryTags.Items.MINER_REJECT));
 	public static final BackpackDefinition DIGGER = new BackpackDefinition(new Color(0x363cc5), Color.WHITE, new BackpackFilter(ForestryTags.Items.DIGGER_ALLOW, ForestryTags.Items.DIGGER_REJECT));
 	public static final BackpackDefinition FORESTER = new BackpackDefinition(new Color(0x347427), Color.WHITE, new BackpackFilter(ForestryTags.Items.FORESTER_ALLOW, ForestryTags.Items.FORESTER_REJECT));

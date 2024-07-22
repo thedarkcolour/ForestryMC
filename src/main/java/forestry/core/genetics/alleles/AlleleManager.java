@@ -26,6 +26,7 @@ import forestry.api.genetics.alleles.IIntegerChromosome;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.IValueChromosome;
+import forestry.api.genetics.alleles.ValueAllele;
 
 import it.unimi.dsi.fastutil.floats.Float2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -96,21 +97,38 @@ public class AlleleManager implements IAlleleManager {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public <V> IValueAllele<V> valueAllele(V value, boolean dominant, IAlleleNaming<V> naming) {
 		Preconditions.checkNotNull(value, "Allele value must not be null.");
 
 		// Try to get existing by value first
-		IValueAllele<?> valueExisting = (dominant ? this.dominantValueAlleles : this.valueAlleles).get(value);
+		HashMap<?, IValueAllele<?>> valueToAlleleMap = (dominant ? this.dominantValueAlleles : this.valueAlleles);
+		IValueAllele<?> valueExisting = valueToAlleleMap.get(value);
 
 		if (valueExisting != null) {
 			return (IValueAllele<V>) valueExisting;
 		} else {
 			// Then try to get existing by name
 			ResourceLocation name = naming.getName(value, dominant);
+			IAllele byName = this.allelesByName.get(name);
 
-			if (!this.allelesByName.containsKey(name)) {
+			if (byName != null) {
+				if (byName instanceof IValueAllele<?> allele) {
+					if (allele.value() != value) {
+						throw new IllegalStateException("Tried to register two values with the same value allele ID: " + allele.value() + " and " + value + " under ID " + name);
+					} else {
+						return (IValueAllele<V>) allele;
+					}
+				} else {
+					throw new IllegalStateException("Tried to register a value allele with ID " + name + " but an allele was already registered with type " + byName.getClass());
+				}
+			} else {
+				// Create new allele
+				IValueAllele<V> allele = new ValueAllele<>(name, value, dominant);
+				((HashMap) valueToAlleleMap).put(value, allele);
+				this.allelesByName.put(name, allele);
 
+				return allele;
 			}
 		}
 	}

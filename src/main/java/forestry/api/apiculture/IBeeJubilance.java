@@ -5,6 +5,7 @@
  ******************************************************************************/
 package forestry.api.apiculture;
 
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.genetics.IGenome;
 
 public interface IBeeJubilance {

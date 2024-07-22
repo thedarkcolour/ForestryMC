@@ -18,6 +18,7 @@ import net.minecraftforge.client.model.data.ModelData;
 public abstract class ModelBlockCached<B extends Block, K> extends ModelBlockDefault<B, K> {
 	private static final Set<ModelBlockCached<?, ?>> CACHE_PROVIDERS = new HashSet<>();
 
+	// todo test performance of this. from my experience, Cache is slow.
 	private final Cache<K, BakedModel> inventoryCache;
 	private final Cache<K, BakedModel> worldCache;
 

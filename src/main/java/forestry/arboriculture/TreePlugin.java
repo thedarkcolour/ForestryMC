@@ -13,10 +13,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import forestry.api.arboriculture.IFruitProvider;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.genetics.ForestryComponentKeys;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.IResearchHandler;
 import forestry.api.genetics.alleles.TreeChromosomes;
@@ -58,34 +58,12 @@ import genetics.api.root.translator.IBlockTranslator;
 import genetics.api.root.translator.IIndividualTranslator;
 import genetics.api.root.translator.IItemTranslator;
 
-@GeneticPlugin(modId = ForestryConstants.MOD_ID)
 public class TreePlugin implements IGeneticPlugin {
-	@Override
-	public void registerClassifications(IClassificationRegistry registry) {
-		TreeBranchDefinition.registerBranches(registry);
-	}
-
-	@Override
-	public void registerListeners(IGeneticListenerRegistry registry) {
-		registry.add(ForestrySpeciesType.TREE, TreeDefinition.VALUES);
-	}
-
-	@Override
-	public void registerAlleles(IAlleleRegistry registry) {
-		registry.registerAlleles(HeightAllele.values(), TreeChromosomes.HEIGHT);
-		registry.registerAlleles(SaplingsAllele.values(), TreeChromosomes.SAPLINGS);
-		registry.registerAlleles(YieldAllele.values(), TreeChromosomes.YIELD);
-		registry.registerAlleles(FireproofAllele.values(), TreeChromosomes.FIREPROOF);
-		registry.registerAlleles(MaturationAllele.values(), TreeChromosomes.MATURATION);
-		registry.registerAlleles(SappinessAllele.values(), TreeChromosomes.SAPPINESS);
-		AlleleFruits.registerAlleles(registry);
-		LeafEffectAllele.registerAlleles(registry);
-	}
 
 	@Override
 	public void createRoot(IRootManager rootManager, IGeneticFactory geneticFactory) {
 		//TODO tags?
-		IIndividualRootBuilder<ITree> rootBuilder = rootManager.createRoot(ForestrySpeciesType.TREE);
+		IIndividualRootBuilder<ITree> rootBuilder = rootManager.createRoot(ForestrySpeciesTypes.TREE);
 		rootBuilder
 			.setRootFactory(TreeSpeciesType::new)
 			.setSpeciesType(TreeChromosomes.SPECIES)
@@ -105,8 +83,8 @@ public class TreePlugin implements IGeneticPlugin {
 
 					Collection<IFruitFamily> suitableFruit = treeSpecies.getSuitableFruit();
 					for (IFruitFamily fruitFamily : suitableFruit) {
-						Collection<IFruitProvider> fruitProviders = TreeManager.treeRoot.getFruitProvidersForFruitFamily(fruitFamily);
-						for (IFruitProvider fruitProvider : fruitProviders) {
+						Collection<IFruit> fruitProviders = TreeManager.treeRoot.getFruitProvidersForFruitFamily(fruitFamily);
+						for (IFruit fruitProvider : fruitProviders) {
 							IProductList products = fruitProvider.getProducts();
 							for (ItemStack stack : products.getPossibleStacks()) {
 								if (stack.sameItem(itemstack)) {
@@ -170,7 +148,7 @@ public class TreePlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		TreeManager.treeRoot = instance.<ITreeSpeciesType>getRoot(ForestrySpeciesType.TREE).get();
+		TreeManager.treeRoot = instance.<ITreeSpeciesType>getRoot(ForestrySpeciesTypes.TREE).get();
 
 		// Modes
 		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.easy);
@@ -179,6 +157,6 @@ public class TreePlugin implements IGeneticPlugin {
 		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.hardcore);
 		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.insane);
 
-		TreeDisplayHandler.init(DisplayHelper.getInstance());
+		TreeDisplayHandler.init(DisplayHelper.INSTANCE);
 	}
 }

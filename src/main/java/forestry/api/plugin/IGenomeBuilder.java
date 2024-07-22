@@ -1,6 +1,7 @@
 package forestry.api.plugin;
 
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IBooleanChromosome;
@@ -15,6 +16,12 @@ public interface IGenomeBuilder {
 	 */
 	default void set(IBooleanChromosome chromosome, boolean defaultAllele) {
 		set(chromosome, defaultAllele ? ForestryAlleles.TRUE : ForestryAlleles.FALSE);
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	default void setUnchecked(IChromosome chromosome, AllelePair allele) {
+		this.setActive(chromosome, allele.active());
+		this.setInactive(chromosome, allele.inactive());
 	}
 
 	/**

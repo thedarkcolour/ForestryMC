@@ -1,10 +1,12 @@
 package forestry.api.genetics.alleles;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 
-import forestry.api.genetics.IGenome;
 import forestry.core.genetics.Genome;
 
 /**
@@ -33,15 +35,18 @@ public interface IKaryotype {
 	 */
 	int size();
 
+	<A extends IAllele> boolean isChromosomeValid(IChromosome<A> chromosome);
+
+	<A extends IAllele> A getDefaultAllele(IChromosome<A> chromosome);
+
 	/**
-	 * Used to get a genome for an individual when the species is not known.
-	 * If you do know the species, use {@link forestry.api.genetics.ISpecies#getDefaultGenome} instead.
-	 *
-	 * @return The default genome for this species type.
+	 * @return The default species for this species type.
 	 */
-	IGenome getDefaultGenome();
+	ResourceLocation getDefaultSpecies();
 
 	<A extends IAllele> boolean isAlleleValid(IChromosome<A> chromosome, A allele);
 
-	Codec<Genome> genomeCodec();
+	Codec<Genome> getGenomeCodec();
+
+	ImmutableMap<IChromosome<?>, ? extends IAllele> getDefaultAlleles();
 }

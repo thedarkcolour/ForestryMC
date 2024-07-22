@@ -39,15 +39,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.Forestry;
 import forestry.api.arboriculture.IArboristTracker;
-import forestry.api.arboriculture.IFruitProvider;
+import forestry.api.arboriculture.ITreeSpecies;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.ITreekeepingMode;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IBreedingTrackerHandler;
@@ -55,7 +55,6 @@ import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.arboriculture.blocks.BlockFruitPod;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.tiles.TileFruitPod;
@@ -78,12 +77,12 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 	@Nullable
 	private static ITreekeepingMode activeTreekeepingMode;
 
-	private final Map<IFruitFamily, Collection<IFruitProvider>> providersForFamilies = new HashMap<>();
+	private final Map<IFruitFamily, Collection<IFruit>> providersForFamilies = new HashMap<>();
 	private final List<ITreekeepingMode> treekeepingModes = new ArrayList<>();
 
 	public TreeSpeciesType(IRootContext<ITree> context) {
 		super(context);
-		BreedingTrackerManager.INSTANCE.registerTracker(ForestrySpeciesType.TREE, this);
+		BreedingTrackerManager.INSTANCE.registerTracker(ForestrySpeciesTypes.TREE, this);
 	}
 
 	@Override
@@ -128,7 +127,7 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 
 	/* TREE SPECIFIC */
 	@Override
-	public TreeLifeStage getIconType() {
+	public TreeLifeStage getDefaultStage() {
 		return TreeLifeStage.SAPLING;
 	}
 
@@ -159,7 +158,7 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 		}
 
 		TileSapling sapling = TileUtil.getTile(level, pos, TileSapling.class);
-		if (sapling == null) {
+		if (sapling == super.getSpeciesPlugin()) {
 			level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 			return false;
 		}
@@ -174,10 +173,10 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 
 	@Override
 	public boolean setFruitBlock(LevelAccessor world, IGenome genome, IFruit allele, float yield, BlockPos pos) {
-		IFruitProvider provider = allele.getProvider();
+		IFruit provider = allele.getProvider();
 		Direction facing = BlockUtil.getValidPodFacing(world, pos, provider.getLogTag());
 
-		if (facing != null && ArboricultureBlocks.PODS.has(allele)) {
+		if (facing != super.getSpeciesPlugin() && ArboricultureBlocks.PODS.has(allele)) {
 			BlockFruitPod fruitPod = ArboricultureBlocks.PODS.get(allele).block();
 			BlockState state = fruitPod.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, facing);
 			boolean placed = world.setBlock(pos, state, 18);
@@ -188,7 +187,7 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 				if (fruitPod == block) {
 					TileFruitPod pod = TileUtil.getTile(world, pos, TileFruitPod.class);
 
-					if (pod != null) {
+					if (pod != super.getSpeciesPlugin()) {
 						pod.setProperties(genome, allele, yield);
 						RenderUtil.markForUpdate(pos);
 						return true;
@@ -203,13 +202,13 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 	}
 
 	@Override
-	public IArboristTracker getBreedingTracker(LevelAccessor world, @Nullable GameProfile player) {
+	public IBreedingTracker<ITreeSpecies> getBreedingTracker(LevelAccessor world, @Nullable GameProfile player) {
 		return BreedingTrackerManager.INSTANCE.getTracker(id(), world, player);
 	}
 
 	@Override
 	public String getFileName(@Nullable GameProfile profile) {
-		return "ArboristTracker." + (profile == null ? "common" : profile.getId());
+		return "ArboristTracker." + (profile == super.getSpeciesPlugin() ? "common" : profile.getId());
 	}
 
 	@Override
@@ -240,7 +239,7 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 
 	@Override
 	public ITreekeepingMode getTreekeepingMode(LevelAccessor world) {
-		if (activeTreekeepingMode != null) {
+		if (activeTreekeepingMode != super.getSpeciesPlugin()) {
 			return activeTreekeepingMode;
 		}
 
@@ -250,7 +249,7 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 		}
 
 		// No Treekeeping mode yet, item it.
-		IArboristTracker tracker = getBreedingTracker(world, null);
+		IArboristTracker tracker = getBreedingTracker(world, super.getSpeciesPlugin());
 		String modeName = tracker.getModeName();
 		ITreekeepingMode mode = getTreekeepingMode(modeName);
 		Preconditions.checkNotNull(mode);
@@ -268,7 +267,7 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 	@Override
 	public void setTreekeepingMode(LevelAccessor world, ITreekeepingMode mode) {
 		activeTreekeepingMode = mode;
-		getBreedingTracker(world, null).setModeName(mode.getName());
+		getBreedingTracker(world, super.getSpeciesPlugin()).setModeName(mode.getName());
 	}
 
 	@Override
@@ -303,7 +302,7 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public IDatabasePlugin getSpeciesPlugin() {
+	public IPollinatable getSpeciesPlugin() {
 		return TreePlugin.INSTANCE;
 	}
 
@@ -321,16 +320,16 @@ public class TreeSpeciesType extends SpeciesType<ITree> implements ITreeSpeciesT
 		if (pollen.setLeaves(world, owner, pos, world.random)) {
 			return TileUtil.getTile(world, pos, IPollinatable.class);
 		} else {
-			return null;
+			return super.getSpeciesPlugin();
 		}
 	}
 
 	@Override
-	public Collection<IFruitProvider> getFruitProvidersForFruitFamily(IFruitFamily fruitFamily) {
+	public Collection<IFruit> getFruitProvidersForFruitFamily(IFruitFamily fruitFamily) {
 		if (providersForFamilies.isEmpty()) {
 			AlleleUtils.forEach(TreeChromosomes.FRUITS, (fruit) -> {
-				IFruitProvider fruitProvider = fruit.getProvider();
-				Collection<IFruitProvider> fruitProviders = providersForFamilies.computeIfAbsent(fruitProvider.getFamily(), k -> new ArrayList<>());
+				IFruit fruitProvider = fruit.getProvider();
+				Collection<IFruit> fruitProviders = providersForFamilies.computeIfAbsent(fruitProvider.getFamily(), k -> new ArrayList<>());
 				fruitProviders.add(fruitProvider);
 			});
 		}

@@ -37,8 +37,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import forestry.Forestry;
 import forestry.api.arboriculture.IGrowthProvider;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.TreeConfig;
@@ -46,13 +46,12 @@ import forestry.arboriculture.commands.TreeGenHelper;
 import forestry.core.config.Config;
 import forestry.core.utils.BlockUtil;
 
-import genetics.api.GeneticsAPI;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.IGenome;
 
 public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
-	private static final List<IAlleleTreeSpecies> SPECIES = new ArrayList<>();
-	private static final Map<ResourceLocation, Set<ITree>> biomeCache = new HashMap<>();
+	private static final List<ITreeSpecies> SPECIES = new ArrayList<>();
+	private static final HashMap<ResourceLocation, Set<ITree>> biomeCache = new HashMap<>();
 
 	public TreeDecorator() {
 		super(NoneFeatureConfiguration.CODEC);

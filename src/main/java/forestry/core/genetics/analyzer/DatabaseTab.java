@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
 
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 
 import genetics.api.individual.IIndividual;

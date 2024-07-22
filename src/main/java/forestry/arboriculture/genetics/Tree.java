@@ -39,7 +39,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
 import forestry.api.arboriculture.IArboristTracker;
-import forestry.api.arboriculture.IFruitProvider;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.ILeafEffect;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
@@ -59,6 +59,7 @@ import genetics.api.individual.Individual;
 import genetics.api.mutation.IMutationContainer;
 import genetics.api.root.components.ComponentKeys;
 import forestry.core.genetics.Genome;
+import forestry.core.genetics.Individual;
 
 public class Tree extends Individual implements ITree, IPlantable {
 	public Tree(IGenome genome) {
@@ -110,7 +111,7 @@ public class Tree extends Individual implements ITree, IPlantable {
 	/* GROWTH */
 	@Override
 	public Feature<NoneFeatureConfiguration> getTreeGenerator(WorldGenLevel world, BlockPos pos, boolean wasBonemealed) {
-		return genome.getActiveAllele(TreeChromosomes.SPECIES).getGenerator().getTreeFeature(this);
+		return genome.getActiveValue(TreeChromosomes.SPECIES).getGenerator().getTreeFeature(this);
 	}
 
 	@Override
@@ -171,7 +172,7 @@ public class Tree extends Individual implements ITree, IPlantable {
 
 	@Override
 	public boolean allowsFruitBlocks() {
-		IFruitProvider provider = getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+		IFruit provider = getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 		if (!provider.requiresFruitBlocks()) {
 			return false;
 		}
@@ -182,16 +183,10 @@ public class Tree extends Individual implements ITree, IPlantable {
 
 	@Override
 	public boolean trySpawnFruitBlock(LevelAccessor world, RandomSource rand, BlockPos pos) {
-		IFruitProvider provider = getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+		IFruit provider = getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 		Collection<IFruitFamily> suitable = genome.getActiveAllele(TreeChromosomes.SPECIES).getSuitableFruit();
 		return suitable.contains(provider.getFamily()) &&
 				provider.trySpawnFruitBlock(getGenome(), world, rand, pos);
-	}
-
-	/* INFORMATION */
-	@Override
-	public IGenome getGenome() {
-		return genome;
 	}
 
 	@Override

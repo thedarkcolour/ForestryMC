@@ -29,10 +29,13 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
+import forestry.api.IForestryApi;
+import forestry.api.arboriculture.ForestryTreeSpecies;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.blocks.IColoredBlock;
 
 /**
@@ -74,7 +77,7 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		if (tree == null) {
 			return ItemStack.EMPTY;
 		}
-		IAlleleTreeSpecies species = tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES);
+		ITreeSpecies species = tree.getGenome().getActiveValue(TreeChromosomes.SPECIES);
 		return species.getDecorativeLeaves();
 	}
 
@@ -82,10 +85,12 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 	@Override
 	public List<ItemStack> onSheared(@Nullable Player player, @Nonnull ItemStack item, Level world, BlockPos pos, int fortune) {
 		ITree tree = getTree(world, pos);
+		ITreeSpecies species;
 		if (tree == null) {
-			tree = TreeDefinition.Oak.createIndividual();
+			species = IForestryApi.INSTANCE.getGeneticManager().<ITreeSpeciesType>getSpeciesType(ForestrySpeciesTypes.TREE).getSpeciesById(ForestryTreeSpecies.OAK);
+		} else {
+			species = tree.getGenome().getActiveValue(TreeChromosomes.SPECIES);
 		}
-		IAlleleTreeSpecies species = tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES);
 		ItemStack decorativeLeaves = species.getDecorativeLeaves();
 		if (decorativeLeaves.isEmpty()) {
 			return Collections.emptyList();
@@ -97,7 +102,7 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		ITree tree = getTree(worldIn, pos);
-		if (tree != null && TreeDefinition.Willow.getId().equals(tree.getId())) {
+		if (tree != null && tree.getSpecies().id().equals(ForestryTreeSpecies.WILLOW)) {
 			return Shapes.empty();
 		}
 		return super.getCollisionShape(state, worldIn, pos, context);
@@ -133,40 +138,6 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		} else {
 			return 5;
 		}
-	}
-
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-		return super.getDrops(state, builder);
-		/*List<ItemStack> ret = super.getDrops(state, builder);
-		Entity entity = builder.getOptionalParameter(LootParameters.THIS_ENTITY);
-		PlayerEntity player = null;
-		GameProfile profile = null;
-		if (entity instanceof PlayerEntity) {
-			player = (PlayerEntity) entity;
-			profile = player.getGameProfile();
-		}
-		World world = builder.getLevel();
-		BlockPos pos = new BlockPos(builder.getParameter(LootParameters.ORIGIN));
-		ItemStack tool = builder.getParameter(LootParameters.TOOL);
-		int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool);
-		float saplingModifier = 1.0f;
-		Item toolItem = tool.getItem();
-		if (toolItem instanceof IToolGrafter && player != null) {
-			IToolGrafter grafter = (IToolGrafter) toolItem;
-			saplingModifier = grafter.getSaplingModifier(tool, world, player, pos);
-			//tool.damageItem(1, player, p -> {});
-			//tool.
-			if (tool.isEmpty()) {
-				//ForgeEventFactory.onPlayerDestroyItem(player, tool, Hand.MAIN_HAND);
-			}
-		}
-		NonNullList<ItemStack> drops = NonNullList.create();
-		// leaves not harvested, get drops normally
-		getLeafDrop(drops, world, profile, pos, saplingModifier, fortune, builder);
-		ret.addAll(drops);
-		return ret;*/
 	}
 
 	protected abstract void getLeafDrop(NonNullList<ItemStack> drops, Level world, @Nullable GameProfile playerProfile, BlockPos pos, float saplingModifier, int fortune, LootContext.Builder builder);

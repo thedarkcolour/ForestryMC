@@ -15,14 +15,15 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.genetics.IForestrySpeciesType;
-import forestry.api.lepidopterology.ILepidopteristTracker;
+import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.lepidopterology.IButterflySpecies;
 
-public interface IButterflySpeciesType extends IForestrySpeciesType<IButterfly> {
+public interface IButterflySpeciesType extends ISpeciesType<IButterflySpecies> {
 
 	/* BUTTERFLY SPECIFIC */
 	@Override
-	ILepidopteristTracker getBreedingTracker(LevelAccessor world, @Nullable GameProfile player);
+	IBreedingTracker<IButterflySpecies> getBreedingTracker(LevelAccessor world, @Nullable GameProfile player);
 
 	/**
 	 * Spawns the given butterfly in the world.

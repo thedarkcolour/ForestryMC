@@ -2,22 +2,11 @@ package forestry.arboriculture.villagers;
 
 import com.google.common.collect.ImmutableSet;
 
-import forestry.api.ForestryConstants;
-import forestry.api.arboriculture.ForestryWoodType;
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.WoodBlockKind;
-import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.arboriculture.features.ArboricultureBlocks;
-import forestry.arboriculture.features.ArboricultureItems;
-import forestry.core.genetics.alleles.AlleleForestrySpecies;
-import forestry.core.registration.VillagerTrade;
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IAlleleSpecies;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.ILifeStage;
-import genetics.utils.AlleleUtils;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -28,17 +17,27 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
+
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import forestry.api.ForestryConstants;
+import forestry.api.arboriculture.ForestryWoodType;
+import forestry.api.arboriculture.ITreeSpecies;
+import forestry.api.arboriculture.TreeManager;
+import forestry.api.arboriculture.WoodBlockKind;
+import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.arboriculture.features.ArboricultureBlocks;
+import forestry.arboriculture.features.ArboricultureItems;
+import forestry.core.registration.VillagerTrade;
+import forestry.core.utils.SpeciesUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 public class RegisterVillager {
 
@@ -103,15 +102,14 @@ public class RegisterVillager {
 
 		@Nullable
 		@Override
-		public MerchantOffer getOffer(@NotNull Entity trader, @NotNull RandomSource rand) {
-			IChromosome treeSpeciesType = TreeChromosomes.SPECIES;
-			Collection<IAllele> registeredSpecies = AlleleUtils.getAllelesByType(treeSpeciesType);
-			List<IAlleleSpecies> potentialSpecies = new ArrayList<>();
-			for (IAllele allele : registeredSpecies) {
-				if (allele instanceof AlleleForestrySpecies species) {
-					if (species.getComplexity() <= maxComplexity) {
-						potentialSpecies.add(species);
-					}
+		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
+			// todo this could be optimized to just pick random entries from tree species until one with suitable complexity is found
+			// instead of copying the whole thing and then picking once
+			List<ITreeSpecies> registeredSpecies = SpeciesUtil.getAllTreeSpecies();
+			ArrayList<ITreeSpecies> potentialSpecies = new ArrayList<>();
+			for (ITreeSpecies species : registeredSpecies) {
+				if (species.getComplexity() <= maxComplexity) {
+					potentialSpecies.add(species);
 				}
 			}
 
@@ -119,11 +117,8 @@ public class RegisterVillager {
 				return null;
 			}
 
-			IAlleleSpecies chosenSpecies = potentialSpecies.get(rand.nextInt(potentialSpecies.size()));
-			IAllele[] template = TreeManager.treeRoot.getTemplate(chosenSpecies.getId().toString());
-			ITree individual = TreeManager.treeRoot.templateAsIndividual(template);
-
-			ItemStack sellStack = TreeManager.treeRoot.createStack(individual, type);
+			ITreeSpecies chosenSpecies = potentialSpecies.get(rand.nextInt(potentialSpecies.size()));
+			ItemStack sellStack = chosenSpecies.getType().createStack(chosenSpecies, type);
 			sellStack.setCount(sellingPriceInfo.getPrice(rand));
 
 			return new MerchantOffer(new ItemStack(Items.EMERALD, buyingPriceInfo.getPrice(rand)), sellStack, maxUses, xp, priceMult);

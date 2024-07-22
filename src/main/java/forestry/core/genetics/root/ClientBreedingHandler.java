@@ -18,9 +18,9 @@ public class ClientBreedingHandler extends ServerBreedingHandler {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends IBreedingTracker> T getTracker(String rootUID, LevelAccessor world, @Nullable GameProfile profile) {
-		if (world instanceof ServerLevel) {
-			return super.getTracker(rootUID, world, profile);
+	public <T extends IBreedingTracker> T getTracker(String rootUID, LevelAccessor level, @Nullable GameProfile profile) {
+		if (level instanceof ServerLevel) {
+			return super.getTracker(rootUID, level, profile);
 		}
 		IBreedingTrackerHandler handler = BreedingTrackerManager.factories.get(rootUID);
 		T tracker = (T) trackerByUID.computeIfAbsent(rootUID, (key) -> handler.createTracker());

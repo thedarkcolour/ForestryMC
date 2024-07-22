@@ -10,12 +10,15 @@
  ******************************************************************************/
 package forestry.apiculture;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.ForestryCapabilities;
 import forestry.api.apiculture.IArmorApiaristHelper;
+import forestry.api.apiculture.genetics.IBeeEffect;
 
 public class ArmorApiaristHelper implements IArmorApiaristHelper {
 
@@ -31,7 +34,7 @@ public class ArmorApiaristHelper implements IArmorApiaristHelper {
 	}
 
 	@Override
-	public int wearsItems(LivingEntity entity, ResourceLocation cause, boolean doProtect) {
+	public int wearsItems(LivingEntity entity, @Nullable IBeeEffect cause, boolean doProtect) {
 		int count = 0;
 
 		for (ItemStack armorItem : entity.getAllSlots()) {

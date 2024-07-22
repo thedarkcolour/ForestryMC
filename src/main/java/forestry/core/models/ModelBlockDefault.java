@@ -15,7 +15,6 @@ import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -33,16 +32,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import forestry.core.models.baker.ModelBaker;
 import forestry.core.models.baker.ModelBakerModel;
 import forestry.core.utils.ResourceUtil;
-import org.jetbrains.annotations.NotNull;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class ModelBlockDefault<B extends Block, K> implements BakedModel {
 	@Nullable
 	private ItemOverrides overrideList;

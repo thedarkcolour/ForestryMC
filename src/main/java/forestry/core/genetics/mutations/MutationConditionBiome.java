@@ -34,7 +34,7 @@ public class MutationConditionBiome implements IMutationCondition {
 
 	@Override
 	public float getChance(Level level, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, ClimateState climate) {
-		return climate.getBiome().is(validBiomes) ? 1f : 0f;
+		return level.getBiome(pos).is(this.validBiomes) ? 1f : 0f;
 	}
 
 	@Override

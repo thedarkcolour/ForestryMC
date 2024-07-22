@@ -14,12 +14,12 @@ import com.mojang.authlib.GameProfile;
 
 import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.IResearchHandler;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.core.utils.ItemStackUtil;
 
-import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.ISpecies<?>;
 import genetics.api.individual.IIndividual;
 import forestry.api.genetics.IMutation;
 import genetics.api.mutation.IMutationContainer;
@@ -57,7 +57,7 @@ public class ResearchHandler<I extends IIndividual> implements IResearchHandler<
 	}
 
 	@Override
-	public float getResearchSuitability(IAlleleSpecies species, ItemStack itemstack) {
+	public float getResearchSuitability(ISpecies<?> species, ItemStack itemstack) {
 		if (itemstack.isEmpty()) {
 			return 0f;
 		}
@@ -84,14 +84,14 @@ public class ResearchHandler<I extends IIndividual> implements IResearchHandler<
 	}
 
 	@Override
-	public NonNullList<ItemStack> getResearchBounty(IAlleleSpecies species, Level world, GameProfile gameProfile, I individual, int bountyLevel) {
+	public NonNullList<ItemStack> getResearchBounty(ISpecies<?> species, Level world, GameProfile gameProfile, I individual, int bountyLevel) {
 		NonNullList<ItemStack> bounty = NonNullList.create();
 		if (world.random.nextFloat() < bountyLevel / 16.0f) {
 			IMutationContainer<I, ? extends IMutation> container = root.getComponent(ComponentKeys.MUTATIONS);
 			List<? extends IMutation> allMutations = container.getCombinations(species);
 			if (!allMutations.isEmpty()) {
 				List<IMutation> unresearchedMutations = new ArrayList<>();
-				IBreedingTracker tracker = ((IForestrySpeciesType<I>) root).getBreedingTracker(world, gameProfile);
+				IBreedingTracker tracker = ((ISpeciesType<I>) root).getBreedingTracker(world, gameProfile);
 				for (IMutation mutation : allMutations) {
 					if (!tracker.isResearched(mutation)) {
 						unresearchedMutations.add(mutation);

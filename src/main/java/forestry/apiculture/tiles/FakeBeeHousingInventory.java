@@ -18,11 +18,11 @@ public enum FakeBeeHousingInventory implements IBeeHousingInventory {
 	}
 
 	@Override
-	public void setQueen(ItemStack itemstack) {
+	public void setQueen(ItemStack stack) {
 	}
 
 	@Override
-	public void setDrone(ItemStack itemstack) {
+	public void setDrone(ItemStack stack) {
 	}
 
 	@Override

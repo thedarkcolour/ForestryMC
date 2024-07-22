@@ -18,10 +18,12 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -30,9 +32,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import forestry.api.IForestryApi;
 import forestry.api.circuits.ChipsetManager;
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.core.ForestryError;
 import forestry.api.core.IError;
-import forestry.api.genetics.alleles.AlleleManager;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IPacketRegistry;
 import forestry.api.multiblock.MultiblockManager;
@@ -43,7 +45,6 @@ import forestry.core.circuits.SolderManager;
 import forestry.core.climate.ForestryClimateManager;
 import forestry.core.commands.CommandModules;
 import forestry.core.features.CoreFeatures;
-import forestry.core.genetics.alleles.AlleleManager;
 import forestry.core.multiblock.MultiblockLogicFactory;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
@@ -70,7 +71,6 @@ import forestry.core.proxy.Proxies;
 import forestry.core.recipes.HygroregulatorManager;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ModuleUtil;
-import forestry.api.client.IClientModuleHandler;
 
 public class ModuleCore extends BlankForestryModule {
 	public static final LiteralArgumentBuilder<CommandSourceStack> rootCommand = LiteralArgumentBuilder.literal("forestry");
@@ -90,6 +90,7 @@ public class ModuleCore extends BlankForestryModule {
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::onItemPickup);
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::onLevelTick);
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::onTagsUpdated);
+		MinecraftForge.EVENT_BUS.addGenericListener(ItemStack.class, ModuleCore::onAttachCapabilities);
 	}
 
 	private static void onItemPickup(EntityItemPickupEvent event) {
@@ -111,6 +112,9 @@ public class ModuleCore extends BlankForestryModule {
 		}
 	}
 
+	private static void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
+	}
+
 	@Override
 	public boolean isCore() {
 		return true;
@@ -126,9 +130,6 @@ public class ModuleCore extends BlankForestryModule {
 		ChipsetManager.solderManager = new SolderManager();
 
 		ChipsetManager.circuitRegistry = new CircuitRegistry();
-
-		AlleleManager.alleleRegistry = new genetics.alleles.AlleleRegistry();
-		AlleleManager.alleleFactory = new AlleleManager();
 
 		MultiblockManager.logicFactory = new MultiblockLogicFactory();
 

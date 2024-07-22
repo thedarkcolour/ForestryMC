@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.ISpecies<?>;
 import genetics.api.individual.IIndividual;
 import genetics.api.root.components.ComponentKey;
 import genetics.api.root.components.IRootComponent;
@@ -35,12 +35,12 @@ public interface IResearchHandler<I extends IIndividual> extends IRootComponent<
 	/**
 	 * @return A float signifying the chance for the passed itemstack to yield a research success.
 	 */
-	float getResearchSuitability(IAlleleSpecies species, ItemStack itemstack);
+	float getResearchSuitability(ISpecies<?> species, ItemStack itemstack);
 
 	/**
 	 * @return ItemStacks representing the bounty for this research success.
 	 */
-	NonNullList<ItemStack> getResearchBounty(IAlleleSpecies species, Level world, GameProfile gameProfile, I individual, int bountyLevel);
+	NonNullList<ItemStack> getResearchBounty(ISpecies<?> species, Level world, GameProfile gameProfile, I individual, int bountyLevel);
 
 	@Override
 	ComponentKey<IResearchHandler> getKey();

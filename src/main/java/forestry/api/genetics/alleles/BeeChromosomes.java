@@ -2,15 +2,11 @@ package forestry.api.genetics.alleles;
 
 import net.minecraft.core.Vec3i;
 
-import forestry.api.apiculture.IBeeSpecies;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.core.ToleranceType;
-import forestry.api.genetics.ForestrySpeciesType;
-import forestry.core.genetics.alleles.BooleanChromosome;
-import forestry.core.genetics.alleles.FloatChromosome;
-import forestry.core.genetics.alleles.IntegerChromosome;
-import forestry.core.genetics.alleles.ValueChromosome;
+import forestry.api.genetics.ForestrySpeciesTypes;
 
 import static forestry.api.ForestryConstants.forestry;
 
@@ -21,7 +17,7 @@ public class BeeChromosomes {
 	/**
 	 * The species of a bee.
 	 */
-	public static final ISpeciesChromosome<IBeeSpecies> SPECIES = ForestryAlleles.REGISTRY.speciesChromosome(ForestrySpeciesType.BEE, IBeeSpecies.class);
+	public static final ISpeciesChromosome<IBeeSpecies> SPECIES = ForestryAlleles.REGISTRY.speciesChromosome(ForestrySpeciesTypes.BEE, IBeeSpecies.class);
 	/**
 	 * Determines a queen's production speed.
 	 */

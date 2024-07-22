@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 import forestry.api.ForestryConstants;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.api.genetics.gatgets.IGeneticAnalyzer;
@@ -143,10 +143,10 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 			return;
 		}
 		ItemStack stack = provider.getSpecimen(selectedSlot);
-		IForestrySpeciesType<?> root = RootUtils.getRoot(stack);
+		ISpeciesType<?> root = RootUtils.getRoot(stack);
 
 		if (root != null) {
-			IDatabasePlugin<?> databasePlugin = root.getSpeciesPlugin();
+			IDatabasePlugin databasePlugin = root.getSpeciesPlugin();
 
 			if (databasePlugin != null) {
 				IIndividual individual = root.create(stack);

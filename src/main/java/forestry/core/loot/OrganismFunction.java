@@ -13,11 +13,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import forestry.api.genetics.alleles.IAllele;
-import genetics.api.individual.IIndividual;
-import genetics.api.individual.ISpeciesDefinition;
 import forestry.api.genetics.ILifeStage;
-import forestry.api.genetics.ISpeciesType;
-import genetics.utils.RootUtils;
 
 /**
  * Loot function to add genetic information, an organism, to the item stack.

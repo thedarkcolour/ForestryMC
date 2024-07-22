@@ -13,13 +13,13 @@ package forestry.core.inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.tiles.TileNaturalistChest;
 
 public class InventoryNaturalistChest extends InventoryAdapterTile<TileNaturalistChest> {
-	private final IForestrySpeciesType speciesRoot;
+	private final ISpeciesType speciesRoot;
 
-	public InventoryNaturalistChest(TileNaturalistChest tile, IForestrySpeciesType speciesRoot) {
+	public InventoryNaturalistChest(TileNaturalistChest tile, ISpeciesType speciesRoot) {
 		super(tile, 125, "Items");
 		this.speciesRoot = speciesRoot;
 	}

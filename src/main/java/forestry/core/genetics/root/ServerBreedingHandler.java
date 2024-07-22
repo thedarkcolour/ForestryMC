@@ -13,13 +13,12 @@ import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IBreedingTrackerHandler;
 
 public class ServerBreedingHandler implements BreedingTrackerManager.SidedHandler {
-
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends IBreedingTracker> T getTracker(String rootUID, LevelAccessor world, @Nullable GameProfile player) {
+	public <T extends IBreedingTracker> T getTracker(String rootUID, LevelAccessor level, @Nullable GameProfile player) {
 		IBreedingTrackerHandler handler = BreedingTrackerManager.factories.get(rootUID);
 		String filename = handler.getFileName(player);
-		ServerLevel overworld = ((ServerLevel) world).getServer().getLevel(Level.OVERWORLD);
+		ServerLevel overworld = level.getServer().getLevel(Level.OVERWORLD);
 		T tracker = (T) overworld.getDataStorage().computeIfAbsent(tag -> (SavedData) handler.createTracker(tag), () -> (SavedData) handler.createTracker(), filename);
 		handler.populateTracker(tracker, overworld, player);
 		return tracker;

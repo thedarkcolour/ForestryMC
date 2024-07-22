@@ -16,7 +16,7 @@ import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
@@ -37,8 +37,8 @@ public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
 
 	@Override
 	public void createElements(DatabaseElement database, IButterfly butterfly, ItemStack itemStack) {
-		IAlleleButterflySpecies primarySpecies = butterfly.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES);
-		IAlleleButterflySpecies secondarySpecies = butterfly.getGenome().getInactiveAllele(ButterflyChromosomes.SPECIES);
+		IButterflySpecies primarySpecies = butterfly.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES);
+		IButterflySpecies secondarySpecies = butterfly.getGenome().getInactiveAllele(ButterflyChromosomes.SPECIES);
 
 		database.label(Component.translatable("for.gui.database.tab." + (mode == DatabaseMode.ACTIVE ? "active" : "inactive") + "_species.name"), Alignment.TOP_CENTER, GuiElementFactory.INSTANCE.databaseTitle);
 
@@ -58,7 +58,7 @@ public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
 		database.addLine(Component.translatable("for.gui.effect"), ButterflyChromosomes.EFFECT);
 
 		Function<Boolean, Component> toleranceText = a -> {
-			IAlleleButterflySpecies species = a ? primarySpecies : secondarySpecies;
+			IButterflySpecies species = a ? primarySpecies : secondarySpecies;
 			return ClimateHelper.toDisplay(species.getTemperature());
 		};
 		database.addLine(Component.translatable("for.gui.climate"), toleranceText, ButterflyChromosomes.TEMPERATURE_TOLERANCE);

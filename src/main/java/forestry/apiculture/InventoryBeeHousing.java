@@ -63,13 +63,13 @@ public class InventoryBeeHousing extends InventoryAdapterRestricted implements I
 	}
 
 	@Override
-	public final void setQueen(ItemStack itemstack) {
-		setItem(SLOT_QUEEN, itemstack);
+	public final void setQueen(ItemStack stack) {
+		setItem(SLOT_QUEEN, stack);
 	}
 
 	@Override
-	public final void setDrone(ItemStack itemstack) {
-		setItem(SLOT_DRONE, itemstack);
+	public final void setDrone(ItemStack stack) {
+		setItem(SLOT_DRONE, stack);
 	}
 
 	@Override

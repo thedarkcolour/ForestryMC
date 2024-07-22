@@ -10,19 +10,11 @@ import java.util.Map;
 
 import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import genetics.api.individual.IIndividual;
-
 /**
  * An ISpeciesPlugin provides methods that are used in the alyzer and database to display information about an
  * individual.
  */
-@OnlyIn(Dist.CLIENT)
-public interface IDatabasePlugin<I extends IIndividual> {
-
-	/* ALYZER */
+public interface IDatabasePlugin {
 	List<String> getHints();
 
 	IDatabaseTab<?>[] getTabs();

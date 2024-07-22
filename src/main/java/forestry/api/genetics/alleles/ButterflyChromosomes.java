@@ -2,10 +2,10 @@ package forestry.api.genetics.alleles;
 
 import forestry.api.apiculture.IFlowerType;
 import forestry.api.core.ToleranceType;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.lepidopterology.IButterflyCocoon;
-import forestry.api.lepidopterology.IButterflySpecies;
 import forestry.api.lepidopterology.IButterflyEffect;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.genetics.alleles.BooleanChromosome;
 import forestry.core.genetics.alleles.FloatChromosome;
 import forestry.core.genetics.alleles.IntegerChromosome;
@@ -18,7 +18,7 @@ public class ButterflyChromosomes {
 	/**
 	 * Determines the species of a butterfly.
 	 */
-	public static final ISpeciesChromosome<IButterflySpecies> SPECIES = new SpeciesChromosome<>(ForestrySpeciesType.BUTTERFLY, IButterflySpecies.class);
+	public static final ISpeciesChromosome<IButterflySpecies> SPECIES = new SpeciesChromosome<>(ForestrySpeciesTypes.BUTTERFLY, IButterflySpecies.class);
 	/**
 	 * Determines physical size of a butterfly.
 	 */
@@ -60,7 +60,7 @@ public class ButterflyChromosomes {
 	 */
 	public static final IBooleanChromosome FIREPROOF = new BooleanChromosome(forestry("fireproof"));
 	/**
-	 * The type of flowers this butterfly likes to fly around.
+	 * The type of flowers this butterfly likes to fly around. TODO this is wrong information lol
 	 */
 	public static final IValueChromosome<IFlowerType> FLOWER_TYPE = BeeChromosomes.FLOWER_TYPE;
 	/**

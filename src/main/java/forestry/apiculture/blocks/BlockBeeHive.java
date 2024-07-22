@@ -42,6 +42,7 @@ import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.hives.IHiveDrop;
 import forestry.api.apiculture.hives.HiveType;
 import forestry.api.apiculture.hives.IHiveTile;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.apiculture.MaterialBeehive;
 import forestry.apiculture.features.ApicultureTiles;
 import forestry.apiculture.tiles.TileHive;
@@ -108,7 +109,7 @@ public class BlockBeeHive extends BaseEntityBlock {
 		List<IHiveDrop> hiveDrops = getDropsForHive();
 		Collections.shuffle(hiveDrops);
 
-		// Grab a princess
+		// Grab a princess (10 tries)
 		int tries = 0;
 		boolean hasPrincess = false;
 		while (tries <= 10 && !hasPrincess) {
@@ -120,6 +121,8 @@ public class BlockBeeHive extends BaseEntityBlock {
 					if (random.nextFloat() < drop.getIgnobleChance(world, pos, fortune)) {
 						bee.setIsNatural(false);
 					}
+
+					IForestryApi.INSTANCE.getGeneticManager().createIndividual(ForestrySpeciesTypes.BEE)
 
 					ItemStack princess = BeeManager.beeRoot.getTypes().createStack(bee, BeeLifeStage.PRINCESS);
 					drops.add(princess);

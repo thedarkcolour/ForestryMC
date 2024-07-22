@@ -28,7 +28,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import forestry.api.ForestryCapabilities;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.core.inventory.AdjacentInventoryCache;
 import forestry.core.network.IStreamableGui;
@@ -141,11 +141,11 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 	}
 
 	public Collection<Direction> getValidDirections(ItemStack itemStack, Direction from) {
-		IForestrySpeciesType<IIndividual> definition = RootUtils.getRoot(itemStack);
+		ISpeciesType<IIndividual> definition = RootUtils.getRoot(itemStack);
 		IIndividual individual = null;
 		ILifeStage type = null;
 		if (definition != null) {
-			IForestrySpeciesType<IIndividual> root = definition;
+			ISpeciesType<IIndividual> root = definition;
 			individual = root.create(itemStack);
 			type = root.getTypes().getType(itemStack);
 		}

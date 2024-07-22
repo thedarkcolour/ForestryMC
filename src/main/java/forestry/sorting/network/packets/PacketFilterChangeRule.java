@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.ForestryCapabilities;
-import forestry.api.genetics.alleles.AlleleManager;
 import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;

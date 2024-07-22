@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.farming.gui;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
 
@@ -36,10 +37,10 @@ public class GuiFarm extends GuiForestryTitled<ContainerFarm> {
 
 		IFarmControllerInternal farmController = tile.getMultiblockLogic().getController();
 
-		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 69, 22, HorizontalDirection.NORTH));
-		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 69, 58, HorizontalDirection.SOUTH));
-		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 51, 40, HorizontalDirection.WEST));
-		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 87, 40, HorizontalDirection.EAST));
+		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 69, 22, Direction.NORTH));
+		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 69, 58, Direction.SOUTH));
+		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 51, 40, Direction.WEST));
+		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 87, 40, Direction.EAST));
 
 		this.imageWidth = 216;
 		this.imageHeight = 220;

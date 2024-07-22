@@ -10,6 +10,9 @@
  ******************************************************************************/
 package forestry.lepidopterology.genetics;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +24,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.item.ItemStack;
@@ -35,20 +39,18 @@ import forestry.api.core.tooltips.ToolTip;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.ForestryChromosomes;
-import forestry.api.genetics.products.IProductList;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.Product;
+import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.IEntityButterfly;
-import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflyMutation;
 import forestry.api.core.ForestryError;
-import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.core.genetics.GenericRatings;
 import forestry.core.genetics.IndividualLiving;
 import forestry.lepidopterology.ModuleLepidopterology;
@@ -57,16 +59,12 @@ import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.IGenome;
-import genetics.api.mutation.IMutationContainer;
-import forestry.api.genetics.ISpeciesType;
-import genetics.api.root.components.ComponentKeys;
 import forestry.core.genetics.Genome;
 import org.jetbrains.annotations.NotNull;
 
 public class Butterfly extends IndividualLiving implements IButterfly {
 	private static final RandomSource rand = RandomSource.create();
 
-	/* CONSTRUCTOR */
 	public Butterfly(CompoundTag nbt) {
 		super(nbt);
 	}
@@ -80,17 +78,14 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 	}
 
 	@Override
-	public ISpeciesType getRoot() {
-		return ButterflyHelper.getRoot();
-	}
-
-	@Override
 	public void addTooltip(List<Component> list) {
 		ToolTip toolTip = new ToolTip();
 
-		IButterflySpeciesType primary = genome.getActiveValue(ButterflyChromosomes.SPECIES);
-		IButterflySpeciesType secondary = genome.getActiveValue(ButterflyChromosomes.SPECIES);
-		if (!isPureBred(ButterflyChromosomes.SPECIES)) {
+		IGenome genome = this.genome;
+		AllelePair<IValueAllele<IButterflySpecies>> speciesPair = genome.getAllelePair(ButterflyChromosomes.SPECIES);
+		IButterflySpecies primary = speciesPair.active().value();
+		IButterflySpecies secondary = speciesPair.inactive().value();
+		if (!speciesPair.isSameAlleles()) {
 			toolTip.translated("for.butterflies.hybrid", primary.getDisplayName(), secondary.getDisplayName()).style(ChatFormatting.BLUE);
 		}
 
@@ -98,15 +93,16 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 			//TODO ITextComponent.toUpperCase(Locale.ENGLISH));
 			toolTip.translated("for.gui.fecundated").style(ChatFormatting.RED);
 		}
-		toolTip.add(genome.getActiveAllele(ButterflyChromosomes.SIZE).getDisplayName().withStyle(ChatFormatting.YELLOW));
-		toolTip.add(genome.getActiveAllele(ButterflyChromosomes.SPEED).getDisplayName().withStyle(ChatFormatting.DARK_GREEN));
-		toolTip.singleLine().add(genome.getActiveAllele(ButterflyChromosomes.LIFESPAN).getDisplayName()).text(" ").translated("for.gui.life").style(ChatFormatting.GRAY).create();
+		toolTip.add(genome.getActiveName(ButterflyChromosomes.SIZE).withStyle(ChatFormatting.YELLOW));
+		toolTip.add(genome.getActiveName(ButterflyChromosomes.SPEED).withStyle(ChatFormatting.DARK_GREEN));
+		// todo remove
+		toolTip.singleLine().add(genome.getActiveName(ButterflyChromosomes.LIFESPAN)).text(" ").translated("for.gui.life").style(ChatFormatting.GRAY).create();
 
-		IValueAllele<ToleranceType> tempToleranceAllele = getGenome().getActiveAllele(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
-		IValueAllele<ToleranceType> humidToleranceAllele = getGenome().getActiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
+		MutableComponent tempTolerance = genome.getActiveName(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
+		MutableComponent humidTolerance = genome.getActiveName(ButterflyChromosomes.HUMIDITY_TOLERANCE);
 
-		toolTip.singleLine().text("T: ").add(ClimateHelper.toDisplay(primary.getTemperature())).text(" / ").add(tempToleranceAllele.getDisplayName()).style(ChatFormatting.GREEN).create();
-		toolTip.singleLine().text("H: ").add(ClimateHelper.toDisplay(primary.getHumidity())).text(" / ").add(humidToleranceAllele.getDisplayName()).style(ChatFormatting.GREEN).create();
+		toolTip.singleLine().text("T: ").add(ClimateHelper.toDisplay(primary.getTemperature())).text(" / ").add(tempTolerance).style(ChatFormatting.GREEN).create();
+		toolTip.singleLine().text("H: ").add(ClimateHelper.toDisplay(primary.getHumidity())).text(" / ").add(humidTolerance).style(ChatFormatting.GREEN).create();
 
 		toolTip.add(GenericRatings.rateActivityTime(genome.getActiveValue(ButterflyChromosomes.NEVER_SLEEPS), primary.isNocturnal()).withStyle(ChatFormatting.RED));
 
@@ -126,7 +122,7 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 
 	@Override
 	public Component getDisplayName() {
-		return genome.getPrimarySpecies().getDisplayName();
+		return getSpecies().getDisplayName();
 	}
 
 	@Override
@@ -156,7 +152,7 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 
 	@NotNull
 	private Set<IError> addClimateErrors(IButterflyNursery nursery, Set<IError> errorStates) {
-		IAlleleButterflySpecies species = genome.getActiveAllele(ButterflyChromosomes.SPECIES);
+		IButterflySpecies species = genome.getActiveValue(ButterflyChromosomes.SPECIES);
 		TemperatureType actualTemperature = nursery.temperature();
 		TemperatureType baseTemperature = species.getTemperature();
 		ToleranceType toleranceTemperature = genome.getActiveValue(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
@@ -176,7 +172,7 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 
 		BlockPos pos = new BlockPos(x, y, z);
 		Holder<Biome> biome = level.getBiome(pos);
-		IAlleleButterflySpecies species = getGenome().getActiveAllele(ButterflyChromosomes.SPECIES);
+		IButterflySpecies species = getGenome().getActiveValue(ButterflyChromosomes.SPECIES);
 		return biome.is(species.getSpawnBiomes()) && isAcceptedEnvironment(level, pos);
 	}
 
@@ -195,44 +191,45 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 		TemperatureType biomeTemperature = IForestryApi.INSTANCE.getClimateManager().getTemperature(biome);
 		HumidityType biomeHumidity = IForestryApi.INSTANCE.getClimateManager().getHumidity(biome);
 		return ClimateHelper.isWithinLimits(biomeTemperature, biomeHumidity,
-				getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getTemperature(), getGenome().getActiveValue(ButterflyChromosomes.TEMPERATURE_TOLERANCE),
-				getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getHumidity(), getGenome().getActiveValue(ButterflyChromosomes.HUMIDITY_TOLERANCE));
+				getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getTemperature(), getGenome().getActiveValue(ButterflyChromosomes.TEMPERATURE_TOLERANCE),
+				getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getHumidity(), getGenome().getActiveValue(ButterflyChromosomes.HUMIDITY_TOLERANCE));
 	}
 
 	@Override
 	@Nullable
 	public IButterfly spawnCaterpillar(Level level, IButterflyNursery nursery) {
 		// We need a mated queen to produce offspring.
-		if (mate == null) {
+		if (this.mate == null) {
 			return null;
 		}
 
-		AllelePair[] chromosomes = new AllelePair[genome.getAllelePairs().length];
-		AllelePair[] parent1 = genome.getAllelePairs();
-		AllelePair[] parent2 = mate.getAllelePairs();
+		IKaryotype karyotype = this.genome.getKaryotype();
+		Genome.Builder genome = new Genome.Builder(karyotype);
+		ImmutableList<AllelePair<?>> parent1 = this.genome.getAllelePairs();
+		ImmutableList<AllelePair<?>> parent2 = this.mate.getAllelePairs();
 
 		// Check for mutation. Replace one of the parents with the mutation
 		// template if mutation occured.
-		AllelePair[] mutated1 = mutateSpecies(level, nursery, genome, mate);
+		ImmutableList<AllelePair<?>> mutated1 = mutateSpecies(level, nursery, this.genome, this.mate);
 		if (mutated1 != null) {
 			parent1 = mutated1;
 		}
-		AllelePair[] mutated2 = mutateSpecies(level, nursery, mate, genome);
+		ImmutableList<AllelePair<?>> mutated2 = mutateSpecies(level, nursery, this.mate, this.genome);
 		if (mutated2 != null) {
 			parent2 = mutated2;
 		}
 
 		for (int i = 0; i < parent1.length; i++) {
 			if (parent1[i] != null && parent2[i] != null) {
-				chromosomes[i] = parent1[i].inheritChromosome(rand, parent2[i]);
+				genome[i] = parent1[i].inheritChromosome(rand, parent2[i]);
 			}
 		}
 
-		return new Butterfly(new Genome(ButterflyHelper.getRoot().getKaryotype(), chromosomes));
+		return new Butterfly(new Genome(ButterflyHelper.getRoot().getKaryotype(), genome));
 	}
 
 	@Nullable
-	private static AllelePair[] mutateSpecies(Level world, IButterflyNursery nursery, IGenome genomeOne, IGenome genomeTwo) {
+	private static AllelePair[] mutateSpecies(Level level, IButterflyNursery nursery, IGenome genomeOne, IGenome genomeTwo) {
 
 		AllelePair[] parent1 = genomeOne.getAllelePairs();
 		AllelePair[] parent2 = genomeTwo.getAllelePairs();
@@ -258,7 +255,7 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 
 		IMutationContainer<IButterfly, IButterflyMutation> container = ButterflyHelper.getRoot().getComponent(ComponentKeys.MUTATIONS);
 		for (IButterflyMutation mutation : container.getMutations(true)) {
-			float chance = mutation.getChance(world, nursery, allele0, allele1, genome0, genome1);
+			float chance = getChance(mutation, level, nursery, allele0, allele1, genome0, genome1);
 			if (chance > rand.nextFloat() * 100) {
 				return ButterflyManager.butterflyRoot.getKaryotype().templateAsChromosomes(mutation.getTemplate());
 			}
@@ -286,11 +283,12 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 
 		PathfinderMob creature = entity.getEntity();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
-		IProductList products = getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getButterflyLoot();
+		List<Product> products = getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getButterflyLoot();
+		RandomSource rand = creature.level.random;
 
-		for (Product product : products.getPossibleProducts()) {
-			if (creature.level.random.nextFloat() < product.getChance() * metabolism) {
-				drop.add(product.copyStack());
+		for (Product product : products) {
+			if (rand.nextFloat() < product.chance() * metabolism) {
+				drop.add(product.createStack());
 			}
 		}
 

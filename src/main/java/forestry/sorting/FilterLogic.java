@@ -181,7 +181,7 @@ public class FilterLogic implements IFilterLogic {
 		if (rule == DefaultFilterRuleType.ITEM && !filterData.isPresent()) {
 			return true;
 		}
-		String requiredRoot = rule.getRootUID();
+		String requiredRoot = rule.getSpeciesTypeId();
 		if (requiredRoot != null && (!filterData.isPresent() || !filterData.root().id().equals(requiredRoot))) {
 			return false;
 		}

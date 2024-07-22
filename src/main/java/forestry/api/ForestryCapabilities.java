@@ -8,6 +8,7 @@ import forestry.api.apiculture.IArmorApiarist;
 import forestry.api.climate.IClimateListener;
 import forestry.api.climate.IClimateTransformer;
 import forestry.api.core.IArmorNaturalist;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.filter.IFilterLogic;
 
 import genetics.api.IGeneTemplate;
@@ -22,7 +23,6 @@ public class ForestryCapabilities {
 
 	// Genetics
 	public static Capability<IIndividual> INDIVIDUAL = CapabilityManager.get(new CapabilityToken<>() {});
-	public static Capability<IGeneTemplate> GENE_TEMPLATE = CapabilityManager.get(new CapabilityToken<>() {});
 
 	// Climate (habitat reformer)
 	public static Capability<IClimateListener> CLIMATE_LISTENER = CapabilityManager.get(new CapabilityToken<>() {});

@@ -15,7 +15,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.climate.IClimatised;
 import forestry.api.core.TemperatureType;
-import forestry.api.genetics.alleles.AlleleManager;
+import forestry.api.genetics.ClimateHelper;
 
 import net.minecraft.network.chat.Component;
 

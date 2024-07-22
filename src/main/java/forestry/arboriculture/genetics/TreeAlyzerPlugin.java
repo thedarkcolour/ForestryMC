@@ -69,13 +69,13 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	}
 
 	@Override
-	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack itemStack) {
+	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			ITree tree = TreeManager.treeRoot.create(itemStack);
+			ITree tree = TreeManager.treeRoot.create(stack);
 			if (tree == null) {
 				return;
 			}
-			ILifeStage type = TreeManager.treeRoot.getTypes().getType(itemStack);
+			ILifeStage type = TreeManager.treeRoot.getTypes().getType(stack);
 			if (type == null) {
 				return;
 			}
@@ -122,9 +122,9 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack itemStack) {
+	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			ITree tree = TreeManager.treeRoot.create(itemStack);
+			ITree tree = TreeManager.treeRoot.create(stack);
 			if (tree == null) {
 				return;
 			}

@@ -13,7 +13,7 @@ package forestry.apiculture.genetics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.apiculture.IBeeSpecies;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.IGenome;
 
@@ -26,8 +26,7 @@ import forestry.api.apiculture.genetics.IBeeMutationBuilder;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.core.genetics.mutations.Mutation;
 
-public class BeeMutation extends Mutation implements IBeeMutation, IBeeMutationBuilder {
-
+public class BeeMutation extends Mutation implements IBeeMutation {
 	public BeeMutation(IBeeSpecies bee0, IBeeSpecies bee1, IAllele[] result, int chance) {
 		super(bee0, bee1, result, chance);
 	}
@@ -44,21 +43,7 @@ public class BeeMutation extends Mutation implements IBeeMutation, IBeeMutationB
 
 	@Override
 	public float getChance(IBeeHousing housing, IBeeSpecies allele0, IBeeSpecies allele1, IGenome genome0, IGenome genome1) {
-		Level world = housing.getWorldObj();
-		BlockPos housingPos = housing.getCoordinates();
 
-		float processedChance = super.getChance(world, housingPos, allele0, allele1, genome0, genome1, housing);
-		if (processedChance <= 0) {
-			return 0;
-		}
-
-		IBeeModifier beeHousingModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
-		//IBeeModifier beeModeModifier = BeeManager.beeRoot.getBeekeepingMode(world).getBeeModifier();
-
-		processedChance *= beeHousingModifier.getMutationModifier(genome0, genome1, processedChance);
-		//processedChance *= beeModeModifier.getMutationModifier(genome0, genome1, processedChance);
-
-		return processedChance;
 	}
 
 }

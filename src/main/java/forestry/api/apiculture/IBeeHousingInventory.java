@@ -8,14 +8,13 @@ package forestry.api.apiculture;
 import net.minecraft.world.item.ItemStack;
 
 public interface IBeeHousingInventory {
-
 	ItemStack getQueen();
 
 	ItemStack getDrone();
 
-	void setQueen(ItemStack itemstack);
+	void setQueen(ItemStack stack);
 
-	void setDrone(ItemStack itemstack);
+	void setDrone(ItemStack stack);
 
 	/**
 	 * Adds products to the housing's inventory.

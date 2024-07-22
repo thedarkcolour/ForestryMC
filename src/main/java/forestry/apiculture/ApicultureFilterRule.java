@@ -1,22 +1,22 @@
 package forestry.apiculture;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.filter.IFilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.sorting.DefaultFilterRuleType;
 
-import genetics.api.individual.IIndividual;
-
 public enum ApicultureFilterRule implements IFilterRule {
 	PURE_BREED(DefaultFilterRuleType.PURE_BREED) {
 		@Override
 		protected boolean isValid(IBee bee) {
-			return bee.isPureBred(BeeChromosomes.SPECIES);
+			return bee.getGenome().getActiveAllele(BeeChromosomes.SPECIES) == bee.getGenome().getInactiveAllele(BeeChromosomes.SPECIES);
 		}
 	},
 	NOCTURNAL(DefaultFilterRuleType.NOCTURNAL) {
@@ -28,7 +28,7 @@ public enum ApicultureFilterRule implements IFilterRule {
 	PURE_NOCTURNAL(DefaultFilterRuleType.PURE_NOCTURNAL) {
 		@Override
 		protected boolean isValid(IBee bee) {
-			return bee.getGenome().getActiveValue(BeeChromosomes.NEVER_SLEEPS) && bee.isPureBred(BeeChromosomes.NEVER_SLEEPS);
+			return bee.getGenome().getActiveValue(BeeChromosomes.NEVER_SLEEPS) && bee.getGenome().getInactiveValue(BeeChromosomes.NEVER_SLEEPS);
 		}
 	},
 	FLYER(DefaultFilterRuleType.FLYER) {
@@ -40,7 +40,7 @@ public enum ApicultureFilterRule implements IFilterRule {
 	PURE_FLYER((DefaultFilterRuleType.PURE_FLYER)) {
 		@Override
 		protected boolean isValid(IBee bee) {
-			return bee.getGenome().getActiveValue(BeeChromosomes.TOLERATES_RAIN) && bee.isPureBred(BeeChromosomes.TOLERATES_RAIN);
+			return bee.getGenome().getActiveValue(BeeChromosomes.TOLERATES_RAIN) && bee.getGenome().getInactiveValue(BeeChromosomes.TOLERATES_RAIN);
 		}
 	},
 	CAVE(DefaultFilterRuleType.CAVE) {
@@ -52,7 +52,7 @@ public enum ApicultureFilterRule implements IFilterRule {
 	PURE_CAVE(DefaultFilterRuleType.PURE_CAVE) {
 		@Override
 		protected boolean isValid(IBee bee) {
-			return bee.getGenome().getActiveValue(BeeChromosomes.CAVE_DWELLING) && bee.isPureBred(BeeChromosomes.CAVE_DWELLING);
+			return bee.getGenome().getActiveValue(BeeChromosomes.CAVE_DWELLING) && bee.getGenome().getInactiveValue(BeeChromosomes.CAVE_DWELLING);
 		}
 	};
 
@@ -69,10 +69,10 @@ public enum ApicultureFilterRule implements IFilterRule {
 			return false;
 		}
 		IIndividual individual = data.individual();
-		if (!(individual instanceof IBee)) {
-			return false;
+		if (individual instanceof IBee) {
+			return isValid((IBee) individual);
 		}
-		return isValid((IBee) individual);
+		return false;
 	}
 
 	protected boolean isValid(IBee bee) {
@@ -80,7 +80,7 @@ public enum ApicultureFilterRule implements IFilterRule {
 	}
 
 	@Override
-	public String getRootUID() {
+	public ResourceLocation getSpeciesTypeId() {
 		return BeeManager.beeRoot.id();
 	}
 

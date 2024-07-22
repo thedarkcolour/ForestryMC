@@ -42,7 +42,7 @@ import forestry.core.proxy.Proxies;
 import forestry.core.utils.StringUtil;
 
 import genetics.api.GeneticsAPI;
-import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.ISpecies<?>;
 import genetics.commands.CommandHelpers;
 
 public final class CommandSaveStats implements Command<CommandSourceStack> {
@@ -90,7 +90,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 		IBreedingTracker tracker = saveHelper.getBreedingTracker(world, player.getGameProfile());
 		saveHelper.addExtraInfo(statistics, tracker);
 
-		Collection<? extends IAlleleSpecies> species = saveHelper.getSpecies();
+		Collection<? extends ISpecies<?>> species = saveHelper.getSpecies();
 
 		String speciesCount = Component.translatable("for.gui.speciescount").getString();
 		String speciesCountLine = String.format("%s (%s):", speciesCount, species.size());
@@ -108,7 +108,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 		statistics.add(StringUtil.line(header.length()));
 		statistics.add("");
 
-		for (IAlleleSpecies allele : species) {
+		for (ISpecies<?> allele : species) {
 			statistics.add(generateSpeciesListEntry(allele, tracker));
 		}
 
@@ -161,7 +161,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 		return speciesListEntry(discoveredSymbol, blacklistedSymbol, notCountedSymbol, "UID", species, authority.getString());
 	}
 
-	private static String generateSpeciesListEntry(IAlleleSpecies species, IBreedingTracker tracker) {
+	private static String generateSpeciesListEntry(ISpecies<?> species, IBreedingTracker tracker) {
 		Component discovered = Component.empty();
 		if (tracker.isDiscovered(species)) {
 			discovered = discoveredSymbol;

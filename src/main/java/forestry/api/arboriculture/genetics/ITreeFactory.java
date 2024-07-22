@@ -13,7 +13,7 @@ import forestry.api.arboriculture.ILeafSpriteProvider;
 public interface ITreeFactory {
 	/**
 	 * Creates a new tree species.
-	 * See IAlleleTreeSpeciesBuilder and IAlleleSpeciesBuilder for adding additional properties to the returned species.
+	 * See IAlleleTreeSpeciesBuilder and ISpecies<?>Builder for adding additional properties to the returned species.
 	 *
 	 * @param uid               Unique Identifier for this species
 	 * @param modID             The modID from the mod of the species

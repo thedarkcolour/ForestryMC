@@ -8,16 +8,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.features.CoreItems;
 import forestry.core.gui.slots.SlotAnalyzer;
 import forestry.core.gui.slots.SlotLockable;
 import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.utils.GeneticsUtil;
 import forestry.database.inventory.InventoryDatabaseAnalyzer;
-
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
 
 public class ContainerAnalyzerProviderHelper {
 	/* Attributes - Final*/
@@ -73,13 +70,14 @@ public class ContainerAnalyzerProviderHelper {
 			return;
 		}
 
+		// TODO... how do I convert to a genetic specimen?
 		ItemStack convertedSpecimen = GeneticsUtil.convertToGeneticEquivalent(specimen);
 		if (!ItemStack.matches(specimen, convertedSpecimen)) {
 			specimenSlot.set(convertedSpecimen);
 			specimen = convertedSpecimen;
 		}
 
-		IForestrySpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(specimen);
+		ISpeciesType<?> speciesRoot = RootUtils.getRoot(specimen);
 		// No individual, abort
 		if (speciesRoot == null) {
 			return;

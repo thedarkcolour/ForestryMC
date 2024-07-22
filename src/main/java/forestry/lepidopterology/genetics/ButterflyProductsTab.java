@@ -8,10 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.gatgets.IDatabaseTab;
-import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.gui.elements.Alignment;
@@ -29,21 +26,21 @@ public class ButterflyProductsTab implements IDatabaseTab<IButterfly> {
 	@Override
 	public void createElements(DatabaseElement container, IButterfly individual, ItemStack itemStack) {
 		LayoutHelper groupHelper = container.layoutHelper((x, y) -> GuiElementFactory.horizontal(18, 2, FlexLayout.LEFT_MARGIN), 90, 0);
-		Collection<ItemStack> butterflyLoot = individual.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getButterflyLoot().getPossibleStacks();
+		Collection<ItemStack> butterflyLoot = individual.getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getButterflyLoot().getPossibleStacks();
 		if (!butterflyLoot.isEmpty()) {
 			container.translated("for.gui.loot.butterfly").setAlign(Alignment.TOP_CENTER);
 			butterflyLoot.forEach(stack -> groupHelper.add(new ItemElement(0, 0, stack)));
 			groupHelper.finish();
 		}
 
-		Collection<ItemStack> caterpillarLoot = individual.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getCaterpillarLoot().getPossibleStacks();
+		Collection<ItemStack> caterpillarLoot = individual.getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarLoot().getPossibleStacks();
 		if (!caterpillarLoot.isEmpty()) {
 			container.translated("for.gui.loot.caterpillar").setAlign(Alignment.TOP_CENTER);
 			caterpillarLoot.forEach(stack -> groupHelper.add(new ItemElement(0, 0, stack)));
 			groupHelper.finish();
 		}
 
-		Collection<ItemStack> cocoonLoot = individual.getGenome().getActiveAllele(ButterflyChromosomes.COCOON).getCocoonLoot().getPossibleStacks();
+		Collection<ItemStack> cocoonLoot = individual.getGenome().getActiveValue(ButterflyChromosomes.COCOON).getCocoonLoot().getPossibleStacks();
 		if (!cocoonLoot.isEmpty()) {
 			container.translated("for.gui.loot.cocoon").setAlign(Alignment.TOP_CENTER);
 			cocoonLoot.forEach(stack -> groupHelper.add(new ItemElement(0, 0, stack)));

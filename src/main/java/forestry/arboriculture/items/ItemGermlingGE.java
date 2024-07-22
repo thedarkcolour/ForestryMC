@@ -39,6 +39,7 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.ItemGroups;
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IPollinatable;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.recipes.IVariableFermentable;
 import forestry.arboriculture.genetics.TreeHelper;
@@ -64,7 +65,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 	}
 
 	@Override
-	protected IAlleleTreeSpecies getSpecies(ItemStack itemStack) {
+	protected ISpecies<?> getSpecies(ItemStack itemStack) {
 		return GeneticHelper.getOrganism(itemStack).getAllele(TreeChromosomes.SPECIES, true);
 	}
 

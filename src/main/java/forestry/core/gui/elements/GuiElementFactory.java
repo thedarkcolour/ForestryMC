@@ -16,7 +16,7 @@ import forestry.api.ForestryConstants;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.genetics.gatgets.IGeneticAnalyzer;
@@ -169,7 +169,7 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 		if (breedingTracker.isDiscovered(mutation)) {
 			ContainerElement element = new ContainerElement();
 			element.setPreferredBounds(x, y, width, height);
-			IAlyzerPlugin plugin = ((IForestrySpeciesType) mutation.getType()).getAlyzerPlugin();
+			IAlyzerPlugin plugin = ((ISpeciesType) mutation.getType()).getAlyzerPlugin();
 			Map<ResourceLocation, ItemStack> iconStacks = plugin.getIconStacks();
 
 			ItemStack firstPartner = iconStacks.get(mutation.getFirstParent().getId());
@@ -189,7 +189,7 @@ public class GuiElementFactory implements ResourceManagerReloadListener {
 	public ContainerElement createMutation(int x, int y, int width, int height, IMutation mutation, IAllele species, IBreedingTracker breedingTracker) {
 		if (breedingTracker.isDiscovered(mutation)) {
 			ContainerElement element = pane(x, y, width, height);
-			IForestrySpeciesType speciesRoot = (IForestrySpeciesType) mutation.getType();
+			ISpeciesType speciesRoot = (ISpeciesType) mutation.getType();
 			int speciesIndex = speciesRoot.getKaryotype().getSpeciesChromosome().ordinal();
 			IDatabasePlugin plugin = speciesRoot.getSpeciesPlugin();
 			Map<String, ItemStack> iconStacks = plugin.getIndividualStacks();

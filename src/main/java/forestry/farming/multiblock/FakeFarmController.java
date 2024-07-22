@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
@@ -83,7 +84,7 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public void setUpFarmlandTargets(Map<HorizontalDirection, List<FarmTarget>> targets) {
+	public void setUpFarmlandTargets(Map<Direction, List<FarmTarget>> targets) {
 	}
 
 	@Override
@@ -174,16 +175,16 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public int getExtents(HorizontalDirection direction, BlockPos pos) {
+	public int getExtents(Direction direction, BlockPos pos) {
 		return 0;
 	}
 
 	@Override
-	public void setExtents(HorizontalDirection direction, BlockPos pos, int extend) {
+	public void setExtents(Direction direction, BlockPos pos, int extend) {
 	}
 
 	@Override
-	public void cleanExtents(HorizontalDirection direction) {
+	public void cleanExtents(Direction direction) {
 	}
 
 	private enum FakeFarmInventory implements IFarmInventoryInternal {

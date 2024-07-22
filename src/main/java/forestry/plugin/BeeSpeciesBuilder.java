@@ -2,7 +2,6 @@ package forestry.plugin;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.resources.ResourceLocation;
@@ -13,52 +12,31 @@ import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.Product;
 import forestry.api.plugin.IBeeSpeciesBuilder;
-import forestry.api.plugin.IGenomeBuilder;
-import forestry.api.plugin.IKaryotypeBuilder;
-import forestry.api.plugin.IMutationsRegistration;
+import forestry.apiculture.BeeSpecies;
 
-public class BeeSpeciesBuilder implements IBeeSpeciesBuilder {
-	private final ResourceLocation id;
-	private final String genus;
-	private final String species;
-	private final IMutationsRegistration mutations;
-	private final ArrayList<Product> products = new ArrayList<>();
-	private final ArrayList<Product> specialties = new ArrayList<>();
+import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
+
+public class BeeSpeciesBuilder extends SpeciesBuilder implements IBeeSpeciesBuilder {
+	private final Reference2FloatOpenHashMap<Supplier<ItemStack>> products = new Reference2FloatOpenHashMap<>();
+	private final Reference2FloatOpenHashMap<Supplier<ItemStack>> specialties = new Reference2FloatOpenHashMap<>();
 	private int bodyColor = 0xffdc16;
 	private int stripesColor = 0;
 	private int outlineColor = -1;
-	private boolean secret;
-	private boolean glint;
+	private boolean nocturnal;
 
-	public BeeSpeciesBuilder(ResourceLocation id, String genus, String species) {
-		this.id = id;
-		this.genus = genus;
-		this.species = species;
-		this.mutations = new MutationsRegistration();
+	public BeeSpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
+		super(id, genus, species, mutations);
 	}
 
 	@Override
 	public IBeeSpeciesBuilder addProduct(Supplier<ItemStack> stack, float chance) {
+		this.products.put(stack, chance);
 		return this;
 	}
 
 	@Override
 	public IBeeSpeciesBuilder addSpecialty(Supplier<ItemStack> stack, float chance) {
-		return this;
-	}
-
-	@Override
-	public IBeeSpeciesBuilder setTemperature(TemperatureType temperature) {
-		return this;
-	}
-
-	@Override
-	public IBeeSpeciesBuilder setHumidity(HumidityType humidity) {
-		return this;
-	}
-
-	@Override
-	public IBeeSpeciesBuilder setGenome(Consumer<IGenomeBuilder> genome) {
+		this.specialties.put(stack, chance);
 		return this;
 	}
 
@@ -81,31 +59,19 @@ public class BeeSpeciesBuilder implements IBeeSpeciesBuilder {
 	}
 
 	@Override
-	public IBeeSpeciesBuilder setDominant(boolean dominant) {
-		return this;
-	}
-
-	@Override
-	public IBeeSpeciesBuilder addMutations(Consumer<IMutationsRegistration> mutations) {
-		mutations.accept(this.mutations);
-		return this;
-	}
-
-	@Override
-	public IBeeSpeciesBuilder setGlint(boolean glint) {
-		this.glint = glint;
-		return this;
-	}
-
-	@Override
-	public IBeeSpeciesBuilder setSecret(boolean secret) {
-		this.secret = secret;
-		return this;
-	}
-
-	@Override
 	public IBeeSpeciesBuilder setJubilance(IBeeJubilance jubilance) {
 		return this;
+	}
+
+	@Override
+	public IBeeSpeciesBuilder setNocturnal(boolean nocturnal) {
+		this.nocturnal = nocturnal;
+		return this;
+	}
+
+	@Override
+	public boolean isNocturnal() {
+		return this.nocturnal;
 	}
 
 	public BeeSpecies build() {

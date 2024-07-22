@@ -1,12 +1,13 @@
 package forestry.api.plugin;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.IBeeJubilance;
-import forestry.api.apiculture.IBeeSpecies;
+import forestry.api.genetics.Product;
 
 /**
  * Builder used to register new bee species and configure already existing ones.
@@ -45,17 +46,6 @@ public interface IBeeSpeciesBuilder extends ISpeciesBuilder<IBeeSpeciesBuilder> 
 	IBeeSpeciesBuilder setOutline(Color color);
 
 	/**
-	 * Specify whether this bee species is a "secret" species whose mutation cannot be discovered in the Escritoire.
-	 * <p>
-	 * Example species include: <ul>
-	 * <li>Holiday species (Leporine, Merry, Tricky, Tipsy)</li>
-	 * <li>Iridium-producing species (Vindictive, Vengeful, Avenging)</li>
-	 * <li>Easter eggs like the secret Benson species from Career Bees</li>
-	 * </ul>
-	 */
-	IBeeSpeciesBuilder setSecret(boolean secret);
-
-	/**
 	 * Specify the jubilance conditions for this bee species. The default returns true if the bee's ideal temperature and humidity are met.
 	 * When {@link IBeeJubilance#isJubilant} returns true, a bee can produce its specialty products.
 	 */
@@ -65,4 +55,18 @@ public interface IBeeSpeciesBuilder extends ISpeciesBuilder<IBeeSpeciesBuilder> 
 	 * Specify whether this bee species is nocturnal.
 	 */
 	IBeeSpeciesBuilder setNocturnal(boolean nocturnal);
+
+	List<Product> buildProducts();
+
+	List<Product> buildSpecialties();
+
+	int getBody();
+
+	int getStripes();
+
+	int getOutline();
+
+	IBeeJubilance getJubilance();
+
+	boolean isNocturnal();
 }

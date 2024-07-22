@@ -28,16 +28,15 @@ import com.mojang.authlib.GameProfile;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IBreedingTrackerHandler;
-import forestry.api.genetics.gatgets.IDatabasePlugin;
+import forestry.api.genetics.IPollinatable;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.ILepidopteristTracker;
-import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.core.genetics.root.BreedingTrackerManager;
@@ -52,20 +51,14 @@ import forestry.lepidopterology.features.LepidopterologyEntities;
 import forestry.lepidopterology.tiles.TileCocoon;
 
 import forestry.api.genetics.IGenome;
-import genetics.api.individual.IGenomeWrapper;
-import genetics.api.individual.IIndividual;
-import genetics.api.root.IRootContext;
-import genetics.api.root.SpeciesType;
-import genetics.utils.AlleleUtils;
 
-public class ButterflySpeciesType extends SpeciesType<IButterfly> implements IButterflySpeciesType, IBreedingTrackerHandler {
-
+public class ButterflySpeciesType implements IButterflySpeciesType, IBreedingTrackerHandler {
 	private int butterflySpeciesCount = -1;
 	private static final List<IButterfly> butterflyTemplates = new ArrayList<>();
 
 	public ButterflySpeciesType(IRootContext<IButterfly> context) {
 		super(context);
-		BreedingTrackerManager.INSTANCE.registerTracker(ForestrySpeciesType.BUTTERFLY, this);
+		BreedingTrackerManager.INSTANCE.registerTracker(ForestrySpeciesTypes.BUTTERFLY, this);
 	}
 
 	@Override
@@ -97,14 +90,14 @@ public class ButterflySpeciesType extends SpeciesType<IButterfly> implements IBu
 	public int getSpeciesCount() {
 		if (butterflySpeciesCount < 0) {
 			butterflySpeciesCount = (int) AlleleUtils.filteredStream(ButterflyChromosomes.SPECIES)
-				.filter(IAlleleButterflySpecies::isCounted).count();
+				.filter(IButterflySpecies::isCounted).count();
 		}
 
 		return butterflySpeciesCount;
 	}
 
 	@Override
-	public ButterflyLifeStage getIconType() {
+	public ButterflyLifeStage getDefaultStage() {
 		return ButterflyLifeStage.BUTTERFLY;
 	}
 
@@ -120,7 +113,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterfly> implements IBu
 
 	@Override
 	public BlockPos plantCocoon(LevelAccessor world, BlockPos coordinates, @Nullable IButterfly caterpillar, GameProfile owner, int age, boolean createNursery) {
-		if (caterpillar == null) {
+		if (caterpillar == super.getSpeciesPlugin()) {
 			return BlockPos.ZERO;
 		}
 
@@ -140,7 +133,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterfly> implements IBu
 		}
 
 		TileCocoon cocoon = TileUtil.getTile(world, pos, TileCocoon.class);
-		if (cocoon == null) {
+		if (cocoon == super.getSpeciesPlugin()) {
 			world.setBlock(pos, Blocks.AIR.defaultBlockState(), 18);
 			return BlockPos.ZERO;
 		}
@@ -183,13 +176,13 @@ public class ButterflySpeciesType extends SpeciesType<IButterfly> implements IBu
 	}
 
 	private boolean isNurseryValid(@Nullable IButterflyNursery nursery, IButterfly caterpillar, GameProfile gameProfile) {
-		return nursery != null && nursery.canNurse(caterpillar);
+		return nursery != super.getSpeciesPlugin() && nursery.canNurse(caterpillar);
 	}
 
 	@Override
 	public boolean isMated(ItemStack stack) {
 		IButterfly butterfly = getTypes().createIndividual(stack);
-		return butterfly != null && butterfly.getMate() == null;
+		return butterfly != super.getSpeciesPlugin() && butterfly.getMate() == super.getSpeciesPlugin();
 	}
 
 	/* BREEDING TRACKER */
@@ -200,7 +193,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterfly> implements IBu
 
 	@Override
 	public String getFileName(@Nullable GameProfile profile) {
-		return "LepidopteristTracker." + (profile == null ? "common" : profile.getId());
+		return "LepidopteristTracker." + (profile == super.getSpeciesPlugin() ? "common" : profile.getId());
 	}
 
 	@Override
@@ -229,7 +222,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterfly> implements IBu
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public IDatabasePlugin getSpeciesPlugin() {
+	public IPollinatable getSpeciesPlugin() {
 		return ButterflyPlugin.INSTANCE;
 	}
 }

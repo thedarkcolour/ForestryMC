@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -28,7 +29,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IMutationManager;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.core.config.Constants;
 import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.gui.buttons.GuiBetterButton;
@@ -37,25 +43,20 @@ import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
 
-import forestry.api.genetics.alleles.IAlleleSpecies;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.IGenome;
-import genetics.api.individual.IIndividual;
 import forestry.api.genetics.IMutation;
-import genetics.api.mutation.IMutationContainer;
-import genetics.api.root.components.ComponentKeys;
 
 public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalistMenu> extends GuiForestry<C> {
-	private final IForestrySpeciesType<IIndividual> speciesRoot;
+	private final ISpeciesType<?> speciesType;
 	private final IBreedingTracker breedingTracker;
-	private final HashMap<String, ItemStack> iconStacks = new HashMap<>();
+	private final HashMap<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
 	private final int pageCurrent, pageMax;
 	private final CycleTimer timer = new CycleTimer(0);
 
 	public GuiNaturalistInventory(C menu, Inventory playerInv, Component name) {
 		super(Constants.TEXTURE_PATH_GUI + "/apiaristinventory.png", menu, playerInv, name);
 
-		this.speciesRoot = menu.getSpeciesRoot();
+		this.speciesType = menu.getSpeciesRoot();
 
 		this.pageCurrent = menu.getCurrentPage();
 		this.pageMax = ContainerNaturalistInventory.MAX_PAGE;
@@ -63,11 +64,12 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 		imageWidth = 196;
 		imageHeight = 202;
 
-		for (IIndividual individual : speciesRoot.getIndividualTemplates()) {
-			iconStacks.put(individual.getId(), speciesRoot.getTypes().createStack(individual, speciesRoot.getIconType()));
+		// todo investigate how often this map is populated
+		for (ISpecies species : speciesType.getSpecies()) {
+			iconStacks.put(species.id(), species.createStack(species.createIndividual(), speciesType.getDefaultStage()));
 		}
 
-		breedingTracker = speciesRoot.getBreedingTracker(playerInv.player.level, playerInv.player.getGameProfile());
+		breedingTracker = speciesType.getBreedingTracker(playerInv.player.level, playerInv.player.getGameProfile());
 	}
 
 	@Override
@@ -87,12 +89,16 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 			textLayout.startPage(transform);
 
 			IGenome genome = individual.getGenome();
-			IChromosome speciesType = individual.getRoot().getKaryotype().getSpeciesChromosome();
-			boolean pureBred = individual.isPureBred(speciesType);
+			ISpeciesChromosome<? extends ISpecies<?>> speciesChromosome = individual.getType().getKaryotype().getSpeciesChromosome();
+			// var allows generics to compile :)
+			var speciesPair = genome.getAllelePair(speciesChromosome);
+			boolean pureBred = speciesPair.isSameAlleles();
 
-			displaySpeciesInformation(transform, true, genome.getPrimarySpecies(), iconStacks.get(individual.getId()), 10, pureBred ? 25 : 10);
+			ISpecies<?> active = speciesPair.active().value();
+			displaySpeciesInformation(transform, true, active, iconStacks.get(active.id()), 10, pureBred ? 25 : 10);
 			if (!pureBred) {
-				displaySpeciesInformation(transform, individual.isAnalyzed(), genome.getSecondarySpecies(), iconStacks.get(genome.getSecondarySpecies().id().toString()), 10, 10);
+				ISpecies<?> inactive = speciesPair.inactive().value();
+				displaySpeciesInformation(transform, individual.isAnalyzed(), inactive, iconStacks.get(inactive.id()), 10, 10);
 			}
 
 			textLayout.endPage(transform);
@@ -135,18 +141,17 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 			return null;
 		}
 
-		if (!speciesRoot.isMember(slot.getItem())) {
+		if (!speciesType.isMember(slot.getItem())) {
 			return null;
 		}
 
-		return speciesRoot.getTypes().createIndividual(slot.getItem());
+		return speciesType.createIndividual(slot.getItem());
 	}
 
 	private void displayBreedingStatistics(PoseStack transform, int x) {
-
 		textLayout.startPage(transform);
 
-		textLayout.drawLine(transform, Component.translatable("for.gui.speciescount").append(": ").append(breedingTracker.getSpeciesBred() + "/" + speciesRoot.getSpeciesCount()), x);
+		textLayout.drawLine(transform, Component.translatable("for.gui.speciescount").append(": ").append(breedingTracker.getSpeciesBred() + "/" + speciesType.getSpeciesCount()), x);
 		textLayout.newLine();
 		textLayout.newLine();
 
@@ -164,8 +169,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 		textLayout.endPage(transform);
 	}
 
-	private void displaySpeciesInformation(PoseStack transform, boolean analyzed, IAlleleSpecies species, ItemStack iconStack, int x, int maxMutationCount) {
-
+	private void displaySpeciesInformation(PoseStack transform, boolean analyzed, ISpecies<?> species, ItemStack iconStack, int x, int maxMutationCount) {
 		if (!analyzed) {
 			textLayout.drawLine(transform, Component.translatable("for.gui.unknown"), x);
 			return;
@@ -180,9 +184,10 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 		int columnWidth = 16;
 		int column = 10;
 
-		IMutationContainer<IIndividual, ? extends IMutation> container = speciesRoot.getComponent(ComponentKeys.MUTATIONS);
-		List<List<? extends IMutation>> mutations = splitMutations(container.getCombinations(species), maxMutationCount);
-		for (IMutation combination : timer.getCycledItem(mutations, Collections::emptyList)) {
+		@SuppressWarnings("rawtypes")
+		IMutationManager manager = speciesType.getMutations();
+		List<List<? extends IMutation<?>>> mutations = splitMutations(manager.getMutationsFrom(species), maxMutationCount);
+		for (IMutation<?> combination : timer.getCycledItem(mutations, Collections::emptyList)) {
 			if (combination.isSecret()) {
 				continue;
 			}
@@ -204,7 +209,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 		textLayout.newLine();
 	}
 
-	private void drawMutationIcon(PoseStack transform, IMutation combination, IAlleleSpecies species, int x) {
+	private void drawMutationIcon(PoseStack transform, IMutation<?> combination, ISpecies<?> species, int x) {
 		GuiUtil.drawItemStack(transform, this, iconStacks.get(combination.getPartner(species).id().toString()), leftPos + x, topPos + textLayout.getLineY());
 
 		int line = 48;
@@ -235,7 +240,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 
 	}
 
-	private void drawUnknownIcon(PoseStack transform, IMutation mutation, int x) {
+	private void drawUnknownIcon(PoseStack transform, IMutation<?> mutation, int x) {
 		float chance = mutation.getBaseChance();
 
 		int line;
@@ -264,16 +269,16 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 		blit(transform, leftPos + x, topPos + textLayout.getLineY(), column, line, 16, 16);
 	}
 
-	private static List<List<? extends IMutation>> splitMutations(List<? extends IMutation> mutations, int maxMutationCount) {
+	private static List<List<? extends IMutation<?>>> splitMutations(List<? extends IMutation<?>> mutations, int maxMutationCount) {
 		int size = mutations.size();
 		if (size <= maxMutationCount) {
 			return Collections.singletonList(mutations);
 		}
-		ImmutableList.Builder<List<? extends IMutation>> subGroups = new ImmutableList.Builder<>();
-		List<IMutation> subList = new LinkedList<>();
+		ImmutableList.Builder<List<? extends IMutation<?>>> subGroups = new ImmutableList.Builder<>();
+		List<IMutation<?>> subList = new LinkedList<>();
 		subGroups.add(subList);
 		int count = 0;
-		for (IMutation mutation : mutations) {
+		for (IMutation<?> mutation : mutations) {
 			if (mutation.isSecret()) {
 				continue;
 			}

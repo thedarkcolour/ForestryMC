@@ -1,19 +1,14 @@
 package forestry.api.genetics.gatgets;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import forestry.api.genetics.IIndividual;
 import forestry.core.gui.elements.DatabaseElement;
-
-import genetics.api.individual.IIndividual;
 
 /**
  * A tab of the database screen that shows some information about a {@link IIndividual}.
  */
-@OnlyIn(Dist.CLIENT)
 public interface IDatabaseTab<I extends IIndividual> {
 	/**
 	 * Creates the gui elements that are displayed if this tab is selected in the database.

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import genetics.ApiInstance;
-import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.ISpecies<?>;
 import forestry.api.genetics.ITaxon;
 import forestry.api.genetics.TaxonomicRank;
 
@@ -14,7 +14,7 @@ public class Taxon implements ITaxon {
 	private final TaxonomicRank rank;
 	private final String id;
 
-	private final ArrayList<IAlleleSpecies> members = new ArrayList<>();
+	private final ArrayList<ISpecies<?>> members = new ArrayList<>();
 	private final ArrayList<ITaxon> groups = new ArrayList<>();
 
 	public Taxon(TaxonomicRank rank, String id, String scientific) {
@@ -46,7 +46,7 @@ public class Taxon implements ITaxon {
 	}
 
 	@Override
-	public List<IAlleleSpecies> getMemberSpecies() {
-		return members.toArray(new IAlleleSpecies[0]);
+	public List<ISpecies<?>> getMemberSpecies() {
+		return members.toArray(new ISpecies<?>[0]);
 	}
 }

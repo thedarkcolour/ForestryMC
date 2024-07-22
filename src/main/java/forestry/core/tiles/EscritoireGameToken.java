@@ -18,7 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 
 import forestry.api.core.INbtWritable;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.ColourUtil;
@@ -77,7 +77,7 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 			ISpeciesType<IIndividual> root = (ISpeciesType<IIndividual>) species.getSpecies();
 			IAllele[] template = root.getTemplates().getTemplate(species.getId().toString());
 			this.tokenIndividual = root.templateAsIndividual(template);
-			this.tokenStack = root.getTypes().createStack(this.tokenIndividual, ((IForestrySpeciesType<IIndividual>) root).getIconType());
+			this.tokenStack = root.getTypes().createStack(this.tokenIndividual, ((ISpeciesType<IIndividual>) root).getDefaultStage());
 		}
 	}
 

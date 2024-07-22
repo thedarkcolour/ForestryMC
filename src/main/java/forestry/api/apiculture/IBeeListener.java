@@ -5,7 +5,7 @@
  ******************************************************************************/
 package forestry.api.apiculture;
 
-import genetics.api.individual.IIndividual;
+import forestry.api.genetics.IIndividual;
 
 public interface IBeeListener {
 

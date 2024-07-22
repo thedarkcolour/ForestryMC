@@ -51,34 +51,29 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 
+import forestry.api.ForestryTags;
+import forestry.api.IForestryApi;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.ICheckPollinatable;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.ForestryChromosomes;
+import forestry.api.genetics.alleles.IAllele;
 import forestry.api.lepidopterology.IEntityButterfly;
 import forestry.api.lepidopterology.ILepidopteristTracker;
-import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.core.config.Config;
-import forestry.api.ForestryTags;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.genetics.Butterfly;
 import forestry.lepidopterology.genetics.ButterflyHelper;
-
-import genetics.api.GeneticsAPI;
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.IGenome;
-import genetics.api.individual.IIndividual;
-import genetics.api.root.EmptyRootDefinition;
-import forestry.api.genetics.ISpeciesType;
-import genetics.api.root.IRootDefinition;
-import genetics.utils.AlleleUtils;
 
 public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	private static final String NBT_BUTTERFLY = "BTFLY";
@@ -105,7 +100,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	@Nullable
 	private Vec3 flightTarget;
 	private int exhaustion;
-	private IButterfly contained = ButterflyHelper.getRoot().templateAsIndividual(ButterflyHelper.getRoot().getDefaultTemplate());
+	private IButterfly contained = IForestryApi.INSTANCE.getGeneticManager().createDefaultIndividual(ForestrySpeciesTypes.BUTTERFLY);
 	@Nullable
 	private IIndividual pollen;
 
@@ -116,7 +111,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 	// Client Rendering
 	@Nullable
-	private IAlleleButterflySpecies species;
+	private forestry.api.lepidopterology.IButterflySpecies species;
 	private float size = DEFAULT_BUTTERFLY_SIZE;
 	private EnumButterflyState state = DEFAULT_STATE;
 	@OnlyIn(Dist.CLIENT)
@@ -373,7 +368,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 	public void setIndividual(@Nullable IButterfly butterfly) {
 		if (butterfly == null) {
-			butterfly = ButterflyHelper.getKaryotype().getDefaultTemplate().toIndividual(ButterflyHelper.getRoot());
+			butterfly = IForestryApi.INSTANCE.getGeneticManager().createDefaultIndividual(ForestrySpeciesTypes.BUTTERFLY);
 		}
 		contained = butterfly;
 
@@ -383,11 +378,11 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		size = genome.getActiveValue(ButterflyChromosomes.SIZE);
 		// todo
 		//		setSize(size, 0.4f);
-		species = genome.getActiveAllele(ButterflyChromosomes.SPECIES);
+		this.species = genome.getActiveValue(ButterflyChromosomes.SPECIES);
 
 		if (!level.isClientSide) {
 			entityData.set(DATAWATCHER_ID_SIZE, (int) (size * 100));
-			entityData.set(DATAWATCHER_ID_SPECIES, species.getId().toString());
+			entityData.set(DATAWATCHER_ID_SPECIES, species.id().toString());
 		} else {
 			textureResource = species.getEntityTexture();
 		}
@@ -505,8 +500,8 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 				String speciesUid = entityData.get(DATAWATCHER_ID_SPECIES);
 				IAllele allele = AlleleUtils.getAllele(speciesUid);
 				if (allele != null) {
-					if (allele instanceof IAlleleButterflySpecies) {
-						species = (IAlleleButterflySpecies) allele;
+					if (allele instanceof IButterflySpecies) {
+						species = (IButterflySpecies) allele;
 						textureResource = species.getEntityTexture();
 						size = entityData.get(DATAWATCHER_ID_SIZE) / 100f;
 					}

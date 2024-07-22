@@ -4,40 +4,30 @@ import java.util.Collection;
 
 import net.minecraft.network.chat.Component;
 
-import forestry.api.apiculture.IBeeSpecies;
-import forestry.api.genetics.alleles.IAllele;
-
-
 /**
+ * Represents a mutation between two species (in any order) into a third species.
+ * A mutation should never have both parents of the same species.
  */
 public interface IMutation<S extends ISpecies<?>> {
-
 	/**
 	 * @return {@link ISpeciesType} this mutation is associated with.
 	 */
 	ISpeciesType<S> getType();
 
 	/**
-	 * @return first of the alleles implementing IAlleleSpecies required for this mutation.
+	 * @return One of the species required for this mutation.
 	 */
 	S getFirstParent();
 
 	/**
-	 * @return second of the alleles implementing IAlleleSpecies required for this mutation.
+	 * @return The other species required for this mutation.
 	 */
 	S getSecondParent();
 
 	/**
-	 * @return the allele implementing IAlleleSpecies the resulted of this mutation.
+	 * @return The species resulting from this mutation.
 	 */
-	S getResultingSpecies();
-
-	/**
-	 * @return Array of {@link IAllele} representing the full default genome of the mutated side.
-	 * <p>
-	 * Make sure to return a proper array for the species class. Returning an allele of the wrong type will cause cast errors on runtime.
-	 */
-	IAllele[] getTemplate();
+	S getResult();
 
 	/**
 	 * @return Unmodified base chance for mutation to fire.
@@ -50,14 +40,14 @@ public interface IMutation<S extends ISpecies<?>> {
 	Collection<Component> getSpecialConditions();
 
 	/**
-	 * @return true if the passed allele is one of the alleles participating in this mutation.
+	 * @return {@code true} if the passed allele is one of the alleles participating in this mutation.
 	 */
-	boolean isPartner(IAllele allele);
+	boolean isPartner(ISpecies<?> allele);
 
 	/**
-	 * @return the other allele which was not passed as argument.
+	 * @return The other allele which was not passed as argument.
 	 */
-	IAllele getPartner(IAllele allele);
+	ISpecies<?> getPartner(ISpecies<?> allele);
 
 	/**
 	 * @return true if the mutation should not be displayed in a gui that displays all mutations.

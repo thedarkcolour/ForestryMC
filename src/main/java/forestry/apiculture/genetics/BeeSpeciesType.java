@@ -10,17 +10,19 @@
  ******************************************************************************/
 package forestry.apiculture.genetics;
 
+import com.google.common.base.Preconditions;
+
 import javax.annotation.Nullable;
 
+import java.util.List;
+
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
 import com.mojang.authlib.GameProfile;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.IBeeHousing;
@@ -28,56 +30,90 @@ import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.apiculture.genetics.BeeLifeStage;
-import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IBreedingTrackerHandler;
-import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.gatgets.IDatabasePlugin;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IMutationManager;
+import forestry.api.genetics.IPollinatable;
+import forestry.api.genetics.alleles.IKaryotype;
 import forestry.apiculture.BeeHousingListener;
 import forestry.apiculture.BeeHousingModifier;
 import forestry.apiculture.BeekeepingLogic;
 import forestry.core.genetics.root.BreedingTrackerManager;
 
 import forestry.api.genetics.IGenome;
-import genetics.api.individual.IGenomeWrapper;
-import genetics.api.individual.IIndividual;
 import forestry.api.genetics.ILifeStage;
-import genetics.api.root.IRootContext;
-import genetics.api.root.SpeciesType;
-import genetics.utils.AlleleUtils;
 
-public class BeeSpeciesType extends SpeciesType<IBee> implements IBeeSpeciesType, IBreedingTrackerHandler {
+import deleteme.Todos;
+
+public class BeeSpeciesType implements IBeeSpeciesType {
+	private final ResourceLocation id;
+	private final IKaryotype karyotype;
+
+	// Initialized after all species are registered.
 	private int beeSpeciesCount = -1;
 
-	public BeeSpeciesType(IRootContext<IBee> context) {
-		super(context);
-		BreedingTrackerManager.INSTANCE.registerTracker(ForestrySpeciesType.BEE, this);
+	public BeeSpeciesType(ResourceLocation id, IKaryotype karyotype) {
+		this.id = id;
+		this.karyotype = karyotype;
+		BreedingTrackerManager.INSTANCE.registerTracker(ForestrySpeciesTypes.BEE, this);
 	}
 
 	@Override
-	public Class<? extends IBee> getMemberClass() {
-		return IBee.class;
+	public ResourceLocation id() {
+		return this.id;
+	}
+
+	@Override
+	public IKaryotype getKaryotype() {
+		return this.karyotype;
+	}
+
+	@Override
+	public ItemStack createStack(IIndividual species, ILifeStage type) {
+		throw Todos.unimplemented();
+	}
+
+	@Override
+	public void onSpeciesRegistered(List<IBeeSpecies> allSpecies) {
+		this.beeSpeciesCount = 0;
+
+		for (IBeeSpecies species : allSpecies) {
+			if (!species.isSecret()) {
+				this.beeSpeciesCount++;
+			}
+		}
+	}
+
+	@Override
+	public IMutationManager<IBeeSpecies> getMutations() {
+		return null;
+	}
+
+	@Override
+	public List<IBeeSpecies> getSpecies() {
+		return null;
+	}
+
+	@Override
+	public IBeeSpecies getSpeciesById(ResourceLocation id) {
+		return null;
 	}
 
 	@Override
 	public int getSpeciesCount() {
-		if (beeSpeciesCount < 0) {
-			beeSpeciesCount = (int) AlleleUtils.filteredStream(BeeChromosomes.SPECIES)
-					.filter(IAlleleBeeSpecies::isCounted).count();
-		}
+		Preconditions.checkState(this.beeSpeciesCount >= -1, "Not all bee species have not been registered.");
 
-		return beeSpeciesCount;
+		return this.beeSpeciesCount;
 	}
 
 
 	@Override
-	public BeeLifeStage getIconType() {
+	public BeeLifeStage getDefaultStage() {
 		return BeeLifeStage.DRONE;
 	}
 
@@ -87,7 +123,7 @@ public class BeeSpeciesType extends SpeciesType<IBee> implements IBeeSpeciesType
 			case 0 -> BeeLifeStage.PRINCESS;
 			case 1 -> BeeLifeStage.DRONE;
 			case 2 -> BeeLifeStage.QUEEN;
-			default -> getIconType();
+			default -> getDefaultStage();
 		};
 	}
 
@@ -117,11 +153,6 @@ public class BeeSpeciesType extends SpeciesType<IBee> implements IBeeSpeciesType
 	}
 
 	@Override
-	public IGenomeWrapper createWrapper(IGenome genome) {
-		return () -> genome;
-	}
-
-	@Override
 	public IBee create(CompoundTag compound) {
 		return new Bee(compound);
 	}
@@ -138,7 +169,7 @@ public class BeeSpeciesType extends SpeciesType<IBee> implements IBeeSpeciesType
 
 	@Override
 	public String getFileName(@Nullable GameProfile profile) {
-		return "ApiaristTracker." + (profile == null ? "common" : profile.getId());
+		return "ApiaristTracker." + (profile == super.getSpeciesPlugin() ? "common" : profile.getId());
 	}
 
 	@Override
@@ -186,8 +217,7 @@ public class BeeSpeciesType extends SpeciesType<IBee> implements IBeeSpeciesType
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public IDatabasePlugin getSpeciesPlugin() {
+	public IPollinatable getSpeciesPlugin() {
 		return BeePlugin.INSTANCE;
 	}
 }

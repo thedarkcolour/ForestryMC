@@ -66,6 +66,10 @@ public record AllelePair<A extends IAllele>(A active, A inactive) {
 		}
 	}
 
+	public boolean isSameAlleles() {
+		return this.active == this.inactive;
+	}
+
 	/**
 	 * A new chromosome pair with the active allele is the first dominant allele and the inactive allele is the other allele.
 	 * THIS IS DIFFERENT THAN THE CONSTRUCTOR.

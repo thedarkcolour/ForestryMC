@@ -3,14 +3,12 @@ package forestry.api.apiculture;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.alleles.INamedValue;
-
-import genetics.api.individual.IIndividual;
 
 public interface IFlowerType extends INamedValue {
 	/**
@@ -32,7 +30,7 @@ public interface IFlowerType extends INamedValue {
 	 * Allows the flower provider to affect the produce at the given location.
 	 * If this flowerProvider does not affect the products, it should return the products unchanged.
 	 */
-	default NonNullList<ItemStack> affectProducts(Level level, BlockPos pos, IIndividual individual, NonNullList<ItemStack> products) {
+	default List<ItemStack> affectProducts(Level level, BlockPos pos, IIndividual individual, List<ItemStack> products) {
 		return products;
 	}
 }

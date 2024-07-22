@@ -34,12 +34,11 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.PlantType;
 
 import forestry.api.arboriculture.EnumFruitFamily;
-import forestry.api.arboriculture.IFruitProvider;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.ITreekeepingMode;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.HumidityType;
@@ -199,14 +198,14 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		}
 
 		if (tree.canBearFruit() && checkFruit && level != null && !level.isClientSide) {
-			IFruitProvider fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+			IFruit fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 			if (fruitProvider.isFruitLeaf(genome, level, getBlockPos())) {
 				isFruitLeaf = fruitProvider.getFruitChance(genome, level, getBlockPos()) >= level.random.nextFloat();
 			}
 		}
 
 		if (isFruitLeaf) {
-			IFruitProvider fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+			IFruit fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 			if (level != null && level.isClientSide) {
 				fruitSprite = fruitProvider.getSprite(genome, level, getBlockPos(), getRipeningTime());
 			}
@@ -259,7 +258,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 			tree = TreeDefinition.Cherry.createIndividual();
 		}
 		IGenome genome = tree.getGenome();
-		IFruitProvider fruit = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+		IFruit fruit = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 		return fruit.getColour(genome, level, getBlockPos(), getRipeningTime());
 	}
 

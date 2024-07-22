@@ -5,21 +5,17 @@ import javax.annotation.Nullable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.tooltips.ITextInstance;
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.alyzer.IAlleleDisplayHandler;
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
-import forestry.apiculture.genetics.IGeneticTooltipProvider;
-import forestry.arboriculture.genetics.alleles.AlleleFruits;
 
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IValueAllele;
-import genetics.api.individual.IChromosomeAllele;
 import forestry.api.genetics.alleles.IChromosome;
-import genetics.api.individual.IChromosomeValue;
 import forestry.api.genetics.IGenome;
 
 public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
@@ -35,21 +31,19 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 	FIREPROOF(TreeChromosomes.FIREPROOF, 3) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, ITree individual) {
-			Boolean value = getActiveValue(genome);
+			boolean value = genome.getActiveValue(TreeChromosomes.FIREPROOF);
 			if (!value) {
 				return;
 			}
-			toolTip.translated("for.gui.fireresist")
-					.style(ChatFormatting.RED);
+			toolTip.translated("for.gui.fireresist").style(ChatFormatting.RED);
 		}
 	},
 	FRUITS(TreeChromosomes.FRUITS, 4) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, ITree individual) {
-			IAllele fruit = getActiveAllele(genome);
-			if (fruit != AlleleFruits.fruitNone) {
-				ITextInstance<?, ?, ?> instance = toolTip.singleLine().text("F: ")
-						.add(genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider().getDescription()).style(ChatFormatting.GREEN);
+			IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUITS);
+			if (fruit != ForestryAlleles.FRUIT_NONE.value()) {
+				ITextInstance<?, ?, ?> instance = toolTip.singleLine().text("F: ").add(fruit.getDescription()).style(ChatFormatting.GREEN);
 				if (!individual.canBearFruit()) {
 					instance.style(ChatFormatting.STRIKETHROUGH);
 				}
@@ -58,7 +52,7 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 		}
 	};
 
-	final IChromosome type;
+	final IChromosome<?> type;
 	@Nullable
 	final String alyzerCaption;
 	final int alyzerIndex;
@@ -120,15 +114,16 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 		for (TreeDisplayHandler handler : values()) {
 			int tooltipIndex = handler.tooltipIndex;
 			if (tooltipIndex >= 0) {
-				helper.addTooltip(handler, ForestrySpeciesType.TREE, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesTypes.TREE, tooltipIndex * 10);
 			}
 			int alyzerIndex = handler.alyzerIndex;
 			if (alyzerIndex >= 0) {
-				helper.addAlyzer(handler, ForestrySpeciesType.TREE, alyzerIndex * 10);
+				helper.addAlyzer(handler, ForestrySpeciesTypes.TREE, alyzerIndex * 10);
 			}
 		}
 	}
 
+	// todo replace shit code
 	@Override
 	public void addTooltip(ToolTip toolTip, IGenome genome, ITree individual) {
 		//Default Implementation
@@ -136,8 +131,8 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 			TreeDisplayHandler first = values()[groupPair[0]];
 			TreeDisplayHandler second = values()[groupPair[1]];
 			//list.add(new TranslationTextComponent("%1$s %2$s", saplings, maturation));
-			Object firstValue = genome.getActiveValue(first.type, Object.class);
-			Object secondValue = genome.getActiveValue(second.type, Object.class);
+			Object firstValue = genome.getActiveValue(first.type);
+			Object secondValue = genome.getActiveValue(second.type);
 			toolTip.singleLine()
 					.add(Component.translatable(first.formattingText, firstValue
 					), first.color)
@@ -146,56 +141,6 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 					), second.color)
 					.create();
 			//toolTip.translated("%1$s %2$s", first.formattingText, second.formattingText)
-		}
-	}
-
-	<V> IValueAllele<V> getActive(IGenome genome) {
-		//noinspection unchecked
-		return genome.getActiveAllele((IChromosomeValue<V>) type);
-	}
-
-	<V> IValueAllele<V> getInactive(IGenome genome) {
-		//noinspection unchecked
-		return genome.getInactiveAllele((IChromosomeValue<V>) type);
-	}
-
-	<A extends IAllele> A getActiveAllele(IGenome genome) {
-		//noinspection unchecked
-		return genome.getActiveAllele((IChromosomeAllele<A>) type);
-	}
-
-	<A extends IAllele> A getInactiveAllele(IGenome genome) {
-		//noinspection unchecked
-		return genome.getInactiveAllele((IChromosomeAllele<A>) type);
-	}
-
-	<V> V getActiveValue(IGenome genome) {
-		//noinspection unchecked
-		return genome.getActiveValue((IChromosomeValue<V>) type);
-	}
-
-	<V> V getInactiveValue(IGenome genome) {
-		//noinspection unchecked
-		return genome.getInactiveValue((IChromosomeValue<V>) type);
-	}
-
-	private static class AllelePair implements IGeneticTooltipProvider<ITree> {
-		private final IGeneticTooltipProvider<ITree> first;
-		private final IGeneticTooltipProvider<ITree> second;
-
-		private AllelePair(IGeneticTooltipProvider<ITree> first, IGeneticTooltipProvider<ITree> second) {
-			this.first = first;
-			this.second = second;
-		}
-
-		@Override
-		public void addTooltip(ToolTip toolTip, IGenome genome, ITree individual) {
-			ToolTip cache = new ToolTip();
-			first.addTooltip(cache, genome, individual);
-			Component fistComp = cache.lastComponent();
-			second.addTooltip(cache, genome, individual);
-			Component secondComp = cache.lastComponent();
-			toolTip.translated("%1$s %2$s", fistComp, secondComp);
 		}
 	}
 }

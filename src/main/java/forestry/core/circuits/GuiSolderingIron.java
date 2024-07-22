@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +34,6 @@ import forestry.core.inventory.ItemInventorySolderingIron;
 import forestry.core.render.ColourProperties;
 
 public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
-
 	private final ItemInventorySolderingIron itemInventory;
 
 	public GuiSolderingIron(ContainerSolderingIron container, Inventory inv, Component title) {
@@ -45,8 +45,8 @@ public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
 	}
 
 	@Override
-	protected void renderBg(PoseStack transform, float partialTicks, int mouseY, int mouseX) {
-		super.renderBg(transform, partialTicks, mouseY, mouseX);
+	protected void renderBg(PoseStack transform, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(transform, partialTicks, mouseX, mouseY);
 
 		ICircuitLayout layout = menu.getLayout();
 		Component title = layout.getName();
@@ -68,7 +68,7 @@ public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
 			if (tube.isEmpty()) {
 				ICircuitSocketType socketType = layout.getSocketType();
 				if (CircuitSocketType.FARM.equals(socketType)) {
-					HorizontalDirection farmDirection = HorizontalDirection.values()[i];
+					Direction farmDirection = HorizontalDirection.VALUES.get(i);
 					String farmDirectionString = farmDirection.toString().toLowerCase(Locale.ENGLISH);
 					Component localizedDirection = Component.translatable("for.gui.solder." + farmDirectionString);
 					getFontRenderer().draw(transform, localizedDirection, leftPos + 17, topPos + 36 + row, ColourProperties.INSTANCE.get("gui.screen"));

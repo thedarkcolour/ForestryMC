@@ -19,13 +19,10 @@ import net.minecraft.world.item.ItemStack;
 import forestry.api.core.IErrorSource;
 import forestry.api.core.IError;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.api.core.ForestryError;
 import forestry.core.utils.GeneticsUtil;
-
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
 
 public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 	public static final int SLOT_ENERGY = 0;
@@ -60,7 +57,7 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 		}
 
 		itemStack = GeneticsUtil.convertToGeneticEquivalent(itemStack);
-		IForestrySpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(itemStack);
+		ISpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(itemStack);
 		if (speciesRoot == null) {
 			return false;
 		}
@@ -94,7 +91,7 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 			specimen = convertedSpecimen;
 		}
 
-		IForestrySpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(specimen);
+		ISpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(specimen);
 		// No individual, abort
 		if (speciesRoot == null) {
 			return;
@@ -132,7 +129,7 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 		if (!hasSpecimen()) {
 			return Set.of(ForestryError.NO_SPECIMEN);
 		} else {
-			IForestrySpeciesType<IIndividual> definition = RootUtils.getRoot(getSpecimen());
+			ISpeciesType<IIndividual> definition = RootUtils.getRoot(getSpecimen());
 			if (definition != null && !isAlyzingFuel(getItem(SLOT_ENERGY))) {
 				return Set.of(ForestryError.NO_HONEY);
 			}

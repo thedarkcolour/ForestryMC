@@ -2,24 +2,23 @@ package forestry.storage;
 
 import java.util.function.Predicate;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import genetics.api.GeneticsAPI;
-import genetics.api.individual.IIndividual;
-import forestry.api.genetics.ISpeciesType;
-import genetics.api.root.IRootDefinition;
+import forestry.api.ForestryCapabilities;
 
 public class BackpackFilterNaturalist implements Predicate<ItemStack> {
-	private final String speciesRootUid;
+	private final ResourceLocation speciesRootUid;
 
-	public BackpackFilterNaturalist(String speciesRootUid) {
-		this.speciesRootUid = speciesRootUid;
+	public BackpackFilterNaturalist(ResourceLocation speciesType) {
+		this.speciesRootUid = speciesType;
 	}
 
 	@Override
-	public boolean test(ItemStack itemStack) {
-		IRootDefinition<ISpeciesType<IIndividual>> definition = GeneticsAPI.apiInstance.getRoot(speciesRootUid);
-		return definition.test(root -> root.isMember(itemStack));
+	public boolean test(ItemStack stack) {
+		return stack.getCapability(ForestryCapabilities.INDIVIDUAL)
+				.map(individual -> this.speciesRootUid.equals(individual.getType().id()))
+				.orElse(false);
 	}
 
 }

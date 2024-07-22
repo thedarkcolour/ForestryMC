@@ -10,13 +10,12 @@ import forestry.api.genetics.IMutation;
 
 import forestry.api.apiculture.IBeeHousing;
 
-public interface IBeeMutation extends IMutation {
-
+public interface IBeeMutation extends IMutation<IBeeSpecies> {
 	@Override
 	IBeeSpeciesType getType();
 
 	/**
 	 * @return float representing the chance for mutation to occur. note that this is 0 - 100 based, since it was an integer previously!
 	 */
-	float getChance(IBeeHousing housing, IAlleleBeeSpecies allele0, IAlleleBeeSpecies allele1, IGenome genome0, IGenome genome1);
+	float getChance(IBeeHousing housing, IBeeSpecies allele0, IBeeSpecies allele1, IGenome genome0, IGenome genome1);
 }

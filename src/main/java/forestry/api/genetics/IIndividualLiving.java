@@ -7,8 +7,6 @@ package forestry.api.genetics;
 
 import net.minecraft.world.level.Level;
 
-import genetics.api.individual.IIndividual;
-
 /**
  * An individual with health and a lifespan.
  */
@@ -39,6 +37,6 @@ public interface IIndividualLiving extends IIndividual {
 	boolean isAlive();
 
 	default boolean hasEffect() {
-		return getGenome().getActiveValue(getGenome().getKaryotype().getSpeciesChromosome()).hasEffect();
+		return getGenome().getActiveValue(getGenome().getKaryotype().getSpeciesChromosome()).hasGlint();
 	}
 }

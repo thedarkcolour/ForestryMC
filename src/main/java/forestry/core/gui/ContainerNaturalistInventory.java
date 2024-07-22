@@ -17,7 +17,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerListener;
 
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFilteredInventory;
 import forestry.core.tiles.IFilterSlotDelegate;
@@ -63,7 +64,7 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 	}
 
 	@Override
-	public IForestrySpeciesType<IIndividual> getSpeciesRoot() {
+	public ISpeciesType<?> getSpeciesRoot() {
 		return tile.getSpeciesRoot();
 	}
 

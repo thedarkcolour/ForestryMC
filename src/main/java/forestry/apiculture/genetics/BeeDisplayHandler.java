@@ -11,8 +11,7 @@ import forestry.api.apiculture.genetics.IBee;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
-import forestry.api.genetics.ForestrySpeciesType;
-import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IAlleleFlowers;
 import forestry.api.genetics.alyzer.IAlleleDisplayHandler;
@@ -176,11 +175,11 @@ public enum BeeDisplayHandler implements IAlleleDisplayHandler<IBee> {
 		for (BeeDisplayHandler handler : values()) {
 			int tooltipIndex = handler.tooltipIndex;
 			if (tooltipIndex >= 0) {
-				helper.addTooltip(handler, ForestrySpeciesType.BEE, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesTypes.BEE, tooltipIndex * 10);
 			}
 			int alyzerIndex = handler.alyzerIndex;
 			if (alyzerIndex >= 0) {
-				helper.addAlyzer(handler, ForestrySpeciesType.BEE, alyzerIndex * 10);
+				helper.addAlyzer(handler, ForestrySpeciesTypes.BEE, alyzerIndex * 10);
 			}
 		}
 	}

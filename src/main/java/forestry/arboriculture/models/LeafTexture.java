@@ -22,7 +22,7 @@ import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.LeafType;
 
 public record LeafTexture(ResourceLocation fast, ResourceLocation fancy, ResourceLocation pollinatedFast, ResourceLocation pollinatedFancy) {
-	private static final Map<LeafType, LeafTexture> leafTextures = new EnumMap<>(LeafType.class);
+	private static final EnumMap<LeafType, LeafTexture> leafTextures = new EnumMap<>(LeafType.class);
 
 	static {
 		for (LeafType leafType : LeafType.values()) {

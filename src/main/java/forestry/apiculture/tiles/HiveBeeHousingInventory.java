@@ -40,13 +40,13 @@ class HiveBeeHousingInventory implements IBeeHousingInventory {
 	}
 
 	@Override
-	public void setQueen(ItemStack itemstack) {
-		this.queen = itemstack;
+	public void setQueen(ItemStack stack) {
+		this.queen = stack;
 	}
 
 	@Override
-	public void setDrone(ItemStack itemstack) {
-		this.drone = itemstack;
+	public void setDrone(ItemStack stack) {
+		this.drone = stack;
 	}
 
 	@Override

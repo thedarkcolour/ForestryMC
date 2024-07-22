@@ -20,10 +20,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public interface IAlyzerPlugin {
 
 	@OnlyIn(Dist.CLIENT)
-	void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack itemStack);
+	void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack);
 
 	@OnlyIn(Dist.CLIENT)
-	void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack itemStack);
+	void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack);
 
 	@OnlyIn(Dist.CLIENT)
 	void drawAnalyticsPage3(PoseStack transform, ItemStack itemStack, Screen gui);

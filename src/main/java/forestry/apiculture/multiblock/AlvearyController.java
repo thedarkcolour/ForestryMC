@@ -338,7 +338,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public HumidityType humidity() {
-		return null;
+		return IForestryApi.INSTANCE.getClimateManager().getHumidity(getBiome());
 	}
 
 	@Override
@@ -350,7 +350,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 			}
 		}
 
-		return TemperatureType.getFromValue(getExactTemperature());
+		return IForestryApi.INSTANCE.getClimateManager().getTemperature(getBiome());
 	}
 
 	@Override
@@ -388,7 +388,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public void addTemperatureChange(float change, float boundaryDown, float boundaryUp) {
-		float temperature = listener.getExactTemperature();
+		float temperature = listener.temperature();
 
 		tempChange += change;
 		tempChange = Math.max(boundaryDown - temperature, tempChange);
@@ -397,7 +397,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public void addHumidityChange(float change, float boundaryDown, float boundaryUp) {
-		float humidity = listener.getExactHumidity();
+		float humidity = listener.humidity();
 
 		humidChange += change;
 		humidChange = Math.max(boundaryDown - humidity, humidChange);

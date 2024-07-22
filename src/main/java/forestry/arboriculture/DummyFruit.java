@@ -1,0 +1,162 @@
+/*******************************************************************************
+ * Copyright (c) 2011-2014 SirSengir.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser Public License v3
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Various Contributors including, but not limited to:
+ * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
+ ******************************************************************************/
+package forestry.arboriculture;
+
+import com.google.common.collect.ImmutableMap;
+
+import javax.annotation.Nullable;
+import java.util.List;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.TextureStitchEvent;
+
+import forestry.api.ForestryConstants;
+import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.Product;
+
+public class DummyFruit implements IFruit {
+
+	private static class OverlayType {
+		public final String ident;
+		public final ResourceLocation sprite;
+
+		public OverlayType(String ident) {
+			this.ident = ident;
+			this.sprite = ForestryConstants.forestry("block/leaves/fruits." + ident);
+		}
+	}
+
+	// todo should this be extensible?
+	private static final ImmutableMap<String, OverlayType> overlayTypes = ImmutableMap.<String, OverlayType>builder()
+			.put("berries", new OverlayType("berries"))
+			.put("pomes", new OverlayType("pomes"))
+			.put("nuts", new OverlayType("nuts"))
+			.put("citrus", new OverlayType("citrus"))
+			.put("plums", new OverlayType("plums"))
+			.build();
+
+	private final String unlocalizedDescription;
+
+	protected int ripeningPeriod = 10;
+
+	@Nullable
+	private OverlayType overlay = null;
+
+	// todo
+	public DummyFruit(String modid, String name) {
+		this.unlocalizedDescription = name;
+	}
+
+	public IFruit setOverlay(String ident) {
+		overlay = overlayTypes.get(ident);
+		return this;
+	}
+
+	@Override
+	public List<ItemStack> getFruits(IGenome genome, Level world, BlockPos pos, int ripeningTime) {
+		return NonNullList.create();
+	}
+
+	@Override
+	public boolean requiresFruitBlocks() {
+		return false;
+	}
+
+	@Override
+	public boolean trySpawnFruitBlock(IGenome genome, LevelAccessor world, RandomSource rand, BlockPos pos) {
+		return false;
+	}
+
+	@Override
+	public int getColour(IGenome genome, BlockGetter world, BlockPos pos, int ripeningTime) {
+		return 0xffffff;
+	}
+
+	@Override
+	public int getDecorativeColor() {
+		return 0xffffff;
+	}
+
+	@Override
+	public boolean isFruitLeaf(IGenome genome, LevelAccessor level, BlockPos pos) {
+		return false;
+	}
+
+	@Override
+	public int getRipeningPeriod() {
+		return ripeningPeriod;
+	}
+
+	@Override
+	public List<Product> getProducts() {
+		return List.of();
+	}
+
+	@Override
+	public List<Product> getSpecialty() {
+		return List.of();
+	}
+
+	@Override
+	public MutableComponent getDescription() {
+		return Component.translatable(unlocalizedDescription);
+	}
+
+	@Override
+	public ResourceLocation getSprite(IGenome genome, BlockGetter world, BlockPos pos, int ripeningTime) {
+		if (overlay != null) {
+			return overlay.sprite;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public ResourceLocation getDecorativeSprite() {
+		if (overlay != null) {
+			return overlay.sprite;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void registerSprites(TextureStitchEvent.Pre event) {
+		if (overlay != null) {
+			event.addSprite(overlay.sprite);
+		}
+	}
+
+	@Nullable
+	@Override
+	public String getModelName() {
+		return null;
+	}
+
+	@Override
+	public String getModId() {
+		return ForestryConstants.MOD_ID;
+	}
+}

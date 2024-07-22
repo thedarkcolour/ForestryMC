@@ -62,7 +62,7 @@ public enum ArboricultureFilterRuleType implements IFilterRuleType {
 	}
 
 	@Override
-	public String getRootUID() {
+	public String getSpeciesTypeId() {
 		return TreeManager.treeRoot.id();
 	}
 

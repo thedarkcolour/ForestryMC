@@ -1,36 +1,26 @@
 package forestry.apiculture;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
-import forestry.api.genetics.alyzer.IAlyzerDisplayProvider;
 import forestry.apiculture.genetics.IGeneticTooltipProvider;
 
-import genetics.api.individual.IIndividual;
 import forestry.api.genetics.ILifeStage;
 
-public class DisplayHelper implements IAlleleDisplayHelper {
+public enum DisplayHelper implements IAlleleDisplayHelper {
+	INSTANCE;
+
 	private final Map<ResourceLocation, PriorityQueue<OrderedPair<IGeneticTooltipProvider<?>>>> tooltips = new HashMap<>();
-	private final Map<ResourceLocation, PriorityQueue<OrderedPair<IAlyzerDisplayProvider>>> alyzers = new HashMap<>();
-
-	@Nullable
-	private static DisplayHelper instance;
-
-	public static DisplayHelper getInstance() {
-		if (instance == null) {
-			instance = new DisplayHelper();
-		}
-		return instance;
-	}
+	private final Map<ResourceLocation, PriorityQueue<OrderedPair<IGeneticTooltipProvider<?>>>> alyzers = new HashMap<>();
 
 	@Override
 	public void addTooltip(IGeneticTooltipProvider<?> provider, ResourceLocation id, int orderingInfo) {
@@ -43,18 +33,21 @@ public class DisplayHelper implements IAlleleDisplayHelper {
 	}
 
 	@Override
-	public void addAlyzer(IAlyzerDisplayProvider provider, ResourceLocation id, int orderingInfo) {
+	public void addAlyzer(IGeneticTooltipProvider<?> provider, ResourceLocation id, int orderingInfo) {
 		this.alyzers.computeIfAbsent(id, (root) -> new PriorityQueue<>()).add(new OrderedPair<>(provider, orderingInfo, null));
 	}
 
-	public <I extends IIndividual> Collection<IGeneticTooltipProvider<I>> getTooltips(String rootUID, ILifeStage type) {
+	public <I extends IIndividual> List<IGeneticTooltipProvider<I>> getTooltips(ResourceLocation rootUID, ILifeStage type) {
 		if (!tooltips.containsKey(rootUID)) {
-			return Collections.emptyList();
+			return List.of();
 		}
-		return tooltips.get(rootUID).stream()
-				.filter((value) -> value.hasValue(type))
-				.map((value) -> (IGeneticTooltipProvider<I>) value.value)
-				.collect(Collectors.toList());
+		ArrayList<IGeneticTooltipProvider<?>> tooltips = new ArrayList<>();
+		for (OrderedPair<IGeneticTooltipProvider<?>> pair : this.tooltips.get(rootUID)) {
+			if (pair.hasValue(type)) {
+				tooltips.add(pair.value);
+			}
+		}
+		return tooltips;
 	}
 
 	private static class OrderedPair<T> implements Comparable<OrderedPair<T>> {

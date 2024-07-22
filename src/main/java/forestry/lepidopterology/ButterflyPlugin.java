@@ -1,8 +1,12 @@
 package forestry.lepidopterology;
 
+import java.util.List;
+
 import forestry.api.ForestryConstants;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.Product;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryChromosomes;
 import forestry.api.lepidopterology.genetics.*;
@@ -33,7 +37,7 @@ import genetics.api.IGeneticApiInstance;
 import genetics.api.IGeneticFactory;
 import genetics.api.IGeneticPlugin;
 import forestry.api.genetics.IAlleleRegistry;
-import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.ISpecies<?>;
 import forestry.api.genetics.IClassificationRegistry;
 import genetics.api.individual.IIndividual;
 import genetics.api.organism.IOrganismTypes;
@@ -47,8 +51,8 @@ import genetics.api.root.components.ComponentKeys;
 public class ButterflyPlugin implements IGeneticPlugin {
 	@Override
 	public void registerListeners(IGeneticListenerRegistry registry) {
-		registry.add(ForestrySpeciesType.BUTTERFLY, ButterflyDefinition.values());
-		registry.add(ForestrySpeciesType.BUTTERFLY, MothDefinition.values());
+		registry.add(ForestrySpeciesTypes.BUTTERFLY, ButterflyDefinition.values());
+		registry.add(ForestrySpeciesTypes.BUTTERFLY, MothDefinition.values());
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public class ButterflyPlugin implements IGeneticPlugin {
 
 	@Override
 	public void createRoot(IRootManager rootManager, IGeneticFactory geneticFactory) {
-		IIndividualRootBuilder<IButterfly> rootBuilder = rootManager.createRoot(ForestrySpeciesType.BUTTERFLY);
+		IIndividualRootBuilder<IButterfly> rootBuilder = rootManager.createRoot(ForestrySpeciesTypes.BUTTERFLY);
 		rootBuilder
 			.setRootFactory(ButterflySpeciesType::new)
 			.setSpeciesType(ButterflyChromosomes.SPECIES)
@@ -76,22 +80,22 @@ public class ButterflyPlugin implements IGeneticPlugin {
 			.addListener(ForestryComponentKeys.RESEARCH, (IResearchHandler<IButterfly> component) -> {
 				component.addPlugin(new IResearchPlugin() {
 					@Override
-					public float getResearchSuitability(ISpecies<?> species, ItemStack itemstack) {
-						if (itemstack.isEmpty() || !(species instanceof IAlleleButterflySpecies butterflySpecies)) {
+					public float getResearchSuitability(ISpecies<?> species, ItemStack stack) {
+						if (stack.isEmpty() || !(species instanceof IButterflySpecies butterflySpecies)) {
 							return -1;
 						}
 
-						if (itemstack.getItem() == Items.GLASS_BOTTLE) {
+						if (stack.getItem() == Items.GLASS_BOTTLE) {
 							return 0.9f;
 						}
 
-						for (ItemStack stack : butterflySpecies.getButterflyLoot().getPossibleStacks()) {
-							if (stack.sameItem(itemstack)) {
+						for (Product product : butterflySpecies.getButterflyLoot()) {
+							if (stack.is(product.item())) {
 								return 1.0f;
 							}
 						}
-						for (ItemStack stack : butterflySpecies.getCaterpillarLoot().getPossibleStacks()) {
-							if (stack.sameItem(itemstack)) {
+						for (Product product : butterflySpecies.getCaterpillarLoot()) {
+							if (stack.is(product.item())) {
 								return 1.0f;
 							}
 						}
@@ -99,11 +103,10 @@ public class ButterflyPlugin implements IGeneticPlugin {
 					}
 
 					@Override
-					public NonNullList<ItemStack> getResearchBounty(ISpecies<?> species, Level world, GameProfile researcher, IIndividual individual, int bountyLevel) {
-						ItemStack serum = ((ISpeciesType<IIndividual>) species.getSpecies()).getTypes().createStack(individual.copy(), ButterflyLifeStage.SERUM);
-						NonNullList<ItemStack> bounty = NonNullList.create();
-						bounty.add(serum);
-						return bounty;
+					public List<ItemStack> getResearchBounty(ISpecies<?> species, Level world, GameProfile researcher, IIndividual individual, int bountyLevel) {
+						ItemStack serum = individual.copyWithStage(ButterflyLifeStage.SERUM);
+
+						return List.of(serum);
 					}
 				});
 			})
@@ -112,6 +115,6 @@ public class ButterflyPlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		ButterflyManager.butterflyRoot = instance.<IButterflySpeciesType>getRoot(ForestrySpeciesType.BUTTERFLY).get();
+		ButterflyManager.butterflyRoot = instance.<IButterflySpeciesType>getRoot(ForestrySpeciesTypes.BUTTERFLY).get();
 	}
 }

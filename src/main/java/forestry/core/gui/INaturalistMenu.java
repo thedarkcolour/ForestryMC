@@ -1,13 +1,12 @@
 package forestry.core.gui;
 
-import forestry.api.genetics.IForestrySpeciesType;
-
-import genetics.api.individual.IIndividual;
+import forestry.api.genetics.ISpeciesType;
 
 public interface INaturalistMenu {
-	IForestrySpeciesType<IIndividual> getSpeciesRoot();
+	ISpeciesType<?> getSpeciesRoot();
 
 	int getCurrentPage();
 
-	default void onFlipPage() {}
+	default void onFlipPage() {
+	}
 }

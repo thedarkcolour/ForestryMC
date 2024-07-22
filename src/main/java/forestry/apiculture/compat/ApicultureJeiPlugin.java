@@ -3,7 +3,10 @@ package forestry.apiculture.compat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.api.ForestryCapabilities;
 import forestry.api.ForestryConstants;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.core.utils.JeiUtil;
 
@@ -25,10 +28,9 @@ public class ApicultureJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
-		IIngredientSubtypeInterpreter<ItemStack> beeSubtypeInterpreter = (itemStack, context) -> {
-			IIndividual individual = GeneticHelper.getIndividual(itemStack);
-			return individual == null ? IIngredientSubtypeInterpreter.NONE : individual.getGenome().getPrimarySpecies().getBinomial();
-		};
+		IIngredientSubtypeInterpreter<ItemStack> beeSubtypeInterpreter = (stack, context) -> stack.getCapability(ForestryCapabilities.INDIVIDUAL)
+				.map(individual -> individual.getGenome().getActiveValue(BeeChromosomes.SPECIES).getBinomial())
+				.orElse(IIngredientSubtypeInterpreter.NONE);
 
 		subtypeRegistry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, ApicultureItems.BEE_DRONE.item(), beeSubtypeInterpreter);
 		subtypeRegistry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, ApicultureItems.BEE_PRINCESS.item(), beeSubtypeInterpreter);

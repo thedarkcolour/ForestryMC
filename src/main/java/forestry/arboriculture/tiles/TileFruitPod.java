@@ -28,9 +28,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.arboriculture.IFruitProvider;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.arboriculture.TreeManager;
 import forestry.api.genetics.IFruitBearer;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.alleles.ForestryAlleles;
@@ -50,11 +49,11 @@ import genetics.utils.AlleleUtils;
 public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamable {
 
 	private static final short MAX_MATURITY = 2;
-	private static final IGenome defaultGenome = TreeManager.treeRoot.getKaryotype().getDefaultGenome();
+	private static final IGenome defaultGenome = TreeManager.treeRoot.getKaryotype().getDefaultSpecies();
 	private static final IFruit defaultAllele = ForestryAlleles.FRUIT_COCOA;
 
 	private IGenome genome = defaultGenome;
-	private IValueAllele<IFruitProvider> allele = defaultAllele;
+	private IValueAllele<IFruit> allele = defaultAllele;
 	private short maturity;
 	private float yield;
 

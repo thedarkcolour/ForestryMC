@@ -3,17 +3,29 @@ package forestry.api.plugin;
 import java.util.function.Function;
 
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import forestry.api.arboriculture.ITreeGenData;
+import forestry.api.arboriculture.ITreeGenerator;
+import forestry.api.arboriculture.ITreeSpecies;
+import forestry.api.arboriculture.IWoodType;
+import forestry.arboriculture.worldgen.DefaultTreeGenerator;
 
 public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesBuilder> {
 	/**
-	 * Overrides the tree feature set in {@link IArboricultureRegistration#registerSpecies}.
+	 * Shortcut to create a tree generator using the tree generator built into Forestry.
 	 */
-	ITreeSpeciesBuilder setTreeFeature(Function<ITreeGenData, Feature<?>> factory);
+	ITreeSpeciesBuilder setTreeFeature(Function<ITreeGenData, Feature<NoneFeatureConfiguration>> factory);
+
+	ITreeSpeciesBuilder setGenerator(ITreeGenerator generator);
 
 	// todo not sure if this is needed
 	ITreeSpeciesBuilder setHasFruitLeaves(boolean hasFruitLeaves);
+
+	/**
+	 * Overrides the wood type set in {@link IArboricultureRegistration#registerSpecies}.
+	 */
+	ITreeSpeciesBuilder setWoodType(IWoodType woodType);
 
 	/**
 	 * Sets the rarity for this tree to generate during world generation.

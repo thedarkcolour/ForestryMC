@@ -28,11 +28,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDefaultLeaves;
-import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.models.baker.ModelBaker;
 import forestry.core.utils.ResourceUtil;
@@ -46,11 +44,11 @@ public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, Mod
 	}
 
 	public static class Key {
-		public final TreeDefinition definition;
+		public final ResourceLocation definition;
 		public final boolean fancy;
-		private final int hashCode;
+		public final int hashCode;
 
-		public Key(TreeDefinition definition, boolean fancy) {
+		public Key(ResourceLocation definition, boolean fancy) {
 			this.definition = definition;
 			this.fancy = fancy;
 			this.hashCode = Objects.hash(definition, fancy);
@@ -76,7 +74,7 @@ public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, Mod
 		Block block = Block.byItem(stack.getItem());
 		Preconditions.checkArgument(block instanceof BlockDefaultLeaves, "ItemStack must be for default leaves.");
 		BlockDefaultLeaves bBlock = (BlockDefaultLeaves) block;
-		return new Key(bBlock.getDefinition(), Minecraft.useFancyGraphics());
+		return new Key(bBlock.getSpeciesId(), Minecraft.useFancyGraphics());
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, Mod
 		Block block = state.getBlock();
 		Preconditions.checkArgument(block instanceof BlockDefaultLeaves, "state must be for default leaves.");
 		BlockDefaultLeaves bBlock = (BlockDefaultLeaves) block;
-		TreeDefinition treeDefinition = bBlock.getDefinition();
+		TreeDefinition treeDefinition = bBlock.getSpeciesId();
 		Preconditions.checkNotNull(treeDefinition);
 		return new ModelDefaultLeaves.Key(treeDefinition, Minecraft.useFancyGraphics());
 	}

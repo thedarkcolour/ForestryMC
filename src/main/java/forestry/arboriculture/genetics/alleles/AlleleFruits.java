@@ -15,10 +15,10 @@ import genetics.utils.AlleleUtils;
 
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.arboriculture.FruitProviderNone;
-import forestry.arboriculture.FruitProviderPod;
-import forestry.arboriculture.FruitProviderPod.EnumPodType;
-import forestry.arboriculture.FruitProviderRipening;
+import forestry.arboriculture.DummyFruit;
+import forestry.arboriculture.PodFruit;
+import forestry.arboriculture.PodFruit.EnumPodType;
+import forestry.arboriculture.RipeningFruit;
 import forestry.core.features.CoreItems;
 import forestry.core.items.ItemFruit.EnumFruit;
 
@@ -47,31 +47,31 @@ public class AlleleFruits {
 		ItemStack cocoaBean = new ItemStack(Items.COCOA_BEANS);
 
 		fruitAlleles = Arrays.asList(
-			fruitNone = new Fruit("none", new FruitProviderNone("for.fruits.none", NONE)),
-			fruitApple = new Fruit("apple", new FruitProviderRipening("for.fruits.apple", POMES, () -> new ItemStack(Items.APPLE), 1.0f)
+			fruitNone = new Fruit("none", new DummyFruit("for.fruits.none", NONE)),
+			fruitApple = new Fruit("apple", new RipeningFruit("for.fruits.apple", POMES, () -> new ItemStack(Items.APPLE), 1.0f)
 				.setColours(new Color(0xff2e2e), new Color(0xE3F49C))
 				.setOverlay("pomes")),
-			fruitCocoa = new Fruit("cocoa", new FruitProviderPod("for.fruits.cocoa", JUNGLE, EnumPodType.COCOA, () -> cocoaBean)),
+			fruitCocoa = new Fruit("cocoa", new PodFruit("for.fruits.cocoa", JUNGLE, EnumPodType.COCOA, () -> cocoaBean)),
 			// .setColours(0xecdca5, 0xc4d24a), true)
-			fruitChestnut = new Fruit("chestnut", new FruitProviderRipening("for.fruits.chestnut", NUX, () -> CoreItems.FRUITS.stack(EnumFruit.CHESTNUT, 1), 1.0f)
+			fruitChestnut = new Fruit("chestnut", new RipeningFruit("for.fruits.chestnut", NUX, () -> CoreItems.FRUITS.stack(EnumFruit.CHESTNUT, 1), 1.0f)
 				.setRipeningPeriod(6)
 				.setColours(new Color(0x7f333d), new Color(0xc4d24a))
 				.setOverlay("nuts"), true),
-			fruitWalnut = new Fruit("walnut", new FruitProviderRipening("for.fruits.walnut", NUX, () -> CoreItems.FRUITS.stack(EnumFruit.WALNUT, 1), 1.0f)
+			fruitWalnut = new Fruit("walnut", new RipeningFruit("for.fruits.walnut", NUX, () -> CoreItems.FRUITS.stack(EnumFruit.WALNUT, 1), 1.0f)
 				.setRipeningPeriod(8)
 				.setColours(new Color(0xfba248), new Color(0xc4d24a))
 				.setOverlay("nuts"), true),
-			fruitCherry = new Fruit("cherry", new FruitProviderRipening("for.fruits.cherry", PRUNES, () -> CoreItems.FRUITS.stack(EnumFruit.CHERRY, 1), 1.0f)
+			fruitCherry = new Fruit("cherry", new RipeningFruit("for.fruits.cherry", PRUNES, () -> CoreItems.FRUITS.stack(EnumFruit.CHERRY, 1), 1.0f)
 				.setColours(new Color(0xff2e2e), new Color(0xc4d24a))
 				.setOverlay("berries"), true),
-			fruitDates = new Fruit("dates", new FruitProviderPod("for.fruits.dates", JUNGLE, EnumPodType.DATES, () -> {
+			fruitDates = new Fruit("dates", new PodFruit("for.fruits.dates", JUNGLE, EnumPodType.DATES, () -> {
 				return CoreItems.FRUITS.stack(EnumFruit.DATES, 4);
 			})),
-			fruitPapaya = new Fruit("papaya", new FruitProviderPod("for.fruits.papaya", JUNGLE, EnumPodType.PAPAYA, () -> CoreItems.FRUITS.stack(EnumFruit.PAPAYA, 1))),
-			fruitLemon = new Fruit("lemon", new FruitProviderRipening("for.fruits.lemon", PRUNES, () -> CoreItems.FRUITS.stack(EnumFruit.LEMON, 1), 1.0f)
+			fruitPapaya = new Fruit("papaya", new PodFruit("for.fruits.papaya", JUNGLE, EnumPodType.PAPAYA, () -> CoreItems.FRUITS.stack(EnumFruit.PAPAYA, 1))),
+			fruitLemon = new Fruit("lemon", new RipeningFruit("for.fruits.lemon", PRUNES, () -> CoreItems.FRUITS.stack(EnumFruit.LEMON, 1), 1.0f)
 				.setColours(new Color(0xeeee00), new Color(0x99ff00))
 				.setOverlay("citrus"), true),
-			fruitPlum = new Fruit("plum", new FruitProviderRipening("for.fruits.plum", PRUNES, () -> CoreItems.FRUITS.stack(EnumFruit.PLUM, 1), 1.0f)
+			fruitPlum = new Fruit("plum", new RipeningFruit("for.fruits.plum", PRUNES, () -> CoreItems.FRUITS.stack(EnumFruit.PLUM, 1), 1.0f)
 				.setColours(new Color(0x663446), new Color(0xeeff1a))
 				.setOverlay("plums"), true)
 		);

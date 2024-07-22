@@ -17,12 +17,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.BeeManager;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.apiculture.genetics.Bee;
 import forestry.core.inventory.ItemInventory;
 
@@ -72,11 +71,11 @@ public class ItemInventoryImprinter extends ItemInventory {
 		}
 	}
 
-	public IAlleleBeeSpecies getPrimary() {
+	public IBeeSpecies getPrimary() {
 		return BeeManager.beeRoot.getIndividualTemplates().get(primaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
 	}
 
-	public IAlleleBeeSpecies getSecondary() {
+	public IBeeSpecies getSecondary() {
 		return BeeManager.beeRoot.getIndividualTemplates().get(secondaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
 	}
 

@@ -17,12 +17,11 @@ import net.minecraft.resources.ResourceLocation;
 
 @JeiPlugin
 public class CharcoalJeiPlugin implements IModPlugin {
-
 	public static final RecipeType<ICharcoalPileWall> RECIPE_TYPE = RecipeType.create(ForestryConstants.MOD_ID, "charcoal.pile", ICharcoalPileWall.class);
 
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(ForestryConstants.MOD_ID, ForestryModuleIds.CHARCOAL);
+		return ForestryModuleIds.CHARCOAL;
 	}
 
 	@Override

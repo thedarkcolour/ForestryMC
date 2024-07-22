@@ -48,7 +48,7 @@ public interface IApicultureRegistration {
 	/**
 	 * Register a wild hive for world generation.
 	 */
-	void registerHive(ResourceLocation id, IHiveDefinition definition);
+	IHiveBuilder registerHive(ResourceLocation id, IHiveDefinition definition);
 
 	void addHiveDrop(ResourceLocation id, IHiveDrop drop);
 

@@ -11,13 +11,14 @@ import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.genetics.ForestryTaxa;
+import forestry.api.genetics.TaxonomicRank;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.plugin.ISpeciesTypeBuilder;
-import forestry.api.plugin.ITaxonBuilder;
-import forestry.api.genetics.TaxonomicRank;
 import forestry.api.plugin.IChromosomeBuilder;
 import forestry.api.plugin.IGeneticRegistration;
+import forestry.api.plugin.IKaryotypeBuilder;
+import forestry.api.plugin.ISpeciesTypeBuilder;
+import forestry.api.plugin.ITaxonBuilder;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
@@ -28,6 +29,7 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	private final HashMap<String, HashSet<String>> unknownTaxa = new HashMap<>();
 	// Name of taxon with missing parent -> Action
 	private final HashMap<String, Consumer<ITaxonBuilder>> unknownActions = new HashMap<>();
+	private final HashMap<ResourceLocation, SpeciesTypeBuilder> builders = new HashMap<>();
 	private final HashMap<ResourceLocation, ArrayList<Consumer<ISpeciesTypeBuilder>>> modifications = new HashMap<>();
 	private boolean registeredSpecies;
 
@@ -72,8 +74,17 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	}
 
 	@Override
-	public ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id) {
+	public ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id, Consumer<IKaryotypeBuilder> karyotype) {
 		Preconditions.checkState(!this.registeredSpecies, "Species must be registered or modified in IForestryPlugin.registerGenetics.");
+
+		if (this.builders.containsKey(id)) {
+			throw new IllegalStateException("A species type was already registered with ID " + id + " - modify it instead using IGeneticRegistration.modifySpeciesType");
+		} else {
+			SpeciesTypeBuilder builder = new SpeciesTypeBuilder(id);
+			builder.setKaryotype(karyotype);
+
+			return builder;
+		}
 	}
 
 	@Override
@@ -125,6 +136,7 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	public void finishRegistration() {
 		Preconditions.checkState(!this.registeredSpecies, "Registration of species is already finished. Some mod is being pesky!");
 		this.registeredSpecies = true;
+
 	}
 
 	private static class TaxonBuilder implements ITaxonBuilder {

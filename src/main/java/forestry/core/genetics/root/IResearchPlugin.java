@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpecies;
 
 import genetics.api.individual.IIndividual;

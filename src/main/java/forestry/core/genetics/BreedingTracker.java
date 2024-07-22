@@ -29,15 +29,14 @@ import com.mojang.authlib.GameProfile;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 
+import forestry.api.IForestryApi;
 import forestry.api.core.ForestryEvent;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IMutation;
+import forestry.api.genetics.ISpecies;
 import forestry.core.network.packets.PacketGenomeTrackerSync;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.GeneticsAPI;
-import forestry.api.genetics.alleles.IAlleleSpecies;
-import genetics.api.individual.IIndividual;
 import forestry.api.genetics.ISpeciesType;
 
 public abstract class BreedingTracker extends SavedData implements IBreedingTracker {
@@ -67,16 +66,20 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 		this.modeName = defaultModeName;
 	}
 
-	protected BreedingTracker(String defaultModeName, CompoundTag tag) {
+	protected BreedingTracker(String defaultModeName, CompoundTag nbt) {
 		this(defaultModeName);
 
-		if (tag.contains(MODE_NAME_KEY)) {
-			modeName = tag.getString(MODE_NAME_KEY);
+		load(nbt);
+	}
+
+	protected void load(CompoundTag nbt) {
+		if (nbt.contains(MODE_NAME_KEY)) {
+			modeName = nbt.getString(MODE_NAME_KEY);
 		}
 
-		readValuesFromNBT(tag, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
-		readValuesFromNBT(tag, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
-		readValuesFromNBT(tag, researchedMutations, RESEARCHED_COUNT_KEY, RESEARCHED_KEY);
+		readValuesFromNBT(nbt, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
+		readValuesFromNBT(nbt, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
+		readValuesFromNBT(nbt, researchedMutations, RESEARCHED_COUNT_KEY, RESEARCHED_KEY);
 	}
 
 	public void setUsername(@Nullable GameProfile username) {
@@ -164,16 +167,16 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 		return nbt;
 	}
 
-	private void writeToNBT(CompoundTag CompoundNBT, Collection<String> discoveredSpecies, Collection<String> discoveredMutations, Collection<String> researchedMutations) {
+	private void writeToNBT(CompoundTag nbt, Collection<String> discoveredSpecies, Collection<String> discoveredMutations, Collection<String> researchedMutations) {
 		if (!modeName.isEmpty()) {
-			CompoundNBT.putString(MODE_NAME_KEY, modeName);
+			nbt.putString(MODE_NAME_KEY, modeName);
 		}
 
-		CompoundNBT.putString(TYPE_KEY, getSpeciesId());
+		nbt.putString(TYPE_KEY, getSpeciesId().toString());
 
-		writeValuesToNBT(CompoundNBT, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
-		writeValuesToNBT(CompoundNBT, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
-		writeValuesToNBT(CompoundNBT, researchedMutations, RESEARCHED_COUNT_KEY, RESEARCHED_KEY);
+		writeValuesToNBT(nbt, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
+		writeValuesToNBT(nbt, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
+		writeValuesToNBT(nbt, researchedMutations, RESEARCHED_COUNT_KEY, RESEARCHED_KEY);
 	}
 
 	private static void readValuesFromNBT(CompoundTag CompoundNBT, Set<String> values, String countKey, String key) {
@@ -203,20 +206,20 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	}
 
 	private static String getMutationString(IMutation mutation) {
-		String species0 = mutation.getFirstParent().getId().toString();
-		String species1 = mutation.getSecondParent().getId().toString();
-		String resultSpecies = mutation.getResultingSpecies().getId().toString();
+		String species0 = mutation.getFirstParent().id().toString();
+		String species1 = mutation.getSecondParent().id().toString();
+		String resultSpecies = mutation.getResult().id().toString();
 		return String.format(MUTATION_FORMAT, species0, species1, resultSpecies);
 	}
 
 	@Override
-	public void registerMutation(IMutation mutation) {
+	public void registerMutation(IMutation<?> mutation) {
 		String mutationString = getMutationString(mutation);
 		if (!discoveredMutations.contains(mutationString)) {
 			discoveredMutations.add(mutationString);
 			setDirty();
 
-			ISpeciesType<?> speciesRoot = GeneticsAPI.apiInstance.getRoot(getSpeciesId());
+			ISpeciesType<?> speciesRoot = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(getSpeciesId());
 			ForestryEvent event = new ForestryEvent.MutationDiscovered(speciesRoot, username, mutation, this);
 			MinecraftForge.EVENT_BUS.post(event);
 
@@ -225,14 +228,14 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	}
 
 	@Override
-	public boolean isDiscovered(IMutation mutation) {
+	public boolean isDiscovered(IMutation<?> mutation) {
 		String mutationString = getMutationString(mutation);
 		return discoveredMutations.contains(mutationString) || researchedMutations.contains(mutationString);
 	}
 
 	@Override
-	public boolean isDiscovered(IAlleleSpecies species) {
-		return discoveredSpecies.contains(species.getId().toString());
+	public boolean isDiscovered(ISpecies<?> species) {
+		return discoveredSpecies.contains(species.id().toString());
 	}
 
 	@Override
@@ -246,18 +249,17 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	}
 
 	@Override
-	public void registerBirth(IIndividual individual) {
-		registerSpecies(individual.getGenome().getPrimarySpecies());
-		registerSpecies(individual.getGenome().getSecondarySpecies());
+	public void registerBirth(ISpecies<?> species) {
+		registerSpecies(species);
 	}
 
 	@Override
-	public void registerSpecies(IAlleleSpecies species) {
-		String registryName = species.getId().toString();
+	public void registerSpecies(ISpecies<?> species) {
+		String registryName = species.id().toString();
 		if (!discoveredSpecies.contains(registryName)) {
 			discoveredSpecies.add(registryName);
 
-			ISpeciesType<?> speciesRoot = GeneticsAPI.apiInstance.getRoot(getSpeciesId());
+			ISpeciesType<?> speciesRoot = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(getSpeciesId());
 			ForestryEvent event = new ForestryEvent.SpeciesDiscovered(speciesRoot, username, species, this);
 			MinecraftForge.EVENT_BUS.post(event);
 
@@ -266,7 +268,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	}
 
 	@Override
-	public void researchMutation(IMutation mutation) {
+	public void researchMutation(IMutation<?> mutation) {
 		String mutationString = getMutationString(mutation);
 		if (!researchedMutations.contains(mutationString)) {
 			researchedMutations.add(mutationString);
@@ -279,7 +281,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	}
 
 	@Override
-	public boolean isResearched(IMutation mutation) {
+	public boolean isResearched(IMutation<?> mutation) {
 		String mutationString = getMutationString(mutation);
 		return researchedMutations.contains(mutationString);
 	}

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,6 +38,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import forestry.api.IForestryApi;
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.CircuitSocketType;
 import forestry.api.circuits.ICircuitBoard;
@@ -291,7 +294,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	private void refreshFarmLogics() {
-		for (HorizontalDirection direction : HorizontalDirection.values()) {
+		for (Direction direction : HorizontalDirection.VALUES) {
 			resetFarmLogic(direction);
 		}
 
@@ -307,32 +310,20 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 	@Override
 	public TemperatureType temperature() {
-		BlockPos coords = getReferenceCoord();
-		return TemperatureType.getFromBiome(getBiome(), coords);
+		return IForestryApi.INSTANCE.getClimateManager().getTemperature(getBiome());
 	}
 
 	@Override
 	public HumidityType humidity() {
-		return HumidityType.getFromValue(getExactHumidity());
+		return IForestryApi.INSTANCE.getClimateManager().getHumidity(getBiome());
 	}
 
-	@Override
-	public float getExactTemperature() {
-		BlockPos coords = getReferenceCoord();
-		return 0; // getBiome().getTemperature(coords);
-	}
-
-	@Override
-	public float getExactHumidity() {
-		return getBiome().getDownfall();
-	}
-
-	protected Biome getBiome() {
+	protected Holder<Biome> getBiome() {
 		BlockPos coords = getReferenceCoord();
 		if (coords == null) {
-			return ForgeRegistries.BIOMES.getDelegateOrThrow(Biomes.PLAINS).value();
+			return ForgeRegistries.BIOMES.getDelegateOrThrow(Biomes.PLAINS);
 		}
-		return level.getBiome(coords).value();
+		return level.getBiome(coords);
 	}
 
 	@Override
@@ -368,7 +359,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void setUpFarmlandTargets(Map<HorizontalDirection, List<FarmTarget>> targets) {
+	public void setUpFarmlandTargets(Map<Direction, List<FarmTarget>> targets) {
 		BlockPos targetStart = getCoords();
 
 		BlockPos max = getMaximumCoord();
@@ -406,7 +397,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public boolean plantGermling(IFarmable germling, Level world, BlockPos pos, HorizontalDirection direction) {
+	public boolean plantGermling(IFarmable germling, Level world, BlockPos pos, Direction direction) {
 		Player player = PlayerUtil.getFakePlayer(world, getOwnerHandler().getOwner());
 		return player != null && inventory.plantGermling(germling, player, pos);
 	}
@@ -422,7 +413,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void setFarmLogic(HorizontalDirection direction, IFarmLogic logic) {
+	public void setFarmLogic(Direction direction, IFarmLogic logic) {
 		Preconditions.checkNotNull(direction);
 		Preconditions.checkNotNull(logic, "logic must not be null");
 		farmLogics.put(direction, logic);
@@ -501,17 +492,17 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public int getExtents(HorizontalDirection direction, BlockPos pos) {
+	public int getExtents(Direction direction, BlockPos pos) {
 		return manager.getExtents(direction, pos);
 	}
 
 	@Override
-	public void setExtents(HorizontalDirection direction, BlockPos pos, int extend) {
+	public void setExtents(Direction direction, BlockPos pos, int extend) {
 		manager.setExtents(direction, pos, extend);
 	}
 
 	@Override
-	public void cleanExtents(HorizontalDirection direction) {
+	public void cleanExtents(Direction direction) {
 		manager.cleanExtents(direction);
 	}
 

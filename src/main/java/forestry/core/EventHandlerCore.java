@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import forestry.api.ForestryConstants;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.apiculture.ApiaristAI;
 import forestry.apiculture.villagers.RegisterVillager;
 
@@ -48,7 +48,7 @@ public class EventHandlerCore {
 	private static void syncBreedingTrackers(Player player) {
 		Collection<ISpeciesType<?>> speciesRoots = GeneticsAPI.apiInstance.getRoots().values();
 		for (ISpeciesType<?> speciesRoot : speciesRoots) {
-			if (speciesRoot instanceof IForestrySpeciesType<?> root) {
+			if (speciesRoot instanceof ISpeciesType<?> root) {
 				IBreedingTracker breedingTracker = root.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());
 				breedingTracker.synchToPlayer(player);
 			}

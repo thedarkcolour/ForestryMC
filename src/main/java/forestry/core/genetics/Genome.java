@@ -5,22 +5,25 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IKaryotype;
-import forestry.api.genetics.alleles.IValueAllele;
-import forestry.api.genetics.alleles.IValueChromosome;
 import forestry.api.plugin.IGenomeBuilder;
 
-import genetics.utils.AlleleUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public final class Genome implements IGenome {
 	final ImmutableMap<IChromosome<?>, AllelePair<?>> chromosomes;
 	private final IKaryotype karyotype;
+
+	private boolean isDefaultGenome;
+	private boolean hasCachedDefaultGenome;
 
 	public Genome(IKaryotype karyotype, Map<IChromosome<?>, AllelePair<?>> chromosomes) {
 		this(karyotype, ImmutableMap.copyOf(chromosomes));
@@ -37,41 +40,89 @@ public final class Genome implements IGenome {
 	}
 
 	@Override
-	public <A extends IAllele> A getActiveAllele(IChromosome<A> chromosomeType) {
-		AllelePair<A> chromosome = getChromosome(chromosomeType);
-		return chromosome.active();
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <V> IValueAllele<V> getActiveAllele(IValueChromosome<V> chromosome) {
-		return (IValueAllele<V>) getActiveAllele(chromosome, IValueAllele.class);
-	}
-
-	@Override
-	public <V> V getActiveValue(IValueChromosome<V> chromosome, Class<? extends V> valueClass) {
-		IAllele allele = getActiveAllele(chromosome);
-		V value = AlleleUtils.getAlleleValue(allele, valueClass);
-		if (value == null) {
-			throw new IllegalArgumentException(String.format("The allele '%s' at the active position of the chromosome type '%s' has no value of the type '%s'.", allele, chromosome, valueClass));
-		}
-		return value;
-	}
-
-	@Override
-	public <V> V getActiveValue(IValueChromosome<V> chromosome, Class<? extends V> valueClass, V fallback) {
-		IAllele allele = getActiveAllele(chromosome);
-		return AlleleUtils.getAlleleValue(allele, valueClass, fallback);
-	}
-
-	@Override
 	public IKaryotype getKaryotype() {
 		return this.karyotype;
 	}
 
 	@Override
-	public int size() {
-		return this.chromosomes.size();
+	@SuppressWarnings("unchecked")
+	public <A extends IAllele> AllelePair<A> getAllelePair(IChromosome<A> chromosomeType) {
+		return (AllelePair<A>) Objects.requireNonNull(this.chromosomes.get(chromosomeType));
+	}
+
+	@Override
+	public boolean isDefaultGenome() {
+		if (!this.hasCachedDefaultGenome) {
+			Genome defaultGenome = (Genome) getActiveValue(this.karyotype.getSpeciesChromosome()).getDefaultGenome();
+
+			this.isDefaultGenome = this == defaultGenome || (defaultGenome.karyotype == this.karyotype && this.chromosomes.equals(defaultGenome.chromosomes));
+			this.hasCachedDefaultGenome = true;
+		}
+
+		return this.isDefaultGenome;
+	}
+
+	@Override
+	public ImmutableMap<IChromosome<?>, AllelePair<?>> getChromosomes() {
+		return this.chromosomes;
+	}
+
+	@Override
+	public IGenome copyWith(Map<IChromosome<?>, IAllele> alleles) {
+		IGenome genome;
+		if (alleles.isEmpty()) {
+			genome = this;
+		} else {
+			Genome.Builder builder = new Genome.Builder(getKaryotype());
+			// avoid duplicate instances of default genome
+			MutableBoolean isDefault = new MutableBoolean(true);
+
+			// copy over allele map or default allele
+			this.chromosomes.forEach((chromosome, pair) -> {
+				IAllele allele = alleles.get(chromosome);
+
+				if (allele == null || allele.equals(pair.active())) {
+					// copy default allele if missing or equal
+					builder.setUnchecked(chromosome, pair);
+				} else {
+					// mark not default when there are non-default alleles
+					builder.setUnchecked(chromosome, new AllelePair<>(allele, allele));
+					isDefault.setFalse();
+				}
+			});
+
+			if (isDefault.isTrue()) {
+				genome = this;
+			} else {
+				genome = builder.build();
+			}
+		}
+
+		return genome;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		Genome genome = (Genome) o;
+
+		if (!chromosomes.equals(genome.chromosomes)) {
+			return false;
+		}
+		return karyotype.equals(genome.karyotype);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = chromosomes.hashCode();
+		result = 31 * result + karyotype.hashCode();
+		return result;
 	}
 
 	public static class Builder implements IGenomeBuilder {

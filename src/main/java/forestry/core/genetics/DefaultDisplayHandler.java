@@ -4,15 +4,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
-import forestry.apiculture.genetics.IGeneticTooltipProvider;
 
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.IGenome;
-import genetics.api.individual.IIndividual;
+import forestry.apiculture.genetics.IGeneticTooltipProvider;
 
 public enum DefaultDisplayHandler implements IGeneticTooltipProvider<IIndividual> {
 	UNKNOWN(-3) {
@@ -47,9 +45,9 @@ public enum DefaultDisplayHandler implements IGeneticTooltipProvider<IIndividual
 		for (DefaultDisplayHandler handler : values()) {
 			int tooltipIndex = handler.tooltipIndex;
 			if (tooltipIndex >= 0) {
-				helper.addTooltip(handler, ForestrySpeciesType.BEE, tooltipIndex * 10);
-				helper.addTooltip(handler, ForestrySpeciesType.TREE, tooltipIndex * 10);
-				helper.addTooltip(handler, ForestrySpeciesType.BUTTERFLY, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesTypes.BEE, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesTypes.TREE, tooltipIndex * 10);
+				helper.addTooltip(handler, ForestrySpeciesTypes.BUTTERFLY, tooltipIndex * 10);
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 package forestry.storage.features;
 
 import forestry.api.core.ItemGroups;
-import forestry.api.genetics.ForestrySpeciesType;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.storage.EnumBackpackType;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureProvider;
@@ -13,8 +13,8 @@ import forestry.storage.ModuleBackpacks;
 public class BackpackItems {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleBackpacks.class);
 
-	public static final FeatureItem<?> APIARIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleBackpacks.APIARIST, ForestrySpeciesType.BEE, ItemGroups.tabApiculture, "apiarist_bag");
-	public static final FeatureItem<?> LEPIDOPTERIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleBackpacks.LEPIDOPTERIST, ForestrySpeciesType.BUTTERFLY, ItemGroups.tabLepidopterology, "lepidopterist_bag");
+	public static final FeatureItem<?> APIARIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleBackpacks.APIARIST, ForestrySpeciesTypes.BEE, ItemGroups.tabApiculture, "apiarist_bag");
+	public static final FeatureItem<?> LEPIDOPTERIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleBackpacks.LEPIDOPTERIST, ForestrySpeciesTypes.BUTTERFLY, ItemGroups.tabLepidopterology, "lepidopterist_bag");
 
 	public static final FeatureItem<?> MINER_BACKPACK = REGISTRY.backpack(ModuleBackpacks.MINER, EnumBackpackType.NORMAL, "miner_bag");
 	public static final FeatureItem<?> MINER_BACKPACK_T_2 = REGISTRY.backpack(ModuleBackpacks.MINER, EnumBackpackType.WOVEN, "miner_bag_woven");

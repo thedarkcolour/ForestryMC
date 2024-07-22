@@ -13,11 +13,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import genetics.api.GeneticHelper;
 import genetics.api.organism.IIndividualCapability;
 
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.config.Config;
 import forestry.core.genetics.analyzer.DatabasePlugin;
@@ -42,7 +41,7 @@ public class ButterflyPlugin extends DatabasePlugin<IButterfly> {
 			if (organism.isEmpty()) {
 				continue;
 			}
-			IAlleleButterflySpecies species = organism.getAllele(ButterflyChromosomes.SPECIES, true);
+			IButterflySpecies species = organism.getAllele(ButterflyChromosomes.SPECIES, true);
 			iconStacks.put(species.getId().toString(), butterflyStack);
 		}
 	}

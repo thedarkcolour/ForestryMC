@@ -35,8 +35,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import forestry.api.client.ISpriteRegister;
 import forestry.api.core.ItemGroups;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
@@ -53,7 +53,7 @@ import forestry.lepidopterology.features.LepidopterologyEntities;
 import forestry.lepidopterology.genetics.ButterflyHelper;
 
 import genetics.api.GeneticHelper;
-import forestry.api.genetics.alleles.IAlleleSpecies;
+import forestry.api.genetics.alleles.ISpecies<?>;
 import genetics.api.individual.IIndividual;
 import forestry.api.genetics.ILifeStage;
 import genetics.utils.AlleleUtils;
@@ -70,7 +70,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 	}
 
 	@Override
-	protected IAlleleForestrySpecies getSpecies(ItemStack itemStack) {
+	protected ISpecies<?> getSpecies(ItemStack itemStack) {
 		return GeneticHelper.getOrganism(itemStack).getAllele(ButterflyChromosomes.SPECIES, true);
 	}
 
@@ -238,7 +238,7 @@ public class ItemButterflyGE extends ItemGE implements ISpriteRegister, IColored
 		if (stack.hasTag()) {
 			IIndividual individual = GeneticHelper.getIndividual(stack);
 			if (individual != null) {
-				IAlleleSpecies species = individual.getGenome().getPrimarySpecies();
+				ISpecies<?> species = individual.getGenome().getPrimarySpecies();
 				return ((IAlleleForestrySpecies) species).getSpriteColour(tintIndex);
 			}
 		}

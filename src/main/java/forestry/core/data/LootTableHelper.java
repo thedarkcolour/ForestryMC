@@ -217,22 +217,22 @@ public class LootTableHelper {
 		);
 	}
 
-	private LootPoolSingletonContainer.Builder<?> saplingLoot(TreeDefinition definition) {
-		return saplingLoot(TreeLifeStage.SAPLING, definition);
+	private LootPoolSingletonContainer.Builder<?> saplingLoot(ResourceLocation species) {
+		return saplingLoot(TreeLifeStage.SAPLING, species);
 	}
 
-	private LootPoolSingletonContainer.Builder<?> saplingLoot(TreeLifeStage type, TreeDefinition definition) {
+	private LootPoolSingletonContainer.Builder<?> saplingLoot(TreeLifeStage type, ResourceLocation species) {
 		return LootItem.lootTableItem(saplingItem(type))
-				.apply(OrganismFunction.fromDefinition(definition));
+				.apply(OrganismFunction.fromDefinition(species));
 	}
 
-	private LootPoolSingletonContainer.Builder<?> beeLoot(BeeDefinition definition) {
-		return beeLoot(BeeLifeStage.DRONE, definition);
+	private LootPoolSingletonContainer.Builder<?> beeLoot(ResourceLocation species) {
+		return beeLoot(BeeLifeStage.DRONE, species);
 	}
 
-	private LootPoolSingletonContainer.Builder<?> beeLoot(BeeLifeStage type, BeeDefinition definition) {
+	private LootPoolSingletonContainer.Builder<?> beeLoot(BeeLifeStage type, ResourceLocation species) {
 		return LootItem.lootTableItem(beeItem(type))
-				.apply(OrganismFunction.fromDefinition(definition));
+				.apply(OrganismFunction.fromDefinition(species));
 	}
 
 	private Item saplingItem(TreeLifeStage type) {

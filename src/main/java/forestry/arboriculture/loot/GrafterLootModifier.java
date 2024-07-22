@@ -2,7 +2,7 @@ package forestry.arboriculture.loot;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import forestry.api.arboriculture.IFruitProvider;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.IToolGrafter;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
@@ -98,7 +98,7 @@ public class GrafterLootModifier extends LootModifier {
 		}
 		if (state.getBlock() instanceof BlockDefaultLeavesFruit) {
 			IGenome genome = tree.getGenome();
-			IFruitProvider fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+			IFruit fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
 			if (fruitProvider.isFruitLeaf(genome, world, pos)) {
 				generatedLoot.addAll(tree.produceStacks(world, pos, Integer.MAX_VALUE));
 			}

@@ -29,12 +29,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.IAlyzerPlugin;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryChromosomes;
 import forestry.api.genetics.Product;
 import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyChromosome;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
@@ -60,7 +61,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			if (organism.isEmpty()) {
 				continue;
 			}
-			IAlleleButterflySpecies species = organism.getAllele(ButterflyChromosomes.SPECIES, true);
+			IButterflySpecies species = organism.getAllele(ButterflyChromosomes.SPECIES, true);
 			iconStacks.put(species.getId(), butterflyStack);
 		}
 	}
@@ -135,8 +136,8 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			}
 
 			IGenome genome = butterfly.getGenome();
-			IAlleleButterflySpecies primaryAllele = genome.getActiveAllele(ButterflyChromosomes.SPECIES);
-			IAlleleButterflySpecies secondaryAllele = genome.getActiveAllele(ButterflyChromosomes.SPECIES);
+			IButterflySpecies primaryAllele = genome.getActiveAllele(ButterflyChromosomes.SPECIES);
+			IButterflySpecies secondaryAllele = genome.getActiveAllele(ButterflyChromosomes.SPECIES);
 
 			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
@@ -158,8 +159,8 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			IValueAllele<ToleranceType> tempToleranceInactive = genome.getInactiveAllele(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
 
 			textLayout.drawLine(transform, indentedTolerance, GuiAlyzer.COLUMN_0);
-			guiAlyzer.drawToleranceInfo(transform, tempToleranceActive, GuiAlyzer.COLUMN_1);
-			guiAlyzer.drawToleranceInfo(transform, tempToleranceInactive, GuiAlyzer.COLUMN_2);
+			guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceActive, GuiAlyzer.COLUMN_1);
+			guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceInactive, GuiAlyzer.COLUMN_2);
 
 			textLayout.newLine();
 
@@ -171,8 +172,8 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			IValueAllele<ToleranceType> humidToleranceActive = genome.getActiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
 			IValueAllele<ToleranceType> humidToleranceInactive = genome.getInactiveAllele(ButterflyChromosomes.HUMIDITY_TOLERANCE);
 			textLayout.drawLine(transform, indentedTolerance, GuiAlyzer.COLUMN_0);
-			guiAlyzer.drawToleranceInfo(transform, humidToleranceActive, GuiAlyzer.COLUMN_1);
-			guiAlyzer.drawToleranceInfo(transform, humidToleranceInactive, GuiAlyzer.COLUMN_2);
+			guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceActive, GuiAlyzer.COLUMN_1);
+			guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceInactive, GuiAlyzer.COLUMN_2);
 
 			textLayout.newLine();
 			textLayout.newLine();
@@ -240,8 +241,8 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			int guiTop = guiAlyzer.getGuiTop();
 			int x = GuiAlyzer.COLUMN_0;
 
-			for (Product product : butterfly.getGenome().getPrimarySpecies(IAlleleButterflySpecies.class).getButterflyLoot().getPossibleProducts()) {
-				itemRenderer.renderGuiItem(product.getStack(), guiLeft + x, guiTop + textLayout.getLineY());
+			for (Product product : butterfly.getGenome().getPrimarySpecies(IButterflySpecies.class).getButterflyLoot().getPossibleProducts()) {
+				itemRenderer.renderGuiItem(product.createStack(), guiLeft + x, guiTop + textLayout.getLineY());
 				x += 18;
 				if (x > 148) {
 					x = GuiAlyzer.COLUMN_0;
@@ -256,8 +257,8 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			textLayout.newLine();
 
 			x = GuiAlyzer.COLUMN_0;
-			for (Product product : butterfly.getGenome().getPrimarySpecies(IAlleleButterflySpecies.class).getCaterpillarLoot().getPossibleProducts()) {
-				itemRenderer.renderGuiItem(product.getStack(), guiLeft + x, guiTop + textLayout.getLineY());
+			for (Product product : butterfly.getGenome().getPrimarySpecies(IButterflySpecies.class).getCaterpillarLoot().getPossibleProducts()) {
+				itemRenderer.renderGuiItem(product.createStack(), guiLeft + x, guiTop + textLayout.getLineY());
 				x += 18;
 				if (x > 148) {
 					x = GuiAlyzer.COLUMN_0;
@@ -273,7 +274,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 
 			x = GuiAlyzer.COLUMN_0;
 			for (Product product : butterfly.getGenome().getActiveAllele(ButterflyChromosomes.COCOON).getCocoonLoot().getPossibleProducts()) {
-				itemRenderer.renderGuiItem(product.getStack(), guiLeft + x, guiTop + textLayout.getLineY());
+				itemRenderer.renderGuiItem(product.createStack(), guiLeft + x, guiTop + textLayout.getLineY());
 				x += 18;
 				if (x > 148) {
 					x = GuiAlyzer.COLUMN_0;

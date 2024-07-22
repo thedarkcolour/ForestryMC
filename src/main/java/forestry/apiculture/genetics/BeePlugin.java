@@ -32,7 +32,7 @@ public class BeePlugin extends DatabasePlugin<IBee> {
 		super(new BeeDatabaseTab(DatabaseMode.ACTIVE),
 			new BeeDatabaseTab(DatabaseMode.INACTIVE),
 			new ProductsTab(() -> ApicultureItems.BEE_COMBS.stack(EnumHoneyComb.HONEY)),
-			new MutationsTab(ApicultureItems.FRAME_IMPREGNATED::stack));
+			new MutationsTab<>(ApicultureItems.FRAME_IMPREGNATED::stack));
 		NonNullList<ItemStack> beeList = NonNullList.create();
 		ApicultureItems.BEE_DRONE.item().addCreativeItems(beeList, false);
 		for (ItemStack beeStack : beeList) {

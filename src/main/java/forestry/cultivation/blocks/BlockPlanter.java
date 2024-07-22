@@ -19,7 +19,7 @@ import forestry.core.render.ParticleRender;
 import forestry.cultivation.tiles.TilePlanter;
 
 public class BlockPlanter extends BlockBase<BlockTypePlanter> {
-	private Mode mode;
+	private final Mode mode;
 
 	//TODO can probably propagate mode further through the code
 	public enum Mode implements IBlockSubtype {
@@ -32,8 +32,8 @@ public class BlockPlanter extends BlockBase<BlockTypePlanter> {
 		}
 	}
 
-	public BlockPlanter(BlockTypePlanter blockType, Mode mode) {
-		super(blockType, Material.WOOD);
+	public BlockPlanter(BlockTypePlanter type, Mode mode) {
+		super(type, Material.WOOD);
 		this.mode = mode;
 	}
 
@@ -41,12 +41,11 @@ public class BlockPlanter extends BlockBase<BlockTypePlanter> {
 		return mode;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource rand) {
+	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
 		if (blockType == BlockTypePlanter.FARM_ENDER) {
 			for (int i = 0; i < 3; ++i) {
-				ParticleRender.addPortalFx(worldIn, pos, rand);
+				ParticleRender.addPortalFx(level, pos, rand);
 			}
 		}
 	}

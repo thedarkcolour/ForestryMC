@@ -25,16 +25,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.ITreeGenData;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.api.genetics.products.IProductList;
 
 import forestry.api.genetics.alleles.IChromosome;
-import genetics.api.individual.IIndividual;
-import genetics.api.individual.IHasSecrets;
 
-public interface ITree extends IIndividual, ITreeGenData, IHasSecrets {
+public interface ITree extends IIndividual, ITreeGenData {
 
-	@Override
 	ITreeSpeciesType getRoot();
 
 	IEffectData[] doEffect(IEffectData[] storedData, Level world, BlockPos pos);
@@ -86,19 +83,17 @@ public interface ITree extends IIndividual, ITreeGenData, IHasSecrets {
 
 	Feature<NoneFeatureConfiguration> getTreeGenerator(WorldGenLevel world, BlockPos pos, boolean wasBonemealed);
 
-	@Override
 	ITree copy();
 
-	boolean isPureBred(IChromosome chromosomeType);
+	boolean isPureBred(IChromosome<?> chromosome);
 
 	boolean canBearFruit();
 
-	default boolean hasEffect() {
-		return getGenome().getActiveAllele(TreeChromosomes.SPECIES).hasEffect();
+	default boolean hasValue() {
+		return getGenome().getActiveValue(TreeChromosomes.SPECIES).hasGlint();
 	}
 
-	@Override
 	default boolean isSecret() {
-		return getGenome().getActiveAllele(TreeChromosomes.SPECIES).isSecret();
+		return getGenome().getActiveValue(TreeChromosomes.SPECIES).isSecret();
 	}
 }

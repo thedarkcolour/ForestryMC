@@ -1,5 +1,6 @@
 package forestry.lepidopterology;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import genetics.api.individual.IIndividual;
@@ -69,7 +70,7 @@ public enum LepidopterologyFilterRule implements IFilterRule {
 	}
 
 	@Override
-	public String getRootUID() {
+	public ResourceLocation getSpeciesTypeId() {
 		return ButterflyManager.butterflyRoot.id();
 	}
 

@@ -12,7 +12,6 @@ import forestry.api.apiculture.genetics.IEffect;
 import forestry.api.genetics.IGenome;
 
 import forestry.api.genetics.IEffectData;
-import forestry.api.genetics.alleles.IAlleleEffect;
 
 /**
  * Simple allele encapsulating a leaf effect. (Not implemented)

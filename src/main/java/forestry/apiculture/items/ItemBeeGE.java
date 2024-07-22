@@ -13,6 +13,7 @@ package forestry.apiculture.items;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.BeeManager;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Item;
@@ -26,11 +27,14 @@ import net.minecraft.world.level.Level;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.core.ItemGroups;
+import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
@@ -53,7 +57,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 	}
 
 	@Override
-	protected IAlleleBeeSpecies getSpecies(ItemStack itemStack) {
+	protected ISpecies<?> getSpecies(ItemStack itemStack) {
 		return GeneticHelper.getOrganism(itemStack).getAllele(BeeChromosomes.SPECIES, true);
 	}
 
@@ -88,8 +92,8 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 
 	public void addCreativeItems(NonNullList<ItemStack> subItems, boolean hideSecrets) {
 		//so need to adjust init sequence
-		IBeeSpeciesType root = BeeManager.beeRoot;
-		for (IBee bee : root.getIndividualTemplates()) {
+		IBeeSpeciesType type = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.BEE);
+		for (IBeeSpecies bee : type.getSpecies()) {
 			// Don't show secret bees unless ordered to.
 			if (hideSecrets && bee.isSecret() && !Config.isDebug) {
 				continue;

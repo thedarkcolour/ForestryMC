@@ -10,13 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,9 +23,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IIndividualLiving;
-
-import genetics.api.individual.IIndividual;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 
 /**
  * Other implementations than Forestry's default one are not supported.
@@ -70,11 +70,11 @@ public interface IBee extends IIndividualLiving {
 
 	List<Holder.Reference<Biome>> getSuitableBiomes(Registry<Biome> registry);
 
-	NonNullList<ItemStack> getProduceList();
+	List<ItemStack> getProduceList();
 
-	NonNullList<ItemStack> getSpecialtyList();
+	List<ItemStack> getSpecialtyList();
 
-	NonNullList<ItemStack> produceStacks(IBeeHousing housing);
+	List<ItemStack> produceStacks(IBeeHousing housing);
 
 	@Nullable
 	IBee spawnPrincess(IBeeHousing housing);
@@ -98,4 +98,10 @@ public interface IBee extends IIndividualLiving {
 	boolean pollinateRandom(IBeeHousing housing, IIndividual pollen);
 
 	Iterator<BlockPos.MutableBlockPos> getAreaIterator(IBeeHousing housing);
+
+	@Override
+	IBeeSpeciesType getType();
+
+	@Override
+	IBeeSpecies getSpecies();
 }

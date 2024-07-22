@@ -145,7 +145,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public void setUpFarmlandTargets(Map<HorizontalDirection, List<FarmTarget>> targets) {
+	public void setUpFarmlandTargets(Map<Direction, List<FarmTarget>> targets) {
 		BlockPos targetStart = getCoords();
 		BlockPos minPos = worldPosition;
 		BlockPos maxPos = worldPosition;
@@ -352,17 +352,17 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public int getExtents(HorizontalDirection direction, BlockPos pos) {
+	public int getExtents(Direction direction, BlockPos pos) {
 		return manager.getExtents(direction, pos);
 	}
 
 	@Override
-	public void setExtents(HorizontalDirection direction, BlockPos pos, int extend) {
+	public void setExtents(Direction direction, BlockPos pos, int extend) {
 		manager.setExtents(direction, pos, extend);
 	}
 
 	@Override
-	public void cleanExtents(HorizontalDirection direction) {
+	public void cleanExtents(Direction direction) {
 		manager.cleanExtents(direction);
 	}
 }

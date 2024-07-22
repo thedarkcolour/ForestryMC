@@ -15,7 +15,7 @@ import java.util.List;
 import net.minecraft.world.entity.Mob;
 
 import forestry.api.apiculture.IBeeJubilance;
-import forestry.api.apiculture.IBeeSpecies;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IGenome;
 

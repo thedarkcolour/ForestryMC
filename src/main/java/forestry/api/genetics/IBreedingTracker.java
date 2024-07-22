@@ -14,15 +14,12 @@ import net.minecraft.world.entity.player.Player;
 import forestry.api.apiculture.IBeekeepingMode;
 import forestry.api.genetics.alleles.IAllele;
 
-import genetics.api.individual.IIndividual;
-
 /**
  * Keeps track of who bred, discovered, and researched which species in a world.
  *
  * @author SirSengir
  */
 public interface IBreedingTracker {
-
 	/**
 	 * @return Name of the current {@link IBeekeepingMode}.
 	 */
@@ -39,24 +36,24 @@ public interface IBreedingTracker {
 	int getSpeciesBred();
 
 	/**
-	 * Register the birth of an individual. Will mark it as discovered.
+	 * Register the birth of a species. Will mark it as discovered.
 	 */
-	void registerBirth(IIndividual individual);
+	void registerBirth(ISpecies<?> species);
 
 	/**
-	 * Register the pickup of an individual.
+	 * Register the pickup of a species.
 	 */
-	void registerPickup(IIndividual individual);
+	void registerPickup(ISpecies<?> species);
 
 	/**
 	 * Marks a species as discovered. Should only be called from registerIndividual normally.
 	 */
-	void registerSpecies(ISpecies species);
+	void registerSpecies(ISpecies<?> species);
 
 	/**
 	 * Register a successful mutation. Will mark it as discovered.
 	 */
-	void registerMutation(IMutation mutation);
+	void registerMutation(IMutation<?> mutation);
 
 	/**
 	 * Queries the tracker for discovered species.
@@ -64,7 +61,7 @@ public interface IBreedingTracker {
 	 * @param mutation Mutation to query for.
 	 * @return true if the mutation has been discovered.
 	 */
-	boolean isDiscovered(IMutation mutation);
+	boolean isDiscovered(IMutation<?> mutation);
 
 	/**
 	 * Queries the tracker for discovered species.
@@ -72,7 +69,7 @@ public interface IBreedingTracker {
 	 * @param species Species to check.
 	 * @return true if the species has been bred.
 	 */
-	boolean isDiscovered(IAlleleSpecies species);
+	boolean isDiscovered(ISpecies<?> species);
 
 	/**
 	 * @return A collection that contains the {@link IAllele#id()}s of all discovered species.
@@ -87,12 +84,12 @@ public interface IBreedingTracker {
 	 * Researched mutations may have bonuses such as occurring at a higher rate.
 	 * Researched mutations count as discovered.
 	 */
-	void researchMutation(IMutation mutation);
+	void researchMutation(IMutation<?> mutation);
 
 	/**
 	 * @return true if the mutation has been researched.
 	 */
-	boolean isResearched(IMutation mutation);
+	boolean isResearched(IMutation<?> mutation);
 
 	/**
 	 * Synchronizes the tracker to the client side.

@@ -32,13 +32,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
+
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.core.IBlockSubtype;
 import forestry.api.core.IItemSubtype;
@@ -60,6 +61,11 @@ public class ModFeatureRegistry {
 	private ModFeatureRegistry(String modId) {
 		this.modId = modId;
 		this.modBus = ModuleUtil.getModBus(modId);
+
+		this.modBus.addListener(this::postRegistry);
+		if (FMLEnvironment.dist == Dist.CLIENT) {
+			this.modBus.addListener(this::clientSetupRenderers);
+		}
 	}
 
 	public void register(IModFeature feature) {
@@ -72,7 +78,6 @@ public class ModFeatureRegistry {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		for (ModuleFeatureRegistry features : modules.values()) {
 			features.clientSetupRenderers(event);
@@ -88,7 +93,7 @@ public class ModFeatureRegistry {
 	}
 
 	public IFeatureRegistry getRegistry(ResourceLocation moduleId) {
-		return this.modules.computeIfAbsent(moduleId, ModuleFeatureRegistry::new);
+		return this.modules.computeIfAbsent(moduleId, key -> new ModuleFeatureRegistry(key, this.modBus));
 	}
 
 	private static class ModuleFeatureRegistry implements IFeatureRegistry {
@@ -98,9 +103,11 @@ public class ModFeatureRegistry {
 		private final HashMap<ResourceKey, DeferredRegister> registries = new HashMap<>();
 		private final LinkedListMultimap<ResourceKey<? extends Registry<?>>, Consumer<RegisterEvent>> registryListeners = LinkedListMultimap.create();
 		private final ResourceLocation moduleId;
+		private final IEventBus modBus;
 
-		public ModuleFeatureRegistry(ResourceLocation moduleId) {
+		public ModuleFeatureRegistry(ResourceLocation moduleId, IEventBus modBus) {
 			this.moduleId = moduleId;
+			this.modBus = modBus;
 		}
 
 		@Override
@@ -114,8 +121,7 @@ public class ModFeatureRegistry {
 			String modId = this.moduleId.getNamespace();
 			return registries.computeIfAbsent(registryKey, key -> {
 				DeferredRegister<V> registry = DeferredRegister.create(key, modId);
-				// todo use different mod bus depending on registered mod?
-				registry.register(ModuleUtil.getModBus(modId));
+				registry.register(this.modBus);
 				return registry;
 			});
 		}

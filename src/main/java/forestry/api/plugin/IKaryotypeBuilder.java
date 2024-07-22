@@ -1,5 +1,7 @@
 package forestry.api.plugin;
 
+import java.util.List;
+
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.genetics.ISpecies;
@@ -35,7 +37,8 @@ public interface IKaryotypeBuilder {
 
 	// todo allow recessive alleles
 	default void set(IBooleanChromosome chromosome, boolean defaultAllele) {
-		set(chromosome, defaultAllele ? ForestryAlleles.TRUE : ForestryAlleles.FALSE);
+		set(chromosome, defaultAllele ? ForestryAlleles.TRUE : ForestryAlleles.FALSE)
+				.addAlleles(List.of(ForestryAlleles.TRUE, ForestryAlleles.FALSE));
 	}
 
 	/**

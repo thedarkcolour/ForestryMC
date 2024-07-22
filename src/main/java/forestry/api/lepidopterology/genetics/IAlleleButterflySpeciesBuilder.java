@@ -10,11 +10,11 @@ import java.awt.Color;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
-import forestry.api.genetics.alleles.IAlleleSpeciesBuilder;
+import forestry.api.genetics.alleles.ISpecies<?>Builder;
 
-public interface IAlleleButterflySpeciesBuilder extends IAlleleSpeciesBuilder<IAlleleButterflySpeciesBuilder> {
+public interface IAlleleButterflySpeciesBuilder extends ISpecies<?>Builder<IAlleleButterflySpeciesBuilder> {
 	@Override
-	IAlleleButterflySpecies build();
+	IButterflySpecies build();
 
 	IAlleleButterflySpeciesBuilder setRarity(float rarity);
 

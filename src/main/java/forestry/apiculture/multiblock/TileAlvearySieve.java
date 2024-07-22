@@ -23,7 +23,7 @@ import genetics.api.individual.IIndividual;
 import forestry.api.apiculture.DefaultBeeListener;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.genetics.IForestrySpeciesType;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.gui.ContainerAlvearySieve;
@@ -74,7 +74,7 @@ public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.B
 				return false;
 			}
 
-			IForestrySpeciesType<IIndividual> root = GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(pollen);
+			ISpeciesType<IIndividual> root = GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(pollen);
 
 			ItemStack pollenStack = root.getTypes().createStack(pollen, TreeLifeStage.POLLEN);
 			if (!pollenStack.isEmpty()) {
