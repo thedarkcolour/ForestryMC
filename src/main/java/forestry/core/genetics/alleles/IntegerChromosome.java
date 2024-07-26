@@ -11,11 +11,6 @@ public class IntegerChromosome extends AbstractChromosome<IIntegerAllele> implem
 	}
 
 	@Override
-	public String getTranslationKey(IIntegerAllele allele) {
-		return null;
-	}
-
-	@Override
 	public Class<?> valueClass() {
 		return int.class;
 	}

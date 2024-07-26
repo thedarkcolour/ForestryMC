@@ -1,8 +1,7 @@
 package forestry.sorting.tiles;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -28,23 +27,17 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import forestry.api.ForestryCapabilities;
-import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.filter.IFilterData;
 import forestry.core.inventory.AdjacentInventoryCache;
 import forestry.core.network.IStreamableGui;
 import forestry.core.tiles.TileForestry;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.ItemStackUtil;
-import forestry.sorting.FilterData;
+import forestry.api.genetics.filter.FilterData;
 import forestry.sorting.FilterLogic;
 import forestry.sorting.features.SortingTiles;
 import forestry.sorting.gui.ContainerGeneticFilter;
 import forestry.sorting.inventory.InventoryFilter;
 import forestry.sorting.inventory.ItemHandlerFilter;
-
-import genetics.api.individual.IIndividual;
-import forestry.api.genetics.ILifeStage;
-import genetics.utils.RootUtils;
 
 public class TileGeneticFilter extends TileForestry implements IStreamableGui, IFilterContainer {
 	private static final int TRANSFER_DELAY = 5;
@@ -55,7 +48,7 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 	public TileGeneticFilter(BlockPos pos, BlockState state) {
 		super(SortingTiles.GENETIC_FILTER.tileType(), pos, state);
 		this.inventoryCache = new AdjacentInventoryCache(this, getTileCache());
-		this.logic = new FilterLogic(this, (logic1, server, player) -> sendToPlayers(server, player));
+		this.logic = new FilterLogic(this, (logic1, level, player) -> sendToPlayers(level, player));
 		setInternalInventory(new InventoryFilter(this));
 	}
 
@@ -140,29 +133,25 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 		return copy;
 	}
 
-	public Collection<Direction> getValidDirections(ItemStack itemStack, Direction from) {
-		ISpeciesType<IIndividual> definition = RootUtils.getRoot(itemStack);
-		IIndividual individual = null;
-		ILifeStage type = null;
-		if (definition != null) {
-			ISpeciesType<IIndividual> root = definition;
-			individual = root.create(itemStack);
-			type = root.getTypes().getType(itemStack);
-		}
-		IFilterData filterData = new FilterData(definition, individual, type);
-		List<Direction> validFacings = new LinkedList<>();
-		for (Direction facing : Direction.VALUES) {
-			if (facing == from) {
-				continue;
+	public List<Direction> getValidDirections(ItemStack stack, Direction from) {
+		return stack.getCapability(ForestryCapabilities.INDIVIDUAL).map(individual -> {
+			FilterData filterData = new FilterData(individual.getType(), individual, individual.getLifeStage());
+			List<Direction> validFacings = new ArrayList<>();
+
+			for (Direction facing : Direction.VALUES) {
+				if (facing == from) {
+					continue;
+				}
+				if (isValidFacing(facing, stack, filterData)) {
+					validFacings.add(facing);
+				}
 			}
-			if (isValidFacing(facing, itemStack, filterData)) {
-				validFacings.add(facing);
-			}
-		}
-		return validFacings;
+
+			return validFacings;
+		}).orElse(List.of());
 	}
 
-	private boolean isValidFacing(Direction facing, ItemStack itemStack, IFilterData filterData) {
+	private boolean isValidFacing(Direction facing, ItemStack itemStack, FilterData filterData) {
 		return inventoryCache.getAdjacentInventory(facing) != null && logic.isValid(facing, itemStack, filterData);
 	}
 

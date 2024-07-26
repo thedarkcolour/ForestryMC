@@ -2,34 +2,33 @@ package forestry.core.genetics;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
+import forestry.core.utils.SpeciesUtil;
 
-public abstract class Individual<S extends ISpecies<?>, T extends ISpeciesType<S>> implements IIndividual {
+public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T extends ISpeciesType<S, I>> implements IIndividual {
 	protected final S species;
 	protected final IGenome genome;
-	protected final ILifeStage stage;
 
 	@Nullable
 	protected IGenome mate;
 	protected boolean isAnalyzed;
 
-	public Individual(S species, IGenome genome, ILifeStage stage) {
-		this.species = species;
+	public Individual(IGenome genome) {
+		this.species = genome.getActiveSpecies();
 		this.genome = genome;
-		this.stage = stage;
 	}
 
 	@Override
-	public boolean mate(@Nullable IGenome mate) {
-		if (mate != null && this.genome.getKaryotype() != mate.getKaryotype()) {
-			return false;
-		} else {
+	public void setMate(@Nullable IGenome mate) {
+		if (mate == null || this.genome.getKaryotype() == mate.getKaryotype()) {
 			this.mate = mate;
-			return true;
 		}
 	}
 
@@ -42,11 +41,6 @@ public abstract class Individual<S extends ISpecies<?>, T extends ISpeciesType<S
 	@Override
 	public IGenome getGenome() {
 		return this.genome;
-	}
-
-	@Override
-	public ILifeStage getLifeStage() {
-		return this.stage;
 	}
 
 	@Override
@@ -63,5 +57,36 @@ public abstract class Individual<S extends ISpecies<?>, T extends ISpeciesType<S
 	@Override
 	public boolean isAnalyzed() {
 		return this.isAnalyzed;
+	}
+
+	@Override
+	public boolean analyze() {
+		if (this.isAnalyzed) {
+			return false;
+		}
+
+		this.isAnalyzed = true;
+		return true;
+	}
+
+	@Override
+	public I copy() {
+		// todo should i copy the mate?
+		return this.species.createIndividual(this.genome);
+	}
+
+	@Override
+	public void saveToStack(ItemStack stack) {
+		Tag individual = SpeciesUtil.serializeIndividual(this);
+		if (individual != null) {
+			stack.getOrCreateTag().put("individual", individual);
+		}
+	}
+
+	@Override
+	public ItemStack copyWithStage(ILifeStage stage) {
+		ItemStack stack = new ItemStack(stage.getItemForm());
+		saveToStack(stack);
+		return stack;
 	}
 }

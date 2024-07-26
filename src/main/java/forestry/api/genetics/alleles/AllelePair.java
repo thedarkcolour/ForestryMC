@@ -66,6 +66,9 @@ public record AllelePair<A extends IAllele>(A active, A inactive) {
 		}
 	}
 
+	/**
+	 * @return {@code true} if the active allele is the same as the inactive allele.
+	 */
 	public boolean isSameAlleles() {
 		return this.active == this.inactive;
 	}

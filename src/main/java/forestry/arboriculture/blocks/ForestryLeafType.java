@@ -1,6 +1,9 @@
 package forestry.arboriculture.blocks;
 
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -12,54 +15,63 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.IBlockSubtype;
 import forestry.api.genetics.alleles.TreeChromosomes;
 
+import deleteme.Todos;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * Used for the default leaf, fruit, and decorative blocks.
  */
-public enum ForestryLeafType implements IBlockSubtype {
-	OAK(ForestryTreeSpecies.OAK, new Color(4764952), new Color(4764952).brighter()),
-	DARK_OAK(ForestryTreeSpecies.DARK_OAK, new Color(4764952), new Color(4764952).brighter()),
-	BIRCH(ForestryTreeSpecies.BIRCH, new Color(8431445), new Color(0xb0c648)),
-	LIME(ForestryTreeSpecies.LIME, new Color(0x5ea107), new Color(0x5ea107).brighter()),
-	WALNUT(ForestryTreeSpecies.WALNUT, new Color(0x798c55), new Color(0xb0c648)),
-	CHESTNUT(ForestryTreeSpecies.CHESTNUT, new Color(0x5ea107), new Color(0xb0c648)),
-	CHERRY(ForestryTreeSpecies.CHERRY, new Color(0xe691da), new Color(0xe63e59)),
-	LEMON(ForestryTreeSpecies.LEMON, new Color(0x88af54), new Color(0xa3b850)),
-	PLUM(ForestryTreeSpecies.PLUM, new Color(0x589246), new Color(0xa3b850)),
-	MAPLE(ForestryTreeSpecies.MAPLE, new Color(0xd4f425), new Color(0x619a3c)),
-	SPRUCE(ForestryTreeSpecies.SPRUCE, new Color(6396257), new Color(0x539d12)),
-	LARCH(ForestryTreeSpecies.LARCH, new Color(0x698f90), new Color(0x569896)),
-	PINE(ForestryTreeSpecies.PINE, new Color(0xfeff8f), new Color(0xffd98f)),
-	SEQUOIA(ForestryTreeSpecies.SEQUOIA, new Color(0x418e71), new Color(0x569896)),
-	GIANT_SEQUOIA(ForestryTreeSpecies.GIANT_SEQUOIA, new Color(0x738434), new Color(0x738434).brighter()),
-	JUNGLE(ForestryTreeSpecies.JUNGLE, new Color(4764952), new Color(0x658917)),
-	TEAK(ForestryTreeSpecies.TEAK, new Color(0xfeff8f), new Color(0xffd98f)),
-	IPE(ForestryTreeSpecies.IPE, new Color(0xfdd207), new Color(0xad8f04)),
-	KAPOK(ForestryTreeSpecies.KAPOK, new Color(0x89987b), new Color(0x89aa9e)),
-	EBONY(ForestryTreeSpecies.EBONY, new Color(0xa2d24a), new Color(0xc4d24a)),
-	ZEBRAWOOD(ForestryTreeSpecies.ZEBRAWOOD, new Color(0xa2d24a), new Color(0xc4d24a)),
-	MAHOGONY(ForestryTreeSpecies.MAHOGONY, new Color(0x8ab154), new Color(0xa9b154)),
-	ACACIA_VANILLA(ForestryTreeSpecies.ACACIA_VANILLA, new Color(0x616101), new Color(0xb3b302)),
-	DESERT_ACACIA(ForestryTreeSpecies.DESERT_ACACIA, new Color(0x748C1C), new Color(0xb3b302)),
-	PADAUK(ForestryTreeSpecies.PADAUK, new Color(0xd0df8c), new Color(0x435c32)),
-	BALSA(ForestryTreeSpecies.BALSA, new Color(0x59ac00), new Color(0xfeff8f)),
-	COCOBOLO(ForestryTreeSpecies.COCOBOLO, new Color(0x6aa17a), new Color(0x487d4c)),
-	WENGE(ForestryTreeSpecies.WENGE, new Color(0xada157), new Color(0xad8a57)),
-	BAOBAB(ForestryTreeSpecies.BAOBAB, new Color(0xfeff8f), new Color(0xffd98f)),
-	MAHOE(ForestryTreeSpecies.MAHOE, new Color(0xa0ba1b), new Color(0x79a175)),
-	WILLOW(ForestryTreeSpecies.WILLOW, new Color(0xa3b8a5), new Color(0xa3b850)),
-	SIPIRI(ForestryTreeSpecies.SIPIRI, new Color(0x678911), new Color(0x79a175)),
-	PAPAYA(ForestryTreeSpecies.PAPAYA, new Color(0x6d9f58), new Color(0x75E675)),
-	DATE(ForestryTreeSpecies.DATE, new Color(0xcbcd79), new Color(0xB3F370)),
-	POPLAR(ForestryTreeSpecies.POPLAR, new Color(0xa3b8a5), new Color(0x539d12));
+public class ForestryLeafType implements IBlockSubtype {
+	public static final ForestryLeafType OAK = new ForestryLeafType(ForestryTreeSpecies.OAK);
+	public static final ForestryLeafType DARK_OAK = new ForestryLeafType(ForestryTreeSpecies.DARK_OAK);
+	public static final ForestryLeafType BIRCH = new ForestryLeafType(ForestryTreeSpecies.BIRCH);
+	public static final ForestryLeafType LIME = new ForestryLeafType(ForestryTreeSpecies.LIME);
+	public static final ForestryLeafType WALNUT = new ForestryLeafType(ForestryTreeSpecies.WALNUT);
+	public static final ForestryLeafType CHESTNUT = new ForestryLeafType(ForestryTreeSpecies.CHESTNUT);
+	public static final ForestryLeafType CHERRY = new ForestryLeafType(ForestryTreeSpecies.CHERRY);
+	public static final ForestryLeafType LEMON = new ForestryLeafType(ForestryTreeSpecies.LEMON);
+	public static final ForestryLeafType PLUM = new ForestryLeafType(ForestryTreeSpecies.PLUM);
+	public static final ForestryLeafType MAPLE = new ForestryLeafType(ForestryTreeSpecies.MAPLE);
+	public static final ForestryLeafType SPRUCE = new ForestryLeafType(ForestryTreeSpecies.SPRUCE);
+	public static final ForestryLeafType LARCH = new ForestryLeafType(ForestryTreeSpecies.LARCH);
+	public static final ForestryLeafType PINE = new ForestryLeafType(ForestryTreeSpecies.PINE);
+	public static final ForestryLeafType SEQUOIA = new ForestryLeafType(ForestryTreeSpecies.SEQUOIA);
+	public static final ForestryLeafType GIANT_SEQUOIA = new ForestryLeafType(ForestryTreeSpecies.GIANT_SEQUOIA);
+	public static final ForestryLeafType JUNGLE = new ForestryLeafType(ForestryTreeSpecies.JUNGLE);
+	public static final ForestryLeafType TEAK = new ForestryLeafType(ForestryTreeSpecies.TEAK);
+	public static final ForestryLeafType IPE = new ForestryLeafType(ForestryTreeSpecies.IPE);
+	public static final ForestryLeafType KAPOK = new ForestryLeafType(ForestryTreeSpecies.KAPOK);
+	public static final ForestryLeafType EBONY = new ForestryLeafType(ForestryTreeSpecies.EBONY);
+	public static final ForestryLeafType ZEBRAWOOD = new ForestryLeafType(ForestryTreeSpecies.ZEBRAWOOD);
+	public static final ForestryLeafType MAHOGANY = new ForestryLeafType(ForestryTreeSpecies.MAHOGANY);
+	public static final ForestryLeafType ACACIA_VANILLA = new ForestryLeafType(ForestryTreeSpecies.ACACIA_VANILLA);
+	public static final ForestryLeafType DESERT_ACACIA = new ForestryLeafType(ForestryTreeSpecies.DESERT_ACACIA);
+	public static final ForestryLeafType PADAUK = new ForestryLeafType(ForestryTreeSpecies.PADAUK);
+	public static final ForestryLeafType BALSA = new ForestryLeafType(ForestryTreeSpecies.BALSA);
+	public static final ForestryLeafType COCOBOLO = new ForestryLeafType(ForestryTreeSpecies.COCOBOLO);
+	public static final ForestryLeafType WENGE = new ForestryLeafType(ForestryTreeSpecies.WENGE);
+	public static final ForestryLeafType BAOBAB = new ForestryLeafType(ForestryTreeSpecies.BAOBAB);
+	public static final ForestryLeafType MAHOE = new ForestryLeafType(ForestryTreeSpecies.MAHOE);
+	public static final ForestryLeafType WILLOW = new ForestryLeafType(ForestryTreeSpecies.WILLOW);
+	public static final ForestryLeafType SIPIRI = new ForestryLeafType(ForestryTreeSpecies.SIPIRI);
+	public static final ForestryLeafType PAPAYA = new ForestryLeafType(ForestryTreeSpecies.PAPAYA);
+	public static final ForestryLeafType DATE = new ForestryLeafType(ForestryTreeSpecies.DATE);
+	public static final ForestryLeafType POPLAR = new ForestryLeafType(ForestryTreeSpecies.POPLAR);
 
+	private static final ObjectOpenHashSet<ForestryLeafType> VALUES = new ObjectOpenHashSet<>(35);
 	private final ResourceLocation speciesId;
 
 	private IFruit fruit;
 	private ILeafSpriteProvider leafSprite;
 	private ITree individual;
 
-	ForestryLeafType(ResourceLocation speciesId) {
+	// Take care not to create duplicates...
+	public ForestryLeafType(ResourceLocation speciesId) {
 		this.speciesId = speciesId;
+		VALUES.add(this);
+
+		throw Todos.unimplemented();
 	}
 
 	public void setSpecies(ITreeSpecies species) {
@@ -70,7 +82,7 @@ public enum ForestryLeafType implements IBlockSubtype {
 
 	@Override
 	public String getSerializedName() {
-		return this.name().toLowerCase(Locale.ROOT);
+		return this.speciesId.getPath();
 	}
 
 	public IFruit getFruit() {
@@ -87,5 +99,16 @@ public enum ForestryLeafType implements IBlockSubtype {
 
 	public ResourceLocation getSpeciesId() {
 		return this.speciesId;
+	}
+
+	// Used by ITreeSpeciesType to set the species of each type
+	public static Set<ForestryLeafType> allValues() {
+		return Collections.unmodifiableSet(VALUES);
+	}
+
+	// Default values used by Forestry to make its leaf blocks (includes all the fields)
+	@ApiStatus.Internal
+	public static List<ForestryLeafType> values() {
+		return Arrays.asList(OAK, DARK_OAK, BIRCH, LIME, WALNUT, CHESTNUT, CHERRY, LEMON, PLUM, MAPLE, SPRUCE, LARCH, PINE, SEQUOIA, GIANT_SEQUOIA, JUNGLE, TEAK, IPE, KAPOK, EBONY, ZEBRAWOOD, MAHOGANY, ACACIA_VANILLA, DESERT_ACACIA, PADAUK, BALSA, COCOBOLO, WENGE, BAOBAB, MAHOE, WILLOW, SIPIRI, PAPAYA, DATE, POPLAR);
 	}
 }

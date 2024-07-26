@@ -36,20 +36,18 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import forestry.api.IForestryApi;
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.hives.IHiveDrop;
 import forestry.api.apiculture.hives.HiveType;
+import forestry.api.apiculture.hives.IHiveDrop;
 import forestry.api.apiculture.hives.IHiveTile;
-import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.apiculture.MaterialBeehive;
 import forestry.apiculture.features.ApicultureTiles;
 import forestry.apiculture.tiles.TileHive;
 import forestry.core.tiles.TileUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public class BlockBeeHive extends BaseEntityBlock {
-
 	private final HiveType type;
 
 	public BlockBeeHive(HiveType type) {
@@ -91,7 +89,7 @@ public class BlockBeeHive extends BaseEntityBlock {
 		if (hiveName.equals(HiveType.SWARM.getId())) {
 			return Collections.emptyList();
 		}
-		return IForestryApi.INSTANCE.getHiveManager().getRegistry().getDrops(hiveName);
+		return IForestryApi.INSTANCE.getHiveManager().getDrops(hiveName);
 	}
 
 	@Override
@@ -99,7 +97,7 @@ public class BlockBeeHive extends BaseEntityBlock {
 		BlockPos pos = new BlockPos(builder.getParameter(LootContextParams.ORIGIN));
 		ItemStack tool = builder.getParameter(LootContextParams.TOOL);
 		int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool);
-        return getDrops(builder.getLevel(), pos, fortune);
+		return getDrops(builder.getLevel(), pos, fortune);
 	}
 
 	private NonNullList<ItemStack> getDrops(ServerLevel world, BlockPos pos, int fortune) {
@@ -119,12 +117,10 @@ public class BlockBeeHive extends BaseEntityBlock {
 				if (random.nextDouble() < drop.getChance(world, pos, fortune)) {
 					IBee bee = drop.getBeeType(world, pos);
 					if (random.nextFloat() < drop.getIgnobleChance(world, pos, fortune)) {
-						bee.setIsNatural(false);
+						bee.setPristine(false);
 					}
 
-					IForestryApi.INSTANCE.getGeneticManager().createIndividual(ForestrySpeciesTypes.BEE)
-
-					ItemStack princess = BeeManager.beeRoot.getTypes().createStack(bee, BeeLifeStage.PRINCESS);
+					ItemStack princess = SpeciesUtil.BEE_TYPE.get().createStack(bee, BeeLifeStage.PRINCESS);
 					drops.add(princess);
 					hasPrincess = true;
 					break;
@@ -136,7 +132,7 @@ public class BlockBeeHive extends BaseEntityBlock {
 		for (IHiveDrop drop : hiveDrops) {
 			if (random.nextDouble() < drop.getChance(world, pos, fortune)) {
 				IBee bee = drop.getBeeType(world, pos);
-				ItemStack drone = BeeManager.beeRoot.getTypes().createStack(bee, BeeLifeStage.DRONE);
+				ItemStack drone = SpeciesUtil.BEE_TYPE.get().createStack(bee, BeeLifeStage.DRONE);
 				drops.add(drone);
 				break;
 			}

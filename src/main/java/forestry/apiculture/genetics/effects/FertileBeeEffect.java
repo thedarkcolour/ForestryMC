@@ -10,49 +10,47 @@
  ******************************************************************************/
 package forestry.apiculture.genetics.effects;
 
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.common.IPlantable;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.IEffectData;
-
 import forestry.api.genetics.IGenome;
 import forestry.core.render.ParticleRender;
 
 public class FertileBeeEffect extends ThrottledBeeEffect {
-
 	private static final int MAX_BLOCK_FIND_TRIES = 5;
 
 	public FertileBeeEffect() {
-		super("fertile", false, 6, true, false);
+		super(false, 6, true, false);
 	}
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
 
-		Level world = housing.getWorldObj();
+		Level level = housing.getWorldObj();
 		BlockPos housingCoordinates = housing.getCoordinates();
 		Vec3i area = ParticleRender.getModifiedArea(genome, housing);
 
-		int blockX = getRandomOffset(world.random, housingCoordinates.getX(), area.getX());
-		int blockZ = getRandomOffset(world.random, housingCoordinates.getZ(), area.getZ());
+		int blockX = getRandomOffset(level.random, housingCoordinates.getX(), area.getX());
+		int blockZ = getRandomOffset(level.random, housingCoordinates.getZ(), area.getZ());
 		int blockMaxY = housingCoordinates.getY() + area.getY() / 2 + 1;
 		int blockMinY = housingCoordinates.getY() - area.getY() / 2 - 1;
 
 		for (int attempt = 0; attempt < MAX_BLOCK_FIND_TRIES; ++attempt) {
-			if (world.getChunkSource().getChunkNow(blockX >> 4, blockZ >> 4) != null) {
-				if (tryTickColumn(world, blockX, blockZ, blockMaxY, blockMinY)) {
+			if (level.getChunkSource().getChunkNow(blockX >> 4, blockZ >> 4) != null) {
+				if (tryTickColumn(level, blockX, blockZ, blockMaxY, blockMinY)) {
 					break;
 				}
-				blockX = getRandomOffset(world.random, housingCoordinates.getX(), area.getX());
-				blockZ = getRandomOffset(world.random, housingCoordinates.getZ(), area.getZ());
+				blockX = getRandomOffset(level.random, housingCoordinates.getX(), area.getX());
+				blockZ = getRandomOffset(level.random, housingCoordinates.getZ(), area.getZ());
 			}
 		}
 

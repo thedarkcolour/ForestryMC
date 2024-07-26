@@ -1,13 +1,12 @@
 package forestry.farming.compat;
 
+import java.util.List;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.ForestryConstants;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.ClientsideCode;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.features.CoreItems;
@@ -18,27 +17,12 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.registration.ISubtypeRegistration;
-
-import java.util.List;
 
 @JeiPlugin
-@OnlyIn(Dist.CLIENT)
 public class FarmingJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return ForestryConstants.forestry("farming");
-	}
-
-	@Override
-	public void registerItemSubtypes(ISubtypeRegistration registration) {
-		//        BlockRegistryFarming blocks = ModuleFarming.getBlocks();
-		//        Item farmBlock = Item.getItemFromBlock(blocks.farm);
-		//        registration.registerSubtypeInterpreter(farmBlock, itemStack -> {
-		//            CompoundNBT nbt = itemStack.getTag();
-		//            EnumFarmBlockTexture texture = EnumFarmBlockTexture.getFromCompound(nbt);
-		//            return itemStack.getItemDamage() + "." + texture.getUid();
-		//        });
+		return ForestryModuleIds.FARMING;
 	}
 
 	@Override

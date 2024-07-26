@@ -14,33 +14,18 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.client.IClientModuleHandler;
 import forestry.lepidopterology.features.LepidopterologyEntities;
-import forestry.lepidopterology.items.ItemButterflyGE;
 import forestry.lepidopterology.render.ButterflyEntityRenderer;
 import forestry.lepidopterology.render.ButterflyItemModel;
 import forestry.lepidopterology.render.ButterflyModel;
-import forestry.lepidopterology.render.CocoonItemModel;
-import forestry.api.client.IClientModuleHandler;
 
-import genetics.utils.AlleleUtils;
-
-public class LepidopterologyClientHandler extends ProxyLepidopterology implements IClientModuleHandler {
+public class LepidopterologyClientHandler implements IClientModuleHandler {
 	@Override
 	public void registerEvents(IEventBus modBus) {
-		modBus.addListener(LepidopterologyClientHandler::registerAdditionalModels);
 		modBus.addListener(LepidopterologyClientHandler::setupRenderers);
 		modBus.addListener(LepidopterologyClientHandler::setupLayers);
 		modBus.addListener(LepidopterologyClientHandler::registerModelLoaders);
-	}
-
-	public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-		AlleleUtils.forEach(ButterflyChromosomes.COCOON, (allele) -> {
-			for (int age = 0; age < ItemButterflyGE.MAX_AGE; age++) {
-				event.register(allele.getCocoonItemModel(age));
-			}
-		});
 	}
 
 	public static void setupRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -53,6 +38,5 @@ public class LepidopterologyClientHandler extends ProxyLepidopterology implement
 
 	public static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
 		event.register("butterfly_ge", new ButterflyItemModel.Loader());
-		event.register("butterfly_cocoon", new CocoonItemModel.Loader());
 	}
 }

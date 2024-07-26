@@ -26,10 +26,10 @@ public enum DefaultDisplayHandler implements IGeneticTooltipProvider<IIndividual
 	}, HYBRID(-2) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, IIndividual individual) {
-			ISpeciesChromosome<?> speciesType = individual.getRoot().getKaryotype().getSpeciesChromosome();
-			Component primary = genome.getActiveName(speciesType);
-			Component secondary = genome.getActiveName(speciesType);
-			if (!individual.isPureBred(speciesType)) {
+			ISpeciesChromosome<?> speciesChromosome = individual.getType().getKaryotype().getSpeciesChromosome();
+			if (!individual.getGenome().getAllelePair(speciesChromosome).isSameAlleles()) {
+				Component primary = genome.getActiveName(speciesChromosome);
+				Component secondary = genome.getActiveName(speciesChromosome);
 				toolTip.add(Component.translatable("for.bees.hybrid", primary, secondary).withStyle(ChatFormatting.BLUE));
 			}
 		}

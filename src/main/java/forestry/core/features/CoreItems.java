@@ -1,6 +1,7 @@
 package forestry.core.features;
 
 import forestry.api.core.ItemGroups;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.items.*;
 import forestry.core.items.definitions.ToolTier;
 import net.minecraft.world.item.Item;
@@ -21,7 +22,7 @@ import net.minecraft.world.item.ShovelItem;
 
 @FeatureProvider
 public class CoreItems {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCore.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.CORE);
 
 	/* Foresters' Manual */
 	public static final FeatureItem<ForestersManualItem> FORESTERS_MANUAL = REGISTRY.item(ForestersManualItem::new, "foresters_manual");
@@ -95,7 +96,4 @@ public class CoreItems {
 	public static final FeatureItem<ItemForestry> BEESWAX = REGISTRY.item(ItemForestry::new, "beeswax");
 	public static final FeatureItem<ItemForestry> REFRACTORY_WAX = REGISTRY.item(ItemForestry::new, "refractory_wax");
 	public static final FeatureItemGroup<ItemFruit, ItemFruit.EnumFruit> FRUITS = REGISTRY.itemGroup(ItemFruit::new, "fruit", ItemFruit.EnumFruit.values());
-
-	private CoreItems() {
-	}
 }

@@ -24,17 +24,12 @@ import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.genetics.ISpeciesType;
 
 // todo reimplement beekeeping mode
-public interface IBeeSpeciesType extends ISpeciesType<IBeeSpecies> {
-
-	/* BREEDING TRACKER */
-
+public interface IBeeSpeciesType extends ISpeciesType<IBeeSpecies, IBee> {
 	/**
 	 * @return {@link IApiaristTracker} associated with the passed world.
 	 */
 	@Override
-	IApiaristTracker getBreedingTracker(LevelAccessor world, @Nullable GameProfile player);
-
-	/* BEE SPECIFIC */
+	IApiaristTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile);
 
 	/**
 	 * @return true if passed item is a drone. Equal to getLifeStage(ItemStack stack) == EnumBeeType.DRONE
@@ -45,15 +40,6 @@ public interface IBeeSpeciesType extends ISpeciesType<IBeeSpecies> {
 	 * @return true if passed item is mated (i.e. a queen)
 	 */
 	boolean isMated(ItemStack stack);
-
-	/**
-	 * Creates an IBee suitable for a queen containing the necessary second genome for the mate.
-	 *
-	 * @param genome Valid {@link IGenome}
-	 * @param mate   Valid {@link IBee} representing the mate.
-	 * @return Mated {@link IBee} from the passed genomes.
-	 */
-	IBee getBee(Level world, IGenome genome, IBee mate);
 
 	/* MISC */
 

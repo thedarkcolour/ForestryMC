@@ -13,9 +13,10 @@ package forestry.core.genetics;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,32 +26,30 @@ import net.minecraft.world.level.Level;
 import forestry.api.ForestryCapabilities;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 import forestry.apiculture.DisplayHelper;
 import forestry.apiculture.genetics.IGeneticTooltipProvider;
 import forestry.core.config.Config;
 import forestry.core.items.ItemForestry;
-
-import forestry.api.genetics.ILifeStage;
-import forestry.api.genetics.ISpeciesType;
+import forestry.core.utils.GeneticsUtil;
 
 public abstract class ItemGE extends ItemForestry {
 	protected ItemGE(Item.Properties properties) {
 		super(properties.setNoRepair());
 	}
 
-	protected abstract ISpecies<?> getSpecies(ItemStack itemStack);
+	protected abstract ISpecies<?> getSpecies(ItemStack stack);
 
-	protected abstract ILifeStage getType();
+	protected abstract ILifeStage getStage();
 
 	@Override
-	public Component getName(ItemStack itemStack) {
-		if (GeneticHelper.getOrganism(itemStack).isEmpty()) {
-			return super.getName(itemStack);
-		}
-		IAlleleForestrySpecies species = getSpecies(itemStack);
-
-		return species.getItemName(getType());
+	public Component getName(ItemStack stack) {
+		return stack.getCapability(ForestryCapabilities.INDIVIDUAL)
+				.map(handler -> GeneticsUtil.getItemName(handler.getStage(), handler.getIndividual().getSpecies()))
+				.orElseGet(() -> super.getName(stack));
 	}
 
 	@Override
@@ -58,8 +57,8 @@ public abstract class ItemGE extends ItemForestry {
 		if (!stack.hasTag()) { // villager trade wildcard bees
 			return false;
 		}
-		IAlleleForestrySpecies species = getSpecies(stack);
-		return species.hasEffect();
+		ISpecies<?> species = getSpecies(stack);
+		return species.hasGlint();
 	}
 
 	public static void appendGeneticsTooltip(ItemStack stack, ILifeStage organismType, List<Component> tooltip) {
@@ -67,7 +66,8 @@ public abstract class ItemGE extends ItemForestry {
 			return;
 		}
 
-		stack.getCapability(ForestryCapabilities.INDIVIDUAL).ifPresent(individual -> {
+		MutableBoolean analyzed = new MutableBoolean();
+		IIndividualHandler.ifPresent(stack, individual -> {
 			if (individual.isAnalyzed()) {
 				if (Screen.hasShiftDown()) {
 					ToolTip helper = new ToolTip();
@@ -81,38 +81,34 @@ public abstract class ItemGE extends ItemForestry {
 				} else {
 					tooltip.add(Component.translatable("for.gui.tooltip.tmi", "< %s >").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 				}
+
+				analyzed.setTrue();
 			}
 		});
-
-		IIndividual individual = GeneticHelper.getIndividual(stack);
-		if (individual != null && individual.isAnalyzed()) {
-
-		} else {
+		if (analyzed.isFalse()) {
 			tooltip.add(Component.translatable("for.gui.unknown", "< %s >").withStyle(ChatFormatting.GRAY));
 		}
 	}
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		appendGeneticsTooltip(stack, getType(), tooltip);
+		appendGeneticsTooltip(stack, getStage(), tooltip);
 	}
 
 	@Override
-	public String getCreatorModId(ItemStack itemStack) {
-		IAlleleForestrySpecies species = getSpecies(itemStack);
-		return species.getId().getNamespace();
+	public String getCreatorModId(ItemStack stack) {
+		ISpecies<?> species = getSpecies(stack);
+		return species.id().getNamespace();
 	}
 
-	public static <I extends IIndividual & IHasSecrets> void addCreativeItems(Item item, NonNullList<ItemStack> subItems, boolean hideSecrets, ISpeciesType<I> speciesRoot) {
-		for (I individual : speciesRoot.getIndividualTemplates()) {
+	public static <S extends ISpecies<I>, I extends IIndividual> void addCreativeItems(ILifeStage stage, List<ItemStack> subItems, boolean hideSecrets, ISpeciesType<S, I> type) {
+		for (S species : type.getAllSpecies()) {
 			// Don't show secrets unless ordered to.
-			if (hideSecrets && individual.isSecret() && !Config.isDebug) {
+			if (hideSecrets && species.isSecret() && !Config.isDebug) {
 				continue;
 			}
 
-			ItemStack stack = new ItemStack(item);
-			individual.copyTo(stack);
-			subItems.add(stack);
+			subItems.add(species.createStack(species.createIndividual(), stage));
 		}
 	}
 }

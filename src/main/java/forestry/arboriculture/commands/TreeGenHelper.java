@@ -26,11 +26,11 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.utils.BlockUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.worldgen.FeatureBase;
 
 import forestry.api.genetics.alleles.IAllele;
@@ -42,7 +42,7 @@ public final class TreeGenHelper {
 
 	public static Feature<NoneFeatureConfiguration> getWorldGen(ResourceLocation treeName, Player player, BlockPos pos) throws SpeciesNotFoundException {
 		IGenome treeGenome = getTreeGenome(treeName);
-		ITree tree = TreeManager.treeRoot.getTree(player.level, treeGenome);
+		ITree tree = SpeciesUtil.TREE_TYPE.get().getTree(treeGenome);
 		return tree.getTreeGenerator((ServerLevel) player.level, pos, true);
 	}
 
@@ -113,8 +113,8 @@ public final class TreeGenHelper {
 			throw new SpeciesNotFoundException(speciesName);
 		}
 
-		IAllele[] template = TreeManager.treeRoot.getTemplates().getTemplate(species.getId().toString());
+		IAllele[] template = SpeciesUtil.TREE_TYPE.get().getTemplates().getTemplate(species.getId().toString());
 
-		return TreeManager.treeRoot.getKaryotype().templateAsGenome(template);
+		return SpeciesUtil.TREE_TYPE.get().getKaryotype().templateAsGenome(template);
 	}
 }

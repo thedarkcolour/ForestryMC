@@ -23,7 +23,6 @@ import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.genetics.IBeeEffect;
@@ -38,6 +37,7 @@ import forestry.apiculture.particles.BeeTargetParticleData;
 import forestry.core.config.Config;
 import forestry.core.entities.ParticleIgnition;
 import forestry.core.entities.ParticleSmoke;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
 
 import forestry.api.genetics.IGenome;
@@ -274,7 +274,7 @@ public class ParticleRender {
 	}
 
 	public static Vec3i getModifiedArea(IGenome genome, IBeeHousing housing) {
-		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 		float territoryModifier = beeModifier.getTerritoryModifier(genome, 1f);
 
 		Vec3i area = VecUtil.scale(genome.getActiveValue(BeeChromosomes.TERRITORY), territoryModifier);

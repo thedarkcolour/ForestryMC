@@ -56,6 +56,11 @@ public interface IGenome {
 	IGenome copyWith(Map<IChromosome<?>, IAllele> alleles);
 
 	/**
+	 * @return {@code true} if this genome has the same karyotype and alleles as the other genome.
+	 */
+	boolean isSameAlleles(IGenome other);
+
+	/**
 	 * @return The active allele of the chromosome with the given type.
 	 */
 	default <A extends IAllele> A getActiveAllele(IChromosome<A> chromosome) {
@@ -131,5 +136,9 @@ public interface IGenome {
 
 	default <V> MutableComponent getInactiveName(IValueChromosome<V> chromosome) {
 		return chromosome.getDisplayName(getInactiveAllele(chromosome));
+	}
+
+	default <S extends ISpecies<?>> S getActiveSpecies() {
+		return (S) getActiveValue(getKaryotype().getSpeciesChromosome());
 	}
 }

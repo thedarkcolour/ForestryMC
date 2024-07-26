@@ -34,7 +34,7 @@ public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short ind
 		buffer.writeBoolean(active);
 		if (allele != null) {
 			buffer.writeBoolean(true);
-			buffer.writeUtf(allele.id().toString());
+			buffer.writeUtf(allele.alleleId().toString());
 		} else {
 			buffer.writeBoolean(false);
 		}

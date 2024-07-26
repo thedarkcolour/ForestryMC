@@ -1,5 +1,6 @@
 package forestry.core.features;
 
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.ModuleCore;
 import forestry.core.blocks.BlockTypeCoreTesr;
 import forestry.core.tiles.TileAnalyzer;
@@ -11,9 +12,8 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class CoreTiles {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCore.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.CORE);
 
 	public static final FeatureTileType<TileAnalyzer> ANALYZER = REGISTRY.tile(TileAnalyzer::new, "analyzer", CoreBlocks.BASE.get(BlockTypeCoreTesr.ANALYZER)::collect);
 	public static final FeatureTileType<TileEscritoire> ESCRITOIRE = REGISTRY.tile(TileEscritoire::new, "escritoire", CoreBlocks.BASE.get(BlockTypeCoreTesr.ESCRITOIRE)::collect);
-
 }

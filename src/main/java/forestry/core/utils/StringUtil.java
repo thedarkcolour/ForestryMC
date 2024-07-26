@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,13 +45,13 @@ public class StringUtil {
 		return (int) (val * 100) + " %";
 	}
 
-	public static String line(int length) {
+	public static Component line(int length) {
 		StringBuilder line = new StringBuilder();
 		for (int i = 0; i < length; i++) {
 			line.append('-');
 		}
 
-		return line.toString();
+		return Component.literal(line.toString());
 	}
 
 	@OnlyIn(Dist.CLIENT)

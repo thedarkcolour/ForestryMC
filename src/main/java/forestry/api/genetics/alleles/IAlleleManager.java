@@ -38,14 +38,6 @@ public interface IAlleleManager {
 
 	IFloatAllele floatAllele(float value, boolean dominant);
 
-	default <V extends INamedValue> IValueAllele<V> valueAllele(V value) {
-		return valueAllele(value, false);
-	}
-
-	default <V extends INamedValue> IValueAllele<V> valueAllele(V value, boolean dominant) {
-		return valueAllele(value, dominant, V::id);
-	}
-
 	default <V> IValueAllele<V> valueAllele(V value, IAlleleNaming<V> naming) {
 		return valueAllele(value, false, naming);
 	}
@@ -56,6 +48,8 @@ public interface IAlleleManager {
 	 * @return A new boolean allele.
 	 */
 	IBooleanAllele booleanAllele(boolean value, boolean dominant);
+
+	<V extends IRegistryAlleleValue> IRegistryAllele<V> registryAllele(ResourceLocation id, IRegistryChromosome<V> chromosome);
 
 	/**
 	 * @return The allele codec, which serializes/deserializes using the allele's ID.
@@ -82,4 +76,6 @@ public interface IAlleleManager {
 	<V> IValueChromosome<V> valueChromosome(ResourceLocation id, Class<V> valueClass);
 
 	<S extends ISpecies<?>> ISpeciesChromosome<S> speciesChromosome(ResourceLocation id, Class<S> speciesClass);
+
+	<V extends IRegistryAlleleValue> IRegistryChromosome<V> registryChromosome(ResourceLocation id, Class<V> valueClass);
 }

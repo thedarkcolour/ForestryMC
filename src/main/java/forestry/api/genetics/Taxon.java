@@ -1,8 +1,7 @@
 package forestry.api.genetics;
 
+import javax.annotation.Nullable;
 import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Biological classifications from domain down to genus.

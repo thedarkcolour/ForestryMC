@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.core;
 
-import java.util.Collection;
-
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
@@ -23,13 +21,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import forestry.api.ForestryConstants;
+import forestry.api.IForestryApi;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.ISpeciesType;
 import forestry.apiculture.ApiaristAI;
 import forestry.apiculture.villagers.RegisterVillager;
-
-import genetics.api.GeneticsAPI;
-import forestry.api.genetics.ISpeciesType;
 
 @Mod.EventBusSubscriber(modid = ForestryConstants.MOD_ID)
 public class EventHandlerCore {
@@ -46,12 +42,9 @@ public class EventHandlerCore {
 	}
 
 	private static void syncBreedingTrackers(Player player) {
-		Collection<ISpeciesType<?>> speciesRoots = GeneticsAPI.apiInstance.getRoots().values();
-		for (ISpeciesType<?> speciesRoot : speciesRoots) {
-			if (speciesRoot instanceof ISpeciesType<?> root) {
-				IBreedingTracker breedingTracker = root.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());
-				breedingTracker.synchToPlayer(player);
-			}
+		for (ISpeciesType<?, ?> type : IForestryApi.INSTANCE.getGeneticManager().getSpeciesTypes()) {
+			IBreedingTracker breedingTracker = type.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());
+			breedingTracker.synchToPlayer(player);
 		}
 	}
 

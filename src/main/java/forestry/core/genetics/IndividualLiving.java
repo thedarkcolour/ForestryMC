@@ -10,9 +10,6 @@
  ******************************************************************************/
 package forestry.core.genetics;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import forestry.api.genetics.IIndividualLiving;
@@ -20,39 +17,24 @@ import forestry.api.genetics.IIndividualLiving;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.IIntegerChromosome;
 
-public abstract class IndividualLiving<S extends ISpecies<?>, T extends ISpeciesType<S>> extends Individual<S, T> implements IIndividualLiving {
+public abstract class IndividualLiving<S extends ISpecies<I>, I extends IIndividualLiving, T extends ISpeciesType<S, I>> extends Individual<S, I, T> implements IIndividualLiving {
 	private static final String NBT_HEALTH = "Health";
 	private static final String NBT_MAX_HEALTH = "MaxH";
 
-	private int health;
-	private int maxHealth;
+	protected int health;
+	protected int maxHealth;
 
-	protected IndividualLiving(IGenome genome, @Nullable IGenome mate) {
-		super(genome, mate);
+	protected IndividualLiving(IGenome genome) {
+		super(genome);
+
+		int health = genome.getActiveValue(getLifespanChromosome());
+		this.health = health;
+		this.maxHealth = health;
 	}
 
-	protected IndividualLiving(IGenome genome, @Nullable IGenome mate, int newHealth) {
-		super(genome, mate);
-		this.health = newHealth;
-		this.maxHealth = newHealth;
-	}
-
-	protected IndividualLiving(CompoundTag nbt) {
-		super(nbt);
-		health = nbt.getInt(NBT_HEALTH);
-		maxHealth = nbt.getInt(NBT_MAX_HEALTH);
-	}
-
-	@Override
-	public CompoundTag write(CompoundTag compound) {
-		compound = super.write(compound);
-
-		compound.putInt(NBT_HEALTH, health);
-		compound.putInt(NBT_MAX_HEALTH, maxHealth);
-
-		return compound;
-	}
+	protected abstract IIntegerChromosome getLifespanChromosome();
 
 	/* GENERATION */
 	@Override
@@ -83,7 +65,6 @@ public abstract class IndividualLiving<S extends ISpecies<?>, T extends ISpecies
 
 	@Override
 	public void age(Level level, float lifespanModifier) {
-
 		if (lifespanModifier < 0.001f) {
 			setHealth(0);
 			return;
@@ -100,10 +81,17 @@ public abstract class IndividualLiving<S extends ISpecies<?>, T extends ISpecies
 		}
 	}
 
+	@Override
+	public I copy() {
+		I individual = super.copy();
+		individual.setHealth(this.getHealth());
+		((IndividualLiving<?, ?, ?>) individual).maxHealth = this.maxHealth;
+		return individual;
+	}
+
 	private void decreaseHealth() {
 		if (health > 0) {
 			setHealth(health - 1);
 		}
 	}
-
 }

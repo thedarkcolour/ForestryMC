@@ -11,6 +11,7 @@ import forestry.api.core.tooltips.ITextInstance;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.alleles.ForestryAlleles;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.alyzer.IAlleleDisplayHandler;
 import forestry.api.genetics.alyzer.IAlleleDisplayHelper;
@@ -41,9 +42,9 @@ public enum TreeDisplayHandler implements IAlleleDisplayHandler<ITree> {
 	FRUITS(TreeChromosomes.FRUITS, 4) {
 		@Override
 		public void addTooltip(ToolTip toolTip, IGenome genome, ITree individual) {
-			IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUITS);
-			if (fruit != ForestryAlleles.FRUIT_NONE.value()) {
-				ITextInstance<?, ?, ?> instance = toolTip.singleLine().text("F: ").add(fruit.getDescription()).style(ChatFormatting.GREEN);
+			IValueAllele<IFruit> fruit = genome.getActiveAllele(TreeChromosomes.FRUITS);
+			if (fruit != ForestryAlleles.FRUIT_NONE) {
+				ITextInstance<?, ?, ?> instance = toolTip.singleLine().text("F: ").add(TreeChromosomes.FRUITS.getDisplayName(fruit)).style(ChatFormatting.GREEN);
 				if (!individual.canBearFruit()) {
 					instance.style(ChatFormatting.STRIKETHROUGH);
 				}

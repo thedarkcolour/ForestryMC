@@ -16,7 +16,6 @@ import java.util.Map;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
@@ -27,6 +26,7 @@ import forestry.core.inventory.ItemInventory;
 
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.IGenome;
+import forestry.core.utils.SpeciesUtil;
 
 public class ItemInventoryImprinter extends ItemInventory {
 	private static final short specimenSlot = 0;
@@ -40,7 +40,7 @@ public class ItemInventoryImprinter extends ItemInventory {
 	}
 
 	public void advancePrimary() {
-		if (primaryIndex < BeeManager.beeRoot.getIndividualTemplates().size() - 1) {
+		if (primaryIndex < SpeciesUtil.BEE_TYPE.get().getIndividualTemplates().size() - 1) {
 			primaryIndex++;
 		} else {
 			primaryIndex = 0;
@@ -48,7 +48,7 @@ public class ItemInventoryImprinter extends ItemInventory {
 	}
 
 	public void advanceSecondary() {
-		if (secondaryIndex < BeeManager.beeRoot.getIndividualTemplates().size() - 1) {
+		if (secondaryIndex < SpeciesUtil.BEE_TYPE.get().getIndividualTemplates().size() - 1) {
 			secondaryIndex++;
 		} else {
 			secondaryIndex = 0;
@@ -59,7 +59,7 @@ public class ItemInventoryImprinter extends ItemInventory {
 		if (primaryIndex > 0) {
 			primaryIndex--;
 		} else {
-			primaryIndex = BeeManager.beeRoot.getIndividualTemplates().size() - 1;
+			primaryIndex = SpeciesUtil.BEE_TYPE.get().getIndividualTemplates().size() - 1;
 		}
 	}
 
@@ -67,20 +67,20 @@ public class ItemInventoryImprinter extends ItemInventory {
 		if (secondaryIndex > 0) {
 			secondaryIndex--;
 		} else {
-			secondaryIndex = BeeManager.beeRoot.getIndividualTemplates().size() - 1;
+			secondaryIndex = SpeciesUtil.BEE_TYPE.get().getIndividualTemplates().size() - 1;
 		}
 	}
 
 	public IBeeSpecies getPrimary() {
-		return BeeManager.beeRoot.getIndividualTemplates().get(primaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
+		return SpeciesUtil.BEE_TYPE.get().getIndividualTemplates().get(primaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
 	}
 
 	public IBeeSpecies getSecondary() {
-		return BeeManager.beeRoot.getIndividualTemplates().get(secondaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
+		return SpeciesUtil.BEE_TYPE.get().getIndividualTemplates().get(secondaryIndex).getGenome().getActiveAllele(BeeChromosomes.SPECIES);
 	}
 
 	public IBee getSelectedBee() {
-		IBeeSpeciesType beeRoot = BeeManager.beeRoot;
+		IBeeSpeciesType beeRoot = SpeciesUtil.BEE_TYPE.get();
 		List<IBee> individualTemplates = beeRoot.getIndividualTemplates();
 		Map<String, IAllele[]> genomeTemplates = beeRoot.getTemplates().getGenomeTemplates();
 		IAllele[] templateActive = genomeTemplates.get(individualTemplates.get(primaryIndex).getId());
@@ -113,7 +113,7 @@ public class ItemInventoryImprinter extends ItemInventory {
 		}
 
 		// Only imprint bees
-		if (!BeeManager.beeRoot.isMember(specimen)) {
+		if (!SpeciesUtil.BEE_TYPE.get().isMember(specimen)) {
 			return;
 		}
 
@@ -138,7 +138,7 @@ public class ItemInventoryImprinter extends ItemInventory {
 
 	@Override
 	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return BeeManager.beeRoot.isMember(itemStack);
+		return SpeciesUtil.BEE_TYPE.get().isMember(itemStack);
 	}
 
 }

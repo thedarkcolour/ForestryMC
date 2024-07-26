@@ -1,5 +1,6 @@
 package forestry.energy.features;
 
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.items.ItemBlockBase;
 import forestry.energy.ModuleEnergy;
 import forestry.energy.blocks.EngineBlock;
@@ -11,7 +12,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class EnergyBlocks {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleEnergy.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.ENERGY);
 
 	public static final FeatureBlockGroup<EngineBlock, EngineBlockType> ENGINES = REGISTRY.blockGroup(EngineBlock::new, EngineBlockType.VALUES).itemWithType(ItemBlockBase::new).identifier("engine").create();
 }

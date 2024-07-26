@@ -10,40 +10,31 @@
  ******************************************************************************/
 package forestry.arboriculture;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import net.minecraftforge.fml.loading.FMLEnvironment;
-
 import forestry.api.arboriculture.TreeManager;
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.core.IArmorNaturalist;
-import forestry.arboriculture.commands.CommandTree;
-import forestry.arboriculture.genetics.TreeDefinition;
-import forestry.arboriculture.genetics.TreeFactory;
-import forestry.arboriculture.genetics.TreeMutationFactory;
-import forestry.arboriculture.network.PacketRipeningUpdate;
-import forestry.arboriculture.client.ProxyArboriculture;
-import forestry.arboriculture.villagers.RegisterVillager;
-import forestry.core.ClientsideCode;
-import forestry.core.ModuleCore;
+import forestry.api.genetics.IIndividual;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IPacketRegistry;
+import forestry.arboriculture.client.ArboricultureClientHandler;
+import forestry.arboriculture.commands.CommandTree;
+import forestry.arboriculture.network.PacketRipeningUpdate;
+import forestry.arboriculture.villagers.RegisterVillager;
+import forestry.core.ModuleCore;
 import forestry.core.network.PacketIdClient;
 import forestry.modules.BlankForestryModule;
-import forestry.api.modules.ForestryModuleIds;
-import forestry.api.client.IClientModuleHandler;
 
 public class ModuleArboriculture extends BlankForestryModule {
-
-	public static final ProxyArboriculture PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyArboriculture() : new ProxyArboriculture();
-	public static String treekeepingMode = "NORMAL";
-
 	@Override
 	public ResourceLocation getId() {
 		return ForestryModuleIds.ARBORICULTURE;
@@ -54,40 +45,32 @@ public class ModuleArboriculture extends BlankForestryModule {
 		RegisterVillager.POINTS_OF_INTEREST.register(modBus);
 		RegisterVillager.PROFESSIONS.register(modBus);
 		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
+
+		modBus.addListener(ModuleArboriculture::registerCapabilities);
+		modBus.addGenericListener(ItemStack.class, ModuleArboriculture::attachCapabilities);
+	}
+
+	private static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
+		if (!event.getCapabilities().containsKey(IIndividual.CAPABILITY_ID)) {
+
+		}
 	}
 
 	@Override
 	public void setupApi() {
-		TreeManager.treeFactory = new TreeFactory();
-		TreeManager.treeMutationFactory = new TreeMutationFactory();
-
-		TreeManager.woodAccess = WoodAccess.getInstance();
-	}
-
-	@Override
-	public void setupFallbackApi() {
 		TreeManager.woodAccess = WoodAccess.getInstance();
 	}
 
 	@Override
 	public void preInit() {
-		// Init rendering
-		PROXY.initializeModels();
-
 		// Commands
 		ModuleCore.rootCommand.then(CommandTree.register());
 
 		ArboricultureFilterRuleType.init();
 	}
 
-	@Override
-	public void registerCapabilities(Consumer<Class<?>> consumer) {
-		consumer.accept(IArmorNaturalist.class);
-	}
-
-	@Override
-	public void doInit() {
-		TreeDefinition.initTrees();
+	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.register(IArmorNaturalist.class);
 	}
 
 	@Override
@@ -96,7 +79,7 @@ public class ModuleArboriculture extends BlankForestryModule {
 	}
 
 	@Override
-	public @Nullable Supplier<IClientModuleHandler> getClientHandler() {
-		return PROXY;
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new ArboricultureClientHandler());
 	}
 }

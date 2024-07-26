@@ -2,9 +2,9 @@ package forestry.plugin.species;
 
 import java.awt.Color;
 
-import forestry.api.arboriculture.EnumVanillaWoodType;
+import forestry.arboriculture.VanillaWoodType;
 import forestry.api.arboriculture.ForestryTreeSpecies;
-import forestry.api.arboriculture.ForestryWoodType;
+import forestry.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.LeafType;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
@@ -53,7 +53,7 @@ import static forestry.api.genetics.ForestryTaxa.*;
 public class DefaultTreeSpecies {
 	public static void register(IArboricultureRegistration arboriculture) {
 		// Oak (English Oak)
-		arboriculture.registerSpecies(ForestryTreeSpecies.OAK, GENUS_QUERCUS, SPECIES_OAK, false, LeafType.OAK, new Color(4764952), new Color(0x48b518).brighter(), EnumVanillaWoodType.OAK)
+		arboriculture.registerSpecies(ForestryTreeSpecies.OAK, GENUS_QUERCUS, SPECIES_OAK, false, LeafType.OAK, new Color(4764952), new Color(0x48b518).brighter(), VanillaWoodType.OAK)
 				.setTreeFeature(FeatureOak::new)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUITS, ForestryAlleles.FRUIT_APPLE);
@@ -62,7 +62,7 @@ public class DefaultTreeSpecies {
 				});
 
 		// Dark Oak (Black Oak)
-		arboriculture.registerSpecies(ForestryTreeSpecies.DARK_OAK, GENUS_QUERCUS, SPECIES_DARK_OAK, false, LeafType.OAK, new Color(4764952), new Color(0x48b518).brighter(), EnumVanillaWoodType.DARK_OAK)
+		arboriculture.registerSpecies(ForestryTreeSpecies.DARK_OAK, GENUS_QUERCUS, SPECIES_DARK_OAK, false, LeafType.OAK, new Color(4764952), new Color(0x48b518).brighter(), VanillaWoodType.DARK_OAK)
 				.setTreeFeature(FeatureDarkOak::new)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
@@ -71,7 +71,7 @@ public class DefaultTreeSpecies {
 				});
 
 		// Birch (Silver Birch)
-		arboriculture.registerSpecies(ForestryTreeSpecies.BIRCH, GENUS_BETULA, SPECIES_BIRCH, false, LeafType.BIRCH, new Color(8431445), new Color(0xb0c648), EnumVanillaWoodType.BIRCH)
+		arboriculture.registerSpecies(ForestryTreeSpecies.BIRCH, GENUS_BETULA, SPECIES_BIRCH, false, LeafType.BIRCH, new Color(8431445), new Color(0xb0c648), VanillaWoodType.BIRCH)
 				.setTreeFeature(FeatureBirch::new)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
@@ -186,7 +186,7 @@ public class DefaultTreeSpecies {
 				.setRarity(0.0025f);
 
 		// Spruce (Norway Spruce)
-		arboriculture.registerSpecies(ForestryTreeSpecies.SPRUCE, GENUS_PICEA, SPECIES_SPRUCE, false, LeafType.SPRUCE, new Color(6396257), new Color(0x539d12), EnumVanillaWoodType.SPRUCE)
+		arboriculture.registerSpecies(ForestryTreeSpecies.SPRUCE, GENUS_PICEA, SPECIES_SPRUCE, false, LeafType.SPRUCE, new Color(6396257), new Color(0x539d12), VanillaWoodType.SPRUCE)
 				.setTreeFeature(FeatureSpruce::new)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
@@ -254,7 +254,7 @@ public class DefaultTreeSpecies {
 				});
 
 		// Jungle (Might be based on Teak, not sure)
-		arboriculture.registerSpecies(ForestryTreeSpecies.JUNGLE, GENUS_TROPICAL, SPECIES_JUNGLE, false, LeafType.JUNGLE, new Color(4764952), new Color(0x658917), EnumVanillaWoodType.JUNGLE)
+		arboriculture.registerSpecies(ForestryTreeSpecies.JUNGLE, GENUS_TROPICAL, SPECIES_JUNGLE, false, LeafType.JUNGLE, new Color(4764952), new Color(0x658917), VanillaWoodType.JUNGLE)
 				.setTreeFeature(FeatureJungle::new)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUITS, ForestryAlleles.FRUIT_COCOA);
@@ -327,7 +327,7 @@ public class DefaultTreeSpecies {
 				.setRarity(0.0005f);
 
 		// Mahogany TODO taxonomy is wrong
-		arboriculture.registerSpecies(ForestryTreeSpecies.MAHOGONY, GENUS_MAHOGANY, SPECIES_MAHOGONY, true, LeafType.JUNGLE, new Color(0x8ab154), new Color(0xa9b154), ForestryWoodType.MAHOGANY)
+		arboriculture.registerSpecies(ForestryTreeSpecies.MAHOGANY, GENUS_MAHOGANY, SPECIES_MAHOGONY, true, LeafType.JUNGLE, new Color(0x8ab154), new Color(0xa9b154), ForestryWoodType.MAHOGANY)
 				.setTreeFeature(FeatureMahogany::new)
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
@@ -343,7 +343,7 @@ public class DefaultTreeSpecies {
 				.setRarity(0.0005f);
 
 		// Vanilla Acacia TODO should probably switch with desert acacia since aneura are from Australia
-		arboriculture.registerSpecies(ForestryTreeSpecies.ACACIA_VANILLA, GENUS_ACACIA, SPECIES_ACACIA, true, LeafType.ACACIA, new Color(0x616101), new Color(0xb3b302), EnumVanillaWoodType.ACACIA)
+		arboriculture.registerSpecies(ForestryTreeSpecies.ACACIA_VANILLA, GENUS_ACACIA, SPECIES_ACACIA, true, LeafType.ACACIA, new Color(0x616101), new Color(0xb3b302), VanillaWoodType.ACACIA)
 				.setTreeFeature(FeatureAcaciaVanilla::new);
 
 		// Desert Acacia
@@ -473,7 +473,7 @@ public class DefaultTreeSpecies {
 					genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_SLOW);
 				})
 				.addMutations(mutations -> {
-					mutations.add(ForestryTreeSpecies.KAPOK, ForestryTreeSpecies.MAHOGONY, 10)
+					mutations.add(ForestryTreeSpecies.KAPOK, ForestryTreeSpecies.MAHOGANY, 10)
 							.restrictTemperature(TemperatureType.WARM, TemperatureType.HOT)
 							.restrictHumidity(HumidityType.DAMP);
 				})

@@ -10,48 +10,34 @@
  ******************************************************************************/
 package forestry.arboriculture;
 
-import java.awt.Color;
 import java.util.List;
-import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+
+import net.minecraftforge.client.event.TextureStitchEvent;
 
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.Product;
 
 // Fruits that grow unripe in tree leaves, then ripen over time.
-public class RipeningFruit extends DummyFruit {
-	private int colourCallow = 0xffffff;
-	private int diffR;
-	private int diffG;
-	private int diffB;
-	private List<Product> products;
+public class RipeningFruit extends Fruit {
+	private final int colourCallow;
+	private final int diffR;
+	private final int diffG;
+	private final int diffB;
+	private final ResourceLocation sprite;
 
-	public RipeningFruit(String modid, String name, Supplier<List<Product>> product) {
-		super(modid, family);
-		this.products = ProductListWrapper.create();
-		this.products.addProduct(product, 1.0f);
-	}
+	public RipeningFruit(boolean dominant, int ripeningPeriod, ResourceLocation sprite, int ripe, int callow, List<Product> products) {
+		super(dominant, ripeningPeriod, products);
+		this.sprite = sprite;
 
-	public RipeningFruit setColours(Color ripe, Color callow) {
-		colourCallow = callow.getRGB();
-		int ripeRGB = ripe.getRGB();
-
-		diffR = (ripeRGB >> 16 & 255) - (colourCallow >> 16 & 255);
-		diffG = (ripeRGB >> 8 & 255) - (colourCallow >> 8 & 255);
-		diffB = (ripeRGB & 255) - (colourCallow & 255);
-
-		return this;
-	}
-
-	public RipeningFruit setRipeningPeriod(int period) {
-		ripeningPeriod = period;
-		return this;
+		this.colourCallow = callow;
+		this.diffR = (ripe >> 16 & 255) - (callow >> 16 & 255);
+		this.diffG = (ripe >> 8 & 255) - (callow >> 8 & 255);
+		this.diffB = (ripe & 255) - (callow & 255);
 	}
 
 	private float getRipeningStage(int ripeningTime) {
@@ -60,19 +46,6 @@ public class RipeningFruit extends DummyFruit {
 		}
 
 		return (float) ripeningTime / ripeningPeriod;
-	}
-
-	@Override
-	public List<ItemStack> getFruits(IGenome genome, Level world, BlockPos pos, int ripeningTime) {
-		NonNullList<ItemStack> product = NonNullList.create();
-		products.addProducts(world, pos, product, Product::chance, world.random);
-
-		return product;
-	}
-
-	@Override
-	public List<Product> getProducts() {
-		return products;
 	}
 
 	@Override
@@ -97,5 +70,20 @@ public class RipeningFruit extends DummyFruit {
 	@Override
 	public int getDecorativeColor() {
 		return getColour(1.0f);
+	}
+
+	@Override
+	public ResourceLocation getSprite(IGenome genome, BlockGetter world, BlockPos pos, int ripeningTime) {
+		return this.sprite;
+	}
+
+	@Override
+	public ResourceLocation getDecorativeSprite() {
+		return this.sprite;
+	}
+
+	@Override
+	public void registerSprites(TextureStitchEvent.Pre event) {
+		event.addSprite(this.sprite);
 	}
 }

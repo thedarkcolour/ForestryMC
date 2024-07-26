@@ -10,15 +10,10 @@
  ******************************************************************************/
 package forestry.arboriculture;
 
-import com.google.common.collect.ImmutableMap;
-
 import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -26,56 +21,26 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.TextureStitchEvent;
-
 import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.Product;
 
 public class DummyFruit implements IFruit {
+	private final boolean dominant;
 
-	private static class OverlayType {
-		public final String ident;
-		public final ResourceLocation sprite;
-
-		public OverlayType(String ident) {
-			this.ident = ident;
-			this.sprite = ForestryConstants.forestry("block/leaves/fruits." + ident);
-		}
-	}
-
-	// todo should this be extensible?
-	private static final ImmutableMap<String, OverlayType> overlayTypes = ImmutableMap.<String, OverlayType>builder()
-			.put("berries", new OverlayType("berries"))
-			.put("pomes", new OverlayType("pomes"))
-			.put("nuts", new OverlayType("nuts"))
-			.put("citrus", new OverlayType("citrus"))
-			.put("plums", new OverlayType("plums"))
-			.build();
-
-	private final String unlocalizedDescription;
-
-	protected int ripeningPeriod = 10;
-
-	@Nullable
-	private OverlayType overlay = null;
-
-	// todo
-	public DummyFruit(String modid, String name) {
-		this.unlocalizedDescription = name;
-	}
-
-	public IFruit setOverlay(String ident) {
-		overlay = overlayTypes.get(ident);
-		return this;
+	public DummyFruit(boolean dominant) {
+		this.dominant = dominant;
 	}
 
 	@Override
-	public List<ItemStack> getFruits(IGenome genome, Level world, BlockPos pos, int ripeningTime) {
-		return NonNullList.create();
+	public boolean isDominant() {
+		return this.dominant;
+	}
+
+	@Override
+	public List<ItemStack> getFruits(IGenome genome, Level level, BlockPos pos, int ripeningTime) {
+		return List.of();
 	}
 
 	@Override
@@ -105,7 +70,7 @@ public class DummyFruit implements IFruit {
 
 	@Override
 	public int getRipeningPeriod() {
-		return ripeningPeriod;
+		return 0;
 	}
 
 	@Override
@@ -118,35 +83,10 @@ public class DummyFruit implements IFruit {
 		return List.of();
 	}
 
-	@Override
-	public MutableComponent getDescription() {
-		return Component.translatable(unlocalizedDescription);
-	}
-
+	@Nullable
 	@Override
 	public ResourceLocation getSprite(IGenome genome, BlockGetter world, BlockPos pos, int ripeningTime) {
-		if (overlay != null) {
-			return overlay.sprite;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public ResourceLocation getDecorativeSprite() {
-		if (overlay != null) {
-			return overlay.sprite;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerSprites(TextureStitchEvent.Pre event) {
-		if (overlay != null) {
-			event.addSprite(overlay.sprite);
-		}
+		return getDecorativeSprite();
 	}
 
 	@Nullable

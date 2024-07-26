@@ -18,26 +18,29 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.arboriculture.genetics.TreeDefinition;
+import forestry.core.utils.SpeciesUtil;
 
 /**
  * Genetic leaves with no tile entity, used for worldgen trees.
  * Similar to decorative leaves, but these will drop saplings and can be used for pollination.
  */
 public class BlockDefaultLeaves extends BlockAbstractLeaves {
-	private final ForestryLeafType speciesId;
+	private final ForestryLeafType type;
 
-	public BlockDefaultLeaves(ForestryLeafType speciesId) {
-		this.speciesId = speciesId;
+	public BlockDefaultLeaves(ForestryLeafType type) {
+		this.type = type;
 	}
 
 	public ResourceLocation getSpeciesId() {
-		return speciesId.getSpeciesId();
+		return this.type.getSpeciesId();
+	}
+
+	public ForestryLeafType getType() {
+		return this.type;
 	}
 
 	@Override
@@ -51,22 +54,21 @@ public class BlockDefaultLeaves extends BlockAbstractLeaves {
 		List<ITree> saplings = tree.getSaplings(world, playerProfile, pos, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				drops.add(TreeManager.treeRoot.getTypes().createStack(sapling, TreeLifeStage.SAPLING));
+				drops.add(SpeciesUtil.TREE_TYPE.get().createStack(sapling, TreeLifeStage.SAPLING));
 			}
 		}
 	}
 
 	@Override
 	protected ITree getTree(BlockGetter world, BlockPos pos) {
-		return speciesId.createIndividual();
+		return type.getIndividual();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex) {
-		IGenome genome = speciesId.getGenome();
-
-		ILeafSpriteProvider spriteProvider = genome.getActiveAllele(TreeChromosomes.SPECIES).getLeafSpriteProvider();
+	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
+		IGenome genome = type.getIndividual().getGenome();
+		ILeafSpriteProvider spriteProvider = genome.getActiveValue(TreeChromosomes.SPECIES).getLeafSpriteProvider();
 		return spriteProvider.getColor(false);
 	}
 }

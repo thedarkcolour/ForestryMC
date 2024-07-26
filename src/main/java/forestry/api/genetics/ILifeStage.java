@@ -1,6 +1,7 @@
 package forestry.api.genetics;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item;
 
 /**
  * The replacement for the old ISpeciesType class. Denotes different forms of the same species (ex. larvae, princess, queen, drone)
@@ -9,16 +10,17 @@ import net.minecraft.world.item.ItemStack;
  * @see forestry.api.arboriculture.genetics.TreeLifeStage
  * @see forestry.api.lepidopterology.genetics.ButterflyLifeStage
  */
-public interface ILifeStage {
+public interface ILifeStage extends StringRepresentable {
 	/**
-	 * @return The lowercase name of this life stage. Used for translations.
+	 * @return The simple name of this life stage (ex. {@code "drone"}), used in commands and item naming.
 	 */
-	String getName();
+	@Override
+	String getSerializedName();
 
 	/**
 	 * @return The item form of this life stage. Every life stage is associated with an item form.
 	 */
-	ItemStack getItemForm();
+	Item getItemForm();
 
 	/**
 	 * @return The ordinal used for reading/writing to NBT.

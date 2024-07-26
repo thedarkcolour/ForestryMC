@@ -6,13 +6,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.IForestryApi;
 import forestry.api.apiculture.ForestryBeeSpecies;
-import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.genetics.ClimateHelper;
-import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
@@ -21,6 +19,7 @@ import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
 import forestry.core.gui.elements.GuiElementFactory;
+import forestry.core.utils.SpeciesUtil;
 
 public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 	private final DatabaseMode mode;
@@ -35,8 +34,7 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 	}
 
 	@Override
-	public void createElements(DatabaseElement container, IBee bee, ItemStack stack) {
-		ILifeStage type = bee.getLifeStage();
+	public void createElements(DatabaseElement container, IBee bee, ILifeStage stage, ItemStack stack) {
 		IBeeSpecies activeSpecies = bee.getGenome().getActiveValue(BeeChromosomes.SPECIES);
 		IBeeSpecies inactiveSpecies = bee.getGenome().getInactiveValue(BeeChromosomes.SPECIES);
 
@@ -101,7 +99,7 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 		};
 		container.addLine(Component.translatable("for.gui.cave"), cave, BeeChromosomes.CAVE_DWELLING);
 
-		if (type == BeeLifeStage.PRINCESS || type == BeeLifeStage.QUEEN) {
+		if (stage == BeeLifeStage.PRINCESS || stage == BeeLifeStage.QUEEN) {
 			Component displayTextKey = Component.translatable("for.bees.stock.pristine");
 			if (!bee.isPristine()) {
 				displayTextKey = Component.translatable("for.bees.stock.ignoble");
@@ -112,6 +110,6 @@ public class BeeDatabaseTab implements IDatabaseTab<IBee> {
 
 	@Override
 	public ItemStack getIconStack() {
-		return IForestryApi.INSTANCE.getGeneticManager().createIndividual(ForestrySpeciesTypes.BEE, ForestryBeeSpecies.MEADOWS, mode == DatabaseMode.ACTIVE ? BeeLifeStage.PRINCESS : BeeLifeStage.DRONE).getStack();
+		return SpeciesUtil.BEE_TYPE.get().createStack(ForestryBeeSpecies.MEADOWS, mode == DatabaseMode.ACTIVE ? BeeLifeStage.PRINCESS : BeeLifeStage.DRONE);
 	}
 }

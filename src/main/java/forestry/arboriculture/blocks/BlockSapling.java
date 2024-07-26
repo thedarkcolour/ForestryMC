@@ -34,12 +34,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.arboriculture.tiles.TileSapling;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.ItemStackUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public class BlockSapling extends BlockTreeContainer implements BonemealableBlock {
 	protected static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D);
@@ -94,7 +94,7 @@ public class BlockSapling extends BlockTreeContainer implements BonemealableBloc
 		if (sapling == null || sapling.getTree() == null) {
 			return ItemStack.EMPTY;
 		}
-		return TreeManager.treeRoot.getTypes().createStack(sapling.getTree(), TreeLifeStage.SAPLING);
+		return SpeciesUtil.TREE_TYPE.get().createStack(sapling.getTree(), TreeLifeStage.SAPLING);
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class BlockSapling extends BlockTreeContainer implements BonemealableBloc
 		if (sapling != null) {
 			ITree tree = sapling.getTree();
 			if (tree != null) {
-				return TreeManager.treeRoot.getTypes().createStack(tree, TreeLifeStage.SAPLING);
+				return SpeciesUtil.TREE_TYPE.get().createStack(tree, TreeLifeStage.SAPLING);
 			}
 		}
 		return ItemStack.EMPTY;

@@ -7,10 +7,10 @@ package forestry.api.farming;
 
 import java.util.Collection;
 
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import net.minecraftforge.fluids.FluidStack;
@@ -160,5 +160,5 @@ public interface IFarmHousing extends IErrorLogicSource, IExtentCache {
 	 * @param direction The direction to receive
 	 * @return The position of the direction corner.
 	 */
-	BlockPos getFarmCorner(HorizontalDirection direction);
+	BlockPos getFarmCorner(Direction direction);
 }

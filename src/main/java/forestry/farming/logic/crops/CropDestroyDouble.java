@@ -2,6 +2,8 @@ package forestry.farming.logic.crops;
 
 import javax.annotation.Nullable;
 
+import java.util.List;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +32,7 @@ public class CropDestroyDouble extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
+	protected List<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		Block block = blockState.getBlock();
 		Block blockUp = blockStateUp.getBlock();
 		NonNullList<ItemStack> harvested = NonNullList.create();

@@ -4,6 +4,7 @@ import forestry.api.genetics.ForestryTaxa;
 import forestry.api.plugin.IGeneticRegistration;
 
 public class ButterflyTaxonomy {
+	@SuppressWarnings("CodeBlock2Expr")
 	public static void defineTaxa(IGeneticRegistration genetics) {
 		genetics.defineTaxon(ForestryTaxa.CLASS_INSECTS, ForestryTaxa.ORDER_LEPIDOPTERA, order -> {
 			order.defineSubTaxon(ForestryTaxa.FAMILY_GEOMETER_MOTHS, family -> {

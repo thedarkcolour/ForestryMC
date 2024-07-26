@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
-import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.genetics.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -14,11 +13,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import forestry.api.arboriculture.genetics.IFruit;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.IResearchHandler;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.products.IProductList;
 import forestry.apiculture.DisplayHelper;
@@ -41,6 +40,7 @@ import forestry.core.genetics.alleles.SaplingsAllele;
 import forestry.core.genetics.alleles.SappinessAllele;
 import forestry.core.genetics.alleles.YieldAllele;
 import forestry.core.genetics.root.ResearchHandler;
+import forestry.core.utils.SpeciesUtil;
 import forestry.modules.features.FeatureBlock;
 
 import genetics.api.GeneticPlugin;
@@ -74,7 +74,7 @@ public class TreePlugin implements IGeneticPlugin {
 			.addComponent(ComponentKeys.TRANSLATORS)
 			.addComponent(ComponentKeys.MUTATIONS)
 			.addComponent(ForestryComponentKeys.RESEARCH, ResearchHandler::new)
-			.addListener(ForestryComponentKeys.RESEARCH, (IResearchHandler<ITree> builder) -> {
+			.addListener(ForestryComponentKeys.RESEARCH, (IResearchHandler<ISpecies<ITree>, ITree> builder) -> {
 				builder.setResearchSuitability(new ItemStack(Blocks.OAK_SAPLING), 1.0f);
 				builder.addPlugin((species, itemstack) -> {
 					if (itemstack.isEmpty() || !(species instanceof IAlleleTreeSpecies treeSpecies)) {
@@ -83,7 +83,7 @@ public class TreePlugin implements IGeneticPlugin {
 
 					Collection<IFruitFamily> suitableFruit = treeSpecies.getSuitableFruit();
 					for (IFruitFamily fruitFamily : suitableFruit) {
-						Collection<IFruit> fruitProviders = TreeManager.treeRoot.getFruitProvidersForFruitFamily(fruitFamily);
+						Collection<IFruit> fruitProviders = SpeciesUtil.TREE_TYPE.get().getFruitProvidersForFruitFamily(fruitFamily);
 						for (IFruit fruitProvider : fruitProviders) {
 							IProductList products = fruitProvider.getProducts();
 							for (ItemStack stack : products.getPossibleStacks()) {
@@ -148,14 +148,13 @@ public class TreePlugin implements IGeneticPlugin {
 
 	@Override
 	public void onFinishRegistration(IRootManager manager, IGeneticApiInstance instance) {
-		TreeManager.treeRoot = instance.<ITreeSpeciesType>getRoot(ForestrySpeciesTypes.TREE).get();
 
 		// Modes
-		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.easy);
-		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.normal);
-		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.hard);
-		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.hardcore);
-		TreeManager.treeRoot.registerTreekeepingMode(TreekeepingMode.insane);
+		SpeciesUtil.TREE_TYPE.get().registerTreekeepingMode(TreekeepingMode.easy);
+		SpeciesUtil.TREE_TYPE.get().registerTreekeepingMode(TreekeepingMode.normal);
+		SpeciesUtil.TREE_TYPE.get().registerTreekeepingMode(TreekeepingMode.hard);
+		SpeciesUtil.TREE_TYPE.get().registerTreekeepingMode(TreekeepingMode.hardcore);
+		SpeciesUtil.TREE_TYPE.get().registerTreekeepingMode(TreekeepingMode.insane);
 
 		TreeDisplayHandler.init(DisplayHelper.INSTANCE);
 	}

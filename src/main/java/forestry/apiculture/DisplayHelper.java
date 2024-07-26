@@ -41,10 +41,10 @@ public enum DisplayHelper implements IAlleleDisplayHelper {
 		if (!tooltips.containsKey(rootUID)) {
 			return List.of();
 		}
-		ArrayList<IGeneticTooltipProvider<?>> tooltips = new ArrayList<>();
+		ArrayList<IGeneticTooltipProvider<I>> tooltips = new ArrayList<>();
 		for (OrderedPair<IGeneticTooltipProvider<?>> pair : this.tooltips.get(rootUID)) {
 			if (pair.hasValue(type)) {
-				tooltips.add(pair.value);
+				tooltips.add((IGeneticTooltipProvider<I>) pair.value);
 			}
 		}
 		return tooltips;

@@ -17,26 +17,23 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.blocks.IMachinePropertiesTesr;
 import forestry.core.blocks.MachinePropertiesTesr;
-import forestry.core.proxy.Proxies;
 import forestry.core.tiles.TileNaturalistChest;
 import forestry.lepidopterology.features.LepidopterologyTiles;
 import forestry.modules.features.FeatureTileType;
 
 public enum BlockTypeLepidopterologyTesr implements IBlockTypeTesr {
-	LEPICHEST(() -> LepidopterologyTiles.LEPIDOPTERIST_CHEST, "lepi_chest", "lepichest", TileNaturalistChest.CHEST_SHAPE);
+	LEPICHEST(() -> LepidopterologyTiles.LEPIDOPTERIST_CHEST, "lepi_chest", TileNaturalistChest.CHEST_SHAPE);
 
 	public static final BlockTypeLepidopterologyTesr[] VALUES = values();
 
 	private final IMachinePropertiesTesr<?> machineProperties;
 
-	<T extends TileNaturalistChest> BlockTypeLepidopterologyTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, String renderName, VoxelShape shape) {
-		MachinePropertiesTesr<T> machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
+	<T extends TileNaturalistChest> BlockTypeLepidopterologyTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, VoxelShape shape) {
+		this.machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
 				.setParticleTexture(name + ".0")
 				.setClientTicker(TileNaturalistChest::clientTick)
 				.setShape(shape)
 				.create();
-		Proxies.render.setRenderChest(machineProperties, renderName);
-		this.machineProperties = machineProperties;
 	}
 
 	@Override

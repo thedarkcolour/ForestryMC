@@ -8,7 +8,10 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.IIndividualHandler;
 import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.AllelePair;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.core.features.CoreItems;
 import forestry.core.gui.slots.SlotAnalyzer;
 import forestry.core.gui.slots.SlotLockable;
@@ -77,16 +80,8 @@ public class ContainerAnalyzerProviderHelper {
 			specimen = convertedSpecimen;
 		}
 
-		ISpeciesType<?> speciesRoot = RootUtils.getRoot(specimen);
-		// No individual, abort
-		if (speciesRoot == null) {
-			return;
-		}
-
-		IIndividual individual = speciesRoot.create(specimen);
-
-		// Analyze if necessary
-		if (individual != null) {
+		final ItemStack finalSpecimen = specimen;
+		IIndividualHandler.ifPresent(specimen, individual -> {
 			if (!individual.isAnalyzed()) {
 				ItemStack energyStack = alyzerInventory.getItem(InventoryDatabaseAnalyzer.SLOT_ENERGY);
 				if (!ItemInventoryAlyzer.isAlyzingFuel(energyStack)) {
@@ -94,18 +89,17 @@ public class ContainerAnalyzerProviderHelper {
 				}
 
 				if (individual.analyze()) {
-					IBreedingTracker breedingTracker = speciesRoot.getBreedingTracker(player.level, player.getGameProfile());
-					breedingTracker.registerSpecies(individual.getGenome().getPrimarySpecies());
-					breedingTracker.registerSpecies(individual.getGenome().getSecondarySpecies());
+					IBreedingTracker breedingTracker = individual.getType().getBreedingTracker(player.level, player.getGameProfile());
+					breedingTracker.registerSpecies(individual.getSpecies());
+					// todo should inactive species count?
+					//breedingTracker.registerSpecies(individual.getGenome().getSecondarySpecies());
 
-					specimen = specimen.copy();
-					individual.copyTo(specimen);
+					individual.saveToStack(finalSpecimen);
 
 					// Decrease energy
 					alyzerInventory.removeItem(InventoryDatabaseAnalyzer.SLOT_ENERGY, 1);
 				}
-				specimenSlot.set(specimen);
 			}
-		}
+		});
 	}
 }

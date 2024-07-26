@@ -15,13 +15,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import forestry.api.client.ForestrySprites;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.genetics.alleles.AlleleManager;
 import forestry.api.genetics.filter.IFilterLogic;
 import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.core.gui.GuiForestry;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.utils.SoundUtil;
+import forestry.sorting.FilterRegistry;
 import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.gui.ISelectableProvider;
 
@@ -84,7 +84,7 @@ public class RuleWidget extends Widget implements ISelectableProvider<IFilterRul
 	@Override
 	public void handleMouseClick(double mouseX, double mouseY, int mouseButton) {
 		if (mouseButton == 1) {
-			onSelect(AlleleManager.filterRegistry.getDefaultRule());
+			onSelect(FilterRegistry.INSTANCE.getDefaultRule());
 		} else {
 			SoundUtil.playButtonClick();
 			gui.onModuleClick(this);
@@ -102,7 +102,7 @@ public class RuleWidget extends Widget implements ISelectableProvider<IFilterRul
 
 	private static ImmutableSet<IFilterRuleType> createEntries() {
 		ImmutableSet.Builder<IFilterRuleType> entries = ImmutableSet.builder();
-		for (IFilterRuleType rule : AlleleManager.filterRegistry.getRules()) {
+		for (IFilterRuleType rule : FilterRegistry.INSTANCE.getRules()) {
 			entries.add(rule);
 		}
 		return entries.build();

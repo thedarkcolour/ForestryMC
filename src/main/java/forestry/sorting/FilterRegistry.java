@@ -1,44 +1,46 @@
 package forestry.sorting;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import forestry.api.genetics.filter.IFilterRegistry;
 import forestry.api.genetics.filter.IFilterRuleType;
 
-public class FilterRegistry implements IFilterRegistry {
+public enum FilterRegistry implements IFilterRegistry {
+	INSTANCE;
+
 	private static final Comparator<IFilterRuleType> FILTER_COMPARATOR = (f, s) -> f.getId().compareToIgnoreCase(s.getId());
 
-	private final HashMap<String, IFilterRuleType> filterByName = new LinkedHashMap<>();
-	private final HashMap<String, Integer> filterIDByName = new LinkedHashMap<>();
-	private final HashMap<Integer, IFilterRuleType> filterByID = new LinkedHashMap<>();
+	private final LinkedHashMap<String, IFilterRuleType> filterByName = new LinkedHashMap<>();
+	private final LinkedHashMap<String, Integer> filterIDByName = new LinkedHashMap<>();
+	private final LinkedHashMap<Integer, IFilterRuleType> filterByID = new LinkedHashMap<>();
 
 	@Override
 	public void registerFilter(IFilterRuleType rule) {
-		if (!filterByID.isEmpty()) {
+		if (!this.filterByID.isEmpty()) {
 			return;
 		}
-		filterByName.put(rule.getId(), rule);
+		this.filterByName.put(rule.getId(), rule);
 	}
 
 	public void init() {
-		List<IFilterRuleType> rules = new LinkedList<>(filterByName.values());
+		ArrayList<IFilterRuleType> rules = new ArrayList<>(this.filterByName.values());
 		rules.sort(FILTER_COMPARATOR);
-		for (int i = 0; i < rules.size(); i++) {
+
+		int size = rules.size();
+		for (int i = 0; i < size; i++) {
 			IFilterRuleType rule = rules.get(i);
-			filterIDByName.put(rule.getId(), i);
-			filterByID.put(i, rule);
+			this.filterIDByName.put(rule.getId(), i);
+			this.filterByID.put(i, rule);
 		}
 	}
 
 	@Override
 	public Collection<IFilterRuleType> getRules() {
-		return filterByName.values();
+		return this.filterByName.values();
 	}
 
 	@Override
@@ -49,17 +51,17 @@ public class FilterRegistry implements IFilterRegistry {
 	@Nullable
 	@Override
 	public IFilterRuleType getRule(String uid) {
-		return filterByName.get(uid);
+		return this.filterByName.get(uid);
 	}
 
 	@Override
 	public int getId(IFilterRuleType rule) {
-		return filterIDByName.get(rule.getId());
+		return this.filterIDByName.get(rule.getId());
 	}
 
 	@Nullable
 	@Override
 	public IFilterRuleType getRule(int id) {
-		return filterByID.get(id);
+		return this.filterByID.get(id);
 	}
 }

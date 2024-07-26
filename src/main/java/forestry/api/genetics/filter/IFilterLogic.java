@@ -18,9 +18,9 @@ public interface IFilterLogic extends INbtWritable, INbtReadable {
 
 	void readGuiData(FriendlyByteBuf data);
 
-	boolean isValid(ItemStack itemStack, Direction facing);
+	boolean isValid(ItemStack stack, Direction facing);
 
-	boolean isValid(Direction facing, ItemStack itemStack, IFilterData filterData);
+	boolean isValid(Direction facing, ItemStack stack, FilterData filterData);
 
 	boolean isValidAllelePair(Direction orientation, String activeUID, String inactiveUID);
 
@@ -45,6 +45,6 @@ public interface IFilterLogic extends INbtWritable, INbtReadable {
 		 *
 		 * @param player The player that changed the filter.
 		 */
-		void sendToPlayers(IFilterLogic logic, ServerLevel server, Player player);
+		void sendToPlayers(IFilterLogic logic, ServerLevel level, Player player);
 	}
 }

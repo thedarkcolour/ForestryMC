@@ -4,10 +4,10 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.core.utils.SpeciesUtil;
 
 class HiveBeeHousingInventory implements IBeeHousingInventory {
 	@Nullable
@@ -25,7 +25,7 @@ class HiveBeeHousingInventory implements IBeeHousingInventory {
 	public ItemStack getQueen() {
 		if (queen == null) {
 			IBee bee = hive.getContainedBee();
-			queen = BeeManager.beeRoot.getTypes().createStack(bee, BeeLifeStage.QUEEN);
+			queen = SpeciesUtil.BEE_TYPE.get().getTypes().createStack(bee, BeeLifeStage.QUEEN);
 		}
 		return queen;
 	}
@@ -34,7 +34,7 @@ class HiveBeeHousingInventory implements IBeeHousingInventory {
 	public ItemStack getDrone() {
 		if (drone == null) {
 			IBee bee = hive.getContainedBee();
-			drone = BeeManager.beeRoot.getTypes().createStack(bee, BeeLifeStage.DRONE);
+			drone = SpeciesUtil.BEE_TYPE.get().getTypes().createStack(bee, BeeLifeStage.DRONE);
 		}
 		return drone;
 	}

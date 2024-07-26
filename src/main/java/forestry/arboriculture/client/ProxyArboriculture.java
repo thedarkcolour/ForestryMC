@@ -11,19 +11,4 @@
 package forestry.arboriculture.client;
 
 public class ProxyArboriculture {
-
-	public void initializeModels() {
-	}
-
-	public int getFoliageColorDefault() {
-		return 4764952;
-	}
-
-	public int getFoliageColorBirch() {
-		return 8431445;
-	}
-
-	public int getFoliageColorSpruce() {
-		return 6396257;
-	}
 }

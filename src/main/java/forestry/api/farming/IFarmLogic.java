@@ -6,6 +6,7 @@
 package forestry.api.farming;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +30,7 @@ public interface IFarmLogic {
 	 * @param farmHousing The farm that uses this logic.
 	 * @return A collection that contains all items that were collected.
 	 */
-	default NonNullList<ItemStack> collect(Level world, IFarmHousing farmHousing) {
+	default List<ItemStack> collect(Level world, IFarmHousing farmHousing) {
 		return NonNullList.create();
 	}
 

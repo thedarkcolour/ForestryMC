@@ -7,15 +7,9 @@ package forestry.api.apiculture;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.world.item.ItemStack;
-
-import forestry.api.apiculture.genetics.IBeeFactory;
-import forestry.api.apiculture.genetics.IBeeSpeciesType;
-
-import forestry.api.genetics.IGenome;
 
 /**
  * Some miscellaneous lists and settings for bees.
@@ -23,27 +17,10 @@ import forestry.api.genetics.IGenome;
  * @author SirSengir
  */
 public class BeeManager {
-
-	/**
-	 * Common Village Bees
-	 */
-	public static List<IGenome> commonVillageBees;
-	/**
-	 * Uncommon Village Bees (20 % of spawns)
-	 */
-	public static List<IGenome> uncommonVillageBees;
-
 	/**
 	 * List of items that can induce swarming. Integer denotes x in 1000 chance.
 	 */
 	public static final Map<ItemStack, Integer> inducers = new HashMap<>();
-
-	/**
-	 * Convenient access to AlleleManager.alleleRegistry.getSpeciesRoot("rootBees")
-	 *
-	 * @implNote Only null if the "apiculture" module is not enabled.
-	 */
-	public static IBeeSpeciesType beeRoot;
 
 	/**
 	 * Used to check whether a player is wearing Apiarist Armor.

@@ -12,32 +12,31 @@ package forestry.apiculture.genetics.effects;
 
 import java.util.List;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IGenome;
 import forestry.core.utils.DamageSourceForestry;
 
-import forestry.api.genetics.IGenome;
-
 public class MisanthropeBeeEffect extends ThrottledBeeEffect {
-
 	private static final DamageSource damageSourceBeeEnd = new DamageSourceForestry("bee.end");
 
 	public MisanthropeBeeEffect() {
-		super("misanthrope", true, 20, false, false);
+		super(true, 20, false, false);
 	}
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		List<Player> players = getEntitiesInRange(genome, housing, Player.class);
+		List<Player> players = IBeeEffect.getEntitiesInRange(genome, housing, Player.class);
 		for (Player player : players) {
 			int damage = 4;
 
 			// Entities are not attacked if they wear a full set of apiarist's armor.
-			int count = BeeManager.armorApiaristHelper.wearsItems(player, getId(), true);
+			int count = BeeManager.armorApiaristHelper.wearsItems(player, this, true);
 			damage -= count;
 			if (damage <= 0) {
 				continue;

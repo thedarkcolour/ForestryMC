@@ -17,14 +17,12 @@ import forestry.arboriculture.genetics.TreeHelper;
 import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.models.baker.ModelBaker;
-import forestry.core.proxy.Proxies;
+import forestry.core.client.Proxies;
 import forestry.core.utils.ResourceUtil;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

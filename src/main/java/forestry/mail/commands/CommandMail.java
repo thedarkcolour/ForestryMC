@@ -29,17 +29,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import forestry.api.mail.ITradeStation;
 import forestry.api.mail.ITradeStationInfo;
 import forestry.api.mail.PostManager;
+import forestry.core.commands.CommandHelpers;
 import forestry.core.utils.StringUtil;
 import forestry.mail.MailAddress;
 
-import genetics.commands.CommandHelpers;
-import genetics.commands.PermLevel;
-
-/**
- * @author CovertJaguar <http://www.railcraft.info/>
- */
 public class CommandMail {
-
 	public static ArgumentBuilder<CommandSourceStack, ?> register() {
 		return Commands.literal("mail")
 				.then(CommandMailTrades.register())
@@ -83,7 +77,7 @@ public class CommandMail {
 
 	public static class CommandMailVirtualize {
 		public static ArgumentBuilder<CommandSourceStack, ?> register() {
-		    return Commands.literal("virtualize").requires(PermLevel.ADMIN).executes(CommandMailVirtualize::execute);
+		    return Commands.literal("virtualize").requires(CommandHelpers.ADMIN).executes(CommandMailVirtualize::execute);
         }
 
 		public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

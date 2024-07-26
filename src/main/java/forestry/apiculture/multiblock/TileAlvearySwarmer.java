@@ -40,6 +40,7 @@ import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer, IActivatable, IAlvearyComponent.Active {
 
@@ -94,9 +95,9 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		}
 
 		// Queue swarm spawn
-		IBee princess = BeeManager.beeRoot.create(princessStack);
-		princess.setIsNatural(false);
-		pendingSpawns.push(BeeManager.beeRoot.getTypes().createStack(princess, BeeLifeStage.PRINCESS));
+		IBee princess = SpeciesUtil.BEE_TYPE.get().create(princessStack);
+		princess.setPristine(false);
+		pendingSpawns.push(SpeciesUtil.BEE_TYPE.get().getTypes().createStack(princess, BeeLifeStage.PRINCESS));
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 	private ItemStack getPrincessStack() {
 		ItemStack princessStack = getMultiblockLogic().getController().getBeeInventory().getQueen();
 
-		if (BeeManager.beeRoot.isMated(princessStack)) {
+		if (SpeciesUtil.BEE_TYPE.get().isMated(princessStack)) {
 			return princessStack;
 		}
 

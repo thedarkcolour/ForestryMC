@@ -34,7 +34,7 @@ import forestry.arboriculture.blocks.BlockDefaultLeavesFruit;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.models.baker.ModelBaker;
-import forestry.core.proxy.Proxies;
+import forestry.core.client.Proxies;
 import forestry.core.utils.ResourceUtil;
 
 import forestry.api.genetics.IGenome;

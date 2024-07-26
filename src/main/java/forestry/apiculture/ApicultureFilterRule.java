@@ -5,9 +5,10 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.filter.IFilterData;
+import forestry.api.genetics.filter.FilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.sorting.DefaultFilterRuleType;
@@ -64,15 +65,9 @@ public enum ApicultureFilterRule implements IFilterRule {
 	}
 
 	@Override
-	public boolean isValid(ItemStack itemStack, IFilterData data) {
-		if (!data.isPresent()) {
-			return false;
-		}
+	public boolean isValid(ItemStack stack, FilterData data) {
 		IIndividual individual = data.individual();
-		if (individual instanceof IBee) {
-			return isValid((IBee) individual);
-		}
-		return false;
+		return individual instanceof IBee bee && isValid(bee);
 	}
 
 	protected boolean isValid(IBee bee) {
@@ -81,7 +76,6 @@ public enum ApicultureFilterRule implements IFilterRule {
 
 	@Override
 	public ResourceLocation getSpeciesTypeId() {
-		return BeeManager.beeRoot.id();
+		return ForestrySpeciesTypes.BEE;
 	}
-
 }

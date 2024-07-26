@@ -14,13 +14,17 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Keyable;
 
+import forestry.api.IForestryApi;
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.plugin.IChromosomeBuilder;
+import forestry.api.plugin.IGenomeBuilder;
 import forestry.api.plugin.IKaryotypeBuilder;
 
 public class Karyotype implements IKaryotype {
@@ -28,7 +32,7 @@ public class Karyotype implements IKaryotype {
 	private final ISpeciesChromosome<?> speciesChromosome;
 	private final ImmutableMap<IChromosome<?>, ? extends IAllele> defaultAlleles;
 	private final ResourceLocation defaultSpecies;
-	private final Codec<Genome> genomeCodec;
+	private final Codec<IGenome> genomeCodec;
 
 	// Used in Karyotype.Builder
 	public Karyotype(ImmutableMap<IChromosome<?>, ImmutableSet<? extends IAllele>> chromosomes, ImmutableMap<IChromosome<?>, ? extends IAllele> defaultAlleles, ResourceLocation defaultSpecies) {
@@ -38,8 +42,8 @@ public class Karyotype implements IKaryotype {
 		this.defaultSpecies = defaultSpecies;
 
 		Keyable chromosomesKeyable = Keyable.forStrings(() -> this.chromosomes.keySet().stream().map(chromosome -> chromosome.id().toString()));
-		this.genomeCodec = Codec.simpleMap(IChromosome.CODEC, AllelePair.CODEC, chromosomesKeyable)
-				.xmap(map -> new Genome(this, map), genome -> genome.chromosomes).codec();
+		this.genomeCodec = Codec.simpleMap(IForestryApi.INSTANCE.getAlleleManager().chromosomeCodec(), AllelePair.CODEC, chromosomesKeyable)
+				.xmap(map -> (IGenome) new Genome(this, map), IGenome::getChromosomes).codec();
 	}
 
 	@Override
@@ -66,7 +70,16 @@ public class Karyotype implements IKaryotype {
 	@Override
 	public <A extends IAllele> boolean isAlleleValid(IChromosome<A> chromosome, A allele) {
 		ImmutableSet<? extends IAllele> validAlleles = this.chromosomes.get(chromosome);
-		return validAlleles != null && validAlleles.contains(allele);
+
+		if (validAlleles != null) {
+			if (chromosome instanceof IRegistryChromosome<?> registry) {
+				return registry.isValidAllele(allele);
+			} else {
+				return validAlleles.contains(allele);
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -74,6 +87,7 @@ public class Karyotype implements IKaryotype {
 		return this.chromosomes.containsKey(chromosome);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <A extends IAllele> A getDefaultAllele(IChromosome<A> chromosome) {
 		A allele = (A) this.defaultAlleles.get(chromosome);
@@ -83,9 +97,22 @@ public class Karyotype implements IKaryotype {
 		return allele;
 	}
 
+	@SuppressWarnings({"DataFlowIssue", "unchecked"})
+	@Override
+	public <A extends IAllele> ImmutableSet<A> getAlleles(IChromosome<A> chromosome) {
+		Preconditions.checkArgument(isChromosomeValid(chromosome), "Chromosome not present in karyotype");
+
+		return (ImmutableSet<A>) this.chromosomes.get(chromosome);
+	}
+
 	@Override
 	public ImmutableMap<IChromosome<?>, ? extends IAllele> getDefaultAlleles() {
 		return this.defaultAlleles;
+	}
+
+	@Override
+	public IGenomeBuilder genomeBuilder() {
+		return new Genome.Builder(this);
 	}
 
 	@Override
@@ -94,7 +121,7 @@ public class Karyotype implements IKaryotype {
 	}
 
 	@Override
-	public Codec<Genome> getGenomeCodec() {
+	public Codec<IGenome> getGenomeCodec() {
 		return this.genomeCodec;
 	}
 
@@ -116,11 +143,17 @@ public class Karyotype implements IKaryotype {
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
-		public <A extends IAllele> IChromosomeBuilder<A> get(IChromosome<A> chromosome) {
-			return (IChromosomeBuilder<A>) this.chromosomes.computeIfAbsent(chromosome, key -> new ChromosomeBuilder<A>(chromosome));
+		public void set(IRegistryChromosome<?> chromosome, ResourceLocation defaultId) {
+			this.chromosomes.computeIfAbsent(chromosome, key -> new ChromosomeBuilder<>(chromosome));
 		}
 
+		@Override
+		@SuppressWarnings("unchecked")
+		public <A extends IAllele> IChromosomeBuilder<A> get(IChromosome<A> chromosome) {
+			return (IChromosomeBuilder<A>) this.chromosomes.computeIfAbsent(chromosome, key -> new ChromosomeBuilder<>(chromosome));
+		}
+
+		@SuppressWarnings("UnstableApiUsage")
 		public Karyotype build() {
 			Preconditions.checkState(this.defaultSpeciesId != null && this.speciesChromosome != null, "IKaryotypeBuilder is missing a species chromosome.");
 
@@ -130,7 +163,11 @@ public class Karyotype implements IKaryotype {
 			for (Map.Entry<IChromosome<?>, ChromosomeBuilder<?>> entry : this.chromosomes.entrySet()) {
 				IChromosome<?> chromosome = entry.getKey();
 				ChromosomeBuilder<?> builder = entry.getValue();
-				permittedAlleles.put(chromosome, builder.alleles.build());
+				ImmutableSet<? extends IAllele> permitted = builder.alleles.build();
+				if (!(chromosome instanceof IRegistryChromosome<?>) && permitted.isEmpty()) {
+					throw new IllegalStateException("Chromosome missing permitted alleles in karyotype.");
+				}
+				permittedAlleles.put(chromosome, permitted);
 				defaultAlleles.put(chromosome, builder.defaultAllele);
 			}
 			return new Karyotype(permittedAlleles.build(), defaultAlleles.build(), this.defaultSpeciesId);

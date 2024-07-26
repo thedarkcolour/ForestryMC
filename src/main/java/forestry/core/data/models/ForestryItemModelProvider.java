@@ -17,6 +17,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
 import forestry.api.ForestryConstants;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.core.data.builder.FilledCrateModelBuilder;
 import forestry.core.fluids.ForestryFluids;
@@ -97,7 +98,7 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 		}
 
 		// Backpacks
-		for (RegistryObject<Item> object : ModFeatureRegistry.get(ModuleBackpacks.class).getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
+		for (RegistryObject<Item> object : ModFeatureRegistry.get(ForestryModuleIds.BACKPACKS).getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
 			if (object.get() instanceof ItemBackpack) {
 				String path = object.getId().getPath();
 				boolean woven = path.endsWith("woven");

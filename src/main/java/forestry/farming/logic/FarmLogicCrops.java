@@ -10,13 +10,14 @@
  ******************************************************************************/
 package forestry.farming.logic;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import java.util.List;
 
-import forestry.api.farming.HorizontalDirection;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmable;
@@ -29,12 +30,12 @@ public class FarmLogicCrops extends FarmLogicWatered {
 	}
 
 	@Override
-	public NonNullList<ItemStack> collect(Level world, IFarmHousing farmHousing) {
+	public List<ItemStack> collect(Level world, IFarmHousing farmHousing) {
 		return collectEntityItems(world, farmHousing, false);
 	}
 
 	@Override
-	protected boolean maintainCrops(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
+	protected boolean maintainCrops(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
 			if (!world.hasChunkAt(position)) {
@@ -55,7 +56,7 @@ public class FarmLogicCrops extends FarmLogicWatered {
 		return false;
 	}
 
-	private boolean trySetCrop(Level world, IFarmHousing farmHousing, BlockPos position, HorizontalDirection direction) {
+	private boolean trySetCrop(Level world, IFarmHousing farmHousing, BlockPos position, Direction direction) {
 		for (IFarmable candidate : getFarmables()) {
 			if (farmHousing.plantGermling(candidate, world, position, direction)) {
 				return true;

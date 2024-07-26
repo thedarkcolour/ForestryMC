@@ -14,38 +14,37 @@ import java.util.List;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
-import forestry.core.render.ParticleRender;
-
 import forestry.api.genetics.IGenome;
+import forestry.core.render.ParticleRender;
 
 public class IgnitionBeeEffect extends ThrottledBeeEffect {
 	private static final int ignitionChance = 50;
 	private static final int fireDuration = 500;
 
 	public IgnitionBeeEffect() {
-		super("ignition", false, 20, false, true);
+		super(false, 20, false, true);
 	}
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		Level world = housing.getWorldObj();
-		List<LivingEntity> entities = getEntitiesInRange(genome, housing, LivingEntity.class);
+		Level level = housing.getWorldObj();
+		List<LivingEntity> entities = IBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
 		for (LivingEntity entity : entities) {
 			int chance = ignitionChance;
 			int duration = fireDuration;
 
 			// Entities are not attacked if they wear a full set of apiarist's armor.
-			int count = BeeManager.armorApiaristHelper.wearsItems(entity, getId(), true);
+			int count = BeeManager.armorApiaristHelper.wearsItems(entity, this, true);
 			if (count > 3) {
 				continue; // Full set, no damage/effect
 			} else if (count > 2) {
@@ -59,7 +58,7 @@ public class IgnitionBeeEffect extends ThrottledBeeEffect {
 				duration = 350;
 			}
 
-			if (world.random.nextInt(1000) >= chance) {
+			if (level.random.nextInt(1000) >= chance) {
 				continue;
 			}
 
@@ -72,13 +71,12 @@ public class IgnitionBeeEffect extends ThrottledBeeEffect {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public IEffectData doFX(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		LevelAccessor world1 = housing.getWorldObj();
-		ClientLevel world = (ClientLevel) world1;
-		if (world.random.nextInt(2) != 0) {
+		ClientLevel level = (ClientLevel) housing.getWorldObj();
+		if (level.random.nextInt(2) != 0) {
 			super.doFX(genome, storedData, housing);
 		} else {
 			Vec3 beeFXCoordinates = housing.getBeeFXCoordinates();
-			ParticleRender.addEntityIgnitionFX(world, beeFXCoordinates.x, beeFXCoordinates.y + 0.5, beeFXCoordinates.z);
+			ParticleRender.addEntityIgnitionFX(level, beeFXCoordinates.x, beeFXCoordinates.y + 0.5, beeFXCoordinates.z);
 		}
 		return storedData;
 	}

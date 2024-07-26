@@ -55,7 +55,7 @@ public final class Genome implements IGenome {
 		if (!this.hasCachedDefaultGenome) {
 			Genome defaultGenome = (Genome) getActiveValue(this.karyotype.getSpeciesChromosome()).getDefaultGenome();
 
-			this.isDefaultGenome = this == defaultGenome || (defaultGenome.karyotype == this.karyotype && this.chromosomes.equals(defaultGenome.chromosomes));
+			this.isDefaultGenome = this == defaultGenome || (isSameAlleles(defaultGenome));
 			this.hasCachedDefaultGenome = true;
 		}
 
@@ -99,6 +99,11 @@ public final class Genome implements IGenome {
 		}
 
 		return genome;
+	}
+
+	@Override
+	public boolean isSameAlleles(IGenome other) {
+		return other.getKaryotype() == this.karyotype && this.chromosomes.equals(other.getChromosomes());
 	}
 
 	@Override

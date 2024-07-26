@@ -21,16 +21,6 @@ import forestry.api.genetics.alleles.IAllele;
  */
 public interface IBreedingTracker {
 	/**
-	 * @return Name of the current {@link IBeekeepingMode}.
-	 */
-	String getModeName();
-
-	/**
-	 * Set the current {@link IBeekeepingMode}.
-	 */
-	void setModeName(String name);
-
-	/**
 	 * @return Amount of species discovered.
 	 */
 	int getSpeciesBred();
@@ -72,7 +62,7 @@ public interface IBreedingTracker {
 	boolean isDiscovered(ISpecies<?> species);
 
 	/**
-	 * @return A collection that contains the {@link IAllele#id()}s of all discovered species.
+	 * @return A collection that contains the {@link IAllele#alleleId()}s of all discovered species.
 	 */
 	default Collection<String> getDiscoveredSpecies() {
 		return Collections.emptyList();

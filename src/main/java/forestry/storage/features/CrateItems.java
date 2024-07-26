@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
+import forestry.api.modules.ForestryModuleIds;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.items.EnumHoneyComb;
 import forestry.apiculture.items.EnumPollenCluster;
@@ -23,9 +24,8 @@ import forestry.storage.items.ItemCrated;
 
 @FeatureProvider
 public class CrateItems {
-
 	private static final List<FeatureItem<ItemCrated>> CRATES = new ArrayList<>();
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCrates.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.CRATE);
 
 	// TODO map of item to crate or similar?
 	public static final FeatureItem<ItemCrated> CRATE = REGISTRY.item(() -> new ItemCrated(() -> ItemStack.EMPTY), "crate");
@@ -118,9 +118,6 @@ public class CrateItems {
 
 	static {
 		CRATES.addAll(CRATED_BEE_COMBS.getFeatures());
-	}
-
-	private CrateItems() {
 	}
 
 	private static FeatureItem<ItemCrated> register(ItemLike contained, String identifier) {

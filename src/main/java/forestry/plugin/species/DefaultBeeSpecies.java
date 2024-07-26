@@ -448,7 +448,7 @@ public class DefaultBeeSpecies {
 				.setBody(new Color(0x3cd757))
 				.addProduct(() -> BEE_COMBS.stack(EnumHoneyComb.SILKY), 0.30f)
 				.setGenome(genome -> {
-					genome.set(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_FESTIVE_EASTER);
+					genome.set(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_EASTER);
 				})
 				.addMutations(mutations -> {
 					mutations.add(ForestryBeeSpecies.MEADOWS, ForestryBeeSpecies.FOREST, 10)

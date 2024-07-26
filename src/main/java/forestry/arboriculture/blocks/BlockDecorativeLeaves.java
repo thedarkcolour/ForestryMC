@@ -24,32 +24,24 @@ import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.blocks.IColoredBlock;
 import forestry.core.utils.BlockUtil;
 
 public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForgeShearable {
-	private final ForestryLeafType definition;
+	private final ForestryLeafType type;
 
-	public BlockDecorativeLeaves(ForestryLeafType definition) {
-		super(Properties.of(Material.LEAVES)
-				.strength(0.2f)
-				.sound(SoundType.GRASS)
-				.noOcclusion()
-				.isSuffocating(BlockUtil::alwaysTrue)
-				.isRedstoneConductor(BlockUtil::alwaysFalse)
-		);
-		//		this.setLightOpacity(1);	//TODO block stuff);
-		this.definition = definition;
+	public BlockDecorativeLeaves(ForestryLeafType type) {
+		super(Properties.of(Material.LEAVES).strength(0.2f).sound(SoundType.GRASS).noOcclusion().isValidSpawn(BlockUtil.IS_PARROT_OR_OCELOT).isSuffocating(BlockUtil.ALWAYS).isRedstoneConductor(BlockUtil.NEVER).isViewBlocking(BlockUtil.NEVER));
+		this.type = type;
 	}
 
-	public TreeDefinition getDefinition() {
-		return definition;
+	public ForestryLeafType getType() {
+		return type;
 	}
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-		if (TreeDefinition.Willow.equals(definition)) {
+		if (this.type == ForestryLeafType.WILLOW) {
 			return Shapes.empty();
 		}
 		return super.getCollisionShape(state, worldIn, pos, context);
@@ -86,14 +78,14 @@ public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForg
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex) {
-		IGenome genome = definition.getGenome();
+	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
+		IGenome genome = type.getIndividual().getGenome();
 
 		if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
-			IFruit fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUITS);
 			return fruitProvider.getDecorativeColor();
 		}
-		ILeafSpriteProvider spriteProvider = genome.getActiveAllele(TreeChromosomes.SPECIES).getLeafSpriteProvider();
+		ILeafSpriteProvider spriteProvider = genome.getActiveValue(TreeChromosomes.SPECIES).getLeafSpriteProvider();
 		return spriteProvider.getColor(false);
 	}
 }

@@ -7,12 +7,30 @@ package forestry.api.lepidopterology.genetics;
 
 import java.util.Locale;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+
 import forestry.api.genetics.ILifeStage;
+import forestry.lepidopterology.features.LepidopterologyItems;
 
 public enum ButterflyLifeStage implements ILifeStage {
-	BUTTERFLY, SERUM, CATERPILLAR, COCOON;
+	BUTTERFLY(LepidopterologyItems.BUTTERFLY_GE),
+	SERUM(LepidopterologyItems.SERUM_GE),
+	CATERPILLAR(LepidopterologyItems.CATERPILLAR_GE),
+	COCOON(LepidopterologyItems.COCOON_GE);
 
-	public String getName() {
+	private final ItemLike itemForm;
+
+	ButterflyLifeStage(ItemLike itemForm) {
+		this.itemForm = itemForm;
+	}
+
+	public String getSerializedName() {
 		return toString().toLowerCase(Locale.ROOT);
+	}
+
+	@Override
+	public Item getItemForm() {
+		return this.itemForm.asItem();
 	}
 }

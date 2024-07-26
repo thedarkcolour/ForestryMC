@@ -14,18 +14,16 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.ForestryConstants;
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.BeeLifeStage;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.core.ItemGroups;
-import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.apiculture.genetics.Bee;
 import forestry.apiculture.genetics.BeeDefinition;
 import forestry.arboriculture.genetics.Tree;
 import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.features.CoreItems;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.genetics.Butterfly;
 import forestry.lepidopterology.genetics.ButterflyDefinition;
 import forestry.storage.features.BackpackItems;
@@ -48,19 +46,19 @@ public abstract class ItemGroupForestry extends CreativeModeTab {
 		ItemGroups.tabApiculture = new ItemGroupForestry("apiculture") {
 			@Override
 			public ItemStack makeIcon() {
-				return BeeManager.beeRoot.getTypes().createStack(new Bee(BeeDefinition.FOREST.getGenome()), BeeLifeStage.DRONE);
+				return SpeciesUtil.BEE_TYPE.get().getTypes().createStack(new Bee(BeeDefinition.FOREST.getGenome()), BeeLifeStage.DRONE);
 			}
 		};
 		ItemGroups.tabArboriculture = new ItemGroupForestry("arboriculture") {
 			@Override
 			public ItemStack makeIcon() {
-				return TreeManager.treeRoot.getTypes().createStack(new Tree(TreeDefinition.Oak.getGenome()), TreeLifeStage.SAPLING);
+				return SpeciesUtil.TREE_TYPE.get().getTypes().createStack(new Tree(TreeDefinition.Oak.getGenome()), TreeLifeStage.SAPLING);
 			}
 		};
 		ItemGroups.tabLepidopterology = new ItemGroupForestry("lepidopterology") {
 			@Override
 			public ItemStack makeIcon() {
-				return ButterflyManager.butterflyRoot.getTypes().createStack(new Butterfly(ButterflyDefinition.Brimstone.getGenome()), ButterflyLifeStage.BUTTERFLY);
+				return SpeciesUtil.BUTTERFLY_TYPE.get().getTypes().createStack(new Butterfly(ButterflyDefinition.Brimstone.getGenome()), ButterflyLifeStage.BUTTERFLY);
 			}
 		};
 	}

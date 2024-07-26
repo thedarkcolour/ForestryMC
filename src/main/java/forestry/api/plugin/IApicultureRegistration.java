@@ -58,7 +58,7 @@ public interface IApicultureRegistration {
 		}
 	}
 
-	void registerFlowerType(IFlowerType type);
+	void registerFlowerType(ResourceLocation id, IFlowerType type);
 
-	void registerBeeEffect(IBeeEffect effect);
+	void registerBeeEffect(ResourceLocation id, IBeeEffect effect);
 }

@@ -23,15 +23,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureBlocks;
-import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.utils.BlockUtil;
 
 /**
@@ -56,7 +54,7 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 				return InteractionResult.FAIL;
 			}
 			IFruit fruitProvider = tree.getGenome().getActiveValue(TreeChromosomes.FRUITS);
-			NonNullList<ItemStack> products = tree.produceStacks(level, pos, fruitProvider.getRipeningPeriod());
+			List<ItemStack> products = tree.produceStacks(level, pos, fruitProvider.getRipeningPeriod());
 			level.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(leafType).defaultState()
 					.setValue(LeavesBlock.PERSISTENT, state.getValue(LeavesBlock.PERSISTENT))
 					.setValue(LeavesBlock.DISTANCE, state.getValue(LeavesBlock.DISTANCE)), Block.UPDATE_CLIENTS);
@@ -80,15 +78,15 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 		List<ITree> saplings = tree.getSaplings(world, playerProfile, pos, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				drops.add(TreeManager.treeRoot.getTypes().createStack(sapling, TreeLifeStage.SAPLING));
+				drops.add(sapling.copyWithStage(TreeLifeStage.SAPLING));
 			}
 		}
 
 		// Add fruits
 		IGenome genome = tree.getGenome();
-		IFruit fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+		IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUITS);
 		if (fruitProvider.isFruitLeaf(genome, world, pos)) {
-			NonNullList<ItemStack> produceStacks = tree.produceStacks(world, pos, Integer.MAX_VALUE);
+			List<ItemStack> produceStacks = tree.produceStacks(world, pos, Integer.MAX_VALUE);
 			drops.addAll(produceStacks);
 		}
 	}
@@ -104,7 +102,7 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex) {
+	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
 		if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
 			IFruit genome = leafType.getFruit();
 			return genome.getDecorativeColor();

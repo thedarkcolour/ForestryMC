@@ -8,33 +8,34 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.client.ForestrySprites;
 import forestry.api.genetics.ForestrySpeciesTypes;
-import forestry.api.genetics.filter.IFilterData;
+import forestry.api.genetics.filter.FilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
+import forestry.sorting.FilterRegistry;
 
 public enum ApicultureFilterRuleType implements IFilterRuleType {
 	BEE(ForestrySprites.ANALYZER_BEE) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent();
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return true;
 		}
 	},
 	DRONE(ForestrySprites.ANALYZER_DRONE) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == BeeLifeStage.DRONE;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == BeeLifeStage.DRONE;
 		}
 	},
 	PRINCESS(ForestrySprites.ANALYZER_PRINCESS) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == BeeLifeStage.PRINCESS;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == BeeLifeStage.PRINCESS;
 		}
 	},
 	QUEEN(ForestrySprites.ANALYZER_QUEEN) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == BeeLifeStage.QUEEN;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == BeeLifeStage.QUEEN;
 		}
 	};
 
@@ -48,7 +49,7 @@ public enum ApicultureFilterRuleType implements IFilterRuleType {
 
 	public static void init() {
 		for (ApicultureFilterRuleType rule : values()) {
-			AlleleManager.filterRegistry.registerFilter(rule);
+			FilterRegistry.INSTANCE.registerFilter(rule);
 		}
 	}
 
@@ -73,6 +74,6 @@ public enum ApicultureFilterRuleType implements IFilterRuleType {
 
 	@Override
 	public String getId() {
-		return id;
+		return this.id;
 	}
 }

@@ -13,12 +13,12 @@ package forestry.arboriculture.tiles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.arboriculture.TreeManager;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.core.tiles.TileNaturalistChest;
+import forestry.core.utils.SpeciesUtil;
 
 public class TileArboristChest extends TileNaturalistChest {
 	public TileArboristChest(BlockPos pos, BlockState state) {
-		super(ArboricultureTiles.ARBORIST_CHEST.tileType(), pos, state, TreeManager.treeRoot);
+		super(ArboricultureTiles.ARBORIST_CHEST.tileType(), pos, state, SpeciesUtil.TREE_TYPE.get());
 	}
 }

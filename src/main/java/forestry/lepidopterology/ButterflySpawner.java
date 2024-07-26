@@ -21,17 +21,13 @@ import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.IButterflySpecies;
-import forestry.api.lepidopterology.genetics.ButterflyChromosome;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.lepidopterology.entities.EntityButterfly;
 
 public class ButterflySpawner implements ILeafTickHandler {
-
 	@Override
 	public boolean onRandomLeafTick(ITree tree, Level world, RandomSource rand, BlockPos pos, boolean isDestroyed) {
 		if (!world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
@@ -42,7 +38,7 @@ public class ButterflySpawner implements ILeafTickHandler {
 			return false;
 		}
 
-		IButterfly spawn = IForestryApi.INSTANCE.getGeneticManager().createRandomIndividual(ForestrySpeciesTypes.BUTTERFLY, rand, ButterflyLifeStage.BUTTERFLY);
+		IButterfly spawn = (IButterfly) IForestryApi.INSTANCE.getGeneticManager().createRandomIndividual(ForestrySpeciesTypes.BUTTERFLY, rand, ButterflyLifeStage.BUTTERFLY);
 		float rarity;
 		IButterflySpecies activeSpecies = spawn.getGenome().getActiveValue(ButterflyChromosomes.SPECIES);
 		if (!ModuleLepidopterology.spawnRaritys.containsKey(activeSpecies.id().getPath())) {

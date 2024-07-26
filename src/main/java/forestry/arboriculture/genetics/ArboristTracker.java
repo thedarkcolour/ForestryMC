@@ -15,30 +15,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import forestry.api.arboriculture.IArboristTracker;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.arboriculture.ModuleArboriculture;
+import forestry.api.genetics.ISpecies;
 import forestry.core.genetics.BreedingTracker;
-
-import genetics.api.individual.IIndividual;
+import forestry.core.utils.SpeciesUtil;
 
 public class ArboristTracker extends BreedingTracker implements IArboristTracker {
-
-	/**
-	 * Required for creation from map storage
-	 */
 	public ArboristTracker() {
-		super(ModuleArboriculture.treekeepingMode);
+		super();
 	}
 
 	public ArboristTracker(CompoundTag tag) {
-		super(ModuleArboriculture.treekeepingMode, tag);
+		super(tag);
 	}
 
 	@Override
 	protected IBreedingTracker getBreedingTracker(Player player) {
-		return TreeManager.treeRoot.getBreedingTracker(player.level, player.getGameProfile());
+		return SpeciesUtil.TREE_TYPE.get().getBreedingTracker(player.level, player.getGameProfile());
 	}
 
 	@Override
@@ -47,7 +41,6 @@ public class ArboristTracker extends BreedingTracker implements IArboristTracker
 	}
 
 	@Override
-	public void registerPickup(IIndividual individual) {
+	public void registerPickup(ISpecies<?> individual) {
 	}
-
 }

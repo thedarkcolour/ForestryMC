@@ -1,6 +1,6 @@
 package forestry.arboriculture.features;
 
-import forestry.arboriculture.ModuleArboriculture;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.arboriculture.tiles.TileArboristChest;
 import forestry.arboriculture.tiles.TileFruitPod;
 import forestry.arboriculture.tiles.TileLeaves;
@@ -12,7 +12,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class ArboricultureTiles {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleArboriculture.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.ARBORICULTURE);
 
 	public static final FeatureTileType<TileSapling> SAPLING = REGISTRY.tile(TileSapling::new, "sapling", ArboricultureBlocks.SAPLING_GE::collect);
 	public static final FeatureTileType<TileLeaves> LEAVES = REGISTRY.tile(TileLeaves::new, "leaves", ArboricultureBlocks.LEAVES::collect);

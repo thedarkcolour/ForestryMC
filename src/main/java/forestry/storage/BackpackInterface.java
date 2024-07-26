@@ -17,10 +17,10 @@ import com.google.common.base.Preconditions;
 import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
 import forestry.api.storage.IBackpackInterface;
-import forestry.core.proxy.Proxies;
 import forestry.storage.items.ItemBackpack;
 import forestry.storage.items.ItemBackpackNaturalist;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -33,22 +33,22 @@ public class BackpackInterface implements IBackpackInterface {
 		Preconditions.checkArgument(type != EnumBackpackType.NATURALIST, "type must not be NATURALIST. Use createNaturalistBackpack instead.");
 
 		ItemBackpack backpack = new ItemBackpack(definition, type);
-		Proxies.common.registerItem(backpack);
+		//Proxies.common.registerItem(backpack);
 		return backpack;
 	}
 
 	@Override
-	public Item createNaturalistBackpack(IBackpackDefinition definition, String rootUid, CreativeModeTab tab) {
+	public Item createNaturalistBackpack(IBackpackDefinition definition, ResourceLocation speciesTypeId, CreativeModeTab tab) {
 		Preconditions.checkNotNull(definition, "definition must not be null");
-		Preconditions.checkNotNull(rootUid, "rootUid must not be null");
+		Preconditions.checkNotNull(speciesTypeId, "rootUid must not be null");
 
-		ItemBackpack backpack = new ItemBackpackNaturalist(rootUid, definition, tab);
-		Proxies.common.registerItem(backpack);
+		ItemBackpack backpack = new ItemBackpackNaturalist(speciesTypeId, definition, tab);
+		//Proxies.common.registerItem(backpack);
 		return backpack;
 	}
 
 	@Override
-	public Predicate<ItemStack> createNaturalistBackpackFilter(String speciesRootUid) {
+	public Predicate<ItemStack> createNaturalistBackpackFilter(ResourceLocation speciesRootUid) {
 		return new BackpackFilterNaturalist(speciesRootUid);
 	}
 }

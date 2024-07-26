@@ -1,6 +1,6 @@
 package forestry.factory.features;
 
-import forestry.factory.ModuleFactory;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.factory.blocks.BlockTypeFactoryPlain;
 import forestry.factory.blocks.BlockTypeFactoryTesr;
 import forestry.factory.tiles.TileBottler;
@@ -20,7 +20,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class FactoryTiles {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleFactory.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.FACTORY);
 
 	public static final FeatureTileType<TileBottler> BOTTLER = REGISTRY.tile(TileBottler::new, "bottler", FactoryBlocks.TESR.get(BlockTypeFactoryTesr.BOTTLER)::collect);
 	public static final FeatureTileType<TileCarpenter> CARPENTER = REGISTRY.tile(TileCarpenter::new, "carpenter", FactoryBlocks.TESR.get(BlockTypeFactoryTesr.CARPENTER)::collect);

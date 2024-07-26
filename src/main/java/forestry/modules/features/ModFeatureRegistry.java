@@ -6,6 +6,7 @@ import com.google.common.collect.LinkedListMultimap;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,7 +47,6 @@ import forestry.api.core.IItemSubtype;
 import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
 import forestry.core.blocks.BlockBase;
-import forestry.core.proxy.Proxies;
 import forestry.modules.ModuleUtil;
 import forestry.storage.ModuleBackpacks;
 
@@ -96,6 +96,10 @@ public class ModFeatureRegistry {
 		return this.modules.computeIfAbsent(moduleId, key -> new ModuleFeatureRegistry(key, this.modBus));
 	}
 
+	public Map<ResourceLocation, IFeatureRegistry> getModules() {
+		return Collections.unmodifiableMap(modules);
+	}
+
 	private static class ModuleFeatureRegistry implements IFeatureRegistry {
 		private final ArrayList<IModFeature> features = new ArrayList<>();
 		private final ArrayListMultimap<ResourceKey<? extends Registry<?>>, IModFeature> featureByRegistry = ArrayListMultimap.create();
@@ -127,12 +131,12 @@ public class ModFeatureRegistry {
 		}
 
 		@Override
-		public <B extends Block, I extends BlockItem> IBlockFeature<B, I> block(Supplier<B> constructor, String name) {
+		public <B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, String name) {
 			return block(constructor, null, name);
 		}
 
 		@Override
-		public <B extends Block, I extends BlockItem> IBlockFeature<B, I> block(Supplier<B> constructor, @Nullable Function<B, I> itemConstructor, String name) {
+		public <B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, @Nullable Function<B, I> itemConstructor, String name) {
 			return register(new FeatureBlock<>(this, this.moduleId, name, constructor, itemConstructor));
 		}
 
@@ -162,8 +166,8 @@ public class ModFeatureRegistry {
 		}
 
 		@Override
-		public FeatureItem<Item> naturalistBackpack(IBackpackDefinition definition, String rootUid, CreativeModeTab tab, String identifier) {
-			return item(() -> ModuleBackpacks.BACKPACK_INTERFACE.createNaturalistBackpack(definition, rootUid, tab), identifier);
+		public FeatureItem<Item> naturalistBackpack(IBackpackDefinition definition, ResourceLocation speciesTypeId, CreativeModeTab tab, String identifier) {
+			return item(() -> ModuleBackpacks.BACKPACK_INTERFACE.createNaturalistBackpack(definition, speciesTypeId, tab), identifier);
 		}
 
 		@Override
@@ -248,7 +252,7 @@ public class ModFeatureRegistry {
 				listener.accept(event);
 			}
 			// todo move these into the correct event (RegisterColorHandlersEvent)
-			if (event.getRegistryKey() == Registry.BLOCK_REGISTRY && featureByRegistry.containsKey(Registry.BLOCK_REGISTRY)) {
+			/*if (event.getRegistryKey() == Registry.BLOCK_REGISTRY && featureByRegistry.containsKey(Registry.BLOCK_REGISTRY)) {
 				for (RegistryObject<Block> entry : getRegistry(Registry.BLOCK_REGISTRY).getEntries()) {
 					Proxies.common.registerBlock(entry.get());
 				}
@@ -256,7 +260,7 @@ public class ModFeatureRegistry {
 				for (RegistryObject<Item> entry : getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
 					Proxies.common.registerItem(entry.get());
 				}
-			}
+			}*/
 		}
 
 		public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {

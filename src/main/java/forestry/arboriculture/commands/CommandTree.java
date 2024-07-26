@@ -15,21 +15,20 @@ import net.minecraft.commands.Commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
-import forestry.core.commands.CommandMode;
 import forestry.core.commands.CommandSaveStats;
-import forestry.core.commands.ICommandModeHelper;
+import forestry.core.commands.GiveSpeciesCommand;
 import forestry.core.commands.IStatsSaveHelper;
+import forestry.core.utils.SpeciesUtil;
 
 
 public class CommandTree {
 	public static ArgumentBuilder<CommandSourceStack, ?> register() {
 		IStatsSaveHelper saveHelper = new TreeStatsSaveHelper();
-		ICommandModeHelper modeHelper = new TreeModeHelper();
 
 		return Commands.literal("tree")
 				.then(CommandTreeSpawn.register("spawnTree", new TreeSpawner()))
 				.then(CommandTreeSpawn.register("spawnForest", new ForestSpawner()))
-				.then(CommandMode.register(modeHelper))
-				.then(CommandSaveStats.register(saveHelper, modeHelper));
+				.then(CommandSaveStats.register(saveHelper))
+				.then(GiveSpeciesCommand.register(SpeciesUtil.TREE_TYPE.get()));
 	}
 }

@@ -8,9 +8,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.alleles.INamedValue;
+import forestry.api.genetics.alleles.IRegistryAlleleValue;
 
-public interface IFlowerType extends INamedValue {
+public interface IFlowerType extends IRegistryAlleleValue {
 	/**
 	 * Checks if the flower at the specified position is accepted by this rule.
 	 */

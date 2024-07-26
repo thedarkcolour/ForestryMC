@@ -13,12 +13,12 @@ package forestry.lepidopterology.tiles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.lepidopterology.ButterflyManager;
 import forestry.core.tiles.TileNaturalistChest;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.features.LepidopterologyTiles;
 
 public class TileLepidopteristChest extends TileNaturalistChest {
 	public TileLepidopteristChest(BlockPos pos, BlockState state) {
-		super(LepidopterologyTiles.LEPIDOPTERIST_CHEST.tileType(), pos, state, ButterflyManager.butterflyRoot);
+		super(LepidopterologyTiles.LEPIDOPTERIST_CHEST.tileType(), pos, state, SpeciesUtil.BUTTERFLY_TYPE.get());
 	}
 }

@@ -6,6 +6,7 @@
 package forestry.api.lepidopterology.genetics;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
@@ -21,11 +22,6 @@ import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.IEntityButterfly;
 
 public interface IButterfly extends IIndividualLiving {
-	/**
-	 * @return Physical size of the butterfly.
-	 */
-	float getSize();
-
 	/**
 	 * @return true if the butterfly can naturally spawn at the given location at this time. (Used to auto-spawn butterflies from tree leaves.)
 	 */
@@ -46,7 +42,7 @@ public interface IButterfly extends IIndividualLiving {
 	 * @return create a caterpillar with the two genome's from the nursery.
 	 */
 	@Nullable
-	IButterfly spawnCaterpillar(Level level, IButterflyNursery nursery);
+	IButterfly spawnCaterpillar(IButterflyNursery nursery);
 
 	/**
 	 * Determines whether the caterpillar can grow.
@@ -74,24 +70,24 @@ public interface IButterfly extends IIndividualLiving {
 	 * @param lootLevel  Loot level according to the weapon used to kill the butterfly.
 	 * @return Array of itemstacks to drop on death of the given entity.
 	 */
-	NonNullList<ItemStack> getLootDrop(IEntityButterfly entity, boolean playerKill, int lootLevel);
+	List<ItemStack> getLootDrop(IEntityButterfly entity, boolean playerKill, int lootLevel);
 
 	/**
 	 * @param playerKill Whether or not the nursery was broken by a player.
 	 * @param lootLevel  Fortune level.
 	 * @return Array of itemstacks to drop on breaking of the nursery.
 	 */
-	NonNullList<ItemStack> getCaterpillarDrop(IButterflyNursery nursery, boolean playerKill, int lootLevel);
+	List<ItemStack> getCaterpillarDrop(IButterflyNursery nursery, boolean playerKill, int lootLevel);
 
 	/**
+	 * @param includeButterfly Whether the butterfly should drop from the cocoon. Used by worldgen cocoons.
 	 * @return itemstacks to drop on breaking of the cocoon.
 	 */
-	NonNullList<ItemStack> getCocoonDrop(IButterflyCocoon cocoon);
+	List<ItemStack> getCocoonDrop(boolean includeButterfly, IButterflyCocoon cocoon);
 
 	/**
 	 * Create an exact copy of this butterfly.
 	 */
-	@Override
 	IButterfly copy();
 
 	Component getDisplayName();

@@ -1,5 +1,16 @@
 package forestry.farming.compat;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.ForestryConstants;
@@ -12,6 +23,7 @@ import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 import forestry.core.recipes.jei.ForestryRecipeCategory;
 import forestry.core.utils.JeiUtil;
+
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -21,15 +33,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-
-import java.awt.*;
-import java.util.Collection;
-import java.util.List;
 
 public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInfoRecipe> {
 	public static final RecipeType<FarmingInfoRecipe> TYPE = RecipeType.create(ForestryConstants.MOD_ID, "farming", FarmingInfoRecipe.class);
@@ -67,38 +70,29 @@ public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInf
 		IFarmProperties properties = recipe.properties();
 		Collection<IFarmableInfo> farmableInfo = properties.getFarmableInfo();
 
-		{
-			List<ItemStack> soils = properties.getSoils().stream()
-					.map(Soil::resource)
-					.toList();
-
-			List<IRecipeSlotBuilder> soilSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 1, 55, 18);
-			soilSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
-			distributeItems(soilSlots, soils);
+		ArrayList<ItemStack> soils = new ArrayList<>();
+		for (Soil soil : properties.getSoils()) {
+			soils.add(soil.resource());
 		}
+		List<IRecipeSlotBuilder> soilSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 1, 55, 18);
+		soilSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
+		distributeItems(soilSlots, soils);
 
-
-		{
-			List<ItemStack> germlings = farmableInfo.stream()
-					.map(IFarmableInfo::getSeedlings)
-					.flatMap(Collection::stream)
-					.toList();
-
-			List<IRecipeSlotBuilder> germlingSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 55, 55, 18);
-			germlingSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
-			distributeItems(germlingSlots, germlings);
+		ArrayList<ItemStack> germlings = new ArrayList<>();
+		for (IFarmableInfo info : farmableInfo) {
+			germlings.addAll(info.getSeedlings());
 		}
+		List<IRecipeSlotBuilder> germlingSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 55, 55, 18);
+		germlingSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
+		distributeItems(germlingSlots, germlings);
 
-		{
-			List<ItemStack> products = farmableInfo.stream()
-					.map(IFarmableInfo::getProducts)
-					.flatMap(Collection::stream)
-					.toList();
-
-			List<IRecipeSlotBuilder> productSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.OUTPUT, 2, 2, 109, 55, 18);
-			productSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
-			distributeItems(productSlots, products);
+		ArrayList<ItemStack> products = new ArrayList<>();
+		for (IFarmableInfo info : farmableInfo) {
+			products.addAll(info.getProducts());
 		}
+		List<IRecipeSlotBuilder> productSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.OUTPUT, 2, 2, 109, 55, 18);
+		productSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
+		distributeItems(productSlots, products);
 	}
 
 	@Override

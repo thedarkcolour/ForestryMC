@@ -6,6 +6,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.ForestryConstants;
+import forestry.api.client.IForestryClientApi;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiForestryTitled;
 import forestry.core.gui.ledgers.Ledger;
@@ -35,7 +37,7 @@ public class EngineScreen<M extends AbstractContainerMenu, E extends EngineBlock
 		public void draw(PoseStack transform, int y, int x) {
 			drawBackground(transform, y, x);
 
-			drawSprite(transform, ForestryTextureManager.INSTANCE.getDefault("misc/energy"), x + 3, y + 4);
+			drawSprite(transform, IForestryClientApi.INSTANCE.getTextureManager().getSprite(ForestryConstants.forestry("misc/energy")), x + 3, y + 4);
 
 			if (isFullyOpened()) {
 				drawHeader(transform, Component.translatable("for.gui.energy"), x + 22, y + 8);

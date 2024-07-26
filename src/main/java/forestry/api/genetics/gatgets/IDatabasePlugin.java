@@ -8,6 +8,7 @@ package forestry.api.genetics.gatgets;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -19,5 +20,5 @@ public interface IDatabasePlugin {
 
 	IDatabaseTab<?>[] getTabs();
 
-	Map<String, ItemStack> getIndividualStacks();
+	Map<ResourceLocation, ItemStack> getIndividualStacks();
 }

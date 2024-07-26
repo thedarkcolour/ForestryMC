@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.storage.gui;
 
-import net.minecraft.client.ResourceLoadStateTracker;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,8 +17,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.IForestryApi;
-import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpeciesType;
 import forestry.core.config.Constants;
 import forestry.core.gui.ContainerItemInventory;
@@ -32,7 +29,7 @@ import forestry.storage.items.ItemBackpackNaturalist;
 
 public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInventoryBackpackPaged> implements IGuiSelectable, INaturalistMenu {
 	private final int currentPage;
-	private final ISpeciesType<?> speciesRoot;
+	private final ISpeciesType<?, ?> speciesRoot;
 
 	public ContainerNaturalistBackpack(int windowId, Inventory inv, ItemInventoryBackpackPaged inventory, int selectedPage, ResourceLocation rootUid) {
 		super(windowId, inventory, inv, 18, 120, BackpackMenuTypes.NATURALIST_BACKPACK.menuType());
@@ -49,7 +46,7 @@ public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInve
 	}
 
 	@Override
-	public ISpeciesType<?> getSpeciesRoot() {
+	public ISpeciesType<?, ?> getSpeciesType() {
 		return this.speciesRoot;
 	}
 

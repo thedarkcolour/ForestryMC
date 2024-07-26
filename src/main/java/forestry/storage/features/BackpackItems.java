@@ -2,6 +2,8 @@ package forestry.storage.features;
 
 import forestry.api.core.ItemGroups;
 import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.modules.ForestryModule;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.api.storage.EnumBackpackType;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureProvider;
@@ -11,7 +13,7 @@ import forestry.storage.ModuleBackpacks;
 
 @FeatureProvider
 public class BackpackItems {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleBackpacks.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.BACKPACKS);
 
 	public static final FeatureItem<?> APIARIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleBackpacks.APIARIST, ForestrySpeciesTypes.BEE, ItemGroups.tabApiculture, "apiarist_bag");
 	public static final FeatureItem<?> LEPIDOPTERIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleBackpacks.LEPIDOPTERIST, ForestrySpeciesTypes.BUTTERFLY, ItemGroups.tabLepidopterology, "lepidopterist_bag");

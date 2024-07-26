@@ -8,13 +8,12 @@ package forestry.api.arboriculture.genetics;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
@@ -26,36 +25,30 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.arboriculture.ITreeGenData;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.Product;
 import forestry.api.genetics.alleles.TreeChromosomes;
 
-import forestry.api.genetics.alleles.IChromosome;
-
 public interface ITree extends IIndividual, ITreeGenData {
-
-	ITreeSpeciesType getRoot();
-
-	IEffectData[] doEffect(IEffectData[] storedData, Level world, BlockPos pos);
+	IEffectData[] doEffect(IEffectData[] storedData, Level level, BlockPos pos);
 
 	@OnlyIn(Dist.CLIENT)
-	IEffectData[] doFX(IEffectData[] storedData, Level world, BlockPos pos);
+	IEffectData[] doFX(IEffectData[] storedData, Level level, BlockPos pos);
 
 	/**
 	 * @since Forestry 4.0
 	 */
-	List<ITree> getSaplings(Level world, @Nullable GameProfile playerProfile, BlockPos pos, float modifier);
+	List<ITree> getSaplings(Level level, @Nullable GameProfile playerProfile, BlockPos pos, float modifier);
 
-	// Products, Chance
-	IProductList getProducts();
+	List<Product> getProducts();
 
-	// Specialties, Chance
-	IProductList getSpecialties();
+	List<Product> getSpecialties();
 
-	NonNullList<ItemStack> produceStacks(Level world, BlockPos pos, int ripeningTime);
+	List<ItemStack> produceStacks(Level level, BlockPos pos, int ripeningTime);
 
 	/**
 	 * @return Boolean indicating whether a sapling can stay planted at the given position.
 	 */
-	boolean canStay(BlockGetter world, BlockPos pos);
+	boolean canStay(BlockGetter level, BlockPos pos);
 
 	/**
 	 * @return Position that this tree can grow. May be different from pos if there are multiple saplings.
@@ -63,7 +56,7 @@ public interface ITree extends IIndividual, ITreeGenData {
 	 */
 	@Override
 	@Nullable
-	BlockPos canGrow(LevelAccessor world, BlockPos pos, int expectedGirth, int expectedHeight);
+	BlockPos canGrow(LevelAccessor level, BlockPos pos, int expectedGirth, int expectedHeight);
 
 	/**
 	 * @return Integer denoting the maturity (block ticks) required for a sapling to attempt to grow into a tree.
@@ -81,19 +74,9 @@ public interface ITree extends IIndividual, ITreeGenData {
 	@Override
 	int getGirth();
 
-	Feature<NoneFeatureConfiguration> getTreeGenerator(WorldGenLevel world, BlockPos pos, boolean wasBonemealed);
+	Feature<NoneFeatureConfiguration> getTreeGenerator(WorldGenLevel level, BlockPos pos, boolean wasBonemealed);
 
 	ITree copy();
 
-	boolean isPureBred(IChromosome<?> chromosome);
-
 	boolean canBearFruit();
-
-	default boolean hasValue() {
-		return getGenome().getActiveValue(TreeChromosomes.SPECIES).hasGlint();
-	}
-
-	default boolean isSecret() {
-		return getGenome().getActiveValue(TreeChromosomes.SPECIES).isSecret();
-	}
 }

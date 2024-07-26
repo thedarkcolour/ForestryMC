@@ -1,6 +1,7 @@
 package forestry.arboriculture.features;
 
 import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.arboriculture.ModuleArboriculture;
 import forestry.arboriculture.items.ItemGermlingGE;
 import forestry.arboriculture.items.ItemGrafter;
@@ -11,7 +12,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class ArboricultureItems {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleArboriculture.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.ARBORICULTURE);
 
 	public static final FeatureItem<ItemGermlingGE> SAPLING = REGISTRY.item(() -> new ItemGermlingGE(TreeLifeStage.SAPLING), "sapling");
 	public static final FeatureItem<ItemGermlingGE> POLLEN_FERTILE = REGISTRY.item(() -> new ItemGermlingGE(TreeLifeStage.POLLEN), "pollen_fertile");

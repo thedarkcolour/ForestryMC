@@ -20,28 +20,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.ForestryConstants;
 import forestry.api.IForestryApi;
 import forestry.api.client.IForestryClientApi;
-import forestry.api.core.ISetupListener;
 import forestry.api.recipes.ICarpenterRecipe;
 import forestry.api.recipes.ICentrifugeRecipe;
 import forestry.api.recipes.IFabricatorRecipe;
@@ -55,7 +48,6 @@ import forestry.api.recipes.ISqueezerRecipe;
 import forestry.api.recipes.IStillRecipe;
 import forestry.arboriculture.loot.CountBlockFunction;
 import forestry.arboriculture.loot.GrafterLootModifier;
-import forestry.core.ClientsideCode;
 import forestry.core.EventHandlerCore;
 import forestry.core.circuits.CircuitRecipe;
 import forestry.core.data.ForestryAdvancementProvider;
@@ -74,12 +66,9 @@ import forestry.core.loot.ConditionLootModifier;
 import forestry.core.loot.OrganismFunction;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.network.NetworkHandler;
-import forestry.core.proxy.Proxies;
-import forestry.core.proxy.ProxyCommon;
 import forestry.core.recipes.HygroregulatorRecipe;
 import forestry.core.render.ForestryTextureManager;
 import forestry.core.utils.ForgeUtils;
-import forestry.apiculture.villagers.VillagerJigsaw;
 import forestry.factory.recipes.CarpenterRecipe;
 import forestry.factory.recipes.CentrifugeRecipe;
 import forestry.factory.recipes.FabricatorRecipe;
@@ -91,10 +80,6 @@ import forestry.factory.recipes.SqueezerRecipe;
 import forestry.factory.recipes.StillRecipe;
 import forestry.modules.ForestryModuleManager;
 import forestry.modules.features.ModFeatureRegistry;
-
-import genetics.Genetics;
-import forestry.api.genetics.alleles.IAllele;
-import genetics.utils.AlleleUtils;
 
 /**
  * Forestry Minecraft Mod
@@ -110,48 +95,15 @@ public class Forestry {
 		moduleManager.init();
 		NetworkHandler.register();
 		IEventBus modEventBus = ForgeUtils.modBus();
-		modEventBus.addListener(this::setup);
-		modEventBus.addListener(this::registerCapabilities);
 		modEventBus.addListener(this::clientSetupRenderers);
 		modEventBus.addListener(this::gatherData);
 		MinecraftForge.EVENT_BUS.register(EventHandlerCore.class);
 		MinecraftForge.EVENT_BUS.register(this);
-		Proxies.common = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyCommon() : new ProxyCommon();
-		// Modules must be set up before Genetics API
-		Genetics.initGenetics(modEventBus);
 	}
 
 	public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		for (ModFeatureRegistry value : ModFeatureRegistry.getRegistries().values()) {
 			value.clientSetupRenderers(event);
-		}
-	}
-
-	private void setup(FMLCommonSetupEvent event) {
-		// Forestry's villager houses
-		event.enqueueWork(VillagerJigsaw::init);
-
-		// Register event handler
-		callSetupListeners(true);
-		ForestryModuleManager.getModuleHandler().runPreInit();
-		ForestryModuleManager.getModuleHandler().runInit();
-		callSetupListeners(false);
-		ForestryModuleManager.getModuleHandler().runPostInit();
-	}
-
-	private void registerCapabilities(RegisterCapabilitiesEvent event) {
-		ForestryModuleManager.getModuleHandler().registerCapabilities(event::register);
-	}
-
-	private void callSetupListeners(boolean start) {
-		for (IAllele allele : AlleleUtils.getAlleles()) {
-			if (allele instanceof ISetupListener listener) {
-				if (start) {
-					listener.onStartSetup();
-				} else {
-					listener.onFinishSetup();
-				}
-			}
 		}
 	}
 
@@ -177,12 +129,6 @@ public class Forestry {
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = ForestryConstants.MOD_ID)
 	public static class RegistryEvents {
-		// should honestly go in Common
-		@SubscribeEvent(priority = EventPriority.LOW)
-		public static void createObjects(RegisterEvent event) {
-			ForestryModuleManager.getModuleHandler().postRegistry(event);
-		}
-
 		@SubscribeEvent
 		public static void register(RegisterEvent event) {
 			event.register(Registry.RECIPE_SERIALIZER_REGISTRY, helper -> {

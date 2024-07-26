@@ -29,7 +29,8 @@ public class ForestryTreeSpecies {
 	public static final ResourceLocation KAPOK = forestry("kapok");
 	public static final ResourceLocation EBONY = forestry("ebony");
 	public static final ResourceLocation ZEBRAWOOD = forestry("zebrawood");
-	public static final ResourceLocation MAHOGONY = forestry("mahogony");
+	// todo change registry name
+	public static final ResourceLocation MAHOGANY = forestry("mahogony");
 	public static final ResourceLocation ACACIA_VANILLA = forestry("acacia");
 	public static final ResourceLocation DESERT_ACACIA = forestry("desert_acacia");
 	public static final ResourceLocation PADAUK = forestry("padauk");

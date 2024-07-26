@@ -10,11 +10,14 @@ import forestry.api.apiculture.hives.IHiveDefinition;
 import forestry.api.apiculture.hives.IHiveDrop;
 import forestry.api.plugin.IApicultureRegistration;
 import forestry.api.plugin.IBeeSpeciesBuilder;
+import forestry.api.plugin.IHiveBuilder;
+
+import deleteme.Todos;
 
 public class ApicultureRegistration extends SpeciesRegistration<IBeeSpeciesBuilder, BeeSpeciesBuilder> implements IApicultureRegistration {
 	@Override
-	protected BeeSpeciesBuilder createSpeciesBuilder(ResourceLocation id, String genus, String species) {
-		return new BeeSpeciesBuilder(id, genus, species);
+	protected BeeSpeciesBuilder createSpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
+		return new BeeSpeciesBuilder(id, genus, species, mutations);
 	}
 
 	@Override
@@ -30,18 +33,18 @@ public class ApicultureRegistration extends SpeciesRegistration<IBeeSpeciesBuild
 	}
 
 	@Override
-	public void registerFlowerType(IFlowerType type) {
+	public void registerFlowerType(ResourceLocation id, IFlowerType type) {
 
 	}
 
 	@Override
-	public void registerBeeEffect(IBeeEffect effect) {
+	public void registerBeeEffect(ResourceLocation id, IBeeEffect effect) {
 
 	}
 
 	@Override
-	public void registerHive(ResourceLocation id, IHiveDefinition definition) {
-
+	public IHiveBuilder registerHive(ResourceLocation id, IHiveDefinition definition) {
+		throw Todos.unimplemented();
 	}
 
 	@Override

@@ -21,7 +21,6 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,14 +28,20 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import forestry.api.arboriculture.ForestryWoodType;
+import forestry.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.IWoodAccess;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.TreeManager;
@@ -90,6 +95,19 @@ public class ForestryRecipeProvider extends RecipeProvider {
 
 	public ForestryRecipeProvider(DataGenerator generator) {
 		super(generator);
+	}
+
+	public static ItemStack getContainer(EnumContainerType type, ForestryFluids fluid) {
+		return getContainer(type, fluid.getFluid());
+	}
+
+	public static ItemStack getContainer(EnumContainerType type, Fluid fluid) {
+		ItemStack container = FluidsItems.CONTAINERS.stack(type);
+		LazyOptional<IFluidHandlerItem> fluidHandlerCap = FluidUtil.getFluidHandler(container);
+		return fluidHandlerCap.map(handler -> {
+			handler.fill(new FluidStack(fluid, Integer.MAX_VALUE), IFluidHandler.FluidAction.EXECUTE);
+			return container;
+		}).orElse(ItemStack.EMPTY);
 	}
 
 	@Override
@@ -734,9 +752,9 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		// Bog earth
 		bogRecipe.accept(6, new ItemStack(Items.WATER_BUCKET), "bucket");
 
-		ItemStack canWater = FluidsItems.getContainer(EnumContainerType.CAN, Fluids.WATER);
-		ItemStack waxCapsuleWater = FluidsItems.getContainer(EnumContainerType.CAPSULE, Fluids.WATER);
-		ItemStack refractoryWater = FluidsItems.getContainer(EnumContainerType.REFRACTORY, Fluids.WATER);
+		ItemStack canWater = getContainer(EnumContainerType.CAN, Fluids.WATER);
+		ItemStack waxCapsuleWater = getContainer(EnumContainerType.CAPSULE, Fluids.WATER);
+		ItemStack refractoryWater = getContainer(EnumContainerType.REFRACTORY, Fluids.WATER);
 		bogRecipe.accept(8, canWater, "can");
 		bogRecipe.accept(8, waxCapsuleWater, "wax_capsule");
 		bogRecipe.accept(8, refractoryWater, "refractory");
@@ -948,7 +966,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 			/*if (menuType == EnumContainerType.JAR || menuType == EnumContainerType.GLASS) {
 				continue;
 			}*/
-			ItemStack filled = FluidsItems.getContainer(containerType, milk);
+			ItemStack filled = getContainer(containerType, milk);
 			ShapedRecipeBuilder.shaped(Items.CAKE)
 					.define('A', StrictNBTIngredient.of(filled))
 					.define('B', Items.SUGAR)

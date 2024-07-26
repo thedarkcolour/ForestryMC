@@ -19,10 +19,10 @@ import forestry.core.genetics.EffectData;
 public abstract class ThrottledBeeEffect extends DummyBeeEffect implements IBeeEffect {
 	private final boolean isCombinable;
 	private final int throttle;
-	private boolean requiresWorkingQueen;
+	private final boolean requiresWorkingQueen;
 
-	protected ThrottledBeeEffect(String modId, String name, int throttle, boolean requiresWorking, boolean isCombinable) {
-		super(modId, name);
+	protected ThrottledBeeEffect(boolean dominant, int throttle, boolean requiresWorking, boolean isCombinable) {
+		super(dominant);
 		this.throttle = throttle;
 		this.isCombinable = isCombinable;
 		this.requiresWorkingQueen = requiresWorking;

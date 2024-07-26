@@ -25,8 +25,6 @@ import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IIndividualLiving;
-import forestry.api.genetics.ISpecies;
-import forestry.api.genetics.ISpeciesType;
 
 /**
  * Other implementations than Forestry's default one are not supported.
@@ -48,7 +46,7 @@ public interface IBee extends IIndividualLiving {
 	/**
 	 * Set the natural flag on this bee.
 	 */
-	void setIsNatural(boolean flag);
+	void setPristine(boolean flag);
 
 	IEffectData[] doEffect(IEffectData[] storedData, IBeeHousing housing);
 
@@ -104,4 +102,7 @@ public interface IBee extends IIndividualLiving {
 
 	@Override
 	IBeeSpecies getSpecies();
+
+	@Override
+	IBee copy();
 }

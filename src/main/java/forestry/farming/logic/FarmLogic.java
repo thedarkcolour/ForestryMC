@@ -13,22 +13,22 @@ package forestry.farming.logic;
 import com.google.common.base.Predicate;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
@@ -138,11 +138,11 @@ public abstract class FarmLogic implements IFarmLogic {
 		return new AABB(min.getX(), min.getY(), min.getZ(), max.getX(), maxY, max.getZ());
 	}
 
-	protected NonNullList<ItemStack> collectEntityItems(Level world, IFarmHousing farmHousing, boolean toWorldHeight) {
+	protected List<ItemStack> collectEntityItems(Level world, IFarmHousing farmHousing, boolean toWorldHeight) {
 		AABB harvestBox = getHarvestBox(world, farmHousing, toWorldHeight);
 
 		List<ItemEntity> entityItems = world.getEntitiesOfClass(ItemEntity.class, harvestBox, entitySelectorFarm);
-		NonNullList<ItemStack> stacks = NonNullList.create();
+		ArrayList<ItemStack> stacks = new ArrayList<>();
 		for (ItemEntity entity : entityItems) {
 			ItemStack contained = entity.getItem();
 			stacks.add(contained.copy());

@@ -13,9 +13,6 @@ import forestry.api.IForestryApi;
  * Register your chromosomes with {@link forestry.api.plugin.IGeneticRegistration#registerChromosome}.
  */
 public interface IChromosome<A extends IAllele> {
-	// todo is this circular?
-	Codec<IChromosome<?>> CODEC = IForestryApi.INSTANCE.getAlleleManager().chromosomeCodec();
-
 	/**
 	 * @return Unique ID for this chromosome.
 	 */
@@ -24,11 +21,7 @@ public interface IChromosome<A extends IAllele> {
 	/**
 	 * The translation key of this allele, for use in {@link Component#translatable(String)}.
 	 */
-	default String getTranslationKey(A allele) {
-		ResourceLocation alleleId = allele.id();
-		// ex: allele.forestry.bee_species.meadows
-		return "allele." + alleleId.getNamespace() + '.' + id().getPath() + '.' + alleleId.getPath();
-	}
+	String getTranslationKey(A allele);
 
 	default MutableComponent getDisplayName(A allele) {
 		return Component.translatable(getTranslationKey(allele));

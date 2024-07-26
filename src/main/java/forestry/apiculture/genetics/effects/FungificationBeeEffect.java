@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.core.genetics.EffectData;
 import forestry.core.render.ParticleRender;
@@ -24,17 +25,16 @@ import forestry.core.utils.VecUtil;
 import forestry.api.genetics.IGenome;
 
 public class FungificationBeeEffect extends ThrottledBeeEffect {
-
 	private static final int MAX_BLOCK_FIND_TRIES = 10;
 	private static final int ENTITY_THROTTLE = 6;
 
 	public FungificationBeeEffect() {
-		super("mycophilic", true, 20, false, false);
+		super(true, 20, false, false);
 	}
 
 	@Override
 	public IEffectData validateStorage(IEffectData storedData) {
-		if (storedData instanceof EffectData && ((EffectData) storedData).getIntSize() == 2) {
+		if (storedData instanceof EffectData data && data.getIntSize() == 2) {
 			return storedData;
 		}
 
@@ -43,7 +43,6 @@ public class FungificationBeeEffect extends ThrottledBeeEffect {
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-
 		doBlockEffect(genome, housing);
 
 		int entityThrottle = storedData.getInteger(1);
@@ -79,7 +78,7 @@ public class FungificationBeeEffect extends ThrottledBeeEffect {
 	}
 
 	private static void doEntityEffect(IGenome genome, IBeeHousing housing) {
-		List<Cow> cows = getEntitiesInRange(genome, housing, Cow.class);
+		List<Cow> cows = IBeeEffect.getEntitiesInRange(genome, housing, Cow.class);
 		for (Cow cow : cows) {
 			if (convertCowToMooshroom(cow)) {
 				return;

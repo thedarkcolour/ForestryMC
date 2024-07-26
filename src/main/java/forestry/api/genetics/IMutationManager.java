@@ -2,6 +2,11 @@ package forestry.api.genetics;
 
 import java.util.List;
 
+import net.minecraft.Util;
+import net.minecraft.util.RandomSource;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 /**
  * Keeps track of mutations involving members of a certain species type.
  *
@@ -11,20 +16,29 @@ public interface IMutationManager<S extends ISpecies<?>> {
 	/**
 	 * @return A list of mutations that this species is one of the parents for.
 	 */
-	List<? extends IMutation<S>> getMutationsFrom(S species);
+	List<IMutation<S>> getMutationsFrom(S species);
 
 	/**
 	 * @return A list of mutations that this species is the result of.
 	 */
-	List<? extends IMutation<S>> getMutationsInto(S species);
+	List<IMutation<S>> getMutationsInto(S species);
 
 	/**
 	 * @return A list of mutations between these two parents.
 	 */
-	List<? extends IMutation<S>> getCombinations(S firstParent, S secondParent);
+	List<IMutation<S>> getCombinations(S firstParent, S secondParent);
 
 	/**
 	 * @return All mutations within the species type of this mutation manager.
 	 */
-	List<? extends IMutation<S>> getAllMutations();
+	List<IMutation<S>> getAllMutations();
+
+	/**
+	 * @return A shuffled list of all mutations within the species type of this mutation manager.
+	 */
+	default ObjectArrayList<? extends IMutation<S>> getAllMutations(RandomSource rand) {
+		ObjectArrayList<? extends IMutation<S>> mutations = new ObjectArrayList<>(getAllMutations());
+		Util.shuffle(mutations, rand);
+		return mutations;
+	}
 }

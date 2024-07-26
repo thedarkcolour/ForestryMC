@@ -9,9 +9,10 @@ import forestry.api.arboriculture.ITreeGenData;
 import forestry.api.arboriculture.ITreeGenerator;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.IWoodType;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.arboriculture.worldgen.DefaultTreeGenerator;
 
-public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesBuilder> {
+public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, ITreeSpeciesBuilder> {
 	/**
 	 * Shortcut to create a tree generator using the tree generator built into Forestry.
 	 */
@@ -33,4 +34,6 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesBuilder
 	 * @param rarity A float between 0 and 1 that determines how often this tree spawns naturally.
 	 */
 	ITreeSpeciesBuilder setRarity(float rarity);
+
+	ITreeGenerator getGenerator();
 }

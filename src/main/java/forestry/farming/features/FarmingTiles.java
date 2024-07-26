@@ -1,6 +1,6 @@
 package forestry.farming.features;
 
-import forestry.farming.ModuleFarming;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.farming.blocks.EnumFarmBlockType;
 import forestry.farming.tiles.TileFarmControl;
 import forestry.farming.tiles.TileFarmGearbox;
@@ -14,7 +14,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class FarmingTiles {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleFarming.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.FARMING);
 
 	public static final FeatureTileType<TileFarmControl> CONTROL = REGISTRY.tile(TileFarmControl::new, "control", () -> FarmingBlocks.FARM.getRowBlocks(EnumFarmBlockType.CONTROL));
 	public static final FeatureTileType<TileFarmGearbox> GEARBOX = REGISTRY.tile(TileFarmGearbox::new, "gearbox", () -> FarmingBlocks.FARM.getRowBlocks(EnumFarmBlockType.GEARBOX));

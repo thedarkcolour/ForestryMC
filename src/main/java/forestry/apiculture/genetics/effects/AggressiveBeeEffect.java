@@ -15,7 +15,6 @@ import java.util.List;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.damagesource.DamageSource;
 
-import forestry.api.ForestryConstants;
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.genetics.IBeeEffect;
@@ -28,7 +27,7 @@ public class AggressiveBeeEffect extends ThrottledBeeEffect {
 	private static final DamageSource damageSourceBeeAggressive = new DamageSourceForestry("bee.aggressive");
 
 	public AggressiveBeeEffect() {
-		super(ForestryConstants.MOD_ID, "aggressive", 40, false, false);
+		super(true, 40, false, false);
 	}
 
 	@Override

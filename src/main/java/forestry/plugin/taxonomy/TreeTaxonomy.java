@@ -4,6 +4,7 @@ import forestry.api.genetics.ForestryTaxa;
 import forestry.api.plugin.IGeneticRegistration;
 
 public class TreeTaxonomy {
+	@SuppressWarnings("CodeBlock2Expr")
 	public static void defineTaxa(IGeneticRegistration genetics) {
 		genetics.defineTaxon(ForestryTaxa.KINGDOM_PLANT, ForestryTaxa.PHYLUM_FLOWERING_PLANT, phylum -> {
 			phylum.defineSubTaxon(ForestryTaxa.CLASS_ASTERIDS, klass -> {

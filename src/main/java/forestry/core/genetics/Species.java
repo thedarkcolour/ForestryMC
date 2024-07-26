@@ -1,31 +1,49 @@
 package forestry.core.genetics;
 
+import java.util.Map;
+
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.IForestryApi;
+import forestry.api.apiculture.genetics.IBee;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.Taxon;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.plugin.ISpeciesBuilder;
+import forestry.core.utils.GeneticsUtil;
 
-public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>>, I extends IIndividual> implements ISpecies<I> {
+public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, I extends IIndividual> implements ISpecies<I> {
 	protected final ResourceLocation id;
 	protected final T speciesType;
 	protected final IGenome defaultGenome;
 	protected final int complexity;
 	protected final boolean secret;
+	protected final boolean glint;
+	protected final boolean dominant;
+	protected final String authority;
+	protected final String species;
+	protected final Taxon genus;
 	protected final String binomial;
 	protected final String translationKey;
 
-	public Species(ResourceLocation id, T speciesType, IGenome defaultGenome, ISpeciesBuilder<?> builder) {
+	public Species(ResourceLocation id, T speciesType, IGenome defaultGenome, ISpeciesBuilder<T, ?> builder) {
 		this.id = id;
 		this.speciesType = speciesType;
 		this.defaultGenome = defaultGenome;
 
 		this.complexity = builder.getComplexity();
 		this.secret = builder.isSecret();
-		this.binomial = createBinomial(builder.getGenus(), builder.getSpecies());
-		this.translationKey = createTranslationKey(speciesType.id(), id);
+		this.glint = builder.hasGlint();
+		this.dominant = builder.isDominant();
+		this.authority = builder.getAuthority();
+		this.species = builder.getSpecies();
+		this.genus = IForestryApi.INSTANCE.getGeneticManager().getTaxon(builder.getGenus());
+		this.binomial = createBinomial(this.genus.name(), this.species);
+		this.translationKey = GeneticsUtil.createTranslationKey("species", speciesType.id(), id);
 	}
 
 	private static String createBinomial(String genus, String species) {
@@ -37,31 +55,6 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>>, I e
 		binomial.append(' ');
 		binomial.append(species);
 		return binomial.toString();
-	}
-
-	private static String createTranslationKey(ResourceLocation typeId, ResourceLocation speciesId) {
-		String typeNamespace = typeId.getNamespace();
-		StringBuilder translationKey = new StringBuilder("species.");
-
-		translationKey.append(typeNamespace);
-		translationKey.append('.');
-		translationKey.append(typeId.getPath());
-		translationKey.append('.');
-
-		String speciesNamespace = speciesId.getNamespace();
-		if (speciesNamespace.equals(typeNamespace)) {
-			// for species from the same mod as species type, use the following format:
-			// species.forestry.bee.austere
-			translationKey.append(speciesId.getPath());
-		} else {
-			// if species type is from another mod, use this format instead:
-			// species.forestry.bee.extrabees.creeper
-			translationKey.append(speciesNamespace);
-			translationKey.append('.');
-			translationKey.append(speciesId.getPath());
-		}
-
-		return translationKey.toString();
 	}
 
 	@Override
@@ -97,5 +90,30 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>>, I e
 	@Override
 	public int getComplexity() {
 		return this.complexity;
+	}
+
+	@Override
+	public boolean hasGlint() {
+		return this.glint;
+	}
+
+	@Override
+	public Taxon getGenus() {
+		return this.genus;
+	}
+
+	@Override
+	public boolean isDominant() {
+		return this.dominant;
+	}
+
+	@Override
+	public String getAuthority() {
+		return this.authority;
+	}
+
+	@Override
+	public I createIndividual(Map<IChromosome<?>, IAllele> alleles) {
+		return createIndividual(this.defaultGenome.copyWith(alleles));
 	}
 }

@@ -33,8 +33,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.ForestryTags;
-import forestry.api.arboriculture.ForestryWoodType;
-import forestry.api.arboriculture.EnumVanillaWoodType;
+import forestry.arboriculture.ForestryWoodType;
+import forestry.arboriculture.VanillaWoodType;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
@@ -762,7 +762,7 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 			addFireproofRecipes(consumer, type);
 		}
 
-		for (EnumVanillaWoodType type : EnumVanillaWoodType.values()) {
+		for (VanillaWoodType type : VanillaWoodType.values()) {
 			addFireproofRecipes(consumer, type);
 		}
 	}

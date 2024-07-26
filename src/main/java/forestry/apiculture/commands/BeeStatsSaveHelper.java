@@ -13,48 +13,45 @@ package forestry.apiculture.commands;
 import java.util.Collection;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
-import genetics.utils.AlleleUtils;
-
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IApiaristTracker;
-import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.ISpecies;
 import forestry.core.commands.IStatsSaveHelper;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.StringUtil;
 
 public class BeeStatsSaveHelper implements IStatsSaveHelper {
-
 	@Override
-	public String getUnlocalizedSaveStatsString() {
+	public String getTranslationKey() {
 		return "for.chat.command.forestry.bee.save.stats";
 	}
 
 	@Override
-	public void addExtraInfo(Collection<String> statistics, IBreedingTracker breedingTracker) {
+	public void addExtraInfo(Collection<Component> statistics, IBreedingTracker breedingTracker) {
 		IApiaristTracker tracker = (IApiaristTracker) breedingTracker;
-		String discoveredLine = Component.translatable("for.chat.command.forestry.stats.save.key.discovered").append(":").getString();
+		Component discoveredLine = Component.translatable("for.chat.command.forestry.stats.save.key.discovered").append(":");
 		statistics.add(discoveredLine);
-		statistics.add(StringUtil.line(discoveredLine.length()));
+		// todo lines
+		//statistics.add(StringUtil.line(discoveredLine.length()));
 
-		String queen = Component.translatable("for.bees.grammar.queen.type").getString();
-		String princess = Component.translatable("for.bees.grammar.princess.type").getString();
-		String drone = Component.translatable("for.bees.grammar.drone.type").getString();
-		statistics.add(queen + ":\t\t" + tracker.getQueenCount());
-		statistics.add(princess + ":\t" + tracker.getPrincessCount());
-		statistics.add(drone + ":\t\t" + tracker.getDroneCount());
-		statistics.add("");
+		MutableComponent queen = Component.translatable("for.bees.grammar.queen.type");
+		MutableComponent princess = Component.translatable("for.bees.grammar.princess.type");
+		MutableComponent drone = Component.translatable("for.bees.grammar.drone.type");
+		statistics.add(queen.append(":\t\t" + tracker.getQueenCount()));
+		// why does this one only have 1 tab?
+		statistics.add(princess.append(":\t" + tracker.getPrincessCount()));
+		statistics.add(drone.append(":\t\t" + tracker.getDroneCount()));
+		statistics.add(Component.literal(""));
 	}
 
 	@Override
-	public Collection<IAlleleBeeSpecies> getSpecies() {
-		return AlleleUtils.filteredAlleles(BeeChromosomes.SPECIES);
+	public Collection<? extends ISpecies<?>> getSpecies() {
+		return SpeciesUtil.getAllBeeSpecies();
 	}
 
 	@Override
@@ -65,7 +62,7 @@ public class BeeStatsSaveHelper implements IStatsSaveHelper {
 	@Override
 	public IBreedingTracker getBreedingTracker(Level world, GameProfile gameProfile) {
 		//TODO world cast
-		return BeeManager.beeRoot.getBreedingTracker(world, gameProfile);
+		return SpeciesUtil.BEE_TYPE.get().getBreedingTracker(world, gameProfile);
 	}
 
 }

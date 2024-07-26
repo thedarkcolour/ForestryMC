@@ -1,5 +1,7 @@
 package forestry.farming.logic.crops;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +24,7 @@ public class CropChorusFlower extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
+	protected List<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		NonNullList<ItemStack> harvested = NonNullList.create();
 		harvested.add(new ItemStack(Blocks.CHORUS_FLOWER));
 		//TODO: Fix dropping

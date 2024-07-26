@@ -10,22 +10,18 @@
  ******************************************************************************/
 package forestry.apiculture.genetics.effects;
 
-import net.minecraft.resources.ResourceLocation;
-
 import forestry.api.apiculture.genetics.IBeeEffect;
 
 // A bee effect that does nothing. Used in the default "none" as well as for the Leporine bee's Easter effect.
 public class DummyBeeEffect implements IBeeEffect {
-	private final ResourceLocation dominantId;
-	private final ResourceLocation recessiveId;
+	private final boolean dominant;
 
-	public DummyBeeEffect(String modId, String name) {
-		this.dominantId = new ResourceLocation(modId, "bee_effect_" + name + 'd');
-		this.recessiveId = new ResourceLocation(modId, "bee_effect_" + name);
+	public DummyBeeEffect(boolean dominant) {
+		this.dominant = dominant;
 	}
 
 	@Override
-	public ResourceLocation id(boolean dominant) {
-		return dominant ? this.dominantId : this.recessiveId;
+	public boolean isDominant() {
+		return this.dominant;
 	}
 }

@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.apiculture.genetics.IBeeEffect;
 
@@ -30,7 +29,7 @@ public interface IArmorApiaristHelper {
 	 * @return Whether or not the item is valid Apiarist Armor and should protect the player from that attack
 	 * @since Forestry 4.2
 	 */
-	boolean isArmorApiarist(ItemStack stack, LivingEntity entity, ResourceLocation cause, boolean doProtect);
+	boolean isArmorApiarist(ItemStack stack, LivingEntity entity, IBeeEffect cause, boolean doProtect);
 
 	/**
 	 * Called when the apiarist's armor acts as protection against an attack.

@@ -30,6 +30,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+import forestry.api.genetics.Product;
+
 public abstract class ItemStackUtil {
 
 	private static final int[] EMPTY_CONSUME = new int[0];
@@ -260,10 +262,10 @@ public abstract class ItemStackUtil {
 	}
 
 
-	public static ItemStack copyWithRandomSize(ItemStack template, int max, RandomSource rand) {
+	public static ItemStack copyWithRandomSize(Product template, int max, RandomSource rand) {
 		int size = max <= 0 ? 1 : rand.nextInt(max);
-		ItemStack copy = template.copy();
-		copy.setCount(Math.min(size, template.getMaxStackSize()));
+		ItemStack copy = template.createStack();
+		copy.setCount(Math.min(size, copy.getMaxStackSize()));
 		return copy;
 	}
 

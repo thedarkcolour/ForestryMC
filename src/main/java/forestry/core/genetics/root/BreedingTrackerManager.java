@@ -31,11 +31,11 @@ public enum BreedingTrackerManager implements IBreedingTrackerManager {
 	}
 
 	@Override
-	public <T extends IBreedingTracker> T getTracker(String rootUID, LevelAccessor world, @Nullable GameProfile profile) {
-		return BREEDING_HANDLER.getTracker(rootUID, world, profile);
+	public <T extends IBreedingTracker> T getTracker(ResourceLocation id, LevelAccessor level, @Nullable GameProfile profile) {
+		return BREEDING_HANDLER.getTracker(id, level, profile);
 	}
 
 	interface SidedHandler {
-		<T extends IBreedingTracker> T getTracker(String rootUID, LevelAccessor world, @Nullable GameProfile player);
+		<T extends IBreedingTracker> T getTracker(ResourceLocation rootUID, LevelAccessor world, @Nullable GameProfile player);
 	}
 }

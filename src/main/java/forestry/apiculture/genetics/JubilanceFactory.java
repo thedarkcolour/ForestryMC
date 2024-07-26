@@ -22,6 +22,11 @@ public class JubilanceFactory implements IJubilanceFactory {
 	}
 
 	@Override
+	public IBeeJubilance getHermit() {
+		return HermitBeeJubilance.INSTANCE;
+	}
+
+	@Override
 	public IBeeJubilance getRequiresResource(BlockState... acceptedBlockStates) {
 		return new RequiresResourceBeeJubilance(acceptedBlockStates);
 	}

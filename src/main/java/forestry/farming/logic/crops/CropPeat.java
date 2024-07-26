@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.farming.logic.crops;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +37,7 @@ public class CropPeat extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
+	protected List<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		NonNullList<ItemStack> drops = NonNullList.create();
 		drops.add(CoreItems.PEAT.stack());
 

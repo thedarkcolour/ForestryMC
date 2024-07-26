@@ -3,9 +3,11 @@ package forestry.arboriculture.genetics;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
+import forestry.api.IForestryApi;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IGenome;
 
@@ -17,7 +19,6 @@ import forestry.api.core.ToleranceType;
 import forestry.api.genetics.alleles.TreeChromosomes;
 
 public class ClimateGrowthProvider implements IGrowthProvider {
-
 	@Nullable
 	private TemperatureType temperature;
 	@Nullable
@@ -45,15 +46,15 @@ public class ClimateGrowthProvider implements IGrowthProvider {
 	}
 
 	@Override
-	public boolean isBiomeValid(ITree tree, Biome biome) {
-		TemperatureType biomeTemperature = TemperatureType.getFromBiome(biome);
-		HumidityType biomeHumidity = HumidityType.getFromValue(biome.getDownfall());
+	public boolean isBiomeValid(ITree tree, Holder.Reference<Biome> biome) {
+		TemperatureType biomeTemperature = IForestryApi.INSTANCE.getClimateManager().getTemperature(biome);
+		HumidityType biomeHumidity = IForestryApi.INSTANCE.getClimateManager().getHumidity(biome);
 		IGenome genome = tree.getGenome();
 		if (temperature == null) {
-			temperature = genome.getActiveAllele(TreeChromosomes.SPECIES).getTemperature();
+			temperature = genome.getActiveValue(TreeChromosomes.SPECIES).getTemperature();
 		}
 		if (humidity == null) {
-			humidity = genome.getActiveAllele(TreeChromosomes.SPECIES).getHumidity();
+			humidity = genome.getActiveValue(TreeChromosomes.SPECIES).getHumidity();
 		}
 		return ClimateHelper.isWithinLimits(biomeTemperature, biomeHumidity, temperature, temperatureTolerance, humidity, humidityTolerance);
 	}

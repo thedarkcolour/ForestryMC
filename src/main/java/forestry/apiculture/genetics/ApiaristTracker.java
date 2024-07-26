@@ -15,17 +15,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import forestry.api.IForestryApi;
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IMutationManager;
-import forestry.apiculture.ModuleApiculture;
+import forestry.api.genetics.ISpecies;
 import forestry.core.genetics.BreedingTracker;
+import forestry.core.utils.SpeciesUtil;
 
-public class ApiaristTracker extends BreedingTracker<IBeeSpecies> implements IApiaristTracker {
+public class ApiaristTracker extends BreedingTracker implements IApiaristTracker {
 	private int queensTotal = 0;
 	private int dronesTotal = 0;
 	private int princessesTotal = 0;
@@ -34,12 +33,12 @@ public class ApiaristTracker extends BreedingTracker<IBeeSpecies> implements IAp
 	 * Required for creation from map storage
 	 */
 	public ApiaristTracker() {
-		super(ModuleApiculture.beekeepingMode);
+		super();
 	}
 
 	// todo get rid of this constructor and just call load
 	public ApiaristTracker(CompoundTag tag) {
-		super(ModuleApiculture.beekeepingMode, tag);
+		super(tag);
 	}
 
 	@Override
@@ -62,8 +61,8 @@ public class ApiaristTracker extends BreedingTracker<IBeeSpecies> implements IAp
 	}
 
 	@Override
-	public void registerPickup(IBeeSpecies species) {
-		IMutationManager manager = IForestryApi.INSTANCE.getGeneticManager().getMutations(ForestrySpeciesTypes.BEE);
+	public void registerPickup(ISpecies<?> species) {
+		IMutationManager<ISpecies<?>> manager = IForestryApi.INSTANCE.getGeneticManager().getMutations(ForestrySpeciesTypes.BEE);
 
 		if (manager.getMutationsFrom(species).isEmpty()) {
 			registerSpecies(species);
@@ -72,39 +71,40 @@ public class ApiaristTracker extends BreedingTracker<IBeeSpecies> implements IAp
 
 	@Override
 	public void registerQueen(IBee bee) {
-		queensTotal++;
+		this.queensTotal++;
+		// no need to register because we should already have princess
 	}
 
 	@Override
 	public int getQueenCount() {
-		return queensTotal;
+		return this.queensTotal;
 	}
 
 	@Override
 	public void registerPrincess(IBee bee) {
-		princessesTotal++;
-		registerBirth(bee);
+		this.princessesTotal++;
+		registerBirth(bee.getSpecies());
 	}
 
 	@Override
 	public int getPrincessCount() {
-		return princessesTotal;
+		return this.princessesTotal;
 	}
 
 	@Override
 	public void registerDrone(IBee bee) {
-		dronesTotal++;
-		registerBirth(bee);
+		this.dronesTotal++;
+		registerBirth(bee.getSpecies());
 	}
 
 	@Override
 	public int getDroneCount() {
-		return dronesTotal;
+		return this.dronesTotal;
 	}
 
 	@Override
 	protected IBreedingTracker getBreedingTracker(Player player) {
-		return BeeManager.beeRoot.getBreedingTracker(player.level, player.getGameProfile());
+		return SpeciesUtil.BEE_TYPE.get().getBreedingTracker(player.level, player.getGameProfile());
 	}
 
 	@Override

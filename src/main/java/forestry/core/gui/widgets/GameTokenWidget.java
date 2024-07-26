@@ -23,6 +23,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
+import forestry.api.client.ForestrySprites;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.gui.GuiUtil;
 import forestry.core.network.packets.PacketGuiSelectRequest;
@@ -81,9 +84,9 @@ public class GameTokenWidget extends Widget {
 		GuiUtil.drawItemStack(transform, manager.gui, tokenStack, startX + xPos + 3, startY + yPos + 3);
 
 		RenderSystem.disableDepthTest();
-		ForestryTextureManager.INSTANCE.bindGuiTextureMap();
+		RenderSystem.setShaderTexture(0, ForestrySprites.TEXTURE_ATLAS);
 		for (String ident : token.getOverlayIcons()) {
-			TextureAtlasSprite icon = ForestryTextureManager.INSTANCE.getDefault(ident);
+			TextureAtlasSprite icon = IForestryClientApi.INSTANCE.getTextureManager().getSprite(ForestryConstants.forestry(ident));
 			GuiComponent.blit(transform, startX + xPos + 3, startY + yPos + 3, manager.gui.getBlitOffset(), 16, 16, icon);
 		}
 		RenderSystem.enableDepthTest();

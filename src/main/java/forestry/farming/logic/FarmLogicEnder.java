@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -11,11 +12,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
@@ -34,7 +33,7 @@ public class FarmLogicEnder extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	public NonNullList<ItemStack> collect(Level world, IFarmHousing farmHousing) {
+	public List<ItemStack> collect(Level world, IFarmHousing farmHousing) {
 		return collectEntityItems(world, farmHousing, true);
 	}
 
@@ -93,7 +92,7 @@ public class FarmLogicEnder extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
+	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
 			BlockState state = world.getBlockState(position);

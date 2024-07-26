@@ -19,12 +19,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import forestry.api.climate.ClimateState;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.genetics.IMutationCondition;
 
-import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.IGenome;
 
+// todo separate classes for single biome and tag
 public class MutationConditionBiome implements IMutationCondition {
 	private final TagKey<Biome> validBiomes;
 
@@ -33,7 +34,7 @@ public class MutationConditionBiome implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level level, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, ClimateState climate) {
+	public float getChance(Level level, BlockPos pos, ISpecies<?> allele0, ISpecies<?> allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
 		return level.getBiome(pos).is(this.validBiomes) ? 1f : 0f;
 	}
 

@@ -12,17 +12,17 @@ package forestry.arboriculture.models;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.arboriculture.EnumVanillaWoodType;
+import forestry.arboriculture.VanillaWoodType;
 import forestry.api.arboriculture.IGermlingModelProvider;
 import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 
 public class ModelProviderGermlingVanilla implements IGermlingModelProvider {
 
-	private final EnumVanillaWoodType woodType;
+	private final VanillaWoodType woodType;
 	private final ILeafSpriteProvider leafSpriteProvider;
 
-	public ModelProviderGermlingVanilla(EnumVanillaWoodType woodType, ILeafSpriteProvider leafSpriteProvider) {
+	public ModelProviderGermlingVanilla(VanillaWoodType woodType, ILeafSpriteProvider leafSpriteProvider) {
 		this.woodType = woodType;
 		this.leafSpriteProvider = leafSpriteProvider;
 	}

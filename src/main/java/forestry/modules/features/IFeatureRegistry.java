@@ -10,6 +10,7 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
@@ -31,6 +32,7 @@ import forestry.api.storage.EnumBackpackType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegisterEvent;
 
+// todo this isn't an API. remove the interface
 public interface IFeatureRegistry {
 	String getModId();
 
@@ -40,24 +42,26 @@ public interface IFeatureRegistry {
 	 */
 	<V> DeferredRegister<V> getRegistry(ResourceKey<? extends Registry<V>> registry);
 
-	<B extends Block, I extends BlockItem> IBlockFeature<B, I> block(Supplier<B> constructor, String name);
+	<B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, String name);
 
-	<B extends Block, I extends BlockItem> IBlockFeature<B, I> block(Supplier<B> constructor, @Nullable Function<B, I> itemConstructor, String name);
+	<B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, @Nullable Function<B, I> itemConstructor, String name);
 
 	<B extends Block, S extends IBlockSubtype> FeatureBlockGroup.Builder<B, S> blockGroup(Function<S, B> constructor, Class<? extends S> typeClass);
 
 	<B extends Block, S extends IBlockSubtype> FeatureBlockGroup.Builder<B, S> blockGroup(Function<S, B> constructor, Collection<S> types);
 
+	// Note: use the Collection variant whenever possible
 	<B extends Block, S extends IBlockSubtype> FeatureBlockGroup.Builder<B, S> blockGroup(Function<S, B> constructor, S[] types);
 
 	<I extends Item> FeatureItem<I> item(Supplier<I> constructor, String identifier);
 
 	FeatureItem<Item> backpack(IBackpackDefinition definition, EnumBackpackType type, String identifier);
 
-	FeatureItem<Item> naturalistBackpack(IBackpackDefinition definition, String rootUid, CreativeModeTab tab, String identifier);
+	FeatureItem<Item> naturalistBackpack(IBackpackDefinition definition, ResourceLocation speciesTypeId, CreativeModeTab tab, String identifier);
 
 	<I extends Item, S extends IItemSubtype> FeatureItemGroup<I, S> itemGroup(Function<S, I> constructor, String identifier, S[] subTypes);
 
+	// Note: use the Collection variant whenever possible
 	<I extends Item, S extends IItemSubtype> FeatureItemGroup.Builder<I, S> itemGroup(Function<S, I> constructor, S[] subTypes);
 
 	<I extends Item, R extends IItemSubtype, C extends IItemSubtype> FeatureItemTable<I, R, C> itemTable(BiFunction<R, C, I> constructor, R[] rowTypes, C[] columnTypes, String identifier);

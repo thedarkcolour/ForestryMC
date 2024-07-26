@@ -11,5 +11,5 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IColoredBlock {
 	@OnlyIn(Dist.CLIENT)
-	int colorMultiplier(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex);
+	int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex);
 }

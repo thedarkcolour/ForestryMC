@@ -34,7 +34,6 @@ import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
-import forestry.api.genetics.alleles.IValueAllele;
 import forestry.core.config.Constants;
 import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.gui.buttons.GuiBetterButton;
@@ -56,7 +55,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 	public GuiNaturalistInventory(C menu, Inventory playerInv, Component name) {
 		super(Constants.TEXTURE_PATH_GUI + "/apiaristinventory.png", menu, playerInv, name);
 
-		this.speciesType = menu.getSpeciesRoot();
+		this.speciesType = menu.getSpeciesType();
 
 		this.pageCurrent = menu.getCurrentPage();
 		this.pageMax = ContainerNaturalistInventory.MAX_PAGE;
@@ -65,7 +64,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 		imageHeight = 202;
 
 		// todo investigate how often this map is populated
-		for (ISpecies species : speciesType.getSpecies()) {
+		for (ISpecies species : speciesType.getAllSpecies()) {
 			iconStacks.put(species.id(), species.createStack(species.createIndividual(), speciesType.getDefaultStage()));
 		}
 

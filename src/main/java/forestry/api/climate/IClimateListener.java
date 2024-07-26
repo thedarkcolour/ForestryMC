@@ -12,13 +12,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.ILocatable;
 
-/**
- * A climate listener listens to the climate at a specific location. It automatically gets and caches the climate state
- * of the climate at the specific location if you call {@link #getClimateState()}, {@link #getExactTemperature()}
- * or {@link #getExactHumidity()}.
- * <p>
- * You can create an instance of the climate listener with {@link IClimateFactory#createListener(ILocatable)}.
- */
 public interface IClimateListener extends ILocatable, IClimateProvider {
 
 	/**

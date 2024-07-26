@@ -47,7 +47,7 @@ public class SpeciesSelectionElement extends GuiElement {
 			if (itemstack.isEmpty()) {
 				return;
 			}
-			Optional<IIndividual> optional = RootUtils.getIndividual(itemstack);
+			Optional<IIndividual> optional = IIndividualHandler.getIndividual(itemstack);
 			if (!optional.isPresent()) {
 				return;
 			}
@@ -101,7 +101,7 @@ public class SpeciesSelectionElement extends GuiElement {
 		if (itemstack.isEmpty()) {
 			return false;
 		}
-		IIndividual individual = RootUtils.getIndividual(itemstack);
+		IIndividual individual = IIndividualHandler.getIndividual(itemstack);
 		if (individual == null) {
 			return false;
 		}

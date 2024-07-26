@@ -30,6 +30,10 @@ public class FeatureItemGroup<I extends Item, S extends IItemSubtype> extends Fe
 		return builder.registry.item(() -> builder.constructor.apply(type), builder.getIdentifier(type));
 	}
 
+	public I item(S variant) {
+		return get(variant).item();
+	}
+
 	public static class Builder<I extends Item, S extends IItemSubtype> extends FeatureGroup.Builder<S, FeatureItemGroup<I, S>> {
 		private final IFeatureRegistry registry;
 		private final Function<S, I> constructor;

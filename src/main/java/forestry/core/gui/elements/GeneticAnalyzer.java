@@ -10,14 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import org.lwjgl.glfw.GLFW;
 
 import forestry.api.ForestryConstants;
-import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.gatgets.IDatabasePlugin;
+import forestry.api.genetics.IIndividualHandler;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.api.genetics.gatgets.IGeneticAnalyzer;
 import forestry.api.genetics.gatgets.IGeneticAnalyzerProvider;
@@ -29,24 +25,16 @@ import forestry.core.gui.widgets.IScrollable;
 import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
-
-@OnlyIn(Dist.CLIENT)
 public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyzer, IScrollable {
-	/* Textures */
 	public static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/analyzer_screen.png");
 
-	/* Drawables */
 	public static final Drawable SCROLLBAR_BACKGROUND = new Drawable(TEXTURE, 202, 0, 3, 142);
 	public static final Drawable SCROLLBAR_SLIDER = new Drawable(TEXTURE, 205, 0, 3, 5);
 	public static final Drawable SELECTION_BAR = new Drawable(GeneticAnalyzer.TEXTURE, 70, 166, 107, 32);
 	public static final Drawable ANALYZER_BUTTON = new Drawable(TEXTURE, 163, 40, 22, 25);
 
-	/* Attributes- Final */
 	private final IGeneticAnalyzerProvider provider;
 
-	/*Attributes - Gui Elements */
 	private final ScrollBarElement scrollBar;
 	private final ScrollableElement scrollable;
 	private final DatabaseElement scrollableContent;
@@ -56,7 +44,6 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 	private final ButtonElement rightButton;
 	private final ButtonElement analyzeButton;
 
-	/* Attributes - State */
 	private int selectedSlot = -1;
 
 	public GeneticAnalyzer(Window window, int xPos, int yPos, boolean rightBoarder, IGeneticAnalyzerProvider provider) {
@@ -143,40 +130,32 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 			return;
 		}
 		ItemStack stack = provider.getSpecimen(selectedSlot);
-		ISpeciesType<?> root = RootUtils.getRoot(stack);
 
-		if (root != null) {
-			IDatabasePlugin databasePlugin = root.getSpeciesPlugin();
+		IIndividualHandler.ifPresent(stack, (individual, stage) -> {
+			if (individual.isAnalyzed()) {
+				tabs.setPlugin(individual.getType().getDatabasePlugin());
+				IDatabaseTab tab = tabs.getSelected();
+				// Clean the element area
+				scrollableContent.clear();
+				// Create the new elements
+				scrollableContent.init(tab.getMode(), individual, scrollableContent.getWidth() / 2, 0);
+				tab.createElements(scrollableContent, individual, stage, stack);
+				scrollableContent.forceLayout();
+				// Update the scrollbar
+				int invisibleArea = scrollable.getInvisibleArea();
 
-			if (databasePlugin != null) {
-				IIndividual individual = root.create(stack);
-
-				if (individual != null) {
-					if (individual.isAnalyzed()) {
-						tabs.setPlugin(databasePlugin);
-						IDatabaseTab tab = tabs.getSelected();
-						// Clean the element area
-						scrollableContent.clear();
-						// Create the new elements
-						scrollableContent.init(tab.getMode(), individual, scrollableContent.getWidth() / 2, 0);
-						tab.createElements(scrollableContent, individual, stack);
-						scrollableContent.forceLayout();
-						// Update the scrollbar
-						int invisibleArea = scrollable.getInvisibleArea();
-
-						if (invisibleArea > 0) {
-							scrollBar.setParameters(this, 0, invisibleArea, 1);
-							scrollBar.show();
-						} else {
-							scrollBar.setValue(0);
-							scrollBar.hide();
-						}
-						return;
-					}
-					tabs.setPlugin(null);
+				if (invisibleArea > 0) {
+					scrollBar.setParameters(this, 0, invisibleArea, 1);
+					scrollBar.show();
+				} else {
+					scrollBar.setValue(0);
+					scrollBar.hide();
 				}
+				return;
 			}
-		}
+			tabs.setPlugin(null);
+		});
+
 		// Clean the element area
 		scrollableContent.clear();
 		Font fontRenderer = Minecraft.getInstance().font;

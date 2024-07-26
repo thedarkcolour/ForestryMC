@@ -1,14 +1,11 @@
 package forestry.api.plugin;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.IKaryotype;
 
 /**
  * Handles registration of genetic-related data. Accessed from {@link IForestryPlugin#registerGenetics(IGeneticRegistration)}.
@@ -34,8 +31,6 @@ public interface IGeneticRegistration {
 	 */
 	void defineTaxon(String parent, String name, Consumer<ITaxonBuilder> action);
 
-	<A extends IAllele> IChromosomeBuilder<A> registerChromosome(IChromosome<A> chromosomeType);
-
 	/**
 	 * Register a new type of species. Can only be called from {@link IForestryPlugin#registerGenetics}.
 	 *
@@ -43,7 +38,7 @@ public interface IGeneticRegistration {
 	 * @param typeFactory The function to use to create the species type, given the completed karyotype.
 	 * @return A builder that can be used to define properties of the species.
 	 */
-	ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id, Function<IKaryotype, ISpeciesType<?>> typeFactory, Consumer<IKaryotypeBuilder> karyotype);
+	ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id, ISpeciesTypeFactory typeFactory);
 
 	/**
 	 * Modify an existing species, for example, adding an extra chromosome to bees, or adding additional permitted alleles to chromosomes.
@@ -53,4 +48,6 @@ public interface IGeneticRegistration {
 	 * @param action The modifications to be made.
 	 */
 	void modifySpeciesType(ResourceLocation id, Consumer<ISpeciesTypeBuilder> action);
+
+	<A extends IAllele> IChromosomeBuilder<A> registerChromosome(IChromosome<A> chromosomeType);
 }

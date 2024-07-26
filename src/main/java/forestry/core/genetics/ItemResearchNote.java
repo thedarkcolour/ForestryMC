@@ -34,6 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.ISpecies;
 import forestry.core.genetics.mutations.EnumMutateChance;
@@ -42,7 +43,6 @@ import forestry.core.items.ItemForestry;
 import forestry.api.genetics.IMutation;
 
 public class ItemResearchNote extends ItemForestry {
-
 	private static final String PARENT_0_KEY = "P0";
 	private static final String PARENT_1_KEY = "P1";
 	private static final String RESULT_KEY = "RS";
@@ -58,7 +58,7 @@ public class ItemResearchNote extends ItemForestry {
 		public static final EnumNoteType[] VALUES = values();
 
 		@Nullable
-		private static IMutation<?> getEncodedMutation(ISpeciesType<?> type, CompoundTag compound) {
+		private static IMutation<?> getEncodedMutation(ISpeciesType<?, ?> type, CompoundTag compound) {
 			ISpecies<?> parent0 = AlleleUtil.getSpecies(type, compound, PARENT_0_KEY);
 			ISpecies<?> parent1 = AlleleUtil.getSpecies(type, compound, PARENT_1_KEY);
 			if (parent0 == null || parent1 == null) {
@@ -71,7 +71,8 @@ public class ItemResearchNote extends ItemForestry {
 			}
 
 			IMutation<?> encoded = null;
-			for (IMutation<?> mutation : type.getMutations().getMutationsFrom(parent0)) {
+			IMutationManager mutations = type.getMutations();
+			for (IMutation<?> mutation : (List<IMutation<?>>) mutations.getMutationsFrom(parent0)) {
 				if (mutation.isPartner(parent1)) {
 					if (result == null || mutation.getResult().id().equals(result.id())) {
 						encoded = mutation;

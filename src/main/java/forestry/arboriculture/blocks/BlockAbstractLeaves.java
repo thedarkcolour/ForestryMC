@@ -37,6 +37,7 @@ import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.blocks.IColoredBlock;
+import forestry.core.utils.BlockUtil;
 
 /**
  * Parent class for shared behavior between {@link BlockDefaultLeaves} and {@link BlockForestryLeaves}
@@ -51,10 +52,10 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 				.strength(0.2f)
 				.sound(SoundType.GRASS)
 				.randomTicks()
-				.isValidSpawn((a, b, c, entityType) -> entityType == EntityType.OCELOT || entityType == EntityType.PARROT)
-				.isSuffocating((a, b, c) -> false)
-				.isViewBlocking((a, b, c) -> false)
-				.noOcclusion());
+				.noOcclusion()
+				.isValidSpawn(BlockUtil.IS_PARROT_OR_OCELOT)
+				.isSuffocating(BlockUtil.NEVER)
+				.isViewBlocking(BlockUtil.NEVER));
 	}
 
 	@Nullable
@@ -87,7 +88,7 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		ITree tree = getTree(world, pos);
 		ITreeSpecies species;
 		if (tree == null) {
-			species = IForestryApi.INSTANCE.getGeneticManager().<ITreeSpeciesType>getSpeciesType(ForestrySpeciesTypes.TREE).getSpeciesById(ForestryTreeSpecies.OAK);
+			species = IForestryApi.INSTANCE.getGeneticManager().<ITreeSpeciesType>getSpeciesType(ForestrySpeciesTypes.TREE).getSpecies(ForestryTreeSpecies.OAK);
 		} else {
 			species = tree.getGenome().getActiveValue(TreeChromosomes.SPECIES);
 		}

@@ -29,13 +29,13 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.ITreekeepingMode;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.arboriculture.worldgen.FeatureArboriculture;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.worldgen.FeatureBase;
 
 public class TileSapling extends TileTreeContainer {
@@ -69,7 +69,7 @@ public class TileSapling extends TileTreeContainer {
 	}
 
 	private static int getRequiredMaturity(Level world, ITree tree) {
-		ITreekeepingMode treekeepingMode = TreeManager.treeRoot.getTreekeepingMode(world);
+		ITreekeepingMode treekeepingMode = SpeciesUtil.TREE_TYPE.get().getTreekeepingMode(world);
 		float maturationModifier = treekeepingMode.getMaturationModifier(tree.getGenome(), 1f);
 		return Math.round(tree.getRequiredMaturity() * maturationModifier);
 	}
@@ -120,7 +120,7 @@ public class TileSapling extends TileTreeContainer {
 		}
 
 		if (generated) {
-			IBreedingTracker breedingTracker = TreeManager.treeRoot.getBreedingTracker(level, getOwnerHandler().getOwner());
+			IBreedingTracker breedingTracker = SpeciesUtil.TREE_TYPE.get().getBreedingTracker(level, getOwnerHandler().getOwner());
 			breedingTracker.registerBirth(tree);
 		}
 	}

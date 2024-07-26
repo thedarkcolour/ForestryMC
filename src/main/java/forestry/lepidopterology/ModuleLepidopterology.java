@@ -12,43 +12,31 @@ package forestry.lepidopterology;
 
 import com.google.common.collect.Maps;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.lepidopterology.ButterflyManager;
-import forestry.core.ClientsideCode;
+import forestry.api.client.IClientModuleHandler;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.ModuleCore;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.commands.CommandButterfly;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyEntities;
 import forestry.lepidopterology.features.LepidopterologyFeatures;
-import forestry.lepidopterology.genetics.ButterflyDefinition;
-import forestry.lepidopterology.genetics.ButterflyFactory;
-import forestry.lepidopterology.genetics.ButterflyMutationFactory;
-import forestry.lepidopterology.genetics.MothDefinition;
-import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
-import forestry.lepidopterology.proxy.ProxyLepidopterology;
+import forestry.lepidopterology.proxy.LepidopterologyClientHandler;
 import forestry.modules.BlankForestryModule;
-import forestry.api.modules.ForestryModuleIds;
-import forestry.api.client.IClientModuleHandler;
 
 public class ModuleLepidopterology extends BlankForestryModule {
-	public static final ProxyLepidopterology PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyLepidopterology() : new ProxyLepidopterology();
-	private static final String CONFIG_CATEGORY = "lepidopterology";
 	public static int maxDistance = 64;
 	private static boolean allowPollination = true;
 	public static final Map<String, Float> spawnRaritys = Maps.newHashMap();
@@ -78,18 +66,7 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	}
 
 	@Override
-	public void setupApi() {
-		ButterflyManager.butterflyFactory = new ButterflyFactory();
-		ButterflyManager.butterflyMutationFactory = new ButterflyMutationFactory();
-	}
-
-	@Override
 	public void preInit() {
-		ButterflyDefinition.preInit();
-		MothDefinition.preInit();
-
-		PROXY.preInitializeRendering();
-
 		LepidopterologyFilterRule.init();
 		LepidopterologyFilterRuleType.init();
 	}
@@ -103,12 +80,8 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	public void doInit() {
 		ModuleCore.rootCommand.then(CommandButterfly.register());
 
-		MothDefinition.initMoths();
-		ButterflyDefinition.initButterflies();
-		ButterflyAlleles.createLoot();
-
 		if (spawnButterflysFromLeaves) {
-			TreeManager.treeRoot.registerLeafTickHandler(new ButterflySpawner());
+			SpeciesUtil.TREE_TYPE.get().registerLeafTickHandler(new ButterflySpawner());
 		}
 	}
 
@@ -137,8 +110,8 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	}
 
 	@Override
-	public @Nullable Supplier<IClientModuleHandler> getClientHandler() {
-		return PROXY;
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new LepidopterologyClientHandler());
 	}
 
 	private static class ForgeEvents {

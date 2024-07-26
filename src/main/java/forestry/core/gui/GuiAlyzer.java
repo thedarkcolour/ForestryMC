@@ -12,14 +12,12 @@ package forestry.core.gui;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,16 +30,21 @@ import forestry.api.IForestryApi;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpecies;
-import forestry.api.genetics.ITaxon;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IMutation;
-import forestry.api.genetics.TaxonomicRank;
+import forestry.api.genetics.Taxon;
+import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.IValueChromosome;
 import forestry.core.config.Constants;
 import forestry.core.genetics.mutations.EnumMutateChance;
@@ -49,21 +52,11 @@ import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.render.ColourProperties;
-
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.ISpecies<?>;
-import forestry.api.genetics.alleles.IValueAllele;
-import forestry.api.genetics.alleles.IChromosome;
-import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutationContainer;
-import forestry.api.genetics.ILifeStage;
-import genetics.api.root.components.ComponentKeys;
-import genetics.utils.AlleleUtils;
-import genetics.utils.RootUtils;
+import forestry.core.utils.GeneticsUtil;
+import forestry.core.utils.Translator;
 
 // Portable analyzer
 public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
-
 	public static final int COLUMN_0 = 12;
 	public static final int COLUMN_1 = 90;
 	public static final int COLUMN_2 = 155;
@@ -117,26 +110,25 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 
 	public final void drawChromosomeRow(PoseStack transform, Component chromosomeName, IIndividual individual, IChromosome<?> chromosome) {
 		IAllele active = individual.getGenome().getActiveAllele(chromosome);
+		MutableComponent activeName = chromosome.getDisplayName(active.cast());
 		IAllele inactive = individual.getGenome().getInactiveAllele(chromosome);
-		textLayout.drawRow(transform, chromosomeName, active.getDisplayName(), inactive.getDisplayName(),
-				ColourProperties.INSTANCE.get("gui.screen"), getColorCoding(active.dominant()),
-				getColorCoding(inactive.dominant()));
+		MutableComponent inactiveName = chromosome.getDisplayName(inactive.cast());
+		textLayout.drawRow(transform, chromosomeName, activeName, inactiveName, ColourProperties.INSTANCE.get("gui.screen"), getColorCoding(active.dominant()), getColorCoding(inactive.dominant()));
 	}
 
-	public final void drawSpeciesRow(PoseStack transform, Component text0, IIndividual individual, IChromosome<?> chromosome, ILifeStage type) {
-		ISpecies<?> primary = individual.getGenome().getActiveValue().getPrimarySpecies();
-		ISpecies<?> secondary = individual.getGenome().getInactiveValue().getSecondarySpecies();
+	public <S extends ISpecies<?>> void drawSpeciesRow(PoseStack transform, Component text0, IIndividual individual, ISpeciesChromosome<S> chromosome, ILifeStage type) {
+		AllelePair<IValueAllele<S>> species = individual.getGenome().getAllelePair(chromosome);
 
 		textLayout.drawLine(transform, text0, textLayout.column0);
 		int columnwidth = textLayout.column2 - textLayout.column1 - 2;
 
-		Map<ResourceLocation, ItemStack> iconStacks = ((ISpeciesType<?>) chromosome.getSpecies()).getAlyzerPlugin().getIconStacks();
+		Map<ResourceLocation, ItemStack> iconStacks = species.active().value().getType().getAlyzerPlugin().getIconStacks();
 
-		GuiUtil.drawItemStack(transform, this, iconStacks.get(primary.id()), leftPos + textLayout.column1 + columnwidth - 20, topPos + 10);
-		GuiUtil.drawItemStack(transform, this, iconStacks.get(secondary.id()), leftPos + textLayout.column2 + columnwidth - 20, topPos + 10);
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(species.active().value().id()), leftPos + textLayout.column1 + columnwidth - 20, topPos + 10);
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(species.inactive().value().id()), leftPos + textLayout.column2 + columnwidth - 20, topPos + 10);
 
-		Component primaryName = primary.getAlyzerName(type);
-		Component secondaryName = secondary.getAlyzerName(type);
+		Component primaryName = chromosome.getDisplayName(species.active());
+		Component secondaryName = chromosome.getDisplayName(species.inactive());
 
 		drawSplitLine(transform, primaryName, textLayout.column1, columnwidth, individual, chromosome, false);
 		drawSplitLine(transform, secondaryName, textLayout.column2, columnwidth, individual, chromosome, true);
@@ -156,57 +148,36 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		}
 
 		ItemStack stackInSlot = itemInventory.getItem(specimenSlot);
-		ISpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(stackInSlot);
-		if (speciesRoot == null) {
-			return;
-		}
-		switch (specimenSlot) {
-			case ItemInventoryAlyzer.SLOT_ANALYZE_1 -> {
-				speciesRoot.getAlyzerPlugin().drawAnalyticsPage1(transform, this, stackInSlot);
-			}
-			case ItemInventoryAlyzer.SLOT_ANALYZE_2 -> {
-				speciesRoot.getAlyzerPlugin().drawAnalyticsPage2(transform, this, stackInSlot);
-			}
-			case ItemInventoryAlyzer.SLOT_ANALYZE_3 -> {
-				speciesRoot.getAlyzerPlugin().drawAnalyticsPage3(transform, stackInSlot, this);
-			}
-			case ItemInventoryAlyzer.SLOT_ANALYZE_4 -> {
-				IIndividual individual = speciesRoot.create(stackInSlot);
-				drawAnalyticsPageMutations(transform, individual);
-			}
-			case ItemInventoryAlyzer.SLOT_ANALYZE_5 -> {
-				IIndividual individual = speciesRoot.create(stackInSlot);
-				drawAnalyticsPageClassification(transform, individual);
-			}
-			default -> drawAnalyticsOverview(transform);
-		}
 
+		IIndividualHandler.ifPresent(stackInSlot, individual -> {
+			ISpeciesType<?, ?> type = individual.getType();
+
+			switch (specimenSlot) {
+				case ItemInventoryAlyzer.SLOT_ANALYZE_1 ->
+						type.getAlyzerPlugin().drawAnalyticsPage1(transform, this, stackInSlot);
+				case ItemInventoryAlyzer.SLOT_ANALYZE_2 ->
+						type.getAlyzerPlugin().drawAnalyticsPage2(transform, this, stackInSlot);
+				case ItemInventoryAlyzer.SLOT_ANALYZE_3 ->
+						type.getAlyzerPlugin().drawAnalyticsPage3(transform, this, stackInSlot);
+				case ItemInventoryAlyzer.SLOT_ANALYZE_4 -> drawAnalyticsPageMutations(transform, individual);
+				case ItemInventoryAlyzer.SLOT_ANALYZE_5 -> drawAnalyticsPageClassification(transform, individual);
+				default -> drawAnalyticsOverview(transform);
+			}
+		});
 	}
 
 	private int getSpecimenSlot() {
 		for (int k = ItemInventoryAlyzer.SLOT_SPECIMEN; k <= ItemInventoryAlyzer.SLOT_ANALYZE_5; k++) {
 			ItemStack stackInSlot = itemInventory.getItem(k);
-			if (stackInSlot.isEmpty()) {
-				continue;
-			}
 
-			ISpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(stackInSlot);
-			if (speciesRoot == null) {
-				continue;
+			if (!stackInSlot.isEmpty() && IIndividualHandler.filter(stackInSlot, IIndividual::isAnalyzed)) {
+				return k;
 			}
-
-			IIndividual individual = speciesRoot.create(stackInSlot);
-			if (!individual.isAnalyzed()) {
-				continue;
-			}
-
-			return k;
 		}
 		return -1;
 	}
 
 	public void drawAnalyticsOverview(PoseStack transform) {
-
 		textLayout.startPage(transform);
 
 		textLayout.newLine();
@@ -241,68 +212,60 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.classification").append(":"), 12);
 		textLayout.newLine();
 
-		Stack<ITaxon> hierarchy = new Stack<>();
-		ITaxon classification = individual.getGenome().getPrimarySpecies().getGenus();
-		while (classification != null) {
-
-			if (!classification.getScientific().isEmpty()) {
-				hierarchy.push(classification);
+		Stack<Taxon> hierarchy = new Stack<>();
+		Taxon taxon = individual.getSpecies().getGenus();
+		while (taxon != null) {
+			if (!taxon.name().isEmpty()) {
+				hierarchy.push(taxon);
 			}
-			classification = classification.getParent();
+			taxon = taxon.parent();
 		}
 
 		boolean overcrowded = hierarchy.size() > 5;
 		int x = 12;
-		ITaxon group = null;
+		Taxon group = null;
 
 		while (!hierarchy.isEmpty()) {
-
 			group = hierarchy.pop();
 			if (overcrowded && group.rank().isDroppable()) {
 				continue;
 			}
 
-			textLayout.drawLine(transform, group.getScientific(), x, group.rank().getColour());
+			textLayout.drawLine(transform, group.name(), x, group.rank().getColour());
 			textLayout.drawLine(transform, group.rank().name(), 170, group.rank().getColour());
 			textLayout.newLineCompressed();
 			x += 12;
 		}
 
 		// Add the species name
-		String binomial = individual.getGenome().getPrimarySpecies().getBinomial();
-		if (group != null && group.rank() == TaxonomicRank.GENUS) {
-			binomial = group.getScientific().substring(0, 1) + ". " + binomial.toLowerCase(Locale.ENGLISH);
-		}
+		String binomial = individual.getSpecies().getBinomial();
+		// todo shorten the name to G. species
+		//if (group != null && group.rank() == TaxonomicRank.GENUS) {
+		//	binomial = group.getScientific().substring(0, 1) + ". " + binomial.toLowerCase(Locale.ENGLISH);
+		//}
 
 		textLayout.drawLine(transform, binomial, x, 0xebae85);
 		textLayout.drawLine(transform, "SPECIES", 170, 0xebae85);
 
 		textLayout.newLine();
-		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.authority").append(": ").append(individual.getGenome().getPrimarySpecies().getAuthority()), 12);
-		if (AlleleUtils.isBlacklisted(individual.getId())) {
-			// todo
-			String extinct = ">> " + Component.translatable("for.gui.alyzer.extinct")/*.toUpperCase(Locale.ENGLISH)*/ + " <<";
-			getFontRenderer().drawShadow(transform, extinct, leftPos + 200 - getFontRenderer().width(extinct),
-					topPos + textLayout.getLineY(), ColourProperties.INSTANCE.get("gui.beealyzer.dominant"));
-		}
+		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.authority").append(": ").append(individual.getSpecies().getAuthority()), 12);
 
 		textLayout.newLine();
-		String description = individual.getGenome().getPrimarySpecies().getDescription().getString();
-		if (StringUtils.isBlank(description) || description.startsWith("for.description.")) {
-			textLayout.drawSplitLine(transform, Component.translatable("for.gui.alyzer.nodescription"), 12, 200, 0x666666);
-		} else {
+		String description = GeneticsUtil.createDescriptionKey(individual.getSpecies());
+		if (Translator.canTranslateToLocal(description)) {
 			String[] tokens = description.split("\\|");
 			textLayout.drawSplitLine(transform, tokens[0], 12, 200, 0x666666);
 			if (tokens.length > 1) {
 				String signature = "- " + tokens[1];
 				getFontRenderer().drawShadow(transform, signature, leftPos + 210 - getFontRenderer().width(signature), topPos + 145 - 14, 0x99cc32);
 			}
+		} else {
+			textLayout.drawSplitLine(transform, Component.translatable("for.gui.alyzer.nodescription"), 12, 200, 0x666666);
 		}
 
 		textLayout.endPage(transform);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void drawAnalyticsPageMutations(PoseStack transform, IIndividual individual) {
 		textLayout.startPage(transform, COLUMN_0, COLUMN_1, COLUMN_2);
 		textLayout.drawLine(transform, Component.translatable("for.gui.beealyzer.mutations").append(":"), COLUMN_0);
@@ -310,19 +273,17 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 
 		//RenderHelper.enableGUIStandardItemLighting(); TODO Gui Light
 
-		IGenome genome = individual.getGenome();
-		ISpeciesType<IIndividual> speciesRoot = (ISpeciesType) individual.getRoot();
+		ISpeciesType<?, ?> speciesRoot = individual.getType();
 		ISpecies<?> species = individual.getSpecies();
 
 		int columnWidth = 50;
 		int x = 0;
 
 		Player player = Minecraft.getInstance().player;
-		//TODO world cast
 		IBreedingTracker breedingTracker = speciesRoot.getBreedingTracker(player.level, player.getGameProfile());
 
-		IMutationManager mutations = IForestryApi.INSTANCE.getGeneticManager().getMutations(species.getType());
-		for (IMutation mutation : mutations.getMutationsFrom(species)) {
+		IMutationManager<?> mutations = IForestryApi.INSTANCE.getGeneticManager().getMutations(species.getType());
+		for (IMutation<?> mutation : mutations.getMutationsFrom(species)) {
 			if (breedingTracker.isDiscovered(mutation)) {
 				drawMutationInfo(transform, mutation, species, COLUMN_0 + x, breedingTracker);
 			} else {
@@ -344,15 +305,15 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.endPage(transform);
 	}
 
-	public void drawMutationInfo(PoseStack transform, IMutation combination, IAllele species, int x, IBreedingTracker breedingTracker) {
-		Map<ResourceLocation, ItemStack> iconStacks = ((ISpeciesType) combination.getType()).getAlyzerPlugin().getIconStacks();
+	public void drawMutationInfo(PoseStack transform, IMutation<?> combination, IAllele species, int x, IBreedingTracker breedingTracker) {
+		Map<ResourceLocation, ItemStack> iconStacks = combination.getType().getAlyzerPlugin().getIconStacks();
 
 		ItemStack partnerBee = iconStacks.get(combination.getPartner(species).id());
 		widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), partnerBee));
 
 		drawProbabilityArrow(transform, combination, leftPos + x + 18, topPos + textLayout.getLineY() + 4, breedingTracker);
 
-		IAllele result = combination.getTemplate()[(BeeChromosomes.SPECIES).ordinal()];
+		ISpecies<?> result = combination.getResult();
 		ItemStack resultBee = iconStacks.get(result.id());
 		widgetManager.add(new ItemStackWidget(widgetManager, x + 33, textLayout.getLineY(), resultBee));
 	}
@@ -484,10 +445,9 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 	public List<String> getHints() {
 		ItemStack specimen = itemInventory.getSpecimen();
 		if (!specimen.isEmpty()) {
-			ISpeciesType<?> root = RootUtils.getRoot(specimen);
-			if (root != null) {
-				IAlyzerPlugin alyzerPlugin = root.getAlyzerPlugin();
-				return alyzerPlugin.getHints();
+			IIndividual individual = IIndividualHandler.getIndividual(specimen);
+			if (individual != null) {
+				return individual.getType().getAlyzerPlugin().getHints();
 			}
 		}
 		return Collections.emptyList();

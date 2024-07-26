@@ -11,9 +11,9 @@
 package forestry.lepidopterology.genetics;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,8 +21,6 @@ import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.RandomSource;
@@ -31,50 +29,58 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import forestry.api.IForestryApi;
+import forestry.api.core.ForestryError;
 import forestry.api.core.HumidityType;
-import forestry.api.core.TemperatureType;
 import forestry.api.core.IError;
-import forestry.api.core.tooltips.ToolTip;
+import forestry.api.core.TemperatureType;
 import forestry.api.core.ToleranceType;
+import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.ClimateHelper;
-import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.Product;
-import forestry.api.genetics.alleles.IKaryotype;
-import forestry.api.lepidopterology.ButterflyManager;
+import forestry.api.genetics.alleles.AllelePair;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.alleles.IIntegerChromosome;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.IEntityButterfly;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.api.lepidopterology.genetics.IButterflyMutation;
-import forestry.api.core.ForestryError;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
+import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.core.genetics.GenericRatings;
 import forestry.core.genetics.IndividualLiving;
+import forestry.core.genetics.mutations.Mutation;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IValueAllele;
-import forestry.api.genetics.alleles.AllelePair;
-import forestry.api.genetics.IGenome;
-import forestry.core.genetics.Genome;
 import org.jetbrains.annotations.NotNull;
 
-public class Butterfly extends IndividualLiving implements IButterfly {
+public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, IButterflySpeciesType> implements IButterfly {
 	private static final RandomSource rand = RandomSource.create();
+	public static final Codec<Butterfly> CODEC = RecordCodecBuilder.create(instance -> {
+		Codec<IGenome> genomeCodec = SpeciesUtil.BUTTERFLY_TYPE.get().getKaryotype().getGenomeCodec();
 
-	public Butterfly(CompoundTag nbt) {
-		super(nbt);
-	}
+		return instance.group(
+				genomeCodec.fieldOf("genome").forGetter(IIndividual::getGenome),
+				genomeCodec.optionalFieldOf("mate", null).forGetter(IIndividual::getMate)
+		).apply(instance, Butterfly::new);
+	});
 
 	public Butterfly(IGenome genome) {
-		super(genome, null, genome.getActiveValue(ButterflyChromosomes.LIFESPAN));
+		super(genome);
 	}
 
 	public Butterfly(IGenome genome, @Nullable IGenome mate) {
-		super(genome, mate);
+		super(genome);
+
+		this.mate = mate;
 	}
 
 	@Override
@@ -111,13 +117,6 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 		}
 
 		list.addAll(toolTip.getLines());
-	}
-
-	@Override
-	public IButterfly copy() {
-		CompoundTag compoundNBT = new CompoundTag();
-		this.write(compoundNBT);
-		return new Butterfly(compoundNBT);
 	}
 
 	@Override
@@ -195,73 +194,21 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 				getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getHumidity(), getGenome().getActiveValue(ButterflyChromosomes.HUMIDITY_TOLERANCE));
 	}
 
-	@Override
 	@Nullable
-	public IButterfly spawnCaterpillar(Level level, IButterflyNursery nursery) {
+	@Override
+	public IButterfly spawnCaterpillar(IButterflyNursery nursery) {
 		// We need a mated queen to produce offspring.
 		if (this.mate == null) {
 			return null;
 		}
 
-		IKaryotype karyotype = this.genome.getKaryotype();
-		Genome.Builder genome = new Genome.Builder(karyotype);
-		ImmutableList<AllelePair<?>> parent1 = this.genome.getAllelePairs();
-		ImmutableList<AllelePair<?>> parent2 = this.mate.getAllelePairs();
-
-		// Check for mutation. Replace one of the parents with the mutation
-		// template if mutation occured.
-		ImmutableList<AllelePair<?>> mutated1 = mutateSpecies(level, nursery, this.genome, this.mate);
-		if (mutated1 != null) {
-			parent1 = mutated1;
-		}
-		ImmutableList<AllelePair<?>> mutated2 = mutateSpecies(level, nursery, this.mate, this.genome);
-		if (mutated2 != null) {
-			parent2 = mutated2;
-		}
-
-		for (int i = 0; i < parent1.length; i++) {
-			if (parent1[i] != null && parent2[i] != null) {
-				genome[i] = parent1[i].inheritChromosome(rand, parent2[i]);
-			}
-		}
-
-		return new Butterfly(new Genome(ButterflyHelper.getRoot().getKaryotype(), genome));
+		SpeciesUtil.ISpeciesMutator mutator = (p1, p2) -> mutateSpecies(nursery, p1, p2);
+		return SpeciesUtil.createOffspring(nursery.getWorldObj().random, this.genome, this.mate, mutator, Butterfly::new);
 	}
 
 	@Nullable
-	private static AllelePair[] mutateSpecies(Level level, IButterflyNursery nursery, IGenome genomeOne, IGenome genomeTwo) {
-
-		AllelePair[] parent1 = genomeOne.getAllelePairs();
-		AllelePair[] parent2 = genomeTwo.getAllelePairs();
-
-		IGenome genome0;
-		IGenome genome1;
-		IAllele allele0;
-		IAllele allele1;
-
-		if (rand.nextBoolean()) {
-			allele0 = parent1[(ButterflyChromosomes.SPECIES).ordinal()].active();
-			allele1 = parent2[(ButterflyChromosomes.SPECIES).ordinal()].inactive();
-
-			genome0 = genomeOne;
-			genome1 = genomeTwo;
-		} else {
-			allele0 = parent2[(ButterflyChromosomes.SPECIES).ordinal()].active();
-			allele1 = parent1[(ButterflyChromosomes.SPECIES).ordinal()].inactive();
-
-			genome0 = genomeTwo;
-			genome1 = genomeOne;
-		}
-
-		IMutationContainer<IButterfly, IButterflyMutation> container = ButterflyHelper.getRoot().getComponent(ComponentKeys.MUTATIONS);
-		for (IButterflyMutation mutation : container.getMutations(true)) {
-			float chance = getChance(mutation, level, nursery, allele0, allele1, genome0, genome1);
-			if (chance > rand.nextFloat() * 100) {
-				return ButterflyManager.butterflyRoot.getKaryotype().templateAsChromosomes(mutation.getTemplate());
-			}
-		}
-
-		return null;
+	private static ImmutableList<AllelePair<?>> mutateSpecies(IButterflyNursery nursery, IGenome parent1, IGenome parent2) {
+		return SpeciesUtil.mutateSpecies(nursery.getWorldObj(), nursery.getCoordinates(), null, parent1, parent2, ButterflyChromosomes.SPECIES, Mutation::getChance);
 	}
 
 	private boolean isActiveThisTime(boolean isDayTime) {
@@ -269,17 +216,17 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 			return true;
 		}
 
-		return isDayTime != getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).isNocturnal();
+		return isDayTime != getGenome().getActiveValue(ButterflyChromosomes.SPECIES).isNocturnal();
 	}
 
 	@Override
-	public float getSize() {
-		return getGenome().getActiveValue(ButterflyChromosomes.SIZE);
+	protected IIntegerChromosome getLifespanChromosome() {
+		return ButterflyChromosomes.LIFESPAN;
 	}
 
 	@Override
-	public NonNullList<ItemStack> getLootDrop(IEntityButterfly entity, boolean playerKill, int lootLevel) {
-		NonNullList<ItemStack> drop = NonNullList.create();
+	public List<ItemStack> getLootDrop(IEntityButterfly entity, boolean playerKill, int lootLevel) {
+		ArrayList<ItemStack> drop = new ArrayList<>();
 
 		PathfinderMob creature = entity.getEntity();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
@@ -296,13 +243,14 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 	}
 
 	@Override
-	public NonNullList<ItemStack> getCaterpillarDrop(IButterflyNursery nursery, boolean playerKill, int lootLevel) {
-		NonNullList<ItemStack> drop = NonNullList.create();
+	public List<ItemStack> getCaterpillarDrop(IButterflyNursery nursery, boolean playerKill, int lootLevel) {
+		ArrayList<ItemStack> drop = new ArrayList<>();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
-		IProductList products = getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getCaterpillarLoot();
-		for (Product product : products.getPossibleProducts()) {
-			if (rand.nextFloat() < product.getChance() * metabolism) {
-				drop.add(product.copyStack());
+		List<Product> products = getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarLoot();
+
+		for (Product product : products) {
+			if (rand.nextFloat() < product.chance() * metabolism) {
+				drop.add(product.createStack());
 			}
 		}
 
@@ -310,34 +258,35 @@ public class Butterfly extends IndividualLiving implements IButterfly {
 	}
 
 	@Override
-	public NonNullList<ItemStack> getCocoonDrop(IButterflyCocoon cocoon) {
-		NonNullList<ItemStack> drop = NonNullList.create();
+	public List<ItemStack> getCocoonDrop(boolean includeButterfly, IButterflyCocoon cocoon) {
+		ArrayList<ItemStack> drop = new ArrayList<>();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
-		IProductList products = getGenome().getActiveAllele(ButterflyChromosomes.COCOON).getCocoonLoot();
+		List<Product> products = cocoon.getProducts();
 
-		for (Product product : products.getPossibleProducts()) {
-			if (rand.nextFloat() < product.getChance() * metabolism) {
-				drop.add(product.copyStack());
+		for (Product product : products) {
+			if (rand.nextFloat() < product.chance() * metabolism) {
+				drop.add(product.createStack());
 			}
 		}
 
+		IButterflySpeciesType butterflyType = SpeciesUtil.BUTTERFLY_TYPE.get();
+
 		if (ModuleLepidopterology.getSerumChance() > 0) {
 			if (rand.nextFloat() < ModuleLepidopterology.getSerumChance() * metabolism) {
-				ItemStack stack = ButterflyManager.butterflyRoot.getTypes().createStack(this, ButterflyLifeStage.SERUM);
+				ItemStack stack = butterflyType.createStack(this, ButterflyLifeStage.SERUM);
 				if (ModuleLepidopterology.getSecondSerumChance() > 0) {
 					if (rand.nextFloat() < ModuleLepidopterology.getSecondSerumChance() * metabolism) {
 						stack.setCount(2);
 					}
 				}
-				drop.add(ButterflyManager.butterflyRoot.getTypes().createStack(this, ButterflyLifeStage.SERUM));
+				drop.add(butterflyType.createStack(this, ButterflyLifeStage.SERUM));
 			}
 		}
 
-		if (cocoon.isSolid()) {
-			drop.add(ButterflyManager.butterflyRoot.getTypes().createStack(this, ButterflyLifeStage.BUTTERFLY));
+		if (includeButterfly) {
+			drop.add(butterflyType.createStack(this, ButterflyLifeStage.BUTTERFLY));
 		}
 
 		return drop;
 	}
-
 }

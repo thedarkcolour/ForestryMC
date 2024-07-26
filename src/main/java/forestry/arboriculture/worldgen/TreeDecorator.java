@@ -11,11 +11,8 @@
 package forestry.arboriculture.worldgen;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
@@ -33,25 +30,19 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import forestry.Forestry;
-import forestry.api.arboriculture.IGrowthProvider;
 import forestry.api.arboriculture.ITreeSpecies;
-import forestry.api.arboriculture.TreeManager;
+import forestry.api.arboriculture.IGrowthProvider;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.TreeConfig;
 import forestry.arboriculture.commands.TreeGenHelper;
 import forestry.core.config.Config;
 import forestry.core.utils.BlockUtil;
-
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.IGenome;
+import forestry.core.utils.SpeciesUtil;
 
 public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
-	private static final List<ITreeSpecies> SPECIES = new ArrayList<>();
-	private static final HashMap<ResourceLocation, Set<ITree>> biomeCache = new HashMap<>();
+	private static final HashMap<ResourceLocation, HashSet<ITree>> BIOME_CACHE = new HashMap<>();
 
 	public TreeDecorator() {
 		super(NoneFeatureConfiguration.CODEC);
@@ -84,35 +75,16 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 		return null;
 	}
 
-	private static List<IAlleleTreeSpecies> getSpecies() {
-		if (!SPECIES.isEmpty()) {
-			return SPECIES;
-		}
-
-		for (IAllele allele : GeneticsAPI.apiInstance.getAlleleRegistry().getRegisteredAlleles(TreeChromosomes.SPECIES)) {
-			if (allele instanceof IAlleleTreeSpecies alleleTreeSpecies) {
-				if (TreeConfig.getSpawnRarity() > 0) {
-					SPECIES.add(alleleTreeSpecies);
-				}
-			}
-		}
-
-		return SPECIES;
-	}
-
 	private static void generateBiomeCache(WorldGenLevel world, RandomSource rand) {
-		for (IAlleleTreeSpecies species : getSpecies()) {
-			IAllele[] template = TreeManager.treeRoot.getTemplate(species.getId().toString());
-			IGenome genome = TreeManager.treeRoot.templateAsIndividual(template).getGenome();
-			ITree tree = TreeManager.treeRoot.getTree(world.getLevel(), genome);
-			ResourceLocation treeUID = genome.getPrimarySpecies().id();
+		for (ITreeSpecies species : SpeciesUtil.getAllTreeSpecies()) {
 			IGrowthProvider growthProvider = species.getGrowthProvider();
-			for (Biome biome : ForgeRegistries.BIOMES) {
-				Set<ITree> trees = biomeCache.computeIfAbsent(BuiltinRegistries.BIOME.getKey(biome), k -> new HashSet<>());
+
+			world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).holders().forEach(biome -> {
+				HashSet<ITree> trees = BIOME_CACHE.computeIfAbsent(BuiltinRegistries.BIOME.getKey(biome), k -> new HashSet<>());
 				if (growthProvider.isBiomeValid(tree, biome)) {
 					trees.add(tree);
 				}
-			}
+			});
 		}
 	}
 
@@ -127,7 +99,7 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 			return false;
 		}
 
-		if (biomeCache.isEmpty()) {
+		if (BIOME_CACHE.isEmpty()) {
 			generateBiomeCache(level, rand);
 		}
 
@@ -137,12 +109,12 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 
 			Biome biome = level.getBiome(pos).value();
 			ResourceLocation biomeName = level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
-			Set<ITree> trees = biomeCache.computeIfAbsent(biomeName, k -> new HashSet<>());
+			Set<ITree> trees = BIOME_CACHE.computeIfAbsent(biomeName, k -> new HashSet<>());
 
 			for (ITree tree : trees) {
 				ResourceLocation treeUID = tree.getGenome().getPrimarySpecies().id();
 
-				IAlleleTreeSpecies species = tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES);
+				ITreeSpecies species = tree.getSpecies();
 				if (TreeConfig.getSpawnRarity() * globalRarity >= rand.nextFloat()) {
 					BlockPos validPos = getValidPos(level, x, z, tree);
 					if (validPos == null) {

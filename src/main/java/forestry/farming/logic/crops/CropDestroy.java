@@ -50,7 +50,7 @@ public class CropDestroy extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
+	protected List<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		Block block = blockState.getBlock();
 		List<ItemStack> harvested = Block.getDrops(blockState, (ServerLevel) level, pos, level.getBlockEntity(pos));    //TODO - method safety
 		NonNullList<ItemStack> nnHarvested = NonNullList.of(ItemStack.EMPTY, harvested.toArray(new ItemStack[0]));    //TODO very messy

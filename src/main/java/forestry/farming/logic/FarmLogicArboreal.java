@@ -22,7 +22,6 @@ import java.util.Stack;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
@@ -50,7 +49,7 @@ public class FarmLogicArboreal extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	public NonNullList<ItemStack> collect(Level world, IFarmHousing farmHousing) {
+	public List<ItemStack> collect(Level world, IFarmHousing farmHousing) {
 		return collectEntityItems(world, farmHousing, true);
 	}
 
@@ -117,7 +116,7 @@ public class FarmLogicArboreal extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
+	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
 
@@ -132,7 +131,7 @@ public class FarmLogicArboreal extends FarmLogicHomogeneous {
 		return false;
 	}
 
-	private boolean plantSapling(Level world, IFarmHousing farmHousing, BlockPos position, HorizontalDirection direction) {
+	private boolean plantSapling(Level world, IFarmHousing farmHousing, BlockPos position, Direction direction) {
 		Collections.shuffle(getFarmables());
 		for (IFarmable candidate : getFarmables()) {
 			if (farmHousing.plantGermling(candidate, world, position, direction)) {

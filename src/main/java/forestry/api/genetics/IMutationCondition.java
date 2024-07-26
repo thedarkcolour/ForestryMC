@@ -9,8 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-import forestry.api.climate.ClimateState;
-import forestry.api.genetics.alleles.IAllele;
+import forestry.api.climate.IClimateProvider;
 
 public interface IMutationCondition {
 	/**
@@ -18,7 +17,7 @@ public interface IMutationCondition {
 	 * Most will return 1 if the condition is met and 0 otherwise,
 	 * but the float offers flexibility for more advanced conditions.
 	 */
-	float getChance(Level level, BlockPos pos, IAllele firstParent, IAllele secondParent, IGenome firstGenome, IGenome secondGenome, ClimateState climate);
+	float getChance(Level level, BlockPos pos, ISpecies<?> firstParent, ISpecies<?> secondParent, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate);
 
 	/**
 	 * A localized description of the mutation condition. (i.e. "A temperature of HOT is required.")

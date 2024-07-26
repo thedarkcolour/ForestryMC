@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -53,7 +54,6 @@ import net.minecraftforge.common.IPlantable;
 
 import forestry.api.ForestryTags;
 import forestry.api.IForestryApi;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.ICheckPollinatable;
@@ -61,23 +61,21 @@ import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IAllele;
 import forestry.api.lepidopterology.IEntityButterfly;
 import forestry.api.lepidopterology.ILepidopteristTracker;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.core.config.Config;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.ItemStackUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
-import forestry.lepidopterology.genetics.Butterfly;
-import forestry.lepidopterology.genetics.ButterflyHelper;
 
 public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	private static final String NBT_BUTTERFLY = "BTFLY";
-	private static final String NBT_ROOT = "ROT";
+	private static final String NBT_POLLEN_TYPE = "PLNTP";
 	private static final String NBT_POLLEN = "PLN";
 	private static final String NBT_STATE = "STATE";
 	private static final String NBT_EXHAUSTION = "EXH";
@@ -111,7 +109,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 	// Client Rendering
 	@Nullable
-	private forestry.api.lepidopterology.IButterflySpecies species;
+	private IButterflySpecies species;
 	private float size = DEFAULT_BUTTERFLY_SIZE;
 	private EnumButterflyState state = DEFAULT_STATE;
 	@OnlyIn(Dist.CLIENT)
@@ -159,56 +157,58 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 	/* SAVING & LOADING */
 	@Override
-	public void addAdditionalSaveData(CompoundTag compoundNBT) {
-		super.addAdditionalSaveData(compoundNBT);
+	public void addAdditionalSaveData(CompoundTag nbt) {
+		super.addAdditionalSaveData(nbt);
 
-		CompoundTag bio = new CompoundTag();
-		contained.write(bio);
-		compoundNBT.put(NBT_BUTTERFLY, bio);
-
-		if (pollen != null) {
-			CompoundTag pln = new CompoundTag();
-			pln.putString(NBT_ROOT, pollen.getRoot().id().toString());
-			pollen.write(pln);
-			compoundNBT.put(NBT_POLLEN, pln);
+		Tag containedNbt = SpeciesUtil.serializeIndividual(this.contained);
+		if (containedNbt != null) {
+			nbt.put(NBT_BUTTERFLY, containedNbt);
 		}
 
-		compoundNBT.putByte(NBT_STATE, (byte) getState().ordinal());
-		compoundNBT.putInt(NBT_EXHAUSTION, exhaustion);
+		if (pollen != null) {
+			Tag pollenNbt = SpeciesUtil.serializeIndividual(this.pollen);
+			if (pollenNbt != null) {
+				nbt.putString(NBT_POLLEN_TYPE, pollen.getType().id().toString());
+				nbt.put(NBT_POLLEN, pollenNbt);
+			}
+		}
 
-		compoundNBT.putLong(NBT_HOME, getRestrictCenter().asLong());
+		nbt.putByte(NBT_STATE, (byte) getState().ordinal());
+		nbt.putInt(NBT_EXHAUSTION, exhaustion);
+
+		nbt.putLong(NBT_HOME, getRestrictCenter().asLong());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compoundNBT) {
-		super.readAdditionalSaveData(compoundNBT);
+	public void readAdditionalSaveData(CompoundTag nbt) {
+		super.readAdditionalSaveData(nbt);
 
 		IButterfly butterfly = null;
-		if (compoundNBT.contains(NBT_BUTTERFLY)) {
-			butterfly = new Butterfly(compoundNBT.getCompound(NBT_BUTTERFLY));
+		if (nbt.contains(NBT_BUTTERFLY)) {
+			butterfly = SpeciesUtil.deserializeButterfly(nbt.getCompound(NBT_BUTTERFLY));
 		}
 		setIndividual(butterfly);
 
-		if (compoundNBT.contains(NBT_POLLEN)) {
-			CompoundTag pollenNBT = compoundNBT.getCompound(NBT_POLLEN);
-			ISpeciesType<?> root;
-			if (pollenNBT.contains(NBT_ROOT)) {
-				root = GeneticsAPI.apiInstance.getRoot(new ResourceLocation(pollenNBT.getString(NBT_ROOT)));
+		if (nbt.contains(NBT_POLLEN)) {
+			CompoundTag pollenNBT = nbt.getCompound(NBT_POLLEN);
+			ISpeciesType<?, ?> type;
+			if (pollenNBT.contains(NBT_POLLEN_TYPE)) {
+				type = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(new ResourceLocation(pollenNBT.getString(NBT_POLLEN_TYPE)));
 			} else {
-				root = TreeManager.treeRoot;
+				type = SpeciesUtil.TREE_TYPE.get();
 			}
-			pollen = root.create(pollenNBT);
+			pollen = SpeciesUtil.deserializeIndividual(type, pollenNBT);
 		}
 
-		EnumButterflyState butterflyState = EnumButterflyState.VALUES[compoundNBT.getByte(NBT_STATE)];
+		EnumButterflyState butterflyState = EnumButterflyState.VALUES[nbt.getByte(NBT_STATE)];
 		setState(butterflyState);
-		exhaustion = compoundNBT.getInt(NBT_EXHAUSTION);
-		BlockPos home = BlockPos.of(compoundNBT.getLong(NBT_HOME));
+		exhaustion = nbt.getInt(NBT_EXHAUSTION);
+		BlockPos home = BlockPos.of(nbt.getLong(NBT_HOME));
 		restrictTo(home, ModuleLepidopterology.maxDistance);
 	}
 
 	public float getWingFlap(float partialTickTime) {
-		int offset = species != null ? species.getId().toString().hashCode() : level.random.nextInt();
+		int offset = species != null ? species.id().toString().hashCode() : level.random.nextInt();
 		return getState().getWingFlap(this, offset, partialTickTime);
 	}
 
@@ -295,7 +295,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 				if (this.pollen != null) {
 					ICheckPollinatable pollinatable = GeneticsUtil.getCheckPollinatable(level, posBelow);
-					if (pollinatable != null && pollinatable.getPollen().getId().equals(this.pollen.getId())) {
+					if (pollinatable != null && pollinatable.getPollen().getSpecies().equals(this.pollen.getSpecies())) {
 						isSamePollen = true;
 					}
 				}
@@ -452,9 +452,9 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		ItemStack stack = player.getItemInHand(hand);
 		if (stack.is(ForestryTags.Items.SCOOPS)) {
 			if (!level.isClientSide) {
-				IButterflySpeciesType root = ButterflyHelper.getRoot();
-				ILepidopteristTracker tracker = root.getBreedingTracker(level, player.getGameProfile());
-				ItemStack itemStack = root.getTypes().createStack(contained.copy(), ButterflyLifeStage.BUTTERFLY);
+				IButterflySpeciesType type = SpeciesUtil.BUTTERFLY_TYPE.get();
+				ILepidopteristTracker tracker = (ILepidopteristTracker) type.getBreedingTracker(level, player.getGameProfile());
+				ItemStack itemStack = contained.copyWithStage(ButterflyLifeStage.BUTTERFLY);
 
 				tracker.registerCatch(contained);
 				ItemStackUtil.dropItemStackAsEntity(itemStack, level, getX(), getY(), getZ());
@@ -477,15 +477,10 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		// Drop pollen if any
 		IIndividual pollen = getPollen();
+
 		if (pollen != null) {
-			ISpeciesType<IIndividual> definition = GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(pollen);
-			if (definition == null) {
-				return;
-			}
-			definition.ifPresent(root -> {
-				ItemStack pollenStack = root.createStack(pollen, TreeLifeStage.POLLEN);
-				ItemStackUtil.dropItemStackAsEntity(pollenStack, level, getX(), getY(), getZ());
-			});
+			ItemStack pollenStack = pollen.copyWithStage(TreeLifeStage.POLLEN);
+			ItemStackUtil.dropItemStackAsEntity(pollenStack, level, getX(), getY(), getZ());
 		}
 	}
 
@@ -498,13 +493,12 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		if (level.isClientSide) {
 			if (species == null) {
 				String speciesUid = entityData.get(DATAWATCHER_ID_SPECIES);
-				IAllele allele = AlleleUtils.getAllele(speciesUid);
-				if (allele != null) {
-					if (allele instanceof IButterflySpecies) {
-						species = (IButterflySpecies) allele;
-						textureResource = species.getEntityTexture();
-						size = entityData.get(DATAWATCHER_ID_SIZE) / 100f;
-					}
+				IButterflySpecies species = SpeciesUtil.BUTTERFLY_TYPE.get().getSpeciesSafe(new ResourceLocation(speciesUid));
+
+				if (species != null) {
+					this.species = species;
+					this.textureResource = this.species.getEntityTexture();
+					this.size = entityData.get(DATAWATCHER_ID_SIZE) / 100f;
 				}
 			}
 
@@ -588,13 +582,10 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 	@Override
 	public ItemStack getPickedResult(HitResult target) {
-		if (species == null) {
+		if (this.species == null) {
 			return ItemStack.EMPTY;
 		}
-		IButterflySpeciesType root = species.getSpecies();
-		IAllele[] template = root.getTemplates().getTemplate(species.getId().toString());
-		IButterfly butterfly = root.templateAsIndividual(template);
-		return root.getTypes().createStack(butterfly, ButterflyLifeStage.BUTTERFLY);
+		return this.species.createStack(ButterflyLifeStage.BUTTERFLY);
 	}
 
 	@Override
@@ -605,7 +596,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		if (getButterfly().getMate() != null) {
 			return false;
 		}
-		return !getButterfly().isGeneticEqual(butterfly.getButterfly());
+		return !getButterfly().getGenome().isSameAlleles(butterfly.getButterfly().getGenome());
 	}
 
 	@Override

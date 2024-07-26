@@ -90,7 +90,7 @@ public enum FakeAlvearyController implements FakeMultiblockController, IAlvearyC
 
 	@Override
 	public Holder<Biome> getBiome() {
-		return BuiltinRegistries.BIOME.getOrThrow(Biomes.PLAINS);
+		return BuiltinRegistries.BIOME.getHolderOrThrow(Biomes.PLAINS);
 	}
 
 	@Override

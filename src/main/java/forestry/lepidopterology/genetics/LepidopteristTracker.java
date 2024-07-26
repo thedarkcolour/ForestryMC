@@ -16,10 +16,10 @@ import net.minecraft.world.entity.player.Player;
 
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.ILepidopteristTracker;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.genetics.BreedingTracker;
+import forestry.core.utils.SpeciesUtil;
 
 import genetics.api.individual.IIndividual;
 
@@ -29,17 +29,17 @@ public class LepidopteristTracker extends BreedingTracker implements ILepidopter
 	 * Required for creation from map storage
 	 */
 	public LepidopteristTracker() {
-		super("NORMAL");
+		super();
 	}
 
 	public LepidopteristTracker(CompoundTag tag) {
-		super("NORMAL", tag);
+		super(tag);
 	}
 
 	@Override
 	protected IBreedingTracker getBreedingTracker(Player player) {
 		//TODO world cast
-		return ButterflyManager.butterflyRoot.getBreedingTracker(player.level, player.getGameProfile());
+		return SpeciesUtil.BUTTERFLY_TYPE.get().getBreedingTracker(player.level, player.getGameProfile());
 	}
 
 	@Override

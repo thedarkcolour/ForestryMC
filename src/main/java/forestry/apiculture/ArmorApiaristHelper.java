@@ -21,9 +21,8 @@ import forestry.api.apiculture.IArmorApiaristHelper;
 import forestry.api.apiculture.genetics.IBeeEffect;
 
 public class ArmorApiaristHelper implements IArmorApiaristHelper {
-
 	@Override
-	public boolean isArmorApiarist(ItemStack stack, LivingEntity entity, ResourceLocation cause, boolean doProtect) {
+	public boolean isArmorApiarist(ItemStack stack, LivingEntity entity, IBeeEffect cause, boolean doProtect) {
 		if (stack.isEmpty()) {
 			return false;
 		}

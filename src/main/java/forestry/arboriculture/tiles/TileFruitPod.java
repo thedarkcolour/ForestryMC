@@ -10,7 +10,7 @@
  ******************************************************************************/
 package forestry.arboriculture.tiles;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -25,15 +25,11 @@ import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.api.arboriculture.genetics.IFruit;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.genetics.IFruitBearer;
 import forestry.api.genetics.IFruitFamily;
 import forestry.api.genetics.alleles.ForestryAlleles;
-import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.alleles.IRegistryAllele;
 import forestry.api.genetics.products.IProductList;
 import forestry.api.genetics.Product;
 import forestry.arboriculture.features.ArboricultureTiles;
@@ -44,16 +40,17 @@ import forestry.core.utils.RenderUtil;
 
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.IGenome;
+import forestry.core.utils.SpeciesUtil;
+
 import genetics.utils.AlleleUtils;
 
 public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamable {
 
 	private static final short MAX_MATURITY = 2;
-	private static final IGenome defaultGenome = TreeManager.treeRoot.getKaryotype().getDefaultSpecies();
-	private static final IFruit defaultAllele = ForestryAlleles.FRUIT_COCOA;
+	private static final IGenome defaultGenome = SpeciesUtil.TREE_TYPE.get().getKaryotype().getDefaultSpecies();
 
 	private IGenome genome = defaultGenome;
-	private IValueAllele<IFruit> allele = defaultAllele;
+	private IRegistryAllele<IFruit> fruit = ForestryAlleles.FRUIT_COCOA;
 	private short maturity;
 	private float yield;
 
@@ -63,7 +60,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 
 	public void setProperties(IGenome genome, IFruit allele, float yield) {
 		this.genome = genome;
-		this.allele = allele;
+		this.fruit = allele;
 		this.yield = yield;
 		setChanged();
 	}
@@ -75,9 +72,9 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 
 		IAllele stored = AlleleUtils.getAllele(compoundNBT.getString("UID"));
 		if (stored instanceof IFruit fruit) {
-			this.allele = fruit;
+			this.fruit = fruit;
 		} else {
-			this.allele = defaultAllele;
+			this.fruit = defaultAllele;
 		}
 
 		maturity = compoundNBT.getShort("MT");
@@ -87,7 +84,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	@Override
 	public void saveAdditional(CompoundTag compoundNBT) {
 		super.saveAdditional(compoundNBT);
-		compoundNBT.putString("UID", allele.id().toString());
+		compoundNBT.putString("UID", fruit.alleleId().toString());
 		compoundNBT.putShort("MT", maturity);
 		compoundNBT.putFloat("SP", yield);
 	}
@@ -108,7 +105,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	}
 
 	public ItemStack getPickBlock() {
-		IProductList products = allele.getProvider().getProducts();
+		IProductList products = fruit.getProvider().getProducts();
 
 		ItemStack pickBlock = ItemStack.EMPTY;
 		float maxChance = 0.0f;
@@ -124,11 +121,10 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	}
 
 	public NonNullList<ItemStack> getDrops() {
-		return allele.getProvider().getFruits(genome, level, getBlockPos(), maturity);
+		return fruit.getFruits(genome, level, getBlockPos(), maturity);
 	}
 
 	/* NETWORK */
-	@Nullable
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
@@ -141,14 +137,12 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void handleUpdateTag(CompoundTag tag) {
 		super.handleUpdateTag(tag);
 		NBTUtilForestry.readStreamableFromNbt(this, tag);
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		super.onDataPacket(net, pkt);
 		CompoundTag nbt = pkt.getTag();
@@ -162,12 +156,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	}
 
 	@Override
-	public IFruitFamily getFruitFamily() {
-		return allele.getProvider().getFamily();
-	}
-
-	@Override
-	public NonNullList<ItemStack> pickFruit(ItemStack tool) {
+	public List<ItemStack> pickFruit(ItemStack tool) {
 		NonNullList<ItemStack> fruits = getDrops();
 		maturity = 0;
 
@@ -201,8 +190,8 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-		if (allele != defaultAllele) {
-			data.writeUtf(allele.getId().toString());
+		if (fruit != defaultAllele) {
+			data.writeUtf(fruit.getId().toString());
 		} else {
 			data.writeUtf("");
 		}
@@ -212,9 +201,9 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	public void readData(FriendlyByteBuf data) {
 		IAllele stored = AlleleUtils.getAllele(data.readUtf());
 		if (stored instanceof IFruit fruit) {
-			this.allele = fruit;
+			this.fruit = fruit;
 		} else {
-			this.allele = defaultAllele;
+			this.fruit = defaultAllele;
 		}
 		RenderUtil.markForUpdate(getBlockPos());
 	}

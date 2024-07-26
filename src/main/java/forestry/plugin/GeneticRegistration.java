@@ -18,6 +18,7 @@ import forestry.api.plugin.IChromosomeBuilder;
 import forestry.api.plugin.IGeneticRegistration;
 import forestry.api.plugin.IKaryotypeBuilder;
 import forestry.api.plugin.ISpeciesTypeBuilder;
+import forestry.api.plugin.ISpeciesTypeFactory;
 import forestry.api.plugin.ITaxonBuilder;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -74,16 +75,13 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	}
 
 	@Override
-	public ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id, Consumer<IKaryotypeBuilder> karyotype) {
+	public ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id, ISpeciesTypeFactory factory) {
 		Preconditions.checkState(!this.registeredSpecies, "Species must be registered or modified in IForestryPlugin.registerGenetics.");
 
 		if (this.builders.containsKey(id)) {
 			throw new IllegalStateException("A species type was already registered with ID " + id + " - modify it instead using IGeneticRegistration.modifySpeciesType");
 		} else {
-			SpeciesTypeBuilder builder = new SpeciesTypeBuilder(id);
-			builder.setKaryotype(karyotype);
-
-			return builder;
+			return new SpeciesTypeBuilder(factory);
 		}
 	}
 

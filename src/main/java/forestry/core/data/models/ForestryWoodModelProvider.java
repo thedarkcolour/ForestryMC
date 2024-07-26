@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import forestry.api.arboriculture.ForestryWoodType;
-import forestry.api.arboriculture.EnumVanillaWoodType;
+import forestry.arboriculture.ForestryWoodType;
+import forestry.arboriculture.VanillaWoodType;
 import forestry.arboriculture.blocks.BlockForestryDoor;
 import forestry.arboriculture.blocks.BlockForestryFence;
 import forestry.arboriculture.blocks.BlockForestryFenceGate;
@@ -28,7 +28,7 @@ public class ForestryWoodModelProvider extends ForestryBlockStateProvider {
 	@Override
 	protected void registerStatesAndModels() {
 		// Vanilla fireproof wood types
-		for (EnumVanillaWoodType woodType : EnumVanillaWoodType.VALUES) {
+		for (VanillaWoodType woodType : VanillaWoodType.VALUES) {
 			// planks
 			Block planks = ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF.get(woodType).block();
 			String woodTypeName = woodType.getSerializedName();

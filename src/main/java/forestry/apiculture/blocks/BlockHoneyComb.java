@@ -29,7 +29,7 @@ public class BlockHoneyComb extends Block implements IColoredBlock {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter reader, @Nullable BlockPos pos, int tintIndex) {
+	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
 		EnumHoneyComb honeyComb = type;
 		if (tintIndex == 1) {
 			return honeyComb.primaryColor;

@@ -10,14 +10,13 @@
  ******************************************************************************/
 package forestry.farming.logic;
 
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmable;
@@ -29,7 +28,7 @@ public abstract class FarmLogicHomogeneous extends FarmLogicSoil {
 		super(properties, isManual);
 	}
 
-	protected boolean trySetCrop(Level world, IFarmHousing farmHousing, BlockPos position, HorizontalDirection direction) {
+	protected boolean trySetCrop(Level world, IFarmHousing farmHousing, BlockPos position, Direction direction) {
 		for (IFarmable candidate : getFarmables()) {
 			if (farmHousing.plantGermling(candidate, world, position, direction)) {
 				return true;
@@ -44,7 +43,7 @@ public abstract class FarmLogicHomogeneous extends FarmLogicSoil {
 		return maintainSoil(world, farmHousing, pos, direction, extent) || maintainSeedlings(world, farmHousing, pos.above(), direction, extent);
 	}
 
-	private boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
+	private boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		if (!farmHousing.canPlantSoil(isManual)) {
 			return false;
 		}
@@ -84,5 +83,5 @@ public abstract class FarmLogicHomogeneous extends FarmLogicSoil {
 		return false;
 	}
 
-	protected abstract boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent);
+	protected abstract boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent);
 }

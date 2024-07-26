@@ -10,12 +10,10 @@
  ******************************************************************************/
 package forestry.arboriculture.genetics;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
@@ -25,19 +23,14 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.arboriculture.EnumFruitFamily;
-import forestry.api.arboriculture.TreeManager;
+import forestry.api.ForestryCapabilities;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.IFruit;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.IAlyzerPlugin;
-import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.arboriculture.features.ArboricultureItems;
-import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
 import forestry.core.gui.GuiAlyzer;
@@ -45,10 +38,9 @@ import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
 
-import genetics.api.GeneticHelper;
 import forestry.api.genetics.IGenome;
-import genetics.api.organism.IIndividualCapability;
 import forestry.api.genetics.ILifeStage;
+import forestry.core.utils.SpeciesUtil;
 
 public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
@@ -57,7 +49,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 
 	TreeAlyzerPlugin() {
 		NonNullList<ItemStack> treeList = NonNullList.create();
-		ItemGE.addCreativeItems(ArboricultureItems.SAPLING.item(), treeList, false, TreeHelper.getRoot());
+		ItemGE.addCreativeItems(TreeLifeStage.SAPLING, treeList, false, SpeciesUtil.TREE_TYPE.get());
 		for (ItemStack treeStack : treeList) {
 			IIndividualCapability<?> organism = GeneticHelper.getOrganism(treeStack);
 			if (organism.isEmpty()) {
@@ -71,11 +63,11 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			ITree tree = TreeManager.treeRoot.create(stack);
+			ITree tree = SpeciesUtil.TREE_TYPE.get().create(stack);
 			if (tree == null) {
 				return;
 			}
-			ILifeStage type = TreeManager.treeRoot.getTypes().getType(stack);
+			ILifeStage type = SpeciesUtil.TREE_TYPE.get().getTypes().getType(stack);
 			if (type == null) {
 				return;
 			}
@@ -120,111 +112,108 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			ITree tree = TreeManager.treeRoot.create(stack);
-			if (tree == null) {
-				return;
-			}
-			IGenome genome = tree.getGenome();
-			IAlleleTreeSpecies primary = genome.getActiveAllele(TreeChromosomes.SPECIES);
-			IAlleleTreeSpecies secondary = genome.getInactiveAllele(TreeChromosomes.SPECIES);
-			IFruit activeFruit = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS);
-			IFruit inactiveFruit = tree.getGenome().getInactiveAllele(TreeChromosomes.FRUITS);
-			IFruitFamily primaryFamily = activeFruit.getProvider().getFamily();
-			IFruitFamily secondaryFamily = inactiveFruit.getProvider().getFamily();
+			stack.getCapability(ForestryCapabilities.INDIVIDUAL).ifPresent(individual -> {
+				if (individual instanceof ITree tree) {
+					IGenome genome = tree.getGenome();
+					ITreeSpecies primary = genome.getActiveValue(TreeChromosomes.SPECIES);
+					ITreeSpecies secondary = genome.getInactiveValue(TreeChromosomes.SPECIES);
+					IValueAllele<IFruit> activeFruit = genome.getActiveAllele(TreeChromosomes.FRUITS);
+					IValueAllele<IFruit> inactiveFruit = genome.getInactiveAllele(TreeChromosomes.FRUITS);
 
-			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
+					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
-			textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
+					textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
 
-			int speciesDominance0 = guiAlyzer.getColorCoding(primary.isDominant());
-			int speciesDominance1 = guiAlyzer.getColorCoding(genome.getSecondarySpecies().isDominant());
+					int speciesDominance0 = guiAlyzer.getColorCoding(primary.isDominant());
+					int speciesDominance1 = guiAlyzer.getColorCoding(secondary.isDominant());
 
-			textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
-			textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);
+					textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
+					textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);
 
-			textLayout.newLine();
-			textLayout.newLine();
+					textLayout.newLine();
+					textLayout.newLine();
 
-			Component yes = Component.translatable("for.yes");
-			Component no = Component.translatable("for.no");
+					Component yes = Component.translatable("for.yes");
+					Component no = Component.translatable("for.no");
 
-			Component fireproofActive = genome.getActiveValue(TreeChromosomes.FIREPROOF) ? yes : no;
-			Component fireproofInactive = genome.getInactiveValue(TreeChromosomes.FIREPROOF) ? yes : no;
+					Component fireproofActive = genome.getActiveValue(TreeChromosomes.FIREPROOF) ? yes : no;
+					Component fireproofInactive = genome.getInactiveValue(TreeChromosomes.FIREPROOF) ? yes : no;
 
-			guiAlyzer.drawRow(transform, Component.translatable("for.gui.fireproof"), fireproofActive, fireproofInactive, tree, TreeChromosomes.FIREPROOF);
+					guiAlyzer.drawRow(transform, Component.translatable("for.gui.fireproof"), fireproofActive, fireproofInactive, tree, TreeChromosomes.FIREPROOF);
 
-			textLayout.newLine();
+					textLayout.newLine();
+/*
+					// todo this was PlantType, displayed as "soil". should there be soil types for trees?
+					textLayout.drawLine(transform, Component.translatable("for.gui.native"), GuiAlyzer.COLUMN_0);
+					textLayout.drawLine(transform, Component.translatable("for.gui." + primary.getPlantType().getName()), GuiAlyzer.COLUMN_1,
+							speciesDominance0);
+					textLayout.drawLine(transform, Component.translatable("for.gui." + secondary.getPlantType().getName()), GuiAlyzer.COLUMN_2,
+							speciesDominance1);
 
-			textLayout.drawLine(transform, Component.translatable("for.gui.native"), GuiAlyzer.COLUMN_0);
-			textLayout.drawLine(transform, Component.translatable("for.gui." + primary.getPlantType().getName()), GuiAlyzer.COLUMN_1,
-					speciesDominance0);
-			textLayout.drawLine(transform, Component.translatable("for.gui." + secondary.getPlantType().getName()), GuiAlyzer.COLUMN_2,
-					speciesDominance1);
+					textLayout.newLine();
 
-			textLayout.newLine();
+					 FRUIT FAMILIES
+					textLayout.drawLine(transform, Component.translatable("for.gui.supports"), GuiAlyzer.COLUMN_0);
+					List<IFruitFamily> families0 = new ArrayList<>(primary.getSuitableFruit());
+					List<IFruitFamily> families1 = new ArrayList<>(secondary.getSuitableFruit());
 
-			// FRUITS
-			textLayout.drawLine(transform, Component.translatable("for.gui.supports"), GuiAlyzer.COLUMN_0);
-			List<IFruitFamily> families0 = new ArrayList<>(primary.getSuitableFruit());
-			List<IFruitFamily> families1 = new ArrayList<>(secondary.getSuitableFruit());
+					int max = Math.max(families0.size(), families1.size());
+					for (int i = 0; i < max; i++) {
+						if (i > 0) {
+							textLayout.newLineCompressed();
+						}
 
-			int max = Math.max(families0.size(), families1.size());
-			for (int i = 0; i < max; i++) {
-				if (i > 0) {
-					textLayout.newLineCompressed();
+						if (families0.size() > i) {
+							textLayout.drawLine(transform, families0.get(i).getName(), GuiAlyzer.COLUMN_1, speciesDominance0);
+						}
+						if (families1.size() > i) {
+							textLayout.drawLine(transform, families1.get(i).getName(), GuiAlyzer.COLUMN_2, speciesDominance1);
+						}
+
+					}
+
+					textLayout.newLine();
+
+					int fruitDominance0 = guiAlyzer.getColorCoding(activeFruit.dominant());
+					int fruitDominance1 = guiAlyzer.getColorCoding(inactiveFruit.dominant());
+
+					textLayout.drawLine(transform, Component.translatable("for.gui.fruits"), GuiAlyzer.COLUMN_0);
+					ChatFormatting strike = ChatFormatting.RESET;
+					if (!tree.canBearFruit() && activeFruit != AlleleFruits.fruitNone) {
+						strike = ChatFormatting.STRIKETHROUGH;
+					}
+					textLayout.drawLine(transform, activeFruit.getProvider().getDescription().withStyle(strike), GuiAlyzer.COLUMN_1, fruitDominance0);
+
+					strike = ChatFormatting.RESET;
+					if (!secondary.getSuitableFruit().contains(inactiveFruit.getProvider().getFamily()) && inactiveFruit != AlleleFruits.fruitNone) {
+						strike = ChatFormatting.STRIKETHROUGH;
+					}
+					textLayout.drawLine(transform, inactiveFruit.getProvider().getDescription().withStyle(strike), GuiAlyzer.COLUMN_2, fruitDominance1);
+
+					textLayout.newLine();
+
+					textLayout.drawLine(transform, Component.translatable("for.gui.family"), GuiAlyzer.COLUMN_0);
+
+					if (!primaryFamily.getUID().equals(EnumFruitFamily.NONE.getUID())) {
+						textLayout.drawLine(transform, primaryFamily.getName(), GuiAlyzer.COLUMN_1, fruitDominance0);
+					}
+					if (!secondaryFamily.getUID().equals(EnumFruitFamily.NONE.getUID())) {
+						textLayout.drawLine(transform, secondaryFamily.getName(), GuiAlyzer.COLUMN_2, fruitDominance1);
+					}*/
+
+					textLayout.endPage(transform);
 				}
-
-				if (families0.size() > i) {
-					textLayout.drawLine(transform, families0.get(i).getName(), GuiAlyzer.COLUMN_1, speciesDominance0);
-				}
-				if (families1.size() > i) {
-					textLayout.drawLine(transform, families1.get(i).getName(), GuiAlyzer.COLUMN_2, speciesDominance1);
-				}
-
-			}
-
-			textLayout.newLine();
-
-			int fruitDominance0 = guiAlyzer.getColorCoding(activeFruit.isDominant());
-			int fruitDominance1 = guiAlyzer.getColorCoding(inactiveFruit.isDominant());
-
-			textLayout.drawLine(transform, Component.translatable("for.gui.fruits"), GuiAlyzer.COLUMN_0);
-			ChatFormatting strike = ChatFormatting.RESET;
-			if (!tree.canBearFruit() && activeFruit != AlleleFruits.fruitNone) {
-				strike = ChatFormatting.STRIKETHROUGH;
-			}
-			textLayout.drawLine(transform, activeFruit.getProvider().getDescription().withStyle(strike), GuiAlyzer.COLUMN_1, fruitDominance0);
-
-			strike = ChatFormatting.RESET;
-			if (!secondary.getSuitableFruit().contains(inactiveFruit.getProvider().getFamily()) && inactiveFruit != AlleleFruits.fruitNone) {
-				strike = ChatFormatting.STRIKETHROUGH;
-			}
-			textLayout.drawLine(transform, inactiveFruit.getProvider().getDescription().withStyle(strike), GuiAlyzer.COLUMN_2, fruitDominance1);
-
-			textLayout.newLine();
-
-			textLayout.drawLine(transform, Component.translatable("for.gui.family"), GuiAlyzer.COLUMN_0);
-
-			if (!primaryFamily.getUID().equals(EnumFruitFamily.NONE.getUID())) {
-				textLayout.drawLine(transform, primaryFamily.getName(), GuiAlyzer.COLUMN_1, fruitDominance0);
-			}
-			if (!secondaryFamily.getUID().equals(EnumFruitFamily.NONE.getUID())) {
-				textLayout.drawLine(transform, secondaryFamily.getName(), GuiAlyzer.COLUMN_2, fruitDominance1);
-			}
-
-			textLayout.endPage(transform);
+			});
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawAnalyticsPage3(PoseStack transform, ItemStack itemStack, Screen gui) {
+	public void drawAnalyticsPage3(PoseStack transform, Screen gui, ItemStack itemStack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			ITree tree = TreeManager.treeRoot.create(itemStack);
+			ITree tree = SpeciesUtil.TREE_TYPE.get().create(itemStack);
 			if (tree == null) {
 				return;
 			}

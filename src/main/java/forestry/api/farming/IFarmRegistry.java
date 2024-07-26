@@ -11,8 +11,9 @@ import java.util.Collection;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public interface IFarmRegistry {
+import forestry.farming.logic.FarmProperties;
 
+public interface IFarmRegistry {
 	/**
 	 * Registers farming logic in registry
 	 *
@@ -57,4 +58,5 @@ public interface IFarmRegistry {
 	@Nullable
 	IFarmProperties getProperties(String identifier);
 
+	IFarmProperties registerProperties(String identifier, FarmProperties properties);
 }

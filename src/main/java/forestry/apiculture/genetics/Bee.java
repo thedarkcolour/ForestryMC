@@ -25,7 +25,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -34,16 +33,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import forestry.api.IForestryApi;
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
-import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeEffect;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.climate.IClimateManager;
 import forestry.api.core.ForestryError;
@@ -53,96 +52,70 @@ import forestry.api.core.TemperatureType;
 import forestry.api.core.ToleranceType;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.ClimateHelper;
-import forestry.api.genetics.ForestrySpeciesTypes;
-import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.IMutation;
-import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.Product;
-import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.AllelePair;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.alleles.IIntegerChromosome;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.genetics.GenericRatings;
 import forestry.core.genetics.IndividualLiving;
+import forestry.core.genetics.mutations.Mutation;
 import forestry.core.utils.GeneticsUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
-
-import forestry.core.genetics.Genome;
 
 import deleteme.Todos;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 
-public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implements IBee {
-	private static final String NBT_NATURAL = "NA";
-	private static final String NBT_GENERATION = "GEN";
+public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> implements IBee {
+	public static final Codec<Bee> CODEC = RecordCodecBuilder.create(instance -> {
+		Codec<IGenome> genomeCodec = SpeciesUtil.BEE_TYPE.get().getKaryotype().getGenomeCodec();
+
+		return instance.group(
+				genomeCodec.fieldOf("genome").forGetter(IIndividual::getGenome),
+				genomeCodec.optionalFieldOf("mate", null).forGetter(IIndividual::getMate),
+				Codec.BOOL.fieldOf("pristine").forGetter(IBee::isPristine),
+				Codec.INT.optionalFieldOf("generation", 0).forGetter(IBee::getGeneration)
+		).apply(instance, Bee::new);
+	});
 
 	private int generation;
-	private boolean isPristine = true;
-
-	/* CONSTRUCTOR */
-	public Bee(CompoundTag nbt) {
-		super(nbt);
-
-		if (nbt.contains(NBT_NATURAL)) {
-			this.isPristine = nbt.getBoolean(NBT_NATURAL);
-		}
-
-		if (nbt.contains(NBT_GENERATION)) {
-			this.generation = nbt.getInt(NBT_GENERATION);
-		}
-	}
+	private boolean pristine = true;
 
 	public Bee(IGenome genome) {
-		this(genome, (IGenome) null);
+		super(genome);
 	}
 
+	// for codec. other places should use setters
+	private Bee(IGenome genome, @Nullable IGenome mate, boolean pristine, int generation) {
+		super(genome);
 
-	public Bee(IGenome genome, IBee mate) {
-		this(genome, mate.getGenome());
-	}
-
-
-	public Bee(IGenome genome, @Nullable IGenome mate) {
-		this(genome, mate, true, 0);
-	}
-
-	private Bee(IGenome genome, @Nullable IGenome mate, boolean isPristine, int generation) {
-		super(genome, mate, genome.getActiveValue(BeeChromosomes.LIFESPAN));
-		this.isPristine = isPristine;
+		this.mate = mate;
+		this.pristine = pristine;
 		this.generation = generation;
 	}
 
 	@Override
-	public CompoundTag write(CompoundTag compound) {
-
-		compound = super.write(compound);
-
-		if (!isPristine) {
-			compound.putBoolean(NBT_NATURAL, false);
-		}
-
-		if (generation > 0) {
-			compound.putInt(NBT_GENERATION, generation);
-		}
-		return compound;
+	protected IIntegerChromosome getLifespanChromosome() {
+		return BeeChromosomes.LIFESPAN;
 	}
 
 	@Override
-	public void setIsNatural(boolean flag) {
-		this.isPristine = flag;
+	public void setPristine(boolean pristine) {
+		this.pristine = pristine;
 	}
 
 	@Override
 	public boolean isPristine() {
-		return this.isPristine;
+		return this.pristine;
 	}
 
 	@Override
@@ -222,7 +195,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 
 		Set<IError> errorStates = new HashSet<>();
 
-		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 
 		// / Rain needs tolerant flyers
 		if (housing.isRaining() && !canFlyInRain(beeModifier)) {
@@ -456,7 +429,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 		IBeeSpecies primary = genome.getActiveValue(BeeChromosomes.SPECIES);
 		IBeeSpecies secondary = genome.getInactiveValue(BeeChromosomes.SPECIES);
 
-		IBeeModifier beeHousingModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeHousingModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 		//IBeeModifier beeModeModifier = mode.getBeeModifier();
 
 		// Bee genetic speed * beehousing * beekeeping mode
@@ -527,7 +500,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 
 		for (int i = 0; i < toCreate; i++) {
 			IBee offspring = createOffspring(housing, mate, 0);
-			offspring.setIsNatural(true);
+			offspring.setPristine(true);
 			bees.add(offspring);
 		}
 
@@ -535,97 +508,32 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 	}
 
 	private IBee createOffspring(IBeeHousing housing, IGenome mate, int generation) {
-		RandomSource rand = housing.getWorldObj().random;
+		SpeciesUtil.ISpeciesMutator mutator = (p1, p2) -> mutateSpecies(housing, p1, p2);
 
-		IKaryotype karyotype = this.genome.getKaryotype();
-		Genome.Builder genome = new Genome.Builder(karyotype);
-		ImmutableList<AllelePair<?>> parent1 = this.genome.getAllelePairs();
-		ImmutableList<AllelePair<?>> parent2 = mate.getAllelePairs();
-
-		// Check for mutation. Replace one of the parents with the mutation
-		// template if mutation occurred.
-		ImmutableList<AllelePair<?>> mutated1 = mutateSpecies(housing, this.genome, mate);
-		if (mutated1 != null) {
-			parent1 = mutated1;
-		}
-		ImmutableList<AllelePair<?>> mutated2 = mutateSpecies(housing, mate, this.genome);
-		if (mutated2 != null) {
-			parent2 = mutated2;
-		}
-
-		ImmutableList<IChromosome<?>> chromosomes = karyotype.getChromosomes();
-		for (int i = 0; i < chromosomes.size(); i++) {
-			IChromosome<?> chromosome = chromosomes.get(i);
-			AllelePair parent = parent1.get(i);
-			genome.setUnchecked(chromosome, parent.inheritOther(rand, parent2.get(i)));
-		}
-
-		//IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(level);
-		return new Bee(genome.build(), null, this.isPristine, generation); /*mode.isOffspringPristine(this)*/
+		return SpeciesUtil.createOffspring(housing.getWorldObj().random, this.genome, mate, mutator, genome -> {
+			//IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(level);
+			return new Bee(genome, null, this.pristine, generation); /*mode.isOffspringPristine(this)*/
+		});
 	}
 
 	@Nullable
+	@SuppressWarnings("CodeBlock2Expr")
 	private static ImmutableList<AllelePair<?>> mutateSpecies(IBeeHousing housing, IGenome parent1, IGenome parent2) {
-		Level level = housing.getWorldObj();
-
-		IGenome genome0;
-		IGenome genome1;
-
-		IBeeSpecies firstParent;
-		IBeeSpecies secondParent;
-
-		if (level.random.nextBoolean()) {
-			firstParent = parent1.getActiveValue(BeeChromosomes.SPECIES);
-			secondParent = parent2.getInactiveValue(BeeChromosomes.SPECIES);
-
-			genome0 = parent1;
-			genome1 = parent2;
-		} else {
-			firstParent = parent2.getActiveValue(BeeChromosomes.SPECIES);
-			secondParent = parent1.getInactiveValue(BeeChromosomes.SPECIES);
-
-			genome0 = parent2;
-			genome1 = parent1;
-		}
-
-		GameProfile playerProfile = housing.getOwner();
-		IBreedingTracker breedingTracker = IForestryApi.INSTANCE.getGeneticManager().getBreedingTracker(level, playerProfile);
-
-		IMutationManager<IBeeSpecies> container = IForestryApi.INSTANCE.getGeneticManager().getMutations(ForestrySpeciesTypes.BEE);
-		List<? extends IMutation<?>> combinations = container.getCombinations(firstParent, secondParent);
-		for (IMutation<?> mutation : combinations) {
-			float chance = getChance(mutation, housing, firstParent, secondParent, genome0, genome1);
-			if (chance <= 0) {
-				continue;
-			}
-
-			// boost chance for researched mutations
-			if (breedingTracker.isResearched(mutation)) {
-				float mutationBoost = chance * (Config.researchMutationBoostMultiplier - 1.0f);
-				mutationBoost = Math.min(Config.maxResearchMutationBoostPercent, mutationBoost);
-				chance += mutationBoost;
-			}
-
-			// mutate
-			if (chance > level.random.nextFloat() * 100) {
-				breedingTracker.registerMutation(mutation);
-				return mutation.getResult().getDefaultGenome().getAllelePairs();
-			}
-		}
-
-		return null;
+		return SpeciesUtil.mutateSpecies(housing.getWorldObj(), housing.getCoordinates(), housing.getOwner(), parent1, parent2, BeeChromosomes.SPECIES, (mutation, level, pos, firstParent, secondParent, firstGenome, secondGenome, climate) -> {
+			return getChance(mutation, housing, firstParent, secondParent, firstGenome, secondGenome);
+		});
 	}
 
 	private static float getChance(IMutation<?> mutation, IBeeHousing housing, IBeeSpecies firstParent, IBeeSpecies secondParent, IGenome genome0, IGenome genome1) {
 		Level level = housing.getWorldObj();
 		BlockPos housingPos = housing.getCoordinates();
 
-		float processedChance = super.getChance(level, housingPos, firstParent, secondParent, genome0, genome1, housing.getClimate());
+		float processedChance = Mutation.getChance(mutation, level, housingPos, firstParent, secondParent, genome0, genome1, housing);
 		if (processedChance <= 0) {
 			return 0;
 		}
 
-		IBeeModifier beeHousingModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeHousingModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 		//IBeeModifier beeModeModifier = BeeManager.beeRoot.getBeekeepingMode(world).getBeeModifier();
 
 		processedChance *= beeHousingModifier.getMutationModifier(genome0, genome1, processedChance);
@@ -638,7 +546,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 	@Nullable
 	@Override
 	public IIndividual retrievePollen(IBeeHousing housing) {
-		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 
 		int chance = Math.round(genome.getActiveValue(BeeChromosomes.POLLINATION) * beeModifier.getFloweringModifier(getGenome(), 1f));
 
@@ -669,13 +577,12 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 
 	@Override
 	public boolean pollinateRandom(IBeeHousing housing, IIndividual pollen) {
-
-		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 
 		int chance = (int) (genome.getActiveValue(BeeChromosomes.POLLINATION) * beeModifier.getFloweringModifier(getGenome(), 1f));
 
-		Level world = housing.getWorldObj();
-		RandomSource random = world.random;
+		Level level = housing.getWorldObj();
+		RandomSource random = level.random;
 
 		// Correct speed
 		if (random.nextInt(100) >= chance) {
@@ -691,19 +598,19 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 			BlockPos randomPos = VecUtil.getRandomPositionInArea(random, area);
 			BlockPos posBlock = VecUtil.sum(housingPos, randomPos, offset);
 
-			ICheckPollinatable checkPollinatable = GeneticsUtil.getCheckPollinatable(world, posBlock);
+			ICheckPollinatable checkPollinatable = GeneticsUtil.getCheckPollinatable(level, posBlock);
 			if (checkPollinatable == null) {
 				continue;
 			}
 
-			if (!genome.getActiveValue(BeeChromosomes.FLOWER_TYPE).isAcceptableFlower(world, posBlock)) {
+			if (!genome.getActiveValue(BeeChromosomes.FLOWER_TYPE).isAcceptableFlower(level, posBlock)) {
 				continue;
 			}
 			if (!checkPollinatable.canMateWith(pollen)) {
 				continue;
 			}
 
-			IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(housing.getOwner(), world, posBlock, Config.pollinateVanillaTrees);
+			IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(housing.getOwner(), level, posBlock, Config.pollinateVanillaTrees);
 
 			if (realPollinatable != null) {
 				realPollinatable.mateWith(pollen);
@@ -717,7 +624,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 	@Nullable
 	@Override
 	public BlockPos plantFlowerRandom(IBeeHousing housing, List<BlockState> potentialFlowers) {
-		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 
 		int chance = Math.round(genome.getActiveValue(BeeChromosomes.POLLINATION) * beeModifier.getFloweringModifier(getGenome(), 1f));
 
@@ -747,7 +654,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 
 	@Override
 	public Iterator<BlockPos.MutableBlockPos> getAreaIterator(IBeeHousing housing) {
-		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 		Vec3i area = getArea(this.genome, beeModifier);
 		BlockPos housingPos = housing.getCoordinates();
 		BlockPos minPos = housingPos.offset(-area.getX() / 2, -area.getY() / 2, -area.getZ() / 2);
@@ -763,7 +670,10 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBeeSpeciesType> implemen
 	}
 
 	@Override
-	public ItemStack copyWithStage(ILifeStage stage) {
-		throw Todos.unimplemented();
+	public IBee copy() {
+		Bee individual = (Bee) super.copy();
+		individual.pristine = this.pristine;
+		individual.generation = this.generation;
+		return individual;
 	}
 }

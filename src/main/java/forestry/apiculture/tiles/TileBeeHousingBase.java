@@ -31,7 +31,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.ForestryCapabilities;
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.climate.IClimatised;
@@ -45,6 +44,7 @@ import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
 import forestry.core.render.ParticleRender;
 import forestry.core.tiles.TileBase;
+import forestry.core.utils.SpeciesUtil;
 
 public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing, IOwnedTile, IClimatised, IGuiBeeHousingDelegate, IStreamableGui {
 	private final String hintKey;
@@ -58,7 +58,7 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 	protected TileBeeHousingBase(BlockEntityType<?> type, BlockPos pos, BlockState state, String hintKey) {
 		super(type, pos, state);
 		this.hintKey = hintKey;
-		this.beeLogic = BeeManager.beeRoot.createBeekeepingLogic(this);
+		this.beeLogic = SpeciesUtil.BEE_TYPE.get().createBeekeepingLogic(this);
 		this.climateListener = new ClimateListener(this);
 	}
 

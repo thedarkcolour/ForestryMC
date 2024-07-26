@@ -15,9 +15,8 @@ import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.climate.IClimateProvider;
 import forestry.api.core.IErrorLogicSource;
 import forestry.api.core.ILocatable;
-import forestry.api.genetics.IHousing;
 
-public interface IBeeHousing extends IHousing, IErrorLogicSource, IClimateProvider, ILocatable {
+public interface IBeeHousing extends IErrorLogicSource, IClimateProvider, ILocatable {
 
 	/**
 	 * Used by {@link IBeeSpeciesType#createBeeHousingModifier(IBeeHousing)}

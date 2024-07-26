@@ -13,17 +13,16 @@ package forestry.factory.blocks;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.core.Direction;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import forestry.core.blocks.BlockBase;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.blocks.IMachinePropertiesTesr;
 import forestry.core.blocks.MachinePropertiesTesr;
 import forestry.core.config.Constants;
-import forestry.core.proxy.Proxies;
 import forestry.core.tiles.IForestryTicker;
 import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileMill;
@@ -60,7 +59,8 @@ public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
 		final VoxelShape ewFront = Block.box(0D, 0D, 0D, 4, 16, 16);
 		final VoxelShape ewBack = Block.box(12D, 0D, 0D, 16, 16, 16);
 		final VoxelShape ew = Shapes.or(ewBase, ewFront, ewBack);
-		MachinePropertiesTesr<T> machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
+
+		this.machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
 				.setParticleTexture(name + ".0")
 				.setServerTicker(serverTicker)
 				.setShape((state, reader, pos, context) -> {
@@ -68,22 +68,19 @@ public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
 					return (direction == Direction.NORTH || direction == Direction.SOUTH) ? ns : ew;
 				})
 				.create();
-		Proxies.render.setRenderDefaultMachine(machineProperties, Constants.TEXTURE_PATH_BLOCK + "/" + name + "_");
-		this.machineProperties = machineProperties;
 	}
 
 	<T extends TileMill> BlockTypeFactoryTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, String renderMillTexture) {
 		final VoxelShape pedestal = Block.box(0D, 0D, 0D, 16, 1, 16);
 		final VoxelShape column = Block.box(5D, 1D, 4D, 11, 16, 12);
 		final VoxelShape extension = Block.box(1D, 8D, 7D, 15, 10, 9);
-		MachinePropertiesTesr<T> machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
+
+		this.machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
 				.setParticleTexture(name + ".0")
 				.setShape(() -> Shapes.or(pedestal, column, extension))
 				.setClientTicker(TileMill::clientTick)
 				.setServerTicker(TileMill::serverTick)
 				.create();
-		Proxies.render.setRenderMill(machineProperties, renderMillTexture);
-		this.machineProperties = machineProperties;
 	}
 
 	@Override

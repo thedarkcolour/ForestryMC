@@ -53,11 +53,11 @@ public class BeeChromosomes {
 	/**
 	 * The type of flowers this bee needs to work. Also includes flowers that a bee can plant.
 	 */
-	public static final IValueChromosome<IFlowerType> FLOWER_TYPE = ForestryAlleles.REGISTRY.valueChromosome(forestry("flower_type"), IFlowerType.class);
+	public static final IRegistryChromosome<IFlowerType> FLOWER_TYPE = ForestryAlleles.REGISTRY.registryChromosome(forestry("flower_type"), IFlowerType.class);
 	/**
 	 * Determines the effect of a bee species. Its range is determined by {@link #TERRITORY}.
 	 */
-	public static final IValueChromosome<IBeeEffect> EFFECT = ForestryAlleles.REGISTRY.valueChromosome(forestry("bee_effect"), IBeeEffect.class);
+	public static final IRegistryChromosome<IBeeEffect> EFFECT = ForestryAlleles.REGISTRY.registryChromosome(forestry("bee_effect"), IBeeEffect.class);
 	/**
 	 * Determines how fast the hive can pollinate trees and plant flowers. Range is determined by {@link #TERRITORY}.
 	 */

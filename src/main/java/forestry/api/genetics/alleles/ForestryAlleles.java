@@ -3,40 +3,20 @@ package forestry.api.genetics.alleles;
 import java.util.List;
 
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
+import forestry.api.ForestryConstants;
 import forestry.api.IForestryApi;
-import forestry.api.apiculture.ForestryFlowerType;
+import forestry.api.apiculture.ForestryBeeEffects;
+import forestry.api.apiculture.ForestryFlowerTypes;
 import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBeeEffect;
+import forestry.api.arboriculture.ForestryFruits;
 import forestry.api.arboriculture.genetics.IFruit;
-import forestry.api.arboriculture.genetics.ILeafEffect;
+import forestry.api.arboriculture.genetics.ITreeEffect;
 import forestry.api.core.ToleranceType;
+import forestry.api.lepidopterology.ForestryCocoons;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.IButterflyEffect;
-import forestry.apiculture.genetics.effects.AggressiveBeeEffect;
-import forestry.apiculture.genetics.effects.Creeper;
-import forestry.apiculture.genetics.effects.ExplorationBeeEffect;
-import forestry.apiculture.genetics.effects.FertileBeeEffect;
-import forestry.apiculture.genetics.effects.FungificationBeeEffect;
-import forestry.apiculture.genetics.effects.GlacialBeeEffect;
-import forestry.apiculture.genetics.effects.HeroicBeeEffect;
-import forestry.apiculture.genetics.effects.IgnitionBeeEffect;
-import forestry.apiculture.genetics.effects.MisanthropeBeeEffect;
-import forestry.apiculture.genetics.effects.DummyBeeEffect;
-import forestry.apiculture.genetics.effects.PotionBeeEffect;
-import forestry.apiculture.genetics.effects.RadioactiveBeeEffect;
-import forestry.apiculture.genetics.effects.RepulsionBeeEffect;
-import forestry.apiculture.genetics.effects.ResurrectionBeeEffect;
-import forestry.apiculture.genetics.effects.SnowingBeeEffect;
-import forestry.arboriculture.DummyFruit;
-import forestry.arboriculture.PodFruit;
-import forestry.arboriculture.RipeningFruit;
-
-import deleteme.Todos;
-import static forestry.api.ForestryConstants.MOD_ID;
 
 /**
  * All alleles defined by base Forestry. Although the field names might seem to suggest that they're
@@ -53,8 +33,6 @@ public class ForestryAlleles {
 	public static final IBooleanAllele TRUE_RECESSIVE = REGISTRY.booleanAllele(true, false);
 	public static final IBooleanAllele FALSE_RECESSIVE = REGISTRY.booleanAllele(false, false);
 
-	public static final List<IBooleanAllele> DEFAULT_BOOLEANS = List.of(TRUE, FALSE);
-
 	// Lifespan
 	public static final IIntegerAllele LIFESPAN_SHORTEST = REGISTRY.intAllele(10, true);
 	public static final IIntegerAllele LIFESPAN_SHORTER = REGISTRY.intAllele(20, true);
@@ -65,6 +43,8 @@ public class ForestryAlleles {
 	public static final IIntegerAllele LIFESPAN_LONG = REGISTRY.intAllele(50);
 	public static final IIntegerAllele LIFESPAN_LONGER = REGISTRY.intAllele(60);
 	public static final IIntegerAllele LIFESPAN_LONGEST = REGISTRY.intAllele(70);
+
+	public static final List<IIntegerAllele> DEFAULT_LIFESPANS = List.of(LIFESPAN_SHORTEST, LIFESPAN_SHORTER, LIFESPAN_SHORT, LIFESPAN_SHORTENED, LIFESPAN_NORMAL, LIFESPAN_ELONGATED, LIFESPAN_LONG, LIFESPAN_LONGER, LIFESPAN_LONGEST);
 
 	// Fertility
 	public static final IIntegerAllele FERTILITY_1 = REGISTRY.intAllele(1, true);
@@ -79,8 +59,8 @@ public class ForestryAlleles {
 	public static final IIntegerAllele FERTILITY_9 = REGISTRY.intAllele(9);
 	public static final IIntegerAllele FERTILITY_10 = REGISTRY.intAllele(10);
 
-	public static final List<IIntegerAllele> BEE_FERTILITIES = List.of(FERTILITY_1, FERTILITY_2, FERTILITY_3, FERTILITY_4);
-	public static final List<IIntegerAllele> BUTTERFLY_FERTILITIES = List.of(FERTILITY_1, FERTILITY_2, FERTILITY_3, FERTILITY_4, FERTILITY_5, FERTILITY_6, FERTILITY_7, FERTILITY_8, FERTILITY_9, FERTILITY_10);
+	public static final List<IIntegerAllele> DEFAULT_BEE_FERTILITIES = List.of(FERTILITY_1, FERTILITY_2, FERTILITY_3, FERTILITY_4);
+	public static final List<IIntegerAllele> DEFAULT_BUTTERFLY_FERTILITIES = List.of(FERTILITY_1, FERTILITY_2, FERTILITY_3, FERTILITY_4, FERTILITY_5, FERTILITY_6, FERTILITY_7, FERTILITY_8, FERTILITY_9, FERTILITY_10);
 
 	// Pollination
 	public static final IIntegerAllele POLLINATION_SLOWEST = REGISTRY.intAllele(5, true);
@@ -95,23 +75,23 @@ public class ForestryAlleles {
 	public static final List<IIntegerAllele> DEFAULT_POLLINATIONS = List.of(POLLINATION_SLOWEST, POLLINATION_SLOWER, POLLINATION_SLOW, POLLINATION_AVERAGE, POLLINATION_FAST, POLLINATION_FASTER, POLLINATION_FASTEST, POLLINATION_MAXIMUM);
 
 	// Tolerance
-	public static final IValueAllele<ToleranceType> TOLERANCE_NONE = REGISTRY.valueAllele(ToleranceType.NONE);
-	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_1 = REGISTRY.valueAllele(ToleranceType.BOTH_1, true);
-	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_2 = REGISTRY.valueAllele(ToleranceType.BOTH_2);
-	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_3 = REGISTRY.valueAllele(ToleranceType.BOTH_3);
-	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_4 = REGISTRY.valueAllele(ToleranceType.BOTH_4);
-	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_5 = REGISTRY.valueAllele(ToleranceType.BOTH_5);
-	public static final IValueAllele<ToleranceType> TOLERANCE_UP_1 = REGISTRY.valueAllele(ToleranceType.UP_1, true);
-	public static final IValueAllele<ToleranceType> TOLERANCE_UP_2 = REGISTRY.valueAllele(ToleranceType.UP_2);
-	public static final IValueAllele<ToleranceType> TOLERANCE_UP_3 = REGISTRY.valueAllele(ToleranceType.UP_3);
-	public static final IValueAllele<ToleranceType> TOLERANCE_UP_4 = REGISTRY.valueAllele(ToleranceType.UP_4);
-	public static final IValueAllele<ToleranceType> TOLERANCE_UP_5 = REGISTRY.valueAllele(ToleranceType.UP_5);
-	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_1 = REGISTRY.valueAllele(ToleranceType.DOWN_1, true);
-	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_2 = REGISTRY.valueAllele(ToleranceType.DOWN_2);
-	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_3 = REGISTRY.valueAllele(ToleranceType.DOWN_3);
-	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_4 = REGISTRY.valueAllele(ToleranceType.DOWN_4);
-	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_5 = REGISTRY.valueAllele(ToleranceType.DOWN_5);
-	
+	public static final IValueAllele<ToleranceType> TOLERANCE_NONE = REGISTRY.valueAllele(ToleranceType.NONE, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_1 = REGISTRY.valueAllele(ToleranceType.BOTH_1, true, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_2 = REGISTRY.valueAllele(ToleranceType.BOTH_2, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_3 = REGISTRY.valueAllele(ToleranceType.BOTH_3, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_4 = REGISTRY.valueAllele(ToleranceType.BOTH_4, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_BOTH_5 = REGISTRY.valueAllele(ToleranceType.BOTH_5, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_UP_1 = REGISTRY.valueAllele(ToleranceType.UP_1, true, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_UP_2 = REGISTRY.valueAllele(ToleranceType.UP_2, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_UP_3 = REGISTRY.valueAllele(ToleranceType.UP_3, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_UP_4 = REGISTRY.valueAllele(ToleranceType.UP_4, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_UP_5 = REGISTRY.valueAllele(ToleranceType.UP_5, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_1 = REGISTRY.valueAllele(ToleranceType.DOWN_1, true, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_2 = REGISTRY.valueAllele(ToleranceType.DOWN_2, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_3 = REGISTRY.valueAllele(ToleranceType.DOWN_3, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_4 = REGISTRY.valueAllele(ToleranceType.DOWN_4, IAlleleNaming.TOLERANCE_NAMING);
+	public static final IValueAllele<ToleranceType> TOLERANCE_DOWN_5 = REGISTRY.valueAllele(ToleranceType.DOWN_5, IAlleleNaming.TOLERANCE_NAMING);
+
 	public static final List<IValueAllele<ToleranceType>> DEFAULT_TEMPERATURE_TOLERANCES = List.of(TOLERANCE_NONE, TOLERANCE_BOTH_1, TOLERANCE_BOTH_2, TOLERANCE_BOTH_3, TOLERANCE_BOTH_4, TOLERANCE_BOTH_5, TOLERANCE_UP_1, TOLERANCE_UP_2, TOLERANCE_UP_3, TOLERANCE_UP_4, TOLERANCE_UP_5, TOLERANCE_DOWN_1, TOLERANCE_DOWN_2, TOLERANCE_DOWN_3, TOLERANCE_DOWN_4, TOLERANCE_DOWN_5);
 	public static final List<IValueAllele<ToleranceType>> DEFAULT_HUMIDITY_TOLERANCES = List.of(TOLERANCE_NONE, TOLERANCE_BOTH_1, TOLERANCE_BOTH_2, TOLERANCE_UP_1, TOLERANCE_UP_2, TOLERANCE_DOWN_1, TOLERANCE_DOWN_2);
 
@@ -120,41 +100,41 @@ public class ForestryAlleles {
 	public static final IValueAllele<Vec3i> TERRITORY_LARGE = REGISTRY.valueAllele(new Vec3i(11, 8, 11), IAlleleNaming.VEC3I_NAMING);
 	public static final IValueAllele<Vec3i> TERRITORY_LARGER = REGISTRY.valueAllele(new Vec3i(13, 12, 13), IAlleleNaming.VEC3I_NAMING);
 	public static final IValueAllele<Vec3i> TERRITORY_LARGEST = REGISTRY.valueAllele(new Vec3i(15, 13, 15), IAlleleNaming.VEC3I_NAMING);
-	
+
 	public static final List<IValueAllele<Vec3i>> DEFAULT_TERRITORIES = List.of(TERRITORY_AVERAGE, TERRITORY_LARGE, TERRITORY_LARGER, TERRITORY_LARGEST);
 
 	// Flower Type
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_VANILLA = REGISTRY.valueAllele(ForestryFlowerType.VANILLA, true);
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_NETHER = REGISTRY.valueAllele(ForestryFlowerType.NETHER);
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_CACTI = REGISTRY.valueAllele(ForestryFlowerType.CACTI);
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_MUSHROOMS = REGISTRY.valueAllele(ForestryFlowerType.MUSHROOMS);
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_END = REGISTRY.valueAllele(ForestryFlowerType.END);
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_JUNGLE = REGISTRY.valueAllele(ForestryFlowerType.JUNGLE);
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_SNOW = REGISTRY.valueAllele(ForestryFlowerType.SNOW, true);
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_WHEAT = REGISTRY.valueAllele(ForestryFlowerType.WHEAT, true);
-	public static final IValueAllele<IFlowerType> FLOWER_TYPE_GOURD = REGISTRY.valueAllele(ForestryFlowerType.GOURD, true);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_VANILLA = REGISTRY.registryAllele(ForestryFlowerTypes.VANILLA, BeeChromosomes.FLOWER_TYPE);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_NETHER = REGISTRY.registryAllele(ForestryFlowerTypes.NETHER, BeeChromosomes.FLOWER_TYPE);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_CACTI = REGISTRY.registryAllele(ForestryFlowerTypes.CACTI, BeeChromosomes.FLOWER_TYPE);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_MUSHROOMS = REGISTRY.registryAllele(ForestryFlowerTypes.MUSHROOMS, BeeChromosomes.FLOWER_TYPE);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_END = REGISTRY.registryAllele(ForestryFlowerTypes.END, BeeChromosomes.FLOWER_TYPE);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_JUNGLE = REGISTRY.registryAllele(ForestryFlowerTypes.JUNGLE, BeeChromosomes.FLOWER_TYPE);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_SNOW = REGISTRY.registryAllele(ForestryFlowerTypes.SNOW, BeeChromosomes.FLOWER_TYPE);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_WHEAT = REGISTRY.registryAllele(ForestryFlowerTypes.WHEAT, BeeChromosomes.FLOWER_TYPE);
+	public static final IRegistryAllele<IFlowerType> FLOWER_TYPE_GOURD = REGISTRY.registryAllele(ForestryFlowerTypes.GOURD, BeeChromosomes.FLOWER_TYPE);
 
 	// Bee Effect
-	public static final IValueAllele<IBeeEffect> EFFECT_NONE = REGISTRY.valueAllele(new DummyBeeEffect(MOD_ID, "none"), true);
-	public static final IValueAllele<IBeeEffect> EFFECT_AGGRESSIVE = REGISTRY.valueAllele(new AggressiveBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_HEROIC = REGISTRY.valueAllele(new HeroicBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_BEATIFIC = REGISTRY.valueAllele(new PotionBeeEffect(MOD_ID, "beatific", MobEffects.REGENERATION, 100));
-	public static final IValueAllele<IBeeEffect> EFFECT_MIASMIC = REGISTRY.valueAllele(new PotionBeeEffect(MOD_ID, "miasmic", MobEffects.POISON, 600, 100, 0.1f));
-	public static final IValueAllele<IBeeEffect> EFFECT_MISANTHROPE = REGISTRY.valueAllele(new MisanthropeBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_GLACIAL = REGISTRY.valueAllele(new GlacialBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_RADIOACTIVE = REGISTRY.valueAllele(new RadioactiveBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_CREEPER = REGISTRY.valueAllele(new Creeper());
-	public static final IValueAllele<IBeeEffect> EFFECT_IGNITION = REGISTRY.valueAllele(new IgnitionBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_EXPLORATION = REGISTRY.valueAllele(new ExplorationBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_FESTIVE_EASTER = REGISTRY.valueAllele(new DummyBeeEffect(MOD_ID, "easter"), true);
-	public static final IValueAllele<IBeeEffect> EFFECT_SNOWING = REGISTRY.valueAllele(new SnowingBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_DRUNKARD = REGISTRY.valueAllele(new PotionBeeEffect(MOD_ID, "drunkard", MobEffects.CONFUSION, 100));
-	public static final IValueAllele<IBeeEffect> EFFECT_REANIMATION = REGISTRY.valueAllele(new ResurrectionBeeEffect("reanimation", ResurrectionBeeEffect.getReanimationList()));
-	public static final IValueAllele<IBeeEffect> EFFECT_RESURRECTION = REGISTRY.valueAllele(new ResurrectionBeeEffect("resurrection", ResurrectionBeeEffect.getResurrectionList()));
-	public static final IValueAllele<IBeeEffect> EFFECT_REPULSION = REGISTRY.valueAllele(new RepulsionBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_FERTILE = REGISTRY.valueAllele(new FertileBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_MYCOPHILIC = REGISTRY.valueAllele(new FungificationBeeEffect());
-	public static final IValueAllele<IBeeEffect> EFFECT_PATRIOTIC = Todos.todo();
+	public static final IRegistryAllele<IBeeEffect> EFFECT_NONE = REGISTRY.registryAllele(ForestryBeeEffects.NONE, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_AGGRESSIVE = REGISTRY.registryAllele(ForestryBeeEffects.AGGRESSIVE, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_HEROIC = REGISTRY.registryAllele(ForestryBeeEffects.HEROIC, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_BEATIFIC = REGISTRY.registryAllele(ForestryBeeEffects.BEATIFIC, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_MIASMIC = REGISTRY.registryAllele(ForestryBeeEffects.MIASMIC, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_MISANTHROPE = REGISTRY.registryAllele(ForestryBeeEffects.MISANTHROPE, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_GLACIAL = REGISTRY.registryAllele(ForestryBeeEffects.GLACIAL, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_RADIOACTIVE = REGISTRY.registryAllele(ForestryBeeEffects.RADIOACTIVE, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_CREEPER = REGISTRY.registryAllele(ForestryBeeEffects.CREEPER, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_IGNITION = REGISTRY.registryAllele(ForestryBeeEffects.IGNITION, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_EXPLORATION = REGISTRY.registryAllele(ForestryBeeEffects.EXPLORATION, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_EASTER = REGISTRY.registryAllele(ForestryBeeEffects.EASTER, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_SNOWING = REGISTRY.registryAllele(ForestryBeeEffects.SNOWING, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_DRUNKARD = REGISTRY.registryAllele(ForestryBeeEffects.DRUNKARD, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_REANIMATION = REGISTRY.registryAllele(ForestryBeeEffects.REANIMATION, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_RESURRECTION = REGISTRY.registryAllele(ForestryBeeEffects.RESURRECTION, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_REPULSION = REGISTRY.registryAllele(ForestryBeeEffects.REPULSION, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_FERTILE = REGISTRY.registryAllele(ForestryBeeEffects.FERTILE, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_MYCOPHILIC = REGISTRY.registryAllele(ForestryBeeEffects.MYCOPHILIC, BeeChromosomes.EFFECT);
+	//public static final IRegistryAllele<IBeeEffect> EFFECT_PATRIOTIC = Todos.todo();
 
 	// Speed
 	public static final IFloatAllele SPEED_SLOWEST = REGISTRY.floatAllele(0.3f, true);
@@ -165,6 +145,8 @@ public class ForestryAlleles {
 	public static final IFloatAllele SPEED_FASTER = REGISTRY.floatAllele(1.4f);
 	public static final IFloatAllele SPEED_FASTEST = REGISTRY.floatAllele(1.7f);
 
+	public static final List<IFloatAllele> DEFAULT_SPEEDS = List.of(SPEED_SLOWEST, SPEED_SLOWER, SPEED_SLOW, SPEED_NORMAL, SPEED_FAST, SPEED_FASTER, SPEED_FASTEST);
+
 	// Size
 	public static final IFloatAllele SIZE_SMALLEST = REGISTRY.floatAllele(0.3f);
 	public static final IFloatAllele SIZE_SMALLER = REGISTRY.floatAllele(0.4f);
@@ -173,6 +155,8 @@ public class ForestryAlleles {
 	public static final IFloatAllele SIZE_LARGE = REGISTRY.floatAllele(0.75f);
 	public static final IFloatAllele SIZE_LARGER = REGISTRY.floatAllele(0.9f);
 	public static final IFloatAllele SIZE_LARGEST = REGISTRY.floatAllele(1.0f);
+
+	public static final List<IFloatAllele> DEFAULT_SIZES = List.of(SIZE_SMALLEST, SIZE_SMALLER, SIZE_SMALL, SIZE_AVERAGE, SIZE_LARGE, SIZE_LARGER, SIZE_LARGEST);
 
 	// Metabolism
 	public static final IIntegerAllele METABOLISM_SLOWEST = REGISTRY.intAllele(1);
@@ -183,10 +167,15 @@ public class ForestryAlleles {
 	public static final IIntegerAllele METABOLISM_FASTER = REGISTRY.intAllele(8);
 	public static final IIntegerAllele METABOLISM_FASTEST = REGISTRY.intAllele(10);
 
+	public static final List<IIntegerAllele> DEFAULT_METABOLISMS = List.of(METABOLISM_SLOWEST, METABOLISM_SLOWER, METABOLISM_SLOW, METABOLISM_NORMAL, METABOLISM_FAST, METABOLISM_FASTER, METABOLISM_FASTEST);
+
 	// Butterfly Effect
-	public static final IValueAllele<IButterflyEffect> BUTTERFLY_EFFECT_NONE = REGISTRY.valueAllele(new ButterflyEffectNone());
+	public static final IValueAllele<IButterflyEffect> BUTTERFLY_EFFECT_NONE = REGISTRY.valueAllele(new DummyButterflyEffect(), ButterflyChromosomes.EFFECT);
+
 	// Butterfly Cocoon
-	public static final IValueAllele<IButterflyCocoon> REGULAR_COCOON = REGISTRY.valueAllele(new ButterflyCocoon("default"));
+	public static final IRegistryAllele<IButterflyCocoon> COCOON_DEFAULT = REGISTRY.registryAllele(ForestryCocoons.DEFAULT, ButterflyChromosomes.COCOON);
+	public static final IRegistryAllele<IButterflyCocoon> COCOON_SILK = REGISTRY.registryAllele(ForestryCocoons.SILK, ButterflyChromosomes.COCOON);
+	public static final List<IValueAllele<IButterflyCocoon>> DEFAULT_COCOONS = List.of(COCOON_DEFAULT, COCOON_SILK);
 
 	// Sappiness
 	public static final IFloatAllele SAPPINESS_LOWEST = REGISTRY.floatAllele(0.1f, true);
@@ -196,6 +185,8 @@ public class ForestryAlleles {
 	public static final IFloatAllele SAPPINESS_HIGH = REGISTRY.floatAllele(0.6f, true);
 	public static final IFloatAllele SAPPINESS_HIGHER = REGISTRY.floatAllele(0.8f);
 	public static final IFloatAllele SAPPINESS_HIGHEST = REGISTRY.floatAllele(1.0f);
+
+	public static final List<IFloatAllele> DEFAULT_SAPPINESSES = List.of(SAPPINESS_LOWEST, SAPPINESS_LOWER, SAPPINESS_LOW, SAPPINESS_AVERAGE, SAPPINESS_HIGH, SAPPINESS_HIGHER, SAPPINESS_HIGHEST);
 
 	// Saplings
 	public static final IFloatAllele SAPLINGS_LOWEST = REGISTRY.floatAllele(0.01f, true);
@@ -207,19 +198,19 @@ public class ForestryAlleles {
 	public static final IFloatAllele SAPLINGS_HIGHEST = REGISTRY.floatAllele(0.3f, true);
 
 	// Fruits
-	public static final IValueAllele<IFruit> FRUIT_NONE = REGISTRY.valueAllele(new DummyFruit(MOD_ID, "none"));
-	public static final IValueAllele<IFruit> FRUIT_APPLE = REGISTRY.valueAllele(new RipeningFruit(MOD_ID, "apple", () -> new ItemStack(Items.APPLE)));
-	public static final IValueAllele<IFruit> FRUIT_COCOA = REGISTRY.valueAllele(new PodFruit(MOD_ID, "cocoa"));
-	public static final IValueAllele<IFruit> FRUIT_CHESTNUT = REGISTRY.valueAllele(new RipeningFruit(MOD_ID, "chestnut"));
-	public static final IValueAllele<IFruit> FRUIT_WALNUT = REGISTRY.valueAllele(new RipeningFruit(MOD_ID, "walnut"));
-	public static final IValueAllele<IFruit> FRUIT_CHERRY = REGISTRY.valueAllele(new RipeningFruit(MOD_ID, "cherry"));
-	public static final IValueAllele<IFruit> FRUIT_DATES = REGISTRY.valueAllele(new PodFruit(MOD_ID, "dates"));
-	public static final IValueAllele<IFruit> FRUIT_PAPAYA = REGISTRY.valueAllele(new RipeningFruit(MOD_ID, "papaya"));
-	public static final IValueAllele<IFruit> FRUIT_LEMON = REGISTRY.valueAllele(new RipeningFruit(MOD_ID, "lemon"));
-	public static final IValueAllele<IFruit> FRUIT_PLUM = REGISTRY.valueAllele(new RipeningFruit(MOD_ID, "plum"));
+	public static final IRegistryAllele<IFruit> FRUIT_NONE = REGISTRY.registryAllele(ForestryFruits.NONE, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_APPLE = REGISTRY.registryAllele(ForestryFruits.APPLE, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_COCOA = REGISTRY.registryAllele(ForestryFruits.COCOA, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_CHESTNUT = REGISTRY.registryAllele(ForestryFruits.CHESTNUT, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_WALNUT = REGISTRY.registryAllele(ForestryFruits.WALNUT, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_CHERRY = REGISTRY.registryAllele(ForestryFruits.CHERRY, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_DATES = REGISTRY.registryAllele(ForestryFruits.DATES, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_PAPAYA = REGISTRY.registryAllele(ForestryFruits.PAPAYA, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_LEMON = REGISTRY.registryAllele(ForestryFruits.LEMON, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_PLUM = REGISTRY.registryAllele(ForestryFruits.PLUM, TreeChromosomes.FRUITS);
 
 	// Tree Effect
-	public static final IValueAllele<ILeafEffect> TREE_EFFECT_NONE = REGISTRY.valueAllele();
+	public static final IValueAllele<ITreeEffect> TREE_EFFECT_NONE = REGISTRY.registryAllele(ForestryConstants.forestry("tree_effect_none"), TreeChromosomes.EFFECT);
 
 	// Maturation
 	public static final IIntegerAllele MATURATION_SLOWEST = REGISTRY.intAllele(10, true);

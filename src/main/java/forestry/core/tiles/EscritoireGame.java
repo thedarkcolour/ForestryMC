@@ -11,26 +11,24 @@
 package forestry.core.tiles;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
-import forestry.api.genetics.ForestryComponentKeys;
-import forestry.api.genetics.IResearchHandler;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
-
 public class EscritoireGame implements INbtWritable, INbtReadable, IStreamable {
-	private static final Random rand = new Random();
+	private static final RandomSource rand = RandomSource.create();
+
 	public static final int BOUNTY_MAX = 16;
 
 	public enum Status {
@@ -44,16 +42,16 @@ public class EscritoireGame implements INbtWritable, INbtReadable, IStreamable {
 	private Status status = Status.EMPTY;
 
 	public EscritoireGame() {
-		gameBoard = new EscritoireGameBoard();
+		this.gameBoard = new EscritoireGameBoard();
 	}
 
 	@Nullable
 	public EscritoireGameToken getToken(int index) {
-		return gameBoard.getToken(index);
+		return this.gameBoard.getToken(index);
 	}
 
 	public Status getStatus() {
-		return status;
+		return this.status;
 	}
 
 	public long getLastUpdate() {
@@ -114,49 +112,48 @@ public class EscritoireGame implements INbtWritable, INbtReadable, IStreamable {
 			return;
 		}
 
-		IIndividual individual = RootUtils.getIndividual(specimen);
-		if (individual == null) {
-			return;
-		}
+		IIndividualHandler.ifPresent(specimen, individual -> {
+			if (this.bountyLevel > 1) {
+				this.bountyLevel--;
+			}
 
-		if (bountyLevel > 1) {
-			bountyLevel--;
-		}
+			ISpecies<?> species = individual.getSpecies();
+			@SuppressWarnings("unchecked")
+			ISpeciesType<ISpecies<?>, ?> type = (ISpeciesType<ISpecies<?>, ?>) species.getType();
+			this.gameBoard.hideProbedTokens();
 
-		IAlleleForestrySpecies species = individual.getGenome().getPrimarySpecies(IAlleleForestrySpecies.class);
-		IResearchHandler handler = species.getSpecies().getComponent(ForestryComponentKeys.RESEARCH);
-		gameBoard.hideProbedTokens();
+			int revealCount = getSampleSize(slotCount);
 
-		int revealCount = getSampleSize(slotCount);
-		for (int i = 0; i < revealCount; i++) {
-			ItemStack sample = inventory.removeItem(startSlot + i, 1);
-			if (!sample.isEmpty()) {
-				if (rand.nextFloat() < handler.getResearchSuitability(species, sample)) {
-					gameBoard.probe();
+			for (int i = 0; i < revealCount; i++) {
+				ItemStack sample = inventory.removeItem(startSlot + i, 1);
+				if (!sample.isEmpty()) {
+					if (rand.nextFloat() < type.getResearchSuitability(species, sample)) {
+						this.gameBoard.probe();
+					}
 				}
 			}
-		}
 
-		lastUpdate = System.currentTimeMillis();
+			this.lastUpdate = System.currentTimeMillis();
+		});
 	}
 
 	public void reset() {
-		bountyLevel = BOUNTY_MAX;
-		gameBoard.reset();
-		status = Status.EMPTY;
+		this.bountyLevel = BOUNTY_MAX;
+		this.gameBoard.reset();
+		this.status = Status.EMPTY;
 
-		lastUpdate = System.currentTimeMillis();
+		this.lastUpdate = System.currentTimeMillis();
 	}
 
 	public void choose(int tokenIndex) {
-		if (getStatus() != Status.PLAYING) {
+		if (this.status != Status.PLAYING) {
 			return;
 		}
 
 		EscritoireGameToken token = gameBoard.getToken(tokenIndex);
 		if (token != null) {
-			status = gameBoard.choose(token);
-			lastUpdate = System.currentTimeMillis();
+			this.status = gameBoard.choose(token);
+			this.lastUpdate = System.currentTimeMillis();
 		}
 	}
 
@@ -166,11 +163,11 @@ public class EscritoireGame implements INbtWritable, INbtReadable, IStreamable {
 
 	/* RETRIEVAL */
 	public int getSampleSize(int slotCount) {
-		if (status == Status.EMPTY) {
+		if (this.status == Status.EMPTY) {
 			return 0;
 		}
 
-		int samples = gameBoard.getTokenCount() / 4;
+		int samples = this.gameBoard.getTokenCount() / 4;
 		samples = Math.max(samples, 2);
 		return Math.min(samples, slotCount);
 	}

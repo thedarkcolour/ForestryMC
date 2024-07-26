@@ -19,8 +19,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -28,28 +28,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import forestry.core.tiles.TileUtil;
 
-
 public abstract class BlockUtil {
+	public static final BlockBehaviour.StatePredicate ALWAYS = (state, level, pos) -> true;
+	public static final BlockBehaviour.StatePredicate NEVER = (state, level, pos) -> false;
+	public static final BlockBehaviour.StateArgumentPredicate<EntityType<?>> IS_PARROT_OR_OCELOT = (a, b, c, entityType) -> entityType == EntityType.OCELOT || entityType == EntityType.PARROT;
 
-
-	public static boolean alwaysTrue(BlockState state, BlockGetter reader, BlockPos pos) {
-		return true;
-	}
-
-	public static boolean alwaysFalse(BlockState state, BlockGetter reader, BlockPos pos) {
-		return false;
-	}
-
-	public static List<ItemStack> getBlockDrops(LevelAccessor world, BlockPos posBlock) {
-		BlockState blockState = world.getBlockState(posBlock);
-
+	public static List<ItemStack> getBlockDrops(LevelAccessor level, BlockPos pos) {
 		//TODO - this call needs sorting
-		return blockState.getBlock().getDrops(blockState, (ServerLevel) world, posBlock, TileUtil.getTile(world, posBlock));
+		return Block.getDrops(level.getBlockState(pos), (ServerLevel) level, pos, TileUtil.getTile(level, pos));
 
 	}
 

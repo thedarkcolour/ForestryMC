@@ -1,16 +1,22 @@
 package forestry.plugin;
 
+import com.google.common.base.Preconditions;
+
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.plugin.IBeeSpeciesBuilder;
 import forestry.api.plugin.IGenomeBuilder;
 import forestry.api.plugin.IMutationsRegistration;
 import forestry.api.plugin.ISpeciesBuilder;
 
-public class SpeciesBuilder<B extends ISpeciesBuilder<B>> implements ISpeciesBuilder<B> {
+public abstract class SpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISpeciesBuilder<T, B>> implements ISpeciesBuilder<T, B> {
 	protected final ResourceLocation id;
 	protected final String genus;
 	protected final String species;
@@ -22,13 +28,21 @@ public class SpeciesBuilder<B extends ISpeciesBuilder<B>> implements ISpeciesBui
 	protected boolean glint;
 	protected int complexity;
 	protected boolean secret;
+	protected String authority = "Sengir";
+	@Nullable
+	protected Consumer<IGenomeBuilder> genome = null;
+	protected ISpeciesFactory<T, B> factory;
 
 	public SpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
 		this.id = id;
 		this.genus = genus;
 		this.species = species;
 		this.mutations = mutations;
+		this.factory = createSpeciesFactory();
 	}
+
+	// default species factory. Example is BeeSpecies::new
+	protected abstract ISpeciesFactory<T, B> createSpeciesFactory();
 
 	@Override
 	public B setDominant(boolean dominant) {
@@ -37,7 +51,8 @@ public class SpeciesBuilder<B extends ISpeciesBuilder<B>> implements ISpeciesBui
 	}
 
 	@Override
-	public B setGenome(Consumer<IGenomeBuilder> karyotype) {
+	public B setGenome(Consumer<IGenomeBuilder> genome) {
+		this.genome = this.genome == null ? genome : this.genome.andThen(genome);
 		return self();
 	}
 
@@ -78,6 +93,23 @@ public class SpeciesBuilder<B extends ISpeciesBuilder<B>> implements ISpeciesBui
 	}
 
 	@Override
+	public B setAuthority(String authority) {
+		this.authority = authority;
+		return self();
+	}
+
+	@Override
+	public B setFactory(ISpeciesFactory<T, B> factory) {
+		this.factory = Preconditions.checkNotNull(factory);
+		return self();
+	}
+
+	@SuppressWarnings("unchecked")
+	protected B self() {
+		return (B) this;
+	}
+
+	@Override
 	public TemperatureType getTemperature() {
 		return this.temperature;
 	}
@@ -102,8 +134,31 @@ public class SpeciesBuilder<B extends ISpeciesBuilder<B>> implements ISpeciesBui
 		return this.species;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected B self() {
-		return (B) this;
+	@Override
+	public boolean isDominant() {
+		return this.dominant;
+	}
+
+	@Override
+	public IGenome buildGenome(IGenomeBuilder builder) {
+		if (this.genome != null) {
+			this.genome.accept(builder);
+		}
+		return builder.build();
+	}
+
+	@Override
+	public boolean hasGlint() {
+		return this.glint;
+	}
+
+	@Override
+	public boolean isSecret() {
+		return this.secret;
+	}
+
+	@Override
+	public String getAuthority() {
+		return this.authority;
 	}
 }

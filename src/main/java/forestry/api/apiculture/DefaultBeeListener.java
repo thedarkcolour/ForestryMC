@@ -5,7 +5,7 @@
  ******************************************************************************/
 package forestry.api.apiculture;
 
-import genetics.api.individual.IIndividual;
+import forestry.api.genetics.IIndividual;
 
 /**
  * Easily extendable default IBeeListener.
@@ -15,17 +15,14 @@ import genetics.api.individual.IIndividual;
 public class DefaultBeeListener implements IBeeListener {
 	@Override
 	public void wearOutEquipment(int amount) {
-
 	}
 
 	@Override
 	public void onQueenDeath() {
-
 	}
 
 	@Override
 	public boolean onPollenRetrieved(IIndividual pollen) {
 		return false;
 	}
-
 }

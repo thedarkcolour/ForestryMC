@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ILifeStage;
 import forestry.core.gui.elements.DatabaseElement;
 
 /**
@@ -15,8 +16,9 @@ public interface IDatabaseTab<I extends IIndividual> {
 	 *
 	 * @param container  A helper to create the gui elements.
 	 * @param individual The individual that is currently in the database selected.
+	 * @param stage
 	 */
-	void createElements(DatabaseElement container, I individual, ItemStack itemStack);
+	void createElements(DatabaseElement container, I individual, ILifeStage stage, ItemStack itemStack);
 
 	ItemStack getIconStack();
 

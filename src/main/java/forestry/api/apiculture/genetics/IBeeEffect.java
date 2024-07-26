@@ -12,20 +12,20 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.INamedValue;
+import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.core.render.ParticleRender;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
 
-public interface IBeeEffect extends IEffect, INamedValue {
+public interface IBeeEffect extends IEffect, IRegistryAlleleValue {
 	static AABB getBounding(IBeeHousing housing, IGenome genome) {
-		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 		float territoryModifier = beeModifier.getTerritoryModifier(genome, 1.0f);
 
 		Vec3i area = VecUtil.scale(genome.getActiveValue(BeeChromosomes.TERRITORY), territoryModifier);

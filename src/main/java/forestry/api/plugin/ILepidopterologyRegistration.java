@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.lepidopterology.IButterflyCocoon;
+
 public interface ILepidopterologyRegistration {
 	/**
 	 * Register a new butterfly species.
@@ -16,4 +18,6 @@ public interface ILepidopterologyRegistration {
 	 * @param rarity     The rarity of this species for spawning.
 	 */
 	IButterflySpeciesBuilder registerSpecies(ResourceLocation id, String genus, String species, boolean dominant, Color serumColor, float rarity);
+
+	void registerCocoon(ResourceLocation id, IButterflyCocoon cocoon);
 }

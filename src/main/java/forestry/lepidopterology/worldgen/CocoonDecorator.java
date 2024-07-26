@@ -29,13 +29,13 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import forestry.Forestry;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
-import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.ButterflyChromosome;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.config.Config;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.lepidopterology.tiles.TileCocoon;
@@ -46,12 +46,12 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 	}
 
 	public static boolean genCocoon(WorldGenLevel world, RandomSource rand, BlockPos pos, IButterfly butterfly) {
-		if (butterfly.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getRarity() * ModuleLepidopterology
+		if (butterfly.getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getRarity() * ModuleLepidopterology
 				.getGenerateCocoonsAmount() < rand.nextFloat() * 100.0f) {
 			return false;
 		}
 
-		TagKey<Biome> spawnBiomes = butterfly.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getSpawnBiomes();
+		TagKey<Biome> spawnBiomes = butterfly.getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getSpawnBiomes();
 
 		if (world.getBiome(pos).is(spawnBiomes)) {
 			for (int tries = 0; tries < 4; tries++) {
@@ -138,12 +138,12 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-		ObjectArrayList<IButterfly> butterflies = new ObjectArrayList<>(ButterflyManager.butterflyRoot.getIndividualTemplates());
+		ObjectArrayList<IButterflySpecies> butterflies = new ObjectArrayList<>(SpeciesUtil.BUTTERFLY_TYPE.get().getAllSpecies());
 
 		Util.shuffle(butterflies, context.random());
 
-		for (IButterfly butterfly : butterflies) {
-			if (genCocoon(context.level(), context.random(), context.origin(), butterfly)) {
+		for (IButterflySpecies butterfly : butterflies) {
+			if (genCocoon(context.level(), context.random(), context.origin(), butterfly.createIndividual())) {
 				return true;
 			}
 		}

@@ -15,10 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.climate.ClimateState;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.genetics.IMutationCondition;
+import forestry.api.genetics.ISpecies;
 import forestry.core.tiles.TileUtil;
-import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.IGenome;
 
 import net.minecraft.client.GameNarrator;
@@ -29,15 +29,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 public class MutationConditionRequiresResource implements IMutationCondition {
-
 	private final List<BlockState> acceptedBlockStates;
 
 	public MutationConditionRequiresResource(BlockState... acceptedBlockStates) {
-		this.acceptedBlockStates = Arrays.asList(acceptedBlockStates); // TODO: Defensive copy?
+		this.acceptedBlockStates = Arrays.asList(acceptedBlockStates);
 	}
 
 	@Override
-	public float getChance(Level level, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, ClimateState climate) {
+	public float getChance(Level level, BlockPos pos, ISpecies<?> allele0, ISpecies<?> allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
 		BlockEntity tile;
 		do {
 			pos = pos.below();

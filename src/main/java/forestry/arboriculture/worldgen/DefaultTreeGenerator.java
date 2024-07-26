@@ -2,6 +2,7 @@ package forestry.arboriculture.worldgen;
 
 import com.google.common.base.Preconditions;
 
+import javax.annotation.Nullable;
 import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
@@ -26,14 +27,12 @@ import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.arboriculture.blocks.ForestryLeafType;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.Tree;
-import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.tiles.TileUtil;
 import forestry.modules.features.FeatureBlockGroup;
-
-import org.jetbrains.annotations.Nullable;
 
 public class DefaultTreeGenerator implements ITreeGenerator {
 	private final Function<ITreeGenData, Feature<NoneFeatureConfiguration>> factory;
@@ -50,37 +49,28 @@ public class DefaultTreeGenerator implements ITreeGenerator {
 	}
 
 	@Override
-	public boolean setLogBlock(IGenome genome, LevelAccessor world, BlockPos pos, Direction facing) {
+	public boolean setLogBlock(IGenome genome, LevelAccessor level, BlockPos pos, Direction facing) {
 		boolean fireproof = genome.getActiveValue(TreeChromosomes.FIREPROOF);
 		BlockState logBlock = TreeManager.woodAccess.getBlock(woodType, WoodBlockKind.LOG, fireproof);
 
 		Direction.Axis axis = facing.getAxis();
-		return world.setBlock(pos, logBlock.setValue(RotatedPillarBlock.AXIS, axis), Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
+		return level.setBlock(pos, logBlock.setValue(RotatedPillarBlock.AXIS, axis), Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
 	}
 
 	@Override
-	public boolean setLeaves(IGenome genome, LevelAccessor world, @Nullable GameProfile owner, BlockPos pos, RandomSource rand) {
+	public boolean setLeaves(IGenome genome, LevelAccessor level, @Nullable GameProfile owner, BlockPos pos, RandomSource rand) {
 		if (owner == null && genome.isDefaultGenome()) {
-			IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUITS);
-			BlockState defaultLeaves;
-			FeatureBlockGroup<? extends Block, TreeDefinition> leavesGroup;
-			if (fruit.isFruitLeaf(genome, world, pos) && rand.nextFloat() <= fruitProvider.getFruitChance(genome, world, pos)) {
-				leavesGroup = ArboricultureBlocks.LEAVES_DEFAULT_FRUIT;
-			} else {
-				leavesGroup = ArboricultureBlocks.LEAVES_DEFAULT;
-			}
-			defaultLeaves = leavesGroup.get(this).defaultState();
-			return world.setBlock(pos, defaultLeaves, 19);
+			return this.woodType.setDefaultLeaves(level, pos, genome, rand, null);
 		} else {
 			BlockState leaves = ArboricultureBlocks.LEAVES.defaultState();
-			boolean placed = world.setBlock(pos, LeavesBlock.updateDistance(leaves, world, pos), 19);
+			boolean placed = level.setBlock(pos, LeavesBlock.updateDistance(leaves, level, pos), 19);
 			if (!placed) {
 				return false;
 			}
 
-			TileLeaves tileLeaves = TileUtil.getTile(world, pos, TileLeaves.class);
+			TileLeaves tileLeaves = TileUtil.getTile(level, pos, TileLeaves.class);
 			if (tileLeaves == null) {
-				world.setBlock(pos, Blocks.AIR.defaultBlockState(), 19);
+				level.setBlock(pos, Blocks.AIR.defaultBlockState(), 19);
 				return false;
 			}
 

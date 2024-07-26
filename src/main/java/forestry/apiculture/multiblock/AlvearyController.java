@@ -31,7 +31,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.ForestryTags;
 import forestry.api.IForestryApi;
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
@@ -50,6 +49,7 @@ import forestry.core.multiblock.IMultiblockControllerInternal;
 import forestry.core.multiblock.MultiblockValidationException;
 import forestry.core.multiblock.RectangularMultiblockControllerBase;
 import forestry.core.render.ParticleRender;
+import forestry.core.utils.SpeciesUtil;
 
 public class AlvearyController extends RectangularMultiblockControllerBase implements IAlvearyControllerInternal, IClimateControlled {
 	private final InventoryBeeHousing inventory;
@@ -71,7 +71,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	public AlvearyController(Level world) {
 		super(world, AlvearyMultiblockSizeLimits.instance);
 		this.inventory = new InventoryBeeHousing(9);
-		this.beekeepingLogic = BeeManager.beeRoot.createBeekeepingLogic(this);
+		this.beekeepingLogic = SpeciesUtil.BEE_TYPE.get().createBeekeepingLogic(this);
 		this.listener = IForestryApi.INSTANCE.getClimateManager().createListener(this);
 
 		this.beeModifiers.add(new AlvearyBeeModifier());
@@ -343,7 +343,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public TemperatureType temperature() {
-		IBeeModifier beeModifier = BeeManager.beeRoot.createBeeHousingModifier(this);
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(this);
 		if (beeModifier.isHellish() || getBiome().is(ForestryTags.Biomes.NETHER_CATEGORY)) {
 			if (tempChange >= 0) {
 				return TemperatureType.HELLISH;
@@ -388,7 +388,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public void addTemperatureChange(float change, float boundaryDown, float boundaryUp) {
-		float temperature = listener.temperature();
+		TemperatureType temperature = listener.temperature();
 
 		tempChange += change;
 		tempChange = Math.max(boundaryDown - temperature, tempChange);
@@ -397,7 +397,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public void addHumidityChange(float change, float boundaryDown, float boundaryUp) {
-		float humidity = listener.humidity();
+		HumidityType humidity = listener.humidity();
 
 		humidChange += change;
 		humidChange = Math.max(boundaryDown - humidity, humidChange);

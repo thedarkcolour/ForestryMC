@@ -22,7 +22,6 @@ import forestry.api.farming.IFarmProperties;
 import forestry.core.circuits.Circuit;
 
 public class CircuitFarmLogic extends Circuit implements IFarmCircuit {
-
 	private final IFarmProperties properties;
 	private final IFarmLogic logic;
 
@@ -74,7 +73,7 @@ public class CircuitFarmLogic extends Circuit implements IFarmCircuit {
 			return;
 		}
 
-		housing.setFarmLogic(HorizontalDirection.values()[slot], logic);
+		housing.setFarmLogic(HorizontalDirection.VALUES.get(slot), logic);
 	}
 
 	@Override
@@ -89,7 +88,7 @@ public class CircuitFarmLogic extends Circuit implements IFarmCircuit {
 			return;
 		}
 
-		farmHousing.resetFarmLogic(HorizontalDirection.values()[slot]);
+		farmHousing.resetFarmLogic(HorizontalDirection.VALUES.get(slot));
 	}
 
 	@Override

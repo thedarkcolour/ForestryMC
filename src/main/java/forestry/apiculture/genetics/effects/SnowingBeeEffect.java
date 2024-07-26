@@ -10,13 +10,13 @@
  ******************************************************************************/
 package forestry.apiculture.genetics.effects;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,21 +24,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IGenome;
 import forestry.core.render.ParticleRender;
 import forestry.core.utils.VecUtil;
 
-import forestry.api.genetics.IGenome;
-
 public class SnowingBeeEffect extends ThrottledBeeEffect {
-
 	public SnowingBeeEffect() {
-		super("snowing", false, 20, true, true);
+		super(false, 20, true, true);
 	}
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
 
-		Level world = housing.getWorldObj();
+		Level level = housing.getWorldObj();
 
 		TemperatureType temp = housing.temperature();
 
@@ -55,15 +53,15 @@ public class SnowingBeeEffect extends ThrottledBeeEffect {
 
 		for (int i = 0; i < 1; i++) {
 
-			BlockPos randomPos = VecUtil.getRandomPositionInArea(world.random, area);
+			BlockPos randomPos = VecUtil.getRandomPositionInArea(level.random, area);
 
 			BlockPos posBlock = randomPos.offset(housing.getCoordinates()).offset(offset);
 
 			// Put snow on the ground
-			if (world.hasChunkAt(posBlock)) {
-				BlockState state = world.getBlockState(posBlock);
+			if (level.hasChunkAt(posBlock)) {
+				BlockState state = level.getBlockState(posBlock);
 				Block block = state.getBlock();
-				if (!state.isAir() && block != Blocks.SNOW || !Blocks.SNOW.defaultBlockState().canSurvive(world, posBlock)) {
+				if (!state.isAir() && block != Blocks.SNOW || !Blocks.SNOW.defaultBlockState().canSurvive(level, posBlock)) {
 					continue;
 				}
 
@@ -71,12 +69,12 @@ public class SnowingBeeEffect extends ThrottledBeeEffect {
 					int layers = state.getValue(SnowLayerBlock.LAYERS);
 					if (layers < 7) {
 						BlockState moreSnow = state.setValue(SnowLayerBlock.LAYERS, layers + 1);
-						world.setBlockAndUpdate(posBlock, moreSnow);
+						level.setBlockAndUpdate(posBlock, moreSnow);
 					} else {
-						world.setBlockAndUpdate(posBlock, Blocks.SNOW.defaultBlockState());
+						level.setBlockAndUpdate(posBlock, Blocks.SNOW.defaultBlockState());
 					}
 				} else if (block.defaultBlockState().getMaterial().isReplaceable()) {
-					world.setBlockAndUpdate(posBlock, Blocks.SNOW.defaultBlockState());
+					level.setBlockAndUpdate(posBlock, Blocks.SNOW.defaultBlockState());
 				}
 			}
 		}

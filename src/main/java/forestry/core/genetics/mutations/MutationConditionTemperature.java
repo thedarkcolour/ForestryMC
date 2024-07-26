@@ -14,15 +14,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-import forestry.api.climate.ClimateState;
-import forestry.api.genetics.alleles.IAllele;
+import forestry.api.climate.IClimateProvider;
+import forestry.api.genetics.ClimateHelper;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.IGenome;
 
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IMutationCondition;
 
 public class MutationConditionTemperature implements IMutationCondition {
-
 	private final TemperatureType minTemperature;
 	private final TemperatureType maxTemperature;
 
@@ -32,7 +32,7 @@ public class MutationConditionTemperature implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level level, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, ClimateState climate) {
+	public float getChance(Level level, BlockPos pos, ISpecies<?> allele0, ISpecies<?> allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
 		TemperatureType biomeTemperature = climate.temperature();
 
 		if (biomeTemperature.ordinal() < minTemperature.ordinal() || biomeTemperature.ordinal() > maxTemperature.ordinal()) {

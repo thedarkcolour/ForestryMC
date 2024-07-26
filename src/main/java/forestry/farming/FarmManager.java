@@ -13,19 +13,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import deleteme.Shuffler;
-
-import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 
 import net.minecraftforge.fluids.FluidStack;
 
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
@@ -36,7 +34,6 @@ import forestry.api.farming.IFarmListener;
 import forestry.api.farming.IFarmLogic;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
-import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
@@ -46,6 +43,8 @@ import forestry.farming.FarmHelper.FarmWorkStatus;
 import forestry.farming.FarmHelper.Stage;
 import forestry.farming.multiblock.FarmFertilizerManager;
 import forestry.farming.multiblock.FarmHydrationManager;
+
+import deleteme.Shuffler;
 
 public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IExtentCache {
 	private final Map<Direction, List<FarmTarget>> targets = new EnumMap<>(Direction.class);
@@ -189,9 +188,9 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 		return farmWorkStatus.didWork;
 	}
 
+	private void cultivateTargets(FarmWorkStatus farmWorkStatus, List<FarmTarget> farmTargets, IFarmLogic logic, Direction farmSide) {
+		Level level = housing.getWorldObj();
 
-	private void cultivateTargets(FarmWorkStatus farmWorkStatus, List<FarmTarget> farmTargets, IFarmLogic logic, HorizontalDirection farmSide) {
-		Level world = housing.getWorldObj();
 		if (farmWorkStatus.hasFarmland && !FarmHelper.isCycleCanceledByListeners(logic, farmSide, farmListeners)) {
 			final float hydrationModifier = hydrationManager.getHydrationModifier();
 			final int fertilizerConsumption = Math.round(logic.getProperties().getFertilizerConsumption(housing) * Config.fertilizerModifier);
@@ -210,7 +209,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 					continue;
 				}
 
-				if (FarmHelper.cultivateTarget(world, housing, target, logic, farmListeners)) {
+				if (FarmHelper.cultivateTarget(level, housing, target, logic, farmListeners)) {
 					// Remove fertilizer and water
 					fertilizerManager.removeFertilizer(fertilizerConsumption);
 					housing.removeLiquid(liquid);
@@ -222,7 +221,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	}
 
 	private boolean collectWindfall(IFarmLogic logic) {
-		NonNullList<ItemStack> collected = logic.collect(housing.getWorldObj(), housing);
+		List<ItemStack> collected = logic.collect(housing.getWorldObj(), housing);
 		if (collected.isEmpty()) {
 			return false;
 		}
@@ -266,7 +265,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 			return false;
 		}
 
-		NonNullList<ItemStack> harvested = crop.harvest();
+		List<ItemStack> harvested = crop.harvest();
 		if (harvested != null) {
 			// Remove fertilizer and water
 			fertilizerManager.removeFertilizer(fertilizerConsumption);
@@ -319,13 +318,13 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 		this.pendingProduce.add(stack);
 	}
 
-	public BlockPos getFarmCorner(HorizontalDirection direction) {
+	public BlockPos getFarmCorner(Direction direction) {
 		List<FarmTarget> targetList = this.targets.get(direction);
 		if (targetList.isEmpty()) {
 			return housing.getCoords();
 		}
 		FarmTarget target = targetList.get(0);
-		return target.getStart().relative(direction.getFacing().getOpposite());
+		return target.getStart().relative(direction.getOpposite());
 	}
 
 	@Override

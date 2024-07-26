@@ -6,35 +6,33 @@
 package forestry.api.arboriculture.genetics;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
 
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.genetics.Product;
-import forestry.api.genetics.alleles.TreeChromosomes;
-
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.Product;
+import forestry.api.genetics.alleles.IRegistryAlleleValue;
+import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.core.utils.SpeciesUtil;
 
 /**
  * Provides all information that is needed to spawn a fruit leaves / pod block in the world.
  */
-public interface IFruit {
+public interface IFruit extends IRegistryAlleleValue {
 	/**
 	 * Returns the color of the fruit spite based on the ripening time of the fruit.
 	 *
@@ -66,12 +64,12 @@ public interface IFruit {
 	 * @return The chance that this leaves contains fruits or the chance that a pod block spawns.
 	 */
 	default float getFruitChance(IGenome genome, LevelAccessor level, BlockPos pos) {
-		ITreeSpeciesType treeRoot = TreeManager.treeRoot;
+		ITreeSpeciesType treeRoot = SpeciesUtil.TREE_TYPE.get();
 		if (treeRoot == null) {
 			return 0.0F;
 		}
-		float yieldModifier = treeRoot.getTreekeepingMode(level).getYieldModifier(genome, 1.0F);
-		return genome.getActiveValue(TreeChromosomes.YIELD) * yieldModifier * 2.5F;
+		//float yieldModifier = treeRoot.getTreekeepingMode(level).getYieldModifier(genome, 1.0F);
+		return genome.getActiveValue(TreeChromosomes.YIELD) * 2.5F;// * yieldModifier;
 	}
 
 	/**
@@ -99,12 +97,7 @@ public interface IFruit {
 	 * @param genome       The genome of the tree of the leaves / pod.
 	 * @param ripeningTime The repining time of the block. From 0 to {@link #getRipeningPeriod()}.
 	 */
-	List<ItemStack> getFruits(IGenome genome, Level world, BlockPos pos, int ripeningTime);
-
-	/**
-	 * @return Short, human-readable identifier used in the treealyzer.
-	 */
-	MutableComponent getDescription();
+	List<ItemStack> getFruits(IGenome genome, Level level, BlockPos pos, int ripeningTime);
 
 	/**
 	 * @return The location of the pod model in the "modid:pods/" folder.
@@ -126,11 +119,10 @@ public interface IFruit {
 	@Nullable
 	ResourceLocation getSprite(IGenome genome, BlockGetter world, BlockPos pos, int ripeningTime);
 
-	/**
-	 * return the ResourceLocation to display on decorative leaves
-	 */
 	@Nullable
-	ResourceLocation getDecorativeSprite();
+	default ResourceLocation getDecorativeSprite() {
+		return null;
+	}
 
 	/**
 	 * @return true if this fruit provider requires fruit blocks to spawn, false otherwise.
@@ -146,7 +138,8 @@ public interface IFruit {
 	boolean trySpawnFruitBlock(IGenome genome, LevelAccessor world, RandomSource rand, BlockPos pos);
 
 	@OnlyIn(Dist.CLIENT)
-	void registerSprites(TextureStitchEvent.Pre event);
+	default void registerSprites(TextureStitchEvent.Pre event) {
+	}
 
 	/**
 	 * Tag for the log that the is placed on

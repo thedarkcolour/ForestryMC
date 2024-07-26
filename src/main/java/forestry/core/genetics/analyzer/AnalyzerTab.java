@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.core.features.CoreItems;
 import forestry.core.gui.elements.DatabaseElement;
@@ -13,7 +14,7 @@ import forestry.core.gui.elements.DatabaseElement;
 public enum AnalyzerTab implements IDatabaseTab<IIndividual> {
 	ANALYZE {
 		@Override
-		public void createElements(DatabaseElement container, IIndividual individual, ItemStack itemStack) {
+		public void createElements(DatabaseElement container, IIndividual individual, ILifeStage stage, ItemStack itemStack) {
 		}
 
 		@Override

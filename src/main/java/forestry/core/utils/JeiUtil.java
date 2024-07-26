@@ -10,6 +10,7 @@ import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -22,10 +23,17 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 import forestry.Forestry;
+import forestry.api.ForestryCapabilities;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.modules.features.FeatureItem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
+
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 public class JeiUtil {
@@ -125,4 +133,13 @@ public class JeiUtil {
 			.orElse(ItemStack.EMPTY);
 	}
 
+	public static <S extends ISpecies<?>> void registerItemSubtypes(ISubtypeRegistration registry, ISpeciesChromosome<S> species, ISpeciesType<S, ?> type) {
+		IIngredientSubtypeInterpreter<ItemStack> interpreter = (stack, context) -> stack.getCapability(ForestryCapabilities.INDIVIDUAL)
+				.map(individual -> individual.getIndividual().getGenome().getActiveValue(species).getBinomial())
+				.orElse(IIngredientSubtypeInterpreter.NONE);
+
+		for (ILifeStage stage : type.getLifeStages()) {
+			registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, stage.getItemForm(), interpreter);
+		}
+	}
 }

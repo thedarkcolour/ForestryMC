@@ -6,14 +6,13 @@
 package forestry.api.farming;
 
 import java.util.Collection;
+import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 
 public interface IFarmListener {
-
 	/**
 	 * Called before a crop is harvested.
 	 *
@@ -30,7 +29,7 @@ public interface IFarmListener {
 	 * @param harvested Collection of harvested stacks. May be manipulated. Ensure removal of stacks with 0 or less items!
 	 * @param crop      Harvested {@link ICrop}
 	 */
-	default void afterCropHarvest(NonNullList<ItemStack> harvested, ICrop crop) {
+	default void afterCropHarvest(List<ItemStack> harvested, ICrop crop) {
 	}
 
 	/**
@@ -38,7 +37,7 @@ public interface IFarmListener {
 	 *
 	 * @param collected Collection of collected stacks. May be manipulated. Ensure removal of stacks with 0 or less items!
 	 */
-	default void hasCollected(NonNullList<ItemStack> collected, IFarmLogic logic) {
+	default void hasCollected(List<ItemStack> collected, IFarmLogic logic) {
 	}
 
 	/**

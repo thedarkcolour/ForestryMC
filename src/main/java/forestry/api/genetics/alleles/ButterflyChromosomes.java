@@ -6,11 +6,6 @@ import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.IButterflyEffect;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
-import forestry.core.genetics.alleles.BooleanChromosome;
-import forestry.core.genetics.alleles.FloatChromosome;
-import forestry.core.genetics.alleles.IntegerChromosome;
-import forestry.core.genetics.alleles.SpeciesChromosome;
-import forestry.core.genetics.alleles.ValueChromosome;
 
 import static forestry.api.ForestryConstants.forestry;
 
@@ -18,25 +13,25 @@ public class ButterflyChromosomes {
 	/**
 	 * Determines the species of a butterfly.
 	 */
-	public static final ISpeciesChromosome<IButterflySpecies> SPECIES = new SpeciesChromosome<>(ForestrySpeciesTypes.BUTTERFLY, IButterflySpecies.class);
+	public static final ISpeciesChromosome<IButterflySpecies> SPECIES = ForestryAlleles.REGISTRY.speciesChromosome(ForestrySpeciesTypes.BUTTERFLY, IButterflySpecies.class);
 	/**
 	 * Determines physical size of a butterfly.
 	 */
-	public static final IFloatChromosome SIZE = new FloatChromosome(forestry("size"));
+	public static final IFloatChromosome SIZE = ForestryAlleles.REGISTRY.floatChromosome(forestry("size"));
 	/**
 	 * Determines the flight speed of a butterfly.
 	 */
 	public static final IFloatChromosome SPEED = BeeChromosomes.SPEED;
 	/**
-	 * Determines how long this butterfly will live (todo change? butterflies randomly dying isn't minecraft-y)
+	 * Determines how long this butterfly will live (todo change? mobs dying of old age isn't minecraft-y)
 	 */
-	public static final IIntegerChromosome LIFESPAN = new IntegerChromosome(forestry("butterfly_lifespan"));
+	public static final IIntegerChromosome LIFESPAN = ForestryAlleles.REGISTRY.intChromosome(forestry("butterfly_lifespan"));
 	/**
 	 * Determines the rate at which caterpillars destroy leaves and influences cocoon drops.
 	 */
-	public static final IIntegerChromosome METABOLISM = new IntegerChromosome(forestry("metabolism"));
+	public static final IIntegerChromosome METABOLISM = ForestryAlleles.REGISTRY.intChromosome(forestry("metabolism"));
 	/**
-	 * TODO document
+	 * Determines how likely this butterfly is to mate with another butterfly as well as how fast its nurseries and cocoons mature.
 	 */
 	public static final IIntegerChromosome FERTILITY = BeeChromosomes.FERTILITY;
 	/**
@@ -52,23 +47,23 @@ public class ButterflyChromosomes {
 	 */
 	public static final IBooleanChromosome NEVER_SLEEPS = BeeChromosomes.NEVER_SLEEPS;
 	/**
-	 * TODO document
+	 * Whether this butterfly can spawn or fly while it is raining.
 	 */
 	public static final IBooleanChromosome TOLERATES_RAIN = BeeChromosomes.TOLERATES_RAIN;
 	/**
 	 * Whether this butterfly is immune to fire/lava damage.
 	 */
-	public static final IBooleanChromosome FIREPROOF = new BooleanChromosome(forestry("fireproof"));
+	public static final IBooleanChromosome FIREPROOF = ForestryAlleles.REGISTRY.booleanChromosome(forestry("fireproof"));
 	/**
-	 * The type of flowers this butterfly likes to fly around. TODO this is wrong information lol
+	 * Unimplemented.
 	 */
-	public static final IValueChromosome<IFlowerType> FLOWER_TYPE = BeeChromosomes.FLOWER_TYPE;
+	public static final IRegistryChromosome<IFlowerType> FLOWER_TYPE = BeeChromosomes.FLOWER_TYPE;
 	/**
-	 * TODO document
+	 * Unimplemented.
 	 */
-	public static final IValueChromosome<IButterflyEffect> EFFECT = new ValueChromosome<>(forestry("butterfly_effect"), IButterflyEffect.class);
+	public static final IRegistryChromosome<IButterflyEffect> EFFECT = ForestryAlleles.REGISTRY.registryChromosome(forestry("butterfly_effect"), IButterflyEffect.class);
 	/**
-	 * Was used for silk moths (Bombyx Mori) to place special cocoons. TODO reimplement
+	 * Used for silk moths (Bombyx Mori) to affect cocoon drops.
 	 */
-	public static final IValueChromosome<IButterflyCocoon> COCOON = new ValueChromosome<>(forestry("cocoon"), IButterflyCocoon.class);
+	public static final IRegistryChromosome<IButterflyCocoon> COCOON = ForestryAlleles.REGISTRY.registryChromosome(forestry("cocoon"), IButterflyCocoon.class);
 }

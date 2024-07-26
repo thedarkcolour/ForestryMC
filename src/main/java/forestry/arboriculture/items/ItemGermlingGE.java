@@ -32,7 +32,7 @@ import net.minecraft.world.phys.HitResult;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import forestry.api.arboriculture.TreeManager;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
@@ -50,6 +50,7 @@ import forestry.core.utils.GeneticsUtil;
 
 import genetics.api.GeneticHelper;
 import forestry.api.genetics.ILifeStage;
+import forestry.core.utils.SpeciesUtil;
 
 public class ItemGermlingGE extends ItemGE implements IVariableFermentable, IColoredItem {
 	private final TreeLifeStage type;
@@ -60,13 +61,13 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 	}
 
 	@Override
-	protected final ILifeStage getType() {
+	protected final ILifeStage getStage() {
 		return type;
 	}
 
 	@Override
-	protected ISpecies<?> getSpecies(ItemStack itemStack) {
-		return GeneticHelper.getOrganism(itemStack).getAllele(TreeChromosomes.SPECIES, true);
+	protected ITreeSpecies getSpecies(ItemStack stack) {
+		return GeneticHelper.getOrganism(stack).getAllele(TreeChromosomes.SPECIES, true);
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 		ItemStack stack = playerIn.getItemInHand(handIn);
 
 		if (traceResult.getType() == HitResult.Type.BLOCK) {
-			ITree tree = TreeManager.treeRoot.create(stack);
+			ITree tree = SpeciesUtil.TREE_TYPE.get().create(stack);
 
 			if (tree != null) {
 				BlockPos pos = traceResult.getBlockPos();
@@ -144,7 +145,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 		}
 
 		if (tree.canStay(worldIn, pos)) {
-			if (TreeManager.treeRoot.plantSapling(worldIn, tree, player.getGameProfile(), pos)) {
+			if (SpeciesUtil.TREE_TYPE.get().plantSapling(worldIn, tree, player.getGameProfile(), pos)) {
 				if (!player.isCreative()) {
 					stack.shrink(1);
 				}
@@ -157,7 +158,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 	@Override
 	public float getFermentationModifier(ItemStack itemstack) {
 		itemstack = GeneticsUtil.convertToGeneticEquivalent(itemstack);
-		ITree tree = TreeManager.treeRoot.create(itemstack);
+		ITree tree = SpeciesUtil.TREE_TYPE.get().create(itemstack);
 		if (tree == null) {
 			return 1.0f;
 		}

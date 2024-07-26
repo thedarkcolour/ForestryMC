@@ -27,4 +27,12 @@ public record Product(Item item, int count, @Nullable CompoundTag nbt, float cha
 		stack.setTag(nbt);
 		return stack;
 	}
+
+	public static Product of(Item item) {
+		return new Product(item, 1, null, 1f);
+	}
+
+	public static Product of(Item item, int amount, float chance) {
+		return new Product(item, amount, null, chance);
+	}
 }

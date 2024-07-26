@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.farming.logic.crops;
 
+import java.util.List;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
@@ -32,7 +34,7 @@ public class CropFruit extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
+	protected List<ItemStack> harvestBlock(Level level, BlockPos pos) {
 		IFruitBearer tile = TileUtil.getTile(level, pos, IFruitBearer.class);
 		if (tile == null) {
 			return NonNullList.create();

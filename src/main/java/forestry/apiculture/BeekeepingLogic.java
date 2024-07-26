@@ -32,7 +32,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.Forestry;
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeHousingInventory;
@@ -41,20 +40,17 @@ import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.genetics.IBeeSpeciesType;
-import forestry.api.core.IErrorLogic;
+import forestry.api.core.ForestryError;
 import forestry.api.core.IError;
+import forestry.api.core.IErrorLogic;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.apiculture.features.ApicultureItems;
+import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.ILifeStage;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.core.config.Constants;
-import forestry.api.core.ForestryError;
 import forestry.core.utils.NetworkUtil;
-
-import forestry.api.genetics.IGenome;
-
-import forestry.api.genetics.ILifeStage;
 import forestry.core.utils.SpeciesUtil;
 
 public class BeekeepingLogic implements IBeekeepingLogic {
@@ -84,32 +80,11 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 	public BeekeepingLogic(IBeeHousing housing) {
 		this.housing = housing;
-		this.beeModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
-		this.beeListener = BeeManager.beeRoot.createBeeHousingListener(housing);
+		this.beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
+		this.beeListener = SpeciesUtil.BEE_TYPE.get().createBeeHousingListener(housing);
 	}
 
 	// / SAVING & LOADING
-	@Override
-	public void read(CompoundTag compoundNBT) {
-		this.beeProgress = compoundNBT.getInt("BreedingTime");
-		this.queenWorkCycleThrottle = compoundNBT.getInt("Throttle");
-
-		if (compoundNBT.contains("queen")) {
-			CompoundTag queenNBT = compoundNBT.getCompound("queen");
-			this.queenStack = ItemStack.of(queenNBT);
-			this.queen = BeeManager.beeRoot.create(queenStack);
-		}
-
-		setActive(compoundNBT.getBoolean("Active"));
-
-		this.hasFlowersCache.read(compoundNBT);
-
-		ListTag list = compoundNBT.getList("Offspring", 10);
-		for (int i = 0; i < list.size(); i++) {
-			this.spawn.add(ItemStack.of(list.getCompound(i)));
-		}
-	}
-
 	@Override
 	public CompoundTag write(CompoundTag compoundNBT) {
 		compoundNBT.putInt("BreedingTime", this.beeProgress);
@@ -138,6 +113,28 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	}
 
 	@Override
+	public void read(CompoundTag compoundNBT) {
+		this.beeProgress = compoundNBT.getInt("BreedingTime");
+		this.queenWorkCycleThrottle = compoundNBT.getInt("Throttle");
+
+		// sadly this means duplicated NBT
+		if (compoundNBT.contains("queen")) {
+			CompoundTag queenNBT = compoundNBT.getCompound("queen");
+			this.queenStack = ItemStack.of(queenNBT);
+			this.queen = (IBee) IIndividualHandler.get(queenStack);
+		}
+
+		setActive(compoundNBT.getBoolean("Active"));
+
+		this.hasFlowersCache.read(compoundNBT);
+
+		ListTag list = compoundNBT.getList("Offspring", 10);
+		for (int i = 0; i < list.size(); i++) {
+			this.spawn.add(ItemStack.of(list.getCompound(i)));
+		}
+	}
+
+	@Override
 	public void writeData(FriendlyByteBuf data) {
 		data.writeBoolean(active);
 		if (active) {
@@ -149,11 +146,13 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	@Override
 	public void readData(FriendlyByteBuf data) {
 		boolean active = data.readBoolean();
+
 		setActive(active);
+
 		if (active) {
-			queenStack = data.readItem();
-			queen = BeeManager.beeRoot.create(queenStack);
-			hasFlowersCache.readData(data);
+			this.queenStack = data.readItem();
+			this.queen = (IBee) IIndividualHandler.getIndividual(queenStack);
+			this.hasFlowersCache.readData(data);
 		}
 	}
 
@@ -171,70 +170,70 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 	@Override
 	public boolean canWork() {
-
-		IErrorLogic errorLogic = housing.getErrorLogic();
+		IErrorLogic errorLogic = this.housing.getErrorLogic();
 		errorLogic.clearErrors();
 
-		IBeeHousingInventory beeInventory = housing.getBeeInventory();
+		IBeeHousingInventory beeInventory = this.housing.getBeeInventory();
 
-		boolean hasSpace = addPendingProducts(beeInventory, spawn);
+		boolean hasSpace = addPendingProducts(beeInventory, this.spawn);
 		errorLogic.setCondition(!hasSpace, ForestryError.NO_SPACE_INVENTORY);
 
-		ItemStack queenStack = beeInventory.getQueen();
-		ILifeStage beeType = BeeManager.beeRoot.getTypes().getType(queenStack);
+		ItemStack newQueenStack = beeInventory.getQueen();
+		IIndividualHandler handler = IIndividualHandler.get(newQueenStack);
+		ILifeStage beeType = handler.getStage();
 		// check if we're breeding
 		if (beeType == BeeLifeStage.PRINCESS) {
-			boolean hasDrone = BeeManager.beeRoot.isDrone(beeInventory.getDrone());
+			boolean hasDrone = SpeciesUtil.BEE_TYPE.get().isDrone(beeInventory.getDrone());
 			errorLogic.setCondition(!hasDrone, ForestryError.NO_DRONE);
 
 			setActive(false); // not active (no bee FX) when we are breeding
 			return !errorLogic.hasErrors();
 		}
 		if (beeType == BeeLifeStage.QUEEN) {
-			if (!isQueenAlive(queenStack)) {
-				IBee dyingQueen = BeeManager.beeRoot.create(queenStack);
-				if (dyingQueen != null) {
-					Collection<ItemStack> spawned = killQueen(dyingQueen, housing, beeListener);
-					spawn.addAll(spawned);
-				}
-				queenStack = ItemStack.EMPTY;
+			IBee queen = (IBee) handler.getIndividual();
+
+			if (!queen.isAlive()) {
+				Collection<ItemStack> spawned = killQueen(queen, this.housing, this.beeListener);
+				this.spawn.addAll(spawned);
+				newQueenStack = ItemStack.EMPTY;
 			}
 		} else {
-			queenStack = ItemStack.EMPTY;
+			newQueenStack = ItemStack.EMPTY;
 		}
 
-		if (this.queenStack != queenStack) {
-			if (!queenStack.isEmpty()) {
-				this.queen = BeeManager.beeRoot.create(queenStack);
+		// if the princess changed into a queen, or if a queen died
+		if (this.queenStack != newQueenStack) {
+			if (!newQueenStack.isEmpty()) {
+				this.queen = (IBee) IIndividualHandler.get(newQueenStack);
 				if (this.queen != null) {
-					hasFlowersCache.onNewQueen(queen, housing);
+					hasFlowersCache.onNewQueen(this.queen, this.housing);
 				}
 			} else {
 				this.queen = null;
 			}
-			this.queenStack = queenStack;
-			queenCanWorkCache.clear();
+			this.queenStack = newQueenStack;
+			this.queenCanWorkCache.clear();
 		}
 
-		if (errorLogic.setCondition(queen == null, ForestryError.NO_QUEEN)) {
+		if (errorLogic.setCondition(this.queen == null, ForestryError.NO_QUEEN)) {
 			setActive(false);
-			beeProgress = 0;
+			this.beeProgress = 0;
 			return false;
 		}
 
-		Set<IError> queenErrors = queenCanWorkCache.queenCanWork(queen, housing);
+		Set<IError> queenErrors = this.queenCanWorkCache.queenCanWork(this.queen, this.housing);
 		for (IError errorState : queenErrors) {
 			errorLogic.setCondition(true, errorState);
 		}
 
-		hasFlowersCache.update(queen, housing);
+		this.hasFlowersCache.update(this.queen, this.housing);
 
-		boolean hasFlowers = hasFlowersCache.hasFlowers();
-		boolean flowerCacheNeedsSync = hasFlowersCache.needsSync();
+		boolean hasFlowers = this.hasFlowersCache.hasFlowers();
+		boolean flowerCacheNeedsSync = this.hasFlowersCache.needsSync();
 		errorLogic.setCondition(!hasFlowers, ForestryError.NO_FLOWER);
 
 		boolean canWork = !errorLogic.hasErrors();
-		if (active != canWork) {
+		if (this.active != canWork) {
 			setActive(canWork);
 		} else if (flowerCacheNeedsSync) {
 			syncToClient();
@@ -246,14 +245,13 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 	public void doWork() {
 		IBeeHousingInventory beeInventory = housing.getBeeInventory();
 		ItemStack queenStack = beeInventory.getQueen();
-		ILifeStage beeType = BeeManager.beeRoot.getTypes().getType(queenStack);
-		if (beeType != null) {
-			if (beeType == BeeLifeStage.PRINCESS) {
+		IIndividualHandler.ifPresent(queenStack, (individual, stage) -> {
+			if (stage == BeeLifeStage.PRINCESS) {
 				tickBreed();
-			} else if (beeType == BeeLifeStage.QUEEN) {
-				queenWorkTick(queen, queenStack);
+			} else if (stage == BeeLifeStage.QUEEN) {
+				queenWorkTick((IBee) individual, queenStack);
 			}
-		}
+		});
 	}
 
 	@Override
@@ -299,7 +297,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 			queen.age(world, lifespanModifier);
 
 			// Write the changed queen back into the item stack.
-			GeneticHelper.setIndividual(queenStack, queen);
+			queen.saveToStack(queenStack);
 			housing.getBeeInventory().setQueen(queenStack);
 		}
 
@@ -335,25 +333,6 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		return housingHasSpace;
 	}
 
-	/**
-	 * Checks if a queen is alive. Much faster than reading the whole bee nbt
-	 */
-	private static boolean isQueenAlive(ItemStack queenStack) {
-		if (queenStack.isEmpty()) {
-			return false;
-		}
-		CompoundTag compound = queenStack.getTag();
-		if (compound == null) {
-			return false;
-		}
-		CompoundTag individualTag = compound.getCompound(OrganismHandler.INDIVIDUAL_KEY);
-		if (individualTag.isEmpty()) {
-			return false;
-		}
-		int health = individualTag.getInt("Health");
-		return health > 0;
-	}
-
 	// / BREEDING
 	private void tickBreed() {
 		beeProgressMax = totalBreedingTime;
@@ -363,10 +342,9 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		ItemStack droneStack = beeInventory.getDrone();
 		ItemStack princessStack = beeInventory.getQueen();
 
-		IBeeSpeciesType root = BeeManager.beeRoot;
-		ILifeStage droneType = root.getTypes().getType(droneStack);
-		ILifeStage princessType = root.getTypes().getType(princessStack);
-		if (droneType != BeeLifeStage.DRONE || princessType != BeeLifeStage.PRINCESS) {
+		IIndividualHandler droneType = IIndividualHandler.get(droneStack);
+		IIndividualHandler princessType = IIndividualHandler.get(princessStack);
+		if (droneType == null || princessType == null || droneType.getStage() != BeeLifeStage.DRONE || princessType.getStage() != BeeLifeStage.PRINCESS) {
 			beeProgress = 0;
 			return;
 		}
@@ -379,17 +357,15 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		}
 
 		// Mate and replace princess with queen
-		IBee princess = BeeManager.beeRoot.create(princessStack);
-		IBee drone = BeeManager.beeRoot.create(droneStack);
-		princess.mate(drone.getGenome());
+		IBee princess = (IBee) IIndividualHandler.getIndividual(princessStack);
+		IBee drone = (IBee) IIndividualHandler.getIndividual(droneStack);
+		princess.setMate(drone.getGenome());
 
-		queenStack = ApicultureItems.BEE_QUEEN.stack();
-		princess.copyTo(queenStack);
-
+		queenStack = princess.copyWithStage(BeeLifeStage.QUEEN);
 		beeInventory.setQueen(queenStack);
 
 		// Register the new queen with the breeding tracker
-		BeeManager.beeRoot.getBreedingTracker(housing.getWorldObj(), housing.getOwner()).registerQueen(princess);
+		SpeciesUtil.BEE_TYPE.get().getBreedingTracker(housing.getWorldObj(), housing.getOwner()).registerQueen(princess);
 
 		// Remove drone
 		droneStack.shrink(1);
@@ -415,10 +391,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		} else {
 			Forestry.LOGGER.warn("Tried to spawn offspring off an unmated queen. Devolving her to a princess.");
 
-			ItemStack convert = ApicultureItems.BEE_PRINCESS.stack();
-			GeneticHelper.setIndividual(convert, queen);
-
-			spawn = Collections.singleton(convert);
+			spawn = Collections.singleton(queen.copyWithStage(BeeLifeStage.PRINCESS));
 		}
 		beeInventory.setQueen(ItemStack.EMPTY);
 
@@ -449,7 +422,8 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		// Drones
 		List<IBee> drones = queen.spawnDrones(beeHousing);
 		for (IBee drone : drones) {
-			ItemStack droneStack = BeeManager.beeRoot.getTypes().createStack(drone, BeeLifeStage.DRONE);
+			ItemStack droneStack = new ItemStack(BeeLifeStage.DRONE.getItemForm());
+			drone.saveToStack(droneStack);
 			breedingTracker.registerDrone(drone);
 			offspring.push(droneStack);
 		}

@@ -71,7 +71,7 @@ public class ApiaristAI extends MoveToBlockGoal {
 			//fill slots from inside bee house
 			for (ItemStack stack : InventoryUtil.getStacks(inventory, SLOT_PRODUCT_1, SLOT_PRODUCT_COUNT)) {
 				if (!stack.isEmpty() && stack.getItem() instanceof ItemBeeGE) {
-					BeeLifeStage type = ((ItemBeeGE) stack.getItem()).getType();
+					BeeLifeStage type = ((ItemBeeGE) stack.getItem()).getStage();
 					if (inventory.getItem(SLOT_QUEEN).isEmpty() && type == BeeLifeStage.PRINCESS) {
 						inventory.setQueen(stack.copy());
 						stack.setCount(0);
@@ -91,7 +91,7 @@ public class ApiaristAI extends MoveToBlockGoal {
 						break;
 					}
 					if (!stack.isEmpty() && stack.getItem() instanceof ItemBeeGE) {
-						BeeLifeStage type = ((ItemBeeGE) stack.getItem()).getType();
+						BeeLifeStage type = ((ItemBeeGE) stack.getItem()).getStage();
 						if (type == BeeLifeStage.DRONE && inventory.getItem(SLOT_DRONE).isEmpty()) {
 							InventoryUtil.addStack(inventory, stack, SLOT_DRONE, 1, true);
 							droneAdded = true;
@@ -119,7 +119,7 @@ public class ApiaristAI extends MoveToBlockGoal {
 		}
 		for (ItemStack stack : InventoryUtil.getStacks(villagerInventory)) {
 			if (!stack.isEmpty() && stack.getItem() instanceof ItemBeeGE) {
-				if (((ItemBeeGE) stack.getItem()).getType() == type) {
+				if (((ItemBeeGE) stack.getItem()).getStage() == type) {
 					return true;
 				}
 			}
@@ -137,7 +137,7 @@ public class ApiaristAI extends MoveToBlockGoal {
 				return false;
 			}
 			if (!inventory.getItem(SLOT_QUEEN).isEmpty()) {
-				BeeLifeStage type = ((ItemBeeGE) inventory.getItem(SLOT_QUEEN).getItem()).getType();
+				BeeLifeStage type = ((ItemBeeGE) inventory.getItem(SLOT_QUEEN).getItem()).getStage();
 				if (type == BeeLifeStage.QUEEN) {
 					return false;
 				}
@@ -152,7 +152,7 @@ public class ApiaristAI extends MoveToBlockGoal {
 			}
 			for (ItemStack stack : InventoryUtil.getStacks(inventory, SLOT_PRODUCT_1, SLOT_PRODUCT_COUNT)) {
 				if (!stack.isEmpty() && stack.getItem() instanceof ItemBeeGE) {
-					BeeLifeStage type = ((ItemBeeGE) stack.getItem()).getType();
+					BeeLifeStage type = ((ItemBeeGE) stack.getItem()).getStage();
 					if (type == BeeLifeStage.PRINCESS) {
 						foundPrincess = true;
 					}

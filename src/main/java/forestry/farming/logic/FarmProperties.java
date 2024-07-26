@@ -19,10 +19,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
 
+import forestry.api.IForestryApi;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmPropertiesBuilder;
+import forestry.api.farming.IFarmRegistry;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.IFarmableInfo;
 import forestry.api.farming.Soil;
@@ -45,7 +47,7 @@ public final class FarmProperties implements IFarmProperties {
 		Preconditions.checkNotNull(builder.waterConsumption);
 		Preconditions.checkNotNull(builder.fertilizerConsumption);
 		Preconditions.checkNotNull(builder.translationKey);
-		ForestryFarmRegistry registry = ForestryFarmRegistry.INSTANCE;
+		IFarmRegistry registry = IForestryApi.INSTANCE.getFarmRegistry();
 		this.manualLogic = builder.factory.apply(this, true);
 		this.managedLogic = builder.factory.apply(this, false);
 		this.soils = ImmutableSet.copyOf(builder.soils);
@@ -168,7 +170,7 @@ public final class FarmProperties implements IFarmProperties {
 
 		public Builder(String identifier) {
 			this.identifier = identifier;
-			this.defaultInfo = ForestryFarmRegistry.INSTANCE.getFarmableInfo(identifier);
+			this.defaultInfo = IForestryApi.INSTANCE.getFarmRegistry().getFarmableInfo(identifier);
 		}
 
 		@Override
@@ -254,7 +256,7 @@ public final class FarmProperties implements IFarmProperties {
 
 		@Override
 		public IFarmProperties create() {
-			return ForestryFarmRegistry.INSTANCE.registerProperties("farm" + WordUtils.capitalize(identifier), new FarmProperties(this));
+			return IForestryApi.INSTANCE.getFarmRegistry().registerProperties("farm" + WordUtils.capitalize(identifier), new FarmProperties(this));
 		}
 	}
 }

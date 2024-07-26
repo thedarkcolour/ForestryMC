@@ -5,13 +5,11 @@
  ******************************************************************************/
 package forestry.api.lepidopterology;
 
-import forestry.api.genetics.IHousing;
-import forestry.api.lepidopterology.genetics.IButterfly;
+import java.util.List;
 
-public interface IButterflyCocoon extends IHousing {
-	IButterfly getCaterpillar();
+import forestry.api.genetics.Product;
+import forestry.api.genetics.alleles.IRegistryAlleleValue;
 
-	void setCaterpillar(IButterfly butterfly);
-
-	boolean isSolid();
+public interface IButterflyCocoon extends IRegistryAlleleValue {
+	List<Product> getProducts();
 }

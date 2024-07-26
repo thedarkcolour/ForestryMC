@@ -13,7 +13,6 @@ package forestry.apiculture;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.core.inventory.InventoryAdapterRestricted;
@@ -21,6 +20,7 @@ import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.SlotUtil;
 
 import forestry.api.genetics.ILifeStage;
+import forestry.core.utils.SpeciesUtil;
 
 public class InventoryBeeHousing extends InventoryAdapterRestricted implements IBeeHousingInventory {
 	public static final int SLOT_QUEEN = 0;
@@ -34,7 +34,7 @@ public class InventoryBeeHousing extends InventoryAdapterRestricted implements I
 
 	@Override
 	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		ILifeStage beeType = BeeManager.beeRoot.getLifeStage(itemStack);
+		ILifeStage beeType = SpeciesUtil.BEE_TYPE.get().getLifeStage(itemStack);
 
 		if (slotIndex == SLOT_QUEEN) {
 			return beeType == BeeLifeStage.QUEEN || beeType == BeeLifeStage.PRINCESS;

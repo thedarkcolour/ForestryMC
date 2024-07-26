@@ -38,54 +38,43 @@ import net.minecraftforge.fml.ModList;
 import forestry.Forestry;
 import forestry.api.ForestryConstants;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.core.proxy.Proxies;
+import forestry.api.genetics.ISpecies;
 import forestry.core.utils.StringUtil;
 
-import genetics.api.GeneticsAPI;
-import forestry.api.genetics.alleles.ISpecies<?>;
-import genetics.commands.CommandHelpers;
-
 public final class CommandSaveStats implements Command<CommandSourceStack> {
-
-	private static final Component discoveredSymbol;
-	private static final Component blacklistedSymbol;
-	private static final Component notCountedSymbol;
-
-	static {
-		discoveredSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.discovered.symbol");
-		blacklistedSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.blacklisted.symbol");
-		notCountedSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.notCounted.symbol");
-	}
+	private static final Component discoveredSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.discovered.symbol");
+	private static final Component blacklistedSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.blacklisted.symbol");
+	private static final Component notCountedSymbol = Component.translatable("for.chat.command.forestry.stats.save.key.notCounted.symbol");
 
 	private final IStatsSaveHelper saveHelper;
-	private final ICommandModeHelper modeHelper;
 
-	public CommandSaveStats(IStatsSaveHelper saveHelper, ICommandModeHelper modeHelper) {
+	public CommandSaveStats(IStatsSaveHelper saveHelper) {
 		this.saveHelper = saveHelper;
-		this.modeHelper = modeHelper;
 	}
 
-	public static ArgumentBuilder<CommandSourceStack, ?> register(IStatsSaveHelper saveHelper, ICommandModeHelper modeHelper) {
+	public static ArgumentBuilder<CommandSourceStack, ?> register(IStatsSaveHelper saveHelper) {
 		return Commands.literal("save")
 				.then(Commands.argument("player", EntityArgument.player())
-						.executes(new CommandSaveStats(saveHelper, modeHelper)));
+						.executes(new CommandSaveStats(saveHelper)));
 
 	}
 
 	public int run(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-		String newLine = System.getProperty("line.separator");
 
 		ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
 
 		Level world = ctx.getSource().getLevel();
 
-		Collection<String> statistics = new ArrayList<>();
+		Collection<Component> statistics = new ArrayList<>();
 
 		String date = DateFormat.getInstance().format(new Date());
-		statistics.add(Component.translatable(saveHelper.getUnlocalizedSaveStatsString(), player.getDisplayName(), date).getString());
-		statistics.add("");
-		statistics.add(Component.translatable("for.chat.command.forestry.stats.save.mode", modeHelper.getModeName(world)).getString());
-		statistics.add("");
+		Component emptyLiteral = Component.literal("");
+
+		// todo why tf are there empty components getting added?
+		statistics.add(Component.translatable(saveHelper.getTranslationKey(), player.getDisplayName(), date));
+		statistics.add(emptyLiteral);
+		//statistics.add(Component.translatable("for.chat.command.forestry.stats.save.mode", modeHelper.getModeName(world)));
+		statistics.add(emptyLiteral);
 
 		IBreedingTracker tracker = saveHelper.getBreedingTracker(world, player.getGameProfile());
 		saveHelper.addExtraInfo(statistics, tracker);
@@ -94,25 +83,26 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 
 		String speciesCount = Component.translatable("for.gui.speciescount").getString();
 		String speciesCountLine = String.format("%s (%s):", speciesCount, species.size());
-		statistics.add(speciesCountLine);
+		statistics.add(Component.literal(speciesCountLine));
 		statistics.add(StringUtil.line(speciesCountLine.length()));
 
-		statistics.add(discoveredSymbol + ": " + Component.translatable("for.chat.command.forestry.stats.save.key.discovered"));
-		statistics.add(blacklistedSymbol + ": " + Component.translatable("for.chat.command.forestry.stats.save.key.blacklisted"));
-		statistics.add(notCountedSymbol + ": " + Component.translatable("for.chat.command.forestry.stats.save.key.notCounted"));
-		statistics.add("");
+		statistics.add(Component.literal(discoveredSymbol + ": ").append(Component.translatable("for.chat.command.forestry.stats.save.key.discovered")));
+		statistics.add(Component.literal(blacklistedSymbol + ": ").append(Component.translatable("for.chat.command.forestry.stats.save.key.blacklisted")));
+		statistics.add(Component.literal(notCountedSymbol + ": ").append(Component.translatable("for.chat.command.forestry.stats.save.key.notCounted")));
+		statistics.add(Component.literal(""));
 
 		String header = generateSpeciesListHeader();
-		statistics.add(header);
+		statistics.add(Component.literal(header));
 
 		statistics.add(StringUtil.line(header.length()));
-		statistics.add("");
+		statistics.add(Component.literal(""));
 
 		for (ISpecies<?> allele : species) {
-			statistics.add(generateSpeciesListEntry(allele, tracker));
+			statistics.add(Component.literal(generateSpeciesListEntry(allele, tracker)));
 		}
 
-		File file = new File(Proxies.common.getForestryRoot(), "config/" + ForestryConstants.MOD_ID + "/stats/" + player.getDisplayName().getString() + '-' + saveHelper.getFileSuffix() + ".log");
+		// todo test
+		File file = new File("config/" + ForestryConstants.MOD_ID + "/stats/" + player.getDisplayName().getString() + '-' + saveHelper.getFileSuffix() + ".log");
 		try {
 			File folder = file.getParentFile();
 			if (folder != null && !folder.exists()) {
@@ -133,13 +123,14 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 				return 0;
 			}
 
+			String newLine = System.lineSeparator();
 			FileOutputStream fileout = new FileOutputStream(file);
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fileout, StandardCharsets.UTF_8));
 
 			writer.write("# " + ForestryConstants.MOD_ID + newLine + "# " + ModList.get().getModContainerById(ForestryConstants.MOD_ID).get().getModInfo().getVersion() + newLine);
 
-			for (String line : statistics) {
-				writer.write(line + newLine);
+			for (Component line : statistics) {
+				writer.write(line.getString() + newLine);
 			}
 
 			writer.close();
@@ -158,7 +149,7 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 	private static String generateSpeciesListHeader() {
 		Component authority = Component.translatable("for.gui.alyzer.authority");
 		Component species = Component.translatable("for.gui.species");
-		return speciesListEntry(discoveredSymbol, blacklistedSymbol, notCountedSymbol, "UID", species, authority.getString());
+		return speciesListEntry(discoveredSymbol, notCountedSymbol, "UID", species, authority.getString());
 	}
 
 	private static String generateSpeciesListEntry(ISpecies<?> species, IBreedingTracker tracker) {
@@ -167,20 +158,15 @@ public final class CommandSaveStats implements Command<CommandSourceStack> {
 			discovered = discoveredSymbol;
 		}
 
-		Component blacklisted = Component.empty();
-		if (GeneticsAPI.apiInstance.getAlleleRegistry().isBlacklisted(species.getId())) {
-			blacklisted = blacklistedSymbol;
-		}
-
 		Component notCounted = Component.empty();
 		if (!species.isDominant()) {
 			notCounted = notCountedSymbol;
 		}
 
-		return speciesListEntry(discovered, blacklisted, notCounted, species.getId().toString(), species.getDisplayName(), species.getAuthority());
+		return speciesListEntry(discovered, notCounted, species.id().toString(), species.getDisplayName(), species.getAuthority());
 	}
 
-	private static String speciesListEntry(Component discovered, Component blacklisted, Component notCounted, String UID, Component speciesName, String authority) {
-		return String.format("[ %-2s ] [ %-2s ] [ %-2s ]\t%-40s %-20s %-20s", discovered, blacklisted, notCounted, UID, speciesName, authority);
+	private static String speciesListEntry(Component discovered, Component notCounted, String UID, Component speciesName, String authority) {
+		return String.format("[ %-2s ] [ %-2s ]\t%-40s %-20s %-20s", discovered, notCounted, UID, speciesName, authority);
 	}
 }

@@ -9,24 +9,17 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 public interface IAlyzerPlugin {
-
-	@OnlyIn(Dist.CLIENT)
 	void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack);
 
-	@OnlyIn(Dist.CLIENT)
 	void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack);
 
-	@OnlyIn(Dist.CLIENT)
-	void drawAnalyticsPage3(PoseStack transform, ItemStack itemStack, Screen gui);
+	void drawAnalyticsPage3(PoseStack transform, Screen gui, ItemStack stack);
 
 	/**
 	 * The hints that will be shown in the alyzer gui.

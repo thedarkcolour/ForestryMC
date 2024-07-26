@@ -120,9 +120,8 @@ public class ForestryModuleManager implements IModuleManager {
 	public void init() {
 		loadModules();
 
-
 		for (Map.Entry<ResourceLocation, IForestryModule> entry : this.loadedModules.entrySet()) {
-			IEventBus modBus = modBuses.computeIfAbsent(entry.getKey().getNamespace(), modid -> ModuleUtil.getModBus(modid));
+			IEventBus modBus = ModuleUtil.getModBus(entry.getKey().getNamespace());
 			IForestryModule module = entry.getValue();
 
 			module.registerEvents(modBus);

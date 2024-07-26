@@ -5,7 +5,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.api.farming.IFarmProperties;
 
 public abstract class FarmLogicSoil extends FarmLogic {
-
 	public FarmLogicSoil(IFarmProperties properties, boolean isManual) {
 		super(properties, isManual);
 	}
@@ -13,5 +12,4 @@ public abstract class FarmLogicSoil extends FarmLogic {
 	protected boolean isAcceptedSoil(BlockState blockState) {
 		return properties.isAcceptedSoil(blockState);
 	}
-
 }

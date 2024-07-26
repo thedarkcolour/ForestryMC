@@ -19,7 +19,6 @@ import forestry.apiculture.tiles.TileApiaristChest;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.blocks.IMachinePropertiesTesr;
 import forestry.core.blocks.MachinePropertiesTesr;
-import forestry.core.proxy.Proxies;
 import forestry.core.tiles.TileNaturalistChest;
 import forestry.modules.features.FeatureTileType;
 
@@ -31,13 +30,11 @@ public enum BlockTypeApicultureTesr implements IBlockTypeTesr {
 	private final IMachinePropertiesTesr<?> machineProperties;
 
 	<T extends TileApiaristChest> BlockTypeApicultureTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, String textureName, VoxelShape shape) {
-		MachinePropertiesTesr<T> machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
+		this.machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
 			.setParticleTexture(name + ".0")
 			.setClientTicker(TileNaturalistChest::clientTick)
 			.setShape(shape)
 			.create();
-		Proxies.render.setRenderChest(machineProperties, textureName);
-		this.machineProperties = machineProperties;
 	}
 
 	@Override

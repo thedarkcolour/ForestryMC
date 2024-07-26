@@ -3,8 +3,10 @@ package forestry.core.data;
 import com.google.common.collect.Sets;
 
 import forestry.api.ForestryConstants;
+import forestry.api.apiculture.ForestryBeeSpecies;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.apiculture.features.ApicultureItems;
-import forestry.apiculture.genetics.BeeDefinition;
+import forestry.core.utils.SpeciesUtil;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -57,7 +59,7 @@ public class ForestryAdvancementProvider implements DataProvider {
 
 	private void build(Consumer<Advancement> consumer) {
 		ItemStack icon = new ItemStack(ApicultureItems.BEE_QUEEN.item());
-		BeeDefinition.INDUSTRIOUS.createIndividual().copyTo(icon);
+		SpeciesUtil.BEE_TYPE.get().createStack(ForestryBeeSpecies.INDUSTRIOUS, BeeLifeStage.QUEEN);
 
 		Advancement.Builder.advancement()
 				.display(icon, Component.translatable("advancements.forestry.root.title"), Component.translatable("advancements.forestry.root.description"), new ResourceLocation("textures/block/honeycomb_block.png"), FrameType.TASK, false, false, false)

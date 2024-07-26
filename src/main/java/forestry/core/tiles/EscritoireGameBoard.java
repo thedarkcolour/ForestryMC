@@ -14,29 +14,25 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.core.INbtWritable;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.IValueChromosome;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.individual.IIndividual;
-import forestry.api.genetics.alleles.IKaryotype;
-import genetics.utils.RootUtils;
-
 public class EscritoireGameBoard implements INbtWritable, IStreamable {
-	private static final Random rand = new Random();
+	private static final RandomSource rand = RandomSource.create();
 	private static final int TOKEN_COUNT_MAX = 22;
 	private static final int TOKEN_COUNT_MIN = 6;
 
@@ -44,11 +40,10 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	private int tokenCount;
 
 	public EscritoireGameBoard() {
-
 	}
 
 	public EscritoireGameBoard(CompoundTag nbt) {
-		tokenCount = nbt.getInt("TokenCount");
+		this.tokenCount = nbt.getInt("TokenCount");
 
 		if (tokenCount > 0) {
 			EscritoireGameToken[] tokens = new EscritoireGameToken[tokenCount];
@@ -65,26 +60,24 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	}
 
 	public boolean initialize(ItemStack specimen) {
-		IIndividual individual = RootUtils.getIndividual(specimen);
-		if (individual == null) {
-			return false;
+		IIndividual individual = IIndividualHandler.getIndividual(specimen);
+
+		if (individual != null) {
+			IGenome genome = individual.getGenome();
+			ISpeciesType<?, ?> species = genome.getActiveSpecies().getType();
+
+			this.tokenCount = getTokenCount(genome);
+
+			for (int i = 0; i < this.tokenCount / 2; i++) {
+				ISpecies<?> randomSpecies = species.getRandomSpecies(rand);
+				gameTokens.add(new EscritoireGameToken(randomSpecies.id()));
+				gameTokens.add(new EscritoireGameToken(randomSpecies.id()));
+			}
+			Collections.shuffle(gameTokens);
+
+			return true;
 		}
-
-		IGenome genome = individual.getGenome();
-		IKaryotype karyotype = genome.getKaryotype();
-		ISpeciesType<?> species = genome.getPrimarySpecies();
-
-		tokenCount = getTokenCount(genome);
-
-		for (int i = 0; i < tokenCount / 2; i++) {
-			IAllele[] randomTemplate = species.getTemplates().getRandomTemplate(rand);
-			IChromosome iChromosomeType = karyotype.getSpeciesChromosome();
-			String speciesUid = randomTemplate[iChromosomeType.ordinal()].id().toString();
-			gameTokens.add(new EscritoireGameToken(speciesUid));
-			gameTokens.add(new EscritoireGameToken(speciesUid));
-		}
-		Collections.shuffle(gameTokens);
-		return true;
+		return false;
 	}
 
 	@Nullable
@@ -180,9 +173,9 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	}
 
 	private static int getTokenCount(IGenome genome) {
-		IValueChromosome<? extends ISpeciesType<?>> speciesChromosome = genome.getKaryotype().getSpeciesChromosome();
-		ISpeciesType<?> species1 = genome.getPrimarySpecies(speciesChromosome);
-		ISpeciesType<?> species2 = genome.getSecondarySpecies(speciesChromosome);
+		var speciesPair = genome.getAllelePair(genome.getKaryotype().getSpeciesChromosome());
+		ISpecies<?> species1 = speciesPair.active().value();
+		ISpecies<?> species2 = speciesPair.inactive().value();
 
 		int tokenCount = species1.getComplexity() + species2.getComplexity();
 

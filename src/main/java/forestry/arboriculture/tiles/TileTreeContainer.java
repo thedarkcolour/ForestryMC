@@ -10,11 +10,10 @@
  ******************************************************************************/
 package forestry.arboriculture.tiles;
 
-import com.google.common.base.Preconditions;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.arboriculture.genetics.Tree;
 import forestry.core.network.IStreamable;
@@ -38,7 +36,7 @@ import forestry.core.owner.OwnerHandler;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.RenderUtil;
 
-import forestry.api.genetics.alleles.IAllele;
+import forestry.core.utils.SpeciesUtil;
 
 /**
  * This is the base TE class for any block that needs to contain tree genome information.
@@ -46,7 +44,6 @@ import forestry.api.genetics.alleles.IAllele;
  * @author SirSengir
  */
 public abstract class TileTreeContainer extends BlockEntity implements IStreamable, IOwnedTile {
-
 	@Nullable
 	private ITree containedTree;
 	private final OwnerHandler ownerHandler = new OwnerHandler();
@@ -80,25 +77,27 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-		String speciesUID = "";
 		ITree tree = getTree();
 		if (tree != null) {
-			speciesUID = tree.getId();
+			data.writeBoolean(true);
+			ResourceLocation speciesId = tree.getSpecies().id();
+			data.writeResourceLocation(speciesId);
+		} else {
+			data.writeBoolean(false);
 		}
-		data.writeUtf(speciesUID);
 	}
 
 	@Override
 	public void readData(FriendlyByteBuf data) {
-		String speciesUID = data.readUtf();
-		ITree tree = getTree(speciesUID);
-		setTree(tree);
+		if (data.readBoolean()) {
+			ResourceLocation speciesId = data.readResourceLocation();
+			ITree tree = getTree(speciesId);
+			setTree(tree);
+		}
 	}
 
-	private static ITree getTree(String speciesUID) {
-		IAllele[] treeTemplate = TreeManager.treeRoot.getTemplates().getTemplate(speciesUID);
-		Preconditions.checkArgument(treeTemplate.length > 0, "There is no tree template for speciesUID %s", speciesUID);
-		return TreeManager.treeRoot.templateAsIndividual(treeTemplate);
+	private static ITree getTree(ResourceLocation speciesId) {
+		return SpeciesUtil.TREE_TYPE.get().getSpecies(speciesId).createIndividual();
 	}
 
 	/* CLIENT INFORMATION */

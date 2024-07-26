@@ -5,31 +5,31 @@ import java.util.Locale;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.client.ForestrySprites;
-import forestry.api.genetics.alleles.AlleleManager;
-import forestry.api.genetics.filter.IFilterData;
+import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.genetics.filter.FilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
+import forestry.sorting.FilterRegistry;
 
 public enum ArboricultureFilterRuleType implements IFilterRuleType {
 	TREE(ForestrySprites.ANALYZER_TREE) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent();
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return true;
 		}
 	},
 	SAPLING(ForestrySprites.ANALYZER_SAPLING) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == TreeLifeStage.SAPLING;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == TreeLifeStage.SAPLING;
 		}
 	},
 	POLLEN(ForestrySprites.ANALYZER_POLLEN) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == TreeLifeStage.POLLEN;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == TreeLifeStage.POLLEN;
 		}
 	};
 
@@ -43,7 +43,7 @@ public enum ArboricultureFilterRuleType implements IFilterRuleType {
 
 	public static void init() {
 		for (ArboricultureFilterRuleType rule : values()) {
-			AlleleManager.filterRegistry.registerFilter(rule);
+			FilterRegistry.INSTANCE.registerFilter(rule);
 		}
 	}
 
@@ -62,12 +62,12 @@ public enum ArboricultureFilterRuleType implements IFilterRuleType {
 	}
 
 	@Override
-	public String getSpeciesTypeId() {
-		return TreeManager.treeRoot.id();
+	public ResourceLocation getSpeciesTypeId() {
+		return ForestrySpeciesTypes.TREE;
 	}
 
 	@Override
 	public String getId() {
-		return id;
+		return this.id;
 	}
 }

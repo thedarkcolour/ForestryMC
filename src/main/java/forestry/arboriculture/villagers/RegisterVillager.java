@@ -24,14 +24,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import forestry.api.ForestryConstants;
-import forestry.api.arboriculture.ForestryWoodType;
+import forestry.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
-import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.ILifeStage;
-import forestry.api.genetics.alleles.IAllele;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.core.registration.VillagerTrade;

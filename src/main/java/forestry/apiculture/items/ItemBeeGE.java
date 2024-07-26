@@ -13,34 +13,29 @@ package forestry.apiculture.items;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import forestry.api.IForestryApi;
-import forestry.api.apiculture.BeeManager;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.BeeLifeStage;
-import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.genetics.IBeeSpeciesType;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.core.ItemGroups;
-import forestry.api.genetics.ForestrySpeciesTypes;
-import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.IIndividualHandler;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.core.config.Config;
+import forestry.core.genetics.SerializableIndividualHandler;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
-
-import genetics.api.GeneticHelper;
+import forestry.core.utils.SpeciesUtil;
 
 public class ItemBeeGE extends ItemGE implements IColoredItem {
 	private final BeeLifeStage type;
@@ -50,15 +45,14 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 		this.type = type;
 	}
 
-	@Nullable
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		return GeneticHelper.createOrganism(stack, type, BeeManager.beeRoot.gegettDefinition());
+		return new SerializableIndividualHandler(stack, SpeciesUtil.BEE_TYPE.get().createIndividual(nbt, this.type));
 	}
 
 	@Override
-	protected ISpecies<?> getSpecies(ItemStack itemStack) {
-		return GeneticHelper.getOrganism(itemStack).getAllele(BeeChromosomes.SPECIES, true);
+	protected IBeeSpecies getSpecies(ItemStack stack) {
+		return GeneticHelper.getOrganism(stack).getAllele(BeeChromosomes.SPECIES, true);
 	}
 
 	@Override
@@ -67,17 +61,14 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 			return;
 		}
 
-		if (type != BeeLifeStage.DRONE) {
-			IBee individual = GeneticHelper.getIndividual(stack);
-			if (individual == null) {
-				return;
-			}
-
-			if (individual.isPristine()) {
-				list.add(Component.translatable("for.bees.stock.pristine").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC));
-			} else {
-				list.add(Component.translatable("for.bees.stock.ignoble").withStyle(ChatFormatting.YELLOW));
-			}
+		if (this.type != BeeLifeStage.DRONE) {
+			IIndividualHandler.ifPresent(stack, individual -> {
+				if (((IBee) individual).isPristine()) {
+					list.add(Component.translatable("for.bees.stock.pristine").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC));
+				} else {
+					list.add(Component.translatable("for.bees.stock.ignoble").withStyle(ChatFormatting.YELLOW));
+				}
+			});
 		}
 
 		super.appendHoverText(stack, level, list, flag);
@@ -85,22 +76,19 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 
 	@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
-		if (this.allowedIn(tab)) {
+		if (allowedIn(tab)) {
 			addCreativeItems(subItems, true);
 		}
 	}
 
-	public void addCreativeItems(NonNullList<ItemStack> subItems, boolean hideSecrets) {
+	public void addCreativeItems(List<ItemStack> subItems, boolean hideSecrets) {
 		//so need to adjust init sequence
-		IBeeSpeciesType type = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.BEE);
-		for (IBeeSpecies bee : type.getSpecies()) {
+		for (IBeeSpecies species : SpeciesUtil.getAllBeeSpecies()) {
 			// Don't show secret bees unless ordered to.
-			if (hideSecrets && bee.isSecret() && !Config.isDebug) {
+			if (hideSecrets && species.isSecret() && !Config.isDebug) {
 				continue;
 			}
-			ItemStack stack = new ItemStack(this);
-			bee.copyTo(stack);
-			subItems.add(stack);
+			subItems.add(species.createStack(this.type));
 		}
 	}
 
@@ -109,16 +97,25 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 		if (!itemstack.hasTag()) {
 			if (tintIndex == 1) {
 				return 0xffdc16;
+			} else if (tintIndex == 2) {
+				// 2 = stripes
+				return 0;
 			} else {
+				// 0 = outline
 				return 0xffffff;
 			}
-		}
+		} else {
+			IBeeSpecies species = getSpecies(itemstack);
 
-		IAlleleBeeSpecies species = getSpecies(itemstack);
-		return species.getSpriteColour(tintIndex);
+			return switch (tintIndex) {
+				case 2 -> species.getStripes();
+				case 1 -> species.getBody();
+				default -> species.getOutline();
+			};
+		}
 	}
 
-	public final BeeLifeStage getType() {
+	public final BeeLifeStage getStage() {
 		return type;
 	}
 }

@@ -1,5 +1,7 @@
 package forestry.apiculture;
 
+import com.google.common.base.Preconditions;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,9 @@ public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSp
 	private final TemperatureType temperature;
 	private final HumidityType humidity;
 	private final IBeeJubilance jubilance;
+	private final int body;
+	private final int outline;
+	private final int stripes;
 
 	public BeeSpecies(ResourceLocation id, IBeeSpeciesType speciesType, IGenome defaultGenome, IBeeSpeciesBuilder builder) {
 		super(id, speciesType, defaultGenome, builder);
@@ -37,6 +42,9 @@ public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSp
 		this.temperature = builder.getTemperature();
 		this.humidity = builder.getHumidity();
 		this.jubilance = builder.getJubilance();
+		this.body = builder.getBody();
+		this.outline = builder.getOutline();
+		this.stripes = builder.getStripes();
 	}
 
 	@Override
@@ -70,7 +78,29 @@ public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSp
 	}
 
 	@Override
-	public IBee createIndividual(Map<IChromosome<?>, IAllele> alleles) {
-		return new Bee(this.defaultGenome.copyWith(alleles));
+	public IBee createIndividual(IGenome genome) {
+		Preconditions.checkArgument(genome.getKaryotype() == getKaryotype());
+
+		return new Bee(genome);
+	}
+
+	@Override
+	public int getBody() {
+		return this.body;
+	}
+
+	@Override
+	public int getStripes() {
+		return this.stripes;
+	}
+
+	@Override
+	public int getOutline() {
+		return this.outline;
+	}
+
+	@Override
+	public int getEscritoireColor() {
+		return this.outline;
 	}
 }

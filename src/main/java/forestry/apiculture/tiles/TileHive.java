@@ -71,6 +71,7 @@ import forestry.core.utils.DamageSourceForestry;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.TickHelper;
 
 import genetics.api.GeneticHelper;
@@ -146,7 +147,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 			IGenome beeGenome = null;
 			ItemStack containedBee = contained.getItem(0);
 			if (!containedBee.isEmpty()) {
-				IBee bee = BeeManager.beeRoot.create(containedBee);
+				IBee bee = SpeciesUtil.BEE_TYPE.get().create(containedBee);
 				if (bee != null) {
 					beeGenome = bee.getGenome();
 				}
@@ -157,7 +158,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 			if (beeGenome == null) {
 				beeGenome = BeeDefinition.FOREST.getGenome();
 			}
-			this.containedBee = BeeManager.beeRoot.create(beeGenome);
+			this.containedBee = SpeciesUtil.BEE_TYPE.get().create(beeGenome);
 		}
 		return this.containedBee;
 	}
@@ -170,7 +171,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 			if (block instanceof BlockBeeHive hive) {
 				HiveType hiveType = hive.getType();
 				String speciesUid = hiveType.getSpeciesUid();
-				return GeneticHelper.genomeFromTemplate(speciesUid, BeeManager.beeRoot.getDefinition());
+				return GeneticHelper.genomeFromTemplate(speciesUid, SpeciesUtil.BEE_TYPE.get().getDefinition());
 			}
 		}
 		return null;

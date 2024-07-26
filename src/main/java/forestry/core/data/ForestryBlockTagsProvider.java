@@ -18,7 +18,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import forestry.api.ForestryConstants;
 import forestry.api.ForestryTags;
-import forestry.api.arboriculture.ForestryWoodType;
+import forestry.arboriculture.ForestryWoodType;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.CharcoalBlocks;

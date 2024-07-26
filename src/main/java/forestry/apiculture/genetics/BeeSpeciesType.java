@@ -10,19 +10,17 @@
  ******************************************************************************/
 package forestry.apiculture.genetics;
 
-import com.google.common.base.Preconditions;
-
 import javax.annotation.Nullable;
 
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Codec;
 
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.IBeeHousing;
@@ -37,84 +35,23 @@ import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.IMutationManager;
-import forestry.api.genetics.IPollinatable;
+import forestry.api.genetics.Product;
 import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.gatgets.IDatabasePlugin;
+import forestry.api.plugin.ISpeciesTypeBuilder;
 import forestry.apiculture.BeeHousingListener;
 import forestry.apiculture.BeeHousingModifier;
 import forestry.apiculture.BeekeepingLogic;
+import forestry.core.genetics.BreedingTracker;
+import forestry.core.genetics.SpeciesType;
 import forestry.core.genetics.root.BreedingTrackerManager;
 
-import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ILifeStage;
+import forestry.core.utils.ItemStackUtil;
 
-import deleteme.Todos;
-
-public class BeeSpeciesType implements IBeeSpeciesType {
-	private final ResourceLocation id;
-	private final IKaryotype karyotype;
-
-	// Initialized after all species are registered.
-	private int beeSpeciesCount = -1;
-
-	public BeeSpeciesType(ResourceLocation id, IKaryotype karyotype) {
-		this.id = id;
-		this.karyotype = karyotype;
-		BreedingTrackerManager.INSTANCE.registerTracker(ForestrySpeciesTypes.BEE, this);
-	}
-
-	@Override
-	public ResourceLocation id() {
-		return this.id;
-	}
-
-	@Override
-	public IKaryotype getKaryotype() {
-		return this.karyotype;
-	}
-
-	@Override
-	public ItemStack createStack(IIndividual species, ILifeStage type) {
-		throw Todos.unimplemented();
-	}
-
-	@Override
-	public void onSpeciesRegistered(List<IBeeSpecies> allSpecies) {
-		this.beeSpeciesCount = 0;
-
-		for (IBeeSpecies species : allSpecies) {
-			if (!species.isSecret()) {
-				this.beeSpeciesCount++;
-			}
-		}
-	}
-
-	@Override
-	public IMutationManager<IBeeSpecies> getMutations() {
-		return null;
-	}
-
-	@Override
-	public List<IBeeSpecies> getSpecies() {
-		return null;
-	}
-
-	@Override
-	public IBeeSpecies getSpeciesById(ResourceLocation id) {
-		return null;
-	}
-
-	@Override
-	public int getSpeciesCount() {
-		Preconditions.checkState(this.beeSpeciesCount >= -1, "Not all bee species have not been registered.");
-
-		return this.beeSpeciesCount;
-	}
-
-
-	@Override
-	public BeeLifeStage getDefaultStage() {
-		return BeeLifeStage.DRONE;
+public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IBeeSpeciesType {
+	public BeeSpeciesType(IKaryotype karyotype, ISpeciesTypeBuilder builder) {
+		super(ForestrySpeciesTypes.BEE, karyotype, builder);
 	}
 
 	@Override
@@ -143,33 +80,13 @@ public class BeeSpeciesType implements IBeeSpeciesType {
 	}
 
 	@Override
-	public IBee create(IGenome genome) {
-		return new Bee(genome);
-	}
-
-	@Override
-	public IBee create(IGenome genome, IGenome mate) {
-		return new Bee(genome, mate);
-	}
-
-	@Override
-	public IBee create(CompoundTag compound) {
-		return new Bee(compound);
-	}
-
-	@Override
-	public IBee getBee(Level world, IGenome genome, IBee mate) {
-		return new Bee(genome, mate);
-	}
-
-	@Override
-	public IApiaristTracker getBreedingTracker(LevelAccessor world, @Nullable GameProfile player) {
-		return BreedingTrackerManager.INSTANCE.getTracker(id(), world, player);
+	public IApiaristTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile) {
+		return BreedingTrackerManager.INSTANCE.getTracker(id(), level, profile);
 	}
 
 	@Override
 	public String getFileName(@Nullable GameProfile profile) {
-		return "ApiaristTracker." + (profile == super.getSpeciesPlugin() ? "common" : profile.getId());
+		return "ApiaristTracker." + (profile == null ? "common" : profile.getId());
 	}
 
 	@Override
@@ -184,11 +101,10 @@ public class BeeSpeciesType implements IBeeSpeciesType {
 
 	@Override
 	public void populateTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
-		if (!(tracker instanceof ApiaristTracker apiaristTracker)) {
-			return;
+		if (tracker instanceof BreedingTracker apiaristTracker) {
+			apiaristTracker.setLevel(world);
+			apiaristTracker.setUsername(profile);
 		}
-		apiaristTracker.setLevel(world);
-		apiaristTracker.setUsername(profile);
 	}
 
 	@Override
@@ -217,7 +133,41 @@ public class BeeSpeciesType implements IBeeSpeciesType {
 	}
 
 	@Override
-	public IPollinatable getSpeciesPlugin() {
+	public IDatabasePlugin getDatabasePlugin() {
 		return BeePlugin.INSTANCE;
+	}
+
+	@Override
+	public Codec<? extends IBee> getIndividualCodec() {
+		return Bee.CODEC;
+	}
+
+	@Override
+	public float getResearchSuitability(IBeeSpecies species, ItemStack stack) {
+		for (Product product : species.getProducts()) {
+			if (stack.is(product.item())) {
+				return 1.0f;
+			}
+		}
+		for (Product product : species.getSpecialties()) {
+			if (stack.is(product.item())) {
+				return 1.0f;
+			}
+		}
+		return super.getResearchSuitability(species, stack);
+	}
+
+	@Override
+	public List<ItemStack> getResearchBounty(IBeeSpecies species, Level level, GameProfile researcher, IBee individual, int bountyLevel) {
+		List<ItemStack> bounty = super.getResearchBounty(species, level, researcher, individual, bountyLevel);
+		if (bountyLevel > 10) {
+			for (Product stack : species.getSpecialties()) {
+				bounty.add(ItemStackUtil.copyWithRandomSize(stack, (int) ((float) bountyLevel / 2), level.random));
+			}
+		}
+		for (Product stack : species.getProducts()) {
+			bounty.add(ItemStackUtil.copyWithRandomSize(stack, (int) ((float) bountyLevel / 2), level.random));
+		}
+		return bounty;
 	}
 }

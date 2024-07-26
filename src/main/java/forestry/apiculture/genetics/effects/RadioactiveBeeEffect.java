@@ -12,19 +12,20 @@ package forestry.apiculture.genetics.effects;
 
 import java.util.List;
 
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.blocks.BlockAlveary;
 import forestry.core.tiles.TileUtil;
@@ -32,14 +33,11 @@ import forestry.core.utils.BlockUtil;
 import forestry.core.utils.DamageSourceForestry;
 import forestry.core.utils.VecUtil;
 
-import forestry.api.genetics.IGenome;
-
 public class RadioactiveBeeEffect extends ThrottledBeeEffect {
-
 	private static final DamageSource damageSourceBeeRadioactive = new DamageSourceForestry("bee.radioactive");
 
 	public RadioactiveBeeEffect() {
-		super("radioactive", true, 40, false, true);
+		super(true, 40, false, true);
 	}
 
 	@Override
@@ -50,12 +48,12 @@ public class RadioactiveBeeEffect extends ThrottledBeeEffect {
 	}
 
 	private void harmEntities(IGenome genome, IBeeHousing housing) {
-		List<LivingEntity> entities = getEntitiesInRange(genome, housing, LivingEntity.class);
+		List<LivingEntity> entities = IBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
 		for (LivingEntity entity : entities) {
 			int damage = 8;
 
 			// Entities are not attacked if they wear a full set of apiarist's armor.
-			int count = BeeManager.armorApiaristHelper.wearsItems(entity, getId(), true);
+			int count = BeeManager.armorApiaristHelper.wearsItems(entity, this, true);
 			damage -= count * 2;
 			if (damage <= 0) {
 				continue;
@@ -66,8 +64,8 @@ public class RadioactiveBeeEffect extends ThrottledBeeEffect {
 	}
 
 	private static IEffectData destroyEnvironment(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		Level world = housing.getWorldObj();
-		RandomSource rand = world.random;
+		Level level = housing.getWorldObj();
+		RandomSource rand = level.random;
 
 		Vec3i area = VecUtil.scale(genome.getActiveValue(BeeChromosomes.TERRITORY), 2);
 		Vec3i offset = VecUtil.scale(area, -1 / 2.0f);
@@ -78,7 +76,7 @@ public class RadioactiveBeeEffect extends ThrottledBeeEffect {
 			BlockPos posBlock = randomPos.offset(posHousing);
 			posBlock = posBlock.offset(offset);
 
-			if (posBlock.getY() <= 1 || posBlock.getY() >= world.getMaxBuildHeight()) {
+			if (posBlock.getY() <= 1 || posBlock.getY() >= level.getMaxBuildHeight()) {
 				continue;
 			}
 
@@ -87,27 +85,26 @@ public class RadioactiveBeeEffect extends ThrottledBeeEffect {
 				continue;
 			}
 
-			if (!world.hasChunkAt(posBlock) || world.isEmptyBlock(posBlock)) {
+			if (!level.hasChunkAt(posBlock) || level.isEmptyBlock(posBlock)) {
 				continue;
 			}
 
-			BlockState blockState = world.getBlockState(posBlock);
-			Block block = blockState.getBlock();
+			BlockState state = level.getBlockState(posBlock);
 
-			if (block instanceof BlockAlveary) {
+			if (state.getBlock() instanceof BlockAlveary) {
 				continue;
 			}
 
-			BlockEntity tile = TileUtil.getTile(world, posBlock);
+			BlockEntity tile = TileUtil.getTile(level, posBlock);
 			if (tile instanceof IBeeHousing) {
 				continue;
 			}
 
-			if (blockState.getDestroySpeed(world, posBlock) < 0) {
+			if (state.getDestroySpeed(level, posBlock) < 0) {
 				continue;
 			}
 
-			BlockUtil.setBlockToAirWithSound(world, posBlock, blockState);
+			BlockUtil.setBlockToAirWithSound(level, posBlock, state);
 			break;
 		}
 

@@ -20,7 +20,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 import forestry.api.arboriculture.ITreeGenData;
 import forestry.api.arboriculture.ITreeModifier;
-import forestry.api.arboriculture.TreeManager;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.worldgen.FeatureHelper;
 
 public abstract class FeatureTree extends FeatureArboriculture {
@@ -75,15 +75,15 @@ public abstract class FeatureTree extends FeatureArboriculture {
 	}
 
 	protected int modifyByHeight(LevelAccessor world, int val, int min, int max) {
-		ITreeModifier treeModifier = TreeManager.treeRoot.getTreekeepingMode(world);
-		int determined = Math.round(val * tree.getHeightModifier() * treeModifier.getHeightModifier(tree.getGenome(), 1f));
+		//ITreeModifier treeModifier = SpeciesUtil.TREE_TYPE.get().getTreekeepingMode(world);
+		int determined = Math.round(val * tree.getHeightModifier()/* * treeModifier.getHeightModifier(tree.getGenome(), 1f)*/);
 		return determined < min ? min : Math.min(determined, max);
 	}
 
 	private int determineHeight(LevelAccessor world, RandomSource rand, int required, int variation) {
-		ITreeModifier treeModifier = TreeManager.treeRoot.getTreekeepingMode(world);
+		//ITreeModifier treeModifier = SpeciesUtil.TREE_TYPE.get().getTreekeepingMode(world);
 		int baseHeight = required + rand.nextInt(variation);
-		int height = Math.round(baseHeight * tree.getHeightModifier() * treeModifier.getHeightModifier(tree.getGenome(), 1f));
+		int height = Math.round(baseHeight * tree.getHeightModifier()/* * treeModifier.getHeightModifier(tree.getGenome(), 1f)*/);
 		return height < minHeight ? minHeight : Math.min(height, maxHeight);
 	}
 }

@@ -11,6 +11,7 @@
 package forestry.storage.items;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -24,9 +25,9 @@ import forestry.storage.gui.ContainerNaturalistBackpack;
 import forestry.storage.inventory.ItemInventoryBackpackPaged;
 
 public class ItemBackpackNaturalist extends ItemBackpack {
-	public final String rootUid;
+	public final ResourceLocation rootUid;
 
-	public ItemBackpackNaturalist(String rootUid, IBackpackDefinition definition, CreativeModeTab tab) {
+	public ItemBackpackNaturalist(ResourceLocation rootUid, IBackpackDefinition definition, CreativeModeTab tab) {
 		super(definition, EnumBackpackType.NATURALIST, tab);
 		this.rootUid = rootUid;
 	}
@@ -35,7 +36,7 @@ public class ItemBackpackNaturalist extends ItemBackpack {
 	protected void writeContainerData(ServerPlayer player, ItemStack stack, FriendlyByteBuf buffer) {
 		buffer.writeItem(stack);
 		buffer.writeByte(0);
-		buffer.writeUtf(rootUid);
+		buffer.writeResourceLocation(rootUid);
 	}
 
 	@Override

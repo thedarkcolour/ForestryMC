@@ -1,14 +1,23 @@
 package forestry.api.genetics;
 
+import java.util.Collection;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 
-import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Codec;
 
-import forestry.api.lepidopterology.genetics.IButterfly;
-
+/**
+ * Home to all things genetics.
+ * Keeps track of registered species types, which track all their registered member species and are
+ * responsible for creating instances of {@link IIndividual} and {@link net.minecraft.world.item.ItemStack}.
+ * Keeps track of all taxonomy, breeding trackers, and mutations.
+ */
 public interface IGeneticManager {
+	/**
+	 * @return The taxon instance with the given (lowercase) name. See {@link ForestryTaxa} for all names used by base Forestry.
+	 * @throws IllegalStateException If no taxon was registered with that name.
+	 */
 	Taxon getTaxon(String name);
 
 	/**
@@ -19,8 +28,6 @@ public interface IGeneticManager {
 	 * @return A registry of possible mutations for the given species type.
 	 */
 	<S extends ISpecies<?>> IMutationManager<S> getMutations(ResourceLocation speciesTypeId);
-
-	IBreedingTracker getBreedingTracker(Level level, GameProfile player);
 
 	/**
 	 * @return The {@link ISpeciesType} with the given ID. Unchecked cast.
@@ -58,5 +65,8 @@ public interface IGeneticManager {
 	 */
 	<I extends IIndividual> I createIndividual(ResourceLocation typeId, ResourceLocation speciesId, ILifeStage stage);
 
-	IButterfly createRandomIndividual(ResourceLocation typeId, RandomSource rand, ILifeStage stage);
+	// todo move these methods to the species type.
+	IIndividual createRandomIndividual(ResourceLocation typeId, RandomSource rand, ILifeStage stage);
+
+	Collection<ISpeciesType<?, ?>> getSpeciesTypes();
 }

@@ -9,6 +9,7 @@ import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IBooleanChromosome;
 import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
 
 /**
@@ -40,6 +41,8 @@ public interface IKaryotypeBuilder {
 		set(chromosome, defaultAllele ? ForestryAlleles.TRUE : ForestryAlleles.FALSE)
 				.addAlleles(List.of(ForestryAlleles.TRUE, ForestryAlleles.FALSE));
 	}
+
+	void set(IRegistryChromosome<?> chromosome, ResourceLocation defaultId);
 
 	/**
 	 * Used to modify a chromosome already added in {@link #set}.

@@ -76,7 +76,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	// active components are stored with a tick offset so they do not all tick together
 	private final Map<IFarmComponent.Active, Integer> farmActiveComponents = new HashMap<>();
 
-	private final Map<HorizontalDirection, IFarmLogic> farmLogics = new EnumMap<>(HorizontalDirection.class);
+	private final Map<Direction, IFarmLogic> farmLogics = new EnumMap<>(Direction.class);
 
 	private final InventoryAdapter sockets;
 	private final InventoryFarm inventory;
@@ -381,7 +381,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public BlockPos getFarmCorner(HorizontalDirection direction) {
+	public BlockPos getFarmCorner(Direction direction) {
 		return manager.getFarmCorner(direction);
 	}
 
@@ -421,12 +421,12 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void resetFarmLogic(HorizontalDirection direction) {
+	public void resetFarmLogic(Direction direction) {
 		setFarmLogic(direction, FarmDefinition.ARBOREAL.getProperties().getLogic(false));
 	}
 
 	@Override
-	public IFarmLogic getFarmLogic(HorizontalDirection direction) {
+	public IFarmLogic getFarmLogic(Direction direction) {
 		return farmLogics.get(direction);
 	}
 

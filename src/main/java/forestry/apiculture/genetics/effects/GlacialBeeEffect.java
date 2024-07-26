@@ -10,29 +10,26 @@
  ******************************************************************************/
 package forestry.apiculture.genetics.effects;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.core.utils.VecUtil;
 
-import forestry.api.genetics.IGenome;
-
 public class GlacialBeeEffect extends ThrottledBeeEffect {
-
 	public GlacialBeeEffect() {
-		super("glacial", false, 200, true, false);
+		super(false, 200, true, false);
 	}
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-
 		Level world = housing.getWorldObj();
 		TemperatureType temp = housing.temperature();
 

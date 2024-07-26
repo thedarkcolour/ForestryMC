@@ -10,8 +10,12 @@ import net.minecraft.world.item.ItemStack;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.alleles.IRegistryAlleleValue;
 
-public interface ISpecies<I extends IIndividual> {
+public interface ISpecies<I extends IIndividual> extends IRegistryAlleleValue {
+	/**
+	 * @return The string
+	 */
 	String getTranslationKey();
 
 	default MutableComponent getDisplayName() {
@@ -36,7 +40,7 @@ public interface ISpecies<I extends IIndividual> {
 	/**
 	 * @return The type of species this is.
 	 */
-	ISpeciesType<? extends ISpecies<I>> getType();
+	ISpeciesType<? extends ISpecies<I>, I> getType();
 
 	/**
 	 * @return Whether this species is "secret" (Ex. Easter egg bee or extremely rare tree/butterfly)
@@ -49,6 +53,10 @@ public interface ISpecies<I extends IIndividual> {
 		return getType().createStack(individual, stage);
 	}
 
+	default ItemStack createStack(ILifeStage stage) {
+		return createStack(createIndividual(), stage);
+	}
+
 	/**
 	 * Creates an individual of this species using the default genome and the added alleles.
 	 *
@@ -57,11 +65,43 @@ public interface ISpecies<I extends IIndividual> {
 	 */
 	I createIndividual(Map<IChromosome<?>, IAllele> alleles);
 
+	/**
+	 * Creates an individual of this species using the specified genome.
+	 *
+	 * @param genome The genome for this individual.
+	 * @return The new individual.
+	 * @throws IllegalArgumentException If the genome's karyotype does not match this species.
+	 */
+	I createIndividual(IGenome genome);
+
+	/**
+	 * @return A new individual of this species using the default genome.
+	 */
 	default I createIndividual() {
-		return createIndividual(Map.of());
+		return createIndividual(getDefaultGenome());
 	}
 
 	default IKaryotype getKaryotype() {
 		return getDefaultGenome().getKaryotype();
 	}
+
+	/**
+	 * @return Whether the item form of this species has an enchantment glint.
+	 */
+	boolean hasGlint();
+
+	/**
+	 * @return Whether the allele for this species is dominant or recessive.
+	 */
+	@Override
+	boolean isDominant();
+
+	Taxon getGenus();
+
+	String getAuthority();
+
+	/**
+	 * @return The color of cells that contain this species in the Escritoire research game
+	 */
+	int getEscritoireColor();
 }

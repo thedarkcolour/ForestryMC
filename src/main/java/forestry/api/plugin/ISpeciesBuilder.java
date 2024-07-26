@@ -2,24 +2,29 @@ package forestry.api.plugin;
 
 import java.util.function.Consumer;
 
+import net.minecraft.resources.ResourceLocation;
+
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 
 /**
  * Customize properties shared by all species types. Implement this class for your species type registration.
  */
-public interface ISpeciesBuilder<B extends ISpeciesBuilder<B>> {
+public interface ISpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISpeciesBuilder<T, B>> {
 	/**
 	 * Overrides whether the allele of this species is dominant. Usually set first by a "registerSpecies" method parameter.
 	 */
 	B setDominant(boolean dominant);
 
 	/**
-	 * Customize the default alleles for each chromosome in the karyotype..
+	 * Customize the default alleles for each chromosome in the karyotype.
 	 * Called after {@link ITaxonBuilder#setDefaultChromosome} which in turn is called after {@link ISpeciesTypeBuilder#setKaryotype}.
 	 */
-	B setGenome(Consumer<IGenomeBuilder> karyotype);
+	B setGenome(Consumer<IGenomeBuilder> genome);
 
 	/**
 	 * Define mutations that mutate into this species.
@@ -65,6 +70,18 @@ public interface ISpeciesBuilder<B extends ISpeciesBuilder<B>> {
 	 */
 	B setSecret(boolean secret);
 
+	/**
+	 * Sets the name of this species's discoverer. Most of the time, it is either Sengir, Binnie, or MysteriousAges.
+	 *
+	 * @param authority The name of the person who discovered this bee species.
+	 */
+	B setAuthority(String authority);
+
+	/**
+	 * Use a custom class for this species. Default is usually something like {@code BeeSpecies::new}.
+	 */
+	B setFactory(ISpeciesFactory<T, B> factory);
+
 	String getGenus();
 
 	String getSpecies();
@@ -82,4 +99,11 @@ public interface ISpeciesBuilder<B extends ISpeciesBuilder<B>> {
 	int getComplexity();
 
 	boolean isSecret();
+
+	String getAuthority();
+
+	@FunctionalInterface
+	interface ISpeciesFactory<T extends ISpeciesType<?, ?>, B extends ISpeciesBuilder<T, B>> {
+		ISpecies<?> create(ResourceLocation id, T speciesType, IGenome defaultGenome, B builder);
+	}
 }

@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public interface IFilterRule {
-	boolean isValid(ItemStack itemStack, IFilterData data);
+	boolean isValid(ItemStack stack, FilterData data);
 
 	/**
 	 * If a species type with this uid is registered, the filter will only get stack with individuals from this root.

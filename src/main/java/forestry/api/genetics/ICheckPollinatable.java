@@ -14,13 +14,6 @@ import genetics.api.individual.IIndividual;
  * For a normal pollinatable that can be mated, see {@link IPollinatable}.
  */
 public interface ICheckPollinatable {
-
-	/**
-	 * @return plant type this pollinatable is classified as.
-	 * (Can be used by bees to determine whether to interact or not.)
-	 */
-	PlantType getPlantType();
-
 	/**
 	 * @return IIndividual containing the genetic information of this IPollinatable
 	 */

@@ -7,13 +7,14 @@ import java.util.function.Supplier;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.IBeeJubilance;
+import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.genetics.Product;
 
 /**
  * Builder used to register new bee species and configure already existing ones.
  * Use {@link IApicultureRegistration#registerSpecies} to obtain instances of this class.
  */
-public interface IBeeSpeciesBuilder extends ISpeciesBuilder<IBeeSpeciesBuilder> {
+public interface IBeeSpeciesBuilder extends ISpeciesBuilder<IBeeSpeciesType, IBeeSpeciesBuilder> {
 	/**
 	 * Adds a product to this bee species.
 	 *

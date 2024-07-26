@@ -5,11 +5,13 @@ import forestry.api.apiculture.hives.IHiveManager;
 import forestry.api.climate.IClimateManager;
 import forestry.api.core.IErrorManager;
 import forestry.api.farming.IFarmRegistry;
+import forestry.api.genetics.IGeneticManager;
 import forestry.api.genetics.alleles.IAlleleManager;
 import forestry.api.modules.IModuleManager;
 import forestry.apiculture.hives.HiveManager;
 import forestry.core.climate.ForestryClimateManager;
 import forestry.core.errors.ErrorManager;
+import forestry.core.genetics.alleles.AlleleManager;
 import forestry.farming.ForestryFarmRegistry;
 import forestry.modules.ForestryModuleManager;
 
@@ -19,7 +21,8 @@ public class ForestryApiImpl implements IForestryApi {
 	private final IErrorManager errorStateRegistry = new ErrorManager();
 	private final IClimateManager biomeManager = new ForestryClimateManager();
 	private final IHiveManager hiveManager = new HiveManager();
-	private final IAlleleManager alleleRegistry = new AlleleRegistry();
+	private final IAlleleManager alleleRegistry = new AlleleManager();
+	private final IGeneticManager geneticManager;
 
 	@Override
 	public IModuleManager getModuleManager() {
@@ -49,5 +52,10 @@ public class ForestryApiImpl implements IForestryApi {
 	@Override
 	public IAlleleManager getAlleleManager() {
 		return this.alleleRegistry;
+	}
+
+	@Override
+	public IGeneticManager getGeneticManager() {
+		return this.geneticManager;
 	}
 }

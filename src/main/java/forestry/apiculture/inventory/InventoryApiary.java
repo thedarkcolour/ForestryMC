@@ -17,13 +17,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.Tuple;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeekeepingMode;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.hives.IHiveFrame;
 import forestry.apiculture.InventoryBeeHousing;
 import forestry.core.utils.SlotUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public class InventoryApiary extends InventoryBeeHousing implements IApiaryInventory {
 	public static final int SLOT_FRAMES_1 = 9;
@@ -65,7 +65,7 @@ public class InventoryApiary extends InventoryBeeHousing implements IApiaryInven
 
 	@Override
 	public void wearOutFrames(IBeeHousing beeHousing, int amount) {
-		IBeekeepingMode beekeepingMode = BeeManager.beeRoot.getBeekeepingMode(beeHousing.getWorldObj());
+		IBeekeepingMode beekeepingMode = SpeciesUtil.BEE_TYPE.get().getBeekeepingMode(beeHousing.getWorldObj());
 		int wear = Math.round(amount * beekeepingMode.getWearModifier());
 
 		for (int i = SLOT_FRAMES_1; i < SLOT_FRAMES_1 + SLOT_FRAMES_COUNT; i++) {
@@ -73,7 +73,7 @@ public class InventoryApiary extends InventoryBeeHousing implements IApiaryInven
 			Item hiveFrameItem = hiveFrameStack.getItem();
 			if ((hiveFrameItem instanceof IHiveFrame hiveFrame)) {
 
-				IBee queen = BeeManager.beeRoot.create(getQueen());
+				IBee queen = SpeciesUtil.BEE_TYPE.get().create(getQueen());
 				if (queen != null) {
 					ItemStack usedFrame = hiveFrame.frameUsed(beeHousing, hiveFrameStack, queen, wear);
 

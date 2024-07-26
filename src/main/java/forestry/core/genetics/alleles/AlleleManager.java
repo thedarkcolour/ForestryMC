@@ -23,14 +23,14 @@ import forestry.api.genetics.alleles.IFloatAllele;
 import forestry.api.genetics.alleles.IFloatChromosome;
 import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.api.genetics.alleles.IIntegerChromosome;
+import forestry.api.genetics.alleles.IRegistryAlleleValue;
+import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.IValueChromosome;
-import forestry.api.genetics.alleles.ValueAllele;
 
 import it.unimi.dsi.fastutil.floats.Float2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 
 public class AlleleManager implements IAlleleManager {
 	// primitive values to primitive allele
@@ -57,7 +57,7 @@ public class AlleleManager implements IAlleleManager {
 			} else {
 				return DataResult.error("Unknown allele: " + id);
 			}
-		}, allele -> DataResult.success(allele.id()));
+		}, allele -> DataResult.success(allele.alleleId()));
 
 		this.chromosomeCodec = ResourceLocation.CODEC.flatXmap(id -> {
 			IChromosome<?> chromosome = getChromosome(id);
@@ -77,7 +77,7 @@ public class AlleleManager implements IAlleleManager {
 		if (allele == null) {
 			allele = new BooleanAllele(value, dominant);
 			this.booleanAlleles[index] = allele;
-			this.allelesByName.put(allele.id(), allele);
+			this.allelesByName.put(allele.alleleId(), allele);
 		}
 		return allele;
 	}
@@ -86,7 +86,7 @@ public class AlleleManager implements IAlleleManager {
 	public IIntegerAllele intAllele(int value, boolean dominant) {
 		return (dominant ? this.dominantIntAlleles : this.intAlleles).computeIfAbsent(value, v -> {
 			IntegerAllele allele = new IntegerAllele(v, dominant);
-			this.allelesByName.put(allele.id(), allele);
+			this.allelesByName.put(allele.alleleId(), allele);
 			return allele;
 		});
 	}
@@ -180,7 +180,11 @@ public class AlleleManager implements IAlleleManager {
 		return registerValueChromosome(id, speciesClass, SpeciesChromosome::new);
 	}
 
-	@NotNull
+	@Override
+	public <V extends IRegistryAlleleValue> IRegistryChromosome<V> registryChromosome(ResourceLocation id, Class<V> valueClass) {
+		return registerValueChromosome(id, valueClass, RegistryChromosome::new);
+	}
+
 	private <V, C extends IValueChromosome<V>> C registerValueChromosome(ResourceLocation id, Class<V> valueClass, BiFunction<ResourceLocation, Class<V>, C> factory) {
 		@SuppressWarnings("unchecked")
 		C existing = (C) this.chromosomes.get(id);

@@ -14,12 +14,17 @@ public sealed interface IAllele permits IBooleanAllele, IFloatAllele, IIntegerAl
 	Codec<IAllele> CODEC = IForestryApi.INSTANCE.getAlleleManager().alleleCodec();
 
 	/**
-	 * @return Unique ID of this allele. Dominant alleles usually have the "d" suffix.
+	 * @return Unique ID of this allele. Dominant alleles usually have the "d" suffix. Usually prefixed with type to avoid conflicts.
 	 */
-	ResourceLocation id();
+	ResourceLocation alleleId();
 
 	/**
 	 * @return true if the allele is dominant, false otherwise.
 	 */
 	boolean dominant();
+
+	@SuppressWarnings("unchecked")
+	default <A extends IAllele> A cast() {
+		return (A) this;
+	}
 }

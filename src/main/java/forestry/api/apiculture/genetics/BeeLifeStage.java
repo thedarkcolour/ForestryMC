@@ -5,40 +5,35 @@
  ******************************************************************************/
 package forestry.api.apiculture.genetics;
 
-import java.util.List;
 import java.util.Locale;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 import forestry.api.genetics.ILifeStage;
 import forestry.apiculture.features.ApicultureItems;
 
 public enum BeeLifeStage implements ILifeStage {
-	DRONE,
-	PRINCESS,
-	QUEEN,
-	LARVAE;
-
-	public static final List<BeeLifeStage> VALUES = List.of(values());
+	DRONE(ApicultureItems.BEE_DRONE),
+	PRINCESS(ApicultureItems.BEE_PRINCESS),
+	QUEEN(ApicultureItems.BEE_QUEEN),
+	LARVAE(ApicultureItems.BEE_LARVAE);
 
 	private final String name;
+	private final ItemLike itemForm;
 
-	BeeLifeStage() {
+	BeeLifeStage(ItemLike supplier) {
 		this.name = name().toLowerCase(Locale.ROOT);
+		this.itemForm = supplier;
 	}
 
 	@Override
-	public String getName() {
+	public String getSerializedName() {
 		return this.name;
 	}
 
 	@Override
-	public ItemStack getItemForm() {
-		return switch (this) {
-			case DRONE -> ApicultureItems.BEE_DRONE.stack();
-			case PRINCESS -> ApicultureItems.BEE_PRINCESS.stack();
-			case QUEEN -> ApicultureItems.BEE_QUEEN.stack();
-			case LARVAE -> ApicultureItems.BEE_LARVAE.stack();
-		};
+	public Item getItemForm() {
+		return this.itemForm.asItem();
 	}
 }

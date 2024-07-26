@@ -10,58 +10,32 @@
  ******************************************************************************/
 package forestry.arboriculture;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Locale;
-import java.util.function.Supplier;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.TextureStitchEvent;
-
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IFruit;
-import forestry.api.genetics.IFruitFamily;
-import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.api.genetics.products.IProductList;
 import forestry.api.ForestryTags;
-import forestry.core.genetics.ProductListWrapper;
-import forestry.core.utils.BlockUtil;
-
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.Product;
+import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.arboriculture.blocks.ForestryPodType;
+import forestry.core.utils.BlockUtil;
+import forestry.core.utils.SpeciesUtil;
 
 // Fruits that grow on the side of a tree's trunk, like cocoa beans
-public class PodFruit extends DummyFruit {
-	public enum EnumPodType {
-		COCOA, DATES, PAPAYA;
-		//, COCONUT;
+public class PodFruit extends Fruit {
+	private final ForestryPodType type;
 
-		public String getModelName() {
-			return toString().toLowerCase(Locale.ENGLISH);
-		}
-	}
+	public PodFruit(boolean dominant, ForestryPodType type, List<Product> products) {
+		super(dominant, 2, products);
 
-	private final EnumPodType type;
-
-	private ProductListWrapper products;
-
-	public PodFruit(String unlocalizedDescription, IFruitFamily family, EnumPodType type, Supplier<ItemStack> dropOnMature) {
-		super(unlocalizedDescription, family);
 		this.type = type;
-		this.products = ProductListWrapper.create();
-		this.products.addProduct(dropOnMature, 1.0F);
 	}
 
 	@Override
@@ -70,51 +44,22 @@ public class PodFruit extends DummyFruit {
 	}
 
 	@Override
-	public List<ItemStack> getFruits(@Nullable IGenome genome, Level world, BlockPos pos, int ripeningTime) {
-		if (ripeningTime >= 2) {
-			return products.getPossibleStacks();
-		}
-
-		return NonNullList.create();
-	}
-
-	@Override
 	public boolean trySpawnFruitBlock(IGenome genome, LevelAccessor world, RandomSource rand, BlockPos pos) {
 		if (rand.nextFloat() > getFruitChance(genome, world, pos)) {
 			return false;
 		}
 
-		if (type == EnumPodType.COCOA) {
+		if (type == ForestryPodType.COCOA) {
 			return BlockUtil.tryPlantCocoaPod(world, pos);
 		} else {
-			IFruit activeAllele = genome.getActiveAllele(TreeChromosomes.FRUITS);
-			return TreeManager.treeRoot.setFruitBlock(world, genome, activeAllele, genome.getActiveValue(TreeChromosomes.YIELD), pos);
+			IFruit activeAllele = genome.getActiveValue(TreeChromosomes.FRUITS);
+			return SpeciesUtil.TREE_TYPE.get().setFruitBlock(world, genome, activeAllele, genome.getActiveValue(TreeChromosomes.YIELD), pos);
 		}
 	}
 
 	@Override
-	public ResourceLocation getSprite(IGenome genome, BlockGetter world, BlockPos pos, int ripeningTime) {
-		return null;
-	}
-
-	@Override
-	public ResourceLocation getDecorativeSprite() {
-		return null;
-	}
-
-	@Override
-	public IProductList getProducts() {
-		return products;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerSprites(TextureStitchEvent.Pre event) {
-	}
-
-	@Override
 	public String getModelName() {
-		return type.getModelName();
+		return this.type.getSerializedName();
 	}
 
 	@Override
@@ -124,5 +69,9 @@ public class PodFruit extends DummyFruit {
 			case PAPAYA -> ForestryTags.Blocks.PAPAYA_LOGS;
 			default -> BlockTags.JUNGLE_LOGS;
 		};
+	}
+
+	public ForestryPodType getType() {
+		return this.type;
 	}
 }

@@ -11,10 +11,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.util.StringRepresentable;
 
 import forestry.api.IForestryApi;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.IFruit;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.ICircuit;
@@ -23,14 +22,16 @@ import forestry.api.farming.FarmPropertiesEvent;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmPropertiesBuilder;
+import forestry.api.genetics.alleles.ForestryAlleles;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.core.circuits.Circuits;
 import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
 import forestry.core.items.ItemFruit;
 import forestry.core.items.definitions.EnumElectronTube;
 import forestry.core.utils.ForgeUtils;
+import forestry.core.utils.SpeciesUtil;
 import forestry.farming.circuits.CircuitFarmLogic;
 import forestry.farming.logic.FarmLogicArboreal;
 import forestry.farming.logic.FarmLogicCocoa;
@@ -134,14 +135,16 @@ public enum FarmDefinition implements StringRepresentable {
 			properties.setFertilizer(10)
 				.setWater(hydrationModifier -> (int) (40 * hydrationModifier))
 				.setIcon(() -> CoreItems.FRUITS.stack(ItemFruit.EnumFruit.CHERRY));
-			ITreeSpeciesType treeRoot = TreeManager.treeRoot;
+			ITreeSpeciesType treeRoot = SpeciesUtil.TREE_TYPE.get();
 			if (treeRoot != null) {
-				for (ITree tree : treeRoot.getIndividualTemplates()) {
-					IFruit fruitProvider = tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).getProvider();
-					if (fruitProvider != AlleleFruits.fruitNone.getProvider()) {
-						properties.addSeedlings(treeRoot.getTypes().createStack(tree, TreeLifeStage.SAPLING))
-							.addProducts(fruitProvider.getProducts().getPossibleStacks())
-							.addProducts(fruitProvider.getSpecialty().getPossibleStacks());
+				for (ITreeSpecies tree : treeRoot.getAllSpecies()) {
+					IValueAllele<IFruit> fruitAllele = tree.getDefaultGenome().getActiveAllele(TreeChromosomes.FRUITS);
+
+					if (fruitAllele != ForestryAlleles.FRUIT_NONE) {
+						IFruit fruit = fruitAllele.value();
+						properties.addSeedlings(tree.createStack(TreeLifeStage.SAPLING))
+							.addProducts(fruit.getProducts())
+							.addProducts(fruit.getSpecialty());
 					}
 				}
 			}
@@ -157,23 +160,7 @@ public enum FarmDefinition implements StringRepresentable {
 				.setWater(hydrationModifier -> (int) (20 * hydrationModifier))
 				.setIcon(() -> new ItemStack(Items.COCOA_BEANS));
 		}
-	}/*,
-	//TODO: Mod combat
-	RUBBER("rubber", EnumElectronTube.RUBBER, FarmLogicRubber::new, ForestryModuleUids.INDUSTRIALCRAFT2){
-		@Override
-		protected void initProperties(IFarmPropertiesBuilder properties) {
-			properties.setFertilizer(40)
-				.setWater(hydrationModifier->(int) (5 * hydrationModifier))
-			.setIcon(()->{
-				//		if (ModUtil.isModLoaded(PluginIC2.MOD_ID)) {
-				//			return PluginIC2.resin;
-				//		} else if (ModUtil.isModLoaded(PluginTechReborn.MOD_ID)) {
-				//			return PluginTechReborn.sap;
-				//		}
-				return ItemStack.EMPTY;
-			});
-		}
-	}*/;
+	};
 
 	private final String name;
 	private final EnumElectronTube tube;

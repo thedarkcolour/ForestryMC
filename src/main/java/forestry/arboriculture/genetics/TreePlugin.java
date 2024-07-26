@@ -1,11 +1,12 @@
 package forestry.arboriculture.genetics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,6 +16,7 @@ import genetics.api.organism.IIndividualCapability;
 
 import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.arboriculture.features.ArboricultureItems;
@@ -25,6 +27,7 @@ import forestry.core.genetics.analyzer.DatabasePlugin;
 import forestry.core.genetics.analyzer.MutationsTab;
 import forestry.core.genetics.analyzer.ProductsTab;
 import forestry.core.items.ItemFruit;
+import forestry.core.utils.SpeciesUtil;
 
 //TODO: Add support for the alyzer
 @OnlyIn(Dist.CLIENT)
@@ -37,9 +40,9 @@ public class TreePlugin extends DatabasePlugin<ITree> {
 			new TreeDatabaseTab(DatabaseMode.INACTIVE),
 			new ProductsTab(() -> CoreItems.FRUITS.stack(ItemFruit.EnumFruit.CHERRY, 1)),
 			new MutationsTab(ArboricultureItems.GRAFTER::stack));
-		NonNullList<ItemStack> treeList = NonNullList.create();
-		ItemGE.addCreativeItems(ArboricultureItems.SAPLING.item(), treeList, false, TreeHelper.getRoot());
-		for (ItemStack treeStack : treeList) {
+		ArrayList<ItemStack> stacks = new ArrayList<>();
+		ItemGE.addCreativeItems(TreeLifeStage.SAPLING, stacks, false, SpeciesUtil.TREE_TYPE.get());
+		for (ItemStack treeStack : stacks) {
 			IIndividualCapability<?> organism = GeneticHelper.getOrganism(treeStack);
 			if (organism.isEmpty()) {
 				continue;
@@ -50,7 +53,7 @@ public class TreePlugin extends DatabasePlugin<ITree> {
 	}
 
 	@Override
-	public Map<String, ItemStack> getIndividualStacks() {
+	public Map<ResourceLocation, ItemStack> getIndividualStacks() {
 		return iconStacks;
 	}
 

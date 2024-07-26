@@ -8,28 +8,27 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.client.ForestrySprites;
-import forestry.api.genetics.alleles.AlleleManager;
-import forestry.api.genetics.filter.IFilterData;
+import forestry.api.genetics.filter.FilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
 
 public enum DefaultFilterRuleType implements IFilterRuleType {
 	CLOSED(false, ForestrySprites.ANALYZER_CLOSED) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
+		public boolean isValid(ItemStack stack, FilterData data) {
 			return false;
 		}
 	},
 	ANYTHING(false, ForestrySprites.ANALYZER_ANYTHING) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
+		public boolean isValid(ItemStack stack, FilterData data) {
 			return true;
 		}
 	},
 	ITEM(false, ForestrySprites.ANALYZER_ITEM) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return !data.isPresent();
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return true;
 		}
 	},
 	PURE_BREED(ForestrySprites.ANALYZER_PURE_BREED),
@@ -59,14 +58,14 @@ public enum DefaultFilterRuleType implements IFilterRuleType {
 
 	public static void init() {
 		for (DefaultFilterRuleType rule : values()) {
-			AlleleManager.filterRegistry.registerFilter(rule);
+			FilterRegistry.INSTANCE.registerFilter(rule);
 		}
 	}
 
 	@Override
-	public boolean isValid(ItemStack itemStack, IFilterData data) {
+	public boolean isValid(ItemStack stack, FilterData data) {
 		for (IFilterRule logic : logic) {
-			if (logic.isValid(itemStack, data)) {
+			if (logic.isValid(stack, data)) {
 				return true;
 			}
 		}

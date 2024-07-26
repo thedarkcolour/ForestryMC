@@ -1,6 +1,6 @@
 package forestry.farming.features;
 
-import forestry.farming.ModuleFarming;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.farming.blocks.BlockFarm;
 import forestry.farming.blocks.EnumFarmBlockType;
 import forestry.farming.blocks.EnumFarmMaterial;
@@ -12,11 +12,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class FarmingBlocks {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleFarming.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.FARMING);
 
-	//public static final FeatureBlock<BlockMushroom, BlockItem> MUSHROOM = REGISTRY.block(BlockMushroom::new, "mushroom");
 	public static final FeatureBlockTable<BlockFarm, EnumFarmBlockType, EnumFarmMaterial> FARM = REGISTRY.blockTable(BlockFarm::create, EnumFarmBlockType.VALUES, EnumFarmMaterial.values()).item(ItemBlockFarm::new).identifier("farm").create();
-
-	private FarmingBlocks() {
-	}
 }

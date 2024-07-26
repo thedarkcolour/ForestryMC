@@ -6,6 +6,7 @@ import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.plugin.IGeneticRegistration;
 
 public class BeeTaxonomy {
+	@SuppressWarnings("CodeBlock2Expr")
 	public static void defineTaxa(IGeneticRegistration genetics) {
 		genetics.defineTaxon(ForestryTaxa.CLASS_INSECTS, ForestryTaxa.ORDER_HYMNOPTERA, order -> {
 			order.defineSubTaxon(ForestryTaxa.FAMILY_BEES, family -> {

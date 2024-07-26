@@ -1,7 +1,6 @@
 package forestry.core.commands;
 
 import forestry.api.ForestryConstants;
-import forestry.apiculture.commands.CommandBeeGive;
 import forestry.arboriculture.commands.CommandTreeSpawn;
 import forestry.core.utils.ForgeUtils;
 import forestry.modules.features.FeatureProvider;
@@ -16,9 +15,8 @@ import net.minecraftforge.registries.RegistryObject;
 public class CommandArgumentTypes {
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, ForestryConstants.MOD_ID);
 
-    private static final RegistryObject<ArgumentTypeInfo<?, ?>> MODULE = ARGUMENT_TYPES.register("module", () -> ArgumentTypeInfos.registerByClass(CommandModules.CommandPluginsInfo.ModuleArgument.class, SingletonArgumentInfo.contextFree(CommandModules.CommandPluginsInfo.ModuleArgument::modules)));
-    private static final RegistryObject<ArgumentTypeInfo<?, ?>> BEE = ARGUMENT_TYPES.register("bee", () -> ArgumentTypeInfos.registerByClass(CommandBeeGive.BeeArgument.class, SingletonArgumentInfo.contextFree(CommandBeeGive.BeeArgument::beeArgument)));
-    private static final RegistryObject<ArgumentTypeInfo<?, ?>> TREE = ARGUMENT_TYPES.register("tree", () -> ArgumentTypeInfos.registerByClass(CommandTreeSpawn.TreeArugment.class, SingletonArgumentInfo.contextFree(CommandTreeSpawn.TreeArugment::treeArgument)));
+    private static final RegistryObject<ArgumentTypeInfo<?, ?>> SPECIES = ARGUMENT_TYPES.register("species", () -> ArgumentTypeInfos.registerByClass(SpeciesArgument.class, new ISpeciesArgumentType.Serializer<>(SpeciesArgument::new)));
+    private static final RegistryObject<ArgumentTypeInfo<?, ?>> LIFE_STAGE = ARGUMENT_TYPES.register("life_stage", () -> ArgumentTypeInfos.registerByClass(LifeStageArgument.class, new LifeStageArgument.Serializer<>(LifeStageArgument::new)));
 
     static {
         ARGUMENT_TYPES.register(ForgeUtils.modBus());

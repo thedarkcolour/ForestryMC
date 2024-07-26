@@ -1,11 +1,14 @@
 package forestry.arboriculture.charcoal.jei;
 
+import net.minecraft.resources.ResourceLocation;
+
 import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.ICharcoalManager;
 import forestry.api.arboriculture.ICharcoalPileWall;
 import forestry.api.arboriculture.TreeManager;
-import forestry.arboriculture.features.CharcoalBlocks;
 import forestry.api.modules.ForestryModuleIds;
+import forestry.arboriculture.features.CharcoalBlocks;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -13,7 +16,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.resources.ResourceLocation;
 
 @JeiPlugin
 public class CharcoalJeiPlugin implements IModPlugin {

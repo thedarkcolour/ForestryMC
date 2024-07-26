@@ -6,42 +6,42 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.client.ForestrySprites;
-import forestry.api.genetics.alleles.AlleleManager;
-import forestry.api.genetics.filter.IFilterData;
+import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.genetics.filter.FilterData;
 import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
-import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
+import forestry.sorting.FilterRegistry;
 
 public enum LepidopterologyFilterRuleType implements IFilterRuleType {
 	FLUTTER(ForestrySprites.ANALYZER_FLUTTER) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent();
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return true;
 		}
 	},
 	BUTTERFLY(ForestrySprites.ANALYZER_BUTTERFLY) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == ButterflyLifeStage.BUTTERFLY;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == ButterflyLifeStage.BUTTERFLY;
 		}
 	},
 	SERUM(ForestrySprites.ANALYZER_SERUM) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == ButterflyLifeStage.SERUM;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == ButterflyLifeStage.SERUM;
 		}
 	},
 	CATERPILLAR(ForestrySprites.ANALYZER_CATERPILLAR) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == ButterflyLifeStage.CATERPILLAR;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == ButterflyLifeStage.CATERPILLAR;
 		}
 	},
 	COCOON(ForestrySprites.ANALYZER_COCOON) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.type() == ButterflyLifeStage.COCOON;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == ButterflyLifeStage.COCOON;
 		}
 	};
 
@@ -55,7 +55,7 @@ public enum LepidopterologyFilterRuleType implements IFilterRuleType {
 
 	public static void init() {
 		for (LepidopterologyFilterRuleType rule : values()) {
-			AlleleManager.filterRegistry.registerFilter(rule);
+			FilterRegistry.INSTANCE.registerFilter(rule);
 		}
 	}
 
@@ -75,7 +75,7 @@ public enum LepidopterologyFilterRuleType implements IFilterRuleType {
 
 	@Override
 	public ResourceLocation getSpeciesTypeId() {
-		return ButterflyManager.butterflyRoot.id();
+		return ForestrySpeciesTypes.BUTTERFLY;
 	}
 
 	@Override

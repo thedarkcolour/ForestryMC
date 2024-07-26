@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.IToolGrafter;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
@@ -13,6 +12,8 @@ import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockDefaultLeavesFruit;
 import forestry.arboriculture.genetics.TreeHelper;
 import forestry.api.genetics.IGenome;
+import forestry.core.utils.SpeciesUtil;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -90,7 +91,7 @@ public class GrafterLootModifier extends LootModifier {
 		List<ITree> saplings = tree.getSaplings(world, player.getGameProfile(), pos, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				generatedLoot.add(TreeManager.treeRoot.getTypes().createStack(sapling, TreeLifeStage.SAPLING));
+				generatedLoot.add(SpeciesUtil.TREE_TYPE.get().getTypes().createStack(sapling, TreeLifeStage.SAPLING));
 			}
 		}
 		if (tileEntity instanceof IFruitBearer bearer) {

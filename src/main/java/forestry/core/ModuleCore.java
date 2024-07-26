@@ -30,6 +30,8 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
 import forestry.api.IForestryApi;
 import forestry.api.circuits.ChipsetManager;
 import forestry.api.client.IClientModuleHandler;
@@ -66,9 +68,10 @@ import forestry.core.network.packets.PacketSolderingIronClick;
 import forestry.core.network.packets.PacketTankLevelUpdate;
 import forestry.core.network.packets.PacketTileStream;
 import forestry.core.owner.GameProfileDataSerializer;
-import forestry.core.proxy.CoreClientHandler;
-import forestry.core.proxy.Proxies;
+import forestry.core.client.CoreClientHandler;
+import forestry.core.client.Proxies;
 import forestry.core.recipes.HygroregulatorManager;
+import forestry.core.worldgen.VillagerJigsaw;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ModuleUtil;
 
@@ -84,6 +87,7 @@ public class ModuleCore extends BlankForestryModule {
 	public void registerEvents(IEventBus modBus) {
 		CoreFeatures.CONFIGURED_FEATURES.register(modBus);
 		CoreFeatures.PLACED_FEATURES.register(modBus);
+		modBus.addListener(ModuleCore::setup);
 
 		ItemGroupForestry.initTabs();
 		ModuleUtil.loadFeatureProviders();
@@ -112,7 +116,13 @@ public class ModuleCore extends BlankForestryModule {
 		}
 	}
 
+	private static void setup(FMLCommonSetupEvent event) {
+		// Forestry's villager houses
+		event.enqueueWork(VillagerJigsaw::init);
+	}
+
 	private static void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
+		// todo what is supposed to go here?
 	}
 
 	@Override
@@ -144,7 +154,7 @@ public class ModuleCore extends BlankForestryModule {
 	public void preInit() {
 		EntityDataSerializers.registerSerializer(GameProfileDataSerializer.INSTANCE);
 
-		rootCommand.then(CommandModules.register());
+		//rootCommand.then(CommandModules.register());
 	}
 
 	@Nullable

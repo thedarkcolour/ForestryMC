@@ -26,7 +26,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.genetics.ForestryComponentKeys;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IIndividualHandler;
 import forestry.api.genetics.IResearchHandler;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.features.CoreTiles;
 import forestry.core.gui.ContainerEscritoire;
@@ -81,15 +84,14 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 			return;
 		}
 
-		IIndividual individual = RootUtils.getIndividual(getItem(InventoryEscritoire.SLOT_ANALYZE));
+		IIndividual individual = IIndividualHandler.getIndividual(getItem(InventoryEscritoire.SLOT_ANALYZE));
 		if (individual == null) {
 			return;
 		}
 
-		IAlleleForestrySpecies species = individual.getGenome().getPrimarySpecies(IAlleleForestrySpecies.class);
-		ISpeciesType<IIndividual> root = (ISpeciesType<IIndividual>) species.getSpecies();
-		IResearchHandler<IIndividual> handler = root.getComponent(ForestryComponentKeys.RESEARCH);
-		for (ItemStack itemstack : handler.getResearchBounty(species, level, gameProfile, individual, game.getBountyLevel())) {
+		ISpecies<?> species = individual.getSpecies();
+		ISpeciesType<?, ?> root = species.getType();
+		for (ItemStack itemstack : root.getResearchBounty(species, level, gameProfile, individual, game.getBountyLevel())) {
 			InventoryUtil.addStack(getInternalInventory(), itemstack, InventoryEscritoire.SLOT_RESULTS_1, InventoryEscritoire.SLOTS_RESULTS_COUNT, true);
 		}
 	}

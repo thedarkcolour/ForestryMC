@@ -101,8 +101,8 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 			this.itemModels = itemModels;
 			this.blockModels = blockModels;
 			ITreeSpeciesType speciesType = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.TREE);
-			this.defaultBlock = Objects.requireNonNull(blockModels.get(speciesType.getSpeciesById(ForestryTreeSpecies.OAK)));
-			this.defaultItem = Objects.requireNonNull(itemModels.get(speciesType.getSpeciesById(ForestryTreeSpecies.OAK)));
+			this.defaultBlock = Objects.requireNonNull(blockModels.get(speciesType.getSpecies(ForestryTreeSpecies.OAK)));
+			this.defaultItem = Objects.requireNonNull(itemModels.get(speciesType.getSpecies(ForestryTreeSpecies.OAK)));
 		}
 
 		@Override

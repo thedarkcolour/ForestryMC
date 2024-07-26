@@ -10,58 +10,76 @@
  ******************************************************************************/
 package forestry.core.genetics.mutations;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-import forestry.api.climate.ClimateState;
 import forestry.api.climate.IClimateProvider;
-import forestry.api.genetics.ISpecies;
-import forestry.api.genetics.alleles.IValueAllele;
-import forestry.api.genetics.IMutationCondition;
-
-import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IMutation;
+import forestry.api.genetics.IMutationCondition;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
 
-public abstract class Mutation<S extends ISpecies<?>> implements IMutation<S> {
+public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
+	private final ISpeciesType<S, ?> type;
+	private final int chance;
+	private final List<IMutationCondition> conditions;
+	private final List<Component> specialConditions;
 	private final S firstParent;
 	private final S secondParent;
 	private final S result;
-	private final IAllele[] template;
-	private final int chance;
+	private final Map<IChromosome<?>, IAllele> resultAlleles;
+	private final boolean secret;
 
-	private final List<IMutationCondition> mutationConditions = new ArrayList<>();
-	private final List<Component> specialConditions = new ArrayList<>();
-
-	protected Mutation(S firstParent, S secondParent, IAllele[] template, int chance) {
+	public Mutation(ISpeciesType<S, ?> type, S firstParent, S secondParent, S result, Map<IChromosome<?>, IAllele> resultAlleles, int chance, List<IMutationCondition> conditions) {
+		this.type = type;
+		this.chance = chance;
+		this.conditions = conditions;
+		ImmutableList.Builder<Component> specialConditions = ImmutableList.builderWithExpectedSize(conditions.size());
+		for (IMutationCondition condition : conditions) {
+			specialConditions.add(condition.getDescription());
+		}
+		this.specialConditions = specialConditions.build();
 		this.firstParent = firstParent;
 		this.secondParent = secondParent;
-		this.result = ((IValueAllele<S>) template[0]).value();
-		this.template = template;
-		this.chance = chance;
+		this.result = result;
+		this.resultAlleles = resultAlleles;
+		this.secret = result.isSecret() || firstParent.isSecret() || secondParent.isSecret();
+	}
+
+	public static float getChance(IMutation<?> mutation, Level level, BlockPos pos, ISpecies<?> firstParent, ISpecies<?> secondParent, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate) {
+		float mutationChance = mutation.getBaseChance();
+		for (IMutationCondition condition : mutation.getConditions()) {
+			mutationChance *= condition.getChance(level, pos, firstParent, secondParent, firstGenome, secondGenome, climate);
+			if (mutationChance == 0f) {
+				return 0f;
+			}
+		}
+		return Math.max(0f, mutationChance);
+	}
+
+	@Override
+	public ISpeciesType<S, ?> getType() {
+		return this.type;
+	}
+
+	@Override
+	public List<IMutationCondition> getConditions() {
+		return this.conditions;
 	}
 
 	@Override
 	public Collection<Component> getSpecialConditions() {
-		return specialConditions;
-	}
-
-	protected float getChance(Level world, BlockPos pos, IAllele firstParent, IAllele secondParent, IGenome firstGenome, IGenome secondGenome, ClimateState climate) {
-		float mutationChance = chance;
-		for (IMutationCondition mutationCondition : mutationConditions) {
-			mutationChance *= mutationCondition.getChance(world, pos, firstParent, secondParent, firstGenome, secondGenome, climate);
-			if (mutationChance == 0) {
-				return 0;
-			}
-		}
-		return mutationChance;
+		return this.specialConditions;
 	}
 
 	@Override
@@ -80,6 +98,11 @@ public abstract class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	}
 
 	@Override
+	public Map<IChromosome<?>, IAllele> getResultAlleles() {
+		return this.resultAlleles;
+	}
+
+	@Override
 	public int getBaseChance() {
 		return this.chance;
 	}
@@ -90,10 +113,10 @@ public abstract class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	}
 
 	@Override
-	public ISpecies<?> getPartner(ISpecies<?> allele) {
-		if (firstParent.id().equals(allele.id())) {
+	public ISpecies<?> getPartner(ISpecies<?> species) {
+		if (firstParent.id().equals(species.id())) {
 			return secondParent;
-		} else if (secondParent.id().equals(allele.id())) {
+		} else if (secondParent.id().equals(species.id())) {
 			return firstParent;
 		} else {
 			throw new IllegalArgumentException("Tried to get partner for allele that is not part of this mutation.");
@@ -102,18 +125,6 @@ public abstract class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 
 	@Override
 	public boolean isSecret() {
-		return this.result.isSecret();
-	}
-
-	@Override
-	public String toString() {
-		MoreObjects.ToStringHelper stringHelper = MoreObjects.toStringHelper(this)
-				.add("first", firstParent)
-				.add("second", secondParent)
-				.add("result", template[0]);
-		if (!specialConditions.isEmpty()) {
-			stringHelper.add("conditions", getSpecialConditions());
-		}
-		return stringHelper.toString();
+		return this.secret;
 	}
 }

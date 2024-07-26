@@ -76,7 +76,6 @@ public interface FakeMultiblockController extends IMultiblockControllerInternal,
 	}
 
 	@Override
-	@Nullable
 	default Level getWorldObj() {
 		return null;
 	}
@@ -157,16 +156,6 @@ public interface FakeMultiblockController extends IMultiblockControllerInternal,
 	@Override
 	default HumidityType humidity() {
 		return HumidityType.NORMAL;
-	}
-
-	@Override
-	default float getExactTemperature() {
-		return 0.5f;
-	}
-
-	@Override
-	default float getExactHumidity() {
-		return 0.5f;
 	}
 
 	@Override

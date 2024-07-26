@@ -18,7 +18,6 @@ import forestry.api.core.IFeatureSubtype;
 import forestry.api.core.IItemProvider;
 
 public abstract class FeatureGroup<B extends FeatureGroup.Builder<S, ? extends FeatureGroup<B, F, S>>, F extends IModFeature, S extends IFeatureSubtype> {
-
 	protected final ImmutableMap<S, F> featureByType;
 
 	protected FeatureGroup(B builder) {

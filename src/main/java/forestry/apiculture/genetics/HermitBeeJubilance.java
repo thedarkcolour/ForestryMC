@@ -14,12 +14,11 @@ import java.util.List;
 
 import net.minecraft.world.entity.Mob;
 
-import forestry.api.apiculture.IBeeJubilance;
-import forestry.api.apiculture.genetics.IBeeSpecies;
-import forestry.api.apiculture.genetics.IBeeEffect;
-import forestry.api.genetics.IGenome;
-
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.IBeeJubilance;
+import forestry.api.apiculture.genetics.IBeeEffect;
+import forestry.api.apiculture.genetics.IBeeSpecies;
+import forestry.api.genetics.IGenome;
 
 /**
  * Hermits will not produce if there are any other living creatures nearby.

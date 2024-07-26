@@ -11,33 +11,31 @@
 package forestry.arboriculture.commands;
 
 import java.util.Collection;
+import java.util.List;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.api.genetics.ISpecies;
 import forestry.core.commands.IStatsSaveHelper;
-
-import genetics.utils.AlleleUtils;
+import forestry.core.utils.SpeciesUtil;
 
 public class TreeStatsSaveHelper implements IStatsSaveHelper {
-
 	@Override
-	public String getUnlocalizedSaveStatsString() {
+	public String getTranslationKey() {
 		return "for.chat.command.forestry.tree.save.stats";
 	}
 
 	@Override
-	public void addExtraInfo(Collection<String> statistics, IBreedingTracker breedingTracker) {
+	public void addExtraInfo(Collection<Component> statistics, IBreedingTracker breedingTracker) {
 	}
 
 	@Override
-	public Collection<IAlleleTreeSpecies> getSpecies() {
-		return AlleleUtils.filteredAlleles(TreeChromosomes.SPECIES);
+	public List<? extends ISpecies<?>> getSpecies() {
+		return SpeciesUtil.getAllTreeSpecies();
 	}
 
 	@Override
@@ -47,7 +45,7 @@ public class TreeStatsSaveHelper implements IStatsSaveHelper {
 
 	@Override
 	public IBreedingTracker getBreedingTracker(Level world, GameProfile gameProfile) {
-		return TreeManager.treeRoot.getBreedingTracker(world, gameProfile);
+		return SpeciesUtil.TREE_TYPE.get().getBreedingTracker(world, gameProfile);
 	}
 
 }

@@ -17,15 +17,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
@@ -35,7 +35,6 @@ import forestry.api.farming.IFarmable;
 import forestry.api.farming.Soil;
 import forestry.core.utils.BlockUtil;
 import forestry.farming.logic.farmables.FarmableCocoa;
-
 
 public class FarmLogicCocoa extends FarmLogicSoil {
 	private static final int[] LAYOUT_POSITIONS = new int[]{4, 1, 3, 0, 2};
@@ -58,12 +57,12 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 		return result;
 	}
 
-	protected boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
+	protected boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		if (!farmHousing.canPlantSoil(isManual)) {
 			return false;
 		}
 		BlockPos cornerPos = farmHousing.getFarmCorner(direction);
-		int distance = getDistanceValue(direction.getFacing().getClockWise(), cornerPos, pos) - 1;
+		int distance = getDistanceValue(direction.getClockWise(), cornerPos, pos) - 1;
 		int layoutExtent = LAYOUT_POSITIONS[distance % LAYOUT_POSITIONS.length];
 		for (Soil soil : getSoils()) {
 			NonNullList<ItemStack> resources = NonNullList.create();
@@ -123,12 +122,12 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 	}
 
 	//4, 1, 3, 0, 2
-	protected boolean isValidPosition(HorizontalDirection direction, BlockPos pos, BlockPos logicPos, int layoutExtent) {
-		int distance = getDistanceValue(direction.getFacing(), pos, logicPos);
+	protected boolean isValidPosition(Direction direction, BlockPos pos, BlockPos logicPos, int layoutExtent) {
+		int distance = getDistanceValue(direction, pos, logicPos);
 		return (distance % LAYOUT_POSITIONS.length) == (layoutExtent);
 	}
 
-	protected boolean trySetSoil(Level world, IFarmHousing farmHousing, BlockPos position, ItemStack resource, BlockState ground) {
+	protected static boolean trySetSoil(Level world, IFarmHousing farmHousing, BlockPos position, ItemStack resource, BlockState ground) {
 		NonNullList<ItemStack> resources = NonNullList.create();
 		resources.add(resource);
 		if (!farmHousing.getFarmInventory().hasResources(resources)) {
@@ -150,11 +149,11 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 		return crops;
 	}
 
-	private boolean tryPlantingCocoa(Level world, IFarmHousing farmHousing, BlockPos position, HorizontalDirection farmDirection) {
+	private boolean tryPlantingCocoa(Level world, IFarmHousing farmHousing, BlockPos position, Direction farmDirection) {
 		BlockPos.MutableBlockPos current = new BlockPos.MutableBlockPos();
 		BlockState blockState = world.getBlockState(current.set(position));
 		while (isJungleTreeTrunk(blockState)) {
-			for (Direction direction : Direction.Plane.HORIZONTAL) {
+			for (Direction direction : HorizontalDirection.VALUES) {
 				BlockPos candidate = new BlockPos(current.getX() + direction.getStepX(), current.getY(), current.getZ() + direction.getStepZ());
 				if (world.hasChunkAt(candidate) && world.isEmptyBlock(candidate)) {
 					return farmHousing.plantGermling(cocoa, world, candidate, farmDirection);

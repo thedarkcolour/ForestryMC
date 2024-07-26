@@ -14,6 +14,7 @@ import java.util.List;
 
 import net.minecraft.world.entity.player.Player;
 
+import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IGenome;
 
 import forestry.api.apiculture.IBeeHousing;
@@ -22,12 +23,12 @@ import forestry.api.genetics.IEffectData;
 public class ExplorationBeeEffect extends ThrottledBeeEffect {
 
 	public ExplorationBeeEffect() {
-		super("exploration", false, 80, true, false);
+		super(false, 80, true, false);
 	}
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		List<Player> players = getEntitiesInRange(genome, housing, Player.class);
+		List<Player> players = IBeeEffect.getEntitiesInRange(genome, housing, Player.class);
 		for (Player player : players) {
 			player.giveExperiencePoints(2);
 		}

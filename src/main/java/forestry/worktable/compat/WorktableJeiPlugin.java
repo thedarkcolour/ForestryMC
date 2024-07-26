@@ -3,7 +3,7 @@ package forestry.worktable.compat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.ForestryConstants;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.utils.JeiUtil;
 import forestry.worktable.features.WorktableBlocks;
 
@@ -18,7 +18,7 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 public class WorktableJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(ForestryConstants.MOD_ID);
+		return ForestryModuleIds.WORKTABLE;
 	}
 
 	@Override

@@ -10,24 +10,23 @@
  ******************************************************************************/
 package forestry.farming.logic;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmable;
 import forestry.core.utils.BlockUtil;
 
 public class FarmLogicGourd extends FarmLogicWatered {
-
 	public FarmLogicGourd(IFarmProperties properties, boolean isManual) {
 		super(properties, isManual);
 	}
 
 	@Override
-	protected boolean maintainCrops(Level world, IFarmHousing farmHousing, BlockPos pos, HorizontalDirection direction, int extent) {
+	protected boolean maintainCrops(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
 			if (!world.hasChunkAt(position)) {
@@ -49,7 +48,7 @@ public class FarmLogicGourd extends FarmLogicWatered {
 		return false;
 	}
 
-	private boolean trySetCrop(Level world, IFarmHousing farmHousing, BlockPos position, HorizontalDirection direction) {
+	private boolean trySetCrop(Level world, IFarmHousing farmHousing, BlockPos position, Direction direction) {
 		for (IFarmable candidate : getFarmables()) {
 			if (farmHousing.plantGermling(candidate, world, position, direction)) {
 				return true;
@@ -60,8 +59,8 @@ public class FarmLogicGourd extends FarmLogicWatered {
 	}
 
 	@Override
-	protected boolean isValidPosition(IFarmHousing housing, HorizontalDirection direction, BlockPos position, CultivationType type) {
-		BlockPos farmLocation = housing.getFarmCorner(direction).relative(direction.getFacing());
+	protected boolean isValidPosition(IFarmHousing housing, Direction direction, BlockPos position, CultivationType type) {
+		BlockPos farmLocation = housing.getFarmCorner(direction).relative(direction);
 		int xVal = farmLocation.getX() & 1;
 		int zVal = farmLocation.getZ() & 1;
 		boolean uneven = ((position.getX() & 1) != xVal) ^ ((position.getZ() & 1) != zVal);

@@ -5,8 +5,6 @@ import java.util.function.Supplier;
 import forestry.core.blocks.IBlockTypeTesr;
 import forestry.core.blocks.IMachinePropertiesTesr;
 import forestry.core.blocks.MachinePropertiesTesr;
-import forestry.core.config.Constants;
-import forestry.core.proxy.Proxies;
 import forestry.energy.features.EnergyTiles;
 import forestry.energy.tiles.EngineBlockEntity;
 import forestry.modules.features.FeatureTileType;
@@ -25,13 +23,11 @@ public enum EngineBlockType implements IBlockTypeTesr {
     }
 
     private static IMachinePropertiesTesr<?> createEngineProperties(Supplier<FeatureTileType<? extends EngineBlockEntity>> teClass, String name, String textureName) {
-        MachinePropertiesTesr<? extends EngineBlockEntity> machinePropertiesEngine = new MachinePropertiesTesr.Builder<>(teClass, name)
+		return new MachinePropertiesTesr.Builder<>(teClass, name)
                 .setParticleTexture(textureName + ".0")
                 .setClientTicker(EngineBlockEntity::clientTick)
                 .setServerTicker(EngineBlockEntity::serverTick)
                 .create();
-        Proxies.render.setRenderDefaultEngine(machinePropertiesEngine, Constants.TEXTURE_PATH_BLOCK + textureName + "_");
-        return machinePropertiesEngine;
     }
 
     @Override

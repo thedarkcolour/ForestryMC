@@ -34,7 +34,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.genetics.alleles.AlleleManager;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
@@ -51,6 +50,7 @@ import forestry.core.network.packets.PacketItemStackDisplay;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.SpeciesUtil;
 
 import genetics.api.individual.IIndividual;
 import genetics.utils.RootUtils;
@@ -93,7 +93,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 		ItemStack stackToAnalyze = getItem(InventoryAnalyzer.SLOT_ANALYZE);
 		if (!stackToAnalyze.isEmpty()) {
-			specimenToAnalyze = RootUtils.getIndividual(stackToAnalyze);
+			specimenToAnalyze = IIndividualHandler.getIndividual(stackToAnalyze);
 		}
 	}
 
@@ -220,11 +220,11 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			return;
 		}
 
-		if (!TreeManager.treeRoot.isMember(inputStack)) {
+		if (!SpeciesUtil.TREE_TYPE.get().isMember(inputStack)) {
 			inputStack = GeneticsUtil.convertToGeneticEquivalent(inputStack);
 		}
 
-		specimenToAnalyze = RootUtils.getIndividual(inputStack);
+		specimenToAnalyze = IIndividualHandler.getIndividual(inputStack);
 		if (specimenToAnalyze == null) {
 			return;
 		}

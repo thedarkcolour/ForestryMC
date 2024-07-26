@@ -29,14 +29,13 @@ public interface IIndividualLiving extends IIndividual {
 	/**
 	 * Age the individual.
 	 */
-	void age(Level world, float ageModifier);
+	void age(Level level, float ageModifier);
 
 	/**
 	 * @return true if the individual is among the living.
 	 */
 	boolean isAlive();
 
-	default boolean hasEffect() {
-		return getGenome().getActiveValue(getGenome().getKaryotype().getSpeciesChromosome()).hasGlint();
-	}
+	@Override
+	IIndividual copy();
 }

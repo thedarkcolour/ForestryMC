@@ -14,8 +14,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.api.genetics.filter.IFilterLogic;
 import forestry.core.gui.GuiForestry;
 import forestry.core.gui.GuiUtil;
@@ -23,15 +23,9 @@ import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.utils.SoundUtil;
 import forestry.sorting.gui.GuiGeneticFilter;
-import forestry.sorting.gui.ISelectableProvider;
 
-import genetics.api.GeneticsAPI;
-import forestry.api.genetics.alleles.ISpecies<?>;
 import forestry.api.genetics.IGenome;
-import genetics.api.individual.IIndividual;
-import genetics.api.root.IRootDefinition;
-import genetics.utils.AlleleUtils;
-import genetics.utils.RootUtils;
+import forestry.sorting.gui.ISelectableProvider;
 
 public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecies<?>> {
 	private final static ImmutableMap<ISpecies<?>, ItemStack> ITEMS = createEntries();
@@ -123,7 +117,7 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecie
 	public void handleMouseClick(double mouseX, double mouseY, int mouseButton) {
 		ItemStack stack = gui.getMinecraft().player.inventoryMenu.getCarried();
 		if (!stack.isEmpty()) {
-			IIndividual individual = RootUtils.getIndividual(stack);
+			IIndividual individual = IIndividualHandler.getIndividual(stack);
 			if (individual != null) {
 				IGenome genome = individual.getGenome();
 				onSelect(mouseButton == 0 ? genome.getPrimarySpecies() : genome.getSecondarySpecies());

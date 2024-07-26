@@ -23,6 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.EntityBlock;
@@ -38,17 +39,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import forestry.api.ForestryTags;
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.lepidopterology.ButterflyManager;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.arboriculture.ModuleArboriculture;
 import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.ItemStackUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public class BlockForestryLeaves extends BlockAbstractLeaves implements BonemealableBlock, EntityBlock {
 	@Override
@@ -101,7 +100,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				drops.add(TreeManager.treeRoot.getTypes().createStack(sapling, TreeLifeStage.SAPLING));
+				drops.add(SpeciesUtil.TREE_TYPE.get().createStack(sapling, TreeLifeStage.SAPLING));
 			}
 		}
 
@@ -127,7 +126,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 					return InteractionResult.SUCCESS;
 				}
 			} else if (heldItem.is(ForestryTags.Items.SCOOPS) && caterpillar != null) {
-				ItemStack butterfly = ButterflyManager.butterflyRoot.getTypes().createStack(caterpillar, ButterflyLifeStage.CATERPILLAR);
+				ItemStack butterfly = SpeciesUtil.BUTTERFLY_TYPE.get().createStack(caterpillar, ButterflyLifeStage.CATERPILLAR);
 				ItemStackUtil.dropItemStackAsEntity(butterfly, level, pos);
 				leaves.setCaterpillar(null);
 				return InteractionResult.SUCCESS;
@@ -160,9 +159,9 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex) {
-		if (worldIn != null && pos != null) {
-			TileLeaves leaves = TileUtil.getTile(worldIn, pos, TileLeaves.class);
+	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
+		if (level != null && pos != null) {
+			TileLeaves leaves = TileUtil.getTile(level, pos, TileLeaves.class);
 			if (leaves != null) {
 				if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
 					return leaves.getFruitColour();
@@ -172,6 +171,6 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 				}
 			}
 		}
-		return ModuleArboriculture.PROXY.getFoliageColorDefault();
+		return FoliageColor.getDefaultColor();
 	}
 }
