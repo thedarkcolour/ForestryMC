@@ -17,6 +17,7 @@ import forestry.core.errors.ErrorManager;
 import forestry.core.genetics.alleles.AlleleManager;
 import forestry.farming.ForestryFarmRegistry;
 import forestry.modules.ForestryModuleManager;
+import forestry.sorting.FilterManager;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -98,11 +99,22 @@ public class ForestryApiImpl implements IForestryApi {
 	}
 
 	@ApiStatus.Internal
-	public void setCircuitManager(CircuitManager manager) {
-
+	public void setCircuitManager(CircuitManager circuitManager) {
+		this.circuitManager = circuitManager;
 	}
 
+	@ApiStatus.Internal
 	public void setErrorManager(ErrorManager errorManager) {
 		this.errorManager = errorManager;
+	}
+
+	@ApiStatus.Internal
+	public void setGeneticManager(GeneticManager geneticManager) {
+		this.geneticManager = geneticManager;
+	}
+
+	@ApiStatus.Internal
+	public void setFilterManager(FilterManager filterManager) {
+		this.filterManager = filterManager;
 	}
 }

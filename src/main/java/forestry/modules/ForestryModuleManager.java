@@ -11,6 +11,7 @@
 package forestry.modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -130,6 +131,10 @@ public class ForestryModuleManager implements IModuleManager {
 				module.registerClientHandler(handler -> handler.registerEvents(modBus));
 			}
 		}
+
+		this.loadedModulesByMod.forEach((modid, modules) -> {
+			Forestry.LOGGER.debug("Handling Forestry module loading for mod '{}' with {} modules: {}", modid, modules.size(), Arrays.toString(modules.toArray()));
+		});
 	}
 
 	// Returns a map of mod IDs to modules, with core modules first in each mod list

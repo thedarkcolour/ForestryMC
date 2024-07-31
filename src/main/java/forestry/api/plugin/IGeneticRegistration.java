@@ -4,8 +4,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.filter.IFilterRuleType;
 
 /**
@@ -17,18 +15,21 @@ public interface IGeneticRegistration {
 	 * When defining a new tree of taxa, it is better to use {@link #defineTaxon(String, String, Consumer)}
 	 * instead of making repeated calls to this method.
 	 *
-	 * @param parent The name of the parent taxon.
+	 * @param parent The name of the parent taxon. Cannot be a {@link forestry.api.genetics.TaxonomicRank#GENUS}.
 	 * @param name   The name of the taxon. Must be unique.
-	 * @see forestry.api.genetics.ForestryTaxa For builtin taxon names.
+	 * @throws UnsupportedOperationException If the parent taxon is a GENUS.
+	 * @see forestry.api.genetics.ForestryTaxa For built-in taxon names.
 	 */
 	void defineTaxon(String parent, String name);
 
 	/**
 	 * Defines a new taxon or retrieves an existing taxon, allows for adding subtaxa and species.
 	 *
-	 * @param parent The taxonomic rank.
+	 * @param parent The name of the parent taxon. Cannot be a {@link forestry.api.genetics.TaxonomicRank#GENUS}.
 	 * @param name   The name of the taxon. Must be unique for all taxa in the same rank.
 	 * @param action A consumer that adds additional information to the taxon after it is defined.
+	 * @throws UnsupportedOperationException If the parent taxon is a GENUS.
+	 * @see forestry.api.genetics.ForestryTaxa For builtin taxon names.
 	 */
 	void defineTaxon(String parent, String name, Consumer<ITaxonBuilder> action);
 

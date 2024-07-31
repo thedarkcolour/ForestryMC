@@ -16,7 +16,7 @@ public interface IGeneticManager {
 	 * @return The taxon instance with the given (lowercase) name. See {@link ForestryTaxa} for all names used by base Forestry.
 	 * @throws IllegalArgumentException If no taxon was registered with that name.
 	 */
-	Taxon getTaxon(String name);
+	ITaxon getTaxon(String name);
 
 	/**
 	 * Retrieves the registry of possible mutations for a given species type.
@@ -24,7 +24,7 @@ public interface IGeneticManager {
 	 *
 	 * @param speciesType The species type.
 	 * @return A registry of possible mutations for the given species type.
-	 * @throws IllegalStateException    If mutations have not been registered yet.
+	 * @throws IllegalStateException If mutations have not been registered yet.
 	 */
 	<S extends ISpecies<?>> IMutationManager<S> getMutations(ISpeciesType<?, ?> speciesType);
 

@@ -11,24 +11,24 @@ import forestry.api.genetics.IGeneticManager;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.Taxon;
+import forestry.api.genetics.ITaxon;
 
 import org.jetbrains.annotations.ApiStatus;
 
 public class GeneticManager implements IGeneticManager {
-	private final ImmutableMap<String, Taxon> taxa;
+	private final ImmutableMap<String, ITaxon> taxa;
 	private final ImmutableMap<ResourceLocation, ISpeciesType<?, ?>> speciesTypes;
 	@Nullable
 	private ImmutableMap<ISpeciesType<?, ?>, IMutationManager<?>> mutationsByType;
 
-	public GeneticManager(ImmutableMap<String, Taxon> taxa, ImmutableMap<ResourceLocation, ISpeciesType<?, ?>> speciesTypes) {
+	public GeneticManager(ImmutableMap<String, ITaxon> taxa, ImmutableMap<ResourceLocation, ISpeciesType<?, ?>> speciesTypes) {
 		this.taxa = taxa;
 		this.speciesTypes = speciesTypes;
 	}
 
 	@Override
-	public Taxon getTaxon(String name) {
-		Taxon taxon = this.taxa.get(name);
+	public ITaxon getTaxon(String name) {
+		ITaxon taxon = this.taxa.get(name);
 		if (taxon == null) {
 			throw new IllegalStateException("No taxon was registered with name '" + name + "'");
 		}

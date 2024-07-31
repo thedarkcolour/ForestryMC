@@ -12,7 +12,7 @@ import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.Taxon;
+import forestry.api.genetics.ITaxon;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
@@ -31,7 +31,7 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 	protected final boolean dominant;
 	protected final String authority;
 	protected final String species;
-	protected final Taxon genus;
+	protected final ITaxon genus;
 	protected final String binomial;
 	protected final String translationKey;
 
@@ -106,7 +106,7 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 	}
 
 	@Override
-	public Taxon getGenus() {
+	public ITaxon getGenus() {
 		return this.genus;
 	}
 

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ServiceLoader;
 
@@ -15,11 +16,15 @@ import forestry.api.circuits.CircuitHolder;
 import forestry.api.circuits.ICircuit;
 import forestry.api.circuits.ICircuitLayout;
 import forestry.api.core.IError;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.ITaxon;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.apiimpl.ForestryApiImpl;
+import forestry.apiimpl.GeneticManager;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.circuits.CircuitManager;
 import forestry.core.errors.ErrorManager;
+import forestry.sorting.FilterManager;
 
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
@@ -38,8 +43,9 @@ public class PluginManager {
 				} else {
 					LOADED_PLUGINS.add(plugin);
 				}
+				Forestry.LOGGER.debug("Registered IForestryPlugin {} with class {}", plugin.id(), plugin.getClass().getName());
 			} else {
-				Forestry.LOGGER.warn("Detected IForestryPlugin {} but did not load it because IForestryPlugin.shouldLoad returned false.", plugin.getClass().getName());
+				Forestry.LOGGER.warn("Detected IForestryPlugin {} with class {} but did not load it because IForestryPlugin.shouldLoad returned false.", plugin.id(), plugin.getClass().getName());
 			}
 		});
 	}
@@ -113,6 +119,19 @@ public class PluginManager {
 	}
 
 	public static void registerGenetics() {
+		GeneticRegistration registration = new GeneticRegistration();
 
+		for (IForestryPlugin plugin : LOADED_PLUGINS) {
+			plugin.registerGenetics(registration);
+		}
+
+		ImmutableMap<ResourceLocation, ISpeciesType<?, ?>> speciesTypes = registration.buildSpeciesTypes();
+		ImmutableMap<String, ITaxon> taxa = registration.buildTaxa();
+
+		Forestry.LOGGER.debug("Registered {} species types: {}", speciesTypes.size(), Arrays.toString(speciesTypes.keySet().toArray(new ResourceLocation[0])));
+
+		ForestryApiImpl api = (ForestryApiImpl) IForestryApi.INSTANCE;
+		api.setGeneticManager(new GeneticManager(taxa, speciesTypes));
+		api.setFilterManager(new FilterManager(registration.getFilterRuleTypes()));
 	}
 }

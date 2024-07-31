@@ -3,7 +3,6 @@ package forestry.api.plugin;
 import java.util.function.Consumer;
 
 import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IBooleanChromosome;
 import forestry.api.genetics.alleles.IChromosome;
 
 /**
@@ -32,7 +31,6 @@ public interface ITaxonBuilder {
 	 *
 	 * @param chromosome The chromosome to set.
 	 * @param value      The default allele of the chromosome.
-	 *
 	 * @throws UnsupportedOperationException If a member of this taxon does not have this chromosome.
 	 */
 	default <A extends IAllele> void setDefaultChromosome(IChromosome<A> chromosome, A value) {
@@ -43,9 +41,8 @@ public interface ITaxonBuilder {
 	 * Sets the default allele for the given chromosome for all members of this taxon.
 	 *
 	 * @param chromosome The chromosome to set.
-	 * @param value The default allele of this chromosome.
-	 * @param required If true, throws an exception if a member of the taxon does not have this chromosome.
-	 *
+	 * @param value      The default allele of this chromosome.
+	 * @param required   If true, throws an exception if a member of the taxon does not have this chromosome.
 	 * @throws UnsupportedOperationException If required is {@code true} and a member of this taxon does not have this chromosome.
 	 */
 	<A extends IAllele> void setDefaultChromosome(IChromosome<A> chromosome, A value, boolean required);

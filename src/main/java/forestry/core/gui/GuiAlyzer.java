@@ -28,18 +28,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.Taxon;
+import forestry.api.genetics.ITaxon;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.IValueChromosome;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.config.Constants;
 import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.gui.widgets.ItemStackWidget;
@@ -207,8 +207,8 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.classification").append(":"), 12);
 		textLayout.newLine();
 
-		Stack<Taxon> hierarchy = new Stack<>();
-		Taxon taxon = individual.getSpecies().getGenus();
+		Stack<ITaxon> hierarchy = new Stack<>();
+		ITaxon taxon = individual.getSpecies().getGenus();
 		while (taxon != null) {
 			if (!taxon.name().isEmpty()) {
 				hierarchy.push(taxon);
@@ -218,7 +218,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 
 		boolean overcrowded = hierarchy.size() > 5;
 		int x = 12;
-		Taxon group = null;
+		ITaxon group;
 
 		while (!hierarchy.isEmpty()) {
 			group = hierarchy.pop();
