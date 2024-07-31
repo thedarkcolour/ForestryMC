@@ -6,8 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 
-import forestry.api.genetics.ISpecies;
-
 /**
  * Used to retrieve interned instances of alleles. Also exposes methods for creating chromosomes.
  * Store alleles obtained from these method calls in a static class like Forestry does in {@link ForestryAlleles}.
@@ -75,7 +73,14 @@ public interface IAlleleManager {
 
 	<V> IValueChromosome<V> valueChromosome(ResourceLocation id, Class<V> valueClass);
 
-	<S extends ISpecies<?>> ISpeciesChromosome<S> speciesChromosome(ResourceLocation id, Class<S> speciesClass);
-
+	/**
+	 * Creates and registers a registry chromosome, which is responsible for populating
+	 * the values of its corresponding {@link IRegistryAllele} instances.
+	 *
+	 * @param id         The ID of this chromosome.
+	 * @param valueClass The type of value this chromosome's alleles hold. Must implement {@link IRegistryAlleleValue}.
+	 * @param <V>        The type of value contained by the alleles of this chromosome.
+	 * @return A new registry chromosome.
+	 */
 	<V extends IRegistryAlleleValue> IRegistryChromosome<V> registryChromosome(ResourceLocation id, Class<V> valueClass);
 }

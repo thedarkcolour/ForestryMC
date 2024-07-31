@@ -235,7 +235,7 @@ public class ForestryAlleles {
 	public static final IFloatAllele YIELD_HIGH = REGISTRY.floatAllele(0.3f);
 	public static final IFloatAllele YIELD_HIGHER = REGISTRY.floatAllele(0.35f);
 	public static final IFloatAllele YIELD_HIGHEST = REGISTRY.floatAllele(0.4f);
-	
+
 	public static final List<IFloatAllele> DEFAULT_YIELDS = List.of(YIELD_LOWEST, YIELD_LOWER, YIELD_LOW, YIELD_AVERAGE, YIELD_HIGH, YIELD_HIGHER, YIELD_HIGHEST);
 
 	// Height todo rename to shortest/tallest
@@ -247,7 +247,7 @@ public class ForestryAlleles {
 	public static final IFloatAllele HEIGHT_LARGER = REGISTRY.floatAllele(1.5f);
 	public static final IFloatAllele HEIGHT_LARGEST = REGISTRY.floatAllele(1.75f);
 	public static final IFloatAllele HEIGHT_GIGANTIC = REGISTRY.floatAllele(2.0f);
-	
+
 	public static final List<IFloatAllele> DEFAULT_HEIGHTS = List.of(HEIGHT_SMALLEST, HEIGHT_SMALLER, HEIGHT_SMALL, HEIGHT_AVERAGE, HEIGHT_LARGE, HEIGHT_LARGER, HEIGHT_LARGEST, HEIGHT_GIGANTIC);
 
 	// Girth

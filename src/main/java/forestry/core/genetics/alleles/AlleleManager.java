@@ -1,7 +1,6 @@
 package forestry.core.genetics.alleles;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 
-import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IAlleleManager;
 import forestry.api.genetics.alleles.IAlleleNaming;
@@ -27,7 +25,6 @@ import forestry.api.genetics.alleles.IIntegerChromosome;
 import forestry.api.genetics.alleles.IRegistryAllele;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.IRegistryChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.IValueChromosome;
 
@@ -35,6 +32,13 @@ import it.unimi.dsi.fastutil.floats.Float2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class AlleleManager implements IAlleleManager {
+	// Default registration state. Both alleles and chromosomes can be registered.
+	public static final int REGISTRATION_OPEN = 0;
+	// State after species types are registered and karyotypes are built. Chromosomes can no longer be registered.
+	public static final int REGISTRATION_CHROMOSOMES_COMPLETE = 1;
+	// State after all species are registered. Alleles can no longer be registered.
+	public static final int REGISTRATION_ALLELES_COMPLETE = 2;
+
 	// primitive values to primitive allele
 	private final Float2ObjectOpenHashMap<IFloatAllele> dominantFloatAlleles = new Float2ObjectOpenHashMap<>();
 	private final Float2ObjectOpenHashMap<IFloatAllele> floatAlleles = new Float2ObjectOpenHashMap<>();
@@ -49,6 +53,8 @@ public class AlleleManager implements IAlleleManager {
 	private final HashMap<ResourceLocation, IChromosome<?>> chromosomes = new HashMap<>();
 	private final Codec<IAllele> alleleCodec;
 	private final Codec<IChromosome<?>> chromosomeCodec;
+
+	private int registrationState = REGISTRATION_OPEN;
 
 	public AlleleManager() {
 		// the flat* codec methods allow for error handling
@@ -71,9 +77,16 @@ public class AlleleManager implements IAlleleManager {
 		}, chromosome -> DataResult.success(chromosome.id()));
 	}
 
+	private void checkAlleleRegistration() {
+		if (this.registrationState == REGISTRATION_ALLELES_COMPLETE) {
+			throw new IllegalStateException("Registration of alleles has already finished");
+		}
+	}
+
 	@Override
 	public IBooleanAllele booleanAllele(boolean value, boolean dominant) {
-		// 0 = FF, 1 = FT, 2 = TF, 3 = TT
+		checkAlleleRegistration();
+		// 0 = F, 1 = Fd, 2 = T, 3 = Td
 		int index = (value ? (dominant ? 3 : 2) : (dominant ? 1 : 0));
 		IBooleanAllele allele = booleanAlleles[index];
 		if (allele == null) {
@@ -86,6 +99,7 @@ public class AlleleManager implements IAlleleManager {
 
 	@Override
 	public IIntegerAllele intAllele(int value, boolean dominant) {
+		checkAlleleRegistration();
 		return (dominant ? this.dominantIntAlleles : this.intAlleles).computeIfAbsent(value, v -> {
 			IntegerAllele allele = new IntegerAllele(v, dominant);
 			this.allelesByName.put(allele.alleleId(), allele);
@@ -95,13 +109,22 @@ public class AlleleManager implements IAlleleManager {
 
 	@Override
 	public IFloatAllele floatAllele(float value, boolean dominant) {
+		checkAlleleRegistration();
 		return (dominant ? this.dominantFloatAlleles : this.floatAlleles).computeIfAbsent(value, v -> new FloatAllele(v, dominant));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <V extends IRegistryAlleleValue> IRegistryAllele<V> registryAllele(ResourceLocation id, IRegistryChromosome<V> chromosome) {
+		checkAlleleRegistration();
+		return (IRegistryAllele<V>) this.allelesByName.computeIfAbsent(id, key -> new RegistryAllele<>(key, chromosome));
 	}
 
 	@Override
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public <V> IValueAllele<V> valueAllele(V value, boolean dominant, IAlleleNaming<V> naming) {
-		Preconditions.checkNotNull(value, "Allele value must not be null.");
+		Preconditions.checkNotNull(value, "Allele value must not be null");
+		checkAlleleRegistration();
 
 		// Try to get existing by value first
 		HashMap<?, IValueAllele<?>> valueToAlleleMap = (dominant ? this.dominantValueAlleles : this.valueAlleles);
@@ -157,39 +180,40 @@ public class AlleleManager implements IAlleleManager {
 		return this.chromosomes.get(id);
 	}
 
+	private void checkChromosomeRegistration() {
+		if (this.registrationState == REGISTRATION_CHROMOSOMES_COMPLETE) {
+			throw new IllegalStateException("Registration of chromosomes has already finished");
+		}
+	}
+
 	@Override
 	public IFloatChromosome floatChromosome(ResourceLocation id) {
+		checkChromosomeRegistration();
 		return (IFloatChromosome) this.chromosomes.computeIfAbsent(id, FloatChromosome::new);
 	}
 
 	@Override
 	public IIntegerChromosome intChromosome(ResourceLocation id) {
+		checkChromosomeRegistration();
 		return (IIntegerChromosome) this.chromosomes.computeIfAbsent(id, IntegerChromosome::new);
 	}
 
 	@Override
 	public IBooleanChromosome booleanChromosome(ResourceLocation id) {
+		checkChromosomeRegistration();
 		return (IBooleanChromosome) this.chromosomes.computeIfAbsent(id, BooleanChromosome::new);
 	}
 
 	@Override
 	public <V> IValueChromosome<V> valueChromosome(ResourceLocation id, Class<V> valueClass) {
+		checkChromosomeRegistration();
 		return registerValueChromosome(id, valueClass, ValueChromosome::new);
 	}
 
 	@Override
-	public <S extends ISpecies<?>> ISpeciesChromosome<S> speciesChromosome(ResourceLocation id, Class<S> speciesClass) {
-		return registerValueChromosome(id, speciesClass, SpeciesChromosome::new);
-	}
-
-	@Override
 	public <V extends IRegistryAlleleValue> IRegistryChromosome<V> registryChromosome(ResourceLocation id, Class<V> valueClass) {
+		checkChromosomeRegistration();
 		return registerValueChromosome(id, valueClass, RegistryChromosome::new);
-	}
-
-	@Override
-	public <V extends IRegistryAlleleValue> IRegistryAllele<V> registryAllele(ResourceLocation id, IRegistryChromosome<V> chromosome) {
-		return null;
 	}
 
 	private <V, C extends IValueChromosome<V>> C registerValueChromosome(ResourceLocation id, Class<V> valueClass, BiFunction<ResourceLocation, Class<V>, C> factory) {
@@ -207,6 +231,21 @@ public class AlleleManager implements IAlleleManager {
 		} else {
 			// Crash in case of conflicting chromosome.
 			throw new IllegalStateException("A chromosome is already registered with ID " + id + " with a different value type: " + existing.valueClass() + " was registered, but tried register again with valueClass: " + valueClass);
+		}
+	}
+
+	public void setRegistrationState(int state) {
+		Preconditions.checkArgument(state == REGISTRATION_CHROMOSOMES_COMPLETE || state == REGISTRATION_ALLELES_COMPLETE, "Invalid registry state");
+		this.registrationState++;
+
+		if (this.registrationState != state) {
+			throw new IllegalStateException("That registration state has already finished: " + state);
+		}
+		if (state == REGISTRATION_ALLELES_COMPLETE) {
+			this.dominantFloatAlleles.trim();
+			this.floatAlleles.trim();
+			this.dominantIntAlleles.trim();
+			this.intAlleles.trim();
 		}
 	}
 }

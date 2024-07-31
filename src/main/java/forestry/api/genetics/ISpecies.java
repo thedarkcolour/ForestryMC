@@ -100,7 +100,7 @@ public interface ISpecies<I extends IIndividual> extends IRegistryAlleleValue {
 	@Override
 	boolean isDominant();
 
-	Taxon getGenus();
+	ITaxon getGenus();
 
 	String getAuthority();
 

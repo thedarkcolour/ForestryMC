@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * A chromosome that is backed by a registry rather than having alleles registered to it.
  * In a karyotype, it is not possible to restrict what alleles can be used for a registry chromosome.
+ * Create an instance using {@link IAlleleManager#registryChromosome(ResourceLocation, Class)}.
  */
 public interface IRegistryChromosome<V extends IRegistryAlleleValue> extends IValueChromosome<V> {
 	/**

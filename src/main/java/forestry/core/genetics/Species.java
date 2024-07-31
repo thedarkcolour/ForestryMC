@@ -16,7 +16,7 @@ import forestry.api.genetics.ITaxon;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.plugin.ISpeciesBuilder;
 import forestry.core.utils.GeneticsUtil;
@@ -129,7 +129,7 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 		tooltip.add(Component.literal("<").append(Component.translatable("for.gui.unknown")).append(">").withStyle(ChatFormatting.GRAY));
 	}
 
-	protected <S extends ISpecies<?>> void addHybridTooltip(List<Component> tooltip, IGenome genome, ISpeciesChromosome<S> species, String hybridKey) {
+	protected <S extends ISpecies<?>> void addHybridTooltip(List<Component> tooltip, IGenome genome, IRegistryChromosome<S> species, String hybridKey) {
 		AllelePair<IValueAllele<S>> speciesPair = genome.getAllelePair(species);
 		S primary = speciesPair.active().value();
 		S secondary = speciesPair.inactive().value();

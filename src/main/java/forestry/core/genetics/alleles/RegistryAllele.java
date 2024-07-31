@@ -37,4 +37,9 @@ public class RegistryAllele<V extends IRegistryAlleleValue> implements IRegistry
 
 		return this.value;
 	}
+
+	@Override
+	public IRegistryChromosome<V> chromosome() {
+		return this.chromosome;
+	}
 }

@@ -31,12 +31,12 @@ import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.genetics.alleles.IRegistryChromosome;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.config.Constants;
 import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.gui.buttons.GuiBetterButton;
@@ -88,7 +88,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 			textLayout.startPage(transform);
 
 			IGenome genome = individual.getGenome();
-			ISpeciesChromosome<? extends ISpecies<?>> speciesChromosome = individual.getType().getKaryotype().getSpeciesChromosome();
+			IRegistryChromosome<? extends ISpecies<?>> speciesChromosome = individual.getType().getKaryotype().getSpeciesChromosome();
 			// var allows generics to compile :)
 			var speciesPair = genome.getAllelePair(speciesChromosome);
 			boolean pureBred = speciesPair.isSameAlleles();

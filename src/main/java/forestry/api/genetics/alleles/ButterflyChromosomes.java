@@ -13,7 +13,7 @@ public class ButterflyChromosomes {
 	/**
 	 * Determines the species of a butterfly.
 	 */
-	public static final ISpeciesChromosome<IButterflySpecies> SPECIES = ForestryAlleles.REGISTRY.speciesChromosome(ForestrySpeciesTypes.BUTTERFLY, IButterflySpecies.class);
+	public static final IRegistryChromosome<IButterflySpecies> SPECIES = ForestryAlleles.REGISTRY.registryChromosome(ForestrySpeciesTypes.BUTTERFLY, IButterflySpecies.class);
 	/**
 	 * Determines physical size of a butterfly.
 	 */

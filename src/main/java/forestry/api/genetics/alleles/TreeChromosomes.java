@@ -11,7 +11,7 @@ public class TreeChromosomes {
 	/**
 	 * The species of a tree.
 	 */
-	public static final ISpeciesChromosome<ITreeSpecies> SPECIES = ForestryAlleles.REGISTRY.speciesChromosome(ForestrySpeciesTypes.TREE, ITreeSpecies.class);
+	public static final IRegistryChromosome<ITreeSpecies> SPECIES = ForestryAlleles.REGISTRY.registryChromosome(ForestrySpeciesTypes.TREE, ITreeSpecies.class);
 	/**
 	 * Modifies the height of a tree.
 	 */

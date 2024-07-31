@@ -4,10 +4,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
-import com.mojang.serialization.Codec;
-
-import forestry.api.IForestryApi;
-
 /**
  * In Forestry, a chromosome is a key in the genome that maps to different alleles.
  */

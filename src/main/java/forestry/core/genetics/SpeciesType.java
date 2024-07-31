@@ -1,6 +1,5 @@
 package forestry.core.genetics;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -109,14 +108,14 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 
 	@Override
 	public List<S> getAllSpecies() {
-		Preconditions.checkState(this.allSpecies != null, "Not all species have not been registered.");
+		checkSpecies();
 
 		return this.allSpecies.values().asList();
 	}
 
 	@Override
 	public S getSpecies(ResourceLocation id) {
-		Preconditions.checkState(this.allSpecies != null, "Not all species have not been registered.");
+		checkSpecies();
 
 		S species = this.allSpecies.get(id);
 		if (species == null) {
@@ -127,7 +126,7 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 
 	@Override
 	public S getSpeciesSafe(ResourceLocation id) {
-		Preconditions.checkState(this.allSpecies != null, "Not all species have not been registered.");
+		checkSpecies();
 
 		return this.allSpecies.get(id);
 	}
@@ -140,16 +139,22 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 
 	@Override
 	public ImmutableSet<ResourceLocation> getAllSpeciesIds() {
-		Preconditions.checkState(this.allSpecies != null, "Not all species have not been registered.");
+		checkSpecies();
 
 		return this.allSpecies.keySet();
 	}
 
 	@Override
 	public int getSpeciesCount() {
-		Preconditions.checkState(this.allSpecies != null, "Not all species have not been registered.");
+		checkSpecies();
 
 		return this.speciesCount;
+	}
+
+	private void checkSpecies() {
+		if (this.allSpecies == null) {
+			throw new IllegalStateException("Not all species have been registered for type: " + this.id);
+		}
 	}
 
 	@Override

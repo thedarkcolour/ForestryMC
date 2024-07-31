@@ -17,7 +17,7 @@ public class BeeChromosomes {
 	/**
 	 * The species of a bee.
 	 */
-	public static final ISpeciesChromosome<IBeeSpecies> SPECIES = ForestryAlleles.REGISTRY.speciesChromosome(ForestrySpeciesTypes.BEE, IBeeSpecies.class);
+	public static final IRegistryChromosome<IBeeSpecies> SPECIES = ForestryAlleles.REGISTRY.registryChromosome(ForestrySpeciesTypes.BEE, IBeeSpecies.class);
 	/**
 	 * Determines a queen's production speed.
 	 */

@@ -22,14 +22,13 @@ import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.IRegistryChromosome;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.plugin.IChromosomeBuilder;
 import forestry.api.plugin.IGenomeBuilder;
 import forestry.api.plugin.IKaryotypeBuilder;
 
 public class Karyotype implements IKaryotype {
 	private final ImmutableMap<IChromosome<?>, ImmutableSet<? extends IAllele>> chromosomes;
-	private final ISpeciesChromosome<?> speciesChromosome;
+	private final IRegistryChromosome<? extends ISpecies<?>> speciesChromosome;
 	private final ImmutableMap<IChromosome<?>, ? extends IAllele> defaultAlleles;
 	private final ResourceLocation defaultSpecies;
 	private final Codec<IGenome> genomeCodec;
@@ -37,7 +36,7 @@ public class Karyotype implements IKaryotype {
 	// Used in Karyotype.Builder
 	public Karyotype(ImmutableMap<IChromosome<?>, ImmutableSet<? extends IAllele>> chromosomes, ImmutableMap<IChromosome<?>, ? extends IAllele> defaultAlleles, ResourceLocation defaultSpecies) {
 		this.chromosomes = chromosomes;
-		this.speciesChromosome = (ISpeciesChromosome<?>) chromosomes.keySet().asList().get(0);
+		this.speciesChromosome = (IRegistryChromosome<? extends ISpecies<?>>) chromosomes.keySet().asList().get(0);
 		this.defaultAlleles = defaultAlleles;
 		this.defaultSpecies = defaultSpecies;
 
@@ -58,7 +57,7 @@ public class Karyotype implements IKaryotype {
 	}
 
 	@Override
-	public ISpeciesChromosome<?> getSpeciesChromosome() {
+	public IRegistryChromosome<? extends ISpecies<?>> getSpeciesChromosome() {
 		return this.speciesChromosome;
 	}
 
@@ -128,12 +127,12 @@ public class Karyotype implements IKaryotype {
 	public static class Builder implements IKaryotypeBuilder {
 		private final LinkedHashMap<IChromosome<?>, ChromosomeBuilder<?>> chromosomes = new LinkedHashMap<>();
 		@Nullable
-		private ISpeciesChromosome<?> speciesChromosome;
+		private IRegistryChromosome<? extends ISpecies<?>> speciesChromosome;
 		@Nullable
 		private ResourceLocation defaultSpeciesId;
 
 		@Override
-		public void setSpecies(ISpeciesChromosome<? extends ISpecies<?>> species, ResourceLocation defaultId) {
+		public void setSpecies(IRegistryChromosome<? extends ISpecies<?>> species, ResourceLocation defaultId) {
 			if (this.speciesChromosome != null && this.speciesChromosome != species) {
 				throw new IllegalStateException("The species chromosome for this karyotype has already been set: " + this.speciesChromosome.id() + ", but tried setting to " + species.id());
 			} else {
@@ -157,13 +156,18 @@ public class Karyotype implements IKaryotype {
 		public Karyotype build() {
 			Preconditions.checkState(this.defaultSpeciesId != null && this.speciesChromosome != null, "IKaryotypeBuilder is missing a species chromosome.");
 
-			ImmutableMap.Builder<IChromosome<?>, ImmutableSet<? extends IAllele>> permittedAlleles = ImmutableMap.builderWithExpectedSize(this.chromosomes.size());
-			ImmutableMap.Builder<IChromosome<?>, IAllele> defaultAlleles = ImmutableMap.builderWithExpectedSize(this.chromosomes.size());
+			ImmutableMap.Builder<IChromosome<?>, ImmutableSet<? extends IAllele>> permittedAlleles = ImmutableMap.builderWithExpectedSize(this.chromosomes.size() + 1);
+			ImmutableMap.Builder<IChromosome<?>, IAllele> defaultAlleles = ImmutableMap.builderWithExpectedSize(this.chromosomes.size() + 1);
+
+			// Species chromosome goes first
+			permittedAlleles.put(this.speciesChromosome, ImmutableSet.of());
+			defaultAlleles.put(this.speciesChromosome, IForestryApi.INSTANCE.getAlleleManager().registryAllele(this.defaultSpeciesId, this.speciesChromosome));
 
 			for (Map.Entry<IChromosome<?>, ChromosomeBuilder<?>> entry : this.chromosomes.entrySet()) {
 				IChromosome<?> chromosome = entry.getKey();
 				ChromosomeBuilder<?> builder = entry.getValue();
 				ImmutableSet<? extends IAllele> permitted = builder.alleles.build();
+				// registry alleles are added later
 				if (!(chromosome instanceof IRegistryChromosome<?>) && permitted.isEmpty()) {
 					throw new IllegalStateException("Chromosome missing permitted alleles in karyotype.");
 				}

@@ -31,7 +31,7 @@ public interface IKaryotype {
 	/**
 	 * @return The chromosome that determines this individual's species.
 	 */
-	ISpeciesChromosome<?> getSpeciesChromosome();
+	IRegistryChromosome<? extends ISpecies<?>> getSpeciesChromosome();
 
 	/**
 	 * @return The number of chromosomes in this karyotype.

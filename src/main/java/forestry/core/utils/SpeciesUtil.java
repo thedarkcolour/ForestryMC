@@ -36,7 +36,7 @@ import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.IRegistryAllele;
-import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
@@ -96,7 +96,7 @@ public class SpeciesUtil {
 	}
 
 	@Nullable
-	public static <S extends ISpecies<?>> ImmutableList<AllelePair<?>> mutateSpecies(Level level, BlockPos pos, @Nullable GameProfile profile, IGenome parent1, IGenome parent2, ISpeciesChromosome<S> speciesChromosome, IMutationChanceGetter<S> chanceGetter) {
+	public static <S extends ISpecies<?>> ImmutableList<AllelePair<?>> mutateSpecies(Level level, BlockPos pos, @Nullable GameProfile profile, IGenome parent1, IGenome parent2, IRegistryChromosome<S> speciesChromosome, IMutationChanceGetter<S> chanceGetter) {
 		IGenome firstGenome;
 		IGenome secondGenome;
 

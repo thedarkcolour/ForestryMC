@@ -29,6 +29,10 @@ public sealed interface IAllele permits IBooleanAllele, IFloatAllele, IIntegerAl
 	 */
 	boolean dominant();
 
+	/**
+	 * Helper method to ignore Java generic type restrictions.
+	 * Manually casting should be preferred whenever possible, only if absolutely necessary (ex. requires capture of ?)
+	 */
 	@SuppressWarnings("unchecked")
 	default <A extends IAllele> A cast() {
 		return (A) this;
