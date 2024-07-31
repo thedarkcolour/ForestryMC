@@ -22,12 +22,10 @@ import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 
 import forestry.api.IForestryApi;
-import forestry.api.circuits.ForestryCircuitSocketTypes;
-import forestry.api.circuits.ICircuitLayout;
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.farming.IFarmRegistry;
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
-import forestry.core.circuits.CircuitLayout;
 import forestry.core.features.CoreItems;
 import forestry.farming.client.FarmingClientHandler;
 import forestry.farming.logic.ForestryFarmIdentifier;
@@ -38,7 +36,6 @@ import forestry.farming.logic.farmables.FarmableGourd;
 import forestry.farming.logic.farmables.FarmableSapling;
 import forestry.farming.logic.farmables.FarmableStacked;
 import forestry.modules.BlankForestryModule;
-import forestry.api.client.IClientModuleHandler;
 
 @ForestryModule
 public class ModuleFarming extends BlankForestryModule {
@@ -110,11 +107,6 @@ public class ModuleFarming extends BlankForestryModule {
 
 		//Forestry fertilizer
 		registry.registerFertilizer(Ingredient.of(CoreItems.FERTILIZER_COMPOUND), 500);
-	}
-
-	@Override
-	public void doInit() {
-		FarmDefinition.init();
 	}
 
 	@Override

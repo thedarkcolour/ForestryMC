@@ -211,7 +211,7 @@ public enum FarmDefinition implements StringRepresentable {
 		return properties;
 	}
 
-	public static void init() {
+	public static void setCircuits() {
 		Circuits.farmArborealManaged = ARBOREAL.managed;
 		Circuits.farmArborealManual = ARBOREAL.manual;
 

@@ -339,6 +339,8 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		for (FarmDefinition definition : FarmDefinition.values()) {
 			definition.registerCircuits(circuits);
 		}
+		FarmDefinition.setCircuits();
+
 		// Factory
 		circuits.registerCircuit(ForestryCircuitLayouts.MACHINE_UPGRADE, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.EMERALD, 1), Circuits.machineSpeedUpgrade1);
 		circuits.registerCircuit(ForestryCircuitLayouts.MACHINE_UPGRADE, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.BLAZE, 1), Circuits.machineSpeedUpgrade2);

@@ -45,7 +45,7 @@ public interface IForestryPlugin {
 	}
 
 	/**
-	 * Called after items are registered. Register your circuits and circuit layout types heere.
+	 * Called after all species are registered. Register your circuits and circuit layout types heere.
 	 */
 	default void registerCircuits(ICircuitRegistration circuits) {
 	}

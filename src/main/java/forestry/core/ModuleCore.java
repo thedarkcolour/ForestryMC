@@ -18,19 +18,21 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -41,10 +43,14 @@ import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IForestryModule;
 import forestry.api.modules.IPacketRegistry;
+import forestry.arboriculture.loot.CountBlockFunction;
+import forestry.arboriculture.loot.GrafterLootModifier;
 import forestry.core.blocks.TileStreamUpdateTracker;
 import forestry.core.client.CoreClientHandler;
 import forestry.core.climate.ForestryClimateManager;
 import forestry.core.features.CoreFeatures;
+import forestry.core.loot.ConditionLootModifier;
+import forestry.core.loot.OrganismFunction;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
 import forestry.core.network.packets.PacketActiveUpdate;
@@ -71,6 +77,7 @@ import forestry.core.utils.NetworkUtil;
 import forestry.core.worldgen.VillagerJigsaw;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ModuleUtil;
+import forestry.plugin.PluginManager;
 
 @ForestryModule
 public class ModuleCore extends BlankForestryModule {
@@ -84,6 +91,8 @@ public class ModuleCore extends BlankForestryModule {
 		CoreFeatures.CONFIGURED_FEATURES.register(modBus);
 		CoreFeatures.PLACED_FEATURES.register(modBus);
 		modBus.addListener(ModuleCore::onCommonSetup);
+		modBus.addListener(ModuleCore::registerGlobalLootModifiers);
+		modBus.addListener(EventPriority.LOWEST, ModuleCore::postItemRegistry);
 
 		ItemGroupForestry.initTabs();
 		ModuleUtil.loadFeatureProviders();
@@ -96,7 +105,27 @@ public class ModuleCore extends BlankForestryModule {
 
 	private static void onCommonSetup(FMLCommonSetupEvent event) {
 		// Forestry's villager houses
-		event.enqueueWork(VillagerJigsaw::init);
+		event.enqueueWork(() -> {
+			VillagerJigsaw.init();
+			PluginManager.registerCircuits();
+		});
+	}
+
+	private static void registerGlobalLootModifiers(RegisterEvent event) {
+		event.register(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, helper -> {
+			helper.register(ForestryConstants.forestry("condition_modifier"), ConditionLootModifier.CODEC);
+			helper.register(ForestryConstants.forestry("grafter_modifier"), GrafterLootModifier.CODEC);
+
+			OrganismFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, ForestryConstants.forestry("set_species_nbt"), new LootItemFunctionType(new OrganismFunction.Serializer()));
+			CountBlockFunction.type = Registry.register(Registry.LOOT_FUNCTION_TYPE, ForestryConstants.forestry("count_from_block"), new LootItemFunctionType(new CountBlockFunction.Serializer()));
+		});
+	}
+
+	// Lowest priority
+	private static void postItemRegistry(RegisterEvent event) {
+		event.register(Registry.ITEM_REGISTRY, helper -> {
+			PluginManager.registerGenetics();
+		});
 	}
 
 	private static void onItemPickup(EntityItemPickupEvent event) {
