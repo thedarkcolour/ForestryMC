@@ -11,7 +11,9 @@
 
 package forestry.core.utils;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 
 import javax.annotation.Nullable;
 
@@ -30,10 +32,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 
 public abstract class ItemStackUtil {
-
 	private static final int[] EMPTY_CONSUME = new int[0];
 
 	/**
@@ -93,11 +94,11 @@ public abstract class ItemStackUtil {
 		return false;
 	}
 
-	public static int[] createConsume(NonNullList<Ingredient> set, Container inventory, boolean craftingTools) {
+	public static int[] createConsume(List<Ingredient> set, Container inventory, boolean craftingTools) {
 		return createConsume(set, inventory.getContainerSize(), inventory::getItem, craftingTools);
 	}
 
-	public static int[] createConsume(NonNullList<Ingredient> set, int stockCount, Function<Integer, ItemStack> stock, boolean craftingTools) {
+	public static int[] createConsume(List<Ingredient> set, int stockCount, IntFunction<ItemStack> stock, boolean craftingTools) {
 		//A array that contains the amount of items that is needed from this stack
 		int[] reqAmounts = new int[stockCount];
 		int found = 0;
@@ -106,17 +107,12 @@ public abstract class ItemStackUtil {
 				found++;
 				continue;
 			}
-			for (ItemStack stack : ing.getItems()) {
-				int curFound = found;
-				for (int i = 0; i < reqAmounts.length; i++) {
-					ItemStack offer = stock.apply(i);
-					if (offer.getCount() > reqAmounts[i] && isCraftingEquivalent(stack, offer, craftingTools)) {
-						reqAmounts[i] = reqAmounts[i] + 1;
-						found++;
-						break;
-					}
-				}
-				if (found > curFound) {
+			for (int i = 0; i < reqAmounts.length; i++) {
+				ItemStack offer = stock.apply(i);
+
+				if (offer.getCount() > reqAmounts[i] && ing.test(offer)) {
+					reqAmounts[i] = reqAmounts[i] + 1;
+					found++;
 					break;
 				}
 			}

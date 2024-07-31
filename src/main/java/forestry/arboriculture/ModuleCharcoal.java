@@ -1,19 +1,20 @@
 package forestry.arboriculture;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Blocks;
 
-import forestry.api.ForestryConstants;
+import net.minecraftforge.eventbus.api.IEventBus;
+
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
 import forestry.api.arboriculture.ICharcoalManager;
 import forestry.api.arboriculture.TreeManager;
-import forestry.api.core.ItemGroups;
 import forestry.api.modules.ForestryModule;
-import forestry.arboriculture.charcoal.CharcoalManager;
-import forestry.core.config.Constants;
-import forestry.modules.BlankForestryModule;
 import forestry.api.modules.ForestryModuleIds;
+import forestry.arboriculture.charcoal.CharcoalManager;
+import forestry.modules.BlankForestryModule;
 
+@ForestryModule
 public class ModuleCharcoal extends BlankForestryModule {
 	@Override
 	public ResourceLocation getId() {
@@ -21,24 +22,26 @@ public class ModuleCharcoal extends BlankForestryModule {
 	}
 
 	@Override
+	public void registerEvents(IEventBus modBus) {
+		modBus.addListener(ModuleCharcoal::commonSetup);
+	}
+
+	@Override
 	public void setupApi() {
 		TreeManager.charcoalManager = new CharcoalManager();
 	}
 
-	@Override
-	public void postInit() {
-		ICharcoalManager manager = TreeManager.charcoalManager;
-		if (manager != null) {
-			manager.registerWall(Blocks.CLAY, 3);
-			manager.registerWall(Blocks.END_STONE, 6);
-			manager.registerWall(Blocks.END_STONE_BRICKS, 6);
-			manager.registerWall(Blocks.DIRT, 2);
-			manager.registerWall(Blocks.GRAVEL, 1);
-			manager.registerWall(Blocks.NETHERRACK, 3);
-		}
-	}
-
-	public static CreativeModeTab getGroup() {
-		return ItemGroups.tabArboriculture;
+	private static void commonSetup(FMLCommonSetupEvent event) {
+		event.enqueueWork(() -> {
+			ICharcoalManager manager = TreeManager.charcoalManager;
+			if (manager != null) {
+				manager.registerWall(Blocks.CLAY, 3);
+				manager.registerWall(Blocks.END_STONE, 6);
+				manager.registerWall(Blocks.END_STONE_BRICKS, 6);
+				manager.registerWall(Blocks.DIRT, 2);
+				manager.registerWall(Blocks.GRAVEL, 1);
+				manager.registerWall(Blocks.NETHERRACK, 3);
+			}
+		});
 	}
 }

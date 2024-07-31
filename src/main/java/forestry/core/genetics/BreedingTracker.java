@@ -10,14 +10,19 @@
  ******************************************************************************/
 package forestry.core.genetics;
 
+import com.google.common.collect.Iterables;
+
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -34,24 +39,19 @@ import forestry.api.core.ForestryEvent;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IMutation;
 import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.network.packets.PacketGenomeTrackerSync;
 import forestry.core.utils.NetworkUtil;
 
-import forestry.api.genetics.ISpeciesType;
-
 public abstract class BreedingTracker extends SavedData implements IBreedingTracker {
-	private static final String SPECIES_COUNT_KEY = "SpeciesCount";
-	private static final String MUTATIONS_COUNT_KEY = "MutationsCount";
-	private static final String RESEARCHED_COUNT_KEY = "ResearchedCount";
 	private static final String SPECIES_KEY = "SD";
 	private static final String MUTATIONS_KEY = "MD";
 	private static final String RESEARCHED_KEY = "RD";
 	private static final String MUTATION_FORMAT = "%s-%s=%s";
-	private static final Collection<String> emptyStringCollection = Collections.emptyList();
 
 	public static final String TYPE_KEY = "TYPE";
 
-	private final Set<String> discoveredSpecies = new HashSet<>();
+	private final Set<ResourceLocation> discoveredSpecies = new HashSet<>();
 	private final Set<String> discoveredMutations = new HashSet<>();
 	private final Set<String> researchedMutations = new HashSet<>();
 
@@ -68,9 +68,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	}
 
 	protected void load(CompoundTag nbt) {
-		readValuesFromNBT(nbt, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
-		readValuesFromNBT(nbt, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
-		readValuesFromNBT(nbt, researchedMutations, RESEARCHED_COUNT_KEY, RESEARCHED_KEY);
+		readFromNbt(nbt);
 	}
 
 	public void setUsername(@Nullable GameProfile username) {
@@ -92,27 +90,27 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	/**
 	 * Tag stored in NBT to identify the type of the tracker being synced
 	 */
-	protected abstract ResourceLocation getSpeciesId();
+	protected abstract ResourceLocation getTypeId();
 
 	// todo why are there two syncToPlayer methods here?
 	@Override
 	public void synchToPlayer(Player player) {
 		if (player instanceof ServerPlayer && !(player instanceof FakePlayer)) {
-			CompoundTag CompoundNBT = new CompoundTag();
-			encodeToNBT(CompoundNBT);
-			PacketGenomeTrackerSync packet = new PacketGenomeTrackerSync(CompoundNBT);
+			CompoundTag nbt = new CompoundTag();
+			encodeToNBT(nbt);
+			PacketGenomeTrackerSync packet = new PacketGenomeTrackerSync(nbt);
 			NetworkUtil.sendToPlayer(packet, (ServerPlayer) player);
 		}
 	}
 
-	private void syncToPlayer(Collection<String> discoveredSpecies, Collection<String> discoveredMutations, Collection<String> researchedMutations) {
+	private void syncToPlayer(Collection<ResourceLocation> discoveredSpecies, Collection<String> discoveredMutations, Collection<String> researchedMutations) {
 		if (level != null && username != null && username.getName() != null) {
 			Player player = level.getPlayerByUUID(username.getId());
 
 			if (player instanceof ServerPlayer && !(player instanceof FakePlayer)) {
-				CompoundTag compound = new CompoundTag();
-				writeToNBT(compound, discoveredSpecies, discoveredMutations, researchedMutations);
-				PacketGenomeTrackerSync packet = new PacketGenomeTrackerSync(compound);
+				CompoundTag nbt = new CompoundTag();
+				writeToNBT(nbt, discoveredSpecies, discoveredMutations, researchedMutations);
+				PacketGenomeTrackerSync packet = new PacketGenomeTrackerSync(nbt);
 				NetworkUtil.sendToPlayer(packet, (ServerPlayer) player);
 			}
 		}
@@ -121,9 +119,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 	/* HELPER FUNCTIONS TO PREVENT OBFUSCATION OF INTERFACE METHODS */
 	@Override
 	public void decodeFromNBT(CompoundTag nbt) {
-		readValuesFromNBT(nbt, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
-		readValuesFromNBT(nbt, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
-		readValuesFromNBT(nbt, researchedMutations, RESEARCHED_COUNT_KEY, RESEARCHED_KEY);
+		readFromNbt(nbt);
 	}
 
 	@Override
@@ -137,36 +133,33 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 		return nbt;
 	}
 
-	private void writeToNBT(CompoundTag nbt, Collection<String> discoveredSpecies, Collection<String> discoveredMutations, Collection<String> researchedMutations) {
-		nbt.putString(TYPE_KEY, getSpeciesId().toString());
+	private void writeToNBT(CompoundTag nbt, Collection<ResourceLocation> discoveredSpecies, Collection<String> discoveredMutations, Collection<String> researchedMutations) {
+		nbt.putString(TYPE_KEY, getTypeId().toString());
 
-		writeValuesToNBT(nbt, discoveredSpecies, SPECIES_COUNT_KEY, SPECIES_KEY);
-		writeValuesToNBT(nbt, discoveredMutations, MUTATIONS_COUNT_KEY, MUTATIONS_KEY);
-		writeValuesToNBT(nbt, researchedMutations, RESEARCHED_COUNT_KEY, RESEARCHED_KEY);
+		writeValuesToNBT(nbt, Iterables.transform(discoveredSpecies, ResourceLocation::toString), SPECIES_KEY);
+		writeValuesToNBT(nbt, discoveredMutations, MUTATIONS_KEY);
+		writeValuesToNBT(nbt, researchedMutations, RESEARCHED_KEY);
 	}
 
-	private static void readValuesFromNBT(CompoundTag CompoundNBT, Set<String> values, String countKey, String key) {
-		if (CompoundNBT.contains(countKey)) {
-			final int count = CompoundNBT.getInt(countKey);
-			for (int i = 0; i < count; i++) {
-				if (CompoundNBT.contains(key + i)) {
-					String value = CompoundNBT.getString(key + i);
-					if (!value.isEmpty()) {
-						values.add(value);
-					}
-				}
-			}
+	private static void writeValuesToNBT(CompoundTag nbt, Iterable<String> values, String key) {
+		ListTag nbtList = new ListTag();
+		for (String value : values) {
+			nbtList.add(StringTag.valueOf(value));
 		}
+		nbt.put(key, nbtList);
 	}
 
-	private static void writeValuesToNBT(CompoundTag CompoundNBT, Collection<String> values, String countKey, String key) {
-		final int count = values.size();
-		CompoundNBT.putInt(countKey, count);
-		Iterator<String> iterator = values.iterator();
-		for (int i = 0; i < count; i++) {
-			String value = iterator.next();
-			if (value != null && !value.isEmpty()) {
-				CompoundNBT.putString(key + i, value);
+	private void readFromNbt(CompoundTag nbt) {
+		readValuesFromNBT(nbt, value -> this.discoveredSpecies.add(new ResourceLocation(value)), SPECIES_KEY);
+		readValuesFromNBT(nbt, this.discoveredMutations::add, MUTATIONS_KEY);
+		readValuesFromNBT(nbt, this.researchedMutations::add, RESEARCHED_KEY);
+	}
+
+	private static void readValuesFromNBT(CompoundTag nbt, Consumer<String> values, String key) {
+		if (nbt.contains(key)) {
+			ListTag nbtList = nbt.getList(key, Tag.TAG_STRING);
+			for (Tag stringTag : nbtList) {
+				values.accept(stringTag.getAsString());
 			}
 		}
 	}
@@ -185,11 +178,11 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 			discoveredMutations.add(mutationString);
 			setDirty();
 
-			ISpeciesType<?, ?> speciesRoot = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(getSpeciesId());
+			ISpeciesType<?, ?> speciesRoot = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(getTypeId());
 			ForestryEvent event = new ForestryEvent.MutationDiscovered(speciesRoot, username, mutation, this);
 			MinecraftForge.EVENT_BUS.post(event);
 
-			syncToPlayer(emptyStringCollection, Collections.singleton(mutationString), emptyStringCollection);
+			syncToPlayer(List.of(), List.of(mutationString), List.of());
 		}
 	}
 
@@ -201,11 +194,11 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 
 	@Override
 	public boolean isDiscovered(ISpecies<?> species) {
-		return discoveredSpecies.contains(species.id().toString());
+		return discoveredSpecies.contains(species.id());
 	}
 
 	@Override
-	public Set<String> getDiscoveredSpecies() {
+	public Set<ResourceLocation> getDiscoveredSpecies() {
 		return discoveredSpecies;
 	}
 
@@ -221,15 +214,16 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 
 	@Override
 	public void registerSpecies(ISpecies<?> species) {
-		String registryName = species.id().toString();
-		if (!discoveredSpecies.contains(registryName)) {
-			discoveredSpecies.add(registryName);
+		ResourceLocation speciesId = species.id();
 
-			ISpeciesType<?, ?> speciesRoot = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(getSpeciesId());
-			ForestryEvent event = new ForestryEvent.SpeciesDiscovered(speciesRoot, username, species, this);
+		if (!discoveredSpecies.contains(speciesId)) {
+			discoveredSpecies.add(speciesId);
+
+			ISpeciesType<?, ?> speciesType = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(getTypeId());
+			ForestryEvent event = new ForestryEvent.SpeciesDiscovered(speciesType, this.username, species, this);
 			MinecraftForge.EVENT_BUS.post(event);
 
-			syncToPlayer(Collections.singleton(registryName), emptyStringCollection, emptyStringCollection);
+			syncToPlayer(List.of(speciesId), List.of(), List.of());
 		}
 	}
 
@@ -242,7 +236,7 @@ public abstract class BreedingTracker extends SavedData implements IBreedingTrac
 
 			registerMutation(mutation);
 
-			syncToPlayer(emptyStringCollection, emptyStringCollection, Collections.singleton(mutationString));
+			syncToPlayer(List.of(), List.of(), List.of(mutationString));
 		}
 	}
 

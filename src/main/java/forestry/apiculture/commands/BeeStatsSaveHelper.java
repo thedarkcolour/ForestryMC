@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.apiculture.IApiaristTracker;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.ISpecies;
 import forestry.core.commands.IStatsSaveHelper;
@@ -50,7 +51,7 @@ public class BeeStatsSaveHelper implements IStatsSaveHelper {
 	}
 
 	@Override
-	public Collection<? extends ISpecies<?>> getSpecies() {
+	public Collection<IBeeSpecies> getSpecies() {
 		return SpeciesUtil.getAllBeeSpecies();
 	}
 

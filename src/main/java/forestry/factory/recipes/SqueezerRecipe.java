@@ -14,28 +14,31 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.recipes.ISqueezerRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 
 public class SqueezerRecipe implements ISqueezerRecipe {
-
 	private final ResourceLocation id;
 	private final int processingTime;
-	private final NonNullList<Ingredient> resources;
+	private final List<Ingredient> resources;
 	private final FluidStack fluidOutput;
 	private final ItemStack remnants;
 	private final float remnantsChance;
 
-	public SqueezerRecipe(ResourceLocation id, int processingTime, NonNullList<Ingredient> resources, FluidStack fluidOutput, ItemStack remnants, float remnantsChance) {
+	public SqueezerRecipe(ResourceLocation id, int processingTime, List<Ingredient> resources, FluidStack fluidOutput, ItemStack remnants, float remnantsChance) {
 		Preconditions.checkNotNull(id, "Recipe identifier cannot be null");
 		Preconditions.checkNotNull(resources);
 		Preconditions.checkArgument(!resources.isEmpty());
@@ -51,7 +54,7 @@ public class SqueezerRecipe implements ISqueezerRecipe {
 	}
 
 	@Override
-	public NonNullList<Ingredient> getResources() {
+	public List<Ingredient> getInputs() {
 		return resources;
 	}
 
@@ -76,16 +79,30 @@ public class SqueezerRecipe implements ISqueezerRecipe {
 	}
 
 	@Override
+	public ItemStack getResultItem() {
+		return ItemStack.EMPTY;
+	}
+
+	@Override
 	public ResourceLocation getId() {
 		return id;
 	}
 
-	public static class Serializer implements RecipeSerializer<SqueezerRecipe> {
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return FactoryRecipeTypes.SQUEEZER.serializer();
+	}
 
+	@Override
+	public RecipeType<?> getType() {
+		return FactoryRecipeTypes.SQUEEZER.type();
+	}
+
+	public static class Serializer implements RecipeSerializer<SqueezerRecipe> {
 		@Override
 		public SqueezerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			int processingTime = GsonHelper.getAsInt(json, "time");
-			NonNullList<Ingredient> resources = NonNullList.create();
+			ArrayList<Ingredient> resources = new ArrayList<>();
 			FluidStack fluidOutput = RecipeSerializers.deserializeFluid(GsonHelper.getAsJsonObject(json, "output"));
 			ItemStack remnants = RecipeSerializers.item(GsonHelper.getAsJsonObject(json, "remnant"));
 			float remnantsChance = GsonHelper.getAsFloat(json, "chance");
@@ -100,7 +117,7 @@ public class SqueezerRecipe implements ISqueezerRecipe {
 		@Override
 		public SqueezerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
 			int processingTime = buffer.readVarInt();
-			NonNullList<Ingredient> resources = RecipeSerializers.read(buffer, Ingredient::fromNetwork);
+			List<Ingredient> resources = RecipeSerializers.read(buffer, Ingredient::fromNetwork);
 			FluidStack fluidOutput = FluidStack.readFromPacket(buffer);
 			ItemStack remnants = buffer.readItem();
 			float remnantsChance = buffer.readFloat();

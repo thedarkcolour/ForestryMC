@@ -32,11 +32,11 @@ public class InventoryStill extends InventoryAdapterTile<TileStill> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_RESOURCE) {
-			return FluidHelper.isFillableEmptyContainer(itemStack);
+			return FluidHelper.isFillableEmptyContainer(stack);
 		} else if (slotIndex == SLOT_CAN) {
-			Optional<FluidStack> fluid = FluidUtil.getFluidContained(itemStack);
+			Optional<FluidStack> fluid = FluidUtil.getFluidContained(stack);
 			return fluid.map(f -> tile.getTankManager().canFillFluidType(f)).orElse(false);
 		}
 		return false;

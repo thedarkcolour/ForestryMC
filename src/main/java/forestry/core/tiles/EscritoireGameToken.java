@@ -18,10 +18,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.ForestryConstants;
+import forestry.api.IForestryApi;
+import forestry.api.client.ForestrySprites;
 import forestry.api.core.INbtWritable;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.ColourUtil;
 import forestry.core.utils.NetworkUtil;
@@ -36,10 +38,8 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		public static final State[] VALUES = values();
 	}
 
-	private static final ResourceLocation[] OVERLAY_NONE = new ResourceLocation[0];
-	private static final ResourceLocation[] OVERLAY_FAILED = new ResourceLocation[]{ForestryConstants.forestry("errors/errored")};
-	private static final ResourceLocation[] OVERLAY_SELECTED = new ResourceLocation[]{ForestryConstants.forestry("errors/unknown")};
-
+	@Nullable
+	private ISpeciesType<? extends ISpecies<?>, ?> tokenType;
 	@Nullable
 	private IIndividual tokenIndividual;
 	private ItemStack tokenStack = ItemStack.EMPTY;
@@ -50,24 +50,26 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		readData(data);
 	}
 
-	public EscritoireGameToken(ResourceLocation speciesId) {
-		setTokenSpecies(speciesId);
+	public EscritoireGameToken(ISpecies<?> species) {
+		setTokenSpecies(species);
 	}
 
 	public EscritoireGameToken(CompoundTag nbt) {
 		read(nbt);
 	}
 
-	private void setTokenSpecies(ResourceLocation speciesId) {
-		//IAllele allele = IForestryApi.INSTANCE.getAlleleManager().getAllele(speciesId);
-
-		if (allele instanceof ISpecies<?> species) {
-			setTokenSpecies(species);
+	private void setTokenSpecies(ResourceLocation typeId, ResourceLocation speciesId) {
+		if (this.tokenType != null && typeId == this.tokenType.id()) {
+			setTokenSpecies(this.tokenType.getSpecies(speciesId));
+		} else {
+			ISpeciesType<?, ?> type = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(typeId);
+			setTokenSpecies(type.getSpecies(speciesId));
 		}
 	}
 
 	private void setTokenSpecies(ISpecies<?> species) {
 		this.tokenIndividual = species.createIndividual();
+		this.tokenType = species.getType();
 		this.tokenStack = species.createStack(species.getType().getDefaultStage());
 	}
 
@@ -130,11 +132,12 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		return !tokenStack.isEmpty() ? tokenStack.getHoverName() : Component.translatable("for.gui.unknown");
 	}
 
-	public String[] getOverlayIcons() {
+	@Nullable
+	public ResourceLocation getOverlayToken() {
 		return switch (state) {
-			case FAILED -> OVERLAY_FAILED;
-			case SELECTED -> OVERLAY_SELECTED;
-			default -> OVERLAY_NONE;
+			case FAILED -> ForestrySprites.ERROR_ERRORED;
+			case SELECTED -> ForestrySprites.ERROR_UNKNOWN;
+			default -> null;
 		};
 	}
 
@@ -158,19 +161,21 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 			this.state = State.VALUES[stateOrdinal];
 		}
 
-		if (nbt.contains("tokenSpecies")) {
-			String speciesId = nbt.getString("tokenSpecies");
+		String tokenSpecies = nbt.getString("tokenSpecies");
+		String tokenType = nbt.getString("tokenSpeciesType");
 
-			setTokenSpecies(new ResourceLocation(speciesId));
+		if (!tokenSpecies.isEmpty() && !tokenType.isEmpty()) {
+			setTokenSpecies(new ResourceLocation(tokenType), new ResourceLocation(tokenSpecies));
 		}
 	}
 
 	@Override
 	public void writeData(FriendlyByteBuf data) {
 		NetworkUtil.writeEnum(data, state);
-		if (tokenIndividual != null) {
+		if (tokenIndividual != null && this.tokenType != null) {
 			data.writeBoolean(true);
 			data.writeResourceLocation(tokenIndividual.getSpecies().id());
+			data.writeResourceLocation(tokenType.id());
 		} else {
 			data.writeBoolean(false);
 		}
@@ -181,7 +186,8 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		state = NetworkUtil.readEnum(data, State.VALUES);
 		if (data.readBoolean()) {
 			ResourceLocation speciesId = data.readResourceLocation();
-			setTokenSpecies(speciesId);
+			ResourceLocation typeId = data.readResourceLocation();
+			setTokenSpecies(typeId, speciesId);
 		}
 	}
 }

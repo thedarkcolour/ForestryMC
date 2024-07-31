@@ -17,24 +17,23 @@ import com.mojang.authlib.GameProfile;
 import forestry.api.genetics.IGenome;
 
 public interface ITreeGenData {
-	int getGirth();
+	int getGirth(IGenome genome);
 
-	float getHeightModifier();
+	float getHeightModifier(IGenome genome);
 
 	/**
-	 * @return Position that this tree can grow. May be different from pos if there are multiple saplings.
-	 * Returns null if a sapling at the given position can not grow into a tree.
+	 * @return Position that this tree can grow, or {@code null} if it cannot grow. May be different from pos if there are multiple saplings.
 	 */
 	@Nullable
-	BlockPos canGrow(LevelAccessor level, BlockPos pos, int expectedGirth, int expectedHeight);
+	BlockPos getGrowthPos(IGenome genome, LevelAccessor level, BlockPos pos, int expectedGirth, int expectedHeight);
 
-	boolean setLeaves(LevelAccessor level, @Nullable GameProfile owner, BlockPos pos, RandomSource random);
+	boolean setLeaves(IGenome genome, LevelAccessor level, @Nullable GameProfile owner, BlockPos pos, RandomSource random);
 
-	boolean setLogBlock(LevelAccessor level, BlockPos pos, Direction facing);
+	boolean setLogBlock(IGenome genome, LevelAccessor level, BlockPos pos, Direction facing);
 
-	boolean allowsFruitBlocks();
+	boolean allowsFruitBlocks(IGenome genome);
 
 	boolean trySpawnFruitBlock(LevelAccessor level, RandomSource rand, BlockPos pos);
 
-	IGenome getGenome();
+	IGenome getDefaultGenome();
 }

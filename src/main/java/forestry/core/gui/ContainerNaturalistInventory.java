@@ -62,7 +62,7 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 
 	@Override
 	public ISpeciesType<?, ?> getSpeciesType() {
-		return tile.getSpeciesRoot();
+		return tile.getSpeciesType();
 	}
 
 	@Override

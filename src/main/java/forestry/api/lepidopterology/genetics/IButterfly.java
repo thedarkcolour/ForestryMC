@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -64,31 +63,34 @@ public interface IButterfly extends IIndividualLiving {
 	 */
 	Set<IError> getCanSpawn(IButterflyNursery nursery, @Nullable IButterflyCocoon cocoon);
 
-
 	/**
 	 * @param playerKill Whether or not the butterfly was killed by a player.
 	 * @param lootLevel  Loot level according to the weapon used to kill the butterfly.
-	 * @return Array of itemstacks to drop on death of the given entity.
+	 * @return Items to drop on death of the given entity.
 	 */
 	List<ItemStack> getLootDrop(IEntityButterfly entity, boolean playerKill, int lootLevel);
 
 	/**
 	 * @param playerKill Whether or not the nursery was broken by a player.
 	 * @param lootLevel  Fortune level.
-	 * @return Array of itemstacks to drop on breaking of the nursery.
+	 * @return Items to drop on breaking of the nursery.
 	 */
 	List<ItemStack> getCaterpillarDrop(IButterflyNursery nursery, boolean playerKill, int lootLevel);
 
 	/**
 	 * @param includeButterfly Whether the butterfly should drop from the cocoon. Used by worldgen cocoons.
-	 * @return itemstacks to drop on breaking of the cocoon.
+	 * @return Items to drop on breaking of the cocoon.
 	 */
 	List<ItemStack> getCocoonDrop(boolean includeButterfly, IButterflyCocoon cocoon);
 
-	/**
-	 * Create an exact copy of this butterfly.
-	 */
+	@Override
 	IButterfly copy();
+
+	@Override
+	IButterflySpeciesType getType();
+
+	@Override
+	IButterflySpecies getSpecies();
 
 	Component getDisplayName();
 }

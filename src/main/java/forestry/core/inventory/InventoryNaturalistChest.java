@@ -25,8 +25,8 @@ public class InventoryNaturalistChest extends InventoryAdapterTile<TileNaturalis
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemstack) {
-		return speciesRoot.isMember(itemstack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return speciesRoot.isMember(stack);
 	}
 
 	@Override

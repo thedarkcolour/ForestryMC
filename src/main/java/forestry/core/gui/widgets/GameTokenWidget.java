@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -29,7 +30,6 @@ import forestry.api.client.IForestryClientApi;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.gui.GuiUtil;
 import forestry.core.network.packets.PacketGuiSelectRequest;
-import forestry.core.render.ForestryTextureManager;
 import forestry.core.tiles.EscritoireGame;
 import forestry.core.tiles.EscritoireGameToken;
 import forestry.core.utils.NetworkUtil;
@@ -55,9 +55,7 @@ public class GameTokenWidget extends Widget {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void draw(PoseStack transform, int startX, int startY) {
-
 		EscritoireGameToken token = getToken();
 		if (token == null) {
 			return;
@@ -83,13 +81,15 @@ public class GameTokenWidget extends Widget {
 
 		GuiUtil.drawItemStack(transform, manager.gui, tokenStack, startX + xPos + 3, startY + yPos + 3);
 
-		RenderSystem.disableDepthTest();
-		RenderSystem.setShaderTexture(0, ForestrySprites.TEXTURE_ATLAS);
-		for (String ident : token.getOverlayIcons()) {
-			TextureAtlasSprite icon = IForestryClientApi.INSTANCE.getTextureManager().getSprite(ForestryConstants.forestry(ident));
+		ResourceLocation overlayToken = token.getOverlayToken();
+
+		if (overlayToken != null) {
+			RenderSystem.disableDepthTest();
+			RenderSystem.setShaderTexture(0, ForestrySprites.TEXTURE_ATLAS);
+			TextureAtlasSprite icon = IForestryClientApi.INSTANCE.getTextureManager().getSprite(overlayToken);
 			GuiComponent.blit(transform, startX + xPos + 3, startY + yPos + 3, manager.gui.getBlitOffset(), 16, 16, icon);
+			RenderSystem.enableDepthTest();
 		}
-		RenderSystem.enableDepthTest();
 	}
 
 	@Override

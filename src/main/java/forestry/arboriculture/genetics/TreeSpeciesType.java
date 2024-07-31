@@ -12,16 +12,17 @@ package forestry.arboriculture.genetics;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -48,7 +49,9 @@ import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IPollinatable;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.plugin.ISpeciesTypeBuilder;
 import forestry.arboriculture.PodFruit;
@@ -81,7 +84,7 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 		for (ITreeSpecies entry : allSpecies.values()) {
 			ITree defaultIndividual = entry.createIndividual();
 
-			for (BlockState state : entry.getVanillaStates()) {
+			for (BlockState state : entry.getVanillaLeafStates()) {
 				this.vanillaIndividuals.put(state, defaultIndividual);
 			}
 		}
@@ -186,31 +189,30 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 
 	@Override
 	public IArboristTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile) {
-		return BreedingTrackerManager.INSTANCE.getTracker(id(), level, profile);
+		return BreedingTrackerManager.INSTANCE.getTracker(this, level, profile);
 	}
 
 	@Override
-	public String getFileName(@Nullable GameProfile profile) {
+	public String getBreedingTrackerFile(@Nullable GameProfile profile) {
 		return "ArboristTracker." + (profile == null ? "common" : profile.getId());
 	}
 
 	@Override
-	public IBreedingTracker createTracker() {
+	public IBreedingTracker createBreedingTracker() {
 		return new ArboristTracker();
 	}
 
 	@Override
-	public IBreedingTracker createTracker(CompoundTag tag) {
+	public IBreedingTracker createBreedingTracker(CompoundTag tag) {
 		return new ArboristTracker(tag);
 	}
 
 	@Override
-	public void populateTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
-		if (!(tracker instanceof ArboristTracker arboristTracker)) {
-			return;
+	public void initializeBreedingTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
+		if (tracker instanceof ArboristTracker arboristTracker) {
+			arboristTracker.setLevel(world);
+			arboristTracker.setUsername(profile);
 		}
-		arboristTracker.setLevel(world);
-		arboristTracker.setUsername(profile);
 	}
 
 	@Override
@@ -244,7 +246,7 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 	public IPollinatable tryConvertToPollinatable(@Nullable GameProfile owner, Level world, BlockPos pos, IIndividual individual) {
 		Preconditions.checkArgument(individual instanceof ITree, "pollen must be an instance of ITree");
 		ITree pollen = (ITree) individual;
-		if (pollen.setLeaves(world, owner, pos, world.random)) {
+		if (pollen.getSpecies().setLeaves(pollen.getGenome(), world, owner, pos, world.random)) {
 			return TileUtil.getTile(world, pos, IPollinatable.class);
 		} else {
 			return null;
@@ -260,5 +262,19 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 	@Override
 	public Codec<? extends ITree> getIndividualCodec() {
 		return Tree.CODEC;
+	}
+
+	@Override
+	public float getResearchSuitability(ITreeSpecies species, ItemStack stack) {
+		if (stack.isEmpty()) {
+			return 0f;
+		}
+		IFruit fruit = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUITS);
+		for (Product product : Iterables.concat(fruit.getProducts(), fruit.getSpecialty())) {
+			if (stack.is(product.item())) {
+				return 1f;
+			}
+		}
+		return super.getResearchSuitability(species, stack);
 	}
 }

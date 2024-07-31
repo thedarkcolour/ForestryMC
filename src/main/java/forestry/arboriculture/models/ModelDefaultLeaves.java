@@ -28,14 +28,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDefaultLeaves;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.models.baker.ModelBaker;
 import forestry.core.utils.ResourceUtil;
-
-import forestry.api.genetics.IGenome;
+import forestry.core.utils.SpeciesUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, ModelDefaultLeaves.Key> {
@@ -43,29 +42,30 @@ public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, Mod
 		super(BlockDefaultLeaves.class);
 	}
 
-	public static class Key {
-		public final ResourceLocation definition;
+	public static final class Key {
+		public final ResourceLocation speciesId;
 		public final boolean fancy;
-		public final int hashCode;
+		private final int hashCode;
 
-		public Key(ResourceLocation definition, boolean fancy) {
-			this.definition = definition;
+		public Key(ResourceLocation speciesId, boolean fancy) {
+			this.speciesId = speciesId;
 			this.fancy = fancy;
-			this.hashCode = Objects.hash(definition, fancy);
+			this.hashCode = Objects.hash(speciesId, fancy);
 		}
 
 		@Override
 		public boolean equals(Object other) {
-			if (!(other instanceof Key otherKey)) {
+			if (!(other instanceof ModelDefaultLeaves.Key otherKey)) {
 				return false;
 			} else {
-				return otherKey.definition == definition && otherKey.fancy == fancy;
+				// species IDs are passed around so == is fine
+				return otherKey.speciesId == this.speciesId && otherKey.fancy == this.fancy;
 			}
 		}
 
 		@Override
 		public int hashCode() {
-			return hashCode;
+			return this.hashCode;
 		}
 	}
 
@@ -79,20 +79,19 @@ public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, Mod
 
 	@Override
 	protected ModelDefaultLeaves.Key getWorldKey(BlockState state, ModelData extraData) {
-		Block block = state.getBlock();
-		Preconditions.checkArgument(block instanceof BlockDefaultLeaves, "state must be for default leaves.");
-		BlockDefaultLeaves bBlock = (BlockDefaultLeaves) block;
-		TreeDefinition treeDefinition = bBlock.getSpeciesId();
-		Preconditions.checkNotNull(treeDefinition);
-		return new ModelDefaultLeaves.Key(treeDefinition, Minecraft.useFancyGraphics());
+		if (state.getBlock() instanceof BlockDefaultLeaves block) {
+			ResourceLocation treeDefinition = block.getSpeciesId();
+			return new ModelDefaultLeaves.Key(treeDefinition, Minecraft.useFancyGraphics());
+		} else {
+			throw new IllegalArgumentException("state must be for default leaves.");
+		}
 	}
 
 	@Override
 	protected void bakeBlock(BlockDefaultLeaves block, ModelData extraData, Key key, ModelBaker baker, boolean inventory) {
-		TreeDefinition treeDefinition = key.definition;
+		ResourceLocation speciesId = key.speciesId;
 
-		IGenome genome = treeDefinition.getGenome();
-		IAlleleTreeSpecies species = genome.getActiveAllele(TreeChromosomes.SPECIES);
+		ITreeSpecies species = SpeciesUtil.getTreeSpecies(speciesId);
 		ILeafSpriteProvider leafSpriteProvider = species.getLeafSpriteProvider();
 
 		ResourceLocation leafSpriteLocation = leafSpriteProvider.getSprite(false, key.fancy);

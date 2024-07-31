@@ -18,11 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.item.ItemStack;
@@ -38,15 +36,13 @@ import forestry.api.core.HumidityType;
 import forestry.api.core.IError;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.ToleranceType;
-import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.IIntegerChromosome;
-import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.IEntityButterfly;
@@ -54,7 +50,6 @@ import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
-import forestry.core.genetics.GenericRatings;
 import forestry.core.genetics.IndividualLiving;
 import forestry.core.genetics.mutations.Mutation;
 import forestry.core.utils.SpeciesUtil;
@@ -84,44 +79,8 @@ public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, I
 	}
 
 	@Override
-	public void addTooltip(List<Component> list) {
-		ToolTip toolTip = new ToolTip();
-
-		IGenome genome = this.genome;
-		AllelePair<IValueAllele<IButterflySpecies>> speciesPair = genome.getAllelePair(ButterflyChromosomes.SPECIES);
-		IButterflySpecies primary = speciesPair.active().value();
-		IButterflySpecies secondary = speciesPair.inactive().value();
-		if (!speciesPair.isSameAlleles()) {
-			toolTip.translated("for.butterflies.hybrid", primary.getDisplayName(), secondary.getDisplayName()).style(ChatFormatting.BLUE);
-		}
-
-		if (getMate() != null) {
-			//TODO ITextComponent.toUpperCase(Locale.ENGLISH));
-			toolTip.translated("for.gui.fecundated").style(ChatFormatting.RED);
-		}
-		toolTip.add(genome.getActiveName(ButterflyChromosomes.SIZE).withStyle(ChatFormatting.YELLOW));
-		toolTip.add(genome.getActiveName(ButterflyChromosomes.SPEED).withStyle(ChatFormatting.DARK_GREEN));
-		// todo remove
-		toolTip.singleLine().add(genome.getActiveName(ButterflyChromosomes.LIFESPAN)).text(" ").translated("for.gui.life").style(ChatFormatting.GRAY).create();
-
-		MutableComponent tempTolerance = genome.getActiveName(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
-		MutableComponent humidTolerance = genome.getActiveName(ButterflyChromosomes.HUMIDITY_TOLERANCE);
-
-		toolTip.singleLine().text("T: ").add(ClimateHelper.toDisplay(primary.getTemperature())).text(" / ").add(tempTolerance).style(ChatFormatting.GREEN).create();
-		toolTip.singleLine().text("H: ").add(ClimateHelper.toDisplay(primary.getHumidity())).text(" / ").add(humidTolerance).style(ChatFormatting.GREEN).create();
-
-		toolTip.add(GenericRatings.rateActivityTime(genome.getActiveValue(ButterflyChromosomes.NEVER_SLEEPS), primary.isNocturnal()).withStyle(ChatFormatting.RED));
-
-		if (genome.getActiveValue(ButterflyChromosomes.TOLERATES_RAIN)) {
-			toolTip.translated("for.gui.flyer.tooltip").style(ChatFormatting.WHITE);
-		}
-
-		list.addAll(toolTip.getLines());
-	}
-
-	@Override
 	public Component getDisplayName() {
-		return getSpecies().getDisplayName();
+		return this.species.getDisplayName();
 	}
 
 	@Override
@@ -246,7 +205,7 @@ public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, I
 	public List<ItemStack> getCaterpillarDrop(IButterflyNursery nursery, boolean playerKill, int lootLevel) {
 		ArrayList<ItemStack> drop = new ArrayList<>();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
-		List<Product> products = getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarLoot();
+		List<Product> products = getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarProducts();
 
 		for (Product product : products) {
 			if (rand.nextFloat() < product.chance() * metabolism) {

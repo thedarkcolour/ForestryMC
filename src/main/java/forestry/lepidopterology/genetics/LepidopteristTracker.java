@@ -16,12 +16,11 @@ import net.minecraft.world.entity.player.Player;
 
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.ISpecies;
 import forestry.api.lepidopterology.ILepidopteristTracker;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.genetics.BreedingTracker;
 import forestry.core.utils.SpeciesUtil;
-
-import genetics.api.individual.IIndividual;
 
 public class LepidopteristTracker extends BreedingTracker implements ILepidopteristTracker {
 
@@ -43,18 +42,18 @@ public class LepidopteristTracker extends BreedingTracker implements ILepidopter
 	}
 
 	@Override
-	protected ResourceLocation getSpeciesId() {
+	protected ResourceLocation getTypeId() {
 		return ForestrySpeciesTypes.BUTTERFLY;
 	}
 
 	@Override
-	public void registerPickup(IIndividual individual) {
+	public void registerCatch(IButterfly butterfly) {
+		registerSpecies(butterfly.getSpecies());
+		registerSpecies(butterfly.getInactiveSpecies());
 	}
 
 	@Override
-	public void registerCatch(IButterfly butterfly) {
-		registerSpecies(butterfly.getGenome().getPrimarySpecies());
-		registerSpecies(butterfly.getGenome().getSecondarySpecies());
+	public void registerPickup(ISpecies<?> species) {
+		registerSpecies(species);
 	}
-
 }

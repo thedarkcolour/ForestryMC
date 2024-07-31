@@ -11,6 +11,8 @@ import java.util.function.UnaryOperator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
@@ -81,6 +83,8 @@ public interface IFeatureRegistry {
 	<E extends Entity> FeatureEntityType<E> entity(EntityType.EntityFactory<E> factory, MobCategory classification, String identifier, UnaryOperator<EntityType.Builder<E>> consumer, Supplier<AttributeSupplier.Builder> attributes);
 
 	FeatureFluid.Builder fluid(String identifier);
+
+	<R extends Recipe<?>> FeatureRecipeType<R> recipeType(String name, Supplier<RecipeSerializer<? extends R>> serializer);
 
 	void addRegistryListener(ResourceKey<? extends Registry<?>> type, Consumer<RegisterEvent> listener);
 

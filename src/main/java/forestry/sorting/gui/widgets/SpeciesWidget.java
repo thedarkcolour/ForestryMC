@@ -1,34 +1,38 @@
 package forestry.sorting.gui.widgets;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.IForestryApi;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.filter.IFilterLogic;
 import forestry.core.gui.GuiForestry;
 import forestry.core.gui.GuiUtil;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
+import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SoundUtil;
 import forestry.sorting.gui.GuiGeneticFilter;
-
-import forestry.api.genetics.IGenome;
 import forestry.sorting.gui.ISelectableProvider;
 
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+
 public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecies<?>> {
-	private final static ImmutableMap<ISpecies<?>, ItemStack> ITEMS = createEntries();
+	private final static Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> ITEMS = createEntries();
 	private final ImmutableSet<ISpecies<?>> entries;
 
 	private final Direction facing;
@@ -43,13 +47,14 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecie
 		this.active = active;
 		this.gui = gui;
 		ImmutableSet.Builder<ISpecies<?>> entries = ImmutableSet.builder();
-		for (IRootDefinition<?> definition : GeneticsAPI.apiInstance.getRoots().values()) {
-			if (!definition.isPresent() || !(definition.get() instanceof ISpeciesType<?> root)) {
-				continue;
-			}
-			IBreedingTracker tracker = root.getBreedingTracker(manager.minecraft.level, manager.minecraft.player.getGameProfile());
-			for (String uid : tracker.getDiscoveredSpecies()) {
-				if (AlleleUtils.getAllele(uid) instanceof ISpecies<?> species) {
+
+		for (ISpeciesType<?, ?> type : IForestryApi.INSTANCE.getGeneticManager().getSpeciesTypes()) {
+			IBreedingTracker tracker = type.getBreedingTracker(manager.minecraft.level, manager.minecraft.player.getGameProfile());
+
+			for (ResourceLocation id : tracker.getDiscoveredSpecies()) {
+				ISpecies<?> species = type.getSpeciesSafe(id);
+
+				if (species != null) {
 					entries.add(species);
 				}
 			}
@@ -104,7 +109,7 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecie
 	@Override
 	public ToolTip getToolTip(int mouseX, int mouseY) {
 		IFilterLogic logic = gui.getLogic();
-		IAlleleForestrySpecies allele = (IAlleleForestrySpecies) logic.getGenomeFilter(facing, index, active);
+		ISpecies<?> allele = logic.getGenomeFilter(facing, index, active);
 		if (allele == null) {
 			return null;
 		}
@@ -117,10 +122,10 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecie
 	public void handleMouseClick(double mouseX, double mouseY, int mouseButton) {
 		ItemStack stack = gui.getMinecraft().player.inventoryMenu.getCarried();
 		if (!stack.isEmpty()) {
-			IIndividual individual = IIndividualHandler.getIndividual(stack);
+			IIndividual individual = IIndividualHandlerItem.getIndividual(stack);
+
 			if (individual != null) {
-				IGenome genome = individual.getGenome();
-				onSelect(mouseButton == 0 ? genome.getPrimarySpecies() : genome.getSecondarySpecies());
+				onSelect(mouseButton == 0 ? individual.getSpecies() : individual.getInactiveSpecies());
 				return;
 			}
 		}
@@ -132,19 +137,12 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecie
 		}
 	}
 
-	private static ImmutableMap<ISpecies<?>, ItemStack> createEntries() {
-		ImmutableMap.Builder<ISpecies<?>, ItemStack> entries = ImmutableMap.builder();
-		for (IRootDefinition definition : GeneticsAPI.apiInstance.getRoots().values()) {
-			if (!definition.isPresent() || !(definition.get() instanceof ISpeciesType)) {
-				continue;
-			}
-			ISpeciesType<IIndividual> root = (ISpeciesType<IIndividual>) definition.get();
-			for (IIndividual individual : root.getIndividualTemplates()) {
-				ISpecies<?> species = individual.getGenome().getPrimarySpecies();
-				ItemStack itemStack = root.getTypes().createStack(root.templateAsIndividual(root.getTemplates().getTemplate(species.getId().toString())), root.getDefaultStage());
-				entries.put(species, itemStack);
-			}
+	private static Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> createEntries() {
+		Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> entries = new Reference2ObjectOpenHashMap<>();
+
+		for (ISpeciesType<?, ?> type : IForestryApi.INSTANCE.getGeneticManager().getSpeciesTypes()) {
+			GeneticsUtil.getIconStacks(entries, type.getDefaultStage(), type);
 		}
-		return entries.build();
+		return entries;
 	}
 }

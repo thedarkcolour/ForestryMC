@@ -134,8 +134,8 @@ public class TileGeneticFilter extends TileForestry implements IStreamableGui, I
 	}
 
 	public List<Direction> getValidDirections(ItemStack stack, Direction from) {
-		return stack.getCapability(ForestryCapabilities.INDIVIDUAL).map(individual -> {
-			FilterData filterData = new FilterData(individual.getType(), individual, individual.getLifeStage());
+		return stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM).map(individual -> {
+			FilterData filterData = new FilterData(individual.getIndividual(), individual.getStage());
 			List<Direction> validFacings = new ArrayList<>();
 
 			for (Direction facing : Direction.VALUES) {

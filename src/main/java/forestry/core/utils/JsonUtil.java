@@ -1,5 +1,6 @@
 package forestry.core.utils;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -7,14 +8,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.GsonHelper;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+
 import net.minecraftforge.common.util.JsonUtils;
 
 import forestry.Forestry;
+import forestry.api.core.Product;
 
 public class JsonUtil {
-	private JsonUtil() {
-	}
-
 	public static ItemStack deserializeItemStack(JsonObject object, ItemStack fallback) {
 		return deserializeItemStack(object, fallback, false);
 	}
@@ -38,5 +40,13 @@ public class JsonUtil {
 			}
 			return fallback;
 		}
+	}
+
+	public static <T> T deserialize(Codec<T> codec, JsonElement json) {
+		return codec.decode(JsonOps.INSTANCE, json).result().get().getFirst();
+	}
+
+	public static <T> JsonElement serialize(Codec<T> codec, T object) {
+		return codec.encodeStart(JsonOps.INSTANCE, object).result().get();
 	}
 }

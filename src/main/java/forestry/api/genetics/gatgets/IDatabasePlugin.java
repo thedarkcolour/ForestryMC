@@ -8,17 +8,17 @@ package forestry.api.genetics.gatgets;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.api.genetics.ISpecies;
+
 /**
- * An ISpeciesPlugin provides methods that are used in the alyzer and database to display information about an
- * individual.
+ * An ISpeciesPlugin provides methods that are used in the alyzer and database to display information about an individual.
  */
 public interface IDatabasePlugin {
 	List<String> getHints();
 
 	IDatabaseTab<?>[] getTabs();
 
-	Map<ResourceLocation, ItemStack> getIndividualStacks();
+	Map<ISpecies<?>, ItemStack> getIndividualStacks();
 }

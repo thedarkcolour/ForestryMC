@@ -25,12 +25,10 @@ import com.mojang.authlib.GameProfile;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.genetics.ForestryComponentKeys;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.IIndividualHandler;
-import forestry.api.genetics.IResearchHandler;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.ISpecies;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.features.CoreTiles;
 import forestry.core.gui.ContainerEscritoire;
 import forestry.core.inventory.InventoryAnalyzer;
@@ -41,12 +39,7 @@ import forestry.core.network.packets.PacketItemStackDisplay;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.individual.IIndividual;
-import forestry.api.genetics.ISpeciesType;
-import genetics.utils.RootUtils;
-
 public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotPickupWatcher, IStreamableGui, IItemStackDisplay {
-
 	private final EscritoireGame game = new EscritoireGame();
 	private ItemStack individualOnDisplayClient = ItemStack.EMPTY;
 
@@ -84,14 +77,14 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 			return;
 		}
 
-		IIndividual individual = IIndividualHandler.getIndividual(getItem(InventoryEscritoire.SLOT_ANALYZE));
+		IIndividual individual = IIndividualHandlerItem.getIndividual(getItem(InventoryEscritoire.SLOT_ANALYZE));
 		if (individual == null) {
 			return;
 		}
 
 		ISpecies<?> species = individual.getSpecies();
 		ISpeciesType<?, ?> root = species.getType();
-		for (ItemStack itemstack : root.getResearchBounty(species, level, gameProfile, individual, game.getBountyLevel())) {
+		for (ItemStack itemstack : root.getResearchBounty(species.cast(), level, gameProfile, individual.cast(), game.getBountyLevel())) {
 			InventoryUtil.addStack(getInternalInventory(), itemstack, InventoryEscritoire.SLOT_RESULTS_1, InventoryEscritoire.SLOTS_RESULTS_COUNT, true);
 		}
 	}

@@ -1,9 +1,9 @@
 package forestry.cultivation.gui.widgets;
 
 import javax.annotation.Nullable;
-import java.util.Locale;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -36,9 +36,9 @@ public class GhostItemStackWidget extends ItemStackWidget {
 		RenderSystem.enableBlend();
 
 		Component directionString = getDirectionString();
-		if (directionString == Component.empty()) {
+		if (directionString != null) {
 			Font fontRenderer = manager.minecraft.font;
-			fontRenderer.drawShadow(transform, getDirectionString(), xPos + startX + 5, yPos + startY + 4, ColourProperties.INSTANCE.get("gui.screen"));
+			fontRenderer.drawShadow(transform, directionString, xPos + startX + 5, yPos + startY + 4, ColourProperties.INSTANCE.get("gui.screen"));
 		}
 
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.5F);
@@ -51,14 +51,15 @@ public class GhostItemStackWidget extends ItemStackWidget {
 		// RenderSystem.enableLighting();
 	}
 
+	@Nullable
 	private Component getDirectionString() {
 		if (slot.getSlotIndex() >= InventoryPlanter.CONFIG.productionStart
 				|| slot.getSlotIndex() < InventoryPlanter.CONFIG.productionStart + InventoryPlanter.CONFIG.productionCount) {
-			return Component.empty();
+			return null;
 		}
 		int index = slot.getSlotIndex() % 4;
-		HorizontalDirection direction = HorizontalDirection.values()[index];
-		String directionString = direction.toString().toLowerCase(Locale.ENGLISH);
+		Direction direction = HorizontalDirection.VALUES.get(index);
+		String directionString = direction.getSerializedName();
 		return Component.translatable("for.gui.planter." + directionString);
 	}
 

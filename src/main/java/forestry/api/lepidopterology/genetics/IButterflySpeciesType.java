@@ -31,6 +31,7 @@ public interface IButterflySpeciesType extends ISpeciesType<IButterflySpecies, I
 	 */
 	Mob spawnButterflyInWorld(Level level, IButterfly butterfly, double x, double y, double z);
 
+	@Nullable
 	BlockPos plantCocoon(LevelAccessor level, BlockPos pos, IButterfly caterpillar, GameProfile owner, int age, boolean createNursery);
 
 	/**

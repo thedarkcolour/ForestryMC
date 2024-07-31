@@ -16,6 +16,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -24,49 +25,47 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.ForestryTags;
-import forestry.api.IForestryApi;
-import forestry.api.apiculture.hives.HiveType;
+import forestry.api.apiculture.ForestryBeeSpecies;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.hives.IHiveDefinition;
 import forestry.api.apiculture.hives.IHiveGen;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
-import forestry.api.genetics.IGenome;
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.api.genetics.alleles.IChromosome;
+import forestry.apiculture.blocks.BlockHiveType;
 import forestry.apiculture.features.ApicultureBlocks;
-import forestry.apiculture.genetics.BeeDefinition;
+import forestry.core.utils.SpeciesUtil;
 
 // todo this should be data driven
 public enum HiveDefinition implements IHiveDefinition {
-	FOREST(HiveType.FOREST, 3.0f, BeeDefinition.FOREST, IForestryApi.INSTANCE.getHiveManager().createTreeGen()) {
+	FOREST(ApicultureBlocks.BEEHIVE.get(BlockHiveType.FOREST).defaultState(), 3.0f, ForestryBeeSpecies.FOREST, HiveGenTree.INSTANCE) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, flowerStates);
 		}
 	},
-	MEADOWS(HiveType.MEADOWS, 1.0f, BeeDefinition.MEADOWS, IForestryApi.INSTANCE.getHiveManager().createGroundGen(Blocks.DIRT, Blocks.GRASS_BLOCK)) {
+	MEADOWS(ApicultureBlocks.BEEHIVE.get(BlockHiveType.MEADOWS).defaultState(), 1.0f, ForestryBeeSpecies.MEADOWS, new HiveGenGround(Blocks.DIRT, Blocks.GRASS_BLOCK)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, flowerStates);
 		}
 	},
-	DESERT(HiveType.DESERT, 1.0f, BeeDefinition.MODEST, IForestryApi.INSTANCE.getHiveManager().createGroundGen(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.SAND, Blocks.SANDSTONE)) {
+	DESERT(ApicultureBlocks.BEEHIVE.get(BlockHiveType.DESERT).defaultState(), 1.0f, ForestryBeeSpecies.MODEST, new HiveGenGround(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.SAND, Blocks.SANDSTONE)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, cactusStates);
 		}
 	},
-	JUNGLE(HiveType.JUNGLE, 6.0f, BeeDefinition.TROPICAL, IForestryApi.INSTANCE.getHiveManager().createTreeGen()),
-	END(HiveType.END, 2.0f, BeeDefinition.ENDED, IForestryApi.INSTANCE.getHiveManager().createGroundGen(Blocks.END_STONE, Blocks.END_STONE_BRICKS)) {
+	JUNGLE(ApicultureBlocks.BEEHIVE.get(BlockHiveType.JUNGLE).defaultState(), 6.0f, ForestryBeeSpecies.TROPICAL, HiveGenTree.INSTANCE),
+	END(ApicultureBlocks.BEEHIVE.get(BlockHiveType.END).defaultState(), 2.0f, ForestryBeeSpecies.ENDED, new HiveGenGround(Blocks.END_STONE, Blocks.END_STONE_BRICKS)) {
 		@Override
 		public boolean isGoodBiome(Holder<Biome> biome) {
 			return biome.is(ForestryTags.Biomes.THE_END_CATEGORY);
 		}
 	},
-	SNOW(HiveType.SNOW, 2.0f, BeeDefinition.WINTRY, IForestryApi.INSTANCE.getHiveManager().createGroundGen(Blocks.DIRT, Blocks.SNOW, Blocks.GRASS_BLOCK)) {
+	SNOW(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SNOW).defaultState(), 2.0f, ForestryBeeSpecies.WINTRY, new HiveGenGround(Blocks.DIRT, Blocks.SNOW, Blocks.GRASS_BLOCK)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			BlockPos posAbove = pos.above();
@@ -77,14 +76,14 @@ public enum HiveDefinition implements IHiveDefinition {
 			postGenFlowers(world, rand, pos, flowerStates);
 		}
 	},
-	SWAMP(HiveType.SWAMP, 2.0f, BeeDefinition.MARSHY, IForestryApi.INSTANCE.getHiveManager().createGroundGen(Blocks.DIRT, Blocks.GRASS_BLOCK)) {
+	SWAMP(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SWAMP).defaultState(), 2.0f, ForestryBeeSpecies.MARSHY, new HiveGenGround(Blocks.DIRT, Blocks.GRASS_BLOCK)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, mushroomStates);
 		}
 	};
 
-	private static final IHiveGen FLOWER_GROUND = IForestryApi.INSTANCE.getHiveManager().createGroundGen(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.SNOW, Blocks.SAND, Blocks.SANDSTONE);
+	private static final IHiveGen FLOWER_GROUND = new HiveGenGround(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.SNOW, Blocks.SAND, Blocks.SANDSTONE);
 	private static final List<BlockState> flowerStates = new ArrayList<>();
 	private static final List<BlockState> mushroomStates = new ArrayList<>();
 	private static final List<BlockState> cactusStates = Collections.singletonList(Blocks.CACTUS.defaultBlockState());
@@ -98,16 +97,14 @@ public enum HiveDefinition implements IHiveDefinition {
 
 	private final BlockState blockState;
 	private final float genChance;
-	private final IGenome beeGenome;
+	private final ResourceLocation speciesId;
 	private final IHiveGen hiveGen;
-	private final HiveType hiveType;
 
-	HiveDefinition(HiveType hiveType, float genChance, BeeDefinition beeTemplate, IHiveGen hiveGen) {
-		this.blockState = ApicultureBlocks.BEEHIVE.get(hiveType).defaultState();
+	HiveDefinition(BlockState hiveState, float genChance, ResourceLocation beeTemplate, IHiveGen hiveGen) {
+		this.blockState = hiveState;
 		this.genChance = genChance;
-		this.beeGenome = beeTemplate.getGenome();
+		this.speciesId = beeTemplate;
 		this.hiveGen = hiveGen;
-		this.hiveType = hiveType;
 	}
 
 	@Override
@@ -127,15 +124,17 @@ public enum HiveDefinition implements IHiveDefinition {
 
 	@Override
 	public boolean isGoodHumidity(HumidityType humidity) {
-		HumidityType idealHumidity = beeGenome.getActiveAllele(BeeChromosomes.SPECIES).getHumidity();
-		ToleranceType humidityTolerance = beeGenome.getActiveValue(BeeChromosomes.HUMIDITY_TOLERANCE);
+		IBeeSpecies species = SpeciesUtil.getBeeSpecies(this.speciesId);
+		HumidityType idealHumidity = species.getHumidity();
+		ToleranceType humidityTolerance = species.getDefaultGenome().getActiveValue(BeeChromosomes.HUMIDITY_TOLERANCE);
 		return ClimateHelper.isWithinLimits(humidity, idealHumidity, humidityTolerance);
 	}
 
 	@Override
 	public boolean isGoodTemperature(TemperatureType temperature) {
-		TemperatureType idealTemperature = beeGenome.getActiveAllele(BeeChromosomes.SPECIES).getTemperature();
-		ToleranceType temperatureTolerance = beeGenome.getActiveValue(BeeChromosomes.TEMPERATURE_TOLERANCE);
+		IBeeSpecies species = SpeciesUtil.getBeeSpecies(this.speciesId);
+		TemperatureType idealTemperature = species.getTemperature();
+		ToleranceType temperatureTolerance = species.getDefaultGenome().getActiveValue(BeeChromosomes.TEMPERATURE_TOLERANCE);
 		return ClimateHelper.isWithinLimits(temperature, idealTemperature, temperatureTolerance);
 	}
 

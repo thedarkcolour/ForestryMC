@@ -28,8 +28,8 @@ public class InventoryEnginePeat extends InventoryAdapterTile<PeatEngineBlockEnt
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return slotIndex == SLOT_FUEL && FuelManager.peatEngineFuel.containsKey(itemStack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return slotIndex == SLOT_FUEL && FuelManager.peatEngineFuel.containsKey(stack);
 	}
 
 	@Override

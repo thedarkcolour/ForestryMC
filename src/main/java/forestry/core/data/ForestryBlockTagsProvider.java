@@ -18,8 +18,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import forestry.api.ForestryConstants;
 import forestry.api.ForestryTags;
-import forestry.arboriculture.ForestryWoodType;
 import forestry.apiculture.features.ApicultureBlocks;
+import forestry.arboriculture.ForestryWoodType;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.CharcoalBlocks;
 import forestry.core.blocks.EnumResourceType;
@@ -40,6 +40,7 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 	@Override
 	protected void addTags() {
+		// todo figure out what belongs in these tags?
 		tag(ForestryTags.Blocks.MINEABLE_SCOOP);
 		tag(ForestryTags.Blocks.MINEABLE_GRAFTER);
 
@@ -48,47 +49,50 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 		}
 		tag(ForestryTags.Blocks.VALID_FARM_BASE).add(Blocks.SMOOTH_STONE);
 
-		{
-			tag(BlockTags.MINEABLE_WITH_AXE).add(ApicultureBlocks.BEE_CHEST.block());
-			tag(BlockTags.MINEABLE_WITH_AXE).add(LepidopterologyBlocks.BUTTERFLY_CHEST.block());
 
-			tag(BlockTags.MINEABLE_WITH_AXE).add(ArboricultureBlocks.TREE_CHEST.block());
-			tag(BlockTags.MINEABLE_WITH_AXE).add(CharcoalBlocks.WOOD_PILE.block());
-			//tag(BlockTags.MINEABLE_WITH_AXE).add(ClimatologyBlocks.HABITATFORMER.block());
+		tag(BlockTags.MINEABLE_WITH_AXE)
+				.add(ApicultureBlocks.BEE_CHEST.block())
+				.add(LepidopterologyBlocks.BUTTERFLY_CHEST.block())
+				.add(ArboricultureBlocks.TREE_CHEST.block())
+				.add(CharcoalBlocks.WOOD_PILE.block());
 
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.APATITE_ORE.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.DEEPSLATE_APATITE_ORE.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.TIN_ORE.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.DEEPSLATE_TIN_ORE.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.RAW_TIN_BLOCK.block());
+		tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.add(CoreBlocks.APATITE_ORE.block())
+				.add(CoreBlocks.DEEPSLATE_APATITE_ORE.block())
+				.add(CoreBlocks.TIN_ORE.block())
+				.add(CoreBlocks.DEEPSLATE_TIN_ORE.block())
+				.add(CoreBlocks.RAW_TIN_BLOCK.block())
+				.add(CharcoalBlocks.CHARCOAL.block())
+				.add(DatabaseBlocks.DATABASE.block());
 
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CharcoalBlocks.CHARCOAL.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(DatabaseBlocks.DATABASE.block());
-
-			for (BlockFarm block : FarmingBlocks.FARM.getBlocks()) {
-				tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
-			}
-
-			for (Block block : union(CoreBlocks.RESOURCE_STORAGE, FactoryBlocks.PLAIN, FactoryBlocks.TESR, MailBlocks.BASE)) {
-				tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
-			}
-
-			tag(BlockTags.MINEABLE_WITH_SHOVEL).add(CoreBlocks.HUMUS.block());
-			tag(BlockTags.MINEABLE_WITH_SHOVEL).add(CoreBlocks.BOG_EARTH.block());
-			tag(BlockTags.MINEABLE_WITH_SHOVEL).add(CoreBlocks.PEAT.block());
-
-			for (Block block : union(
-					CoreBlocks.BASE,
-					ApicultureBlocks.ALVEARY, ApicultureBlocks.BASE,
-					ArboricultureBlocks.DOORS,
-					ArboricultureBlocks.PLANKS, ArboricultureBlocks.PLANKS_FIREPROOF, ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF,
-					ArboricultureBlocks.LOGS, ArboricultureBlocks.LOGS_FIREPROOF, ArboricultureBlocks.LOGS_VANILLA_FIREPROOF,
-					ArboricultureBlocks.FENCES, ArboricultureBlocks.FENCES_FIREPROOF, ArboricultureBlocks.FENCES_VANILLA_FIREPROOF)) {
-				tag(BlockTags.MINEABLE_WITH_AXE).add(block);
-			}
+		for (BlockFarm block : FarmingBlocks.FARM.getBlocks()) {
+			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
 		}
 
-		tag(BlockTags.MINEABLE_WITH_PICKAXE).addTag(ForestryTags.Blocks.ORES_TIN).addTag(ForestryTags.Blocks.ORES_APATITE).addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
+		for (Block block : union(CoreBlocks.RESOURCE_STORAGE, FactoryBlocks.PLAIN, FactoryBlocks.TESR, MailBlocks.BASE)) {
+			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
+		}
+
+		tag(BlockTags.MINEABLE_WITH_SHOVEL)
+				.add(CoreBlocks.HUMUS.block())
+				.add(CoreBlocks.BOG_EARTH.block())
+				.add(CoreBlocks.PEAT.block());
+
+		for (Block block : union(
+				CoreBlocks.BASE,
+				ApicultureBlocks.ALVEARY, ApicultureBlocks.BASE,
+				ArboricultureBlocks.DOORS,
+				ArboricultureBlocks.PLANKS, ArboricultureBlocks.PLANKS_FIREPROOF, ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF,
+				ArboricultureBlocks.LOGS, ArboricultureBlocks.LOGS_FIREPROOF, ArboricultureBlocks.LOGS_VANILLA_FIREPROOF,
+				ArboricultureBlocks.FENCES, ArboricultureBlocks.FENCES_FIREPROOF, ArboricultureBlocks.FENCES_VANILLA_FIREPROOF)) {
+			tag(BlockTags.MINEABLE_WITH_AXE).add(block);
+		}
+
+
+		tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.addTag(ForestryTags.Blocks.ORES_TIN)
+				.addTag(ForestryTags.Blocks.ORES_APATITE)
+				.addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
 		tag(BlockTags.NEEDS_STONE_TOOL).addTag(ForestryTags.Blocks.ORES_TIN).addTag(ForestryTags.Blocks.ORES_APATITE).addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
 
 		tag(ForestryTags.Blocks.CHARCOAL_BLOCK).add(CharcoalBlocks.CHARCOAL.block());

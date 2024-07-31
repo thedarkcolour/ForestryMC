@@ -6,7 +6,6 @@
 package forestry.api.apiculture;
 
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.ISpeciesType;
 
@@ -15,8 +14,7 @@ import forestry.api.genetics.ISpeciesType;
  *
  * @author SirSengir
  */
-public interface IApiaristTracker extends IBreedingTracker<IBeeSpecies> {
-
+public interface IApiaristTracker extends IBreedingTracker {
 	/**
 	 * Register the birth of a queen. Will mark species as discovered.
 	 *
@@ -52,5 +50,4 @@ public interface IApiaristTracker extends IBreedingTracker<IBeeSpecies> {
 	 * @return Amount of drones bred with this tracker.
 	 */
 	int getDroneCount();
-
 }

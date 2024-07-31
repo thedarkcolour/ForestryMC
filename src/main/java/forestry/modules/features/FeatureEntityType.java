@@ -24,7 +24,7 @@ public class FeatureEntityType<T extends Entity> extends ModFeature implements I
 		this.factory = factory;
 		this.attributes = attributes;
 		this.classification = classification;
-		this.entityTypeObject = registry.getRegistry(Registry.ENTITY_TYPE_REGISTRY).register(name, () -> consumer.apply(EntityType.Builder.of(factory, classification)).build(getModuleId() + ":" + name));
+		this.entityTypeObject = registry.getRegistry(Registry.ENTITY_TYPE_REGISTRY).register(name, () -> consumer.apply(EntityType.Builder.of(factory, classification)).build(getModuleId().getNamespace() + ":" + name));
 	}
 
 	@Override

@@ -26,12 +26,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
 import forestry.api.client.ForestrySprites;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
-import forestry.core.utils.ModUtil;
 
 public class HabitatSlot extends Widget {
 	private final TagKey<Biome> biomes;
@@ -43,7 +43,7 @@ public class HabitatSlot extends Widget {
 		super(widgetManager, xPos, yPos);
 		this.biomes = biomes;
 		this.name = name;
-		this.iconIndex = ModUtil.modLoc("habitats/" + name.toLowerCase(Locale.ENGLISH));
+		this.iconIndex = ForestryConstants.forestry("habitats/" + name.toLowerCase(Locale.ENGLISH));
 	}
 
 	@Override

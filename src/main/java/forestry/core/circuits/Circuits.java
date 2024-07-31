@@ -1,14 +1,10 @@
 package forestry.core.circuits;
 
 import forestry.api.circuits.ICircuit;
+import forestry.factory.circuits.CircuitSpeedUpgrade;
 
-@SuppressWarnings({"unused", "NullableProblems"})
 public class Circuits {
-	public static ICircuit energyElectricChoke1;
-	public static ICircuit energyElectricEfficiency1;
-	public static ICircuit energyElectricBoost1;
-	public static ICircuit energyElectricBoost2;
-
+	// Managed Farm
 	public static ICircuit farmArborealManaged;
 	public static ICircuit farmOrchardManaged;
 	public static ICircuit farmShroomManaged;
@@ -18,10 +14,10 @@ public class Circuits {
 	public static ICircuit farmPoalesManaged;
 	public static ICircuit farmInfernalManaged;
 	public static ICircuit farmEnderManaged;
-	public static ICircuit farmOrchidManaged;
 	public static ICircuit farmGourdManaged;
 	public static ICircuit farmCocoaManaged;
 
+	// Manual Farm
 	public static ICircuit farmArborealManual;
 	public static ICircuit farmOrchardManual;
 	public static ICircuit farmShroomManual;
@@ -31,14 +27,11 @@ public class Circuits {
 	public static ICircuit farmPoalesManual;
 	public static ICircuit farmInfernalManual;
 	public static ICircuit farmEnderManual;
-	public static ICircuit farmOrchidManual;
 	public static ICircuit farmGourdManual;
 	public static ICircuit farmCocoaManual;
 
-	public static ICircuit machineSpeedUpgrade1;
-	public static ICircuit machineSpeedUpgrade2;
-	public static ICircuit machineEfficiencyUpgrade1;
-
-	private Circuits() {
-	}
+	// Machine Upgrade
+	public static final ICircuit machineSpeedUpgrade1 = new CircuitSpeedUpgrade("machine.speed.boost.1", 0.125f, 0.05f);
+	public static final ICircuit machineSpeedUpgrade2 = new CircuitSpeedUpgrade("machine.speed.boost.2", 0.250f, 0.10f);
+	public static final ICircuit machineEfficiencyUpgrade1 = new CircuitSpeedUpgrade("machine.efficiency.1", 0, -0.10f);
 }

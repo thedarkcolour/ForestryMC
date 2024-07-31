@@ -12,7 +12,7 @@ import forestry.api.core.ItemGroups;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDecorativeLeaves;
-import forestry.arboriculture.genetics.TreeDefinition;
+import forestry.arboriculture.blocks.ForestryLeafType;
 import forestry.core.items.ItemBlockForestry;
 import forestry.core.items.definitions.IColoredItem;
 
@@ -26,22 +26,22 @@ public class ItemBlockDecorativeLeaves extends ItemBlockForestry<BlockDecorative
 	@Override
 	public Component getName(ItemStack itemStack) {
 		BlockDecorativeLeaves block = getBlock();
-		TreeDefinition treeDefinition = block.getGenome();
-		return ItemBlockLeaves.getDisplayName(treeDefinition.createIndividual());
+		ForestryLeafType treeDefinition = block.getType();
+		return ItemBlockLeaves.getDisplayName(treeDefinition.getIndividual().getSpecies());
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
 		BlockDecorativeLeaves block = getBlock();
-		TreeDefinition treeDefinition = block.getGenome();
+		ForestryLeafType leafType = block.getType();
 
-		IGenome genome = treeDefinition.getGenome();
+		IGenome genome = leafType.getIndividual().getGenome();
 
 		if (renderPass == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
-			IFruit fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUITS);
 			return fruitProvider.getDecorativeColor();
 		}
-		return genome.getActiveAllele(TreeChromosomes.SPECIES).getLeafSpriteProvider().getColor(false);
+		return genome.getActiveValue(TreeChromosomes.SPECIES).getLeafSpriteProvider().getColor(false);
 	}
 }

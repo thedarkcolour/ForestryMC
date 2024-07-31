@@ -1,5 +1,6 @@
 package forestry.api.genetics;
 
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.network.chat.Component;
@@ -14,10 +15,13 @@ import forestry.api.genetics.alleles.IRegistryAlleleValue;
 
 public interface ISpecies<I extends IIndividual> extends IRegistryAlleleValue {
 	/**
-	 * @return The string
+	 * @return The translation key for the human-readable name of this species.
 	 */
 	String getTranslationKey();
 
+	/**
+	 * @return The human-readable name of this species.
+	 */
 	default MutableComponent getDisplayName() {
 		return Component.translatable(getTranslationKey());
 	}
@@ -28,7 +32,7 @@ public interface ISpecies<I extends IIndividual> extends IRegistryAlleleValue {
 	IGenome getDefaultGenome();
 
 	/**
-	 * @return The unique identifier of this species. This is DIFFERENT than the id of its allele.
+	 * @return The unique identifier of this species. Also the allele ID for this species.
 	 */
 	ResourceLocation id();
 
@@ -104,4 +108,10 @@ public interface ISpecies<I extends IIndividual> extends IRegistryAlleleValue {
 	 * @return The color of cells that contain this species in the Escritoire research game
 	 */
 	int getEscritoireColor();
+
+	default <S extends ISpecies<?>> S cast() {
+		return (S) this;
+	}
+
+	void addTooltip(I individual, List<Component> tooltip);
 }

@@ -12,26 +12,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.arboriculture.ITreeGenData;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.Product;
-import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.api.core.Product;
 
-public interface ITree extends IIndividual, ITreeGenData {
+public interface ITree extends IIndividual {
 	IEffectData[] doEffect(IEffectData[] storedData, Level level, BlockPos pos);
 
-	@OnlyIn(Dist.CLIENT)
 	IEffectData[] doFX(IEffectData[] storedData, Level level, BlockPos pos);
 
 	/**
@@ -51,14 +45,6 @@ public interface ITree extends IIndividual, ITreeGenData {
 	boolean canStay(BlockGetter level, BlockPos pos);
 
 	/**
-	 * @return Position that this tree can grow. May be different from pos if there are multiple saplings.
-	 * Returns null if a sapling at the given position can not grow into a tree.
-	 */
-	@Override
-	@Nullable
-	BlockPos canGrow(LevelAccessor level, BlockPos pos, int expectedGirth, int expectedHeight);
-
-	/**
 	 * @return Integer denoting the maturity (block ticks) required for a sapling to attempt to grow into a tree.
 	 */
 	int getRequiredMaturity();
@@ -68,15 +54,15 @@ public interface ITree extends IIndividual, ITreeGenData {
 	 */
 	int getResilience();
 
-	/**
-	 * @return Integer denoting the size of the tree trunk.
-	 */
-	@Override
-	int getGirth();
-
 	Feature<NoneFeatureConfiguration> getTreeGenerator(WorldGenLevel level, BlockPos pos, boolean wasBonemealed);
 
 	ITree copy();
+
+	@Override
+	ITreeSpecies getSpecies();
+
+	@Override
+	ITreeSpeciesType getType();
 
 	boolean canBearFruit();
 }

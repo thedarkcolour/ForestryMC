@@ -1,6 +1,7 @@
 package forestry.core.genetics.alleles;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -14,8 +15,8 @@ import com.mojang.serialization.DataResult;
 
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IAlleleNaming;
 import forestry.api.genetics.alleles.IAlleleManager;
+import forestry.api.genetics.alleles.IAlleleNaming;
 import forestry.api.genetics.alleles.IBooleanAllele;
 import forestry.api.genetics.alleles.IBooleanChromosome;
 import forestry.api.genetics.alleles.IChromosome;
@@ -23,6 +24,7 @@ import forestry.api.genetics.alleles.IFloatAllele;
 import forestry.api.genetics.alleles.IFloatChromosome;
 import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.api.genetics.alleles.IIntegerChromosome;
+import forestry.api.genetics.alleles.IRegistryAllele;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
@@ -183,6 +185,11 @@ public class AlleleManager implements IAlleleManager {
 	@Override
 	public <V extends IRegistryAlleleValue> IRegistryChromosome<V> registryChromosome(ResourceLocation id, Class<V> valueClass) {
 		return registerValueChromosome(id, valueClass, RegistryChromosome::new);
+	}
+
+	@Override
+	public <V extends IRegistryAlleleValue> IRegistryAllele<V> registryAllele(ResourceLocation id, IRegistryChromosome<V> chromosome) {
+		return null;
 	}
 
 	private <V, C extends IValueChromosome<V>> C registerValueChromosome(ResourceLocation id, Class<V> valueClass, BiFunction<ResourceLocation, Class<V>, C> factory) {

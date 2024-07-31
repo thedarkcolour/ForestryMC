@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.core;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -18,12 +17,15 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -32,22 +34,17 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
+import forestry.api.ForestryConstants;
 import forestry.api.IForestryApi;
-import forestry.api.circuits.ChipsetManager;
 import forestry.api.client.IClientModuleHandler;
-import forestry.api.core.ForestryError;
-import forestry.api.core.IError;
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
+import forestry.api.modules.IForestryModule;
 import forestry.api.modules.IPacketRegistry;
-import forestry.api.multiblock.MultiblockManager;
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.blocks.TileStreamUpdateTracker;
-import forestry.core.circuits.CircuitRegistry;
-import forestry.core.circuits.SolderManager;
+import forestry.core.client.CoreClientHandler;
 import forestry.core.climate.ForestryClimateManager;
-import forestry.core.commands.CommandModules;
 import forestry.core.features.CoreFeatures;
-import forestry.core.multiblock.MultiblockLogicFactory;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
 import forestry.core.network.packets.PacketActiveUpdate;
@@ -67,17 +64,16 @@ import forestry.core.network.packets.PacketSocketUpdate;
 import forestry.core.network.packets.PacketSolderingIronClick;
 import forestry.core.network.packets.PacketTankLevelUpdate;
 import forestry.core.network.packets.PacketTileStream;
+import forestry.core.network.packets.RecipeCachePacket;
 import forestry.core.owner.GameProfileDataSerializer;
-import forestry.core.client.CoreClientHandler;
-import forestry.core.client.Proxies;
-import forestry.core.recipes.HygroregulatorManager;
+import forestry.core.recipes.RecipeManagers;
+import forestry.core.utils.NetworkUtil;
 import forestry.core.worldgen.VillagerJigsaw;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ModuleUtil;
 
+@ForestryModule
 public class ModuleCore extends BlankForestryModule {
-	public static final LiteralArgumentBuilder<CommandSourceStack> rootCommand = LiteralArgumentBuilder.literal("forestry");
-
 	@Override
 	public ResourceLocation getId() {
 		return ForestryModuleIds.CORE;
@@ -87,14 +83,20 @@ public class ModuleCore extends BlankForestryModule {
 	public void registerEvents(IEventBus modBus) {
 		CoreFeatures.CONFIGURED_FEATURES.register(modBus);
 		CoreFeatures.PLACED_FEATURES.register(modBus);
-		modBus.addListener(ModuleCore::setup);
+		modBus.addListener(ModuleCore::onCommonSetup);
 
 		ItemGroupForestry.initTabs();
 		ModuleUtil.loadFeatureProviders();
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::onItemPickup);
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::onLevelTick);
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::onTagsUpdated);
-		MinecraftForge.EVENT_BUS.addGenericListener(ItemStack.class, ModuleCore::onAttachCapabilities);
+		MinecraftForge.EVENT_BUS.addListener(ModuleCore::registerReloadListeners);
+		MinecraftForge.EVENT_BUS.addListener(ModuleCore::registerCommands);
+	}
+
+	private static void onCommonSetup(FMLCommonSetupEvent event) {
+		// Forestry's villager houses
+		event.enqueueWork(VillagerJigsaw::init);
 	}
 
 	private static void onItemPickup(EntityItemPickupEvent event) {
@@ -116,13 +118,25 @@ public class ModuleCore extends BlankForestryModule {
 		}
 	}
 
-	private static void setup(FMLCommonSetupEvent event) {
-		// Forestry's villager houses
-		event.enqueueWork(VillagerJigsaw::init);
+	private static void registerReloadListeners(AddReloadListenerEvent event) {
+		event.addListener((prepBarrier, resourceManager, prepProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> {
+			return prepBarrier.wait(Unit.INSTANCE).thenRunAsync(() -> {
+				RecipeManagers.invalidateCaches();
+				NetworkUtil.sendToAllPlayers(new RecipeCachePacket());
+			});
+		});
 	}
 
-	private static void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-		// todo what is supposed to go here?
+	private static void registerCommands(RegisterCommandsEvent event) {
+		LiteralArgumentBuilder<CommandSourceStack> forestryCommand = LiteralArgumentBuilder.literal("forestry");
+
+		for (IForestryModule module : IForestryApi.INSTANCE.getModuleManager().getModulesForMod(ForestryConstants.MOD_ID)) {
+			if (module instanceof BlankForestryModule forestryModule) {
+				forestryModule.addToRootCommand(forestryCommand);
+			}
+		}
+
+		event.getDispatcher().register(forestryCommand);
 	}
 
 	@Override
@@ -136,37 +150,8 @@ public class ModuleCore extends BlankForestryModule {
 	}
 
 	@Override
-	public void setupApi() {
-		ChipsetManager.solderManager = new SolderManager();
-
-		ChipsetManager.circuitRegistry = new CircuitRegistry();
-
-		MultiblockManager.logicFactory = new MultiblockLogicFactory();
-
-		RecipeManagers.hygroregulatorManager = new HygroregulatorManager();
-
-		for (IError code : ForestryError.values()) {
-			IForestryApi.INSTANCE.getErrorManager().registerError(code);
-		}
-	}
-
-	@Override
 	public void preInit() {
 		EntityDataSerializers.registerSerializer(GameProfileDataSerializer.INSTANCE);
-
-		//rootCommand.then(CommandModules.register());
-	}
-
-	@Nullable
-	@Override
-	public LiteralArgumentBuilder<CommandSourceStack> register() {
-		// todo register this
-		return rootCommand;
-	}
-
-	@Override
-	public void doInit() {
-		Proxies.render.initRendering();
 	}
 
 	@Override

@@ -6,16 +6,15 @@ import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.recipes.IHygroregulatorRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class HygroregulatorRecipeBuilder {
-
 	private FluidStack liquid;
 	private int transferTime;
 	private float humidChange;
@@ -75,7 +74,7 @@ public class HygroregulatorRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return IHygroregulatorRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.HYGROREGULATOR.serializer();
 		}
 
 		@Nullable

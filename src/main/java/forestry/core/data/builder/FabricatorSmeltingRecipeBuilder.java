@@ -15,13 +15,13 @@ import com.google.gson.JsonObject;
 import java.util.function.Consumer;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.recipes.IFabricatorSmeltingRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class FabricatorSmeltingRecipeBuilder {
@@ -76,7 +76,7 @@ public class FabricatorSmeltingRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return IFabricatorSmeltingRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.FABRICATOR_SMELTING.serializer();
 		}
 
 		@Override

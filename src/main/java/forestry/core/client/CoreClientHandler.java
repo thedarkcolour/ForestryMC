@@ -89,7 +89,7 @@ public class CoreClientHandler implements IClientModuleHandler {
 	private static void bakeModels(ModelEvent.BakingCompleted event) {
 		ClientManager.INSTANCE.onBakeModels(event);
 	}
-
+/*
 	public void setRenderDefaultMachine(IMachinePropertiesTesr<? extends TileBase> machineProperties, String baseTexture) {
 		machineProperties.setRenderer(RenderMachine.MODEL_LAYER, part -> new RenderMachine(part, baseTexture));
 	}
@@ -112,7 +112,7 @@ public class CoreClientHandler implements IClientModuleHandler {
 
 	public void setRenderChest(IMachinePropertiesTesr<? extends TileNaturalistChest> machineProperties, String textureName) {
 		machineProperties.setRenderer(RenderNaturalistChest.MODEL_LAYER, part -> new RenderNaturalistChest(part, textureName));
-	}
+	}*/
 
 	private static void registerReloadListeners(RegisterClientReloadListenersEvent event) {
 		event.registerReloadListener(((ForestryTextureManager) IForestryClientApi.INSTANCE.getTextureManager()).getSpriteUploader());

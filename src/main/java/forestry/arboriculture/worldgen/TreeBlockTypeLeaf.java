@@ -11,7 +11,6 @@
 package forestry.arboriculture.worldgen;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
@@ -46,6 +45,6 @@ public class TreeBlockTypeLeaf implements ITreeBlockType {
 
 	@Override
 	public boolean setBlock(LevelAccessor world, BlockPos pos) {
-		return tree.setLeaves(world, owner, pos, rand == null ? world.getRandom() : rand);
+		return tree.setLeaves(tree.getDefaultGenome(), world, owner, pos, rand == null ? world.getRandom() : rand);
 	}
 }

@@ -1,40 +1,31 @@
 package forestry.energy;
 
-import net.minecraft.client.gui.screens.MenuScreens;
+import java.util.function.Consumer;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.fuels.EngineBronzeFuel;
 import forestry.api.fuels.EngineCopperFuel;
 import forestry.api.fuels.FuelManager;
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.utils.datastructures.FluidMap;
 import forestry.core.utils.datastructures.ItemStackMap;
-import forestry.energy.features.EnergyMenus;
-import forestry.energy.screen.BiogasEngineScreen;
-import forestry.energy.screen.PeatEngineScreen;
+import forestry.energy.client.EnergyClientHandler;
 import forestry.modules.BlankForestryModule;
 
+@ForestryModule
 public class ModuleEnergy extends BlankForestryModule {
 	@Override
 	public ResourceLocation getId() {
 		return ForestryModuleIds.ENERGY;
-	}
-
-	@Override
-	public void registerMenuScreens() {
-		MenuScreens.register(EnergyMenus.ENGINE_BIOGAS.menuType(), BiogasEngineScreen::new);
-		MenuScreens.register(EnergyMenus.ENGINE_PEAT.menuType(), PeatEngineScreen::new);
-	}
-
-	@Override
-	public void setupFallbackApi() {
-		setupFuelManager();
 	}
 
 	@Override
@@ -44,7 +35,6 @@ public class ModuleEnergy extends BlankForestryModule {
 
 	private static void setupFuelManager() {
 		FuelManager.biogasEngineFuel = new FluidMap<>();
-
 		FuelManager.peatEngineFuel = new ItemStackMap<>();
 	}
 
@@ -80,5 +70,10 @@ public class ModuleEnergy extends BlankForestryModule {
 
 		ItemStack bituminousPeat = CoreItems.BITUMINOUS_PEAT.stack();
 		FuelManager.peatEngineFuel.put(bituminousPeat, new EngineCopperFuel(bituminousPeat, Constants.ENGINE_COPPER_FUEL_VALUE_BITUMINOUS_PEAT, Constants.ENGINE_COPPER_CYCLE_DURATION_BITUMINOUS_PEAT));
+	}
+
+	@Override
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new EnergyClientHandler());
 	}
 }

@@ -12,9 +12,11 @@ package forestry.core;
 
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.modules.BlankForestryModule;
 
+@ForestryModule
 public class ModuleFluids extends BlankForestryModule {
 	@Override
 	public ResourceLocation getId() {

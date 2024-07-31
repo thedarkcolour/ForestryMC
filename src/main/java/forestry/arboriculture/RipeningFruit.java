@@ -20,7 +20,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 
 // Fruits that grow unripe in tree leaves, then ripen over time.
 public class RipeningFruit extends Fruit {

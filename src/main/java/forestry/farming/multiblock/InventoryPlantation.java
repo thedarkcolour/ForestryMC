@@ -81,15 +81,15 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (SlotUtil.isSlotInRange(slotIndex, config.fertilizerStart, config.fertilizerCount)) {
-			return acceptsAsFertilizer(itemStack);
+			return acceptsAsFertilizer(stack);
 		} else if (SlotUtil.isSlotInRange(slotIndex, config.germlingsStart, config.germlingsCount)) {
-			return acceptsAsSeedling(itemStack);
+			return acceptsAsSeedling(stack);
 		} else if (SlotUtil.isSlotInRange(slotIndex, config.resourcesStart, config.productionCount)) {
-			return acceptsAsResource(itemStack);
+			return acceptsAsResource(stack);
 		} else if (SlotUtil.isSlotInRange(slotIndex, config.canStart, config.canCount)) {
-			Optional<FluidStack> fluid = FluidUtil.getFluidContained(itemStack);
+			Optional<FluidStack> fluid = FluidUtil.getFluidContained(stack);
 			return fluid.map(f -> housing.getTankManager().canFillFluidType(f)).orElse(false);
 		}
 		return false;

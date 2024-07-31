@@ -9,18 +9,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.ForestryCapabilities;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.alleles.ForestryAlleles;
+import forestry.api.genetics.alleles.IRegistryAllele;
 import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.SpeciesUtil;
 
-import forestry.api.genetics.alleles.IAllele;
-import genetics.utils.AlleleUtils;
-
-public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short index, boolean active, @Nullable IAllele allele) implements IForestryPacketServer {
+public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short index, boolean active, @Nullable ISpecies<?> species) implements IForestryPacketServer {
 	public static void handle(PacketFilterChangeGenome msg, ServerPlayer player) {
 		TileUtil.getInterface(player.level, msg.pos(), ForestryCapabilities.FILTER_LOGIC, null).ifPresent(logic -> {
-			if (logic.setGenomeFilter(msg.facing(), msg.index(), msg.active(), msg.allele())) {
+			if (logic.setGenomeFilter(msg.facing(), msg.index(), msg.active(), msg.species())) {
 				logic.getNetworkHandler().sendToPlayers(logic, player.getLevel(), player);
 			}
 		});
@@ -28,13 +29,13 @@ public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short ind
 
 	@Override
 	public void write(FriendlyByteBuf buffer) {
-		buffer.writeBlockPos(pos);
-		NetworkUtil.writeDirection(buffer, facing);
-		buffer.writeShort(index);
-		buffer.writeBoolean(active);
-		if (allele != null) {
+		buffer.writeBlockPos(this.pos);
+		NetworkUtil.writeDirection(buffer, this.facing);
+		buffer.writeShort(this.index);
+		buffer.writeBoolean(this.active);
+		if (this.species != null) {
 			buffer.writeBoolean(true);
-			buffer.writeUtf(allele.alleleId().toString());
+			buffer.writeResourceLocation(this.species.id());
 		} else {
 			buffer.writeBoolean(false);
 		}
@@ -50,7 +51,7 @@ public record PacketFilterChangeGenome(BlockPos pos, Direction facing, short ind
 		Direction facing = NetworkUtil.readDirection(buffer);
 		short index = buffer.readShort();
 		boolean active = buffer.readBoolean();
-		IAllele allele = buffer.readBoolean() ? AlleleUtils.getAllele(buffer.readUtf()) : null;
+		ISpecies<?> allele = buffer.readBoolean() ? SpeciesUtil.getAnySpecies(buffer.readResourceLocation()) : null;
 
 		return new PacketFilterChangeGenome(pos, facing, index, active, allele);
 	}

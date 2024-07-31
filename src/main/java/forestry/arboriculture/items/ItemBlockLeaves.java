@@ -19,6 +19,8 @@ import net.minecraft.world.level.FoliageColor;
 
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.items.ItemBlockForestry;
@@ -42,13 +44,12 @@ public class ItemBlockLeaves extends ItemBlockForestry<BlockAbstractLeaves> impl
 		if (tree == null) {
 			return Component.translatable("for.leaves.corrupted");
 		}
-		return getDisplayName(tree);
+		return getDisplayName(tree.getSpecies());
 	}
 
-	public static Component getDisplayName(ITree tree) {
-		ITreeSpecies primary = tree.getGenome().getActiveSpecies();
+	public static Component getDisplayName(ISpecies<?> species) {
 		Component leaves = Component.translatable("for.trees.grammar.leaves.type");
-		return Component.translatable("for.trees.grammar.leaves", primary.getDisplayName(), leaves);
+		return Component.translatable("for.trees.grammar.leaves", species.getDisplayName(), leaves);
 	}
 
 	@Override

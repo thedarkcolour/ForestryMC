@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
-import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.ISpecies;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
@@ -22,18 +22,18 @@ public interface IFilterLogic extends INbtWritable, INbtReadable {
 
 	boolean isValid(Direction facing, ItemStack stack, FilterData filterData);
 
-	boolean isValidAllelePair(Direction orientation, String activeUID, String inactiveUID);
+	boolean isValidAllelePair(Direction orientation, ISpecies<?> active, ISpecies<?> inactive);
 
 	IFilterRuleType getRule(Direction facing);
 
 	boolean setRule(Direction facing, IFilterRuleType rule);
 
 	@Nullable
-	IAllele getGenomeFilter(Direction facing, int index, boolean active);
+	ISpecies<?> getGenomeFilter(Direction facing, int index, boolean active);
 
-	boolean setGenomeFilter(Direction facing, int index, boolean active, @Nullable IAllele allele);
+	boolean setGenomeFilter(Direction facing, int index, boolean active, @Nullable ISpecies<?> allele);
 
-	void sendToServer(Direction facing, int index, boolean active, @Nullable IAllele allele);
+	void sendToServer(Direction facing, int index, boolean active, @Nullable ISpecies<?> allele);
 
 	void sendToServer(Direction facing, IFilterRuleType rule);
 

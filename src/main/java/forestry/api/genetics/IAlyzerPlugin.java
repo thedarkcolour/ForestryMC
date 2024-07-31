@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,5 +25,8 @@ public interface IAlyzerPlugin {
 	 */
 	List<String> getHints();
 
-	Map<ResourceLocation, ItemStack> getIconStacks();
+	/**
+	 * @return Icon stacks used by this plugin for rendering.
+	 */
+	Map<ISpecies<?>, ItemStack> getIconStacks();
 }

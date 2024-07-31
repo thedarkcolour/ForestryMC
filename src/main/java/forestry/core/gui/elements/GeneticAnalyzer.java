@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 import forestry.api.ForestryConstants;
-import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.api.genetics.gatgets.IGeneticAnalyzer;
 import forestry.api.genetics.gatgets.IGeneticAnalyzerProvider;
@@ -131,7 +131,7 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 		}
 		ItemStack stack = provider.getSpecimen(selectedSlot);
 
-		IIndividualHandler.ifPresent(stack, (individual, stage) -> {
+		IIndividualHandlerItem.ifPresent(stack, (individual, stage) -> {
 			if (individual.isAnalyzed()) {
 				tabs.setPlugin(individual.getType().getDatabasePlugin());
 				IDatabaseTab tab = tabs.getSelected();

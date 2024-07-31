@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import forestry.api.ForestryCapabilities;
+import forestry.api.IForestryApi;
 import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
@@ -24,11 +25,11 @@ public record PacketFilterChangeRule(BlockPos pos, Direction facing, IFilterRule
 	public void write(FriendlyByteBuf buffer) {
 		buffer.writeBlockPos(pos);
 		buffer.writeShort(facing.get3DDataValue());
-		buffer.writeShort(AlleleManager.filterRegistry.getId(rule));
+		buffer.writeShort(IForestryApi.INSTANCE.getFilterManager().getId(rule));
 	}
 
 	public static PacketFilterChangeRule decode(FriendlyByteBuf buffer) {
-		return new PacketFilterChangeRule(buffer.readBlockPos(), Direction.VALUES[buffer.readShort()], Objects.requireNonNull(AlleleManager.filterRegistry.getRule(buffer.readShort())));
+		return new PacketFilterChangeRule(buffer.readBlockPos(), Direction.VALUES[buffer.readShort()], Objects.requireNonNull(IForestryApi.INSTANCE.getFilterManager().getRule(buffer.readShort())));
 	}
 
 	public static void handle(PacketFilterChangeRule msg, ServerPlayer player) {

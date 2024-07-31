@@ -84,28 +84,31 @@ public enum ForestryError implements IError {
 	;
 
 	private final ResourceLocation id;
-	// todo get rid of this field, there's no point in caching since getSprite allocates a new ResourceLocation anyway
 	private final ResourceLocation sprite;
+	private final String descriptionKey;
+	private final String helpKey;
 
 	ForestryError(String id) {
 		this(id, id);
 	}
 
 	ForestryError(String id, String iconName) {
-		this.id = new ResourceLocation(id);
-		// todo replace the "errors/" prefix with "_error" suffix and just use the name field
+		this.id = ForestryConstants.forestry(id);
 		this.sprite = ForestryConstants.forestry("errors/" + iconName);
-	}
+		String idDotted = this.id.getNamespace() + '.' + this.id.getPath();
+		this.descriptionKey = "errors." + idDotted + ".desc";
+		this.helpKey = "errors." + idDotted + ".help";
 
-	// todo remove and replace with a mod-agnostic function
-	@Override
-	public String getUnlocalizedDescription() {
-		return "for.errors." + id + ".desc";
 	}
 
 	@Override
-	public String getUnlocalizedHelp() {
-		return "for.errors." + id + ".help";
+	public String getDescriptionTranslationKey() {
+		return this.descriptionKey;
+	}
+
+	@Override
+	public String getHelpTranslationKey() {
+		return this.helpKey;
 	}
 
 	@Override

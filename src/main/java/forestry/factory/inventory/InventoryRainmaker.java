@@ -25,10 +25,10 @@ public class InventoryRainmaker extends InventoryAdapterTile<TileMillRainmaker> 
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_SUBSTRATE) {
-			if (FuelManager.rainSubstrate.containsKey(itemStack) && tile.charge == 0 && tile.progress == 0) {
-				RainSubstrate substrate = FuelManager.rainSubstrate.get(itemStack);
+			if (FuelManager.rainSubstrate.containsKey(stack) && tile.charge == 0 && tile.progress == 0) {
+				RainSubstrate substrate = FuelManager.rainSubstrate.get(stack);
 				if (tile.getLevel().isRaining() && substrate.reverse()) {
 					return true;
 				} else {

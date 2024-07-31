@@ -19,8 +19,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
 import forestry.api.arboriculture.ITreeGenData;
-import forestry.api.arboriculture.ITreeModifier;
-import forestry.core.utils.SpeciesUtil;
 import forestry.core.worldgen.FeatureHelper;
 
 public abstract class FeatureTree extends FeatureArboriculture {
@@ -64,26 +62,26 @@ public abstract class FeatureTree extends FeatureArboriculture {
 	@Override
 	@Nullable
 	public BlockPos getValidGrowthPos(LevelAccessor world, BlockPos pos) {
-		return tree.canGrow(world, pos, girth, height);
+		return tree.getGrowthPos(tree.getDefaultGenome(), world, pos, girth, height);
 	}
 
 	@Override
 	public final void preGenerate(LevelAccessor world, RandomSource rand, BlockPos startPos) {
 		super.preGenerate(world, rand, startPos);
 		height = determineHeight(world, rand, baseHeight, heightVariation);
-		girth = tree.getGirth();
+		girth = tree.getGirth(tree.getDefaultGenome());
 	}
 
 	protected int modifyByHeight(LevelAccessor world, int val, int min, int max) {
 		//ITreeModifier treeModifier = SpeciesUtil.TREE_TYPE.get().getTreekeepingMode(world);
-		int determined = Math.round(val * tree.getHeightModifier()/* * treeModifier.getHeightModifier(tree.getGenome(), 1f)*/);
+		int determined = Math.round(val * tree.getHeightModifier(tree.getDefaultGenome()));/* * treeModifier.getHeightModifier(tree.getGenome(), 1f)*/
 		return determined < min ? min : Math.min(determined, max);
 	}
 
 	private int determineHeight(LevelAccessor world, RandomSource rand, int required, int variation) {
 		//ITreeModifier treeModifier = SpeciesUtil.TREE_TYPE.get().getTreekeepingMode(world);
 		int baseHeight = required + rand.nextInt(variation);
-		int height = Math.round(baseHeight * tree.getHeightModifier()/* * treeModifier.getHeightModifier(tree.getGenome(), 1f)*/);
+		int height = Math.round(baseHeight * tree.getHeightModifier(tree.getDefaultGenome()));/* * treeModifier.getHeightModifier(tree.getGenome(), 1f)*/
 		return height < minHeight ? minHeight : Math.min(height, maxHeight);
 	}
 }

@@ -1,15 +1,9 @@
 package forestry.api.genetics.alleles;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import forestry.api.IForestryApi;
 
 /**
  * A pair of an active allele and an inactive allele, for use in a {@link forestry.api.genetics.IGenome}.
@@ -23,19 +17,6 @@ public record AllelePair<A extends IAllele>(A active, A inactive) {
 			IAllele.CODEC.fieldOf("active").forGetter(AllelePair::active),
 			IAllele.CODEC.fieldOf("inactive").forGetter(AllelePair::inactive)
 	).apply(instance, AllelePair::new));
-
-	@Nullable
-	public static IAllele getActiveAllele(CompoundTag nbt) {
-		ResourceLocation alleleUid = ResourceLocation.tryParse(nbt.getString("active"));
-		return alleleUid == null ? null : IForestryApi.INSTANCE.getAlleleManager().getAllele(alleleUid);
-	}
-
-	// todo are these needed?
-	@Nullable
-	public static IAllele getInactiveAllele(CompoundTag nbt) {
-		ResourceLocation alleleUid = ResourceLocation.tryParse(nbt.getString("inactive"));
-		return alleleUid == null ? null : IForestryApi.INSTANCE.getAlleleManager().getAllele(alleleUid);
-	}
 
 	/**
 	 * Creates an allele pair where both the active and inactive alleles are the same.
@@ -74,8 +55,8 @@ public record AllelePair<A extends IAllele>(A active, A inactive) {
 	}
 
 	/**
-	 * A new chromosome pair with the active allele is the first dominant allele and the inactive allele is the other allele.
-	 * THIS IS DIFFERENT THAN THE CONSTRUCTOR.
+	 * A new chromosome pair where the active allele is the first dominant allele and the inactive allele is the other allele.
+	 * THIS IS DIFFERENT THAN THE CONSTRUCTOR, {@link AllelePair#AllelePair}.
 	 *
 	 * @return A chromosome pair of two alleles in order of allele dominance.
 	 */

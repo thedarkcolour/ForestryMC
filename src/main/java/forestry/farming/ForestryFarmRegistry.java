@@ -69,16 +69,11 @@ public class ForestryFarmRegistry implements IFarmRegistry {
 	}
 
 	@Override
-	public IFarmProperties registerLogic(String identifier, IFarmProperties farmInstance) {
-		farmInstances.put(identifier, farmInstance);
-		return farmInstance;
-	}
-
-	@Override
 	public IFarmPropertiesBuilder getPropertiesBuilder(String identifier) {
 		return propertiesBuilders.computeIfAbsent(identifier, FarmProperties.Builder::new);
 	}
 
+	@Override
 	public IFarmProperties registerProperties(String identifier, IFarmProperties properties) {
 		farmInstances.put(identifier, properties);
 		return properties;

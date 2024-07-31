@@ -18,7 +18,10 @@ import java.util.Map;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import com.mojang.authlib.GameProfile;
 
 import forestry.api.climate.IClimateProvider;
 import forestry.api.genetics.IGenome;
@@ -28,6 +31,8 @@ import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
+import forestry.core.features.CoreItems;
+import forestry.core.genetics.ItemResearchNote;
 
 public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	private final ISpeciesType<S, ?> type;
@@ -126,5 +131,10 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	@Override
 	public boolean isSecret() {
 		return this.secret;
+	}
+
+	@Override
+	public ItemStack getMutationNote(GameProfile researcher) {
+		return ItemResearchNote.createMutationNoteStack(researcher, this);
 	}
 }

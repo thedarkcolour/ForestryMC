@@ -13,20 +13,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import forestry.farming.logic.FarmProperties;
 
+// todo refactor to be similar to the other API
 public interface IFarmRegistry {
-	/**
-	 * Registers farming logic in registry
-	 *
-	 * @since Forestry 5.8
-	 */
-	IFarmProperties registerLogic(String identifier, IFarmProperties farmInstance);
-
 	/**
 	 * Registers farming logic in registry under given identifier
 	 *
 	 * @param identifier           Valid identifiers: farmArboreal farmCrops farmGourd farmInfernal farmPoales farmSucculentes farmShroom
-	 * @param logicFactory         factory that creates the corresponding instance of logic
-	 * @param farmablesIdentifiers Identifiers: farmArboreal farmCrops farmGourd farmInfernal farmPoales farmSucculentes farmShroom
 	 */
 	IFarmPropertiesBuilder getPropertiesBuilder(String identifier);
 
@@ -58,5 +50,5 @@ public interface IFarmRegistry {
 	@Nullable
 	IFarmProperties getProperties(String identifier);
 
-	IFarmProperties registerProperties(String identifier, FarmProperties properties);
+	IFarmProperties registerProperties(String identifier, IFarmProperties properties);
 }

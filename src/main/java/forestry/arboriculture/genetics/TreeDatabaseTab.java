@@ -38,7 +38,7 @@ public class TreeDatabaseTab implements IDatabaseTab<ITree> {
 	}
 
 	@Override
-	public void createElements(DatabaseElement container, ITree tree, ILifeStage stage, ItemStack itemStack) {
+	public void createElements(DatabaseElement container, ITree tree, ILifeStage stage, ItemStack stack) {
 		AllelePair<IValueAllele<ITreeSpecies>> speciesPair = tree.getGenome().getAllelePair(TreeChromosomes.SPECIES);
 		ITreeSpecies species = (mode == DatabaseMode.ACTIVE ? speciesPair.active() : speciesPair.inactive()).value();
 		Style speciesStyle = GuiElementFactory.INSTANCE.getStateStyle(species.isDominant());

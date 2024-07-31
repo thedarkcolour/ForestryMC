@@ -27,8 +27,8 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
-import forestry.api.genetics.IIndividualHandler;
-import forestry.api.genetics.Product;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.core.utils.SpeciesUtil;
@@ -66,7 +66,7 @@ public class FarmableGE implements IFarmable {
 	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
 		ITreeSpeciesType treeRoot = SpeciesUtil.TREE_TYPE.get();
 
-		return IIndividualHandler.filter(germling, individual -> individual instanceof ITree tree && treeRoot.plantSapling(level, tree, player.getGameProfile(), pos));
+		return IIndividualHandlerItem.filter(germling, individual -> individual instanceof ITree tree && treeRoot.plantSapling(level, tree, player.getGameProfile(), pos));
 	}
 
 	@Override

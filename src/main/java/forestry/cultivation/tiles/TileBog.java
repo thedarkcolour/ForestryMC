@@ -1,8 +1,9 @@
 package forestry.cultivation.tiles;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.core.features.CoreBlocks;
@@ -16,27 +17,27 @@ public class TileBog extends TilePlanter {
 	}
 
 	@Override
-	public NonNullList<ItemStack> createGermlingStacks() {
-		return NonNullList.create();
+	public List<ItemStack> createGermlingStacks() {
+		return List.of();
 	}
 
 	@Override
-	public NonNullList<ItemStack> createResourceStacks() {
-		return createList(
-			CoreBlocks.BOG_EARTH.stack(),
-			CoreBlocks.BOG_EARTH.stack(),
-			CoreBlocks.BOG_EARTH.stack(),
-			CoreBlocks.BOG_EARTH.stack()
+	public List<ItemStack> createResourceStacks() {
+		return List.of(
+				CoreBlocks.BOG_EARTH.stack(),
+				CoreBlocks.BOG_EARTH.stack(),
+				CoreBlocks.BOG_EARTH.stack(),
+				CoreBlocks.BOG_EARTH.stack()
 		);
 	}
 
 	@Override
-	public NonNullList<ItemStack> createProductionStacks() {
-		return createList(
-			CoreItems.PEAT.stack(),
-			CoreItems.PEAT.stack(),
-			CoreItems.PEAT.stack(),
-			CoreItems.PEAT.stack()
+	public List<ItemStack> createProductionStacks() {
+		return List.of(
+				CoreItems.PEAT.stack(),
+				CoreItems.PEAT.stack(),
+				CoreItems.PEAT.stack(),
+				CoreItems.PEAT.stack()
 		);
 	}
 }

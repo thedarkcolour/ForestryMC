@@ -56,12 +56,6 @@ public enum DefaultFilterRuleType implements IFilterRuleType {
 		this.isContainer = isContainer;
 	}
 
-	public static void init() {
-		for (DefaultFilterRuleType rule : values()) {
-			FilterRegistry.INSTANCE.registerFilter(rule);
-		}
-	}
-
 	@Override
 	public boolean isValid(ItemStack stack, FilterData data) {
 		for (IFilterRule logic : logic) {
@@ -72,7 +66,6 @@ public enum DefaultFilterRuleType implements IFilterRuleType {
 		return false;
 	}
 
-	// todo this is suspicious
 	@Override
 	public void addLogic(IFilterRule logic) {
 		if (logic == this) {

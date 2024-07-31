@@ -14,9 +14,8 @@ import forestry.api.genetics.ForestryTaxa;
 import forestry.api.genetics.TaxonomicRank;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.plugin.IChromosomeBuilder;
+import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.api.plugin.IGeneticRegistration;
-import forestry.api.plugin.IKaryotypeBuilder;
 import forestry.api.plugin.ISpeciesTypeBuilder;
 import forestry.api.plugin.ISpeciesTypeFactory;
 import forestry.api.plugin.ITaxonBuilder;
@@ -30,12 +29,17 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	private final HashMap<String, HashSet<String>> unknownTaxa = new HashMap<>();
 	// Name of taxon with missing parent -> Action
 	private final HashMap<String, Consumer<ITaxonBuilder>> unknownActions = new HashMap<>();
+	// Species type builders
 	private final HashMap<ResourceLocation, SpeciesTypeBuilder> builders = new HashMap<>();
+	// Species type modifications, run just before registry is finalized
 	private final HashMap<ResourceLocation, ArrayList<Consumer<ISpeciesTypeBuilder>>> modifications = new HashMap<>();
+	// Filter rule types used by IFilterRegistry
+	private final ArrayList<IFilterRuleType> ruleTypes = new ArrayList<>();
+	// Used to throw exceptions when a mod tries to register something too late
 	private boolean registeredSpecies;
 
 	public GeneticRegistration() {
-		// Register default Domain and Kingdom taxa
+		// Register default Domain and Kingdom taxa according to seven kingdoms
 		TaxonBuilder prokaryota = registerTaxon(TaxonomicRank.DOMAIN, ForestryTaxa.DOMAIN_PROKARYOTA);
 		prokaryota.defineSubTaxon(ForestryTaxa.KINGDOM_ARCHAEA);
 		prokaryota.defineSubTaxon(ForestryTaxa.KINGDOM_BACTERIA);
@@ -126,15 +130,14 @@ public final class GeneticRegistration implements IGeneticRegistration {
 		}
 	}
 
-	@Override
-	public <A extends IAllele> IChromosomeBuilder<A> registerChromosome(IChromosome<A> chromosomeType) {
-		return null;
-	}
-
 	public void finishRegistration() {
 		Preconditions.checkState(!this.registeredSpecies, "Registration of species is already finished. Some mod is being pesky!");
 		this.registeredSpecies = true;
+	}
 
+	@Override
+	public void registerFilterRuleType(IFilterRuleType ruleType) {
+		this.ruleTypes.add(ruleType);
 	}
 
 	private static class TaxonBuilder implements ITaxonBuilder {

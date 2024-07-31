@@ -41,9 +41,9 @@ public class ClimateListener implements IClimateListener {
 	@Nullable
 	protected BlockPos pos;
 	@Nullable
-	private IClimatised cachedState;
+	private ClimateState cachedState;
 	@Nullable
-	private IClimatised cachedClientState;
+	private ClimateState cachedClientState;
 	@OnlyIn(Dist.CLIENT)
 	private TickHelper tickHelper;
 	@OnlyIn(Dist.CLIENT)
@@ -103,7 +103,7 @@ public class ClimateListener implements IClimateListener {
 	}
 
 	@Nullable
-	private IClimatised getState(boolean update, boolean syncToClient) {
+	private ClimateState getState(boolean update, boolean syncToClient) {
 		Level worldObj = getWorldObj();
 		if (!worldObj.isClientSide && update) {
 			updateState(syncToClient);
@@ -133,13 +133,12 @@ public class ClimateListener implements IClimateListener {
 			return TemperatureType.HELLISH;
 		}
 
-		throw Todos.unimplemented();
-		//return TemperatureType.getFromValue(getExactTemperature());
+		return IForestryApi.INSTANCE.getClimateManager().getTemperature(getBiome());
 	}
 
 	@Override
 	public HumidityType humidity() {
-		throw Todos.unimplemented();
+		return IForestryApi.INSTANCE.getClimateManager().getHumidity(getBiome());
 	}
 
 	@Override
@@ -147,9 +146,8 @@ public class ClimateListener implements IClimateListener {
 		return new ClimateState(temperature(), humidity());
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void setClimateState(IClimatised climateState) {
+	public void setClimateState(ClimateState climateState) {
 		this.cachedState = climateState;
 	}
 
@@ -170,7 +168,7 @@ public class ClimateListener implements IClimateListener {
 	public void syncToClient(ServerPlayer player) {
 		Level level = getWorldObj();
 		if (!level.isClientSide) {
-			IClimatised climateState = getState(true, false);
+			ClimateState climateState = getState(true, false);
 			NetworkUtil.sendToPlayer(new PacketClimateListenerUpdate(getCoordinates(), climateState), player);
 		}
 	}

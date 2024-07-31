@@ -108,7 +108,7 @@ public class JeiUtil {
 
 	public static void setCraftingItems(
 			List<IRecipeSlotBuilder> craftingSlots,
-			NonNullList<Ingredient> ingredients,
+			List<Ingredient> ingredients,
 			int width,
 			int height,
 			ICraftingGridHelper craftingGridHelper
@@ -134,7 +134,7 @@ public class JeiUtil {
 	}
 
 	public static <S extends ISpecies<?>> void registerItemSubtypes(ISubtypeRegistration registry, ISpeciesChromosome<S> species, ISpeciesType<S, ?> type) {
-		IIngredientSubtypeInterpreter<ItemStack> interpreter = (stack, context) -> stack.getCapability(ForestryCapabilities.INDIVIDUAL)
+		IIngredientSubtypeInterpreter<ItemStack> interpreter = (stack, context) -> stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM)
 				.map(individual -> individual.getIndividual().getGenome().getActiveValue(species).getBinomial())
 				.orElse(IIngredientSubtypeInterpreter.NONE);
 

@@ -26,9 +26,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
-import forestry.core.utils.ModUtil;
 import forestry.core.utils.SoundUtil;
 import forestry.mail.POBoxInfo;
 
@@ -50,7 +50,7 @@ public class GuiMailboxInfo extends GuiComponent {
 	@Nullable
 	private POBoxInfo poInfo;
 	// TODO: this texture is a terrible waste of space in graphics memory, find a better way to do it.
-	private final ResourceLocation textureAlert = ModUtil.modLoc(Constants.TEXTURE_PATH_GUI + "/mailalert.png");
+	private final ResourceLocation textureAlert = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/mailalert.png");
 
 	private GuiMailboxInfo() {
 		fontRenderer = Minecraft.getInstance().font;

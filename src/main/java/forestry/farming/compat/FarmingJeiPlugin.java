@@ -1,13 +1,16 @@
 package forestry.farming.compat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
 
+import forestry.api.IForestryApi;
+import forestry.api.circuits.CircuitHolder;
+import forestry.api.farming.IFarmCircuit;
+import forestry.api.farming.IFarmLogic;
 import forestry.api.modules.ForestryModuleIds;
-import forestry.core.ClientsideCode;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.features.CoreItems;
 
@@ -33,10 +36,23 @@ public class FarmingJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		RecipeManager recipeManager = ClientsideCode.getRecipeManager();
+		registration.addRecipes(FarmingInfoRecipeCategory.TYPE, getRecipes());
+	}
 
-		List<FarmingInfoRecipe> recipes = FarmingInfoRecipeMaker.getRecipes(recipeManager);
-		registration.addRecipes(FarmingInfoRecipeCategory.TYPE, recipes);
+	public static List<FarmingInfoRecipe> getRecipes() {
+		ArrayList<FarmingInfoRecipe> info = new ArrayList<>();
+
+		for (CircuitHolder holder : IForestryApi.INSTANCE.getCircuitManager().getCircuitHolders()) {
+			if (holder.circuit() instanceof IFarmCircuit circuit) {
+				IFarmLogic logic = circuit.getFarmLogic();
+
+				if (logic.isManual()) {
+					info.add(new FarmingInfoRecipe(holder.stack(), logic.getProperties(), circuit));
+				}
+			}
+		}
+
+		return info;
 	}
 
 	@Override

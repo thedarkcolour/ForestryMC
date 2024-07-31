@@ -18,7 +18,7 @@ public interface IDatabaseTab<I extends IIndividual> {
 	 * @param individual The individual that is currently in the database selected.
 	 * @param stage
 	 */
-	void createElements(DatabaseElement container, I individual, ILifeStage stage, ItemStack itemStack);
+	void createElements(DatabaseElement container, I individual, ILifeStage stage, ItemStack stack);
 
 	ItemStack getIconStack();
 

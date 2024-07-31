@@ -32,7 +32,7 @@ public class ButterflyDatabaseTab implements IDatabaseTab<IButterfly> {
 	}
 
 	@Override
-	public void createElements(DatabaseElement database, IButterfly butterfly, ILifeStage stage, ItemStack itemStack) {
+	public void createElements(DatabaseElement database, IButterfly butterfly, ILifeStage stage, ItemStack stack) {
 		IButterflySpecies activeSpecies = butterfly.getGenome().getActiveValue(ButterflyChromosomes.SPECIES);
 		IButterflySpecies inactiveSpecies = butterfly.getGenome().getInactiveValue(ButterflyChromosomes.SPECIES);
 

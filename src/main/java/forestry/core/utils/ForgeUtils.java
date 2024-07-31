@@ -5,6 +5,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+// todo remove
 public class ForgeUtils {
 	private static final Lazy<IEventBus> MOD_BUS = Lazy.of(() -> FMLJavaModLoadingContext.get().getModEventBus());
 

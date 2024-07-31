@@ -9,9 +9,7 @@ import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.client.ForestrySprites;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.filter.FilterData;
-import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
-import forestry.sorting.FilterRegistry;
 
 public enum ArboricultureFilterRuleType implements IFilterRuleType {
 	TREE(ForestrySprites.ANALYZER_TREE) {
@@ -39,21 +37,6 @@ public enum ArboricultureFilterRuleType implements IFilterRuleType {
 	ArboricultureFilterRuleType(ResourceLocation sprite) {
 		this.sprite = sprite;
 		this.id = "forestry.arboriculture." + name().toLowerCase(Locale.ENGLISH);
-	}
-
-	public static void init() {
-		for (ArboricultureFilterRuleType rule : values()) {
-			FilterRegistry.INSTANCE.registerFilter(rule);
-		}
-	}
-
-	@Override
-	public void addLogic(IFilterRule logic) {
-	}
-
-	@Override
-	public boolean isContainer() {
-		return false;
 	}
 
 	@Override

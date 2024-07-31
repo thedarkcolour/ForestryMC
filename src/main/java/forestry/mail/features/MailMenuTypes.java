@@ -1,6 +1,6 @@
 package forestry.mail.features;
 
-import forestry.mail.ModuleMail;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.mail.gui.ContainerCatalogue;
 import forestry.mail.gui.ContainerLetter;
 import forestry.mail.gui.ContainerMailbox;
@@ -14,7 +14,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class MailMenuTypes {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleMail.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.MAIL);
 
 	public static final FeatureMenuType<ContainerCatalogue> CATALOGUE = REGISTRY.menuType(ContainerCatalogue::fromNetwork, "catalogue");
 	public static final FeatureMenuType<ContainerLetter> LETTER = REGISTRY.menuType(ContainerLetter::fromNetwork, "letter");

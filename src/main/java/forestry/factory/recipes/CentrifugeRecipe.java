@@ -14,54 +14,60 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
+import forestry.api.core.Product;
 import forestry.api.recipes.ICentrifugeRecipe;
+import forestry.core.utils.JsonUtil;
+import forestry.factory.features.FactoryRecipeTypes;
 
 public class CentrifugeRecipe implements ICentrifugeRecipe {
-
 	private final ResourceLocation id;
 	private final int processingTime;
 	private final Ingredient input;
-	private final NonNullList<Product> outputs;
+	private final List<Product> products;
 
-	public CentrifugeRecipe(ResourceLocation id, int processingTime, Ingredient input, NonNullList<Product> outputs) {
+	public CentrifugeRecipe(ResourceLocation id, int processingTime, Ingredient input, List<Product> products) {
 		Preconditions.checkNotNull(id, "Recipe identifier cannot be null");
 
 		this.id = id;
 		this.processingTime = processingTime;
 		this.input = input;
-		this.outputs = outputs;
+		this.products = products;
 	}
 
 	@Override
 	public Ingredient getInput() {
-		return input;
+		return this.input;
 	}
 
 	@Override
 	public int getProcessingTime() {
-		return processingTime;
+		return this.processingTime;
 	}
 
 	@Override
-	public NonNullList<ItemStack> getProducts(RandomSource random) {
-		NonNullList<ItemStack> products = NonNullList.create();
+	public List<ItemStack> getProducts(RandomSource random) {
+		ArrayList<ItemStack> products = new ArrayList<>();
 
-		for (Product entry : this.outputs) {
-			float probability = entry.getProbability();
+		for (Product entry : this.products) {
+			float probability = entry.chance();
 
 			if (probability >= 1.0) {
-				products.add(entry.getStack().copy());
+				products.add(entry.createStack());
 			} else if (random.nextFloat() < probability) {
-				products.add(entry.getStack().copy());
+				products.add(entry.createStack());
 			}
 		}
 
@@ -69,17 +75,31 @@ public class CentrifugeRecipe implements ICentrifugeRecipe {
 	}
 
 	@Override
-	public NonNullList<Product> getAllProducts() {
-		return outputs;
+	public List<Product> getAllProducts() {
+		return this.products;
+	}
+
+	@Override
+	public ItemStack getResultItem() {
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ResourceLocation getId() {
-		return id;
+		return this.id;
+	}
+
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return FactoryRecipeTypes.CENTRIFUGE.serializer();
+	}
+
+	@Override
+	public RecipeType<?> getType() {
+		return FactoryRecipeTypes.CENTRIFUGE.type();
 	}
 
 	public static class Serializer implements RecipeSerializer<CentrifugeRecipe> {
-
 		@Override
 		public CentrifugeRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			int processingTime = GsonHelper.getAsInt(json, "time");
@@ -87,9 +107,7 @@ public class CentrifugeRecipe implements ICentrifugeRecipe {
 			NonNullList<Product> outputs = NonNullList.create();
 
 			for (JsonElement element : GsonHelper.getAsJsonArray(json, "products")) {
-				float chance = GsonHelper.getAsFloat(element.getAsJsonObject(), "chance");
-				ItemStack stack = RecipeSerializers.item(GsonHelper.getAsJsonObject(element.getAsJsonObject(), "item"));
-				outputs.add(new Product(chance, stack));
+				outputs.add(JsonUtil.deserialize(Product.CODEC, element));
 			}
 
 			return new CentrifugeRecipe(recipeId, processingTime, input, outputs);
@@ -99,11 +117,7 @@ public class CentrifugeRecipe implements ICentrifugeRecipe {
 		public CentrifugeRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
 			int processingTime = buffer.readVarInt();
 			Ingredient input = Ingredient.fromNetwork(buffer);
-			NonNullList<Product> outputs = RecipeSerializers.read(buffer, b -> {
-				float chance = b.readFloat();
-				ItemStack stack = b.readItem();
-				return new Product(chance, stack);
-			});
+			List<Product> outputs = RecipeSerializers.read(buffer, Product::fromNetwork);
 
 			return new CentrifugeRecipe(recipeId, processingTime, input, outputs);
 		}
@@ -113,10 +127,7 @@ public class CentrifugeRecipe implements ICentrifugeRecipe {
 			buffer.writeVarInt(recipe.processingTime);
 			recipe.input.toNetwork(buffer);
 
-			RecipeSerializers.write(buffer, recipe.outputs, (b, product) -> {
-				b.writeFloat(product.getProbability());
-				b.writeItem(product.getStack());
-			});
+			RecipeSerializers.write(buffer, recipe.products, Product::toNetwork);
 		}
 	}
 }

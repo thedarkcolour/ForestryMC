@@ -11,20 +11,21 @@
 package forestry.factory.tiles;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,17 +35,15 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import forestry.api.circuits.ChipsetManager;
-import forestry.api.circuits.CircuitSocketType;
+import forestry.api.IForestryApi;
+import forestry.api.circuits.ForestryCircuitSocketTypes;
 import forestry.api.circuits.ICircuitBoard;
-import forestry.api.circuits.ICircuitSocketType;
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.ISqueezerRecipe;
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.circuits.ISocketable;
 import forestry.core.circuits.ISpeedUpgradable;
 import forestry.core.config.Constants;
-import forestry.api.core.ForestryError;
 import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.InventoryAdapter;
@@ -53,6 +52,7 @@ import forestry.core.render.TankRenderInfo;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
 import forestry.core.utils.InventoryUtil;
+import forestry.core.utils.RecipeUtils;
 import forestry.factory.features.FactoryTiles;
 import forestry.factory.gui.ContainerSqueezer;
 import forestry.factory.inventory.InventorySqueezer;
@@ -95,7 +95,7 @@ public class TileSqueezer extends TilePowered implements ISocketable, WorldlyCon
 
 		ItemStack chip = sockets.getItem(0);
 		if (!chip.isEmpty()) {
-			ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(chip);
+			ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(chip);
 			if (chipset != null) {
 				chipset.onLoad(this);
 			}
@@ -146,7 +146,7 @@ public class TileSqueezer extends TilePowered implements ISocketable, WorldlyCon
 		if (currentRecipe == null) {
 			return false;
 		}
-		if (!inventory.removeResources(currentRecipe.getResources())) {
+		if (!inventory.removeResources(currentRecipe.getInputs())) {
 			return false;
 		}
 
@@ -165,27 +165,25 @@ public class TileSqueezer extends TilePowered implements ISocketable, WorldlyCon
 		ISqueezerRecipe matchingRecipe = null;
 
 		if (inventory.hasResources()) {
-			NonNullList<ItemStack> resources = inventory.getResources();
+			List<ItemStack> resources = inventory.getResources();
 
 			boolean containsSets = false;
 
 			if (currentRecipe != null) {
 				Container inventory = new InventoryMapper(this, InventorySqueezer.SLOT_RESOURCE_1, InventorySqueezer.SLOTS_RESOURCE_COUNT);
-				containsSets = InventoryUtil.consumeIngredients(inventory, currentRecipe.getResources(), null, false, false, false);
+				containsSets = InventoryUtil.consumeIngredients(inventory, currentRecipe.getInputs(), null, false, false, false);
 			}
 
 			if (currentRecipe != null && containsSets) {
 				matchingRecipe = currentRecipe;
 			} else {
-				matchingRecipe = RecipeManagers.squeezerManager.findMatchingRecipe(getLevel().getRecipeManager(), resources)
-						.orElse(null);
+				matchingRecipe = RecipeUtils.getSqueezerRecipe(getLevel().getRecipeManager(), resources);
 			}
 
 			if (matchingRecipe == null) {
 				for (ItemStack resource : resources) {
 					if (matchingRecipe == null) {
-						matchingRecipe = RecipeManagers.squeezerContainerManager.findMatchingContainerRecipe(getLevel().getRecipeManager(), resource)
-								.orElse(null);
+						matchingRecipe = RecipeUtils.getSqueezerContainerRecipe(getLevel().getRecipeManager(), resource);
 					}
 				}
 			}
@@ -259,11 +257,11 @@ public class TileSqueezer extends TilePowered implements ISocketable, WorldlyCon
 
 	@Override
 	public void setSocket(int slot, ItemStack stack) {
-		if (stack.isEmpty() || ChipsetManager.circuitRegistry.isChipset(stack)) {
+		if (stack.isEmpty() || IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(stack)) {
 			// Dispose correctly of old chipsets
 			if (!sockets.getItem(slot).isEmpty()) {
-				if (ChipsetManager.circuitRegistry.isChipset(sockets.getItem(slot))) {
-					ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(sockets.getItem(slot));
+				if (IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(sockets.getItem(slot))) {
+					ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(sockets.getItem(slot));
 					if (chipset != null) {
 						chipset.onRemoval(this);
 					}
@@ -272,7 +270,7 @@ public class TileSqueezer extends TilePowered implements ISocketable, WorldlyCon
 
 			sockets.setItem(slot, stack);
 			if (!stack.isEmpty()) {
-				ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(stack);
+				ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(stack);
 				if (chipset != null) {
 					chipset.onInsertion(this);
 				}
@@ -281,8 +279,8 @@ public class TileSqueezer extends TilePowered implements ISocketable, WorldlyCon
 	}
 
 	@Override
-	public ICircuitSocketType getSocketType() {
-		return CircuitSocketType.MACHINE;
+	public ResourceLocation getSocketType() {
+		return ForestryCircuitSocketTypes.MACHINE;
 	}
 
 	@Override

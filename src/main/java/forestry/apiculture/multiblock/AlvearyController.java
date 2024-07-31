@@ -56,8 +56,8 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	private final IBeekeepingLogic beekeepingLogic;
 	private final IClimateListener listener;
 
-	private float tempChange = 0.0f;
-	private float humidChange = 0.0f;
+	private byte temperatureSteps;
+	private byte humiditySteps;
 
 	// PARTS
 	private final Set<IBeeModifier> beeModifiers = new HashSet<>();
@@ -98,7 +98,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public IClimateListener getClimateListener() {
-		return listener;
+		return this.listener;
 	}
 
 	@Override
@@ -234,26 +234,16 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 			beekeepingLogic.doWork();
 		}
 
+		// climate blocks will increase climate every tick
 		for (IAlvearyComponent.Climatiser climatiser : climatisers) {
 			climatiser.changeClimate(tickCount, this);
 		}
 
-		tempChange = equalizeChange(tempChange);
-		humidChange = equalizeChange(humidChange);
+		// the old equalizeChange would cap out the climate increases from the climate blocks
+		temperatureSteps = 0;
+		humiditySteps = 0;
 
 		return canWork;
-	}
-
-	private static float equalizeChange(float change) {
-		if (change == 0) {
-			return 0;
-		}
-
-		change *= 0.95f;
-		if (change <= 0.001f && change >= -0.001f) {
-			change = 0;
-		}
-		return change;
 	}
 
 	@Override
@@ -291,8 +281,8 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	public CompoundTag write(CompoundTag data) {
 		data = super.write(data);
 
-		data.putFloat("TempChange", tempChange);
-		data.putFloat("HumidChange", humidChange);
+		data.putByte("temperatureSteps", this.temperatureSteps);
+		data.putByte("humiditySteps", this.humiditySteps);
 
 		beekeepingLogic.write(data);
 		inventory.write(data);
@@ -303,8 +293,8 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	public void read(CompoundTag data) {
 		super.read(data);
 
-		tempChange = data.getFloat("TempChange");
-		humidChange = data.getFloat("HumidChange");
+		this.temperatureSteps = data.getByte("temperatureSteps");
+		this.humiditySteps = data.getByte("humiditySteps");
 
 		beekeepingLogic.read(data);
 		inventory.read(data);
@@ -338,19 +328,19 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public HumidityType humidity() {
-		return IForestryApi.INSTANCE.getClimateManager().getHumidity(getBiome());
+		return IForestryApi.INSTANCE.getClimateManager().getHumidity(getBiome()).up(this.humiditySteps);
 	}
 
 	@Override
 	public TemperatureType temperature() {
 		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(this);
 		if (beeModifier.isHellish() || getBiome().is(ForestryTags.Biomes.NETHER_CATEGORY)) {
-			if (tempChange >= 0) {
+			if (this.temperatureSteps >= 0) {
 				return TemperatureType.HELLISH;
 			}
 		}
 
-		return IForestryApi.INSTANCE.getClimateManager().getTemperature(getBiome());
+		return IForestryApi.INSTANCE.getClimateManager().getTemperature(getBiome()).up(this.temperatureSteps);
 	}
 
 	@Override
@@ -387,21 +377,13 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	}
 
 	@Override
-	public void addTemperatureChange(float change, float boundaryDown, float boundaryUp) {
-		TemperatureType temperature = listener.temperature();
-
-		tempChange += change;
-		tempChange = Math.max(boundaryDown - temperature, tempChange);
-		tempChange = Math.min(boundaryUp - temperature, tempChange);
+	public void addTemperatureChange(byte steps) {
+		this.temperatureSteps += steps;
 	}
 
 	@Override
-	public void addHumidityChange(float change, float boundaryDown, float boundaryUp) {
-		HumidityType humidity = listener.humidity();
-
-		humidChange += change;
-		humidChange = Math.max(boundaryDown - humidity, humidChange);
-		humidChange = Math.min(boundaryUp - humidity, humidChange);
+	public void addHumidityChange(byte steps) {
+		this.humiditySteps += steps;
 	}
 
 	/* GUI */
@@ -412,15 +394,15 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public void writeGuiData(FriendlyByteBuf data) {
-		data.writeVarInt(beekeepingLogic.getBeeProgressPercent());
-		data.writeVarInt(Math.round(tempChange * 100));
-		data.writeVarInt(Math.round(humidChange * 100));
+		data.writeVarInt(this.beekeepingLogic.getBeeProgressPercent());
+		data.writeByte(this.temperatureSteps);
+		data.writeByte(this.humiditySteps);
 	}
 
 	@Override
 	public void readGuiData(FriendlyByteBuf data) {
-		breedingProgressPercent = data.readVarInt();
-		tempChange = data.readVarInt() / 100.0F;
-		humidChange = data.readVarInt() / 100.0F;
+		this.breedingProgressPercent = data.readVarInt();
+		this.temperatureSteps = data.readByte();
+		this.humiditySteps = data.readByte();
 	}
 }

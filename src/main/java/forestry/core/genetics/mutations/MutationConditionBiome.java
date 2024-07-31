@@ -10,9 +10,6 @@
  ******************************************************************************/
 package forestry.core.genetics.mutations;
 
-import java.util.Arrays;
-import java.util.Locale;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -20,10 +17,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.climate.IClimateProvider;
-import forestry.api.genetics.IMutationCondition;
-
-import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutationCondition;
+import forestry.api.genetics.ISpecies;
 
 // todo separate classes for single biome and tag
 public class MutationConditionBiome implements IMutationCondition {
@@ -40,13 +36,7 @@ public class MutationConditionBiome implements IMutationCondition {
 
 	@Override
 	public Component getDescription() {
-		if (validBiomeTypes.size() > 1) {
-			String biomeTypes = Arrays.toString(validBiomeTypes.toArray()).toLowerCase(Locale.ENGLISH);
-			return Component.translatable("for.mutation.condition.biome.multiple", biomeTypes);
-		} else {
-			BiomeCategory firstCategory = validBiomeTypes.iterator().next();
-			String biomeType = firstCategory.toString().toLowerCase(Locale.ENGLISH);
-			return Component.translatable("for.mutation.condition.biome.single", biomeType);
-		}
+		String biomeType = this.validBiomes.location().toString();
+		return Component.translatable("for.mutation.condition.biome.single", biomeType);
 	}
 }

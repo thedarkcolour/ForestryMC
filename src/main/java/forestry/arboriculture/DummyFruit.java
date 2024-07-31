@@ -21,10 +21,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
-import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 
 public class DummyFruit implements IFruit {
 	private final boolean dominant;
@@ -93,10 +92,5 @@ public class DummyFruit implements IFruit {
 	@Override
 	public String getModelName() {
 		return null;
-	}
-
-	@Override
-	public String getModId() {
-		return ForestryConstants.MOD_ID;
 	}
 }

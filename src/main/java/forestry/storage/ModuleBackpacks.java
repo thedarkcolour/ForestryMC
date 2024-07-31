@@ -25,6 +25,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import forestry.api.ForestryTags;
 import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.storage.IBackpackInterface;
 import forestry.core.config.Config;
@@ -32,6 +33,7 @@ import forestry.modules.BlankForestryModule;
 import forestry.api.client.IClientModuleHandler;
 import forestry.storage.client.StorageClientHandler;
 
+@ForestryModule
 public class ModuleBackpacks extends BlankForestryModule {
 	public static final IBackpackInterface BACKPACK_INTERFACE = new BackpackInterface();
 

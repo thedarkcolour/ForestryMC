@@ -1,15 +1,17 @@
 package forestry.plugin;
 
+import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.IBeeJubilance;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 import forestry.api.plugin.IBeeSpeciesBuilder;
 import forestry.apiculture.BeeSpecies;
 import forestry.apiculture.genetics.DefaultBeeJubilance;
@@ -25,6 +27,8 @@ public class BeeSpeciesBuilder extends SpeciesBuilder<IBeeSpeciesType, IBeeSpeci
 	private int outlineColor = -1;
 	private boolean nocturnal;
 	private IBeeJubilance jubilance = DefaultBeeJubilance.INSTANCE;
+	@Nullable
+	private BlockState wildHiveState;
 
 	public BeeSpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
 		super(id, genus, species, mutations);
@@ -78,8 +82,20 @@ public class BeeSpeciesBuilder extends SpeciesBuilder<IBeeSpeciesType, IBeeSpeci
 	}
 
 	@Override
+	public IBeeSpeciesBuilder setWildHive(BlockState state) {
+		this.wildHiveState = state;
+		return this;
+	}
+
+	@Override
 	public boolean isNocturnal() {
 		return this.nocturnal;
+	}
+
+	@Nullable
+	@Override
+	public BlockState getWildHive() {
+		return this.wildHiveState;
 	}
 
 	@Override

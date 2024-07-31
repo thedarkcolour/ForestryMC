@@ -8,10 +8,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IIndividualHandler;
-import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.alleles.AllelePair;
-import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.features.CoreItems;
 import forestry.core.gui.slots.SlotAnalyzer;
 import forestry.core.gui.slots.SlotLockable;
@@ -81,7 +78,7 @@ public class ContainerAnalyzerProviderHelper {
 		}
 
 		final ItemStack finalSpecimen = specimen;
-		IIndividualHandler.ifPresent(specimen, individual -> {
+		IIndividualHandlerItem.ifPresent(specimen, individual -> {
 			if (!individual.isAnalyzed()) {
 				ItemStack energyStack = alyzerInventory.getItem(InventoryDatabaseAnalyzer.SLOT_ENERGY);
 				if (!ItemInventoryAlyzer.isAlyzingFuel(energyStack)) {

@@ -3,8 +3,9 @@ package forestry.core.patchouli.processor;
 import com.google.common.base.Preconditions;
 
 import forestry.api.recipes.ICarpenterRecipe;
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.utils.ModUtil;
+import forestry.core.utils.RecipeUtils;
+import forestry.factory.features.FactoryRecipeTypes;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -21,23 +22,20 @@ public class CarpenterProcessor implements IComponentProcessor {
 
 	@Override
 	public void setup(IVariableProvider variables) {
-		ItemStack itemStack = variables.get("item").as(ItemStack.class, ItemStack.EMPTY);
+		ItemStack stack = variables.get("item").as(ItemStack.class, ItemStack.EMPTY);
 
-		this.recipe = RecipeManagers.carpenterManager.getRecipes(null)
-				.filter(recipe -> recipe.getResult().sameItem(itemStack))
-				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("couldn't fnd a recipe with output: " + itemStack));
+		this.recipe = RecipeUtils.getRecipeByOutput(FactoryRecipeTypes.CARPENTER, stack);
 	}
 
 	@Override
 	public IVariable process(String key) {
 		Preconditions.checkNotNull(recipe);
 		if (key.equals("output")) {
-			return IVariable.from(this.recipe.getResult());
+			return IVariable.from(this.recipe.getResultItem());
 		} else if (key.equals("fluid")) {
-			return IVariable.wrap(ModUtil.getRegistryName(this.recipe.getFluidResource().getFluid()).toString());
+			return IVariable.wrap(ModUtil.getRegistryName(this.recipe.getInputFluid().getFluid()).toString());
 		} else if (key.equals("fluidAmount")) {
-			return IVariable.wrap(this.recipe.getFluidResource().getAmount());
+			return IVariable.wrap(this.recipe.getInputFluid().getAmount());
 		} else if (key.startsWith("ingredient")) {
 			int index = Integer.parseInt(key.substring("ingredient".length()));
             if (index < 1 || index > 9) {

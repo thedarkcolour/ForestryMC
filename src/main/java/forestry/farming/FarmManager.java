@@ -69,7 +69,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 
 	public FarmManager(IFarmHousingInternal housing) {
 		this.housing = housing;
-		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(Fluids.WATER);
+		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(List.of(Fluids.WATER));
 
 		this.tankManager = new TankManager(housing, resourceTank);
 

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -33,8 +32,10 @@ import forestry.api.genetics.IMutation;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.AllelePair;
+import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.alleles.IRegistryAllele;
 import forestry.api.genetics.alleles.ISpeciesChromosome;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
@@ -59,17 +60,30 @@ public class SpeciesUtil {
 		return BEE_TYPE.get().getSpecies(id);
 	}
 
-	public static List<IButterflySpecies> getAllButterflySpecies() {
-		return BUTTERFLY_TYPE.get().getAllSpecies();
-	}
-
 	public static List<IBeeSpecies> getAllBeeSpecies() {
 		return BEE_TYPE.get().getAllSpecies();
 	}
 
+	public static IButterflySpecies getButterflySpecies(ResourceLocation id) {
+		return BUTTERFLY_TYPE.get().getSpecies(id);
+	}
+
+	public static List<IButterflySpecies> getAllButterflySpecies() {
+		return BUTTERFLY_TYPE.get().getAllSpecies();
+	}
+
+	// Retrieves a species of an arbitrary type based on its allele. Does not null check.
+	@Nullable
+	public static ISpecies<?> getAnySpecies(ResourceLocation id) {
+		@SuppressWarnings("unchecked")
+		IRegistryAllele<ISpecies<?>> allele = ((IRegistryAllele<ISpecies<?>>) ForestryAlleles.REGISTRY.getAllele(id));
+		return allele == null ? null : allele.value();
+	}
+
 	@Nullable
 	public static <I extends IIndividual> Tag serializeIndividual(I individual) {
-		Codec<IIndividual> individualCodec = (Codec<IIndividual>) individual.getType().getIndividualCodec();
+		@SuppressWarnings("unchecked")
+		Codec<I> individualCodec = (Codec<I>) individual.getType().getIndividualCodec();
 		return individualCodec.encodeStart(NbtOps.INSTANCE, individual).result().orElse(null);
 	}
 
@@ -126,10 +140,6 @@ public class SpeciesUtil {
 		}
 
 		return null;
-	}
-
-	public static IButterflySpecies getButterflySpecies(ResourceLocation id) {
-		return BUTTERFLY_TYPE.get().getSpecies(id);
 	}
 
 	@FunctionalInterface

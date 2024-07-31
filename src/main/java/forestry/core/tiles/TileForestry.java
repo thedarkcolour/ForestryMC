@@ -133,21 +133,20 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	/* IStreamable */
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-
 	}
 
 	@Override
 	public void readData(FriendlyByteBuf data) {
-
 	}
 
 	// serverside only, called when the block is destroyed and its inventory is spilled into the world
 	public void onDropContents(ServerLevel level) {
 	}
 
+	@Nullable
 	@Override
-	public @Nullable Level getWorldObj() {
-		return level;
+	public Level getWorldObj() {
+		return this.level;
 	}
 
 	// / REDSTONE INFO
@@ -232,19 +231,14 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 		return getInternalInventory().stillValid(player);
 	}
 
-	//	@Override
-	//	public boolean hasCustomName() {
-	//		return getInternalInventory().hasCustomName();
-	//	}
-
 	@Override
 	public final boolean canPlaceItem(int slotIndex, ItemStack itemStack) {
 		return getInternalInventory().canPlaceItem(slotIndex, itemStack);
 	}
 
 	@Override
-	public final boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return getInternalInventory().canSlotAccept(slotIndex, itemStack);
+	public final boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return getInternalInventory().canSlotAccept(slotIndex, stack);
 	}
 
 	@Override

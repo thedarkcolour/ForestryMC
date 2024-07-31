@@ -19,8 +19,6 @@ public enum EnumPollenCluster implements ItemOverlay.IOverlayInfo {
 	NORMAL(new Color(0xa28a25), new Color(0xa28a25)),
 	CRYSTALLINE(new Color(0xffffff), new Color(0xc5feff));
 
-	public static final EnumPollenCluster[] VALUES = values();
-
 	private final String name;
 	private final int primaryColor;
 	private final int secondaryColor;
@@ -44,10 +42,5 @@ public enum EnumPollenCluster implements ItemOverlay.IOverlayInfo {
 	@Override
 	public int getSecondaryColor() {
 		return secondaryColor;
-	}
-
-	@Override
-	public boolean isSecret() {
-		return false;
 	}
 }

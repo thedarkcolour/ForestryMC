@@ -60,6 +60,6 @@ public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInve
 		ItemBackpackNaturalist backpack = (ItemBackpackNaturalist) parent.getItem();
 		ItemInventoryBackpackPaged paged = new ItemInventoryBackpackPaged(playerInventory.player, Constants.SLOTS_BACKPACK_APIARIST, parent, backpack);
 		int page = buffer.readByte();
-		return new ContainerNaturalistBackpack(windowId, playerInventory, paged, page, new ResourceLocation(buffer.readUtf()));
+		return new ContainerNaturalistBackpack(windowId, playerInventory, paged, page, buffer.readResourceLocation());
 	}
 }

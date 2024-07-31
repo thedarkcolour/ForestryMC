@@ -5,8 +5,8 @@ import java.util.Collection;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * A chromosome which has values registered to it at appropriate times instead of statically.
- * Each registry chromosome maintains a registry of the values its alleles can represent.
+ * A chromosome that is backed by a registry rather than having alleles registered to it.
+ * In a karyotype, it is not possible to restrict what alleles can be used for a registry chromosome.
  */
 public interface IRegistryChromosome<V extends IRegistryAlleleValue> extends IValueChromosome<V> {
 	/**

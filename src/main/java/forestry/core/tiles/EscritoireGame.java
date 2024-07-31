@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
-import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.core.network.IStreamable;
@@ -112,7 +112,7 @@ public class EscritoireGame implements INbtWritable, INbtReadable, IStreamable {
 			return;
 		}
 
-		IIndividualHandler.ifPresent(specimen, individual -> {
+		IIndividualHandlerItem.ifPresent(specimen, individual -> {
 			if (this.bountyLevel > 1) {
 				this.bountyLevel--;
 			}

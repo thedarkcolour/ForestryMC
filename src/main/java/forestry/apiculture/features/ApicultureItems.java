@@ -54,7 +54,7 @@ public class ApicultureItems {
 	public static final FeatureItem<ItemForestry> ROYAL_JELLY = REGISTRY.item(() -> new ItemForestry(ItemGroups.tabApiculture), "royal_jelly");
 
 	public static final FeatureItem<ItemWaxCast> WAX_CAST = REGISTRY.item(ItemWaxCast::new, "wax_cast");
-	public static final FeatureItemGroup<ItemPollenCluster, EnumPollenCluster> POLLEN_CLUSTER = REGISTRY.itemGroup(ItemPollenCluster::new, "pollen_cluster", EnumPollenCluster.VALUES);
+	public static final FeatureItemGroup<ItemPollenCluster, EnumPollenCluster> POLLEN_CLUSTER = REGISTRY.itemGroup(ItemPollenCluster::new, "pollen_cluster", EnumPollenCluster.values());
 	public static final FeatureItemGroup<ItemHoneyComb, EnumHoneyComb> BEE_COMBS = REGISTRY.itemGroup(ItemHoneyComb::new, "bee_comb", EnumHoneyComb.VALUES);
 
 	// / BEE FOOD PRODUCTS

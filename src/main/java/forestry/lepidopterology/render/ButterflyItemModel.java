@@ -56,7 +56,7 @@ import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import forestry.api.ForestryConstants;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.models.AbstractBakedModel;
@@ -84,7 +84,7 @@ public class ButterflyItemModel extends AbstractBakedModel {
 
 		@Override
 		public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int p_173469_) {
-			IIndividual individual = Objects.requireNonNull(IIndividualHandler.getIndividual(stack));
+			IIndividual individual = Objects.requireNonNull(IIndividualHandlerItem.getIndividual(stack));
 			IGenome genome = individual.getGenome();
 			IButterflySpecies species = genome.getActiveValue(ButterflyChromosomes.SPECIES);
 			float size = genome.getActiveValue(ButterflyChromosomes.SIZE);

@@ -1,18 +1,14 @@
 package forestry.apiculture.genetics;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpecies;
@@ -20,36 +16,28 @@ import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.api.genetics.alleles.IValueAllele;
-import forestry.apiculture.features.ApicultureItems;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
+import forestry.core.utils.GeneticsUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
 
-	private final Map<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
-
-	BeeAlyzerPlugin() {
-		NonNullList<ItemStack> beeList = NonNullList.create();
-		ApicultureItems.BEE_DRONE.item().addCreativeItems(beeList, false);
-		for (ItemStack beeStack : beeList) {
-			IIndividualHandler.ifPresent(beeStack, individual -> {
-				iconStacks.put(individual.getGenome().getActiveValue(BeeChromosomes.SPECIES).id(), beeStack);
-			});
-		}
-	}
+	private final Map<ISpecies<?>, ItemStack> iconStacks = GeneticsUtil.getIconStacks(BeeLifeStage.DRONE, SpeciesUtil.BEE_TYPE.get());
 
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			IIndividualHandler.ifPresent(stack, (individual, stage) -> {
+			IIndividualHandlerItem.ifPresent(stack, (individual, stage) -> {
 				if (individual instanceof IBee bee) {
 					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
@@ -61,7 +49,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 					textLayout.newLine();
 					textLayout.newLine();
 
-					guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), bee, BeeChromosomes.SPECIES, stage);
+					guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), bee, BeeChromosomes.SPECIES);
 					textLayout.newLine();
 
 					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.lifespan"), bee, BeeChromosomes.LIFESPAN);
@@ -95,7 +83,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			IIndividualHandler.ifPresent(stack, (individual, type) -> {
+			IIndividualHandlerItem.ifPresent(stack, (individual, type) -> {
 				if (individual instanceof IBee bee) {
 					IGenome genome = bee.getGenome();
 					IBeeSpecies primaryAllele = genome.getActiveValue(BeeChromosomes.SPECIES);
@@ -201,7 +189,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage3(PoseStack transform, Screen gui, ItemStack itemStack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			IIndividualHandler.ifPresent(itemStack, individual -> {
+			IIndividualHandlerItem.ifPresent(itemStack, individual -> {
 				if (individual instanceof IBee bee) {
 					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 					WidgetManager widgetManager = guiAlyzer.getWidgetManager();
@@ -249,7 +237,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 	}
 
 	@Override
-	public Map<ResourceLocation, ItemStack> getIconStacks() {
+	public Map<ISpecies<?>, ItemStack> getIconStacks() {
 		return this.iconStacks;
 	}
 

@@ -21,7 +21,6 @@ import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.IGenome;
 
 public class MutationConditionDaytime implements IMutationCondition {
-
 	private final boolean daytime;
 
 	public MutationConditionDaytime(boolean daytime) {
@@ -30,7 +29,7 @@ public class MutationConditionDaytime implements IMutationCondition {
 
 	@Override
 	public float getChance(Level level, BlockPos pos, ISpecies<?> allele0, ISpecies<?> allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
-		if (level.isDay() == daytime) {
+		if (level.isDay() == this.daytime) {
 			return 1;
 		}
 		return 0;
@@ -38,7 +37,7 @@ public class MutationConditionDaytime implements IMutationCondition {
 
 	@Override
 	public Component getDescription() {
-		if (daytime) {
+		if (this.daytime) {
 			return Component.translatable("for.mutation.condition.daytime.day");
 		} else {
 			return Component.translatable("for.mutation.condition.daytime.night");

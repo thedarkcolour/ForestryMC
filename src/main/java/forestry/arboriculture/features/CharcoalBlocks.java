@@ -2,8 +2,8 @@ package forestry.arboriculture.features;
 
 import net.minecraft.world.item.BlockItem;
 
+import forestry.api.core.ItemGroups;
 import forestry.api.modules.ForestryModuleIds;
-import forestry.arboriculture.ModuleCharcoal;
 import forestry.arboriculture.blocks.BlockAsh;
 import forestry.arboriculture.blocks.BlockCharcoal;
 import forestry.arboriculture.blocks.BlockDecorativeWoodPile;
@@ -19,8 +19,8 @@ import forestry.modules.features.ModFeatureRegistry;
 public class CharcoalBlocks {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.CHARCOAL);
 
-	public static final FeatureBlock<BlockCharcoal, ItemBlockForestry<BlockCharcoal>> CHARCOAL = REGISTRY.block(BlockCharcoal::new, (block) -> new ItemBlockForestry<>(block, new ItemProperties(ModuleCharcoal.getGroup()).burnTime(16000)), "charcoal");
-	public static final FeatureBlock<BlockWoodPile, BlockItem> WOOD_PILE = REGISTRY.block(BlockWoodPile::new, (block) -> new ItemBlockForestry<>(block, new ItemProperties(ModuleCharcoal.getGroup()).burnTime(1200)), "wood_pile");
-	public static final FeatureBlock<BlockDecorativeWoodPile, BlockItem> WOOD_PILE_DECORATIVE = REGISTRY.block(BlockDecorativeWoodPile::new, (block) -> new ItemBlockForestry<>(block, new ItemProperties(ModuleCharcoal.getGroup()).burnTime(1200)), "wood_pile_decorative");
+	public static final FeatureBlock<BlockCharcoal, ItemBlockForestry<BlockCharcoal>> CHARCOAL = REGISTRY.block(BlockCharcoal::new, (block) -> new ItemBlockForestry<>(block, new ItemProperties(ItemGroups.tabArboriculture).burnTime(16000)), "charcoal");
+	public static final FeatureBlock<BlockWoodPile, BlockItem> WOOD_PILE = REGISTRY.block(BlockWoodPile::new, (block) -> new ItemBlockForestry<>(block, new ItemProperties(ItemGroups.tabArboriculture).burnTime(1200)), "wood_pile");
+	public static final FeatureBlock<BlockDecorativeWoodPile, BlockItem> WOOD_PILE_DECORATIVE = REGISTRY.block(BlockDecorativeWoodPile::new, (block) -> new ItemBlockForestry<>(block, new ItemProperties(ItemGroups.tabArboriculture).burnTime(1200)), "wood_pile_decorative");
 	public static final FeatureBlock<BlockAsh, BlockItem> ASH = REGISTRY.block(BlockAsh::new, "ash_block");
 }

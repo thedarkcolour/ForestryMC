@@ -25,6 +25,7 @@ import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IIndividualLiving;
+import forestry.api.genetics.ISpecies;
 
 /**
  * Other implementations than Forestry's default one are not supported.
@@ -98,11 +99,14 @@ public interface IBee extends IIndividualLiving {
 	Iterator<BlockPos.MutableBlockPos> getAreaIterator(IBeeHousing housing);
 
 	@Override
+	IBee copy();
+
+	@Override
 	IBeeSpeciesType getType();
 
 	@Override
 	IBeeSpecies getSpecies();
 
 	@Override
-	IBee copy();
+	IBeeSpecies getInactiveSpecies();
 }

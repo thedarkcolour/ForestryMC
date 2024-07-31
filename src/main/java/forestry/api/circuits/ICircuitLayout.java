@@ -7,13 +7,13 @@ package forestry.api.circuits;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public interface ICircuitLayout {
-
 	/**
 	 * unique ID for this circuit layout
 	 */
-	String getUID();
+	String getId();
 
 	/**
 	 * localized name for this circuit layout
@@ -28,6 +28,5 @@ public interface ICircuitLayout {
 	/**
 	 * Specifies where a circuit layout is used.
 	 */
-	ICircuitSocketType getSocketType();
-
+	ResourceLocation getSocketType();
 }

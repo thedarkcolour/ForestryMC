@@ -11,7 +11,6 @@
 package forestry.core.circuits;
 
 import java.util.Locale;
-import java.util.Optional;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Direction;
@@ -21,13 +20,11 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import forestry.api.circuits.ChipsetManager;
-import forestry.api.circuits.CircuitSocketType;
+import forestry.api.IForestryApi;
+import forestry.api.circuits.ForestryCircuitSocketTypes;
+import forestry.api.circuits.ICircuit;
 import forestry.api.circuits.ICircuitLayout;
-import forestry.api.circuits.ICircuitSocketType;
 import forestry.api.farming.HorizontalDirection;
-import forestry.api.recipes.ISolderRecipe;
-import forestry.core.ClientsideCode;
 import forestry.core.config.Constants;
 import forestry.core.gui.GuiForestry;
 import forestry.core.inventory.ItemInventorySolderingIron;
@@ -50,28 +47,27 @@ public class GuiSolderingIron extends GuiForestry<ContainerSolderingIron> {
 
 		ICircuitLayout layout = menu.getLayout();
 		Component title = layout.getName();
-		getFontRenderer().draw(transform, title, leftPos + 8 + textLayout.getCenteredOffset(title, 138), topPos + 16, ColourProperties.INSTANCE.get("gui.screen"));
+		this.font.draw(transform, title, leftPos + 8 + textLayout.getCenteredOffset(title, 138), topPos + 16, ColourProperties.INSTANCE.get("gui.screen"));
 
 		for (int i = 0; i < 4; i++) {
-			String description;
+			Component description;
 			ItemStack tube = itemInventory.getItem(i + 2);
-			Optional<ISolderRecipe> recipe = ChipsetManager.solderManager.getMatchingRecipe(ClientsideCode.getRecipeManager(), layout, tube);
-			if (recipe.isEmpty()) {
-				description = "(" + Component.translatable("for.gui.noeffect").getString() + ")";
+			ICircuit circuit = IForestryApi.INSTANCE.getCircuitManager().getCircuit(layout, tube);
+			if (circuit == null) {
+				description = Component.literal("(").append(Component.translatable("for.gui.noeffect")).append(")");
 			} else {
-				description = recipe.get().getCircuit().getDisplayName().getString();
+				description = circuit.getDisplayName();
 			}
 
 			int row = i * 20;
-			getFontRenderer().draw(transform, description, leftPos + 32, topPos + 36 + row, ColourProperties.INSTANCE.get("gui.screen"));
+			this.font.draw(transform, description, leftPos + 32, topPos + 36 + row, ColourProperties.INSTANCE.get("gui.screen"));
 
 			if (tube.isEmpty()) {
-				ICircuitSocketType socketType = layout.getSocketType();
-				if (CircuitSocketType.FARM.equals(socketType)) {
+				if (ForestryCircuitSocketTypes.FARM == layout.getSocketType()) {
 					Direction farmDirection = HorizontalDirection.VALUES.get(i);
 					String farmDirectionString = farmDirection.toString().toLowerCase(Locale.ENGLISH);
 					Component localizedDirection = Component.translatable("for.gui.solder." + farmDirectionString);
-					getFontRenderer().draw(transform, localizedDirection, leftPos + 17, topPos + 36 + row, ColourProperties.INSTANCE.get("gui.screen"));
+					this.font.draw(transform, localizedDirection, leftPos + 17, topPos + 36 + row, ColourProperties.INSTANCE.get("gui.screen"));
 				}
 			}
 		}

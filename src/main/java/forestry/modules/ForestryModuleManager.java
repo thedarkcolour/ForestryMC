@@ -142,6 +142,8 @@ public class ForestryModuleManager implements IModuleManager {
 				module = klass.asSubclass(IForestryModule.class).getConstructor().newInstance();
 			} catch (ReflectiveOperationException e) {
 				throw new RuntimeException("Failed to instantiate module class " + klass.getName(), e);
+			} catch (ClassCastException e) {
+				throw new RuntimeException("Cannot load class" + klass.getName() + " as a @ForestryModule, it does not implement IForestryModule", e);
 			}
 			String modId = module.getId().getNamespace();
 			// Namespace of the id must be a modid

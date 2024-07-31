@@ -12,12 +12,15 @@ package forestry.apiculture;
 
 import java.util.function.Consumer;
 
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -37,7 +40,6 @@ import forestry.apiculture.items.EnumPollenCluster;
 import forestry.apiculture.network.packets.PacketAlvearyChange;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.apiculture.network.packets.PacketHabitatBiomePointer;
-import forestry.apiculture.network.packets.PacketImprintSelectionResponse;
 import forestry.apiculture.proxy.ApicultureClientHandler;
 import forestry.core.ModuleCore;
 import forestry.core.network.PacketIdClient;
@@ -62,21 +64,16 @@ public class ModuleApiculture extends BlankForestryModule {
 	@Override
 	public void registerEvents(IEventBus modBus) {
 		modBus.addListener(ModuleApiculture::registerCapabilities);
+	}
 
-		// Commands
-		ModuleCore.rootCommand.then(CommandBee.register());
+	@Override
+	public void addToRootCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
+		command.then(CommandBee.register());
 	}
 
 	@Override
 	public void setupApi() {
 		BeeManager.armorApiaristHelper = new ArmorApiaristHelper();
-	}
-
-	@Override
-	public void preInit() {
-
-		ApicultureFilterRuleType.init();
-		ApicultureFilterRule.init();
 	}
 
 	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -153,7 +150,6 @@ public class ModuleApiculture extends BlankForestryModule {
 
 	@Override
 	public void registerPackets(IPacketRegistry registry) {
-		registry.clientbound(PacketIdClient.IMPRINT_SELECTION_RESPONSE, PacketImprintSelectionResponse.class, PacketImprintSelectionResponse::decode, PacketImprintSelectionResponse::handle);
 		registry.clientbound(PacketIdClient.BEE_LOGIC_ACTIVE, PacketBeeLogicActive.class, PacketBeeLogicActive::decode, PacketBeeLogicActive::handle);
 		registry.clientbound(PacketIdClient.HABITAT_BIOME_POINTER, PacketHabitatBiomePointer.class, PacketHabitatBiomePointer::decode, PacketHabitatBiomePointer::handle);
 		registry.clientbound(PacketIdClient.ALVERAY_CONTROLLER_CHANGE, PacketAlvearyChange.class, PacketAlvearyChange::decode, PacketAlvearyChange::handle);

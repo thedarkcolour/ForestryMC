@@ -96,14 +96,14 @@ public class ItemInventoryLetter extends ItemInventory implements IErrorSource {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (letter.isProcessed()) {
 			return false;
 		} else if (SlotUtil.isSlotInRange(slotIndex, Letter.SLOT_POSTAGE_1, Letter.SLOT_POSTAGE_COUNT)) {
-			Item item = itemStack.getItem();
+			Item item = stack.getItem();
 			return item instanceof ItemStamp;
 		} else if (SlotUtil.isSlotInRange(slotIndex, Letter.SLOT_ATTACHMENT_1, Letter.SLOT_ATTACHMENT_COUNT)) {
-			return !(itemStack.getItem() instanceof ItemWithGui);
+			return !(stack.getItem() instanceof ItemWithGui);
 		}
 		return false;
 	}

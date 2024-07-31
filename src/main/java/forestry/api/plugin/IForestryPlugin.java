@@ -27,17 +27,35 @@ public interface IForestryPlugin {
 	}
 
 	/**
-	 * Override to register your bee species, mutations, etc. at the correct time.
+	 * Override to register your bee species, effects, flower types, hives, etc. at the correct time.
 	 */
 	default void registerApiculture(IApicultureRegistration apiculture) {
 	}
 
+	/**
+	 * Override to register your tree species, fruits, etc. at the correct time.
+	 */
 	default void registerArboriculture(IArboricultureRegistration arboriculture) {
 	}
 
+	/**
+	 * Override to register your butterfly species at the correct time.
+	 */
 	default void registerLepidopterology(ILepidopterologyRegistration lepidopterology) {
 	}
 
+	/**
+	 * Called after items are registered. Register your circuits and circuit layout types heere.
+	 */
+	default void registerCircuits(ICircuitRegistration circuits) {
+	}
+
+	default void registerErrors(IErrorRegistration errors) {
+	}
+
+	/**
+	 * @return Unique ID for this plugin.
+	 */
 	ResourceLocation id();
 
 	/**

@@ -19,7 +19,7 @@ public abstract class SpeciesRegistration<I, B extends I> {
 		if (this.speciesBuilders.containsKey(id)) {
 			throw new IllegalStateException("A species is already registered with that ID: " + id);
 		} else {
-			B builder = createSpeciesBuilder(id, genus, species);
+			B builder = createSpeciesBuilder(id, genus, species, new MutationsRegistration(id));
 
 			this.speciesBuilders.put(id, builder);
 

@@ -40,7 +40,7 @@ public class FakeInventoryAdapter implements IInventoryAdapter {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		return false;
 	}
 

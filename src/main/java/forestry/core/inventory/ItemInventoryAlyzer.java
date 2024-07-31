@@ -16,12 +16,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.core.IErrorSource;
-import forestry.api.core.IError;
-import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.ISpeciesType;
-import forestry.apiculture.features.ApicultureItems;
 import forestry.api.core.ForestryError;
+import forestry.api.core.IError;
+import forestry.api.core.IErrorSource;
+import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.apiculture.features.ApicultureItems;
 import forestry.core.utils.GeneticsUtil;
 
 public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
@@ -46,9 +47,9 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_ENERGY) {
-			return isAlyzingFuel(itemStack);
+			return isAlyzingFuel(stack);
 		}
 
 		// only allow one slot to be used at a time
@@ -56,18 +57,14 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 			return false;
 		}
 
-		itemStack = GeneticsUtil.convertToGeneticEquivalent(itemStack);
-		ISpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(itemStack);
-		if (speciesRoot == null) {
-			return false;
-		}
-
-		if (slotIndex == SLOT_SPECIMEN) {
-			return true;
-		}
-
-		IIndividual individual = speciesRoot.create(itemStack);
-		return individual != null && individual.isAnalyzed();
+		stack = GeneticsUtil.convertToGeneticEquivalent(stack);
+		return IIndividualHandlerItem.filter(stack, individual -> {
+			if (slotIndex == SLOT_SPECIMEN) {
+				return true;
+			} else {
+				return individual.isAnalyzed();
+			}
+		});
 	}
 
 	@Override
@@ -91,13 +88,7 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 			specimen = convertedSpecimen;
 		}
 
-		ISpeciesType<IIndividual> speciesRoot = RootUtils.getRoot(specimen);
-		// No individual, abort
-		if (speciesRoot == null) {
-			return;
-		}
-
-		IIndividual individual = speciesRoot.create(specimen);
+		IIndividual individual = IIndividualHandlerItem.getIndividual(specimen);
 
 		// Analyze if necessary
 		if (individual != null) {
@@ -108,11 +99,11 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 				}
 
 				if (individual.analyze()) {
-					IBreedingTracker breedingTracker = speciesRoot.getBreedingTracker(player.level, player.getGameProfile());
-					breedingTracker.registerSpecies(individual.getGenome().getPrimarySpecies());
-					breedingTracker.registerSpecies(individual.getGenome().getSecondarySpecies());
+					IBreedingTracker breedingTracker = individual.getType().getBreedingTracker(player.level, player.getGameProfile());
+					breedingTracker.registerSpecies(individual.getSpecies());
+					breedingTracker.registerSpecies(individual.getInactiveSpecies());
 
-					individual.copyTo(specimen);
+					individual.saveToStack(specimen);
 
 					// Decrease energy
 					removeItem(SLOT_ENERGY, 1);
@@ -126,11 +117,12 @@ public class ItemInventoryAlyzer extends ItemInventory implements IErrorSource {
 
 	@Override
 	public Set<IError> getErrors() {
-		if (!hasSpecimen()) {
+		ItemStack specimen = getSpecimen();
+
+		if (specimen.isEmpty()) {
 			return Set.of(ForestryError.NO_SPECIMEN);
 		} else {
-			ISpeciesType<IIndividual> definition = RootUtils.getRoot(getSpecimen());
-			if (definition != null && !isAlyzingFuel(getItem(SLOT_ENERGY))) {
+			if (IIndividualHandlerItem.isIndividual(specimen) && !isAlyzingFuel(getItem(SLOT_ENERGY))) {
 				return Set.of(ForestryError.NO_HONEY);
 			}
 		}

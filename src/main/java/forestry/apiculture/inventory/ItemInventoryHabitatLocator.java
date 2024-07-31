@@ -21,6 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.core.IErrorSource;
 import forestry.api.core.IError;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.items.HabitatLocatorLogic;
 import forestry.apiculture.items.ItemHabitatLocator;
@@ -31,7 +33,6 @@ import forestry.core.utils.SpeciesUtil;
 import net.minecraft.world.level.biome.Biome;
 
 public class ItemInventoryHabitatLocator extends ItemInventory implements IErrorSource {
-
 	private static final short SLOT_ENERGY = 2;
 	private static final short SLOT_SPECIMEN = 0;
 	private static final short SLOT_ANALYZED = 1;
@@ -68,8 +69,8 @@ public class ItemInventoryHabitatLocator extends ItemInventory implements IError
 		}
 
 		ItemStack analyzed = getItem(SLOT_ANALYZED);
-		IBee bee = SpeciesUtil.BEE_TYPE.get().create(analyzed);
-		if (bee != null) {
+		IIndividual individual = IIndividualHandlerItem.getIndividual(analyzed);
+		if (individual instanceof IBee bee) {
 			locatorLogic.startBiomeSearch(bee, player);
 		}
 	}
@@ -101,11 +102,11 @@ public class ItemInventoryHabitatLocator extends ItemInventory implements IError
 
 	/* IFilterSlotDelegate */
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_ENERGY) {
-			return isEnergy(itemStack);
+			return isEnergy(stack);
 		} else if (slotIndex == SLOT_SPECIMEN) {
-			return SpeciesUtil.BEE_TYPE.get().isMember(itemStack);
+			return SpeciesUtil.BEE_TYPE.get().isMember(stack);
 		}
 		return false;
 	}

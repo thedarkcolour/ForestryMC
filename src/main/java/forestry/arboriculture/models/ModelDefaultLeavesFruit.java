@@ -12,87 +12,56 @@ package forestry.arboriculture.models;
 
 import com.google.common.base.Preconditions;
 
-import java.util.Objects;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDefaultLeavesFruit;
-import forestry.arboriculture.genetics.TreeDefinition;
 import forestry.core.models.ModelBlockCached;
 import forestry.core.models.baker.ModelBaker;
-import forestry.core.client.Proxies;
 import forestry.core.utils.ResourceUtil;
-
-import forestry.api.genetics.IGenome;
+import forestry.core.utils.SpeciesUtil;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelDefaultLeavesFruit extends ModelBlockCached<BlockDefaultLeavesFruit, ModelDefaultLeavesFruit.Key> {
+public class ModelDefaultLeavesFruit extends ModelBlockCached<BlockDefaultLeavesFruit, ModelDefaultLeaves.Key> {
 	public ModelDefaultLeavesFruit() {
 		super(BlockDefaultLeavesFruit.class);
 	}
 
-	public static class Key {
-		public final TreeDefinition definition;
-		public final boolean fancy;
-		private final int hashCode;
-
-		public Key(TreeDefinition definition, boolean fancy) {
-			this.definition = definition;
-			this.fancy = fancy;
-			this.hashCode = Objects.hash(definition, fancy);
-		}
-
-		@Override
-		public boolean equals(Object other) {
-			if (!(other instanceof Key otherKey)) {
-				return false;
-			} else {
-				return otherKey.definition == definition && otherKey.fancy == fancy;
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			return hashCode;
-		}
-	}
-
 	@Override
-	protected ModelDefaultLeavesFruit.Key getInventoryKey(ItemStack stack) {
+	protected ModelDefaultLeaves.Key getInventoryKey(ItemStack stack) {
 		Block block = Block.byItem(stack.getItem());
 		Preconditions.checkArgument(block instanceof BlockDefaultLeavesFruit, "ItemStack must be for default fruit leaves.");
 		BlockDefaultLeavesFruit bBlock = (BlockDefaultLeavesFruit) block;
-		return new Key(bBlock.getLeafType(), Proxies.render.fancyGraphicsEnabled());
+		return new ModelDefaultLeaves.Key(bBlock.getSpeciesId(), Minecraft.useFancyGraphics());
 	}
 
 	@Override
-	protected ModelDefaultLeavesFruit.Key getWorldKey(BlockState state, ModelData extraData) {
+	protected ModelDefaultLeaves.Key getWorldKey(BlockState state, ModelData extraData) {
 		Block block = state.getBlock();
 		Preconditions.checkArgument(block instanceof BlockDefaultLeavesFruit, "state must be for default fruit leaves.");
 		BlockDefaultLeavesFruit bBlock = (BlockDefaultLeavesFruit) block;
-		return new ModelDefaultLeavesFruit.Key(bBlock.getLeafType(), Proxies.render.fancyGraphicsEnabled());
+		return new ModelDefaultLeaves.Key(bBlock.getSpeciesId(), Minecraft.useFancyGraphics());
 	}
 
 	@Override
-	protected void bakeBlock(BlockDefaultLeavesFruit block, ModelData extraData, Key key, ModelBaker baker, boolean inventory) {
-		TreeDefinition treeDefinition = key.definition;
+	protected void bakeBlock(BlockDefaultLeavesFruit block, ModelData extraData, ModelDefaultLeaves.Key key, ModelBaker baker, boolean inventory) {
+		ResourceLocation speciesId = key.speciesId;
 
-		IGenome genome = treeDefinition.getGenome();
-		IAlleleTreeSpecies species = genome.getActiveAllele(TreeChromosomes.SPECIES);
+		ITreeSpecies species = SpeciesUtil.getTreeSpecies(speciesId);
 		ILeafSpriteProvider leafSpriteProvider = species.getLeafSpriteProvider();
 
 		ResourceLocation leafSpriteLocation = leafSpriteProvider.getSprite(false, key.fancy);
@@ -102,7 +71,7 @@ public class ModelDefaultLeavesFruit extends ModelBlockCached<BlockDefaultLeaves
 		baker.addBlockModel(leafSprite, BlockAbstractLeaves.FOLIAGE_COLOR_INDEX);
 
 		// Render overlay for fruit leaves.
-		ResourceLocation fruitSpriteLocation = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider().getDecorativeSprite();
+		ResourceLocation fruitSpriteLocation = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUITS).getDecorativeSprite();
 		if (fruitSpriteLocation != null) {
 			TextureAtlasSprite fruitSprite = ResourceUtil.getBlockSprite(fruitSpriteLocation);
 			baker.addBlockModel(fruitSprite, BlockAbstractLeaves.FRUIT_COLOR_INDEX);
@@ -113,7 +82,7 @@ public class ModelDefaultLeavesFruit extends ModelBlockCached<BlockDefaultLeaves
 	}
 
 	@Override
-	protected BakedModel bakeModel(BlockState state, Key key, BlockDefaultLeavesFruit block, ModelData extraData) {
+	protected BakedModel bakeModel(BlockState state, ModelDefaultLeaves.Key key, BlockDefaultLeavesFruit block, ModelData extraData) {
 		ModelBaker baker = new ModelBaker();
 
 		bakeBlock(block, extraData, key, baker, false);

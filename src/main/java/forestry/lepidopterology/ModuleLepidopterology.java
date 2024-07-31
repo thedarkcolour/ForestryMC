@@ -10,13 +10,13 @@
  ******************************************************************************/
 package forestry.lepidopterology;
 
-import com.google.common.collect.Maps;
-
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -26,8 +26,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import forestry.api.client.IClientModuleHandler;
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
-import forestry.core.ModuleCore;
 import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.commands.CommandButterfly;
 import forestry.lepidopterology.entities.EntityButterfly;
@@ -36,10 +36,13 @@ import forestry.lepidopterology.features.LepidopterologyFeatures;
 import forestry.lepidopterology.proxy.LepidopterologyClientHandler;
 import forestry.modules.BlankForestryModule;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+
+@ForestryModule
 public class ModuleLepidopterology extends BlankForestryModule {
 	public static int maxDistance = 64;
 	private static boolean allowPollination = true;
-	public static final Map<String, Float> spawnRaritys = Maps.newHashMap();
+	public static final Object2FloatOpenHashMap<String> spawnRarities = new Object2FloatOpenHashMap<>();
 	private static boolean spawnButterflysFromLeaves = true;
 	private static boolean generateCocoons = false;
 	private static float generateCocoonsAmount = 1.0f;
@@ -66,20 +69,17 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	}
 
 	@Override
-	public void preInit() {
-		LepidopterologyFilterRule.init();
-		LepidopterologyFilterRuleType.init();
-	}
-
-	@Override
 	public List<ResourceLocation> getModuleDependencies() {
 		return List.of(ForestryModuleIds.CORE, ForestryModuleIds.ARBORICULTURE);
 	}
 
 	@Override
-	public void doInit() {
-		ModuleCore.rootCommand.then(CommandButterfly.register());
+	public void addToRootCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
+		command.then(CommandButterfly.register());
+	}
 
+	@Override
+	public void doInit() {
 		if (spawnButterflysFromLeaves) {
 			SpeciesUtil.TREE_TYPE.get().registerLeafTickHandler(new ButterflySpawner());
 		}

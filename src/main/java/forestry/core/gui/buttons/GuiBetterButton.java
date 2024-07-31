@@ -20,13 +20,13 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.ForestryConstants;
 import forestry.api.core.tooltips.IToolTipProvider;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.config.Constants;
-import forestry.core.utils.ModUtil;
 
 public class GuiBetterButton extends Button implements IToolTipProvider {
-	public static final ResourceLocation TEXTURE = ModUtil.modLoc(Constants.TEXTURE_PATH_GUI + "/buttons.png");
+	public static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/buttons.png");
 
 	protected IButtonTextureSet texture;
 	@Nullable

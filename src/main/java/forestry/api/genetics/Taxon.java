@@ -13,6 +13,5 @@ import java.util.List;
  * @param species  The member species of this group.
  * @param parent   The parent taxon, or {@code null} if this is a {@link TaxonomicRank#DOMAIN}.
  */
-public record Taxon(String name, TaxonomicRank rank, List<Taxon> children, List<ISpecies<?>> species,
-					@Nullable Taxon parent) {
+public record Taxon(String name, TaxonomicRank rank, List<Taxon> children, List<ISpecies<?>> species, @Nullable Taxon parent) {
 }

@@ -6,15 +6,14 @@ import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-import forestry.api.farming.HorizontalDirection;
+import forestry.api.climate.IClimatised;
 import forestry.api.farming.IFarmHousing;
 import forestry.core.fluids.ITankManager;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.farming.FarmTarget;
 import forestry.farming.multiblock.IFarmInventoryInternal;
 
-public interface IFarmHousingInternal extends IFarmHousing, ILiquidTankTile {
-
+public interface IFarmHousingInternal extends IFarmHousing, ILiquidTankTile, IClimatised {
 	@Override
 	ITankManager getTankManager();
 

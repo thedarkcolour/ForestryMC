@@ -11,15 +11,14 @@
 package forestry.arboriculture.worldgen;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -31,18 +30,21 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 import net.minecraftforge.common.IPlantable;
 
-import forestry.Forestry;
+import forestry.api.IForestryApi;
 import forestry.api.arboriculture.ITreeSpecies;
-import forestry.api.arboriculture.IGrowthProvider;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.climate.IClimateManager;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.arboriculture.TreeConfig;
 import forestry.arboriculture.commands.TreeGenHelper;
-import forestry.core.config.Config;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.SpeciesUtil;
 
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+
 public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
-	private static final HashMap<ResourceLocation, HashSet<ITree>> BIOME_CACHE = new HashMap<>();
+	private static final Reference2ObjectOpenHashMap<ResourceKey<Biome>, ArrayList<ITree>> BIOME_CACHE = new Reference2ObjectOpenHashMap<>();
 
 	public TreeDecorator() {
 		super(NoneFeatureConfiguration.CODEC);
@@ -68,24 +70,31 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 			blockState = world.getBlockState(pos);
 		}
 
-		if (tree instanceof IPlantable && blockState.getBlock().canSustainPlant(blockState, world, pos, Direction.UP, (IPlantable) tree)) {
+		if (tree instanceof IPlantable plantable && blockState.getBlock().canSustainPlant(blockState, world, pos, Direction.UP, plantable)) {
 			return pos.above();
 		}
 
 		return null;
 	}
 
-	private static void generateBiomeCache(WorldGenLevel world, RandomSource rand) {
-		for (ITreeSpecies species : SpeciesUtil.getAllTreeSpecies()) {
-			IGrowthProvider growthProvider = species.getGrowthProvider();
+	private static void generateBiomeCache(WorldGenLevel level) {
+		List<ITreeSpecies> allSpecies = SpeciesUtil.getAllTreeSpecies();
+		IClimateManager manager = IForestryApi.INSTANCE.getClimateManager();
+		// correctly dedupe ITree instances with map instead of using set
+		Reference2ObjectOpenHashMap<ITreeSpecies, ITree> treeInstances = new Reference2ObjectOpenHashMap<>(allSpecies.size());
 
-			world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).holders().forEach(biome -> {
-				HashSet<ITree> trees = BIOME_CACHE.computeIfAbsent(BuiltinRegistries.BIOME.getKey(biome), k -> new HashSet<>());
-				if (growthProvider.isBiomeValid(tree, biome)) {
-					trees.add(tree);
+		level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).holders().forEach(biome -> {
+			ArrayList<ITree> trees = BIOME_CACHE.computeIfAbsent(biome.key(), k -> new ArrayList<>());
+			TemperatureType temperature = manager.getTemperature(biome);
+			HumidityType humidity = manager.getHumidity(biome);
+
+			for (ITreeSpecies species : allSpecies) {
+				// todo tolerance chromosomes
+				if (temperature == species.getTemperature() && humidity == species.getHumidity()) {
+					trees.add(treeInstances.computeIfAbsent(species, k -> species.createIndividual()));
 				}
-			});
-		}
+			}
+		});
 	}
 
 	@Override
@@ -100,20 +109,17 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 		}
 
 		if (BIOME_CACHE.isEmpty()) {
-			generateBiomeCache(level, rand);
+			generateBiomeCache(level);
 		}
 
 		for (int tries = 0; tries < 4 + rand.nextInt(2); tries++) {
 			int x = pos.getX() + rand.nextInt(16);
 			int z = pos.getZ() + rand.nextInt(16);
 
-			Biome biome = level.getBiome(pos).value();
-			ResourceLocation biomeName = level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
-			Set<ITree> trees = BIOME_CACHE.computeIfAbsent(biomeName, k -> new HashSet<>());
+			Holder<Biome> biome = level.getBiome(pos);
+			ArrayList<ITree> trees = BIOME_CACHE.computeIfAbsent(biome.unwrapKey().get(), k -> new ArrayList<>());
 
 			for (ITree tree : trees) {
-				ResourceLocation treeUID = tree.getGenome().getPrimarySpecies().id();
-
 				ITreeSpecies species = tree.getSpecies();
 				if (TreeConfig.getSpawnRarity() * globalRarity >= rand.nextFloat()) {
 					BlockPos validPos = getValidPos(level, x, z, tree);
@@ -121,14 +127,8 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 						continue;
 					}
 
-					if (species.getGrowthProvider().canSpawn(tree, level.getLevel(), validPos)) {
-						if (TreeGenHelper.generateTree(tree, level, validPos)) {
-							if (Config.logTreePlacement) {
-								Forestry.LOGGER.info("Placed {} at {}", treeUID, pos);
-							}
-
-							return true;
-						}
+					if (TreeGenHelper.generateTree(species, level, validPos)) {
+						return true;
 					}
 				}
 			}

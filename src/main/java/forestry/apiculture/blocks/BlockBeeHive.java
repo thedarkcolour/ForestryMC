@@ -26,8 +26,9 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -38,7 +39,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.hives.HiveType;
 import forestry.api.apiculture.hives.IHiveDrop;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.apiculture.MaterialBeehive;
@@ -47,17 +47,19 @@ import forestry.apiculture.tiles.TileHive;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.SpeciesUtil;
 
-public class BlockBeeHive extends BaseEntityBlock {
-	private final HiveType type;
+// Hives where wild bees live
+public class BlockBeeHive extends Block implements EntityBlock {
+	private final ResourceLocation speciesId;
 
-	public BlockBeeHive(HiveType type) {
-		super(Properties.of(MaterialBeehive.BEEHIVE_WORLD)
-				.lightLevel((state) -> 7)
-				.strength(2.5f));
-		this.type = type;
+	public BlockBeeHive(BlockHiveType type) {
+		this(type.getSpeciesId());
 	}
 
-	@Nullable
+	public BlockBeeHive(ResourceLocation speciesId) {
+		super(Properties.of(MaterialBeehive.BEEHIVE_WORLD).sound(SoundType.WOOD).lightLevel(state -> 7).strength(2.5f));
+		this.speciesId = speciesId;
+	}
+
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new TileHive(pos, state);
@@ -65,8 +67,8 @@ public class BlockBeeHive extends BaseEntityBlock {
 
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return level.isClientSide() || type != ApicultureTiles.HIVE.tileType() ? null : (level1, pos, state1, t) -> {
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> actualType) {
+		return level.isClientSide() || actualType != ApicultureTiles.HIVE.tileType() ? null : (level1, pos, state1, t) -> {
 			((TileHive) t).tick();
 		};
 	}
@@ -85,8 +87,8 @@ public class BlockBeeHive extends BaseEntityBlock {
 	}
 
 	private List<IHiveDrop> getDropsForHive() {
-		ResourceLocation hiveName = type.getId();
-		if (hiveName.equals(HiveType.SWARM.getId())) {
+		ResourceLocation hiveName = this.speciesId;
+		if (hiveName.equals(BlockHiveType.SWARM.getSpeciesId())) {
 			return Collections.emptyList();
 		}
 		return IForestryApi.INSTANCE.getHiveManager().getDrops(hiveName);
@@ -148,13 +150,8 @@ public class BlockBeeHive extends BaseEntityBlock {
 		return drops;
 	}
 
-	public HiveType getType() {
-		return type;
-	}
-
-	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.MODEL;
+	public ResourceLocation getSpeciesId() {
+		return this.speciesId;
 	}
 
 	@Override

@@ -16,28 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.apiculture.blocks.BlockAlvearyType;
 
 public class TileAlvearyHeater extends TileAlvearyClimatiser {
-
-	private static final HeaterDefinition definition = new HeaterDefinition();
-
 	public TileAlvearyHeater(BlockPos pos, BlockState state) {
-		super(BlockAlvearyType.HEATER, pos, state, definition);
-	}
-
-	private static class HeaterDefinition implements IClimitiserDefinition {
-
-		@Override
-		public float getChangePerTransfer() {
-			return 0.01f;
-		}
-
-		@Override
-		public float getBoundaryUp() {
-			return 2.5f;
-		}
-
-		@Override
-		public float getBoundaryDown() {
-			return 0.0f;
-		}
+		super(BlockAlvearyType.HEATER, pos, state, (byte) 1);
 	}
 }

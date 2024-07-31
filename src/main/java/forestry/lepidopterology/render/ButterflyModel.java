@@ -23,11 +23,11 @@ import net.minecraft.util.Mth;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import forestry.core.utils.ModUtil;
+import forestry.api.ForestryConstants;
 import forestry.lepidopterology.entities.EntityButterfly;
 
 public class ButterflyModel extends EntityModel<EntityButterfly> {
-	public static final ModelLayerLocation LAYER = new ModelLayerLocation(ModUtil.modLoc("butterfly"), "main");
+	public static final ModelLayerLocation LAYER = new ModelLayerLocation(ForestryConstants.forestry("butterfly"), "main");
 
 	private float scale;
 

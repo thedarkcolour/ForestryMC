@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
+import com.mojang.authlib.GameProfile;
 
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
@@ -68,4 +71,6 @@ public interface IMutation<S extends ISpecies<?>> {
 	 * @return true if the mutation should not be displayed in a gui that displays all mutations.
 	 */
 	boolean isSecret();
+
+	ItemStack getMutationNote(GameProfile researcher);
 }

@@ -28,9 +28,9 @@ public class InventoryHygroregulator extends InventoryAdapterTile<TileAlvearyHyg
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_INPUT) {
-			Optional<FluidStack> fluidCap = FluidUtil.getFluidContained(itemStack);
+			Optional<FluidStack> fluidCap = FluidUtil.getFluidContained(stack);
 			return fluidCap.map(f -> tile.getTankManager().canFillFluidType(f)).orElse(false);
 		}
 		return false;

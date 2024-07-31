@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.api.lepidopterology.ForestryButterflySpecies;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
@@ -26,7 +27,7 @@ public class ButterflyPlugin extends DatabasePlugin<IButterfly> {
 	}
 
 	@Override
-	public Map<ResourceLocation, ItemStack> getIndividualStacks() {
+	public Map<ISpecies<?>, ItemStack> getIndividualStacks() {
 		return ButterflyAlyzerPlugin.INSTANCE.getIconStacks();
 	}
 

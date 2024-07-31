@@ -17,37 +17,56 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
 import forestry.api.ForestryCapabilities;
-import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.apiculture.DisplayHelper;
-import forestry.apiculture.genetics.IGeneticTooltipProvider;
 import forestry.core.config.Config;
+import forestry.core.genetics.capability.SerializableIndividualHandlerItem;
 import forestry.core.items.ItemForestry;
 import forestry.core.utils.GeneticsUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public abstract class ItemGE extends ItemForestry {
-	protected ItemGE(Item.Properties properties) {
+	protected final ILifeStage stage;
+
+	protected ItemGE(Item.Properties properties, ILifeStage stage) {
 		super(properties.setNoRepair());
+
+		this.stage = stage;
 	}
 
 	protected abstract ISpecies<?> getSpecies(ItemStack stack);
 
-	protected abstract ILifeStage getStage();
+	protected abstract ISpeciesType<?, ?> getType();
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+		if (nbt != null) {
+			// serializable caps returned by this method are saved under "Parent". I love undocumented Forge code!!!
+			Tag parent = nbt.get("Parent");
+			if (parent != null) {
+				return new SerializableIndividualHandlerItem(getType(), stack, SpeciesUtil.deserializeIndividual(getType(), parent), this.stage);
+			}
+		}
+		return new SerializableIndividualHandlerItem(getType(), stack, getType().getDefaultSpecies().createIndividual(), this.stage);
+	}
 
 	@Override
 	public Component getName(ItemStack stack) {
-		return stack.getCapability(ForestryCapabilities.INDIVIDUAL)
+		return stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM)
 				.map(handler -> GeneticsUtil.getItemName(handler.getStage(), handler.getIndividual().getSpecies()))
 				.orElseGet(() -> super.getName(stack));
 	}
@@ -61,25 +80,18 @@ public abstract class ItemGE extends ItemForestry {
 		return species.hasGlint();
 	}
 
-	public static void appendGeneticsTooltip(ItemStack stack, ILifeStage organismType, List<Component> tooltip) {
+	public static void appendGeneticsTooltip(ItemStack stack, List<Component> tooltip) {
 		if (!stack.hasTag()) {
 			return;
 		}
 
 		MutableBoolean analyzed = new MutableBoolean();
-		IIndividualHandler.ifPresent(stack, individual -> {
+		IIndividualHandlerItem.ifPresent(stack, individual -> {
 			if (individual.isAnalyzed()) {
 				if (Screen.hasShiftDown()) {
-					ToolTip helper = new ToolTip();
-					for (IGeneticTooltipProvider<IIndividual> provider : DisplayHelper.INSTANCE.getTooltips(individual.getType().id(), organismType)) {
-						provider.addTooltip(helper, individual.getGenome(), individual);
-					}
-					if (helper.isEmpty()) {
-						individual.addTooltip(tooltip);
-					}
-					tooltip.addAll(helper.getLines());
+					((ISpecies<IIndividual>) individual.getSpecies()).addTooltip(individual, tooltip);
 				} else {
-					tooltip.add(Component.translatable("for.gui.tooltip.tmi", "< %s >").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+					tooltip.add(Component.translatable("for.gui.tooltip.tmi", "< %s >").withStyle(style -> style.withColor(ChatFormatting.GRAY).withItalic(true)));
 				}
 
 				analyzed.setTrue();
@@ -92,7 +104,7 @@ public abstract class ItemGE extends ItemForestry {
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		appendGeneticsTooltip(stack, getStage(), tooltip);
+		appendGeneticsTooltip(stack, tooltip);
 	}
 
 	@Override

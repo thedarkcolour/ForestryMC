@@ -5,15 +5,8 @@
  ******************************************************************************/
 package forestry.api.climate;
 
-// todo fix to use the enums
 public interface IClimateControlled {
-	/**
-	 * Change the temperature, but not lower than boundaryDown or higher than boundaryUp.
-	 */
-	void addTemperatureChange(float change, float boundaryDown, float boundaryUp);
+	void addTemperatureChange(byte steps);
 
-	/**
-	 * Change the humidity, but not lower than boundaryDown or higher than boundaryUp.
-	 */
-	void addHumidityChange(float change, float boundaryDown, float boundaryUp);
+	void addHumidityChange(byte steps);
 }

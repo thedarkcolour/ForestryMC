@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IPacketRegistry;
 import forestry.core.network.PacketIdClient;
@@ -15,6 +16,7 @@ import forestry.worktable.network.packets.PacketWorktableMemoryUpdate;
 import forestry.worktable.network.packets.PacketWorktableRecipeRequest;
 import forestry.worktable.network.packets.PacketWorktableRecipeUpdate;
 
+@ForestryModule
 public class ModuleWorktable extends BlankForestryModule {
 	@Override
 	public ResourceLocation getId() {

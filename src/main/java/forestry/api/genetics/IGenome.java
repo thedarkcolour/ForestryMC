@@ -141,4 +141,8 @@ public interface IGenome {
 	default <S extends ISpecies<?>> S getActiveSpecies() {
 		return (S) getActiveValue(getKaryotype().getSpeciesChromosome());
 	}
+
+	default <S extends ISpecies<?>> S getInactiveSpecies() {
+		return (S) getInactiveValue(getKaryotype().getSpeciesChromosome());
+	}
 }

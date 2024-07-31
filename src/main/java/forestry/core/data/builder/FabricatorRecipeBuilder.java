@@ -17,17 +17,16 @@ import java.util.function.Consumer;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.recipes.IFabricatorRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class FabricatorRecipeBuilder {
-
 	private Ingredient plan;
 	private FluidStack molten;
 	private ShapedRecipeBuilder.Result recipe;
@@ -80,7 +79,7 @@ public class FabricatorRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return IFabricatorRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.FABRICATOR.serializer();
 		}
 
 		@Override

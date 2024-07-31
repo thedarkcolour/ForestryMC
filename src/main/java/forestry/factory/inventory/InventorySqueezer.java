@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.factory.inventory;
 
+import java.util.List;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,12 +21,12 @@ import net.minecraft.core.NonNullList;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.InventoryAdapterTile;
 import forestry.core.inventory.wrappers.InventoryMapper;
 import forestry.core.utils.InventoryUtil;
+import forestry.core.utils.RecipeUtils;
 import forestry.factory.tiles.TileSqueezer;
 
 public class InventorySqueezer extends InventoryAdapterTile<TileSqueezer> {
@@ -40,18 +42,18 @@ public class InventorySqueezer extends InventoryAdapterTile<TileSqueezer> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_CAN_INPUT) {
-			return FluidHelper.isFillableEmptyContainer(itemStack);
+			return FluidHelper.isFillableEmptyContainer(stack);
 		}
 
 		if (slotIndex >= SLOT_RESOURCE_1 && slotIndex < SLOT_RESOURCE_1 + SLOTS_RESOURCE_COUNT) {
-			if (FluidHelper.isFillableEmptyContainer(itemStack)) {
+			if (FluidHelper.isFillableEmptyContainer(stack)) {
 				return false;
 			}
 
 			RecipeManager recipeManager = tile.getLevel().getRecipeManager();
-			return RecipeManagers.squeezerManager.canUse(recipeManager, itemStack) || RecipeManagers.squeezerContainerManager.findMatchingContainerRecipe(recipeManager, itemStack) != null;
+			return RecipeUtils.isSqueezerIngredient(recipeManager, stack) || RecipeUtils.getSqueezerContainerRecipe(recipeManager, stack) != null;
 		}
 
 		return false;
@@ -66,13 +68,13 @@ public class InventorySqueezer extends InventoryAdapterTile<TileSqueezer> {
 		return !InventoryUtil.isEmpty(this, SLOT_RESOURCE_1, SLOTS_RESOURCE_COUNT);
 	}
 
-	public NonNullList<ItemStack> getResources() {
+	public List<ItemStack> getResources() {
 		return InventoryUtil.getStacks(this, SLOT_RESOURCE_1, SLOTS_RESOURCE_COUNT);
 	}
 
-	public boolean removeResources(NonNullList<Ingredient> stacks) {
+	public boolean removeResources(List<Ingredient> stacks) {
 		Container inventory = new InventoryMapper(this, SLOT_RESOURCE_1, SLOTS_RESOURCE_COUNT);
-		return InventoryUtil.consumeIngredients(inventory,  stacks, null, false, false, true);
+		return InventoryUtil.consumeIngredients(inventory, stacks, null, false, false, true);
 	}
 
 	public boolean addRemnant(ItemStack remnant, boolean doAdd) {

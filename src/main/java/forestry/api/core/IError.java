@@ -7,7 +7,6 @@ package forestry.api.core;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.client.ISpriteRegister;
 import forestry.api.client.ITextureManager;
 
 /**
@@ -22,12 +21,12 @@ public interface IError {
 	/**
 	 * @return Translation key for a short name that succinctly describes the error. Ex. "Too Hot"
 	 */
-	String getUnlocalizedDescription();
+	String getDescriptionTranslationKey();
 
 	/**
 	 * @return Translation key for a detailed message on how to fix the error. Ex. "Move the bees to a cooler climate."
 	 */
-	String getUnlocalizedHelp();
+	String getHelpTranslationKey();
 
 	/**
 	 * @return Location of an icon sprite registered to the Forestry texture manager at {@link ITextureManager}.

@@ -20,15 +20,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,31 +45,27 @@ import forestry.api.climate.IClimateManager;
 import forestry.api.core.ForestryError;
 import forestry.api.core.HumidityType;
 import forestry.api.core.IError;
+import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.ToleranceType;
-import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IPollinatable;
-import forestry.api.genetics.Product;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IIntegerChromosome;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
-import forestry.core.genetics.GenericRatings;
 import forestry.core.genetics.IndividualLiving;
 import forestry.core.genetics.mutations.Mutation;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
 
-import deleteme.Todos;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 
 public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> implements IBee {
@@ -298,72 +291,6 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	public List<Holder.Reference<Biome>> getSuitableBiomes(Registry<Biome> registry) {
 		return registry.holders().filter(this::isSuitableBiome).toList();
 	}
-
-	@Override
-	public void addTooltip(List<Component> list) {
-		ToolTip toolTip = new ToolTip();
-
-		// No info 4 u!
-		if (!isAnalyzed) {
-			toolTip.singleLine().text("<").translated("for.gui.unknown").text(">").style(ChatFormatting.GRAY).create();
-			return;
-		}
-
-		// You analyzed it? Juicy tooltip coming up!
-		if (!genome.getAllelePair(BeeChromosomes.SPECIES).isSameAlleles()) {
-			Component active = this.genome.getActiveName(BeeChromosomes.SPECIES);
-			Component inactive = this.genome.getInactiveName(BeeChromosomes.SPECIES);
-
-			toolTip.add(Component.translatable("for.bees.hybrid", active, inactive).withStyle(ChatFormatting.BLUE));
-		}
-
-		if (generation > 0) {
-			Rarity rarity;
-			if (generation >= 1000) {
-				rarity = Rarity.EPIC;
-			} else if (generation >= 100) {
-				rarity = Rarity.RARE;
-			} else if (generation >= 10) {
-				rarity = Rarity.UNCOMMON;
-			} else {
-				rarity = Rarity.COMMON;
-			}
-			toolTip.translated("for.gui.beealyzer.generations", generation).style(rarity.color);
-		}
-
-		toolTip.singleLine()
-				.add(genome.getActiveName(BeeChromosomes.LIFESPAN))
-				.text(" ")
-				.translated("for.gui.life")
-				.style(ChatFormatting.GRAY)
-				.create();
-
-		toolTip.singleLine()
-				.add(genome.getActiveName(BeeChromosomes.SPEED))
-				.text(" ")
-				.translated("for.gui.worker")
-				.style(ChatFormatting.GRAY)
-				.create();
-
-		Component tempToleranceAllele = this.genome.getActiveName(BeeChromosomes.TEMPERATURE_TOLERANCE);
-		Component humidToleranceAllele = this.genome.getActiveName(BeeChromosomes.HUMIDITY_TOLERANCE);
-		IBeeSpecies active = this.genome.getActiveValue(BeeChromosomes.SPECIES);
-
-		toolTip.singleLine().text("T: ").add(ClimateHelper.toDisplay(active.getTemperature())).text(" / ").add(tempToleranceAllele).style(ChatFormatting.GREEN).create();
-		toolTip.singleLine().text("H: ").add(ClimateHelper.toDisplay(active.getHumidity())).text(" / ").add(humidToleranceAllele).style(ChatFormatting.GREEN).create();
-
-
-		toolTip.add(genome.getActiveName(BeeChromosomes.FLOWER_TYPE), ChatFormatting.GRAY);
-
-		if (genome.getActiveValue(BeeChromosomes.NEVER_SLEEPS)) {
-			toolTip.add(GenericRatings.rateActivityTime(true, false)).style(ChatFormatting.RED);
-		}
-
-		if (genome.getActiveValue(BeeChromosomes.TOLERATES_RAIN)) {
-			toolTip.translated("for.gui.flyer.tooltip").style(ChatFormatting.WHITE);
-		}
-		list.addAll(toolTip.getLines());
-	}
 /*
 	@Override
 	public void age(Level world, float housingLifespanModifier) {
@@ -468,15 +395,20 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	@Nullable
 	public IBee spawnPrincess(IBeeHousing housing) {
 		// We need a mated queen to produce offspring.
-		if (mate == null) {
+		if (this.mate == null) {
 			return null;
 		}
 
-		// todo config for ignoble stock
 		// Fatigued (dead ignoble) queens do not produce princesses.
-		/*if (BeeManager.beeRoot.getBeekeepingMode(housing.getWorldObj()).isFatigued(this, housing)) {
-			return null;
-		}*/
+		if (!this.pristine) {
+			IBeeModifier beeModifier = getType().createBeeHousingModifier(housing);
+			RandomSource rand = housing.getWorldObj().random;
+
+			if ((this.generation > 96 + rand.nextInt(6) + rand.nextInt(6)) &&
+					(rand.nextFloat() < 0.02f * beeModifier.getGeneticDecay(this.genome, 1f))) {
+				return null;
+			}
+		}
 
 		return createOffspring(housing, mate, getGeneration() + 1);
 	}

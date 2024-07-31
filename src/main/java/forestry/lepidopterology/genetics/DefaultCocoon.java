@@ -2,7 +2,7 @@ package forestry.lepidopterology.genetics;
 
 import java.util.List;
 
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 import forestry.api.lepidopterology.IButterflyCocoon;
 
 public class DefaultCocoon implements IButterflyCocoon {

@@ -62,7 +62,7 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 
 	@Override
 	public void registerPickup(ISpecies<?> species) {
-		IMutationManager<ISpecies<?>> manager = IForestryApi.INSTANCE.getGeneticManager().getMutations(ForestrySpeciesTypes.BEE);
+		IMutationManager<ISpecies<?>> manager = IForestryApi.INSTANCE.getGeneticManager().getMutations(SpeciesUtil.BEE_TYPE.get());
 
 		if (manager.getMutationsFrom(species).isEmpty()) {
 			registerSpecies(species);
@@ -108,7 +108,7 @@ public class ApiaristTracker extends BreedingTracker implements IApiaristTracker
 	}
 
 	@Override
-	protected ResourceLocation getSpeciesId() {
+	protected ResourceLocation getTypeId() {
 		return ForestrySpeciesTypes.BEE;
 	}
 }

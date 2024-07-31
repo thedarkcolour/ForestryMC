@@ -10,62 +10,38 @@
  ******************************************************************************/
 package forestry.factory;
 
-import net.minecraft.client.gui.screens.MenuScreens;
+import java.util.function.Consumer;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
-import forestry.api.circuits.ChipsetManager;
-import forestry.api.circuits.CircuitSocketType;
-import forestry.api.circuits.ICircuitLayout;
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.fuels.FermenterFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.api.fuels.MoistenerFuel;
 import forestry.api.fuels.RainSubstrate;
-import forestry.api.recipes.RecipeManagers;
-import forestry.core.circuits.CircuitLayout;
-import forestry.core.circuits.Circuits;
+import forestry.api.modules.ForestryModule;
+import forestry.api.modules.ForestryModuleIds;
+import forestry.api.modules.IPacketRegistry;
 import forestry.core.config.Constants;
 import forestry.core.config.Preference;
 import forestry.core.features.CoreItems;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.items.definitions.EnumCraftingMaterial;
-import forestry.core.items.definitions.EnumElectronTube;
-import forestry.api.modules.IPacketRegistry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
-import forestry.core.utils.datastructures.DummyMap;
 import forestry.core.utils.datastructures.ItemStackMap;
-import forestry.factory.circuits.CircuitSpeedUpgrade;
-import forestry.factory.features.FactoryMenuTypes;
-import forestry.factory.gui.GuiBottler;
-import forestry.factory.gui.GuiCarpenter;
-import forestry.factory.gui.GuiCentrifuge;
-import forestry.factory.gui.GuiFabricator;
-import forestry.factory.gui.GuiFermenter;
-import forestry.factory.gui.GuiMoistener;
-import forestry.factory.gui.GuiRaintank;
-import forestry.factory.gui.GuiSqueezer;
-import forestry.factory.gui.GuiStill;
+import forestry.factory.client.FactoryClientHandler;
 import forestry.factory.network.packets.PacketRecipeTransferRequest;
 import forestry.factory.network.packets.PacketRecipeTransferUpdate;
-import forestry.factory.recipes.CarpenterRecipeManager;
-import forestry.factory.recipes.CentrifugeRecipeManager;
-import forestry.factory.recipes.FabricatorRecipeManager;
-import forestry.factory.recipes.FabricatorSmeltingRecipeManager;
-import forestry.factory.recipes.FermenterRecipeManager;
-import forestry.factory.recipes.MoistenerRecipeManager;
-import forestry.factory.recipes.SqueezerContainerRecipeManager;
-import forestry.factory.recipes.SqueezerRecipeManager;
-import forestry.factory.recipes.StillRecipeManager;
 import forestry.modules.BlankForestryModule;
-import forestry.api.modules.ForestryModuleIds;
 
+@ForestryModule
 public class ModuleFactory extends BlankForestryModule {
 	@Override
 	public ResourceLocation getId() {
@@ -73,52 +49,19 @@ public class ModuleFactory extends BlankForestryModule {
 	}
 
 	@Override
+	public void registerEvents(IEventBus modBus) {
+	}
+
+	@Override
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new FactoryClientHandler());
+	}
+
+	@Override
 	public void setupApi() {
-		RecipeManagers.carpenterManager = machineEnabled() ? new CarpenterRecipeManager() : new DummyManagers.DummyCarpenterManager();
-		RecipeManagers.centrifugeManager = machineEnabled() ? new CentrifugeRecipeManager() : new DummyManagers.DummyCentrifugeManager();
-		RecipeManagers.fabricatorManager = machineEnabled() ? new FabricatorRecipeManager() : new DummyManagers.DummyFabricatorManager();
-		RecipeManagers.fabricatorSmeltingManager = machineEnabled() ? new FabricatorSmeltingRecipeManager() : new DummyManagers.DummyFabricatorSmeltingManager();
-		RecipeManagers.fermenterManager = machineEnabled() ? new FermenterRecipeManager() : new DummyManagers.DummyFermenterManager();
-		RecipeManagers.moistenerManager = machineEnabled() ? new MoistenerRecipeManager() : new DummyManagers.DummyMoistenerManager();
-		RecipeManagers.squeezerManager = machineEnabled() ? new SqueezerRecipeManager() : new DummyManagers.DummySqueezerManager();
-		RecipeManagers.squeezerContainerManager = machineEnabled() ? new SqueezerContainerRecipeManager() : new DummyManagers.DummySqueezerContainerManager();
-		RecipeManagers.stillManager = machineEnabled() ? new StillRecipeManager() : new DummyManagers.DummyStillManager();
-
-		setupFuelManager();
-	}
-
-	@Override
-	public void setupFallbackApi() {
-		RecipeManagers.carpenterManager = new DummyManagers.DummyCarpenterManager();
-		RecipeManagers.centrifugeManager = new DummyManagers.DummyCentrifugeManager();
-		RecipeManagers.fabricatorManager = new DummyManagers.DummyFabricatorManager();
-		RecipeManagers.fabricatorSmeltingManager = new DummyManagers.DummyFabricatorSmeltingManager();
-		RecipeManagers.fermenterManager = new DummyManagers.DummyFermenterManager();
-		RecipeManagers.moistenerManager = new DummyManagers.DummyMoistenerManager();
-		RecipeManagers.squeezerManager = new DummyManagers.DummySqueezerManager();
-		RecipeManagers.stillManager = new DummyManagers.DummyStillManager();
-
-		setupFuelManager();
-	}
-
-	private static void setupFuelManager() {
-		FuelManager.fermenterFuel = machineEnabled() ? new ItemStackMap<>() : new DummyMap<>();
-		FuelManager.moistenerResource = machineEnabled() ? new ItemStackMap<>() : new DummyMap<>();
-		FuelManager.rainSubstrate = machineEnabled() ? new ItemStackMap<>() : new DummyMap<>();
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerMenuScreens() {
-		MenuScreens.register(FactoryMenuTypes.BOTTLER.menuType(), GuiBottler::new);
-		MenuScreens.register(FactoryMenuTypes.CARPENTER.menuType(), GuiCarpenter::new);
-		MenuScreens.register(FactoryMenuTypes.CENTRIFUGE.menuType(), GuiCentrifuge::new);
-		MenuScreens.register(FactoryMenuTypes.FABRICATOR.menuType(), GuiFabricator::new);
-		MenuScreens.register(FactoryMenuTypes.FERMENTER.menuType(), GuiFermenter::new);
-		MenuScreens.register(FactoryMenuTypes.MOISTENER.menuType(), GuiMoistener::new);
-		MenuScreens.register(FactoryMenuTypes.RAINTANK.menuType(), GuiRaintank::new);
-		MenuScreens.register(FactoryMenuTypes.SQUEEZER.menuType(), GuiSqueezer::new);
-		MenuScreens.register(FactoryMenuTypes.STILL.menuType(), GuiStill::new);
+		FuelManager.fermenterFuel = new ItemStackMap<>();
+		FuelManager.moistenerResource = new ItemStackMap<>();
+		FuelManager.rainSubstrate = new ItemStackMap<>();
 	}
 
 	@Override
@@ -154,26 +97,6 @@ public class ModuleFactory extends BlankForestryModule {
 		ItemStack dissipationCharge = CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.DISSIPATION_CHARGE, 1);
 		FuelManager.rainSubstrate.put(iodineCharge, new RainSubstrate(iodineCharge, Constants.RAINMAKER_RAIN_DURATION_IODINE, 0.01f));
 		FuelManager.rainSubstrate.put(dissipationCharge, new RainSubstrate(dissipationCharge, 0.075f));
-
-		ICircuitLayout layoutMachineUpgrade = new CircuitLayout("machine.upgrade", CircuitSocketType.MACHINE);
-		ChipsetManager.circuitRegistry.registerLayout(layoutMachineUpgrade);
-
-	}
-
-	@Override
-	public void registerObjects() {
-		Circuits.machineSpeedUpgrade1 = new CircuitSpeedUpgrade("machine.speed.boost.1", 0.125f, 0.05f);
-		Circuits.machineSpeedUpgrade2 = new CircuitSpeedUpgrade("machine.speed.boost.2", 0.250f, 0.10f);
-		Circuits.machineEfficiencyUpgrade1 = new CircuitSpeedUpgrade("machine.efficiency.1", 0, -0.10f);
-
-		ICircuitLayout layout = ChipsetManager.circuitRegistry.getLayout("forestry.machine.upgrade");
-
-		// / Solder Manager
-		if (layout != null) {
-			ChipsetManager.solderManager.addRecipe(layout, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.EMERALD, 1), Circuits.machineSpeedUpgrade1);
-			ChipsetManager.solderManager.addRecipe(layout, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.BLAZE, 1), Circuits.machineSpeedUpgrade2);
-			ChipsetManager.solderManager.addRecipe(layout, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.GOLD, 1), Circuits.machineEfficiencyUpgrade1);
-		}
 	}
 
 	@Override
@@ -197,18 +120,5 @@ public class ModuleFactory extends BlankForestryModule {
 			//					"X",
 			//					'X', beeItems.propolis.getWildcard()});	//TODO needs tag
 		}
-
-		ICircuitLayout layout = ChipsetManager.circuitRegistry.getLayout("forestry.machine.upgrade");
-
-		// / Solder Manager
-		if (layout != null) {
-			ChipsetManager.solderManager.addRecipe(layout, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.EMERALD, 1), Circuits.machineSpeedUpgrade1);
-			ChipsetManager.solderManager.addRecipe(layout, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.BLAZE, 1), Circuits.machineSpeedUpgrade2);
-			ChipsetManager.solderManager.addRecipe(layout, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.GOLD, 1), Circuits.machineEfficiencyUpgrade1);
-		}
-	}
-
-	public static boolean machineEnabled() {
-		return true;
 	}
 }

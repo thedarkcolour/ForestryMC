@@ -1,7 +1,5 @@
 package forestry.api.plugin;
 
-import java.util.List;
-
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.genetics.ISpecies;
@@ -36,16 +34,16 @@ public interface IKaryotypeBuilder {
 		return get(chromosome).setDefault(defaultAllele);
 	}
 
-	// todo allow recessive alleles
 	default void set(IBooleanChromosome chromosome, boolean defaultAllele) {
 		set(chromosome, defaultAllele ? ForestryAlleles.TRUE : ForestryAlleles.FALSE)
-				.addAlleles(List.of(ForestryAlleles.TRUE, ForestryAlleles.FALSE));
+				.addAlleles(ForestryAlleles.DEFAULT_BOOLEANS);
 	}
 
 	void set(IRegistryChromosome<?> chromosome, ResourceLocation defaultId);
 
 	/**
 	 * Used to modify a chromosome already added in {@link #set}.
+	 *
 	 * @return The {@link IChromosomeBuilder} for this chromosome in the karyotype.
 	 * @throws IllegalArgumentException If the chromosome is not contained in this genome.
 	 */

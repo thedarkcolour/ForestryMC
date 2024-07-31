@@ -11,7 +11,6 @@
 package forestry.apiculture.genetics;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
@@ -31,11 +30,12 @@ import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
+import forestry.api.core.Product;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.Product;
+import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.plugin.ISpeciesTypeBuilder;
@@ -45,8 +45,6 @@ import forestry.apiculture.BeekeepingLogic;
 import forestry.core.genetics.BreedingTracker;
 import forestry.core.genetics.SpeciesType;
 import forestry.core.genetics.root.BreedingTrackerManager;
-
-import forestry.api.genetics.ILifeStage;
 import forestry.core.utils.ItemStackUtil;
 
 public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IBeeSpeciesType {
@@ -81,26 +79,26 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 
 	@Override
 	public IApiaristTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile) {
-		return BreedingTrackerManager.INSTANCE.getTracker(id(), level, profile);
+		return BreedingTrackerManager.INSTANCE.getTracker(this, level, profile);
 	}
 
 	@Override
-	public String getFileName(@Nullable GameProfile profile) {
+	public String getBreedingTrackerFile(@Nullable GameProfile profile) {
 		return "ApiaristTracker." + (profile == null ? "common" : profile.getId());
 	}
 
 	@Override
-	public IBreedingTracker createTracker() {
+	public IBreedingTracker createBreedingTracker() {
 		return new ApiaristTracker();
 	}
 
 	@Override
-	public IBreedingTracker createTracker(CompoundTag tag) {
+	public IBreedingTracker createBreedingTracker(CompoundTag tag) {
 		return new ApiaristTracker(tag);
 	}
 
 	@Override
-	public void populateTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
+	public void initializeBreedingTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
 		if (tracker instanceof BreedingTracker apiaristTracker) {
 			apiaristTracker.setLevel(world);
 			apiaristTracker.setUsername(profile);

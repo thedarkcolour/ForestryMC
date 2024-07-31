@@ -1,7 +1,6 @@
 package forestry.apiculture.features;
 
 import forestry.api.modules.ForestryModuleIds;
-import forestry.apiculture.ModuleApiculture;
 import forestry.apiculture.gui.ContainerAlveary;
 import forestry.apiculture.gui.ContainerAlvearyHygroregulator;
 import forestry.apiculture.gui.ContainerAlvearySieve;

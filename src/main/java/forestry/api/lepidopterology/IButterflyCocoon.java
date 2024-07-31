@@ -7,7 +7,7 @@ package forestry.api.lepidopterology;
 
 import java.util.List;
 
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 
 public interface IButterflyCocoon extends IRegistryAlleleValue {

@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.api.apiculture.hives.IHiveDefinition;
 import forestry.api.apiculture.hives.IHiveDrop;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
@@ -16,7 +17,12 @@ import forestry.apiculture.genetics.HiveDrop;
 import forestry.core.utils.SpeciesUtil;
 
 public class HiveBuilder implements IHiveBuilder {
-	private final ArrayList<Supplier<HiveDrop>> drops = new ArrayList<>();
+	private final IHiveDefinition definition;
+	private final ArrayList<Supplier<IHiveDrop>> drops = new ArrayList<>();
+
+	public HiveBuilder(IHiveDefinition definition) {
+		this.definition = definition;
+	}
 
 	@Override
 	public IHiveBuilder addDrop(double chance, ResourceLocation speciesId, Supplier<List<ItemStack>> extraItems, float ignobleChance, Map<IChromosome<?>, IAllele> alleles) {
@@ -26,6 +32,7 @@ public class HiveBuilder implements IHiveBuilder {
 
 	@Override
 	public IHiveBuilder addCustomDrop(Supplier<IHiveDrop> drop) {
-		return null;
+		this.drops.add(drop);
+		return this;
 	}
 }

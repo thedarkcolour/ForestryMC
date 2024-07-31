@@ -15,7 +15,6 @@ import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -23,36 +22,30 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.core.ItemGroups;
-import forestry.api.genetics.IIndividualHandler;
-import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.config.Config;
-import forestry.core.genetics.SerializableIndividualHandler;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
 import forestry.core.utils.SpeciesUtil;
 
 public class ItemBeeGE extends ItemGE implements IColoredItem {
-	private final BeeLifeStage type;
-
 	public ItemBeeGE(BeeLifeStage type) {
-		super(type != BeeLifeStage.DRONE ? new Item.Properties().tab(ItemGroups.tabApiculture).durability(1) : new Item.Properties().tab(ItemGroups.tabApiculture));
-		this.type = type;
+		super(type != BeeLifeStage.DRONE ? new Item.Properties().tab(ItemGroups.tabApiculture).stacksTo(1) : new Item.Properties().tab(ItemGroups.tabApiculture), type);
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		return new SerializableIndividualHandler(stack, SpeciesUtil.BEE_TYPE.get().createIndividual(nbt, this.type));
+	protected ISpeciesType<?, ?> getType() {
+		return SpeciesUtil.BEE_TYPE.get();
 	}
 
 	@Override
 	protected IBeeSpecies getSpecies(ItemStack stack) {
-		return GeneticHelper.getOrganism(stack).getAllele(BeeChromosomes.SPECIES, true);
+		return (IBeeSpecies) IIndividualHandlerItem.getIndividual(stack).getSpecies();
 	}
 
 	@Override
@@ -61,8 +54,8 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 			return;
 		}
 
-		if (this.type != BeeLifeStage.DRONE) {
-			IIndividualHandler.ifPresent(stack, individual -> {
+		if (this.stage != BeeLifeStage.DRONE) {
+			IIndividualHandlerItem.ifPresent(stack, individual -> {
 				if (((IBee) individual).isPristine()) {
 					list.add(Component.translatable("for.bees.stock.pristine").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC));
 				} else {
@@ -77,7 +70,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 	@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
 		if (allowedIn(tab)) {
-			addCreativeItems(subItems, true);
+			ItemGE.addCreativeItems(this.stage, subItems, true, SpeciesUtil.BEE_TYPE.get());
 		}
 	}
 
@@ -88,7 +81,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 			if (hideSecrets && species.isSecret() && !Config.isDebug) {
 				continue;
 			}
-			subItems.add(species.createStack(this.type));
+			subItems.add(species.createStack(this.stage));
 		}
 	}
 
@@ -116,6 +109,6 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 	}
 
 	public final BeeLifeStage getStage() {
-		return type;
+		return (BeeLifeStage) this.stage;
 	}
 }

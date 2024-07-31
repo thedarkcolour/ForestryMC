@@ -294,28 +294,21 @@ public final class FluidHelper {
 		return true;*/
 	}
 
+	// used by squeezer to check if the item's fluid can be extracted from it
 	public static boolean isDrainableFilledContainer(ItemStack container) {
 		LazyOptional<IFluidHandlerItem> fluidHandlerCap = FluidUtil.getFluidHandler(container);
-		return fluidHandlerCap.isPresent();
-		/*if (!fluidHandlerCap.isPresent()) {
+		if (!fluidHandlerCap.isPresent()) {
 			return false;
 		}
 
 		IFluidHandlerItem fluidHandler = fluidHandlerCap.orElse(null);
+		int capacity = fluidHandler.getTankCapacity(0);
 
-		IFluidTankProperties[] tankProperties = fluidHandler.getTankProperties();
-		for (IFluidTankProperties properties : tankProperties) {
-			if (!properties.canDrain()) {
-				return false;
-			}
-
-			FluidStack contents = properties.getContents();
-			if (contents == null || contents.amount < properties.getCapacity()) {
-				return false;
-			}
+		if (fluidHandler.getFluidInTank(0).getAmount() == capacity) {
+			return fluidHandler.drain(capacity, IFluidHandler.FluidAction.SIMULATE).getAmount() == capacity;
+		} else {
+			return false;
 		}
-
-		return true;*/
 	}
 
 	public static boolean isDrainableContainer(ItemStack container) {

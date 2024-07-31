@@ -656,8 +656,8 @@ public class TradeStation extends SavedData implements ITradeStation, IInventory
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return inventory.canSlotAccept(slotIndex, itemStack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return inventory.canSlotAccept(slotIndex, stack);
 	}
 
 	@Override

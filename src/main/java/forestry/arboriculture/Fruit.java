@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 
 public class Fruit extends DummyFruit {
 	private final List<Product> products;

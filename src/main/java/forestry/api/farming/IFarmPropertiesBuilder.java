@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.floats.Float2IntFunction;
+
 public interface IFarmPropertiesBuilder {
 	IFarmPropertiesBuilder setIcon(Supplier<ItemStack> stackSupplier);
 
@@ -19,21 +21,15 @@ public interface IFarmPropertiesBuilder {
 
 	IFarmPropertiesBuilder setFertilizer(ToIntFunction<IFarmHousing> consumption);
 
-	default IFarmPropertiesBuilder setWater(int waterConsumption) {
-		return setWater((housing, hydrationModifier) -> waterConsumption);
+	default IFarmPropertiesBuilder setWaterConsumption(int waterConsumption) {
+		return setWaterConsumption((housing, hydrationModifier) -> waterConsumption);
 	}
 
-	default IFarmPropertiesBuilder setWater(ToIntFunction<Float> waterConsumption) {
-		return setWater((housing, hydrationModifier) -> waterConsumption.applyAsInt(hydrationModifier));
+	default IFarmPropertiesBuilder setWaterConsumption(Float2IntFunction waterConsumption) {
+		return setWaterConsumption((housing, hydrationModifier) -> waterConsumption.get(hydrationModifier));
 	}
 
-	IFarmPropertiesBuilder setWater(ToIntBiFunction<IFarmHousing, Float> waterConsumption);
-
-	/*IFarmPropertiesBuilder setResourcePredicate(Predicate<ItemStack> isResource);
-
-	IFarmPropertiesBuilder setSeedlingPredicate(Predicate<ItemStack> isSeedling);
-
-	IFarmPropertiesBuilder setWindfallPredicate(Predicate<ItemStack> isWindfall);*/
+	IFarmPropertiesBuilder setWaterConsumption(IWaterConsumption waterConsumption);
 
 	default IFarmPropertiesBuilder addSoil(Block block) {
 		return addSoil(new ItemStack(block), block.defaultBlockState());

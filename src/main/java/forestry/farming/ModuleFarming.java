@@ -22,10 +22,10 @@ import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 
 import forestry.api.IForestryApi;
-import forestry.api.circuits.ChipsetManager;
-import forestry.api.circuits.CircuitSocketType;
+import forestry.api.circuits.ForestryCircuitSocketTypes;
 import forestry.api.circuits.ICircuitLayout;
 import forestry.api.farming.IFarmRegistry;
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.features.CoreItems;
@@ -40,6 +40,7 @@ import forestry.farming.logic.farmables.FarmableStacked;
 import forestry.modules.BlankForestryModule;
 import forestry.api.client.IClientModuleHandler;
 
+@ForestryModule
 public class ModuleFarming extends BlankForestryModule {
 	@Override
 	public ResourceLocation getId() {
@@ -109,22 +110,11 @@ public class ModuleFarming extends BlankForestryModule {
 
 		//Forestry fertilizer
 		registry.registerFertilizer(Ingredient.of(CoreItems.FERTILIZER_COMPOUND), 500);
-
-		// Layouts
-		ICircuitLayout layoutManaged = new CircuitLayout("farms.managed", CircuitSocketType.FARM);
-		ChipsetManager.circuitRegistry.registerLayout(layoutManaged);
-		ICircuitLayout layoutManual = new CircuitLayout("farms.manual", CircuitSocketType.FARM);
-		ChipsetManager.circuitRegistry.registerLayout(layoutManual);
 	}
 
 	@Override
 	public void doInit() {
 		FarmDefinition.init();
-	}
-
-	@Override
-	public void registerRecipes() {
-		FarmDefinition.registerCircuits();
 	}
 
 	@Override

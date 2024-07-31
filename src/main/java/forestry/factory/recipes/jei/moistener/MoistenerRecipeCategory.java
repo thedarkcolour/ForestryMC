@@ -76,7 +76,7 @@ public class MoistenerRecipeCategory extends ForestryRecipeCategory<IMoistenerRe
 
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 128, 4)
-				.addIngredients(recipe.getResource());
+				.addIngredients(recipe.getInput());
 
 		IRecipeSlotBuilder fuelResourceSlot = builder.addSlot(RecipeIngredientRole.INPUT, 24, 43)
 				.addItemStacks(fuelResources);

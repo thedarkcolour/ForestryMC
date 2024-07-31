@@ -10,9 +10,10 @@
  ******************************************************************************/
 package forestry.core.errors;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import com.google.common.collect.ImmutableMap;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -25,17 +26,14 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 
 public class ErrorManager implements IErrorManager {
 	// Numeric IDs should be used only for network synchronization
-	private final Short2ObjectOpenHashMap<IError> byNumericId = new Short2ObjectOpenHashMap<>();
-	private final Object2ShortOpenHashMap<IError> numericIdLookup = new Object2ShortOpenHashMap<>();
-	private final HashMap<ResourceLocation, IError> byId = new HashMap<>();
+	private final Short2ObjectOpenHashMap<IError> byNumericId;
+	private final Object2ShortOpenHashMap<IError> numericIdLookup;
+	private final ImmutableMap<ResourceLocation, IError> byId;
 
-	@Override
-	public void registerError(IError state) {
-		if (this.byId.containsKey(state.getId())) {
-			throw new RuntimeException("Forestry Error State does not possess a unique id.");
-		}
-
-		this.byId.put(state.getId(), state);
+	public ErrorManager(Short2ObjectOpenHashMap<IError> byNumericId, Object2ShortOpenHashMap<IError> numericIdLookup, ImmutableMap<ResourceLocation, IError> byId) {
+		this.byNumericId = byNumericId;
+		this.numericIdLookup = numericIdLookup;
+		this.byId = byId;
 	}
 
 	@Override
@@ -43,14 +41,15 @@ public class ErrorManager implements IErrorManager {
 		return this.byNumericId.get(id);
 	}
 
+	@Nullable
 	@Override
-	public IError getError(ResourceLocation name) {
-		return this.byId.get(name);
+	public IError getError(ResourceLocation errorId) {
+		return this.byId.get(errorId);
 	}
 
 	@Override
-	public Collection<IError> getRegisteredErrors() {
-		return Collections.unmodifiableCollection(this.byNumericId.values());
+	public List<IError> getErrors() {
+		return this.byId.values().asList();
 	}
 
 	@Override

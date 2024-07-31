@@ -11,6 +11,7 @@
 package forestry.apiculture.multiblock;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Stack;
 
@@ -28,6 +29,7 @@ import net.minecraft.nbt.ListTag;
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.gui.ContainerAlvearySwarmer;
@@ -43,7 +45,6 @@ import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SpeciesUtil;
 
 public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer, IActivatable, IAlvearyComponent.Active {
-
 	private final InventorySwarmer inventory;
 	private final Stack<ItemStack> pendingSpawns = new Stack<>();
 	private boolean active;
@@ -95,9 +96,12 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		}
 
 		// Queue swarm spawn
-		IBee princess = SpeciesUtil.BEE_TYPE.get().create(princessStack);
-		princess.setPristine(false);
-		pendingSpawns.push(SpeciesUtil.BEE_TYPE.get().getTypes().createStack(princess, BeeLifeStage.PRINCESS));
+		IIndividualHandlerItem.ifPresent(princessStack, individual -> {
+			if (individual instanceof IBee princess) {
+				princess.setPristine(false);
+				this.pendingSpawns.push(princess.copyWithStage(BeeLifeStage.PRINCESS));
+			}
+		});
 	}
 
 	@Override
@@ -133,12 +137,14 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 	private void trySpawnSwarm() {
 		ItemStack toSpawn = pendingSpawns.peek();
 		HiveDefinitionSwarmer hiveDescription = new HiveDefinitionSwarmer(toSpawn);
-		Hive hive = new Hive(hiveDescription);
+		Hive hive = new Hive(hiveDescription, List.of());
+
+		ServerLevel level = (ServerLevel) this.level;
 
 		int x = getBlockPos().getX() + level.random.nextInt(40 * 2) - 40;
 		int z = getBlockPos().getZ() + level.random.nextInt(40 * 2) - 40;
 
-		if (HiveDecorator.tryGenHive((ServerLevel) level, level.random, x, z, hive)) {
+		if (HiveDecorator.tryGenHive(level, level.random, x, z, hive)) {
 			pendingSpawns.pop();
 		}
 	}
@@ -202,6 +208,7 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 
 		this.active = active;
 
+		// todo is this necessary? should just be a blockstate update
 		if (level != null && !level.isClientSide) {
 			NetworkUtil.sendNetworkPacket(new PacketActiveUpdate(this), worldPosition, level);
 		}

@@ -60,23 +60,14 @@ public interface IForestryModule {
 	default void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
 	}
 
-	default void setupApi() {
-	}
-
 	/**
-	 * Called to setup any API related to this module if this module fails to load (has missing dependencies).
-	 * Use this method to provide fallback or dummy APIs. Not needed if your module always loads.
+	 * Called during Forestry's mod construction phase. Initialize any static API.
 	 */
-	// TODO IMPLEMENT
-	default void setupFallbackApi() {
+	default void setupApi() {
 	}
 
 	// todo remove
 	default void preInit() {
-	}
-
-	// todo remove
-	default void registerObjects() {
 	}
 
 	default void registerPackets(IPacketRegistry registry) {
@@ -85,18 +76,10 @@ public interface IForestryModule {
 	default void doInit() {
 	}
 
-	/**
+	/** todo remove
 	 * Can be used to register recipes. Called after {@link #doInit()}.
 	 */
 	default void registerRecipes() {
-	}
-
-	default void postInit() {
-	}
-
-	@Nullable
-	default LiteralArgumentBuilder<CommandSourceStack> register() {
-		return null;
 	}
 
 	/**

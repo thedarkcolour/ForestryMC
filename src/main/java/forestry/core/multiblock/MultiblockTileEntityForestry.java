@@ -161,8 +161,8 @@ public abstract class MultiblockTileEntityForestry<T extends IMultiblockLogic> e
 	}
 
 	@Override
-	public final boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return getInternalInventory().canSlotAccept(slotIndex, itemStack);
+	public final boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return getInternalInventory().canSlotAccept(slotIndex, stack);
 	}
 
 	@Override

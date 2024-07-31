@@ -11,18 +11,12 @@ import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 
 import forestry.api.apiculture.hives.IHiveDrop;
-import forestry.api.apiculture.hives.IHiveGen;
 import forestry.api.apiculture.hives.IHiveManager;
 
 public class HiveManager implements IHiveManager {
-	private final ImmutableMap<ResourceLocation, Hive> registry;
-
-	public HiveManager(ImmutableMap<ResourceLocation, Hive> registry) {
-		this.registry = registry;
-	}
+	private ImmutableMap<ResourceLocation, Hive> registry;
 
 	@Override
 	public List<Hive> getHives() {
@@ -34,13 +28,7 @@ public class HiveManager implements IHiveManager {
 		return Objects.requireNonNull(this.registry.get(id), "No hive registered with name " + id).getDrops();
 	}
 
-	@Override
-	public IHiveGen createGroundGen(Block... validGroundBlocks) {
-		return new HiveGenGround(validGroundBlocks);
-	}
-
-	@Override
-	public IHiveGen createTreeGen() {
-		return HiveGenTree.INSTANCE;
+	public void setRegistry(ImmutableMap<ResourceLocation, Hive> hives) {
+		this.registry = hives;
 	}
 }

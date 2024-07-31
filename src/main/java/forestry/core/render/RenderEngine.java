@@ -1,6 +1,5 @@
 package forestry.core.render;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -16,9 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.math.Vector3f;
 
+import forestry.api.ForestryConstants;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TemperatureState;
-import forestry.core.utils.ModUtil;
 import forestry.energy.blocks.EngineBlock;
 import forestry.energy.tiles.EngineBlockEntity;
 
@@ -53,14 +52,14 @@ public class RenderEngine implements IForestryRenderer<EngineBlockEntity> {
 		this.extension = root.getChild("extension");
 
 		this.textures = new ResourceLocation[]{
-				ModUtil.modLoc(baseTexture + "base.png"),
-				ModUtil.modLoc(baseTexture + "piston.png"),
-				ModUtil.modLoc(baseTexture + "extension.png"),
-				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_highest.png"),
-				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_higher.png"),
-				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_high.png"),
-				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_medium.png"),
-				ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_low.png"),
+				ForestryConstants.forestry(baseTexture + "base.png"),
+				ForestryConstants.forestry(baseTexture + "piston.png"),
+				ForestryConstants.forestry(baseTexture + "extension.png"),
+				ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_highest.png"),
+				ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_higher.png"),
+				ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_high.png"),
+				ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_medium.png"),
+				ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/engine_trunk_low.png"),
 		};
 	}
 

@@ -12,7 +12,6 @@ package forestry.core.fluids;
 
 import com.google.common.base.Suppliers;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,11 +34,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.utils.ModUtil;
 
-/**
- * @author CovertJaguar <http://www.railcraft.info>
- */
 public class FilteredTank extends StandardTank {
-
 	private Supplier<Set<ResourceLocation>> filters = Suppliers.ofInstance(new HashSet<>()); // FluidNames
 
 	public FilteredTank(int capacity) {
@@ -51,13 +46,9 @@ public class FilteredTank extends StandardTank {
 		super(capacity, canFill, canDrain);
 	}
 
-	public FilteredTank setFilters(Supplier<Set<ResourceLocation>> filters) {
+	public FilteredTank setFilter(FluidRecipeFilter filters) {
 		this.filters = filters;
 		return this;
-	}
-
-	public FilteredTank setFilters(Fluid... filters) {
-		return setFilters(Arrays.asList(filters));
 	}
 
 	public FilteredTank setFilters(Collection<Fluid> filters) {
@@ -97,7 +88,6 @@ public class FilteredTank extends StandardTank {
 				toolTip.add(filterFluidStack.getDisplayName(), rarity.color);
 			}
 		} else {
-			//TODO can this be simplified
 			Component tmiComponent = Component.literal("<")
 					.append(Component.translatable("for.gui.tooltip.tmi"))
 					.append(Component.literal(">"));
@@ -105,5 +95,4 @@ public class FilteredTank extends StandardTank {
 		}
 		toolTip.add(Component.translatable("for.gui.tooltip.liquid.amount", getFluidAmount(), getCapacity()));
 	}
-
 }

@@ -8,8 +8,8 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import forestry.api.client.IClientModuleHandler;
-import forestry.api.genetics.alleles.AlleleManager;
 import forestry.api.genetics.filter.IFilterLogic;
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IPacketRegistry;
 import forestry.core.network.PacketIdClient;
@@ -20,6 +20,7 @@ import forestry.sorting.network.packets.PacketFilterChangeGenome;
 import forestry.sorting.network.packets.PacketFilterChangeRule;
 import forestry.sorting.network.packets.PacketGuiFilterUpdate;
 
+@ForestryModule
 public class ModuleSorting extends BlankForestryModule {
 	@Override
 	public ResourceLocation getId() {
@@ -39,23 +40,8 @@ public class ModuleSorting extends BlankForestryModule {
 		registry.clientbound(PacketIdClient.GUI_UPDATE_FILTER, PacketGuiFilterUpdate.class, PacketGuiFilterUpdate::decode, PacketGuiFilterUpdate::handle);
 	}
 
-	@Override
-	public void setupApi() {
-		AlleleManager.filterRegistry = new FilterRegistry();
-	}
-
-	@Override
-	public void preInit() {
-		DefaultFilterRuleType.init();
-	}
-
 	public static void registerCapabilities(RegisterCapabilitiesEvent consumer) {
 		consumer.register(IFilterLogic.class);
-	}
-
-	@Override
-	public void doInit() {
-		((FilterRegistry) AlleleManager.filterRegistry).init();
 	}
 
 	@Override

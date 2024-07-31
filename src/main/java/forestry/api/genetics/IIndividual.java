@@ -1,9 +1,7 @@
 package forestry.api.genetics;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -24,19 +22,30 @@ public interface IIndividual {
 		}
 	};
 
+	/**
+	 * @return The genome of this individual.
+	 */
 	IGenome getGenome();
 
+	/**
+	 * @return The species type of this individual.
+	 */
 	ISpeciesType<?, ?> getType();
+
+	/**
+	 * @return The active species of this individual. Prefer this method over getting it from {@link #getGenome()}.
+	 */
+	ISpecies<?> getSpecies();
+
+	/**
+	 * @return The inactive species of the individual. Prefer this method over getting it from {@link #getGenome()}.
+	 */
+	ISpecies<?> getInactiveSpecies();
 
 	void setMate(@Nullable IGenome mate);
 
 	@Nullable
 	IGenome getMate();
-
-	/**
-	 * @return The active species of this individual.
-	 */
-	ISpecies<?> getSpecies();
 
 	/**
 	 * @return {@code true} if this individual has been analyzed and a summary of its genome should be displayed in its tooltip.
@@ -55,8 +64,6 @@ public interface IIndividual {
 	 */
 	void saveToStack(ItemStack stack);
 
-	void addTooltip(List<Component> list);
-
 	default boolean hasGlint() {
 		return getSpecies().hasGlint();
 	}
@@ -68,7 +75,12 @@ public interface IIndividual {
 	/**
 	 * Copies this individual and all of its properties EXCEPT FOR ITS MATE.
 	 * Override this method in subclasses to make sure all information is copied.
+	 *
 	 * @return An exact copy of this individual.
 	 */
 	IIndividual copy();
+
+	default <I extends IIndividual> I cast() {
+		return (I) this;
+	}
 }

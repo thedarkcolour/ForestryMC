@@ -70,8 +70,8 @@ public class ApiaristAI extends MoveToBlockGoal {
 
 			//fill slots from inside bee house
 			for (ItemStack stack : InventoryUtil.getStacks(inventory, SLOT_PRODUCT_1, SLOT_PRODUCT_COUNT)) {
-				if (!stack.isEmpty() && stack.getItem() instanceof ItemBeeGE) {
-					BeeLifeStage type = ((ItemBeeGE) stack.getItem()).getStage();
+				if (!stack.isEmpty() && stack.getItem() instanceof ItemBeeGE geneticItem) {
+					BeeLifeStage type = geneticItem.getStage();
 					if (inventory.getItem(SLOT_QUEEN).isEmpty() && type == BeeLifeStage.PRINCESS) {
 						inventory.setQueen(stack.copy());
 						stack.setCount(0);

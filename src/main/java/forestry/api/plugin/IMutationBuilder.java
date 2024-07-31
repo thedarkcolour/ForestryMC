@@ -14,6 +14,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IMutationCondition;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.core.genetics.mutations.Mutation;
 
 /**
  * Set custom mutation requirements
@@ -73,8 +78,12 @@ public interface IMutationBuilder {
 	 */
 	IMutationBuilder addMutationCondition(IMutationCondition condition);
 
+	<A extends IAllele> IMutationBuilder addSpecialAllele(IChromosome<A> chromosome, A allele);
+
 	/**
 	 * Override the chance set in {@link forestry.api.plugin.IMutationsRegistration#add}.
 	 */
 	IMutationBuilder setChance(int chance);
+
+	<S extends ISpecies<?>> Mutation<S> build(ISpeciesType<S, ?> speciesType);
 }

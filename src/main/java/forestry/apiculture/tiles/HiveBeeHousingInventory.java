@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.core.utils.SpeciesUtil;
 
 class HiveBeeHousingInventory implements IBeeHousingInventory {
 	@Nullable
@@ -23,20 +22,20 @@ class HiveBeeHousingInventory implements IBeeHousingInventory {
 
 	@Override
 	public ItemStack getQueen() {
-		if (queen == null) {
-			IBee bee = hive.getContainedBee();
-			queen = SpeciesUtil.BEE_TYPE.get().getTypes().createStack(bee, BeeLifeStage.QUEEN);
+		if (this.queen == null) {
+			IBee bee = this.hive.getContainedBee();
+			this.queen = bee.copyWithStage(BeeLifeStage.QUEEN);
 		}
-		return queen;
+		return this.queen;
 	}
 
 	@Override
 	public ItemStack getDrone() {
-		if (drone == null) {
-			IBee bee = hive.getContainedBee();
-			drone = SpeciesUtil.BEE_TYPE.get().getTypes().createStack(bee, BeeLifeStage.DRONE);
+		if (this.drone == null) {
+			IBee bee = this.hive.getContainedBee();
+			this.drone = bee.copyWithStage(BeeLifeStage.DRONE);
 		}
-		return drone;
+		return this.drone;
 	}
 
 	@Override

@@ -163,11 +163,11 @@ public enum GuiElementFactory implements ResourceManagerReloadListener {
 		if (breedingTracker.isDiscovered(mutation)) {
 			ContainerElement element = new ContainerElement();
 			element.setPreferredBounds(x, y, width, height);
-			IAlyzerPlugin plugin = ((ISpeciesType<?, ?>) mutation.getType()).getAlyzerPlugin();
-			Map<ResourceLocation, ItemStack> iconStacks = plugin.getIconStacks();
+			IAlyzerPlugin plugin = mutation.getType().getAlyzerPlugin();
+			Map<ISpecies<?>, ItemStack> iconStacks = plugin.getIconStacks();
 
-			ItemStack firstPartner = iconStacks.get(mutation.getFirstParent().id());
-			ItemStack secondPartner = iconStacks.get(mutation.getSecondParent().id());
+			ItemStack firstPartner = iconStacks.get(mutation.getFirstParent());
+			ItemStack secondPartner = iconStacks.get(mutation.getSecondParent());
 			element.add(new ItemElement(0, 0, firstPartner), createProbabilityAdd(mutation, 21, 4), new ItemElement(33, 0, secondPartner));
 			return element;
 		}
@@ -184,10 +184,10 @@ public enum GuiElementFactory implements ResourceManagerReloadListener {
 			ContainerElement element = pane(x, y, width, height);
 			ISpeciesType<?, ?> speciesType = mutation.getType();
 			IDatabasePlugin plugin = speciesType.getDatabasePlugin();
-			Map<ResourceLocation, ItemStack> iconStacks = plugin.getIndividualStacks();
-			ItemStack partner = iconStacks.get(mutation.getPartner(species).id());
+			Map<ISpecies<?>, ItemStack> iconStacks = plugin.getIndividualStacks();
+			ItemStack partner = iconStacks.get(mutation.getPartner(species));
 			ISpecies<?> resultSpecies = mutation.getResult();
-			ItemStack result = iconStacks.get(resultSpecies.id());
+			ItemStack result = iconStacks.get(resultSpecies);
 			element.add(new ItemElement(0, 0, partner), new ItemElement(33, 0, result));
 			createProbabilityArrow(element, mutation, 18, 4, breedingTracker);
 			return element;

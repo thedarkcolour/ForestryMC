@@ -13,7 +13,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.core.ILocatable;
 
 public interface IClimateListener extends ILocatable, IClimateProvider {
-
 	/**
 	 * @return Returns the climate state of this listener.
 	 */
@@ -32,8 +31,7 @@ public interface IClimateListener extends ILocatable, IClimateProvider {
 	/**
 	 * Sets the cached state to the given state.
 	 */
-	@OnlyIn(Dist.CLIENT)
-	void setClimateState(IClimatised climateState);
+	void setClimateState(ClimateState climateState);
 
 	/**
 	 * Sends a packet if needed to all players that are currently "watching" the chunk that the listener is located in.

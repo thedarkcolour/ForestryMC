@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,8 +28,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.IForestryApi;
-import forestry.api.circuits.CircuitSocketType;
-import forestry.api.circuits.ICircuitSocketType;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
 import forestry.core.fluids.FakeTankManager;
@@ -144,8 +145,8 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	}
 
 	@Override
-	public ICircuitSocketType getSocketType() {
-		return CircuitSocketType.NONE;
+	public ResourceLocation getSocketType() {
+		return null;
 	}
 
 	@Override
@@ -279,6 +280,16 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 		@Override
 		public double getDrought() {
 			return 0;
+		}
+
+		@Override
+		public TemperatureType temperature() {
+			return TemperatureType.NORMAL;
+		}
+
+		@Override
+		public HumidityType humidity() {
+			return HumidityType.NORMAL;
 		}
 	}
 }

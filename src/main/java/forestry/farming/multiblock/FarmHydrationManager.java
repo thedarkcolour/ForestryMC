@@ -10,13 +10,16 @@
  ******************************************************************************/
 package forestry.farming.multiblock;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
+import forestry.api.core.HumidityType;
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
+import forestry.api.core.TemperatureType;
 import forestry.core.network.IStreamable;
 import forestry.cultivation.IFarmHousingInternal;
 import forestry.farming.gui.IFarmLedgerDelegate;
@@ -58,26 +61,36 @@ public class FarmHydrationManager implements IFarmLedgerDelegate, INbtWritable, 
 
 	@Override
 	public float getHydrationTempModifier() {
-		float temperature = housing.getExactTemperature();
-		return Math.max(temperature, 0.8f);
+		return switch (temperature()) {
+			case NORMAL -> 1.0f;
+			case WARM -> 1.5f;
+			case HOT, HELLISH -> 2.0f;
+			default -> 0.8f;
+		};
 	}
 
 	@Override
 	public float getHydrationHumidModifier() {
-		float mod = 1 / housing.getExactHumidity();
-		return Math.min(mod, 2.0f);
+		return switch (humidity()) {
+			case ARID -> 2.0f;
+			case NORMAL -> 1.5f;
+			case DAMP -> 1.0f;
+		};
+	}
+
+	@Override
+	public TemperatureType temperature() {
+		return this.housing.temperature();
+	}
+
+	@Override
+	public HumidityType humidity() {
+		return this.housing.humidity();
 	}
 
 	@Override
 	public float getHydrationRainfallModifier() {
-		float mod = (float) ticksSinceRainfall / 24000;
-		if (mod <= RAINFALL_MODIFIER_MIN) {
-			return RAINFALL_MODIFIER_MIN;
-		} else if (mod >= RAINFALL_MODIFIER_MAX) {
-			return RAINFALL_MODIFIER_MAX;
-		} else {
-			return mod;
-		}
+		return Mth.clamp(RAINFALL_MODIFIER_MIN, (float) ticksSinceRainfall / 24000, RAINFALL_MODIFIER_MAX);
 	}
 
 	@Override

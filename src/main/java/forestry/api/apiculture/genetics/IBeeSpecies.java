@@ -1,15 +1,21 @@
 package forestry.api.apiculture.genetics;
 
+import javax.annotation.Nullable;
 import java.util.List;
+
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ISpecies;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 
 public interface IBeeSpecies extends ISpecies<IBee> {
+	@Override
+	IBeeSpeciesType getType();
+
 	/**
 	 * @return The list of possible items that can be produced by this bee.
 	 */
@@ -32,9 +38,6 @@ public interface IBeeSpecies extends ISpecies<IBee> {
 
 	boolean isNocturnal();
 
-	@Override
-	IBeeSpeciesType getType();
-
 	boolean isJubilant(IGenome genome, IBeeHousing housing);
 
 	/**
@@ -51,4 +54,10 @@ public interface IBeeSpecies extends ISpecies<IBee> {
 	 * @return The color of the bee's outline. Used for tintIndex = 0.
 	 */
 	int getOutline();
+
+	/**
+	 * @return The hive block state that this species spawns naturally in. {@code null} if this species does not spawn naturally.
+	 */
+	@Nullable
+	BlockState getSpawnHives();
 }

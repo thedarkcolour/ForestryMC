@@ -17,7 +17,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 class FakeCraftingInventory {
-
 	private static final AbstractContainerMenu EMPTY_CONTAINER = new AbstractContainerMenu(null, -1) {
 		@Override
 		public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {

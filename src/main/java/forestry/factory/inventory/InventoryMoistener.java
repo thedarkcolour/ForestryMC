@@ -12,15 +12,15 @@ package forestry.factory.inventory;
 
 import java.util.Optional;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import forestry.api.fuels.FuelManager;
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.inventory.InventoryAdapterTile;
+import forestry.core.utils.RecipeUtils;
 import forestry.core.utils.SlotUtil;
 import forestry.factory.tiles.TileMoistener;
 
@@ -38,17 +38,17 @@ public class InventoryMoistener extends InventoryAdapterTile<TileMoistener> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_RESOURCE) {
-			return RecipeManagers.moistenerManager.isResource(tile.getLevel().getRecipeManager(), itemStack);
+			return RecipeUtils.getMoistenerRecipe(tile.getLevel().getRecipeManager(), stack) != null;
 		}
 
 		if (SlotUtil.isSlotInRange(slotIndex, SLOT_STASH_1, SLOT_STASH_COUNT)) {
-			return FuelManager.moistenerResource.containsKey(itemStack);
+			return FuelManager.moistenerResource.containsKey(stack);
 		}
 
 		if (slotIndex == SLOT_PRODUCT) {
-			Optional<FluidStack> fluidCap = FluidUtil.getFluidContained(itemStack);
+			Optional<FluidStack> fluidCap = FluidUtil.getFluidContained(stack);
 			return fluidCap.map(f -> tile.getTankManager().canFillFluidType(f)).orElse(false);    //TODO very common pattern. Create Helper?
 		}
 

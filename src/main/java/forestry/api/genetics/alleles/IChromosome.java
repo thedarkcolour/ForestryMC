@@ -10,7 +10,6 @@ import forestry.api.IForestryApi;
 
 /**
  * In Forestry, a chromosome is a key in the genome that maps to different alleles.
- * Register your chromosomes with {@link forestry.api.plugin.IGeneticRegistration#registerChromosome}.
  */
 public interface IChromosome<A extends IAllele> {
 	/**

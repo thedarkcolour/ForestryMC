@@ -19,10 +19,10 @@ import net.minecraft.network.chat.Component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import forestry.core.render.ForestryTextureManager;
+import forestry.api.client.ForestrySprites;
+import forestry.api.client.IForestryClientApi;
 
 public class HintLedger extends Ledger {
-
 	private final Component hintString;
 	private final Component hintTooltip;
 
@@ -48,7 +48,7 @@ public class HintLedger extends Ledger {
 		drawBackground(transform, y, x);
 
 		// Draw icon
-		drawSprite(transform, ForestryTextureManager.INSTANCE.getDefault("misc/hint"), x + 3, y + 4);
+		drawSprite(transform, IForestryClientApi.INSTANCE.getTextureManager().getSprite(ForestrySprites.MISC_HINT), x + 3, y + 4);
 
 		if (!isFullyOpened()) {
 			return;

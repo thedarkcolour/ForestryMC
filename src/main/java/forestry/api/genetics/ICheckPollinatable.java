@@ -5,10 +5,6 @@
  ******************************************************************************/
 package forestry.api.genetics;
 
-import net.minecraftforge.common.PlantType;
-
-import genetics.api.individual.IIndividual;
-
 /**
  * Used to check for pollination traits without altering the world by changing vanilla leaves to forestry ones.
  * For a normal pollinatable that can be mated, see {@link IPollinatable}.

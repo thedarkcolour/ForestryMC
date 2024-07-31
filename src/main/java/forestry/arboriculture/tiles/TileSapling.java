@@ -28,11 +28,8 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import forestry.api.arboriculture.ITreeSpecies;
-import forestry.api.arboriculture.ITreekeepingMode;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.arboriculture.worldgen.FeatureArboriculture;
 import forestry.core.utils.SpeciesUtil;
@@ -49,17 +46,17 @@ public class TileSapling extends TileTreeContainer {
 
 	/* SAVING & LOADING */
 	@Override
-	public void load(CompoundTag compoundNBT) {
-		super.load(compoundNBT);
+	public void load(CompoundTag nbt) {
+		super.load(nbt);
 
-		timesTicked = compoundNBT.getInt("TT");
+		timesTicked = nbt.getInt("TT");
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag compoundNBT) {
-		super.saveAdditional(compoundNBT);
+	public void saveAdditional(CompoundTag nbt) {
+		super.saveAdditional(nbt);
 
-		compoundNBT.putInt("TT", timesTicked);
+		nbt.putInt("TT", timesTicked);
 	}
 
 	@Override
@@ -69,9 +66,9 @@ public class TileSapling extends TileTreeContainer {
 	}
 
 	private static int getRequiredMaturity(Level world, ITree tree) {
-		ITreekeepingMode treekeepingMode = SpeciesUtil.TREE_TYPE.get().getTreekeepingMode(world);
-		float maturationModifier = treekeepingMode.getMaturationModifier(tree.getGenome(), 1f);
-		return Math.round(tree.getRequiredMaturity() * maturationModifier);
+		//ITreekeepingMode treekeepingMode = SpeciesUtil.TREE_TYPE.get().getTreekeepingMode(world);
+		//float maturationModifier = treekeepingMode.getMaturationModifier(tree.getGenome(), 1f);
+		return tree.getRequiredMaturity();//Math.round(tree.getRequiredMaturity() * maturationModifier);
 	}
 
 	public boolean canAcceptBoneMeal(RandomSource rand) {
@@ -86,7 +83,7 @@ public class TileSapling extends TileTreeContainer {
 			return true;
 		}
 
-		Feature generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), true);
+		Feature<NoneFeatureConfiguration> generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), true);
 		if (generator instanceof FeatureArboriculture arboricultureGenerator) {
 			arboricultureGenerator.preGenerate(level, rand, getBlockPos());
 			return arboricultureGenerator.getValidGrowthPos(level, getBlockPos()) != null;
@@ -95,7 +92,7 @@ public class TileSapling extends TileTreeContainer {
 		}
 	}
 
-	public void tryGrow(RandomSource random, boolean bonemealed) {
+	public void tryGrow(RandomSource random, boolean boneMealed) {
 		ITree tree = getTree();
 
 		if (tree == null) {
@@ -104,13 +101,13 @@ public class TileSapling extends TileTreeContainer {
 
 		int maturity = getRequiredMaturity(level, tree);
 		if (timesTicked < maturity) {
-			if (bonemealed) {
+			if (boneMealed) {
 				timesTicked = maturity;
 			}
 			return;
 		}
 
-		Feature<NoneFeatureConfiguration> generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), bonemealed);
+		Feature<NoneFeatureConfiguration> generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), boneMealed);
 		final boolean generated;
 		if (generator instanceof FeatureBase) {
 			generated = ((FeatureBase) generator).place(level, random, getBlockPos(), false);
@@ -121,7 +118,7 @@ public class TileSapling extends TileTreeContainer {
 
 		if (generated) {
 			IBreedingTracker breedingTracker = SpeciesUtil.TREE_TYPE.get().getBreedingTracker(level, getOwnerHandler().getOwner());
-			breedingTracker.registerBirth(tree);
+			breedingTracker.registerBirth(tree.getSpecies());
 		}
 	}
 
@@ -132,6 +129,6 @@ public class TileSapling extends TileTreeContainer {
 		if (tree == null) {
 			return ModelData.EMPTY;
 		}
-		return ModelData.builder().with(TREE_SPECIES, tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES)).build();
+		return ModelData.builder().with(TREE_SPECIES, tree.getSpecies()).build();
 	}
 }

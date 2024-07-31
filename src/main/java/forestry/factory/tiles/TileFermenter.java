@@ -39,7 +39,7 @@ import forestry.api.fuels.FermenterFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.api.recipes.IFermenterRecipe;
 import forestry.api.recipes.IVariableFermentable;
-import forestry.api.recipes.RecipeManagers;
+import forestry.core.fluids.FluidRecipeFilter;
 import forestry.core.config.Constants;
 import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
@@ -48,6 +48,7 @@ import forestry.core.fluids.TankManager;
 import forestry.core.render.TankRenderInfo;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
+import forestry.core.utils.RecipeUtils;
 import forestry.factory.features.FactoryTiles;
 import forestry.factory.gui.ContainerFermenter;
 import forestry.factory.inventory.InventoryFermenter;
@@ -71,13 +72,13 @@ public class TileFermenter extends TilePowered implements WorldlyContainer, ILiq
 		setEnergyPerWorkCycle(4200);
 		setInternalInventory(new InventoryFermenter(this));
 
-		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, true, true);
-		resourceTank.setFilters(() -> RecipeManagers.fermenterManager.getRecipeFluidInputs(level.getRecipeManager()));
+		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, true, true);
+		this.resourceTank.setFilter(FluidRecipeFilter.FERMENTER_INPUT);
 
-		productTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, false, true);
-		resourceTank.setFilters(() -> RecipeManagers.fermenterManager.getRecipeFluidOutputs(level.getRecipeManager()));
+		this.productTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, false, true);
+		this.productTank.setFilter(FluidRecipeFilter.FERMENTER_OUTPUT);
 
-		tankManager = new TankManager(this, resourceTank, productTank);
+		this.tankManager = new TankManager(this, this.resourceTank, this.productTank);
 	}
 
 	@Override
@@ -165,8 +166,7 @@ public class TileFermenter extends TilePowered implements WorldlyContainer, ILiq
 		FluidStack fluid = resourceTank.getFluid();
 
 		if (!fluid.isEmpty()) {
-			currentRecipe = RecipeManagers.fermenterManager.findMatchingRecipe(getLevel().getRecipeManager(), resource, fluid)
-					.orElse(null);
+			currentRecipe = RecipeUtils.getFermenterRecipe(this.level.getRecipeManager(), resource, fluid);
 		}
 
 		fermentationTotalTime = fermentationTime = currentRecipe == null ? 0 : currentRecipe.getFermentationValue();
@@ -192,14 +192,12 @@ public class TileFermenter extends TilePowered implements WorldlyContainer, ILiq
 		}
 	}
 
-	private static float determineResourceMod(ItemStack itemstack) {
-		if (!(itemstack.getItem() instanceof IVariableFermentable)) {
-			return 1.0f;
+	private static float determineResourceMod(ItemStack stack) {
+		if (stack.getItem() instanceof IVariableFermentable fermentable) {
+			return fermentable.getFermentationModifier(stack);
 		}
-
-		return ((IVariableFermentable) itemstack.getItem()).getFermentationModifier(itemstack);
+		return 1.0f;
 	}
-
 
 	@Override
 	public boolean hasResourcesMin(float percentage) {

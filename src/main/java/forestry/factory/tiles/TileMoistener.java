@@ -12,6 +12,7 @@ package forestry.factory.tiles;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,13 +36,12 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.fuels.FuelManager;
 import forestry.api.fuels.MoistenerFuel;
 import forestry.api.recipes.IMoistenerRecipe;
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.config.Constants;
-import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.TankManager;
@@ -75,7 +75,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 	public TileMoistener(BlockPos pos, BlockState state) {
 		super(FactoryTiles.MOISTENER.tileType(), pos, state);
 		setInternalInventory(new InventoryMoistener(this));
-		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(Fluids.WATER);
+		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(List.of(Fluids.WATER));
 		tankManager = new TankManager(this, resourceTank);
 	}
 
@@ -237,11 +237,10 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 	}
 
 	public void checkRecipe() {
-		RecipeManager manager = RecipeUtils.getRecipeManager(level);
+		RecipeManager manager = RecipeUtils.getRecipeManager();
 		IMoistenerRecipe sameRec = null;
 		if (manager != null) {
-			sameRec = RecipeManagers.moistenerManager.findMatchingRecipe(manager, getInternalInventory().getItem(InventoryMoistener.SLOT_RESOURCE))
-					.orElse(null);
+			sameRec = RecipeUtils.getMoistenerRecipe(manager, getInternalInventory().getItem(InventoryMoistener.SLOT_RESOURCE));
 		}
 		if (currentRecipe != sameRec) {
 			currentRecipe = sameRec;

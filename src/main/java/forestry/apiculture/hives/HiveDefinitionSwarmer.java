@@ -22,7 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 
-import forestry.api.apiculture.hives.HiveType;
+import forestry.apiculture.blocks.BlockHiveType;
 import forestry.api.apiculture.hives.IHiveDefinition;
 import forestry.api.apiculture.hives.IHiveGen;
 import forestry.api.core.HumidityType;
@@ -45,7 +45,7 @@ public class HiveDefinitionSwarmer implements IHiveDefinition {
 
 	@Override
 	public BlockState getBlockState() {
-		return ApicultureBlocks.BEEHIVE.get(HiveType.SWARM).defaultState();
+		return ApicultureBlocks.BEEHIVE.get(BlockHiveType.SWARM).defaultState();
 	}
 
 	@Override

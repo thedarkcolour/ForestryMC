@@ -28,8 +28,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 
-import forestry.api.ForestryConstants;
-
 
 public abstract class ModUtil {
 	public static boolean isModLoaded(String modname) {
@@ -56,11 +54,6 @@ public abstract class ModUtil {
 		}
 
 		return true;
-	}
-
-	// Creates a Forestry resource location
-	public static ResourceLocation modLoc(String path) {
-		return ForestryConstants.forestry(path);
 	}
 
 	public static ResourceLocation getRegistryName(Fluid o) {

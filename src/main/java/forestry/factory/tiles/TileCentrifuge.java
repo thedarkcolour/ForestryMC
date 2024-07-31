@@ -15,36 +15,36 @@ import java.util.Collection;
 import java.util.Stack;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.Container;
-import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.circuits.ChipsetManager;
-import forestry.api.circuits.CircuitSocketType;
+import forestry.api.IForestryApi;
+import forestry.api.circuits.ForestryCircuitSocketTypes;
 import forestry.api.circuits.ICircuitBoard;
-import forestry.api.circuits.ICircuitSocketType;
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.ICentrifugeRecipe;
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.circuits.ISocketable;
 import forestry.core.config.Constants;
-import forestry.api.core.ForestryError;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.inventory.InventoryAdapter;
 import forestry.core.tiles.IItemStackDisplay;
 import forestry.core.tiles.TilePowered;
 import forestry.core.utils.InventoryUtil;
+import forestry.core.utils.RecipeUtils;
 import forestry.factory.features.FactoryTiles;
 import forestry.factory.gui.ContainerCentrifuge;
 import forestry.factory.inventory.InventoryCentrifuge;
@@ -101,7 +101,7 @@ public class TileCentrifuge extends TilePowered implements ISocketable, WorldlyC
 
 		ItemStack chip = sockets.getItem(0);
 		if (!chip.isEmpty()) {
-			ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(chip);
+			ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(chip);
 			if (chipset != null) {
 				chipset.onLoad(this);
 			}
@@ -151,8 +151,7 @@ public class TileCentrifuge extends TilePowered implements ISocketable, WorldlyC
 
 	private void checkRecipe() {
 		ItemStack resource = getItem(InventoryCentrifuge.SLOT_RESOURCE);
-		ICentrifugeRecipe matchingRecipe = RecipeManagers.centrifugeManager.findMatchingRecipe(getLevel().getRecipeManager(), resource)
-				.orElse(null);
+		ICentrifugeRecipe matchingRecipe = RecipeUtils.getCentrifugeRecipe(getLevel().getRecipeManager(), resource);
 
 		if (currentRecipe != matchingRecipe) {
 			currentRecipe = matchingRecipe;
@@ -223,14 +222,14 @@ public class TileCentrifuge extends TilePowered implements ISocketable, WorldlyC
 	@Override
 	public void setSocket(int slot, ItemStack stack) {
 
-		if (!stack.isEmpty() && !ChipsetManager.circuitRegistry.isChipset(stack)) {
+		if (!stack.isEmpty() && !IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(stack)) {
 			return;
 		}
 
 		// Dispose correctly of old chipsets
 		if (!sockets.getItem(slot).isEmpty()) {
-			if (ChipsetManager.circuitRegistry.isChipset(sockets.getItem(slot))) {
-				ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(sockets.getItem(slot));
+			if (IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(sockets.getItem(slot))) {
+				ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(sockets.getItem(slot));
 				if (chipset != null) {
 					chipset.onRemoval(this);
 				}
@@ -242,15 +241,15 @@ public class TileCentrifuge extends TilePowered implements ISocketable, WorldlyC
 			return;
 		}
 
-		ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(stack);
+		ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(stack);
 		if (chipset != null) {
 			chipset.onInsertion(this);
 		}
 	}
 
 	@Override
-	public ICircuitSocketType getSocketType() {
-		return CircuitSocketType.MACHINE;
+	public ResourceLocation getSocketType() {
+		return ForestryCircuitSocketTypes.MACHINE;
 	}
 
 	@Override

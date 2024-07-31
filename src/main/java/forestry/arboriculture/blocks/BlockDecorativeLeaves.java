@@ -2,6 +2,7 @@ package forestry.arboriculture.blocks;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SoundType;
@@ -35,8 +36,12 @@ public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForg
 		this.type = type;
 	}
 
+	public ResourceLocation getSpeciesId() {
+		return this.type.getSpeciesId();
+	}
+
 	public ForestryLeafType getType() {
-		return type;
+		return this.type;
 	}
 
 	@Override

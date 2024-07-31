@@ -10,30 +10,26 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import net.minecraftforge.network.NetworkHooks;
 
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.ISpeciesType;
 import forestry.core.gui.ContainerNaturalistInventory;
 import forestry.core.gui.IPagedInventory;
@@ -43,49 +39,49 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 	private static final float lidAngleVariationPerTick = 0.1F;
 	public static final VoxelShape CHEST_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
-	private final ISpeciesType<?> speciesRoot;
+	private final ISpeciesType<?, ?> speciesType;
 	public float lidAngle;
 	public float prevLidAngle;
 	private int numPlayersUsing;
 
-	public TileNaturalistChest(BlockEntityType type, BlockPos pos, BlockState state, ISpeciesType<?> speciesRoot) {
+	public TileNaturalistChest(BlockEntityType type, BlockPos pos, BlockState state, ISpeciesType<?, ?> speciesType) {
 		super(type, pos, state);
-		this.speciesRoot = speciesRoot;
-		setInternalInventory(new InventoryNaturalistChest(this, speciesRoot));
+		this.speciesType = speciesType;
+		setInternalInventory(new InventoryNaturalistChest(this, speciesType));
 	}
 
 	public void increaseNumPlayersUsing() {
-		if (numPlayersUsing == 0) {
-			playLidSound(level, SoundEvents.CHEST_OPEN);
+		if (this.numPlayersUsing == 0) {
+			playLidSound(this.level, SoundEvents.CHEST_OPEN);
 		}
 
-		numPlayersUsing++;
-        sendNetworkUpdate();
-    }
+		this.numPlayersUsing++;
+		sendNetworkUpdate();
+	}
 
 	public void decreaseNumPlayersUsing() {
-		numPlayersUsing--;
-		if (numPlayersUsing < 0) {
-			numPlayersUsing = 0;
+		this.numPlayersUsing--;
+		if (this.numPlayersUsing < 0) {
+			this.numPlayersUsing = 0;
 		}
-		if (numPlayersUsing == 0) {
-			playLidSound(level, SoundEvents.CHEST_CLOSE);
+		if (this.numPlayersUsing == 0) {
+			playLidSound(this.level, SoundEvents.CHEST_CLOSE);
 		}
-        sendNetworkUpdate();
-    }
+		sendNetworkUpdate();
+	}
 
 	@Override
 	public void clientTick(Level level, BlockPos pos, BlockState state) {
-		prevLidAngle = lidAngle;
+		this.prevLidAngle = this.lidAngle;
 
-		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
-			if (numPlayersUsing > 0) {
-				lidAngle += lidAngleVariationPerTick;
+		if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
+			if (this.numPlayersUsing > 0) {
+				this.lidAngle += lidAngleVariationPerTick;
 			} else {
-				lidAngle -= lidAngleVariationPerTick;
+				this.lidAngle -= lidAngleVariationPerTick;
 			}
 
-			lidAngle = Math.max(Math.min(lidAngle, 1), 0);
+			this.lidAngle = Math.max(Math.min(this.lidAngle, 1), 0);
 		}
 	}
 
@@ -112,13 +108,12 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 	/* IStreamable */
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-		data.writeInt(numPlayersUsing);
+		data.writeInt(this.numPlayersUsing);
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void readData(FriendlyByteBuf data) {
-		numPlayersUsing = data.readInt();
+		this.numPlayersUsing = data.readInt();
 	}
 
 	@Override
@@ -126,8 +121,8 @@ public abstract class TileNaturalistChest extends TileBase implements IPagedInve
 		return new ContainerNaturalistInventory(windowId, inv, this, 5);
 	}
 
-	public ISpeciesType<?> getSpeciesRoot() {
-		return speciesRoot;
+	public ISpeciesType<?, ?> getSpeciesType() {
+		return this.speciesType;
 	}
 
 	// ensures ContainerNaturalistInventory.page is correct on the server side

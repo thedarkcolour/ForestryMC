@@ -5,24 +5,15 @@
  ******************************************************************************/
 package forestry.api.recipes;
 
+import java.util.List;
+
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.core.NonNullList;
 
-import net.minecraftforge.registries.ObjectHolder;
+import forestry.api.core.Product;
 
 public interface ICentrifugeRecipe extends IForestryRecipe {
-
-	RecipeType<ICentrifugeRecipe> TYPE = RecipeManagers.create("forestry:centrifuge");
-
-	class Companion {
-		@ObjectHolder(registryName = "recipe_serializer", value = "forestry:centrifuge")
-		public static final RecipeSerializer<ICentrifugeRecipe> SERIALIZER = null;
-	}
-
 	/**
 	 * The item for this recipe to match against.
 	 **/
@@ -36,39 +27,11 @@ public interface ICentrifugeRecipe extends IForestryRecipe {
 	/**
 	 * Returns the randomized products from processing one input item.
 	 **/
-	NonNullList<ItemStack> getProducts(RandomSource random);
+	List<ItemStack> getProducts(RandomSource random);
 
 	/**
 	 * Returns a list of all possible products and their estimated probabilities (0.0 to 1.0],
 	 * to help mods that display recipes
 	 **/
-	NonNullList<Product> getAllProducts();
-
-	@Override
-	default RecipeType<?> getType() {
-		return TYPE;
-	}
-
-	@Override
-	default RecipeSerializer<?> getSerializer() {
-		return Companion.SERIALIZER;
-	}
-
-	class Product {
-		private final float probability;
-		private final ItemStack stack;
-
-		public Product(float probability, ItemStack stack) {
-			this.probability = probability;
-			this.stack = stack;
-		}
-
-		public float getProbability() {
-			return probability;
-		}
-
-		public ItemStack getStack() {
-			return stack;
-		}
-	}
+	List<Product> getAllProducts();
 }

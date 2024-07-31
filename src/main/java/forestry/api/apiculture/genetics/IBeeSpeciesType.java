@@ -9,12 +9,9 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.authlib.GameProfile;
-
-import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IGenome;
 
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.IBeeHousing;
@@ -60,5 +57,4 @@ public interface IBeeSpeciesType extends ISpeciesType<IBeeSpecies, IBee> {
 	 * Stays up to date with changes to the housing's listeners.
 	 */
 	IBeeListener createBeeHousingListener(IBeeHousing housing);
-
 }

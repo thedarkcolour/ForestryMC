@@ -10,15 +10,12 @@
  ******************************************************************************/
 package forestry.arboriculture.genetics;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -29,93 +26,83 @@ import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.IAlyzerPlugin;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.genetics.ISpecies;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.config.Config;
-import forestry.core.genetics.ItemGE;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
 
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.ILifeStage;
+import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
 
 public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
 
-	private final Map<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
+	// todo make this reloadable so that data-driven species will work properly
+	private final Map<ISpecies<?>, ItemStack> iconStacks;
 
 	TreeAlyzerPlugin() {
-		NonNullList<ItemStack> treeList = NonNullList.create();
-		ItemGE.addCreativeItems(TreeLifeStage.SAPLING, treeList, false, SpeciesUtil.TREE_TYPE.get());
-		for (ItemStack treeStack : treeList) {
-			IIndividualCapability<?> organism = GeneticHelper.getOrganism(treeStack);
-			if (organism.isEmpty()) {
-				continue;
-			}
-			IAlleleTreeSpecies species = organism.getAllele(TreeChromosomes.SPECIES, true);
-			iconStacks.put(species.getId(), treeStack);
-		}
+		this.iconStacks = GeneticsUtil.getIconStacks(TreeLifeStage.SAPLING, SpeciesUtil.TREE_TYPE.get());
 	}
 
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			ITree tree = SpeciesUtil.TREE_TYPE.get().create(stack);
-			if (tree == null) {
-				return;
-			}
-			ILifeStage type = SpeciesUtil.TREE_TYPE.get().getTypes().getType(stack);
-			if (type == null) {
-				return;
-			}
-			IGenome genome = tree.getGenome();
+			IIndividualHandlerItem.ifPresent(stack, (individual, type) -> {
+				if (individual instanceof ITree tree) {
+					IGenome genome = tree.getGenome();
 
-			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
+					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
-			textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
+					textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
 
-			textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
-			textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);
+					textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
+					textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);
 
-			textLayout.newLine();
-			textLayout.newLine();
+					textLayout.newLine();
+					textLayout.newLine();
 
-			guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), tree, TreeChromosomes.SPECIES, type);
-			textLayout.newLine();
+					guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), tree, TreeChromosomes.SPECIES);
+					textLayout.newLine();
 
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.saplings"), tree, TreeChromosomes.SAPLINGS);
-			textLayout.newLineCompressed();
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.maturity"), tree, TreeChromosomes.MATURATION);
-			textLayout.newLineCompressed();
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.height"), tree, TreeChromosomes.HEIGHT);
-			textLayout.newLineCompressed();
+					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.saplings"), tree, TreeChromosomes.SAPLINGS);
+					textLayout.newLineCompressed();
+					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.maturity"), tree, TreeChromosomes.MATURATION);
+					textLayout.newLineCompressed();
+					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.height"), tree, TreeChromosomes.HEIGHT);
+					textLayout.newLineCompressed();
 
-			int activeGirth = genome.getActiveValue(TreeChromosomes.GIRTH);
-			int inactiveGirth = genome.getInactiveValue(TreeChromosomes.GIRTH);
-			textLayout.drawLine(transform, Component.translatable("for.gui.girth"), GuiAlyzer.COLUMN_0);
-			guiAlyzer.drawLine(transform, String.format("%sx%s", activeGirth, activeGirth), GuiAlyzer.COLUMN_1, tree, TreeChromosomes.GIRTH, false);
-			guiAlyzer.drawLine(transform, String.format("%sx%s", inactiveGirth, inactiveGirth), GuiAlyzer.COLUMN_2, tree, TreeChromosomes.GIRTH, true);
+					int activeGirth = genome.getActiveValue(TreeChromosomes.GIRTH);
+					int inactiveGirth = genome.getInactiveValue(TreeChromosomes.GIRTH);
+					textLayout.drawLine(transform, Component.translatable("for.gui.girth"), GuiAlyzer.COLUMN_0);
+					guiAlyzer.drawLine(transform, String.format("%sx%s", activeGirth, activeGirth), GuiAlyzer.COLUMN_1, tree, TreeChromosomes.GIRTH, false);
+					guiAlyzer.drawLine(transform, String.format("%sx%s", inactiveGirth, inactiveGirth), GuiAlyzer.COLUMN_2, tree, TreeChromosomes.GIRTH, true);
 
-			textLayout.newLineCompressed();
+					textLayout.newLineCompressed();
 
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.yield"), tree, TreeChromosomes.YIELD);
-			textLayout.newLineCompressed();
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.sappiness"), tree, TreeChromosomes.SAPPINESS);
-			textLayout.newLineCompressed();
+					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.yield"), tree, TreeChromosomes.YIELD);
+					textLayout.newLineCompressed();
+					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.sappiness"), tree, TreeChromosomes.SAPPINESS);
+					textLayout.newLineCompressed();
 
-			guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.effect"), tree, TreeChromosomes.EFFECT);
+					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.effect"), tree, TreeChromosomes.EFFECT);
 
-			textLayout.endPage(transform);
+					textLayout.endPage(transform);
+				}
+			});
 		}
 	}
 
 	@Override
 	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			stack.getCapability(ForestryCapabilities.INDIVIDUAL).ifPresent(individual -> {
+			stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM).ifPresent(individual -> {
 				if (individual instanceof ITree tree) {
 					IGenome genome = tree.getGenome();
 					ITreeSpecies primary = genome.getActiveValue(TreeChromosomes.SPECIES);
@@ -211,56 +198,55 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	}
 
 	@Override
-	public void drawAnalyticsPage3(PoseStack transform, Screen gui, ItemStack itemStack) {
+	public void drawAnalyticsPage3(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			ITree tree = SpeciesUtil.TREE_TYPE.get().create(itemStack);
-			if (tree == null) {
-				return;
-			}
+			stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM).ifPresent(individual -> {
+				if (individual instanceof ITree tree) {
+					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
+					WidgetManager widgetManager = guiAlyzer.getWidgetManager();
 
-			TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
-			WidgetManager widgetManager = guiAlyzer.getWidgetManager();
+					textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
 
-			textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
-
-			textLayout.drawLine(transform, Component.translatable("for.gui.beealyzer.produce").append(":"), GuiAlyzer.COLUMN_0);
-			textLayout.newLine();
-
-			int x = GuiAlyzer.COLUMN_0;
-			for (ItemStack stack : tree.getProducts().getPossibleStacks()) {
-				widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), stack));
-				x += 18;
-				if (x > 148) {
-					x = GuiAlyzer.COLUMN_0;
+					textLayout.drawLine(transform, Component.translatable("for.gui.beealyzer.produce").append(":"), GuiAlyzer.COLUMN_0);
 					textLayout.newLine();
-				}
-			}
 
-			textLayout.newLine();
-			textLayout.newLine();
-			textLayout.newLine();
-			textLayout.newLine();
+					int x = GuiAlyzer.COLUMN_0;
+					for (Product product : tree.getProducts()) {
+						widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
+						x += 18;
+						if (x > 148) {
+							x = GuiAlyzer.COLUMN_0;
+							textLayout.newLine();
+						}
+					}
 
-			textLayout.drawLine(transform, Component.translatable("for.gui.beealyzer.specialty").append(":"), GuiAlyzer.COLUMN_0);
-			textLayout.newLine();
-
-			x = GuiAlyzer.COLUMN_0;
-			for (ItemStack stack : tree.getSpecialties().getPossibleStacks()) {
-				Minecraft.getInstance().getItemRenderer().renderGuiItem(stack, guiAlyzer.getGuiLeft() + x, guiAlyzer.getGuiTop() + textLayout.getLineY());
-				x += 18;
-				if (x > 148) {
-					x = GuiAlyzer.COLUMN_0;
 					textLayout.newLine();
-				}
-			}
+					textLayout.newLine();
+					textLayout.newLine();
+					textLayout.newLine();
 
-			textLayout.endPage(transform);
+					textLayout.drawLine(transform, Component.translatable("for.gui.beealyzer.specialty").append(":"), GuiAlyzer.COLUMN_0);
+					textLayout.newLine();
+
+					x = GuiAlyzer.COLUMN_0;
+					for (Product product : tree.getProducts()) {
+						Minecraft.getInstance().getItemRenderer().renderGuiItem(product.createStack(), guiAlyzer.getGuiLeft() + x, guiAlyzer.getGuiTop() + textLayout.getLineY());
+						x += 18;
+						if (x > 148) {
+							x = GuiAlyzer.COLUMN_0;
+							textLayout.newLine();
+						}
+					}
+
+					textLayout.endPage(transform);
+				}
+			});
 		}
 	}
 
 	@Override
-	public Map<ResourceLocation, ItemStack> getIconStacks() {
-		return iconStacks;
+	public Map<ISpecies<?>, ItemStack> getIconStacks() {
+		return this.iconStacks;
 	}
 
 	@Override

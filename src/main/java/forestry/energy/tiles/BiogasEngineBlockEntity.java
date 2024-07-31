@@ -11,6 +11,7 @@
 package forestry.energy.tiles;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,11 +34,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.fuels.EngineBronzeFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.core.config.Constants;
-import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.StandardTank;
@@ -65,7 +66,7 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 		setInternalInventory(new InventoryEngineBiogas(this));
 
 		this.fuelTank = new FilteredTank(Constants.ENGINE_TANK_CAPACITY).setFilters(FuelManager.biogasEngineFuel.keySet());
-		this.heatingTank = new FilteredTank(Constants.ENGINE_TANK_CAPACITY, true, false).setFilters(Fluids.LAVA);
+		this.heatingTank = new FilteredTank(Constants.ENGINE_TANK_CAPACITY, true, false).setFilters(List.of(Fluids.LAVA));
 		this.burnTank = new StandardTank(BUCKET_VOLUME, false, false);
 
 		this.tankManager = new TankManager(this, fuelTank, heatingTank, burnTank);

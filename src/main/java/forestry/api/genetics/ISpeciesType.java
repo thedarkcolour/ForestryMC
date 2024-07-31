@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +19,7 @@ import com.mojang.serialization.Codec;
 
 import forestry.api.ForestryCapabilities;
 import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 
 public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> extends IBreedingTrackerHandler {
@@ -81,7 +83,7 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	ImmutableSet<ResourceLocation> getAllSpeciesIds();
 
 	/**
-	 * @return The number of non-secret species of this type.
+	 * @return The number of NON-SECRET species of this type.
 	 * @throws IllegalStateException If not all species have been registered yet.
 	 */
 	int getSpeciesCount();
@@ -148,7 +150,7 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 
 	@SuppressWarnings({"DataFlowIssue", "ConstantValue"})
 	default boolean isMember(ItemStack stack) {
-		IIndividualHandler individual = stack.getCapability(ForestryCapabilities.INDIVIDUAL).orElse(null);
+		IIndividualHandlerItem individual = stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM).orElse(null);
 		return individual != null && isMember(individual.getIndividual());
 	}
 
@@ -174,4 +176,40 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	 * @return A list of reward items granted upon researching a specimen in the Escritoire. Might be empty.
 	 */
 	List<ItemStack> getResearchBounty(S species, Level level, GameProfile researcher, I individual, int bountyLevel);
+
+	/**
+	 * @return The name of the breeding tracker save file for the given player.
+	 */
+	String getBreedingTrackerFile(@Nullable GameProfile profile);
+
+	/**
+	 * @return A new breeding tracker.
+	 */
+	IBreedingTracker createBreedingTracker();
+
+	/**
+	 * @return A new breeding tracker with data loaded from a previous save file.
+	 */
+	IBreedingTracker createBreedingTracker(CompoundTag tag);
+
+	/**
+	 * @return A new individual of a random species using the default genome of the chosen species.
+	 */
+	I createRandomIndividual(RandomSource rand);
+
+	/**
+	 * Used to initialize a breeding tracker with additional information.
+	 *
+	 * @param tracker The tracker to add information to.
+	 * @param world   The world this tracker is saved to. Always the overworld dimension.
+	 * @param profile The player to whom the breeding tracker belongs to.
+	 */
+	void initializeBreedingTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile);
+
+	/**
+	 * @return This species type casted to a subclass of ISpeciesType.
+	 */
+	default <T extends ISpeciesType<?, ?>> T cast() {
+		return (T) this;
+	}
 }

@@ -8,6 +8,7 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+// todo is this correct? why not use RecipeUtil.getRecipeManager
 public class ClientCraftingHelper {
 	@OnlyIn(Dist.CLIENT)
 	private static final RecipeManager DUMMY = new RecipeManager();

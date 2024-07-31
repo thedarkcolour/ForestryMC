@@ -13,23 +13,23 @@ package forestry.core.data.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
-import forestry.api.recipes.ICentrifugeRecipe;
-import forestry.factory.recipes.RecipeSerializers;
+import forestry.api.core.Product;
+import forestry.core.utils.JsonUtil;
+import forestry.factory.features.FactoryRecipeTypes;
 
 public class CentrifugeRecipeBuilder {
-
 	private int processingTime;
 	private Ingredient input;
-	private final NonNullList<ICentrifugeRecipe.Product> outputs = NonNullList.create();
+	private final ArrayList<Product> outputs = new ArrayList<>();
 
 	public CentrifugeRecipeBuilder setProcessingTime(int processingTime) {
 		this.processingTime = processingTime;
@@ -41,8 +41,8 @@ public class CentrifugeRecipeBuilder {
 		return this;
 	}
 
-	public CentrifugeRecipeBuilder product(float chance, ItemStack itemStack) {
-		outputs.add(new ICentrifugeRecipe.Product(chance, itemStack));
+	public CentrifugeRecipeBuilder product(float chance, ItemStack stack) {
+		outputs.add(new Product(stack.getItem(), stack.getCount(), stack.getTag(), chance));
 		return this;
 	}
 
@@ -54,9 +54,9 @@ public class CentrifugeRecipeBuilder {
 		private final ResourceLocation id;
 		private final int processingTime;
 		private final Ingredient input;
-		private final NonNullList<ICentrifugeRecipe.Product> outputs;
+		private final ArrayList<Product> outputs;
 
-		public Result(ResourceLocation id, int processingTime, Ingredient input, NonNullList<ICentrifugeRecipe.Product> outputs) {
+		public Result(ResourceLocation id, int processingTime, Ingredient input, ArrayList<Product> outputs) {
 			this.id = id;
 			this.processingTime = processingTime;
 			this.input = input;
@@ -70,11 +70,8 @@ public class CentrifugeRecipeBuilder {
 
 			JsonArray products = new JsonArray();
 
-			for (ICentrifugeRecipe.Product product : outputs) {
-				JsonObject object = new JsonObject();
-				object.addProperty("chance", product.getProbability());
-				object.add("item", RecipeSerializers.item(product.getStack()));
-				products.add(object);
+			for (Product product : outputs) {
+				products.add(JsonUtil.serialize(Product.CODEC, product));
 			}
 
 			json.add("products", products);
@@ -87,7 +84,7 @@ public class CentrifugeRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return ICentrifugeRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.CENTRIFUGE.serializer();
 		}
 
 		@Override

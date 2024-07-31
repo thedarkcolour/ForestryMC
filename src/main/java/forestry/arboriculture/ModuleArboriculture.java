@@ -12,8 +12,11 @@ package forestry.arboriculture;
 
 import java.util.function.Consumer;
 
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -24,6 +27,7 @@ import forestry.api.arboriculture.TreeManager;
 import forestry.api.client.IClientModuleHandler;
 import forestry.api.core.IArmorNaturalist;
 import forestry.api.genetics.IIndividual;
+import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IPacketRegistry;
 import forestry.arboriculture.client.ArboricultureClientHandler;
@@ -34,6 +38,7 @@ import forestry.core.ModuleCore;
 import forestry.core.network.PacketIdClient;
 import forestry.modules.BlankForestryModule;
 
+@ForestryModule
 public class ModuleArboriculture extends BlankForestryModule {
 	@Override
 	public ResourceLocation getId() {
@@ -47,13 +52,14 @@ public class ModuleArboriculture extends BlankForestryModule {
 		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
 
 		modBus.addListener(ModuleArboriculture::registerCapabilities);
-		modBus.addGenericListener(ItemStack.class, ModuleArboriculture::attachCapabilities);
+		MinecraftForge.EVENT_BUS.addGenericListener(ItemStack.class, ModuleArboriculture::attachCapabilities);
 	}
 
 	private static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-		if (!event.getCapabilities().containsKey(IIndividual.CAPABILITY_ID)) {
+		// todo attach vanilla capabilities to saplings
+		/*if (!event.getCapabilities().containsKey(IIndividual.CAPABILITY_ID)) {
 
-		}
+		}*/
 	}
 
 	@Override
@@ -62,11 +68,8 @@ public class ModuleArboriculture extends BlankForestryModule {
 	}
 
 	@Override
-	public void preInit() {
-		// Commands
-		ModuleCore.rootCommand.then(CommandTree.register());
-
-		ArboricultureFilterRuleType.init();
+	public void addToRootCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
+		command.then(CommandTree.register());
 	}
 
 	private static void registerCapabilities(RegisterCapabilitiesEvent event) {

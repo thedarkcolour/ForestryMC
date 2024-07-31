@@ -10,17 +10,16 @@ import net.minecraft.world.level.saveddata.SavedData;
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IBreedingTrackerHandler;
+import forestry.api.genetics.ISpeciesType;
 
 public class ServerBreedingHandler implements BreedingTrackerManager.SidedHandler {
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends IBreedingTracker> T getTracker(String rootUID, LevelAccessor level, @Nullable GameProfile player) {
-		IBreedingTrackerHandler handler = BreedingTrackerManager.factories.get(rootUID);
-		String filename = handler.getFileName(player);
+	public <T extends IBreedingTracker> T getTracker(ISpeciesType<?, ?> type, LevelAccessor level, @Nullable GameProfile profile) {
+		String filename = type.getBreedingTrackerFile(profile);
 		ServerLevel overworld = level.getServer().getLevel(Level.OVERWORLD);
-		T tracker = (T) overworld.getDataStorage().computeIfAbsent(tag -> (SavedData) handler.createTracker(tag), () -> (SavedData) handler.createTracker(), filename);
-		handler.populateTracker(tracker, overworld, player);
+		T tracker = (T) overworld.getDataStorage().computeIfAbsent(tag -> (SavedData) type.createBreedingTracker(tag), () -> (SavedData) type.createBreedingTracker(), filename);
+		type.initializeBreedingTracker(tracker, overworld, profile);
 		return tracker;
 	}
 }

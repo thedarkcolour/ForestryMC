@@ -1,10 +1,5 @@
 package forestry.core.registration;
 
-import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Random;
-
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -12,143 +7,73 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
-import org.jetbrains.annotations.Nullable;
+
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class VillagerTrade {
-	public static class GiveItemForEmeralds implements VillagerTrades.ItemListing {
-		final int maxUses;
-		final int xp;
-		final Item sellingItem;
-		final PriceInterval sellingAmounts;
-		final PriceInterval emeraldAmounts;
-
-		public GiveItemForEmeralds(@Nonnull Item sellingItem, @Nonnull PriceInterval sellingAmounts, @Nonnull PriceInterval emeraldAmounts, int maxUses, int xp) {
-			this.sellingItem = sellingItem;
-			this.sellingAmounts = sellingAmounts;
-			this.emeraldAmounts = emeraldAmounts;
-			this.maxUses = maxUses;
-			this.xp = xp;
-		}
-
+	public record GiveItemForEmeralds(Item sellingItem, PriceInterval sellingAmounts, PriceInterval emeraldAmounts,
+									  int maxUses, int xp) implements VillagerTrades.ItemListing {
 		@Override
 		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
 			return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldAmounts.getPrice(rand)), new ItemStack(this.sellingItem, this.sellingAmounts.getPrice(rand)), maxUses, xp, 0.05f);
 		}
 	}
 
-	public static class GiveEmeraldForItem implements VillagerTrades.ItemListing {
-		final int maxUses;
-		final int xp;
-		final Item buyingItem;
-		final PriceInterval buyingAmounts;
-		final PriceInterval emeraldAmounts;
-
-		public GiveEmeraldForItem(Item buyingItem, PriceInterval buyingAmounts, PriceInterval emeraldAmounts, int maxUses, int xp) {
-			this.buyingItem = buyingItem;
-			this.buyingAmounts = buyingAmounts;
-			this.emeraldAmounts = emeraldAmounts;
-			this.maxUses = maxUses;
-			this.xp = xp;
-		}
-
+	public record GiveEmeraldForItem(Item buyingItem, PriceInterval buyingAmounts, PriceInterval emeraldAmounts,
+									 int maxUses, int xp) implements VillagerTrades.ItemListing {
 		@Override
 		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
 			return new MerchantOffer(new ItemStack(this.buyingItem, this.buyingAmounts.getPrice(rand)), new ItemStack(Items.EMERALD, this.emeraldAmounts.getPrice(rand)), maxUses, xp, 0.05f);
 		}
 	}
 
-	public static class GiveItemForItemAndEmerald implements VillagerTrades.ItemListing {
-		final int maxUses;
-		final int xp;
-		final Item buyingItem;
-		final PriceInterval buyAmounts;
-		final PriceInterval emeralsAmounts;
-		final Item sellingItem;
-		final PriceInterval sellingAmounts;
-
-		public GiveItemForItemAndEmerald(Item buyingItem, PriceInterval buyAmounts, PriceInterval emeralsAmounts, Item sellingItem, PriceInterval sellingAmounts, int maxUses, int xp) {
-			this.buyingItem = buyingItem;
-			this.buyAmounts = buyAmounts;
-			this.emeralsAmounts = emeralsAmounts;
-			this.sellingItem = sellingItem;
-			this.sellingAmounts = sellingAmounts;
-			this.maxUses = maxUses;
-			this.xp = xp;
-		}
-
+	public record GiveItemForItemAndEmerald(Item buyingItem, PriceInterval buyAmounts, PriceInterval emeralsAmounts,
+											ItemStack sellingItem, PriceInterval sellingAmounts, int maxUses,
+											int xp) implements VillagerTrades.ItemListing {
 		@Override
 		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
-			return new MerchantOffer(new ItemStack(this.buyingItem, this.buyAmounts.getPrice(rand)), new ItemStack(Items.EMERALD, this.emeralsAmounts.getPrice(rand)), new ItemStack(this.sellingItem, this.sellingAmounts.getPrice(rand)), maxUses, xp, 0.05f);
+			ItemStack buy1 = new ItemStack(this.buyingItem, this.buyAmounts.getPrice(rand));
+			ItemStack buy2 = new ItemStack(Items.EMERALD, this.emeralsAmounts.getPrice(rand));
+			ItemStack sell = ItemHandlerHelper.copyStackWithSize(this.sellingItem, this.sellingAmounts.getPrice(rand));
+			return new MerchantOffer(buy1, buy2, sell, maxUses, xp, 0.05f);
 		}
 	}
 
-	public static class GiveItemForLogAndEmerald implements VillagerTrades.ItemListing {
-		final int maxUses;
-		final int xp;
-		final PriceInterval buyAmounts;
-		final PriceInterval emeraldAmounts;
-		final Item sellingItem;
-		final PriceInterval sellingAmounts;
-
-		public GiveItemForLogAndEmerald(PriceInterval buyAmounts, PriceInterval emeraldAmounts, Item sellingItem, PriceInterval sellingAmounts, int maxUses, int xp) {
-			this.buyAmounts = buyAmounts;
-			this.emeraldAmounts = emeraldAmounts;
-			this.sellingItem = sellingItem;
-			this.sellingAmounts = sellingAmounts;
-			this.maxUses = maxUses;
-			this.xp = xp;
-		}
-
+	public record GiveItemForLogAndEmerald(PriceInterval buyAmounts, PriceInterval emeraldAmounts, Item sellingItem,
+										   PriceInterval sellingAmounts, int maxUses,
+										   int xp) implements VillagerTrades.ItemListing {
 		@Override
 		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
-			Collection<Item> logsBlock = new HashSet<>();
-			logsBlock.add(Items.ACACIA_LOG);
-			logsBlock.add(Items.BIRCH_LOG);
-			logsBlock.add(Items.DARK_OAK_LOG);
-			logsBlock.add(Items.JUNGLE_LOG);
-			logsBlock.add(Items.OAK_LOG);
-			logsBlock.add(Items.SPRUCE_LOG);
+			// should this give forestry logs too?
+			Item[] logsBlock = new Item[]{
+					Items.ACACIA_LOG,
+					Items.BIRCH_LOG,
+					Items.DARK_OAK_LOG,
+					Items.JUNGLE_LOG,
+					Items.OAK_LOG,
+					Items.SPRUCE_LOG,
+					Items.MANGROVE_LOG,
+					// todo 1.20
+					//Items.CHERRY_LOG,
+			};
 
-			return new MerchantOffer(new ItemStack(logsBlock.stream().skip((int) (logsBlock.size() * Math.random())).findFirst().get(), this.buyAmounts.getPrice(rand)), new ItemStack(Items.EMERALD, this.emeraldAmounts.getPrice(rand)), new ItemStack(this.sellingItem, this.sellingAmounts.getPrice(rand)), maxUses, xp, 0.05f);
+			return new MerchantOffer(new ItemStack(logsBlock[rand.nextInt(logsBlock.length)], this.buyAmounts.getPrice(rand)), new ItemStack(Items.EMERALD, this.emeraldAmounts.getPrice(rand)), new ItemStack(this.sellingItem, this.sellingAmounts.getPrice(rand)), maxUses, xp, 0.05f);
 		}
 	}
 
-	public static class GiveItemForTwoItems implements VillagerTrades.ItemListing {
-		final int maxUses;
-		final int xp;
-		final Item buyingItem;
-		final PriceInterval buyAmounts;
-		final Item buyingItem2;
-		final PriceInterval buyAmounts2;
-		final Item sellingItem;
-		final PriceInterval sellingAmounts;
-
-		public GiveItemForTwoItems(Item buyingItem, PriceInterval buyAmounts, Item buyingItem2, PriceInterval buyAmounts2, Item sellingItem, PriceInterval sellingAmounts, int maxUses, int xp) {
-			this.buyingItem = buyingItem;
-			this.buyAmounts = buyAmounts;
-			this.buyingItem2 = buyingItem2;
-			this.buyAmounts2 = buyAmounts2;
-			this.sellingItem = sellingItem;
-			this.sellingAmounts = sellingAmounts;
-			this.maxUses = maxUses;
-			this.xp = xp;
-		}
-
+	public record GiveItemForTwoItems(Item buyingItem, PriceInterval buyAmounts, Item buyingItem2,
+									  PriceInterval buyAmounts2, ItemStack sellingItem, PriceInterval sellingAmounts,
+									  int maxUses, int xp) implements VillagerTrades.ItemListing {
 		@Override
 		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
-			return new MerchantOffer(new ItemStack(this.buyingItem, this.buyAmounts.getPrice(rand)), new ItemStack(this.buyingItem2, this.buyAmounts2.getPrice(rand)), new ItemStack(this.sellingItem, this.sellingAmounts.getPrice(rand)), maxUses, xp, 0.05f);
+			ItemStack buy1 = new ItemStack(this.buyingItem, this.buyAmounts.getPrice(rand));
+			ItemStack buy2 = new ItemStack(this.buyingItem2, this.buyAmounts2.getPrice(rand));
+			ItemStack sell = ItemHandlerHelper.copyStackWithSize(this.sellingItem, this.sellingAmounts.getPrice(rand));
+			return new MerchantOffer(buy1, buy2, sell, maxUses, xp, 0.05f);
 		}
 	}
 
-	public static class PriceInterval {
-		private final int min;
-		private final int max;
-
-		public PriceInterval(int min, int max) {
-			this.min = min;
-			this.max = max;
-		}
-
+	public record PriceInterval(int min, int max) {
 		public int getPrice(RandomSource rand) {
 			return min >= max ? min : min + rand.nextInt(max - min + 1);
 		}

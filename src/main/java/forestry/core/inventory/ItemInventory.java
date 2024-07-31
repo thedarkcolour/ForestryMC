@@ -281,7 +281,7 @@ public abstract class ItemInventory implements Container, IFilterSlotDelegate, I
 
 	/* IFilterSlotDelegate */
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		return true;
 	}
 

@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.util.Mth;
 
 /**
- * Represents taxonomic ranks, sometimes called levels of classification, for a {@link ITaxon}.
+ * Represents taxonomic ranks, sometimes called levels of classification, for a {@link Taxon}.
  */
 public enum TaxonomicRank {
 	DOMAIN(0x777fff, true),

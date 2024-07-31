@@ -8,10 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.client.ForestrySprites;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.filter.FilterData;
-import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
-import forestry.sorting.FilterRegistry;
 
 public enum LepidopterologyFilterRuleType implements IFilterRuleType {
 	FLUTTER(ForestrySprites.ANALYZER_FLUTTER) {
@@ -51,21 +49,6 @@ public enum LepidopterologyFilterRuleType implements IFilterRuleType {
 	LepidopterologyFilterRuleType(ResourceLocation sprite) {
 		this.sprite = sprite;
 		this.id = "forestry.lepidopterology." + name().toLowerCase(Locale.ENGLISH);
-	}
-
-	public static void init() {
-		for (LepidopterologyFilterRuleType rule : values()) {
-			FilterRegistry.INSTANCE.registerFilter(rule);
-		}
-	}
-
-	@Override
-	public void addLogic(IFilterRule logic) {
-	}
-
-	@Override
-	public boolean isContainer() {
-		return false;
 	}
 
 	@Override

@@ -88,7 +88,7 @@ public class ContainerSolderingIron extends ContainerItemInventory<ItemInventory
 			inventory.regressLayout();
 		}
 
-		IForestryPacketClient packetResponse = new PacketGuiLayoutSelect(inventory.getLayout().getUID());
+		IForestryPacketClient packetResponse = new PacketGuiLayoutSelect(inventory.getLayout().getId());
 		NetworkUtil.sendToPlayer(packetResponse, player);
 	}
 

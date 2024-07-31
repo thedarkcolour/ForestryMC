@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.Block;
 import forestry.api.ForestryTags;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.ForestryPodType;
 import forestry.core.utils.BlockUtil;

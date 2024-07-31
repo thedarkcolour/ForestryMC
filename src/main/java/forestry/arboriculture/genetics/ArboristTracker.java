@@ -36,7 +36,7 @@ public class ArboristTracker extends BreedingTracker implements IArboristTracker
 	}
 
 	@Override
-	protected ResourceLocation getSpeciesId() {
+	protected ResourceLocation getTypeId() {
 		return ForestrySpeciesTypes.TREE;
 	}
 

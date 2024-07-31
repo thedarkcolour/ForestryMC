@@ -61,20 +61,20 @@ public class InventoryTradeStation extends InventoryAdapter {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (SlotUtil.isSlotInRange(slotIndex, TradeStation.SLOT_SEND_BUFFER, TradeStation.SLOT_SEND_BUFFER_COUNT)) {
 			for (int i = 0; i < TradeStation.SLOT_TRADEGOOD_COUNT; i++) {
 				ItemStack tradeGood = getItem(TradeStation.SLOT_TRADEGOOD + i);
-				if (ItemStackUtil.isIdenticalItem(tradeGood, itemStack)) {
+				if (ItemStackUtil.isIdenticalItem(tradeGood, stack)) {
 					return true;
 				}
 			}
 			return false;
 		} else if (SlotUtil.isSlotInRange(slotIndex, TradeStation.SLOT_LETTERS_1, TradeStation.SLOT_LETTERS_COUNT)) {
-			Item item = itemStack.getItem();
+			Item item = stack.getItem();
 			return item == Items.PAPER;
 		} else if (SlotUtil.isSlotInRange(slotIndex, TradeStation.SLOT_STAMPS_1, TradeStation.SLOT_STAMPS_COUNT)) {
-			Item item = itemStack.getItem();
+			Item item = stack.getItem();
 			return item instanceof IStamps;
 		}
 

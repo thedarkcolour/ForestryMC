@@ -9,9 +9,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import forestry.api.apiculture.IBeekeepingMode;
 import forestry.api.genetics.alleles.IAllele;
 
 /**
@@ -64,9 +64,7 @@ public interface IBreedingTracker {
 	/**
 	 * @return A collection that contains the {@link IAllele#alleleId()}s of all discovered species.
 	 */
-	default Collection<String> getDiscoveredSpecies() {
-		return Collections.emptyList();
-	}
+	Collection<ResourceLocation> getDiscoveredSpecies();
 
 	/**
 	 * Register a successfully researched mutation.

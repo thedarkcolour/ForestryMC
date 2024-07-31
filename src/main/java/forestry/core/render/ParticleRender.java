@@ -83,7 +83,7 @@ public class ParticleRender {
 			return;
 		}
 
-		int color = genome.getActiveAllele(BeeChromosomes.SPECIES).getSpriteColour(0);
+		int color = genome.getActiveValue(BeeChromosomes.SPECIES).getOutline();
 
 		int randomInt = world.random.nextInt(100);
 

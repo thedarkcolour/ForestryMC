@@ -15,7 +15,6 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 
-import forestry.api.circuits.ChipsetManager;
 import forestry.api.circuits.ICircuit;
 import forestry.core.utils.Translator;
 
@@ -24,12 +23,10 @@ public abstract class Circuit implements ICircuit {
 
 	protected Circuit(String uid) {
 		this.uid = uid;
-
-		ChipsetManager.circuitRegistry.registerCircuit(this);
 	}
 
 	@Override
-	public String getUID() {
+	public String getId() {
 		return "forestry." + this.uid;
 	}
 

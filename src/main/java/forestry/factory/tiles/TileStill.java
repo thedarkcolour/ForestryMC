@@ -36,7 +36,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.IStillRecipe;
-import forestry.api.recipes.RecipeManagers;
+import forestry.core.fluids.FluidRecipeFilter;
+import forestry.core.recipes.RecipeManagers;
 import forestry.core.config.Constants;
 import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
@@ -45,6 +46,7 @@ import forestry.core.fluids.TankManager;
 import forestry.core.render.TankRenderInfo;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
+import forestry.core.utils.RecipeUtils;
 import forestry.factory.features.FactoryTiles;
 import forestry.factory.gui.ContainerStill;
 import forestry.factory.inventory.InventoryStill;
@@ -64,10 +66,10 @@ public class TileStill extends TilePowered implements WorldlyContainer, ILiquidT
 		super(FactoryTiles.STILL.tileType(), pos, state, 1100, 8000);
 		setInternalInventory(new InventoryStill(this));
 		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, true, true);
-		resourceTank.setFilters(() -> RecipeManagers.stillManager.getRecipeFluidInputs(level.getRecipeManager()));
+		resourceTank.setFilter(FluidRecipeFilter.STILL_INPUT);
 
 		productTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, false, true);
-		resourceTank.setFilters(() -> RecipeManagers.stillManager.getRecipeFluidOutputs(level.getRecipeManager()));
+		resourceTank.setFilter(FluidRecipeFilter.STILL_OUTPUT);
 
 		tankManager = new TankManager(this, resourceTank, productTank);
 
@@ -141,12 +143,11 @@ public class TileStill extends TilePowered implements WorldlyContainer, ILiquidT
 	private void checkRecipe() {
 		FluidStack recipeLiquid = !bufferedLiquid.isEmpty() ? bufferedLiquid : resourceTank.getFluid();
 
-		if (!RecipeManagers.stillManager.matches(currentRecipe, recipeLiquid)) {
+		if (this.currentRecipe == null || this.currentRecipe.matches(recipeLiquid)) {
 			Level level = Objects.requireNonNull(this.level);
-			currentRecipe = RecipeManagers.stillManager.findMatchingRecipe(level.getRecipeManager(), recipeLiquid)
-					.orElse(null);
+			this.currentRecipe = RecipeUtils.getStillRecipe(level.getRecipeManager(), recipeLiquid);
 
-			int recipeTime = currentRecipe == null ? 0 : currentRecipe.getCyclesPerUnit();
+			int recipeTime = this.currentRecipe == null ? 0 : this.currentRecipe.getCyclesPerUnit();
 			setEnergyPerWorkCycle(ENERGY_PER_RECIPE_TIME * recipeTime);
 			setTicksPerWorkCycle(recipeTime);
 		}

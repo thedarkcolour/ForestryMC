@@ -29,7 +29,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.genetics.IBreedingTracker;
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
@@ -42,11 +45,8 @@ import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.render.ColourProperties;
 import forestry.core.utils.NetworkUtil;
 
-import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IMutation;
-
 public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalistMenu> extends GuiForestry<C> {
-	private final ISpeciesType<?> speciesType;
+	private final ISpeciesType<?, ?> speciesType;
 	private final IBreedingTracker breedingTracker;
 	private final HashMap<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
 	private final int pageCurrent, pageMax;
@@ -144,7 +144,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 			return null;
 		}
 
-		return speciesType.createIndividual(slot.getItem());
+		return IIndividualHandlerItem.getIndividual(slot.getItem());
 	}
 
 	private void displayBreedingStatistics(PoseStack transform, int x) {

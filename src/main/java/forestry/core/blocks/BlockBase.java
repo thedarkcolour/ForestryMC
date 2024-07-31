@@ -11,11 +11,9 @@
 package forestry.core.blocks;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -46,7 +44,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fluids.FluidUtil;
 
-import forestry.api.client.ISpriteRegister;
 import forestry.api.farming.HorizontalDirection;
 import forestry.core.circuits.ISocketable;
 import forestry.core.tiles.TileBase;
@@ -54,7 +51,7 @@ import forestry.core.tiles.TileForestry;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.InventoryUtil;
 
-public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry implements ISpriteRegister, EntityBlock {
+public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry implements EntityBlock {
 	/**
 	 * use this instead of {@link net.minecraft.world.level.block.HorizontalDirectionalBlock#FACING} so the blocks rotate in a circle instead of NSWE order.
 	 */
@@ -193,13 +190,5 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	public BlockState rotate(BlockState state, Rotation rot) {
 		Direction facing = state.getValue(FACING);
 		return state.setValue(FACING, rot.rotate(facing));
-	}
-
-	@Override
-	public void registerSprites(Consumer<ResourceLocation> registry) {
-		IMachineProperties<?> machineProperties = blockType.getMachineProperties();
-		if (machineProperties instanceof IMachinePropertiesTesr) {
-			registry.accept(((IMachinePropertiesTesr) machineProperties).getParticleTexture());
-		}
 	}
 }

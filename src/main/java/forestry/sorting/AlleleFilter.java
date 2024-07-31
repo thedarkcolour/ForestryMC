@@ -2,21 +2,21 @@ package forestry.sorting;
 
 import javax.annotation.Nullable;
 
-import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.ISpecies;
 
 public class AlleleFilter {
 	@Nullable
-	public IAllele activeAllele;
+	public ISpecies<?> activeSpecies;
 
 	@Nullable
-	public IAllele inactiveAllele;
+	public ISpecies<?> inactiveSpecies;
 
-	public boolean isValid(String activeUID, String inactiveUID) {
-		return (this.activeAllele == null || activeUID.equals(this.activeAllele.alleleId().toString()))
-			&& (this.inactiveAllele == null || inactiveUID.equals(this.inactiveAllele.alleleId().toString()));
+	public boolean isValid(ISpecies<?> active, ISpecies<?> inactive) {
+		return (this.activeSpecies == null || active == this.activeSpecies)
+			&& (this.inactiveSpecies == null || inactive == this.inactiveSpecies);
 	}
 
 	public boolean isEmpty() {
-		return activeAllele == null && inactiveAllele == null;
+		return this.activeSpecies == null && this.inactiveSpecies == null;
 	}
 }

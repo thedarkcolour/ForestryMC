@@ -11,17 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
-import forestry.api.client.ISpriteRegister;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ISpecies;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 
-public interface IButterflySpecies extends ISpecies<IButterfly>, ISpriteRegister {
-
-	/**
-	 * @return the IButterflyRoot
-	 */
+public interface IButterflySpecies extends ISpecies<IButterfly> {
 	@Override
 	IButterflySpeciesType getType();
 
@@ -35,8 +30,14 @@ public interface IButterflySpecies extends ISpecies<IButterfly>, ISpriteRegister
 	 */
 	ResourceLocation getItemTexture();
 
+	/**
+	 * @return The ideal temperature for this butterfly to spawn and fly around in.
+	 */
 	TemperatureType getTemperature();
 
+	/**
+	 * @return The ideal humidity for this butterfly to spawn and fly around in.
+	 */
 	HumidityType getHumidity();
 
 	/**
@@ -45,8 +46,6 @@ public interface IButterflySpecies extends ISpecies<IButterfly>, ISpriteRegister
 	 * @return Biome tag this butterfly species can be spawned in.
 	 */
 	TagKey<Biome> getSpawnBiomes();
-
-	boolean strictSpawnMatch();
 
 	/**
 	 * @return Float between 0 and 1 representing the rarity of the species, will affect spawn rate.
@@ -59,9 +58,14 @@ public interface IButterflySpecies extends ISpecies<IButterfly>, ISpriteRegister
 	float getFlightDistance();
 
 	/**
-	 * @return true if this species is only active at night.
+	 * @return {@code true} if this species is only active at night.
 	 */
 	boolean isNocturnal();
+
+	/**
+	 * @return {@code true} if this species is a Moth species instead of a Butterfly
+	 */
+	boolean isMoth();
 
 	/**
 	 * @return The loot that drops if you kill a butterfly.
@@ -71,5 +75,15 @@ public interface IButterflySpecies extends ISpecies<IButterfly>, ISpriteRegister
 	/**
 	 * @return The loot that drops if you destroy a leaf that contains a caterpillar.
 	 */
-	List<Product> getCaterpillarLoot();
+	List<Product> getCaterpillarProducts();
+
+	/**
+	 * @return The color of this butterfly's serum item. Also used for escritoire cells.
+	 */
+	int getSerumColor();
+
+	@Override
+	default int getEscritoireColor() {
+		return getSerumColor();
+	}
 }

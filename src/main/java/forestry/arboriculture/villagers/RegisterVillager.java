@@ -38,7 +38,6 @@ import forestry.core.utils.SpeciesUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class RegisterVillager {
-
 	public static final ResourceLocation ARBORIST = ForestryConstants.forestry("arborist");
 
 	public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ForestryConstants.MOD_ID);
@@ -94,7 +93,7 @@ public class RegisterVillager {
 	}
 
 	private record GivePollenForEmeralds(VillagerTrade.PriceInterval buyingPriceInfo,
-										 VillagerTrade.PriceInterval sellingPriceInfo, ILifeStage type,
+										 VillagerTrade.PriceInterval sellingPriceInfo, ILifeStage stage,
 										 int maxComplexity, int maxUses, int xp,
 										 float priceMult) implements VillagerTrades.ItemListing {
 
@@ -116,7 +115,7 @@ public class RegisterVillager {
 			}
 
 			ITreeSpecies chosenSpecies = potentialSpecies.get(rand.nextInt(potentialSpecies.size()));
-			ItemStack sellStack = chosenSpecies.getType().createStack(chosenSpecies, type);
+			ItemStack sellStack = chosenSpecies.createStack(stage);
 			sellStack.setCount(sellingPriceInfo.getPrice(rand));
 
 			return new MerchantOffer(new ItemStack(Items.EMERALD, buyingPriceInfo.getPrice(rand)), sellStack, maxUses, xp, priceMult);

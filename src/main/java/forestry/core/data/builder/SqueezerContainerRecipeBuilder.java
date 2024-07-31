@@ -6,15 +6,14 @@ import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.recipes.ISqueezerContainerRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class SqueezerContainerRecipeBuilder {
-
 	private ItemStack emptyContainer;
 	private int processingTime;
 	private ItemStack remnants;
@@ -74,7 +73,7 @@ public class SqueezerContainerRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return ISqueezerContainerRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.SQUEEZER_CONTAINER.serializer();
 		}
 
 		@Nullable

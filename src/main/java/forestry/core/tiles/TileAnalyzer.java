@@ -12,6 +12,8 @@ package forestry.core.tiles;
 
 import javax.annotation.Nullable;
 
+import java.util.List;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,7 +36,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import forestry.api.genetics.alleles.AlleleManager;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.api.core.ForestryError;
@@ -51,9 +54,6 @@ import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SpeciesUtil;
-
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
 
 public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiquidTankTile, IItemStackDisplay {
 	private static final int TIME_TO_ANALYZE = 125;
@@ -72,7 +72,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	public TileAnalyzer(BlockPos pos, BlockState state) {
 		super(CoreTiles.ANALYZER.tileType(), pos, state, 800, Constants.MACHINE_MAX_ENERGY);
 		setInternalInventory(new InventoryAnalyzer(this));
-		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(ForestryFluids.HONEY.getFluid());
+		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(List.of(ForestryFluids.HONEY.getFluid()));
 		tankManager = new TankManager(this, resourceTank);
 		invInput = new InventoryMapper(getInternalInventory(), InventoryAnalyzer.SLOT_INPUT_1, InventoryAnalyzer.SLOT_INPUT_COUNT);
 		invOutput = new InventoryMapper(getInternalInventory(), InventoryAnalyzer.SLOT_OUTPUT_1, InventoryAnalyzer.SLOT_OUTPUT_COUNT);
@@ -93,7 +93,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 		ItemStack stackToAnalyze = getItem(InventoryAnalyzer.SLOT_ANALYZE);
 		if (!stackToAnalyze.isEmpty()) {
-			specimenToAnalyze = IIndividualHandler.getIndividual(stackToAnalyze);
+			specimenToAnalyze = IIndividualHandlerItem.getIndividual(stackToAnalyze);
 		}
 	}
 
@@ -124,7 +124,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 			specimenToAnalyze.analyze();
 
-			specimenToAnalyze.copyTo(stackToAnalyze);
+			specimenToAnalyze.saveToStack(stackToAnalyze);
 		}
 
 		boolean added = InventoryUtil.tryAddStack(invOutput, stackToAnalyze, true);
@@ -143,7 +143,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	private Integer getInputSlotIndex() {
 		for (int slotIndex = 0; slotIndex < invInput.getContainerSize(); slotIndex++) {
 			ItemStack stack = invInput.getItem(slotIndex);
-			if (AlleleManager.alleleRegistry.isIndividual(stack)) {
+			if (IIndividualHandlerItem.isIndividual(stack)) {
 				return slotIndex;
 			}
 		}
@@ -224,7 +224,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			inputStack = GeneticsUtil.convertToGeneticEquivalent(inputStack);
 		}
 
-		specimenToAnalyze = IIndividualHandler.getIndividual(inputStack);
+		specimenToAnalyze = IIndividualHandlerItem.getIndividual(inputStack);
 		if (specimenToAnalyze == null) {
 			return;
 		}

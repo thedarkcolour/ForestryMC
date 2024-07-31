@@ -5,39 +5,36 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.IForestryApi;
 import forestry.api.arboriculture.ForestryTreeSpecies;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.ITreeSpeciesType;
-import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.blocks.IColoredBlock;
 import forestry.core.utils.BlockUtil;
+import forestry.core.utils.SpeciesUtil;
 
 /**
  * Parent class for shared behavior between {@link BlockDefaultLeaves} and {@link BlockForestryLeaves}
@@ -88,7 +85,7 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		ITree tree = getTree(world, pos);
 		ITreeSpecies species;
 		if (tree == null) {
-			species = IForestryApi.INSTANCE.getGeneticManager().<ITreeSpeciesType>getSpeciesType(ForestrySpeciesTypes.TREE).getSpecies(ForestryTreeSpecies.OAK);
+			species = SpeciesUtil.getTreeSpecies(ForestryTreeSpecies.OAK);
 		} else {
 			species = tree.getGenome().getActiveValue(TreeChromosomes.SPECIES);
 		}

@@ -1,7 +1,7 @@
 package forestry.api.plugin;
 
 import java.awt.Color;
-import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
@@ -9,7 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.apiculture.hives.IHiveDefinition;
-import forestry.api.apiculture.hives.IHiveDrop;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
 
 /**
  * Entry point for apiculture related registration.
@@ -39,24 +40,22 @@ public interface IApicultureRegistration {
 
 	/**
 	 * Adds a bee species to the possible bees found in apiaries in the Apiarist villager houses.
+	 * There are two pools: the common pool, which is rolled 75% of the time, and the rare pool, which is rolled 25% of the time.
 	 *
-	 * @param id   The ID of the species to add.
-	 * @param rare If true, this bee goes into the "rare" village bee pool, which is chosen 25% of the time instead of the "common" pool.
+	 * @param speciesId      The ID of the species to add.
+	 * @param rare    If true, this bee goes into the "rare" village bee pool, which is chosen 25% of the time instead of the "common" pool.
+	 * @param alleles Map of non-default alleles. Example is the rare Tolerant Flyer variant of the Forest species.
 	 */
-	void addVillageBee(ResourceLocation id, boolean rare);
+	void addVillageBee(ResourceLocation speciesId, boolean rare, Map<IChromosome<?>, IAllele> alleles);
+
+	default void addVillageBee(ResourceLocation speciesId, boolean rare) {
+		addVillageBee(speciesId, rare, Map.of());
+	}
 
 	/**
 	 * Register a wild hive for world generation.
 	 */
 	IHiveBuilder registerHive(ResourceLocation id, IHiveDefinition definition);
-
-	void addHiveDrop(ResourceLocation id, IHiveDrop drop);
-
-	default void addHiveDrops(ResourceLocation id, List<IHiveDrop> drops) {
-		for (IHiveDrop drop : drops) {
-			addHiveDrop(id, drop);
-		}
-	}
 
 	void registerFlowerType(ResourceLocation id, IFlowerType type);
 

@@ -3,6 +3,7 @@ package forestry.factory.recipes.jei.centrifuge;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.ForestryConstants;
+import forestry.api.core.Product;
 import forestry.api.recipes.ICentrifugeRecipe;
 import forestry.core.config.Constants;
 import forestry.core.recipes.jei.ChanceTooltipCallback;
@@ -60,14 +61,14 @@ public class CentrifugeRecipeCategory extends ForestryRecipeCategory<ICentrifuge
 
 		List<IRecipeSlotBuilder> outputSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.OUTPUT, 3, 3, 101, 1, 18);
 
-		List<ICentrifugeRecipe.Product> sortedProducts = recipe.getAllProducts().stream()
-				.sorted(Comparator.comparing(ICentrifugeRecipe.Product::getProbability).reversed())
+		List<Product> sortedProducts = recipe.getAllProducts().stream()
+				.sorted(Comparator.comparing(Product::chance).reversed())
 				.toList();
 		for (int i = 0; i < sortedProducts.size() && i < outputSlots.size(); i++) {
-			ICentrifugeRecipe.Product product = sortedProducts.get(i);
+			Product product = sortedProducts.get(i);
 			outputSlots.get(i)
-					.addItemStack(product.getStack())
-					.addTooltipCallback(new ChanceTooltipCallback(product.getProbability()));
+					.addItemStack(product.createStack())
+					.addTooltipCallback(new ChanceTooltipCallback(product.chance()));
 		}
 	}
 

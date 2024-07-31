@@ -33,18 +33,15 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.api.IForestryApi;
 import forestry.api.climate.ClimateState;
 import forestry.api.climate.IClimateHousing;
-import forestry.api.climate.IClimatised;
 import forestry.api.climate.IClimateTransformer;
+import forestry.api.climate.IClimatised;
+import forestry.api.genetics.ClimateHelper;
 import forestry.core.items.ItemForestry;
 import forestry.core.items.definitions.IColoredItem;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.StringUtil;
 
 public class ItemHabitatScreen extends ItemForestry implements IColoredItem {
 
@@ -133,27 +130,15 @@ public class ItemHabitatScreen extends ItemForestry implements IColoredItem {
 			}
 		}
 		if (!level.isClientSide) {
-			IClimatised state;
 			ClimateState climateState = IForestryApi.INSTANCE.getClimateManager().getState((ServerLevel) level, pos);
-			if (climateState.isPresent()) {
-				state = climateState;
-				if (!state.isPresent()) {
-					state = IForestryApi.INSTANCE.getClimateManager().getBiomeState(level, pos);
-				}
-			} else {
-				state = IForestryApi.INSTANCE.getClimateManager().getBiomeState(level, pos);
+			if (climateState == null) {
+				climateState = IForestryApi.INSTANCE.getClimateManager().getBiomeState(level, pos);
 			}
-			// todo this shit broken
-			if (state.isPresent()) {
-				player.displayClientMessage(Component.translatable("for.habitat_screen.status.state", ChatFormatting.GOLD.toString() + StringUtil.floatAsPercent(state.getTemperature()), ChatFormatting.BLUE.toString() + StringUtil.floatAsPercent(state.getHumidity())), true);
-			} else {
-				player.displayClientMessage(Component.translatable("for.habitat_screen.status.nostate"), true);
-			}
+			player.displayClientMessage(Component.translatable("for.habitat_screen.status.state", ClimateHelper.toDisplay(climateState.temperature()).withStyle(ChatFormatting.GOLD), ClimateHelper.toDisplay(climateState.humidity())).withStyle(ChatFormatting.BLUE), true);
 		}
 		return InteractionResult.SUCCESS;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		super.appendHoverText(stack, world, tooltip, flag);
@@ -177,12 +162,13 @@ public class ItemHabitatScreen extends ItemForestry implements IColoredItem {
 			return;
 		}
 		IClimatised climateState = housing.getTransformer().getCurrent();
-		tooltip.add(Component.translatable("for.habitat_screen.temperature", StringUtil.floatAsPercent(climateState.getTemperature())).withStyle(ChatFormatting.GOLD));
-		tooltip.add(Component.translatable("for.habitat_screen.humidity", StringUtil.floatAsPercent(climateState.getHumidity())).withStyle(ChatFormatting.BLUE));
+		if (climateState != null) {
+			tooltip.add(Component.translatable("for.habitat_screen.temperature", ClimateHelper.toDisplay(climateState.temperature())).withStyle(ChatFormatting.GOLD));
+			tooltip.add(Component.translatable("for.habitat_screen.humidity", ClimateHelper.toDisplay(climateState.humidity())).withStyle(ChatFormatting.BLUE));
+		}
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public int getColorFromItemStack(ItemStack stack, int tintIndex) {
 		if (tintIndex == 2) {
 			return isValid(stack, Minecraft.getInstance().level) ? 0x14B276 : 0xBA1F17;
@@ -201,7 +187,7 @@ public class ItemHabitatScreen extends ItemForestry implements IColoredItem {
 			}
 			IClimateTransformer transformer = housing.getTransformer();
 			IClimatised state = transformer.getCurrent();
-			return state.getTemperatureEnum().color;
+			return state.temperature().color;
 		}
 		return 0xFFFFFF;
 	}

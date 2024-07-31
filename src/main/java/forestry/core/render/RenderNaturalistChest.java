@@ -13,10 +13,10 @@ package forestry.core.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3f;
 
+import forestry.api.ForestryConstants;
 import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TileNaturalistChest;
-import forestry.core.utils.ModUtil;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -47,7 +47,7 @@ public class RenderNaturalistChest implements IForestryRenderer<TileNaturalistCh
 		this.lid = root.getChild(LID);
 		this.base = root.getChild(BASE);
 		this.lock = root.getChild(LOCK);
-		this.texture = ModUtil.modLoc(Constants.TEXTURE_PATH_BLOCK + "/" + textureName + ".png");
+		this.texture = ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/" + textureName + ".png");
 	}
 	
 	public static LayerDefinition createBodyLayer() {

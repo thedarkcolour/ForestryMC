@@ -4,7 +4,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import forestry.core.utils.ModUtil;
+import forestry.api.ForestryConstants;
 
 /**
  * Handler for the rendering of a forestry tile entity and its item.
@@ -13,7 +13,7 @@ import forestry.core.utils.ModUtil;
  */
 public interface IForestryRenderer<T extends BlockEntity> {
 	static ModelLayerLocation register(String name) {
-		return new ModelLayerLocation(ModUtil.modLoc(name), "main");
+		return new ModelLayerLocation(ForestryConstants.forestry(name), "main");
 	}
 
 	/**

@@ -27,7 +27,7 @@ public class MutationsTab<I extends IIndividual> extends DatabaseTab<I> {
 	}
 
 	@Override
-	public void createElements(DatabaseElement container, IIndividual individual, ILifeStage stage, ItemStack itemStack) {
+	public void createElements(DatabaseElement container, IIndividual individual, ILifeStage stage, ItemStack stack) {
 		ISpecies<?> species = individual.getSpecies();
 		var speciesType = species.getType();
 		var mutationContainer = speciesType.getMutations();
@@ -36,7 +36,7 @@ public class MutationsTab<I extends IIndividual> extends DatabaseTab<I> {
 		IBreedingTracker breedingTracker = speciesType.getBreedingTracker(player.level, player.getGameProfile());
 
 		LayoutHelper groupHelper = container.layoutHelper((x, y) -> GuiElementFactory.horizontal(16, 0, new Insets(0, 1, 0, 0)), 100, 16);
-		Collection<? extends IMutation<?>> mutations = getValidMutations(mutationContainer.getMutationsFrom(species));
+		Collection<? extends IMutation<?>> mutations = getValidMutations(mutationContainer.getMutationsFrom(species.cast()));
 
 		if (!mutations.isEmpty()) {
 			container.label(Component.translatable("for.gui.database.mutations.further"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
@@ -44,7 +44,7 @@ public class MutationsTab<I extends IIndividual> extends DatabaseTab<I> {
 			groupHelper.finish(true);
 		}
 
-		Collection<? extends IMutation<?>> mutationsInto = getValidMutations(mutationContainer.getMutationsInto(species));
+		Collection<? extends IMutation<?>> mutationsInto = getValidMutations(mutationContainer.getMutationsInto(species.cast()));
 		if (mutationsInto.isEmpty()) {
 			return;
 		}

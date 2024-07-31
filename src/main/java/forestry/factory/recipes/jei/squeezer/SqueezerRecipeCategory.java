@@ -61,7 +61,7 @@ public class SqueezerRecipeCategory extends ForestryRecipeCategory<ISqueezerReci
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, ISqueezerRecipe recipe, IFocusGroup focuses) {
 		List<IRecipeSlotBuilder> craftingSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 3, 3, 8, 5, 18);
-		JeiUtil.setCraftingItems(craftingSlots, recipe.getResources(), 3, 3, craftingGridHelper);
+		JeiUtil.setCraftingItems(craftingSlots, recipe.getInputs(), 3, 3, craftingGridHelper);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 44)
 				.addTooltipCallback(new ChanceTooltipCallback(recipe.getRemnantsChance()))

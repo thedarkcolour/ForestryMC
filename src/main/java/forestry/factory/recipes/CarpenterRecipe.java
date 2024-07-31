@@ -19,18 +19,21 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.recipes.ICarpenterRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 
 public class CarpenterRecipe implements ICarpenterRecipe {
-
 	private final ResourceLocation id;
 	private final int packagingTime;
 	private final FluidStack liquid;
@@ -53,27 +56,44 @@ public class CarpenterRecipe implements ICarpenterRecipe {
 
 	@Override
 	public int getPackagingTime() {
-		return packagingTime;
+		return this.packagingTime;
 	}
 
 	@Override
 	public Ingredient getBox() {
-		return box;
+		return this.box;
 	}
 
 	@Override
-	public FluidStack getFluidResource() {
-		return liquid;
+	public FluidStack getInputFluid() {
+		return this.liquid;
 	}
 
 	@Override
 	public CraftingRecipe getCraftingGridRecipe() {
-		return recipe;
+		return this.recipe;
 	}
 
 	@Override
-	public ItemStack getResult() {
-		return result;
+	public ItemStack getResultItem() {
+		return this.result;
+	}
+
+	@Override
+	public boolean matches(FluidStack fluid, ItemStack boxStack, Container craftingInventory, Level level) {
+		FluidStack liquid = this.liquid;
+		if (!liquid.isEmpty()) {
+			if (fluid.isEmpty() || !fluid.containsFluid(liquid)) {
+				return false;
+			}
+		}
+
+		Ingredient box = this.box;
+		if (!box.isEmpty() && !box.test(boxStack)) {
+			return false;
+		}
+
+		return this.recipe.matches(FakeCraftingInventory.of(craftingInventory), level);
 	}
 
 	@Override
@@ -81,8 +101,17 @@ public class CarpenterRecipe implements ICarpenterRecipe {
 		return id;
 	}
 
-	public static class Serializer implements RecipeSerializer<CarpenterRecipe> {
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return FactoryRecipeTypes.CARPENTER.serializer();
+	}
 
+	@Override
+	public RecipeType<?> getType() {
+		return FactoryRecipeTypes.CARPENTER.type();
+	}
+
+	public static class Serializer implements RecipeSerializer<CarpenterRecipe> {
 		@Override
 		public CarpenterRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			int packagingTime = GsonHelper.getAsInt(json, "time");

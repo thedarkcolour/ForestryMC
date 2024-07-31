@@ -1,10 +1,12 @@
 package forestry.api.plugin;
 
 import java.awt.Color;
+import java.util.List;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
+import forestry.api.core.Product;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 
 /**
@@ -42,4 +44,20 @@ public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpec
 	 * @param texturePath String texture path for this butterfly e.g. "forestry:butterfly/..."
 	 */
 	IButterflySpeciesBuilder setTexture(String texturePath);
+
+	int getSerumColor();
+
+	float getFlightDistance();
+
+	boolean isNocturnal();
+
+	boolean isMoth();
+
+	TagKey<Biome> getSpawnBiomes();
+
+	float getRarity();
+
+	List<Product> buildProducts();
+
+	List<Product> buildCaterpillarProducts();
 }

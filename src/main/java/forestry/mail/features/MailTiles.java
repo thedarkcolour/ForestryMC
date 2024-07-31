@@ -1,5 +1,6 @@
 package forestry.mail.features;
 
+import forestry.api.modules.ForestryModuleIds;
 import forestry.mail.ModuleMail;
 import forestry.mail.blocks.BlockTypeMail;
 import forestry.mail.tiles.TileMailbox;
@@ -12,7 +13,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class MailTiles {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleMail.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.MAIL);
 
 	public static final FeatureTileType<TileMailbox> MAILBOX = REGISTRY.tile(TileMailbox::new, "mailbox", MailBlocks.BASE.get(BlockTypeMail.MAILBOX)::collect);
 	public static final FeatureTileType<TileStampCollector> STAMP_COLLECTOR = REGISTRY.tile(TileStampCollector::new, "stamp_collector", MailBlocks.BASE.get(BlockTypeMail.PHILATELIST)::collect);

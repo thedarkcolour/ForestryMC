@@ -3,11 +3,9 @@ package forestry.database.inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.inventory.InventoryAdapterTile;
-import forestry.core.utils.GeneticsUtil;
 import forestry.database.tiles.TileDatabase;
-
-import genetics.utils.RootUtils;
 
 public class InventoryDatabase extends InventoryAdapterTile<TileDatabase> {
 	public InventoryDatabase(TileDatabase tile) {
@@ -15,9 +13,8 @@ public class InventoryDatabase extends InventoryAdapterTile<TileDatabase> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		itemStack = GeneticsUtil.convertToGeneticEquivalent(itemStack);
-		return RootUtils.getRoot(itemStack).isPresent();
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return IIndividualHandlerItem.isIndividual(stack);
 	}
 
 	@Override

@@ -28,12 +28,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -62,7 +65,7 @@ public class ModFeatureRegistry {
 		this.modId = modId;
 		this.modBus = ModuleUtil.getModBus(modId);
 
-		this.modBus.addListener(this::postRegistry);
+		this.modBus.addListener(EventPriority.LOWEST, this::postRegistry);
 		if (FMLEnvironment.dist == Dist.CLIENT) {
 			this.modBus.addListener(this::clientSetupRenderers);
 		}
@@ -198,6 +201,11 @@ public class ModFeatureRegistry {
 		@Override
 		public FeatureFluid.Builder fluid(String identifier) {
 			return new FeatureFluid.Builder(this, moduleId, identifier);
+		}
+
+		@Override
+		public <R extends Recipe<?>> FeatureRecipeType<R> recipeType(String name, Supplier<RecipeSerializer<? extends R>> serializer) {
+			return new FeatureRecipeType<>(this, this.moduleId, name, serializer);
 		}
 
 		@Override

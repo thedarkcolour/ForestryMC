@@ -513,7 +513,7 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 		new CentrifugeRecipeBuilder()
 				.setProcessingTime(5)
 				.setInput(Ingredient.of(Items.STRING))
-				.product(0.15F, CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.SILK_WISP, 1))
+				.product(0.15F, CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.SILK_WISP))
 				.build(consumer, id("centrifuge", "string"));
 
 		ItemStack honeyDrop = ApicultureItems.HONEY_DROPS.stack(EnumHoneyDrop.HONEY, 1);

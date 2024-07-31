@@ -7,22 +7,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -30,10 +28,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import forestry.api.IForestryApi;
 import forestry.api.climate.IClimatised;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
-import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmProperties;
 import forestry.api.farming.IFarmable;
@@ -46,7 +44,6 @@ import forestry.core.owner.OwnerHandler;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
 import forestry.core.utils.PlayerUtil;
-import forestry.core.utils.VecUtil;
 import forestry.cultivation.IFarmHousingInternal;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
@@ -54,7 +51,6 @@ import forestry.cultivation.gui.ContainerPlanter;
 import forestry.cultivation.inventory.InventoryPlanter;
 import forestry.farming.FarmHelper;
 import forestry.farming.FarmManager;
-import forestry.farming.ForestryFarmRegistry;
 import forestry.farming.FarmTarget;
 import forestry.farming.gui.IFarmLedgerDelegate;
 import forestry.farming.multiblock.IFarmInventoryInternal;
@@ -80,7 +76,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 
 	protected TilePlanter(BlockEntityType type, BlockPos pos, BlockState state, String identifier) {
 		super(type, pos, state, 150, 1500);
-		this.properties = Preconditions.checkNotNull(ForestryFarmRegistry.INSTANCE.getProperties(identifier));
+		this.properties = Preconditions.checkNotNull(IForestryApi.INSTANCE.getFarmRegistry().getProperties(identifier));
 		mode = BlockPlanter.Mode.MANAGED;
 		setInternalInventory(inventory = new InventoryPlanter(this));
 		this.manager = new FarmManager(this);
@@ -217,7 +213,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, HorizontalDirection direction) {
+	public boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, Direction direction) {
 		Player player = PlayerUtil.getFakePlayer(world, getOwnerHandler().getOwner());
 		return player != null && inventory.plantGermling(farmable, player, pos, direction);
 	}
@@ -248,15 +244,15 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public void setFarmLogic(HorizontalDirection direction, IFarmLogic logic) {
+	public void setFarmLogic(Direction direction, IFarmLogic logic) {
 	}
 
 	@Override
-	public void resetFarmLogic(HorizontalDirection direction) {
+	public void resetFarmLogic(Direction direction) {
 	}
 
 	@Override
-	public IFarmLogic getFarmLogic(HorizontalDirection direction) {
+	public IFarmLogic getFarmLogic(Direction direction) {
 		return getFarmLogic();
 	}
 
@@ -287,10 +283,6 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 		return data;
 	}
 
-	protected final BlockPos translateWithOffset(BlockPos pos, HorizontalDirection farmDirection, int step) {
-		return VecUtil.scale(farmDirection.getFacing().getNormal(), step).offset(pos);
-	}
-
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inv, Player player) {
 		return new ContainerPlanter(windowId, inv, this);
@@ -302,25 +294,12 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 
 	@Override
 	public TemperatureType temperature() {
-		return TemperatureType.getFromValue(getExactTemperature());
+		return IForestryApi.INSTANCE.getClimateManager().getTemperature(this.level.getBiome(this.worldPosition));
 	}
 
 	@Override
 	public HumidityType humidity() {
-		return HumidityType.getFromValue(getExactHumidity());
-	}
-
-	@Override
-	public float getExactTemperature() {
-		BlockPos coords = getCoordinates();
-		return 0; // level.getBiome(coords).getTemperature(coords);
-	}
-
-	@Override
-	public float getExactHumidity() {
-		BlockPos coords = getCoordinates();
-		Level level = Objects.requireNonNull(this.level);
-		return level.getBiome(coords).value().getDownfall();
+		return IForestryApi.INSTANCE.getClimateManager().getHumidity(this.level.getBiome(this.worldPosition));
 	}
 
 	@Override
@@ -336,15 +315,11 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 		return super.getCapability(capability, facing);
 	}
 
-	protected NonNullList<ItemStack> createList(ItemStack... stacks) {
-		return NonNullList.of(ItemStack.EMPTY, stacks);
-	}
+	public abstract List<ItemStack> createGermlingStacks();
 
-	public abstract NonNullList<ItemStack> createGermlingStacks();
+	public abstract List<ItemStack> createResourceStacks();
 
-	public abstract NonNullList<ItemStack> createResourceStacks();
-
-	public abstract NonNullList<ItemStack> createProductionStacks();
+	public abstract List<ItemStack> createProductionStacks();
 
 	@Override
 	public BlockPos getFarmCorner(Direction direction) {

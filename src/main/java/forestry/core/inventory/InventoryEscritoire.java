@@ -10,20 +10,16 @@
  ******************************************************************************/
 package forestry.core.inventory;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import forestry.api.genetics.ForestryComponentKeys;
-import forestry.api.genetics.IResearchHandler;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.tiles.EscritoireGame;
 import forestry.core.tiles.TileEscritoire;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SlotUtil;
-
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
 
 public class InventoryEscritoire extends InventoryAdapterTile<TileEscritoire> {
 	public static final short SLOT_ANALYZE = 0;
@@ -37,23 +33,20 @@ public class InventoryEscritoire extends InventoryAdapterTile<TileEscritoire> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex >= SLOT_INPUT_1 && slotIndex < SLOT_INPUT_1 + tile.getGame().getSampleSize(SLOTS_INPUT_COUNT)) {
 			ItemStack specimen = getItem(SLOT_ANALYZE);
 			if (specimen.isEmpty()) {
 				return false;
 			}
-			IIndividual individual = IIndividualHandler.getIndividual(specimen);
+			IIndividual individual = IIndividualHandlerItem.getIndividual(specimen);
 			if (individual != null) {
-				IResearchHandler handler = ((IResearchHandler) individual.getRoot().getComponent(ForestryComponentKeys.RESEARCH));
-				return handler.getResearchSuitability(individual.getGenome().getPrimarySpecies(IAlleleForestrySpecies.class), itemStack) > 0;
+				return individual.getType().getResearchSuitability(individual.getSpecies().cast(), specimen) > 0f;
 			}
 			return false;
 		}
 
-		return slotIndex == SLOT_ANALYZE &&
-			(RootUtils.isIndividual(itemStack) || GeneticsUtil.getGeneticEquivalent(itemStack) != null);
-
+		return slotIndex == SLOT_ANALYZE && IIndividualHandlerItem.isIndividual(stack);
 	}
 
 	@Override
@@ -82,16 +75,18 @@ public class InventoryEscritoire extends InventoryAdapterTile<TileEscritoire> {
 	public void setItem(int slotIndex, ItemStack itemstack) {
 		super.setItem(slotIndex, itemstack);
 		if (slotIndex == SLOT_ANALYZE) {
-			if (!RootUtils.isIndividual(getItem(SLOT_ANALYZE)) && !getItem(SLOT_ANALYZE).isEmpty()) {
-				ItemStack ersatz = GeneticsUtil.convertToGeneticEquivalent(getItem(SLOT_ANALYZE));
-				if (RootUtils.isIndividual(ersatz)) {
-					super.setItem(SLOT_ANALYZE, ersatz);
+			ItemStack specimen = getItem(SLOT_ANALYZE);
+
+			if (!IIndividualHandlerItem.isIndividual(specimen) && !specimen.isEmpty()) {
+				specimen = GeneticsUtil.convertToGeneticEquivalent(specimen);
+				if (IIndividualHandlerItem.isIndividual(specimen)) {
+					super.setItem(SLOT_ANALYZE, specimen);
 				}
 			}
-			Level world = tile.getLevel();
-			if (world != null && !world.isClientSide) {
+			Level level = tile.getLevel();
+			if (level != null && !level.isClientSide) {
 				EscritoireGame game = tile.getGame();
-				game.initialize(getItem(SLOT_ANALYZE));
+				game.initialize(specimen);
 			}
 		}
 	}

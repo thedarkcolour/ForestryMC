@@ -20,29 +20,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import forestry.api.ForestryTags;
 import forestry.api.IForestryApi;
-import forestry.api.circuits.ChipsetManager;
-import forestry.api.circuits.CircuitSocketType;
+import forestry.api.circuits.ForestryCircuitSocketTypes;
 import forestry.api.circuits.ICircuitBoard;
-import forestry.api.circuits.ICircuitSocketType;
+import forestry.api.core.ForestryError;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.farming.HorizontalDirection;
@@ -51,8 +52,6 @@ import forestry.api.farming.IFarmable;
 import forestry.api.multiblock.IFarmComponent;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.config.Config;
-import forestry.api.ForestryTags;
-import forestry.api.core.ForestryError;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
@@ -301,7 +300,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		// See whether we have socketed stuff.
 		ItemStack chip = sockets.getItem(0);
 		if (!chip.isEmpty()) {
-			ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(chip);
+			ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(chip);
 			if (chipset != null) {
 				chipset.onLoad(this);
 			}
@@ -447,11 +446,11 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 	@Override
 	public void setSocket(int slot, ItemStack stack) {
-		if (ChipsetManager.circuitRegistry.isChipset(stack) || stack.isEmpty()) {
+		if (IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(stack) || stack.isEmpty()) {
 			// Dispose old chipsets correctly
 			if (!sockets.getItem(slot).isEmpty()) {
-				if (ChipsetManager.circuitRegistry.isChipset(sockets.getItem(slot))) {
-					ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(sockets.getItem(slot));
+				if (IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(sockets.getItem(slot))) {
+					ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(sockets.getItem(slot));
 					if (chipset != null) {
 						chipset.onRemoval(this);
 					}
@@ -462,7 +461,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 			refreshFarmLogics();
 
 			if (!stack.isEmpty()) {
-				ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(stack);
+				ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(stack);
 				if (chipset != null) {
 					chipset.onInsertion(this);
 				}
@@ -471,8 +470,8 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public ICircuitSocketType getSocketType() {
-		return CircuitSocketType.FARM;
+	public ResourceLocation getSocketType() {
+		return ForestryCircuitSocketTypes.FARM;
 	}
 
 	@Override

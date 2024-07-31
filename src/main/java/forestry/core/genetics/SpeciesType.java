@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -18,16 +17,15 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
+import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IKaryotype;
-import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.plugin.ISpeciesTypeBuilder;
-import forestry.core.genetics.root.BreedingTrackerManager;
 
 import deleteme.Todos;
 import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
@@ -37,7 +35,7 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 	protected final IKaryotype karyotype;
 	private final ILifeStage defaultStage;
 	private final ImmutableMap<Item, ILifeStage> stages;
-	private final Reference2FloatOpenHashMap<Item> researchMaterials;
+	protected final Reference2FloatOpenHashMap<Item> researchMaterials;
 
 	// Initialized in onSpeciesRegistered
 	private int speciesCount = -1;
@@ -57,9 +55,7 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 		this.stages = stagesBuilder.build();
 
 		this.researchMaterials = new Reference2FloatOpenHashMap<>();
-		builder.buildResearchMaterials(builder);
-		// register breeding tracker
-		BreedingTrackerManager.INSTANCE.registerTracker(id, this);
+		builder.buildResearchMaterials(this.researchMaterials);
 	}
 
 	public ResourceLocation id() {
@@ -163,7 +159,35 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 
 	@Override
 	public List<ItemStack> getResearchBounty(S species, Level level, GameProfile researcher, I individual, int bountyLevel) {
-		throw Todos.unimplemented();
+		ArrayList<ItemStack> list = new ArrayList<>();
+
+		if (level.random.nextFloat() < bountyLevel / 16f) {
+			List<IMutation<S>> mutationsFrom = getMutations().getMutationsFrom(species);
+
+			if (!mutationsFrom.isEmpty()) {
+				ArrayList<IMutation<?>> unresearchedMutations = new ArrayList<>();
+				IBreedingTracker tracker = getBreedingTracker(level, researcher);
+
+				for (IMutation<?> mutation : mutationsFrom) {
+					if (!tracker.isResearched(mutation)) {
+						unresearchedMutations.add(mutation);
+					}
+				}
+
+				IMutation<?> chosenMutation;
+				if (!unresearchedMutations.isEmpty()) {
+					chosenMutation = unresearchedMutations.get(level.random.nextInt(unresearchedMutations.size()));
+				} else {
+					chosenMutation = mutationsFrom.get(level.random.nextInt(mutationsFrom.size()));
+				}
+
+				ItemStack researchNote = chosenMutation.getMutationNote(researcher);
+				list.add(researchNote);
+				return list;
+			}
+		}
+
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -177,5 +201,11 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 	public ItemStack createStack(ResourceLocation speciesId, ILifeStage stage) {
 		S species = getSpecies(speciesId);
 		return createStack(species.createIndividual(), stage);
+	}
+
+	@Override
+	public I createRandomIndividual(RandomSource rand) {
+		List<S> allSpecies = getAllSpecies();
+		return allSpecies.get(rand.nextInt(allSpecies.size())).createIndividual();
 	}
 }

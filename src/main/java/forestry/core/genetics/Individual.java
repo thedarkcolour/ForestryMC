@@ -14,6 +14,7 @@ import forestry.core.utils.SpeciesUtil;
 
 public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T extends ISpeciesType<S, I>> implements IIndividual {
 	protected final S species;
+	protected final S inactiveSpecies;
 	protected final IGenome genome;
 
 	@Nullable
@@ -22,6 +23,7 @@ public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T
 
 	public Individual(IGenome genome) {
 		this.species = genome.getActiveSpecies();
+		this.inactiveSpecies = genome.getInactiveSpecies();
 		this.genome = genome;
 	}
 
@@ -52,6 +54,11 @@ public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T
 	@Override
 	public S getSpecies() {
 		return this.species;
+	}
+
+	@Override
+	public S getInactiveSpecies() {
+		return this.inactiveSpecies;
 	}
 
 	@Override

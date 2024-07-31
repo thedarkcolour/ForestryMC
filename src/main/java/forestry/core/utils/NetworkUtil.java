@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import forestry.api.climate.ClimateState;
 import forestry.api.core.HumidityType;
@@ -40,12 +41,18 @@ import forestry.core.network.IStreamable;
 import forestry.core.network.NetworkHandler;
 
 public class NetworkUtil {
-	public static <P extends IForestryPacketClient> void sendNetworkPacket(P packet, BlockPos pos, Level level) {
+	public static void sendNetworkPacket(IForestryPacketClient packet, BlockPos pos, Level level) {
 		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(pos)), packet);
 	}
 
 	public static void sendToPlayer(IForestryPacketClient packet, ServerPlayer player) {
 		NetworkHandler.CHANNEL.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+	}
+
+	public static void sendToAllPlayers(IForestryPacketClient packet) {
+		if (ServerLifecycleHooks.getCurrentServer() != null) {
+			NetworkHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), packet);
+		}
 	}
 
 	// Used for Streamable to prepare FriendlyByteBuf for sending over the network

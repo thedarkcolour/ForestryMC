@@ -10,7 +10,9 @@
  ******************************************************************************/
 package forestry.farming.gui;
 
-public interface IFarmLedgerDelegate {
+import forestry.api.climate.IClimatised;
+
+public interface IFarmLedgerDelegate extends IClimatised {
 	float getHydrationModifier();
 
 	float getHydrationTempModifier();

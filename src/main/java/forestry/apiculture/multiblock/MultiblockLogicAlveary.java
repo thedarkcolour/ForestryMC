@@ -39,13 +39,17 @@ public class MultiblockLogicAlveary extends MultiblockLogic<IAlvearyControllerIn
 	public void becomeMultiblockSaveDelegate() {
 		super.becomeMultiblockSaveDelegate();
 		IClimateListener listener = getController().getClimateListener();
-		listener.markLocatableDirty();
+		if (listener != null) {
+			listener.markLocatableDirty();
+		}
 	}
 
 	@Override
 	public void forfeitMultiblockSaveDelegate() {
 		super.forfeitMultiblockSaveDelegate();
 		IClimateListener listener = getController().getClimateListener();
-		listener.markLocatableDirty();
+		if (listener != null) {
+			listener.markLocatableDirty();
+		}
 	}
 }

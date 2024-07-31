@@ -31,6 +31,6 @@ public class TreeBlockTypeLog implements ITreeBlockType {
 
 	@Override
 	public boolean setBlock(LevelAccessor world, BlockPos pos) {
-		return tree.setLogBlock(world, pos, facing);
+		return this.tree.setLogBlock(this.tree.getDefaultGenome(), world, pos, this.facing);
 	}
 }

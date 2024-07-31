@@ -4,11 +4,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.genetics.alleles.IRegistryAllele;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.IRegistryChromosome;
-import forestry.api.genetics.alleles.IValueAllele;
 
-public class RegistryAllele<V extends IRegistryAlleleValue> implements IValueAllele<V> {
+public class RegistryAllele<V extends IRegistryAlleleValue> implements IRegistryAllele<V> {
 	private final ResourceLocation id;
 	private final IRegistryChromosome<V> chromosome;
 	@Nullable
@@ -26,7 +26,7 @@ public class RegistryAllele<V extends IRegistryAlleleValue> implements IValueAll
 
 	@Override
 	public boolean dominant() {
-		return true;
+		return value.isDominant();
 	}
 
 	@Override

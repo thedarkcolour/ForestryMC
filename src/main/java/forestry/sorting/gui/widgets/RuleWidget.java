@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.IForestryApi;
 import forestry.api.client.ForestrySprites;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.core.tooltips.ToolTip;
@@ -21,7 +22,6 @@ import forestry.core.gui.GuiForestry;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.utils.SoundUtil;
-import forestry.sorting.FilterRegistry;
 import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.gui.ISelectableProvider;
 
@@ -84,7 +84,7 @@ public class RuleWidget extends Widget implements ISelectableProvider<IFilterRul
 	@Override
 	public void handleMouseClick(double mouseX, double mouseY, int mouseButton) {
 		if (mouseButton == 1) {
-			onSelect(FilterRegistry.INSTANCE.getDefaultRule());
+			onSelect(IForestryApi.INSTANCE.getFilterManager().getDefaultRule());
 		} else {
 			SoundUtil.playButtonClick();
 			gui.onModuleClick(this);
@@ -102,7 +102,7 @@ public class RuleWidget extends Widget implements ISelectableProvider<IFilterRul
 
 	private static ImmutableSet<IFilterRuleType> createEntries() {
 		ImmutableSet.Builder<IFilterRuleType> entries = ImmutableSet.builder();
-		for (IFilterRuleType rule : FilterRegistry.INSTANCE.getRules()) {
+		for (IFilterRuleType rule : IForestryApi.INSTANCE.getFilterManager().getRules()) {
 			entries.add(rule);
 		}
 		return entries.build();

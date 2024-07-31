@@ -16,15 +16,12 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import forestry.api.IForestryApi;
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.genetics.ForestrySpeciesTypes;
-import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.entities.EntityButterfly;
 
 public class ButterflySpawner implements ILeafTickHandler {
@@ -38,14 +35,9 @@ public class ButterflySpawner implements ILeafTickHandler {
 			return false;
 		}
 
-		IButterfly spawn = (IButterfly) IForestryApi.INSTANCE.getGeneticManager().createRandomIndividual(ForestrySpeciesTypes.BUTTERFLY, rand, ButterflyLifeStage.BUTTERFLY);
-		float rarity;
-		IButterflySpecies activeSpecies = spawn.getGenome().getActiveValue(ButterflyChromosomes.SPECIES);
-		if (!ModuleLepidopterology.spawnRaritys.containsKey(activeSpecies.id().getPath())) {
-			rarity = activeSpecies.getRarity();
-		} else {
-			rarity = ModuleLepidopterology.spawnRaritys.get(activeSpecies.id().getPath());
-		}
+		IButterfly spawn = SpeciesUtil.BUTTERFLY_TYPE.get().createRandomIndividual(rand);
+		IButterflySpecies activeSpecies = spawn.getSpecies();
+		float rarity = ModuleLepidopterology.spawnRarities.getOrDefault(activeSpecies.id().getPath(), activeSpecies.getRarity());
 
 		if (rand.nextFloat() >= rarity * 0.5f) {
 			return false;

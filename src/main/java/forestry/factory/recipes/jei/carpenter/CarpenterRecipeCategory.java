@@ -80,7 +80,7 @@ public class CarpenterRecipeCategory extends ForestryRecipeCategory<ICarpenterRe
 				.setFluidRenderer(10000, false, 16, 58)
 				.setOverlay(tankOverlay, 0, 0);
 
-		FluidStack fluidResource = recipe.getFluidResource();
+		FluidStack fluidResource = recipe.getInputFluid();
 		if (!fluidResource.isEmpty()) {
 			tankSlot.addIngredient(ForgeTypes.FLUID_STACK, fluidResource);
 		}

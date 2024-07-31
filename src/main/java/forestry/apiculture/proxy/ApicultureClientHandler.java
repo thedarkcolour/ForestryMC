@@ -30,7 +30,6 @@ import forestry.apiculture.gui.GuiAlvearySieve;
 import forestry.apiculture.gui.GuiAlvearySwarmer;
 import forestry.apiculture.gui.GuiBeeHousing;
 import forestry.apiculture.gui.GuiHabitatLocator;
-import forestry.apiculture.gui.GuiImprinter;
 import forestry.apiculture.particles.ParticleSnow;
 import forestry.api.client.IClientModuleHandler;
 
@@ -41,7 +40,7 @@ public class ApicultureClientHandler implements IClientModuleHandler {
 		modBus.addListener(ApicultureClientHandler::handleSprites);
 	}
 
-	public static void setupClient(FMLClientSetupEvent event) {
+	private static void setupClient(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
 			ApicultureBlocks.BEE_COMB.getBlocks().forEach((block) -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout()));
 
@@ -51,7 +50,6 @@ public class ApicultureClientHandler implements IClientModuleHandler {
 			MenuScreens.register(ApicultureMenuTypes.ALVEARY_SWARMER.menuType(), GuiAlvearySwarmer::new);
 			MenuScreens.register(ApicultureMenuTypes.BEE_HOUSING.menuType(), GuiBeeHousing<ContainerBeeHousing>::new);
 			MenuScreens.register(ApicultureMenuTypes.HABITAT_LOCATOR.menuType(), GuiHabitatLocator::new);
-			MenuScreens.register(ApicultureMenuTypes.IMPRINTER.menuType(), GuiImprinter::new);
 		});
 	}
 

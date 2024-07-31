@@ -15,14 +15,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 
 public class PickupHandlerCore {
 	public static void onItemPickup(Player player, ItemEntity entity) {
 		ItemStack stack = entity.getItem();
 
 		if (!stack.isEmpty()) {
-			IIndividualHandler.ifPresent(stack, individual -> {
+			IIndividualHandlerItem.ifPresent(stack, individual -> {
 				IBreedingTracker tracker = individual.getType().getBreedingTracker(entity.level, player.getGameProfile());
 				tracker.registerPickup(individual.getSpecies());
 			});

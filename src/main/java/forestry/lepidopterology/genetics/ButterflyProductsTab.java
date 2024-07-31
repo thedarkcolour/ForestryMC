@@ -5,7 +5,7 @@ import java.util.Collection;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.ILifeStage;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 import forestry.api.lepidopterology.ForestryButterflySpecies;
@@ -30,7 +30,7 @@ public class ButterflyProductsTab implements IDatabaseTab<IButterfly> {
 			groupHelper.finish();
 		}
 
-		Collection<Product> caterpillarLoot = individual.getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarLoot();
+		Collection<Product> caterpillarLoot = individual.getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarProducts();
 		if (!caterpillarLoot.isEmpty()) {
 			container.translated("for.gui.loot.caterpillar").setAlign(Alignment.TOP_CENTER);
 			caterpillarLoot.forEach(stack -> groupHelper.add(new ItemElement(0, 0, stack.createStack())));

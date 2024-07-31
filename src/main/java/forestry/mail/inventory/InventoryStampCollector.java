@@ -26,7 +26,7 @@ public class InventoryStampCollector extends InventoryAdapterTile<TileStampColle
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return itemStack.getItem() instanceof IStamps;
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return stack.getItem() instanceof IStamps;
 	}
 }

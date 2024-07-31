@@ -13,20 +13,22 @@ package forestry.factory.recipes;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
+import java.util.List;
+
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.recipes.ISqueezerContainerRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 
 public class SqueezerContainerRecipe implements ISqueezerContainerRecipe {
-
 	private final ResourceLocation id;
 	private final ItemStack emptyContainer;
 	private final int processingTime;
@@ -51,8 +53,8 @@ public class SqueezerContainerRecipe implements ISqueezerContainerRecipe {
 	}
 
 	@Override
-	public NonNullList<Ingredient> getResources() {
-		return NonNullList.create();
+	public List<Ingredient> getInputs() {
+		return List.of();
 	}
 
 	@Override
@@ -76,8 +78,23 @@ public class SqueezerContainerRecipe implements ISqueezerContainerRecipe {
 	}
 
 	@Override
+	public ItemStack getResultItem() {
+		return this.remnants;
+	}
+
+	@Override
 	public ResourceLocation getId() {
 		return id;
+	}
+
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return FactoryRecipeTypes.SQUEEZER_CONTAINER.serializer();
+	}
+
+	@Override
+	public RecipeType<?> getType() {
+		return FactoryRecipeTypes.SQUEEZER_CONTAINER.type();
 	}
 
 	public static class Serializer implements RecipeSerializer<SqueezerContainerRecipe> {

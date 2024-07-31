@@ -10,14 +10,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.IForestryApi;
 import forestry.api.farming.IFarmHousing;
@@ -27,8 +26,8 @@ import forestry.api.farming.IFarmPropertiesBuilder;
 import forestry.api.farming.IFarmRegistry;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.IFarmableInfo;
+import forestry.api.farming.IWaterConsumption;
 import forestry.api.farming.Soil;
-import forestry.farming.ForestryFarmRegistry;
 
 public final class FarmProperties implements IFarmProperties {
 	private final Set<Soil> soils;
@@ -38,7 +37,7 @@ public final class FarmProperties implements IFarmProperties {
 	private final Collection<IFarmable> farmables;
 	private final Collection<IFarmableInfo> farmableInfo;
 	private final ToIntFunction<IFarmHousing> fertilizerConsumption;
-	private final ToIntBiFunction<IFarmHousing, Float> waterConsumption;
+	private final IWaterConsumption waterConsumption;
 	private final String translationKey;
 
 	public FarmProperties(Builder builder) {
@@ -108,7 +107,7 @@ public final class FarmProperties implements IFarmProperties {
 
 	@Override
 	public int getWaterConsumption(IFarmHousing housing, float hydrationModifier) {
-		return waterConsumption.applyAsInt(housing, hydrationModifier);
+		return this.waterConsumption.get(housing, hydrationModifier);
 	}
 
 	@Override
@@ -164,7 +163,7 @@ public final class FarmProperties implements IFarmProperties {
 		@Nullable
 		private ToIntFunction<IFarmHousing> fertilizerConsumption;
 		@Nullable
-		private ToIntBiFunction<IFarmHousing, Float> waterConsumption;
+		private IWaterConsumption waterConsumption;
 		@Nullable
 		private String translationKey;
 
@@ -198,7 +197,7 @@ public final class FarmProperties implements IFarmProperties {
 		}
 
 		@Override
-		public IFarmPropertiesBuilder setWater(ToIntBiFunction<IFarmHousing, Float> waterConsumption) {
+		public IFarmPropertiesBuilder setWaterConsumption(IWaterConsumption waterConsumption) {
 			this.waterConsumption = waterConsumption;
 			return this;
 		}

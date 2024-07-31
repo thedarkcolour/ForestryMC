@@ -14,6 +14,7 @@ import forestry.api.arboriculture.ForestryFruits;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITreeEffect;
 import forestry.api.core.ToleranceType;
+import forestry.api.lepidopterology.ForestryButterflyEffects;
 import forestry.api.lepidopterology.ForestryCocoons;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.IButterflyEffect;
@@ -32,6 +33,8 @@ public class ForestryAlleles {
 	public static final IBooleanAllele FALSE = REGISTRY.booleanAllele(false, true);
 	public static final IBooleanAllele TRUE_RECESSIVE = REGISTRY.booleanAllele(true, false);
 	public static final IBooleanAllele FALSE_RECESSIVE = REGISTRY.booleanAllele(false, false);
+
+	public static final List<IBooleanAllele> DEFAULT_BOOLEANS = List.of(TRUE, FALSE);
 
 	// Lifespan
 	public static final IIntegerAllele LIFESPAN_SHORTEST = REGISTRY.intAllele(10, true);
@@ -170,12 +173,11 @@ public class ForestryAlleles {
 	public static final List<IIntegerAllele> DEFAULT_METABOLISMS = List.of(METABOLISM_SLOWEST, METABOLISM_SLOWER, METABOLISM_SLOW, METABOLISM_NORMAL, METABOLISM_FAST, METABOLISM_FASTER, METABOLISM_FASTEST);
 
 	// Butterfly Effect
-	public static final IValueAllele<IButterflyEffect> BUTTERFLY_EFFECT_NONE = REGISTRY.valueAllele(new DummyButterflyEffect(), ButterflyChromosomes.EFFECT);
+	public static final IValueAllele<IButterflyEffect> BUTTERFLY_EFFECT_NONE = REGISTRY.registryAllele(ForestryButterflyEffects.NONE, ButterflyChromosomes.EFFECT);
 
 	// Butterfly Cocoon
 	public static final IRegistryAllele<IButterflyCocoon> COCOON_DEFAULT = REGISTRY.registryAllele(ForestryCocoons.DEFAULT, ButterflyChromosomes.COCOON);
 	public static final IRegistryAllele<IButterflyCocoon> COCOON_SILK = REGISTRY.registryAllele(ForestryCocoons.SILK, ButterflyChromosomes.COCOON);
-	public static final List<IValueAllele<IButterflyCocoon>> DEFAULT_COCOONS = List.of(COCOON_DEFAULT, COCOON_SILK);
 
 	// Sappiness
 	public static final IFloatAllele SAPPINESS_LOWEST = REGISTRY.floatAllele(0.1f, true);
@@ -196,6 +198,8 @@ public class ForestryAlleles {
 	public static final IFloatAllele SAPLINGS_HIGH = REGISTRY.floatAllele(0.1f, true);
 	public static final IFloatAllele SAPLINGS_HIGHER = REGISTRY.floatAllele(0.2f, true);
 	public static final IFloatAllele SAPLINGS_HIGHEST = REGISTRY.floatAllele(0.3f, true);
+
+	public static final List<IFloatAllele> DEFAULT_SAPLINGS = List.of(SAPLINGS_LOWEST, SAPLINGS_LOWER, SAPLINGS_LOW, SAPLINGS_AVERAGE, SAPLINGS_HIGH, SAPLINGS_HIGHER, SAPLINGS_HIGHEST);
 
 	// Fruits
 	public static final IRegistryAllele<IFruit> FRUIT_NONE = REGISTRY.registryAllele(ForestryFruits.NONE, TreeChromosomes.FRUITS);
@@ -221,6 +225,8 @@ public class ForestryAlleles {
 	public static final IIntegerAllele MATURATION_FASTER = REGISTRY.intAllele(2);
 	public static final IIntegerAllele MATURATION_FASTEST = REGISTRY.intAllele(1);
 
+	public static final List<IIntegerAllele> DEFAULT_MATURATIONS = List.of(MATURATION_SLOWEST, MATURATION_SLOWER, MATURATION_SLOW, MATURATION_AVERAGE, MATURATION_FAST, MATURATION_FASTER, MATURATION_FASTEST);
+
 	// Yield
 	public static final IFloatAllele YIELD_LOWEST = REGISTRY.floatAllele(0.025f, true);
 	public static final IFloatAllele YIELD_LOWER = REGISTRY.floatAllele(0.05f, true);
@@ -229,6 +235,8 @@ public class ForestryAlleles {
 	public static final IFloatAllele YIELD_HIGH = REGISTRY.floatAllele(0.3f);
 	public static final IFloatAllele YIELD_HIGHER = REGISTRY.floatAllele(0.35f);
 	public static final IFloatAllele YIELD_HIGHEST = REGISTRY.floatAllele(0.4f);
+	
+	public static final List<IFloatAllele> DEFAULT_YIELDS = List.of(YIELD_LOWEST, YIELD_LOWER, YIELD_LOW, YIELD_AVERAGE, YIELD_HIGH, YIELD_HIGHER, YIELD_HIGHEST);
 
 	// Height todo rename to shortest/tallest
 	public static final IFloatAllele HEIGHT_SMALLEST = REGISTRY.floatAllele(0.25f);
@@ -239,6 +247,8 @@ public class ForestryAlleles {
 	public static final IFloatAllele HEIGHT_LARGER = REGISTRY.floatAllele(1.5f);
 	public static final IFloatAllele HEIGHT_LARGEST = REGISTRY.floatAllele(1.75f);
 	public static final IFloatAllele HEIGHT_GIGANTIC = REGISTRY.floatAllele(2.0f);
+	
+	public static final List<IFloatAllele> DEFAULT_HEIGHTS = List.of(HEIGHT_SMALLEST, HEIGHT_SMALLER, HEIGHT_SMALL, HEIGHT_AVERAGE, HEIGHT_LARGE, HEIGHT_LARGER, HEIGHT_LARGEST, HEIGHT_GIGANTIC);
 
 	// Girth
 	public static final IIntegerAllele GIRTH_1 = REGISTRY.intAllele(1);
@@ -251,4 +261,6 @@ public class ForestryAlleles {
 	public static final IIntegerAllele GIRTH_8 = REGISTRY.intAllele(8);
 	public static final IIntegerAllele GIRTH_9 = REGISTRY.intAllele(9);
 	public static final IIntegerAllele GIRTH_10 = REGISTRY.intAllele(10);
+
+	public static final List<IIntegerAllele> DEFAULT_GIRTHS = List.of(GIRTH_1, GIRTH_2, GIRTH_3, GIRTH_4, GIRTH_5, GIRTH_6, GIRTH_7, GIRTH_8, GIRTH_9, GIRTH_10);
 }

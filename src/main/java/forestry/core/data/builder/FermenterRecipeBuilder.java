@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.recipes.IFermenterRecipe;
 import forestry.core.utils.ModUtil;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class FermenterRecipeBuilder {
@@ -87,7 +88,7 @@ public class FermenterRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return IFermenterRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.CARPENTER.serializer();
 		}
 
 		@Nullable

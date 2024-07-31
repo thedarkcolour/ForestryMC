@@ -19,9 +19,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import forestry.api.fuels.FuelManager;
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.inventory.InventoryAdapterTile;
+import forestry.core.utils.RecipeUtils;
 import forestry.factory.tiles.TileFermenter;
 
 public class InventoryFermenter extends InventoryAdapterTile<TileFermenter> {
@@ -36,16 +36,16 @@ public class InventoryFermenter extends InventoryAdapterTile<TileFermenter> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_RESOURCE) {
-			return RecipeManagers.fermenterManager.isResource(tile.getLevel().getRecipeManager(), itemStack);
+			return RecipeUtils.isFermenterInput(tile.getLevel().getRecipeManager(), stack);
 		} else if (slotIndex == SLOT_INPUT) {
-			Optional<FluidStack> fluid = FluidUtil.getFluidContained(itemStack);
+			Optional<FluidStack> fluid = FluidUtil.getFluidContained(stack);
 			return fluid.map(f -> tile.getTankManager().canFillFluidType(f)).orElse(false);
 		} else if (slotIndex == SLOT_CAN_INPUT) {
-			return FluidHelper.isFillableContainerWithRoom(itemStack);
+			return FluidHelper.isFillableContainerWithRoom(stack);
 		} else if (slotIndex == SLOT_FUEL) {
-			return FuelManager.fermenterFuel.containsKey(itemStack);
+			return FuelManager.fermenterFuel.containsKey(stack);
 		}
 		return false;
 	}

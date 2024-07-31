@@ -14,7 +14,7 @@ import forestry.core.gui.elements.DatabaseElement;
 public enum AnalyzerTab implements IDatabaseTab<IIndividual> {
 	ANALYZE {
 		@Override
-		public void createElements(DatabaseElement container, IIndividual individual, ILifeStage stage, ItemStack itemStack) {
+		public void createElements(DatabaseElement container, IIndividual individual, ILifeStage stage, ItemStack stack) {
 		}
 
 		@Override

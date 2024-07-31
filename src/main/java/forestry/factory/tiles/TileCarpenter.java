@@ -11,7 +11,6 @@
 package forestry.factory.tiles;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,13 +34,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.ICarpenterRecipe;
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.config.Constants;
-import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
+import forestry.core.fluids.FluidRecipeFilter;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.InventoryAdapterTile;
 import forestry.core.inventory.InventoryGhostCrafting;
@@ -51,12 +50,12 @@ import forestry.core.tiles.IItemStackDisplay;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
 import forestry.core.utils.InventoryUtil;
+import forestry.core.utils.RecipeUtils;
 import forestry.factory.features.FactoryTiles;
 import forestry.factory.gui.ContainerCarpenter;
 import forestry.factory.inventory.InventoryCarpenter;
 
 public class TileCarpenter extends TilePowered implements WorldlyContainer, ILiquidTankTile, IItemStackDisplay {
-
 	private static final int TICKS_PER_RECIPE_TIME = 1;
 	private static final int ENERGY_PER_WORK_CYCLE = 2040;
 	private static final int ENERGY_PER_RECIPE_TIME = ENERGY_PER_WORK_CYCLE / 10;
@@ -76,7 +75,7 @@ public class TileCarpenter extends TilePowered implements WorldlyContainer, ILiq
 	public TileCarpenter(BlockPos pos, BlockState state) {
 		super(FactoryTiles.CARPENTER.tileType(), pos, state, 1100, Constants.MACHINE_MAX_ENERGY);
 		setEnergyPerWorkCycle(ENERGY_PER_WORK_CYCLE);
-		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(() -> RecipeManagers.carpenterManager.getRecipeFluids(getLevel().getRecipeManager()));
+		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilter(FluidRecipeFilter.CARPENTER_INPUT);
 
 		craftingInventory = new InventoryGhostCrafting<>(this, 10);
 		craftPreviewInventory = new ResultContainer();
@@ -120,17 +119,16 @@ public class TileCarpenter extends TilePowered implements WorldlyContainer, ILiq
 			return;
 		}
 
-		//TODO optional could work quite well here
-		if (!RecipeManagers.carpenterManager.matches(currentRecipe, resourceTank.getFluid(), getBoxStack(), craftingInventory, level)) {
-			Optional<ICarpenterRecipe> optional = RecipeManagers.carpenterManager.findMatchingRecipe(level.getRecipeManager(), resourceTank.getFluid(), getBoxStack(), craftingInventory, level);
-			currentRecipe = optional.orElse(null);
+		if (this.currentRecipe == null || !this.currentRecipe.matches(this.resourceTank.getFluid(), getBoxStack(), this.craftingInventory, this.level)) {
+			ICarpenterRecipe recipe = RecipeUtils.getCarpenterRecipe(this.level.getRecipeManager(), this.resourceTank.getFluid(), getBoxStack(), this.craftingInventory, this.level);
+			this.currentRecipe = recipe;
 
-			if (optional.isPresent()) {
+			if (recipe != null) {
 				int recipeTime = currentRecipe.getPackagingTime();
 				setTicksPerWorkCycle(recipeTime * TICKS_PER_RECIPE_TIME);
 				setEnergyPerWorkCycle(recipeTime * ENERGY_PER_RECIPE_TIME);
 
-				ItemStack craftingResult = currentRecipe.getResult();
+				ItemStack craftingResult = currentRecipe.getResultItem();
 				craftPreviewInventory.setItem(0, craftingResult);
 			} else {
 				craftPreviewInventory.setItem(0, ItemStack.EMPTY);
@@ -157,7 +155,7 @@ public class TileCarpenter extends TilePowered implements WorldlyContainer, ILiq
 		}
 
 		if (currentRecipe != null) {
-			ItemStack pendingProduct = currentRecipe.getResult();
+			ItemStack pendingProduct = currentRecipe.getResultItem();
 			InventoryUtil.tryAddStack(this, pendingProduct, InventoryCarpenter.SLOT_PRODUCT, InventoryCarpenter.SLOT_PRODUCT_COUNT, true);
 		}
 		return true;
@@ -168,7 +166,7 @@ public class TileCarpenter extends TilePowered implements WorldlyContainer, ILiq
 			return true;
 		}
 
-		FluidStack fluid = currentRecipe.getFluidResource();
+		FluidStack fluid = currentRecipe.getInputFluid();
 		if (!fluid.isEmpty()) {
 			FluidStack drained = resourceTank.drainInternal(fluid, IFluidHandler.FluidAction.SIMULATE);
 			if (!fluid.isFluidStackIdentical(drained)) {
@@ -217,7 +215,7 @@ public class TileCarpenter extends TilePowered implements WorldlyContainer, ILiq
 			hasLiquidResources = removeLiquidResources(false);
 			hasItemResources = removeItemResources(false);
 
-			ItemStack pendingProduct = currentRecipe.getResult();
+			ItemStack pendingProduct = currentRecipe.getResultItem();
 			canAdd = InventoryUtil.tryAddStack(this, pendingProduct, InventoryCarpenter.SLOT_PRODUCT, InventoryCarpenter.SLOT_PRODUCT_COUNT, true, false);
 		}
 

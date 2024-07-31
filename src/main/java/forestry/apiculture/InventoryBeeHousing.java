@@ -33,8 +33,8 @@ public class InventoryBeeHousing extends InventoryAdapterRestricted implements I
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		ILifeStage beeType = SpeciesUtil.BEE_TYPE.get().getLifeStage(itemStack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		ILifeStage beeType = SpeciesUtil.BEE_TYPE.get().getLifeStage(stack);
 
 		if (slotIndex == SLOT_QUEEN) {
 			return beeType == BeeLifeStage.QUEEN || beeType == BeeLifeStage.PRINCESS;

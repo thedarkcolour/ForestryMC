@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import forestry.api.core.INbtWritable;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.IIndividualHandler;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.core.network.IStreamable;
@@ -60,18 +60,18 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	}
 
 	public boolean initialize(ItemStack specimen) {
-		IIndividual individual = IIndividualHandler.getIndividual(specimen);
+		IIndividual individual = IIndividualHandlerItem.getIndividual(specimen);
 
 		if (individual != null) {
 			IGenome genome = individual.getGenome();
-			ISpeciesType<?, ?> species = genome.getActiveSpecies().getType();
+			ISpeciesType<?, ?> type = genome.getActiveSpecies().getType();
 
 			this.tokenCount = getTokenCount(genome);
 
 			for (int i = 0; i < this.tokenCount / 2; i++) {
-				ISpecies<?> randomSpecies = species.getRandomSpecies(rand);
-				gameTokens.add(new EscritoireGameToken(randomSpecies.id()));
-				gameTokens.add(new EscritoireGameToken(randomSpecies.id()));
+				ISpecies<?> randomSpecies = type.getRandomSpecies(rand);
+				gameTokens.add(new EscritoireGameToken(randomSpecies));
+				gameTokens.add(new EscritoireGameToken(randomSpecies));
 			}
 			Collections.shuffle(gameTokens);
 
@@ -217,16 +217,15 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 		return compoundNBT;
 	}
 
-	/* IStreamable */
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-		data.writeVarInt(tokenCount);
-		NetworkUtil.writeStreamables(data, gameTokens);
+		data.writeVarInt(this.tokenCount);
+		NetworkUtil.writeStreamables(data, this.gameTokens);
 	}
 
 	@Override
 	public void readData(FriendlyByteBuf data) {
-		tokenCount = data.readVarInt();
-		NetworkUtil.readStreamables(data, gameTokens, EscritoireGameToken::new);
+		this.tokenCount = data.readVarInt();
+		NetworkUtil.readStreamables(data, this.gameTokens, EscritoireGameToken::new);
 	}
 }

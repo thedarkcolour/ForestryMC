@@ -42,8 +42,7 @@ public class ApicultureJeiPlugin implements IModPlugin {
 
 		JeiUtil.addDescription(registry,
 				ApicultureItems.HABITAT_LOCATOR,
-				ApicultureItems.SCOOP,
-				ApicultureItems.IMPRINTER
+				ApicultureItems.SCOOP
 		);
 	}
 }

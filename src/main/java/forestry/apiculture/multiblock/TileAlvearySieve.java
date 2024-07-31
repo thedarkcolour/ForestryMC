@@ -17,7 +17,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.apiculture.DefaultBeeListener;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.IIndividual;
@@ -29,7 +28,6 @@ import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.inventory.watchers.ISlotPickupWatcher;
 
 public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.BeeListener {
-
 	private final IBeeListener beeListener;
 	private final InventoryAlvearySieve inventory;
 
@@ -41,16 +39,16 @@ public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.B
 
 	@Override
 	public IInventoryAdapter getInternalInventory() {
-		return inventory;
+		return this.inventory;
 	}
 
 	public ISlotPickupWatcher getCrafter() {
-		return inventory;
+		return this.inventory;
 	}
 
 	@Override
 	public IBeeListener getBeeListener() {
-		return beeListener;
+		return this.beeListener;
 	}
 
 	@Override
@@ -58,7 +56,7 @@ public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.B
 		return new ContainerAlvearySieve(windowId, inv, this);
 	}
 
-	static class AlvearySieveBeeListener extends DefaultBeeListener {
+	static class AlvearySieveBeeListener implements IBeeListener {
 		private final InventoryAlvearySieve inventory;
 
 		public AlvearySieveBeeListener(InventoryAlvearySieve inventory) {
@@ -67,15 +65,13 @@ public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.B
 
 		@Override
 		public boolean onPollenRetrieved(IIndividual pollen) {
-			if (!inventory.canStorePollen()) {
+			if (!this.inventory.canStorePollen()) {
 				return false;
 			}
 
-			ISpeciesType<IIndividual> root = GeneticsAPI.apiInstance.getRootHelper().getSpeciesRoot(pollen);
-
-			ItemStack pollenStack = root.getTypes().createStack(pollen, TreeLifeStage.POLLEN);
+			ItemStack pollenStack = pollen.copyWithStage(TreeLifeStage.POLLEN);
 			if (!pollenStack.isEmpty()) {
-				inventory.storePollenStack(pollenStack);
+				this.inventory.storePollenStack(pollenStack);
 				return true;
 			}
 			return false;

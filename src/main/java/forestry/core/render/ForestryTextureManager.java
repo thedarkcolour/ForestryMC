@@ -10,24 +10,20 @@
  ******************************************************************************/
 package forestry.core.render;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
+
+import net.minecraftforge.client.event.TextureStitchEvent;
 
 import forestry.api.IForestryApi;
 import forestry.api.client.ForestrySprites;
-import forestry.api.client.ISpriteRegister;
 import forestry.api.client.ITextureManager;
 import forestry.api.core.IError;
 
 public class ForestryTextureManager implements ITextureManager {
-	private final List<ISpriteRegister> spriteRegisters = new ArrayList<>();
 	private final ForestrySpriteUploader uploader = new ForestrySpriteUploader(Minecraft.getInstance().textureManager, ForestrySprites.TEXTURE_ATLAS, "gui");
 
 	public ForestrySpriteUploader getSpriteUploader() {
@@ -35,7 +31,7 @@ public class ForestryTextureManager implements ITextureManager {
 	}
 
 	public void init() {
-		for (IError error : IForestryApi.INSTANCE.getErrorManager().getRegisteredErrors()) {
+		for (IError error : IForestryApi.INSTANCE.getErrorManager().getErrors()) {
 			this.uploader.accept(error.getSprite());
 		}
 		initDefaultSprites(this.uploader);
@@ -52,21 +48,9 @@ public class ForestryTextureManager implements ITextureManager {
 		return this.uploader.getSprite(location);
 	}
 
-	public void registerBlock(Block block) {
-		if (block instanceof ISpriteRegister register) {
-			spriteRegisters.add(register);
-		}
-	}
-
-	public void registerItem(Item item) {
-		if (item instanceof ISpriteRegister) {
-			spriteRegisters.add((ISpriteRegister) item);
-		}
-	}
-
-	public void registerSprites(Consumer<ResourceLocation> registry) {
-		for (ISpriteRegister spriteRegister : spriteRegisters) {
-			spriteRegister.registerSprites(registry);
-		}
+	public void registerSprites(TextureStitchEvent.Pre registry) {
+		//for (ISpriteRegister spriteRegister : spriteRegisters) {
+		//	spriteRegister.registerSprites(registry);
+		//}
 	}
 }

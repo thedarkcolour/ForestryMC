@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.circuits.ChipsetManager;
+import forestry.api.IForestryApi;
 import forestry.api.circuits.ICircuitBoard;
 import forestry.core.circuits.ISocketable;
 import forestry.core.circuits.ISolderingIron;
@@ -47,11 +47,11 @@ public class ContainerSocketedHelper<T extends BlockEntity & ISocketable> implem
 			return;
 		}
 
-		if (!ChipsetManager.circuitRegistry.isChipset(itemstack)) {
+		if (!IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(itemstack)) {
 			return;
 		}
 
-		ICircuitBoard circuitBoard = ChipsetManager.circuitRegistry.getCircuitBoard(itemstack);
+		ICircuitBoard circuitBoard = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(itemstack);
 		if (circuitBoard == null) {
 			return;
 		}

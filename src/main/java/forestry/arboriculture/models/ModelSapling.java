@@ -36,16 +36,16 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
-import forestry.api.IForestryApi;
 import forestry.api.arboriculture.ForestryTreeSpecies;
 import forestry.api.arboriculture.ITreeSpecies;
-import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
-import forestry.api.genetics.ForestrySpeciesTypes;
-import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.api.client.IForestryClientApi;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.arboriculture.tiles.TileSapling;
 import forestry.core.utils.SpeciesUtil;
 
+import deleteme.Todos;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
@@ -54,10 +54,8 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 	public ModelSapling() {
 		this.modelsBySpecies = new Reference2ObjectOpenHashMap<>();
 
-		for (ITreeSpecies species : SpeciesUtil.getAllTreeSpecies()) {
-			// todo separate the model location code from the main species
-			this.modelsBySpecies.put(species, Pair.of(species.getBlockModel(), species.getItemModel()));
-		}
+		// todo
+		throw Todos.unimplemented();
 	}
 
 	@Override
@@ -100,9 +98,10 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 		public Baked(ImmutableMap<ITreeSpecies, BakedModel> itemModels, ImmutableMap<ITreeSpecies, BakedModel> blockModels) {
 			this.itemModels = itemModels;
 			this.blockModels = blockModels;
-			ITreeSpeciesType speciesType = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.TREE);
-			this.defaultBlock = Objects.requireNonNull(blockModels.get(speciesType.getSpecies(ForestryTreeSpecies.OAK)));
-			this.defaultItem = Objects.requireNonNull(itemModels.get(speciesType.getSpecies(ForestryTreeSpecies.OAK)));
+			ITreeSpeciesType speciesType = SpeciesUtil.TREE_TYPE.get();
+			ITreeSpecies oakSpecies = speciesType.getSpecies(ForestryTreeSpecies.OAK);
+			this.defaultBlock = Objects.requireNonNull(blockModels.get(oakSpecies));
+			this.defaultItem = Objects.requireNonNull(itemModels.get(oakSpecies));
 		}
 
 		@Override
@@ -160,16 +159,15 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 		}
 
 		public class OverrideList extends ItemOverrides {
-
 			@Nullable
 			@Override
 			public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int p_173469_) {
-				IIndividualCapability<ITree> organism = GeneticHelper.getOrganism(stack);
-				if (organism.isEmpty()) {
+				IIndividual individual = IIndividualHandlerItem.getIndividual(stack);
+				if (individual == null) {
 					return model;
+				} else {
+					return itemModels.getOrDefault(individual.getSpecies(), model);
 				}
-				IAlleleTreeSpecies species = organism.getAllele(TreeChromosomes.SPECIES, true);
-				return itemModels.getOrDefault(species, model);
 			}
 		}
 	}

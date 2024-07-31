@@ -32,6 +32,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
+import forestry.api.ForestryConstants;
 import forestry.api.client.ForestrySprites;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.climate.IClimatised;
@@ -50,7 +51,6 @@ import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.render.ColourProperties;
-import forestry.core.utils.ModUtil;
 import forestry.energy.ForestryEnergyStorage;
 
 public abstract class GuiForestry<C extends AbstractContainerMenu> extends AbstractContainerScreen<C> implements IGuiSizable {
@@ -61,7 +61,7 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 	protected final WindowGui<?> window;
 
 	protected GuiForestry(String texture, C menu, Inventory inv, Component title) {
-		this(ModUtil.modLoc(texture), menu, inv, title);
+		this(ForestryConstants.forestry(texture), menu, inv, title);
 	}
 
 	protected GuiForestry(ResourceLocation texture, C menu, Inventory inv, Component title) {

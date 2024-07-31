@@ -46,7 +46,7 @@ import forestry.api.climate.IClimateTransformer;
 import forestry.api.climate.IClimatised;
 import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.IHygroregulatorRecipe;
-import forestry.api.recipes.RecipeManagers;
+import forestry.core.recipes.RecipeManagers;
 import forestry.climatology.features.ClimatologyTiles;
 import forestry.climatology.gui.ContainerHabitatFormer;
 import forestry.climatology.inventory.InventoryHabitatFormer;
@@ -213,7 +213,7 @@ public class TileHabitatFormer extends TilePowered implements IClimateHousing, I
 
 		if (cachedStack != null) {
 			return manager.findMatchingRecipe(null, cachedStack)
-					.map(IHygroregulatorRecipe::getTempChange)
+					.map(IHygroregulatorRecipe::getTemperatureSteps)
 					.map(tempChange -> (0.05F + Math.abs(tempChange)) * 0.5F / transformer.getSpeedModifier())
 					.orElse(0f);
 		}

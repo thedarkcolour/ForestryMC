@@ -11,6 +11,7 @@
 package forestry.core.utils;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -60,9 +61,7 @@ public abstract class InventoryUtil {
 	}
 
 	/* REMOVAL */
-
-
-	public static boolean consumeIngredients(Container inventory, NonNullList<Ingredient> ingredients, @Nullable Player player, boolean stowContainer, boolean craftingTools, boolean doRemove) {
+	public static boolean consumeIngredients(Container inventory, List<Ingredient> ingredients, @Nullable Player player, boolean stowContainer, boolean craftingTools, boolean doRemove) {
 		int[] consumeStacks = ItemStackUtil.createConsume(ingredients, inventory, craftingTools);
 		if (doRemove && consumeStacks.length > 0) {
 			return consumeItems(inventory, consumeStacks, player, stowContainer);

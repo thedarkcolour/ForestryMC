@@ -3,7 +3,6 @@ package forestry.apiculture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IIndividual;

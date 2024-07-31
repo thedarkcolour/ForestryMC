@@ -14,20 +14,19 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.circuits.ChipsetManager;
-import forestry.api.circuits.CircuitSocketType;
+import forestry.api.IForestryApi;
 import forestry.api.circuits.ICircuit;
 import forestry.api.circuits.ICircuitBoard;
 import forestry.api.circuits.ICircuitLayout;
-import forestry.api.circuits.ICircuitSocketType;
 
 public class CircuitBoard implements ICircuitBoard {
 
@@ -48,10 +47,7 @@ public class CircuitBoard implements ICircuitBoard {
 		// Layout
 		ICircuitLayout layout = null;
 		if (compound.contains("LY")) {
-			layout = ChipsetManager.circuitRegistry.getLayout(compound.getString("LY"));
-		}
-		if (layout == null) {
-			ChipsetManager.circuitRegistry.getDefaultLayout();
+			layout = IForestryApi.INSTANCE.getCircuitManager().getLayout(compound.getString("LY"));
 		}
 		this.layout = layout;
 
@@ -61,7 +57,7 @@ public class CircuitBoard implements ICircuitBoard {
 			if (!compound.contains("CA.I" + i)) {
 				continue;
 			}
-			ICircuit circuit = ChipsetManager.circuitRegistry.getCircuit(compound.getString("CA.I" + i));
+			ICircuit circuit = IForestryApi.INSTANCE.getCircuitManager().getCircuit(compound.getString("CA.I" + i));
 			if (circuit != null) {
 				circuits[i] = circuit;
 			}
@@ -113,7 +109,7 @@ public class CircuitBoard implements ICircuitBoard {
 
 		// Layout
 		if (layout != null) {
-			compound.putString("LY", layout.getUID());
+			compound.putString("LY", layout.getId());
 		}
 
 		// Circuits
@@ -123,7 +119,7 @@ public class CircuitBoard implements ICircuitBoard {
 				continue;
 			}
 
-			compound.putString("CA.I" + i, circuit.getUID());
+			compound.putString("CA.I" + i, circuit.getId());
 		}
 		return compound;
 	}
@@ -177,11 +173,12 @@ public class CircuitBoard implements ICircuitBoard {
 		return circuits;
 	}
 
+	@Nullable
 	@Override
-	public ICircuitSocketType getSocketType() {
-		if (layout == null) {
-			return CircuitSocketType.NONE;
+	public ResourceLocation getSocketType() {
+		if (this.layout == null) {
+			return null;
 		}
-		return layout.getSocketType();
+		return this.layout.getSocketType();
 	}
 }

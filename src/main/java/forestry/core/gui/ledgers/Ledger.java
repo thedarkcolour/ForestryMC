@@ -26,13 +26,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
 import forestry.api.client.ForestrySprites;
 import forestry.api.client.IForestryClientApi;
 import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.config.SessionVars;
 import forestry.core.gui.GuiForestry;
-import forestry.core.utils.ModUtil;
 
 /**
  * Side ledger for guis
@@ -46,8 +46,8 @@ public abstract class Ledger {
 	protected final int maxTextWidth;
 	protected int maxHeight = 24;
 
-	private static final ResourceLocation ledgerTextureRight = ModUtil.modLoc(Constants.TEXTURE_PATH_GUI + "/ledger.png");
-	private static final ResourceLocation ledgerTextureLeft = ModUtil.modLoc(Constants.TEXTURE_PATH_GUI + "/ledger_left.png");
+	private static final ResourceLocation ledgerTextureRight = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/ledger.png");
+	private static final ResourceLocation ledgerTextureLeft = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/ledger_left.png");
 
 	protected final LedgerManager manager;
 

@@ -1,18 +1,23 @@
 package forestry.core.genetics;
 
+import java.util.List;
 import java.util.Map;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.IForestryApi;
-import forestry.api.apiculture.genetics.IBee;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.Taxon;
+import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.ISpeciesChromosome;
+import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.plugin.ISpeciesBuilder;
 import forestry.core.utils.GeneticsUtil;
 
@@ -20,7 +25,7 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 	protected final ResourceLocation id;
 	protected final T speciesType;
 	protected final IGenome defaultGenome;
-	protected final int complexity;
+	private int complexity;
 	protected final boolean secret;
 	protected final boolean glint;
 	protected final boolean dominant;
@@ -89,6 +94,9 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 
 	@Override
 	public int getComplexity() {
+		if (this.complexity == 0) {
+			this.complexity = GeneticsUtil.getResearchComplexity(this);
+		}
 		return this.complexity;
 	}
 
@@ -115,5 +123,18 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 	@Override
 	public I createIndividual(Map<IChromosome<?>, IAllele> alleles) {
 		return createIndividual(this.defaultGenome.copyWith(alleles));
+	}
+
+	protected static void addUnknownGenomeTooltip(List<Component> tooltip) {
+		tooltip.add(Component.literal("<").append(Component.translatable("for.gui.unknown")).append(">").withStyle(ChatFormatting.GRAY));
+	}
+
+	protected <S extends ISpecies<?>> void addHybridTooltip(List<Component> tooltip, IGenome genome, ISpeciesChromosome<S> species, String hybridKey) {
+		AllelePair<IValueAllele<S>> speciesPair = genome.getAllelePair(species);
+		S primary = speciesPair.active().value();
+		S secondary = speciesPair.inactive().value();
+		if (!speciesPair.isSameAlleles()) {
+			tooltip.add(Component.translatable(hybridKey, primary.getDisplayName(), secondary.getDisplayName()).withStyle(ChatFormatting.BLUE));
+		}
 	}
 }

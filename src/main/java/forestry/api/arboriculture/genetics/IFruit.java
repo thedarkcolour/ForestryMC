@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.Product;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.utils.SpeciesUtil;
@@ -106,13 +106,6 @@ public interface IFruit extends IRegistryAlleleValue {
 	String getModelName();
 
 	/**
-	 * @return The mod id of that adds this fruit provider. Needed for the allele of this fruit.
-	 */
-	String getModId();
-
-	/* TEXTURE OVERLAY */
-
-	/**
 	 * @param ripeningTime Elapsed ripening time for the fruit.
 	 * @return ResourceLocation of the texture to overlay on the leaf block.
 	 */
@@ -131,7 +124,7 @@ public interface IFruit extends IRegistryAlleleValue {
 
 	/**
 	 * Tries to spawn a fruit block at the potential position when the tree generates.
-	 * Spawning a fruit has a random chance of success based on {@link TreeChromosomes#SAPPINESS}
+	 * Spawning a fruit has a random chance of success based on {@link TreeChromosomes#SAPPINESS}.
 	 *
 	 * @return true if a fruit block was spawned, false otherwise.
 	 */
@@ -142,7 +135,7 @@ public interface IFruit extends IRegistryAlleleValue {
 	}
 
 	/**
-	 * Tag for the log that the is placed on
+	 * Tag for the log that a pod fruit is placed on
 	 */
 	default TagKey<Block> getLogTag() {
 		return BlockTags.JUNGLE_LOGS;

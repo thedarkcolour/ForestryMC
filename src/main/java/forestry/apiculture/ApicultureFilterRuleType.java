@@ -9,9 +9,7 @@ import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.client.ForestrySprites;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.filter.FilterData;
-import forestry.api.genetics.filter.IFilterRule;
 import forestry.api.genetics.filter.IFilterRuleType;
-import forestry.sorting.FilterRegistry;
 
 public enum ApicultureFilterRuleType implements IFilterRuleType {
 	BEE(ForestrySprites.ANALYZER_BEE) {
@@ -45,21 +43,6 @@ public enum ApicultureFilterRuleType implements IFilterRuleType {
 	ApicultureFilterRuleType(ResourceLocation sprite) {
 		this.id = "forestry.apiculture." + name().toLowerCase(Locale.ENGLISH);
 		this.sprite = sprite;
-	}
-
-	public static void init() {
-		for (ApicultureFilterRuleType rule : values()) {
-			FilterRegistry.INSTANCE.registerFilter(rule);
-		}
-	}
-
-	@Override
-	public void addLogic(IFilterRule logic) {
-	}
-
-	@Override
-	public boolean isContainer() {
-		return false;
 	}
 
 	@Override

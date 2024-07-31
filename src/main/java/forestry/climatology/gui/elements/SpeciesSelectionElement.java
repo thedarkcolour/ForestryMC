@@ -7,11 +7,11 @@
  *
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
- ******************************************************************************/
+ ******************************************************************************//*
+
 package forestry.climatology.gui.elements;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,11 +26,7 @@ import forestry.api.climate.ClimateState;
 import forestry.api.climate.IClimateTransformer;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
 import forestry.core.gui.elements.GuiElement;
-
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class SpeciesSelectionElement extends GuiElement {
@@ -41,7 +37,8 @@ public class SpeciesSelectionElement extends GuiElement {
 		super(xPos, yPos);
 		setSize(22, 22);
 		this.transformer = transformer;
-		/*addSelfEventHandler(GuiEvent.DownEvent.class, event -> {
+		*/
+/*addSelfEventHandler(GuiEvent.DownEvent.class, event -> {
 			PlayerEntity player = Minecraft.getInstance().player;
 			ItemStack itemstack = player.inventoryMenu.getCarried();
 			if (itemstack.isEmpty()) {
@@ -91,7 +88,8 @@ public class SpeciesSelectionElement extends GuiElement {
 					break;
 			}
 			transformer.setTarget(ClimateStateHelper.INSTANCE.create(temp, humid));
-		});*/
+		});*//*
+
 	}
 
 	@Override
@@ -126,3 +124,4 @@ public class SpeciesSelectionElement extends GuiElement {
 		return true;
 	}
 }
+*/

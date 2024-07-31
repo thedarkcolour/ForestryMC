@@ -24,6 +24,7 @@ public interface IMutationsRegistration {
 	 *
 	 * @return A mutation builder for an already registered mutation between these two parents.
 	 * @throws IllegalArgumentException If both parent species are the same species.
+	 * @throws IllegalStateException    If there is no existing mutation between those two parents.
 	 */
 	IMutationBuilder get(ResourceLocation firstParent, ResourceLocation secondParent);
 }

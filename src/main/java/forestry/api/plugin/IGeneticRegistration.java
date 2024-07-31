@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.filter.IFilterRuleType;
 
 /**
  * Handles registration of genetic-related data. Accessed from {@link IForestryPlugin#registerGenetics(IGeneticRegistration)}.
@@ -42,12 +43,23 @@ public interface IGeneticRegistration {
 
 	/**
 	 * Modify an existing species, for example, adding an extra chromosome to bees, or adding additional permitted alleles to chromosomes.
-	 * Called after all species types are registered.
+	 * Called after all species types are registered, but before the registry is finalized.
 	 *
 	 * @param id     The ID of the species to modify.
 	 * @param action The modifications to be made.
 	 */
 	void modifySpeciesType(ResourceLocation id, Consumer<ISpeciesTypeBuilder> action);
 
-	<A extends IAllele> IChromosomeBuilder<A> registerChromosome(IChromosome<A> chromosomeType);
+	/**
+	 * Registers a new filter rule for the Genetic Filter block.
+	 *
+	 * @param ruleType The filter rule type to register.
+	 */
+	void registerFilterRuleType(IFilterRuleType ruleType);
+
+	default void registerFilterRuleTypes(IFilterRuleType[] ruleTypes) {
+		for (IFilterRuleType ruleType : ruleTypes) {
+			registerFilterRuleType(ruleType);
+		}
+	}
 }

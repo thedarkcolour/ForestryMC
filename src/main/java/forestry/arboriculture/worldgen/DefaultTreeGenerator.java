@@ -45,7 +45,7 @@ public class DefaultTreeGenerator implements ITreeGenerator {
 
 	@Override
 	public Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree) {
-		return factory.apply(tree);
+		return this.factory.apply(tree);
 	}
 
 	@Override

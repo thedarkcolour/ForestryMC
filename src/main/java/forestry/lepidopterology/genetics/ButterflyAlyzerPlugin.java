@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.lepidopterology.genetics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -28,8 +25,9 @@ import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividualHandler;
-import forestry.api.genetics.Product;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.genetics.ISpecies;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
@@ -39,25 +37,19 @@ import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
-import forestry.lepidopterology.features.LepidopterologyItems;
+
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
 
-	private final HashMap<ResourceLocation, ItemStack> iconStacks = new HashMap<>();
-
-	public void init() {
-		ArrayList<ItemStack> butterflyList = new ArrayList<>();
-		LepidopterologyItems.BUTTERFLY_GE.item().addCreativeItems(butterflyList, false);
-		for (ItemStack stack : butterflyList) {
-			IIndividualHandler.ifPresent(stack, individual -> iconStacks.put(individual.getSpecies().id(), stack));
-		}
-	}
+	// todo reloadable
+	private final Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> iconStacks = new Reference2ObjectOpenHashMap<>();
 
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			IIndividualHandler.ifPresent(stack, (butterfly, stage) -> {
+			IIndividualHandlerItem.ifPresent(stack, (butterfly, stage) -> {
 				IGenome genome = butterfly.getGenome();
 
 				TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
@@ -70,7 +62,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 				textLayout.newLine();
 				textLayout.newLine();
 
-				guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), butterfly, ButterflyChromosomes.SPECIES, stage);
+				guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), butterfly, ButterflyChromosomes.SPECIES);
 				textLayout.newLine();
 
 				guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.size"), butterfly, ButterflyChromosomes.SIZE);
@@ -105,7 +97,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			IIndividualHandler.ifPresent(stack, (individual, stage) -> {
+			IIndividualHandlerItem.ifPresent(stack, (individual, stage) -> {
 				IGenome genome = individual.getGenome();
 				IButterflySpecies primaryAllele = genome.getActiveValue(ButterflyChromosomes.SPECIES);
 				IButterflySpecies secondaryAllele = genome.getActiveValue(ButterflyChromosomes.SPECIES);
@@ -195,7 +187,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage3(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			IIndividualHandler.ifPresent(stack, individual -> {
+			IIndividualHandlerItem.ifPresent(stack, individual -> {
 				IGenome genome = individual.getGenome();
 				TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 				ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
@@ -225,7 +217,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 				textLayout.newLine();
 
 				x = GuiAlyzer.COLUMN_0;
-				for (Product product : genome.getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarLoot()) {
+				for (Product product : genome.getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarProducts()) {
 					itemRenderer.renderGuiItem(product.createStack(), guiLeft + x, guiTop + textLayout.getLineY());
 					x += 18;
 					if (x > 148) {
@@ -256,8 +248,8 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 	}
 
 	@Override
-	public Map<ResourceLocation, ItemStack> getIconStacks() {
-		return iconStacks;
+	public Map<ISpecies<?>, ItemStack> getIconStacks() {
+		return this.iconStacks;
 	}
 
 	@Override

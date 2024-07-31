@@ -37,5 +37,5 @@ public interface IIndividualLiving extends IIndividual {
 	boolean isAlive();
 
 	@Override
-	IIndividual copy();
+	IIndividualLiving copy();
 }

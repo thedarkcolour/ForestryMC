@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -37,10 +38,10 @@ import forestry.core.utils.BlockUtil;
  * Similar to decorative leaves, but these will drop saplings and can be used for pollination.
  */
 public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
-	private final ForestryLeafType leafType;
+	private final ForestryLeafType type;
 
-	public BlockDefaultLeavesFruit(ForestryLeafType leafType) {
-		this.leafType = leafType;
+	public BlockDefaultLeavesFruit(ForestryLeafType type) {
+		this.type = type;
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 			}
 			IFruit fruitProvider = tree.getGenome().getActiveValue(TreeChromosomes.FRUITS);
 			List<ItemStack> products = tree.produceStacks(level, pos, fruitProvider.getRipeningPeriod());
-			level.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(leafType).defaultState()
+			level.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(type).defaultState()
 					.setValue(LeavesBlock.PERSISTENT, state.getValue(LeavesBlock.PERSISTENT))
 					.setValue(LeavesBlock.DISTANCE, state.getValue(LeavesBlock.DISTANCE)), Block.UPDATE_CLIENTS);
 			for (ItemStack fruit : products) {
@@ -91,24 +92,28 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 		}
 	}
 
-	public ForestryLeafType getLeafType() {
-		return this.leafType;
+	public ResourceLocation getSpeciesId() {
+		return this.type.getSpeciesId();
+	}
+
+	public ForestryLeafType getType() {
+		return this.type;
 	}
 
 	@Override
 	protected ITree getTree(BlockGetter world, BlockPos pos) {
-		return this.leafType.getIndividual();
+		return this.type.getIndividual();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
 		if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
-			IFruit genome = leafType.getFruit();
+			IFruit genome = type.getFruit();
 			return genome.getDecorativeColor();
 		}
 
-		ILeafSpriteProvider spriteProvider = leafType.getLeafSpriteProvider();
+		ILeafSpriteProvider spriteProvider = type.getLeafSpriteProvider();
 		return spriteProvider.getColor(false);
 	}
 }

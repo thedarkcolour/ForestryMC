@@ -129,6 +129,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		registerMailRecipes(consumer);
 		registerSortingRecipes(consumer);
 		registerWorktableRecipes(consumer);
+		registerSolderingRecipes(consumer);
 	}
 
 	private void registerApicultureRecipes(Consumer<FinishedRecipe> helper) {
@@ -1057,6 +1058,10 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern("C")
 				.unlockedBy("has_book", has(Items.BOOK))
 				.save(output);
+	}
+
+	private void registerSolderingRecipes(Consumer<FinishedRecipe> output) {
+
 	}
 
 	@Override

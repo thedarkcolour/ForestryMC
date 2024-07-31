@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.cultivation.proxy;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 
@@ -19,6 +20,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import forestry.cultivation.features.CultivationBlocks;
 import forestry.api.client.IClientModuleHandler;
+import forestry.cultivation.features.CultivationMenuTypes;
+import forestry.cultivation.gui.GuiPlanter;
 
 public class CultivationClientHandler implements IClientModuleHandler {
 	@Override
@@ -27,6 +30,9 @@ public class CultivationClientHandler implements IClientModuleHandler {
 	}
 
 	public static void onClientSetup(FMLClientSetupEvent event) {
-		CultivationBlocks.PLANTER.getBlocks().forEach(block -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped()));
+		event.enqueueWork(() -> {
+			CultivationBlocks.PLANTER.getBlocks().forEach(block -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped()));
+			MenuScreens.register(CultivationMenuTypes.PLANTER.menuType(), GuiPlanter::new);
+		});
 	}
 }

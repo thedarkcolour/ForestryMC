@@ -15,7 +15,6 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -30,9 +29,8 @@ import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.IIndividualHandler;
-import forestry.api.genetics.ILifeStage;
-import forestry.api.genetics.Product;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.lepidopterology.IButterflyNursery;
@@ -74,32 +72,33 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		return EntityUtil.spawnEntity(level, EntityButterfly.create(LepidopterologyEntities.BUTTERFLY.entityType(), level, butterfly, new BlockPos(x, y, z)), x, y, z);
 	}
 
+	@Nullable
 	@Override
 	public BlockPos plantCocoon(LevelAccessor level, BlockPos coordinates, @Nullable IButterfly caterpillar, GameProfile owner, int age, boolean createNursery) {
 		if (caterpillar == null) {
-			return BlockPos.ZERO;
+			return null;
 		}
 
 		BlockPos pos = getValidCocoonPos(level, coordinates, caterpillar, owner, createNursery);
-		if (pos == BlockPos.ZERO) {
+		if (pos == null) {
 			return pos;
 		}
 		// todo replace with cocoon allele
 		BlockState state = LepidopterologyBlocks.COCOON.defaultState().setValue(BlockCocoon.AGE, age);
 		boolean placed = level.setBlock(pos, state, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
 		if (!placed) {
-			return BlockPos.ZERO;
+			return null;
 		}
 
 		Block block = level.getBlockState(pos).getBlock();
 		if (!LepidopterologyBlocks.COCOON.blockEqual(block)) {
-			return BlockPos.ZERO;
+			return null;
 		}
 
 		TileCocoon cocoon = TileUtil.getTile(level, pos, TileCocoon.class);
 		if (cocoon == null) {
 			level.setBlock(pos, Blocks.AIR.defaultBlockState(), 18);
-			return BlockPos.ZERO;
+			return null;
 		}
 
 		cocoon.setCaterpillar(caterpillar);
@@ -108,6 +107,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		return pos;
 	}
 
+	@Nullable
 	private BlockPos getValidCocoonPos(LevelAccessor world, BlockPos pos, IButterfly caterpillar, GameProfile gameProfile, boolean createNursery) {
 		if (isPositionValid(world, pos.below(), caterpillar, gameProfile, createNursery)) {
 			return pos.below();
@@ -121,7 +121,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 			}
 		}
 
-		return BlockPos.ZERO;
+		return null;
 	}
 
 	public boolean isPositionValid(LevelAccessor world, BlockPos pos, IButterfly caterpillar, GameProfile gameProfile, boolean createNursery) {
@@ -129,53 +129,51 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		if (BlockUtil.canReplace(blockState, world, pos)) {
 			BlockPos nurseryPos = pos.above();
 			IButterflyNursery nursery = GeneticsUtil.getNursery(world, nurseryPos);
-			if (isNurseryValid(nursery, caterpillar, gameProfile)) {
+			if (isNurseryValid(nursery, caterpillar)) {
 				return true;
 			} else if (createNursery && GeneticsUtil.canCreateNursery(world, nurseryPos)) {
 				nursery = GeneticsUtil.getOrCreateNursery(gameProfile, world, nurseryPos, false);
-				return isNurseryValid(nursery, caterpillar, gameProfile);
+				return isNurseryValid(nursery, caterpillar);
 			}
 		}
 		return false;
 	}
 
-	private boolean isNurseryValid(@Nullable IButterflyNursery nursery, IButterfly caterpillar, GameProfile gameProfile) {
+	private boolean isNurseryValid(@Nullable IButterflyNursery nursery, IButterfly caterpillar) {
 		return nursery != null && nursery.canNurse(caterpillar);
 	}
 
 	@Override
 	public boolean isMated(ItemStack stack) {
-		return IIndividualHandler.filter(stack, individual -> individual instanceof IButterfly butterfly && butterfly.getMate() != null);
+		return IIndividualHandlerItem.filter(stack, individual -> individual instanceof IButterfly butterfly && butterfly.getMate() != null);
 	}
 
-	/* BREEDING TRACKER */
 	@Override
 	public ILepidopteristTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile) {
-		return BreedingTrackerManager.INSTANCE.getTracker(id(), level, profile);
+		return BreedingTrackerManager.INSTANCE.getTracker(this, level, profile);
 	}
 
 	@Override
-	public String getFileName(@Nullable GameProfile profile) {
+	public String getBreedingTrackerFile(@Nullable GameProfile profile) {
 		return "LepidopteristTracker." + (profile == null ? "common" : profile.getId());
 	}
 
 	@Override
-	public IBreedingTracker createTracker() {
+	public IBreedingTracker createBreedingTracker() {
 		return new LepidopteristTracker();
 	}
 
 	@Override
-	public IBreedingTracker createTracker(CompoundTag tag) {
+	public IBreedingTracker createBreedingTracker(CompoundTag tag) {
 		return new LepidopteristTracker(tag);
 	}
 
 	@Override
-	public void populateTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
-		if (!(tracker instanceof LepidopteristTracker arboristTracker)) {
-			return;
+	public void initializeBreedingTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
+		if (tracker instanceof LepidopteristTracker butterflyTracker) {
+			butterflyTracker.setLevel(world);
+			butterflyTracker.setUsername(profile);
 		}
-		arboristTracker.setLevel(world);
-		arboristTracker.setUsername(profile);
 	}
 
 	@Override
@@ -195,7 +193,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 				return 1.0f;
 			}
 		}
-		for (Product product : species.getCaterpillarLoot()) {
+		for (Product product : species.getCaterpillarProducts()) {
 			if (stack.is(product.item())) {
 				return 1.0f;
 			}
@@ -205,7 +203,9 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 
 	@Override
 	public List<ItemStack> getResearchBounty(IButterflySpecies species, Level level, GameProfile researcher, IButterfly individual, int bountyLevel) {
-		return List.of(individual.copyWithStage(ButterflyLifeStage.SERUM));
+		List<ItemStack> bounty = super.getResearchBounty(species, level, researcher, individual, bountyLevel);
+		bounty.add(individual.copyWithStage(ButterflyLifeStage.SERUM));
+		return bounty;
 	}
 
 	@Override

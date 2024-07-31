@@ -23,7 +23,7 @@ public class InventorySwarmer extends InventoryAdapterTile<TileAlvearySwarmer> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return ItemStackUtil.containsItemStack(BeeManager.inducers.keySet(), itemStack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return ItemStackUtil.containsItemStack(BeeManager.inducers.keySet(), stack);
 	}
 }

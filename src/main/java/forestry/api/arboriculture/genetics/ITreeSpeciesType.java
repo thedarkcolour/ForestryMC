@@ -26,9 +26,6 @@ import forestry.api.genetics.IPollinatableSpeciesType;
 import forestry.api.genetics.ISpeciesType;
 
 public interface ITreeSpeciesType extends ISpeciesType<ITreeSpecies, ITree>, IPollinatableSpeciesType {
-	/**
-	 * @return {@link IArboristTracker} associated with the passed world.
-	 */
 	@Override
 	IArboristTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile);
 

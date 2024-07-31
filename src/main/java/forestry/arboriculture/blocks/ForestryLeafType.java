@@ -15,14 +15,16 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.IBlockSubtype;
 import forestry.api.genetics.alleles.TreeChromosomes;
 
-import deleteme.Todos;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Used for the default leaf, fruit, and decorative blocks.
+ * Other mods can implement this to take advantage of Forestry's built-in leaf blocks.
  */
-public class ForestryLeafType implements IBlockSubtype {
+public final class ForestryLeafType implements IBlockSubtype {
+	private static final ObjectOpenHashSet<ForestryLeafType> VALUES = new ObjectOpenHashSet<>(35);
+
 	public static final ForestryLeafType OAK = new ForestryLeafType(ForestryTreeSpecies.OAK);
 	public static final ForestryLeafType DARK_OAK = new ForestryLeafType(ForestryTreeSpecies.DARK_OAK);
 	public static final ForestryLeafType BIRCH = new ForestryLeafType(ForestryTreeSpecies.BIRCH);
@@ -59,9 +61,9 @@ public class ForestryLeafType implements IBlockSubtype {
 	public static final ForestryLeafType DATE = new ForestryLeafType(ForestryTreeSpecies.DATE);
 	public static final ForestryLeafType POPLAR = new ForestryLeafType(ForestryTreeSpecies.POPLAR);
 
-	private static final ObjectOpenHashSet<ForestryLeafType> VALUES = new ObjectOpenHashSet<>(35);
 	private final ResourceLocation speciesId;
 
+	// These fields are initialized later in setSpecies
 	private IFruit fruit;
 	private ILeafSpriteProvider leafSprite;
 	private ITree individual;
@@ -70,8 +72,6 @@ public class ForestryLeafType implements IBlockSubtype {
 	public ForestryLeafType(ResourceLocation speciesId) {
 		this.speciesId = speciesId;
 		VALUES.add(this);
-
-		throw Todos.unimplemented();
 	}
 
 	public void setSpecies(ITreeSpecies species) {
@@ -110,5 +110,24 @@ public class ForestryLeafType implements IBlockSubtype {
 	@ApiStatus.Internal
 	public static List<ForestryLeafType> values() {
 		return Arrays.asList(OAK, DARK_OAK, BIRCH, LIME, WALNUT, CHESTNUT, CHERRY, LEMON, PLUM, MAPLE, SPRUCE, LARCH, PINE, SEQUOIA, GIANT_SEQUOIA, JUNGLE, TEAK, IPE, KAPOK, EBONY, ZEBRAWOOD, MAHOGANY, ACACIA_VANILLA, DESERT_ACACIA, PADAUK, BALSA, COCOBOLO, WENGE, BAOBAB, MAHOE, WILLOW, SIPIRI, PAPAYA, DATE, POPLAR);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		ForestryLeafType that = (ForestryLeafType) o;
+
+		return this.speciesId.equals(that.speciesId);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.speciesId.hashCode();
 	}
 }

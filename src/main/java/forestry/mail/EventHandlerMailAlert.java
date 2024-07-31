@@ -29,6 +29,7 @@ import forestry.core.utils.NetworkUtil;
 import forestry.mail.gui.GuiMailboxInfo;
 import forestry.mail.network.packets.PacketPOBoxInfoResponse;
 
+// todo this shouldn't be a separate class
 public class EventHandlerMailAlert {
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
