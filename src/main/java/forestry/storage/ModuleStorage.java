@@ -24,17 +24,17 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import forestry.api.ForestryTags;
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.storage.IBackpackInterface;
 import forestry.core.config.Config;
 import forestry.modules.BlankForestryModule;
-import forestry.api.client.IClientModuleHandler;
 import forestry.storage.client.StorageClientHandler;
 
 @ForestryModule
-public class ModuleBackpacks extends BlankForestryModule {
+public class ModuleStorage extends BlankForestryModule {
 	public static final IBackpackInterface BACKPACK_INTERFACE = new BackpackInterface();
 
 	// todo should there be an arborist backpack?
@@ -49,13 +49,13 @@ public class ModuleBackpacks extends BlankForestryModule {
 
 	@Override
 	public ResourceLocation getId() {
-		return ForestryModuleIds.BACKPACKS;
+		return ForestryModuleIds.STORAGE;
 	}
 
 	@Override
 	public void registerEvents(IEventBus modBus) {
-		MinecraftForge.EVENT_BUS.addListener(ModuleBackpacks::onItemPickup);
-		MinecraftForge.EVENT_BUS.addListener(ModuleBackpacks::onLevelTick);
+		MinecraftForge.EVENT_BUS.addListener(ModuleStorage::onItemPickup);
+		MinecraftForge.EVENT_BUS.addListener(ModuleStorage::onLevelTick);
 	}
 
 	private static void onLevelTick(TickEvent.LevelTickEvent event) {

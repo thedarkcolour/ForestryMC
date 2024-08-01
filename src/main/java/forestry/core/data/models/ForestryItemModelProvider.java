@@ -29,7 +29,6 @@ import forestry.lepidopterology.features.LepidopterologyItems;
 import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.ModFeatureRegistry;
-import forestry.storage.ModuleBackpacks;
 import forestry.storage.features.CrateItems;
 import forestry.storage.items.ItemBackpack;
 import forestry.storage.items.ItemCrated;
@@ -98,7 +97,7 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 		}
 
 		// Backpacks
-		for (RegistryObject<Item> object : ModFeatureRegistry.get(ForestryModuleIds.BACKPACKS).getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
+		for (RegistryObject<Item> object : ModFeatureRegistry.get(ForestryModuleIds.STORAGE).getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
 			if (object.get() instanceof ItemBackpack) {
 				String path = object.getId().getPath();
 				boolean woven = path.endsWith("woven");

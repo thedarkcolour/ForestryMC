@@ -14,7 +14,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 public class StorageJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return ForestryModuleIds.BACKPACKS;
+		return ForestryModuleIds.STORAGE;
 	}
 
 	@Override

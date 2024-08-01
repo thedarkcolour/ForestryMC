@@ -29,7 +29,7 @@ public class StorageClientHandler implements IClientModuleHandler {
 	public static final ModelResourceLocation FILLED_CRATE_MODEL = new ModelResourceLocation(ForestryConstants.MOD_ID, "filled_crate", "inventory");
 
 	public StorageClientHandler() {
-		IFeatureRegistry backpacksRegistry = ModFeatureRegistry.get(ForestryModuleIds.BACKPACKS);
+		IFeatureRegistry backpacksRegistry = ModFeatureRegistry.get(ForestryModuleIds.STORAGE);
 
 		backpacksRegistry.addRegistryListener(Registry.ITEM_REGISTRY, event -> {
 			@SuppressWarnings("deprecation")

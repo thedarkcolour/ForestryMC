@@ -10,7 +10,7 @@ import forestry.storage.gui.ContainerNaturalistBackpack;
 
 @FeatureProvider
 public class BackpackMenuTypes {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.BACKPACKS);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.STORAGE);
 
 	public static final FeatureMenuType<ContainerBackpack> BACKPACK = REGISTRY.menuType(ContainerBackpack::fromNetwork, "backpack");
 	public static final FeatureMenuType<ContainerNaturalistBackpack> NATURALIST_BACKPACK = REGISTRY.menuType(ContainerNaturalistBackpack::fromNetwork, "naturalist_backpack");

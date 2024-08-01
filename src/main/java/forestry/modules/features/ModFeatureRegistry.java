@@ -51,7 +51,7 @@ import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
 import forestry.core.blocks.BlockBase;
 import forestry.modules.ModuleUtil;
-import forestry.storage.ModuleBackpacks;
+import forestry.storage.ModuleStorage;
 
 public class ModFeatureRegistry {
 	// Maps module id to feature (needed because of Binnie)
@@ -165,12 +165,12 @@ public class ModFeatureRegistry {
 
 		@Override
 		public FeatureItem<Item> backpack(IBackpackDefinition definition, EnumBackpackType type, String identifier) {
-			return item(() -> ModuleBackpacks.BACKPACK_INTERFACE.createBackpack(definition, type), identifier);
+			return item(() -> ModuleStorage.BACKPACK_INTERFACE.createBackpack(definition, type), identifier);
 		}
 
 		@Override
 		public FeatureItem<Item> naturalistBackpack(IBackpackDefinition definition, ResourceLocation speciesTypeId, CreativeModeTab tab, String identifier) {
-			return item(() -> ModuleBackpacks.BACKPACK_INTERFACE.createNaturalistBackpack(definition, speciesTypeId, tab), identifier);
+			return item(() -> ModuleStorage.BACKPACK_INTERFACE.createNaturalistBackpack(definition, speciesTypeId, tab), identifier);
 		}
 
 		@Override
