@@ -3,12 +3,17 @@ package forestry.plugin;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ServiceLoader;
 
 import net.minecraft.resources.ResourceLocation;
+
+import net.minecraftforge.eventbus.api.IEventBus;
+
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import forestry.Forestry;
 import forestry.api.IForestryApi;
@@ -50,7 +55,6 @@ public class PluginManager {
 		});
 	}
 
-	// TODO when should this be called?
 	public static void registerErrors() {
 		ErrorRegistration registration = new ErrorRegistration();
 
@@ -79,7 +83,14 @@ public class PluginManager {
 		CircuitRegistration registration = new CircuitRegistration();
 
 		for (IForestryPlugin plugin : LOADED_PLUGINS) {
-			plugin.registerCircuits(registration);
+			// TODO remove in 1.20 when FMLCommonSetupEvent throws
+			// rethrow swallowed exception
+			try {
+				plugin.registerCircuits(registration);
+			} catch (Throwable e) {
+				asyncThrown = new RuntimeException("An error was thrown by plugin " + plugin.id() + " during IForestryPlugin.registerCircuits", e);
+				Forestry.LOGGER.fatal(asyncThrown);
+			}
 		}
 
 		ArrayList<CircuitLayout> layouts = registration.getLayouts();
@@ -133,5 +144,19 @@ public class PluginManager {
 		ForestryApiImpl api = (ForestryApiImpl) IForestryApi.INSTANCE;
 		api.setGeneticManager(new GeneticManager(taxa, speciesTypes));
 		api.setFilterManager(new FilterManager(registration.getFilterRuleTypes()));
+	}
+
+	// Todo remove in 1.20 when FMLCommonSetupEvent throws exceptions again
+	@Nullable
+	@Deprecated
+	private static RuntimeException asyncThrown = null;
+
+	@Deprecated
+	public static void registerAsyncException(IEventBus modBus) {
+		modBus.addListener((FMLLoadCompleteEvent event) -> {
+			if (asyncThrown != null) {
+				throw asyncThrown;
+			}
+		});
 	}
 }

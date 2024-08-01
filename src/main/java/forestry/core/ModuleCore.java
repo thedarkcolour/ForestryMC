@@ -101,6 +101,8 @@ public class ModuleCore extends BlankForestryModule {
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::onTagsUpdated);
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::registerReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(ModuleCore::registerCommands);
+
+		PluginManager.registerAsyncException(modBus);
 	}
 
 	private static void onCommonSetup(FMLCommonSetupEvent event) {
