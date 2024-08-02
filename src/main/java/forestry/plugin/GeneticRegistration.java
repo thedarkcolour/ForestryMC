@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,6 @@ import forestry.api.plugin.ISpeciesTypeBuilder;
 import forestry.api.plugin.ISpeciesTypeFactory;
 import forestry.api.plugin.ITaxonBuilder;
 import forestry.core.genetics.Taxon;
-
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 // Handles registration of species types, taxonomy, and filter rules.
 public final class GeneticRegistration implements IGeneticRegistration {
@@ -179,7 +178,7 @@ public final class GeneticRegistration implements IGeneticRegistration {
 		TaxonBuilder[] builders = this.taxaByName.values().toArray(new TaxonBuilder[0]);
 		Arrays.sort(builders, Comparator.comparing(taxon -> taxon.rank));
 		// keep track of child lists because Taxon.setChildren can only be called once (and children are created after parents)
-		Reference2ObjectOpenHashMap<Taxon, ImmutableList.Builder<ITaxon>> parentChildrenMap = new Reference2ObjectOpenHashMap<>(this.taxaByName.size());
+		IdentityHashMap<Taxon, ImmutableList.Builder<ITaxon>> parentChildrenMap = new IdentityHashMap<>(this.taxaByName.size());
 
 		// traverse taxa from parents down to children so that parent is available in taxa map
 		for (TaxonBuilder builder : builders) {
@@ -187,8 +186,7 @@ public final class GeneticRegistration implements IGeneticRegistration {
 			TaxonomicRank rank = builder.rank;
 			// parents are created before children so taxa should always contain the parent Taxon
 			Taxon parent = builder.parent == null ? null : taxa.get(builder.parent.name);
-			Reference2ObjectOpenHashMap<IChromosome<?>, ITaxon.TaxonAllele> alleles = builder.alleles;
-			alleles.trim();
+			IdentityHashMap<IChromosome<?>, ITaxon.TaxonAllele> alleles = builder.alleles;
 
 			// create taxon
 			Taxon taxon = new Taxon(name, rank, parent, alleles);
@@ -210,9 +208,9 @@ public final class GeneticRegistration implements IGeneticRegistration {
 		}
 
 		// Setup taxa children
-		parentChildrenMap.reference2ObjectEntrySet().fastForEach(entry -> {
+		for (Map.Entry<Taxon, ImmutableList.Builder<ITaxon>> entry : parentChildrenMap.entrySet()) {
 			entry.getKey().setChildren(entry.getValue().build());
-		});
+		}
 
 		return ImmutableMap.copyOf(taxa);
 	}
@@ -226,7 +224,7 @@ public final class GeneticRegistration implements IGeneticRegistration {
 		private final TaxonomicRank rank;
 		private final String name;
 		private final HashSet<TaxonBuilder> children = new HashSet<>();
-		private final Reference2ObjectOpenHashMap<IChromosome<?>, ITaxon.TaxonAllele> alleles = new Reference2ObjectOpenHashMap<>();
+		private final IdentityHashMap<IChromosome<?>, ITaxon.TaxonAllele> alleles = new IdentityHashMap<>();
 		// Must not be null by end of registration unless this is a domain
 		@Nullable
 		private TaxonBuilder parent;

@@ -12,6 +12,7 @@ package forestry.arboriculture.worldgen;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -41,10 +42,8 @@ import forestry.arboriculture.commands.TreeGenHelper;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.SpeciesUtil;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-
 public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
-	private static final Reference2ObjectOpenHashMap<ResourceKey<Biome>, ArrayList<ITree>> BIOME_CACHE = new Reference2ObjectOpenHashMap<>();
+	private static final IdentityHashMap<ResourceKey<Biome>, ArrayList<ITree>> BIOME_CACHE = new IdentityHashMap<>();
 
 	public TreeDecorator() {
 		super(NoneFeatureConfiguration.CODEC);
@@ -81,7 +80,7 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 		List<ITreeSpecies> allSpecies = SpeciesUtil.getAllTreeSpecies();
 		IClimateManager manager = IForestryApi.INSTANCE.getClimateManager();
 		// correctly dedupe ITree instances with map instead of using set
-		Reference2ObjectOpenHashMap<ITreeSpecies, ITree> treeInstances = new Reference2ObjectOpenHashMap<>(allSpecies.size());
+		IdentityHashMap<ITreeSpecies, ITree> treeInstances = new IdentityHashMap<>(allSpecies.size());
 
 		level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).holders().forEach(biome -> {
 			ArrayList<ITree> trees = BIOME_CACHE.computeIfAbsent(biome.key(), k -> new ArrayList<>());

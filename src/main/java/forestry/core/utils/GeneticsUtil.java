@@ -13,6 +13,8 @@ package forestry.core.utils;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
@@ -50,8 +52,6 @@ import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.arboriculture.capabilities.ArmorNaturalist;
 import forestry.core.genetics.ItemGE;
 import forestry.core.tiles.TileUtil;
-
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public class GeneticsUtil {
 	private static String getKeyPrefix(ISpecies<?> allele) {
@@ -277,13 +277,13 @@ public class GeneticsUtil {
 		return createTranslationKey("species", id.getType().id(), id.id()) + ".desc";
 	}
 
-	public static Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> getIconStacks(ILifeStage stage, ISpeciesType<?, ?> type) {
-		Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> map = new Reference2ObjectOpenHashMap<>();
+	public static IdentityHashMap<ISpecies<?>, ItemStack> getIconStacks(ILifeStage stage, ISpeciesType<?, ?> type) {
+		IdentityHashMap<ISpecies<?>, ItemStack> map = new IdentityHashMap<>();
 		getIconStacks(map, stage, type);
 		return map;
 	}
 
-	public static void getIconStacks(Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> map, ILifeStage stage, ISpeciesType<?, ?> type) {
+	public static void getIconStacks(Map<ISpecies<?>, ItemStack> map, ILifeStage stage, ISpeciesType<?, ?> type) {
 		ArrayList<ItemStack> itemList = new ArrayList<>(type.getAllSpecies().size());
 		ItemGE.addCreativeItems(stage, itemList, false, type);
 

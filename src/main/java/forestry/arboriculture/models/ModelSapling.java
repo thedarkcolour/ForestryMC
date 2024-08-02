@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,20 +40,18 @@ import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import forestry.api.arboriculture.ForestryTreeSpecies;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
-import forestry.api.client.IForestryClientApi;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.arboriculture.tiles.TileSapling;
 import forestry.core.utils.SpeciesUtil;
 
 import deleteme.Todos;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
-	private final Reference2ObjectOpenHashMap<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> modelsBySpecies;
+	private final IdentityHashMap<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> modelsBySpecies;
 
 	public ModelSapling() {
-		this.modelsBySpecies = new Reference2ObjectOpenHashMap<>();
+		this.modelsBySpecies = new IdentityHashMap<>();
 
 		// todo
 		throw Todos.unimplemented();
@@ -62,7 +61,7 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 	public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
 		ImmutableMap.Builder<ITreeSpecies, BakedModel> itemModels = new ImmutableMap.Builder<>();
 		ImmutableMap.Builder<ITreeSpecies, BakedModel> blockModels = new ImmutableMap.Builder<>();
-		for (Map.Entry<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> entry : this.modelsBySpecies.reference2ObjectEntrySet()) {
+		for (Map.Entry<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> entry : this.modelsBySpecies.entrySet()) {
 			BakedModel blockModel = bakery.bake(entry.getValue().getFirst(), BlockModelRotation.X0_Y0, spriteGetter);
 			if (blockModel != null) {
 				blockModels.put(entry.getKey(), blockModel);

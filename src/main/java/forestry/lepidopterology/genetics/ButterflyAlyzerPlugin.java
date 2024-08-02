@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.lepidopterology.genetics;
 
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,30 +22,28 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.core.Product;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.ISpecies;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-
 public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
 
 	// todo reloadable
-	private final Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> iconStacks = new Reference2ObjectOpenHashMap<>();
+	private final IdentityHashMap<ISpecies<?>, ItemStack> iconStacks = new IdentityHashMap<>();
 
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack) {

@@ -2,6 +2,7 @@ package forestry.core.genetics;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,6 @@ import forestry.api.genetics.ITaxon;
 import forestry.api.genetics.TaxonomicRank;
 import forestry.api.genetics.alleles.IChromosome;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 
 public final class Taxon implements ITaxon {
@@ -18,7 +18,7 @@ public final class Taxon implements ITaxon {
 	private final TaxonomicRank rank;
 	@Nullable
 	private final ITaxon parent;
-	private final Reference2ObjectOpenHashMap<IChromosome<?>, TaxonAllele> alleles;
+	private final IdentityHashMap<IChromosome<?>, TaxonAllele> alleles;
 
 	// these are updated later
 	@Nullable
@@ -27,7 +27,7 @@ public final class Taxon implements ITaxon {
 	private List<ISpecies<?>> species;
 
 	@ApiStatus.Internal
-	public Taxon(String name, TaxonomicRank rank, @Nullable ITaxon parent, Reference2ObjectOpenHashMap<IChromosome<?>, TaxonAllele> alleles) {
+	public Taxon(String name, TaxonomicRank rank, @Nullable ITaxon parent, IdentityHashMap<IChromosome<?>, TaxonAllele> alleles) {
 		this.name = name;
 		this.rank = rank;
 		this.parent = parent;

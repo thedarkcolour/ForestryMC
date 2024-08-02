@@ -3,6 +3,7 @@ package forestry.sorting.gui.widgets;
 import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
+import java.util.IdentityHashMap;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -29,10 +30,8 @@ import forestry.core.utils.SoundUtil;
 import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.gui.ISelectableProvider;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-
 public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecies<?>> {
-	private final static Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> ITEMS = createEntries();
+	private final static IdentityHashMap<ISpecies<?>, ItemStack> ITEMS = createEntries();
 	private final ImmutableSet<ISpecies<?>> entries;
 
 	private final Direction facing;
@@ -137,8 +136,8 @@ public class SpeciesWidget extends Widget implements ISelectableProvider<ISpecie
 		}
 	}
 
-	private static Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> createEntries() {
-		Reference2ObjectOpenHashMap<ISpecies<?>, ItemStack> entries = new Reference2ObjectOpenHashMap<>();
+	private static IdentityHashMap<ISpecies<?>, ItemStack> createEntries() {
+		IdentityHashMap<ISpecies<?>, ItemStack> entries = new IdentityHashMap<>();
 
 		for (ISpeciesType<?, ?> type : IForestryApi.INSTANCE.getGeneticManager().getSpeciesTypes()) {
 			GeneticsUtil.getIconStacks(entries, type.getDefaultStage(), type);

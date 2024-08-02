@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -14,13 +15,11 @@ import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.IRegistryChromosome;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-
 public class RegistryChromosome<V extends IRegistryAlleleValue> extends ValueChromosome<V> implements IRegistryChromosome<V> {
 	@Nullable
 	private ImmutableMap<ResourceLocation, V> registry;
 	@Nullable
-	private Reference2ObjectOpenHashMap<V, ResourceLocation> reverseLookup;
+	private IdentityHashMap<V, ResourceLocation> reverseLookup;
 
 	public RegistryChromosome(ResourceLocation id, Class<V> valueClass) {
 		super(id, valueClass);
@@ -60,7 +59,7 @@ public class RegistryChromosome<V extends IRegistryAlleleValue> extends ValueChr
 		Preconditions.checkState(this.registry == null, "Registry has already been populated");
 
 		this.registry = registry;
-		this.reverseLookup = new Reference2ObjectOpenHashMap<>(registry.size());
+		this.reverseLookup = new IdentityHashMap<>(registry.size());
 
 		for (Map.Entry<ResourceLocation, V> entry : registry.entrySet()) {
 			this.reverseLookup.put(entry.getValue(), entry.getKey());

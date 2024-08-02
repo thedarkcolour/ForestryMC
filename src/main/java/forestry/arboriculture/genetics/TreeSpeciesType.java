@@ -16,6 +16,7 @@ import com.google.common.collect.Iterables;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 
 import net.minecraft.core.BlockPos;
@@ -41,6 +42,7 @@ import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.core.Product;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
@@ -49,7 +51,6 @@ import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IPollinatable;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
@@ -67,11 +68,9 @@ import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.RenderUtil;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-
 public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements ITreeSpeciesType, IBreedingTrackerHandler {
 	private final LinkedList<ILeafTickHandler> leafTickHandlers = new LinkedList<>();
-	private final Reference2ObjectOpenHashMap<BlockState, ITree> vanillaIndividuals = new Reference2ObjectOpenHashMap<>();
+	private final IdentityHashMap<BlockState, ITree> vanillaIndividuals = new IdentityHashMap<>();
 
 	public TreeSpeciesType(IKaryotype karyotype, ISpeciesTypeBuilder builder) {
 		super(ForestrySpeciesTypes.TREE, karyotype, builder);
