@@ -6,21 +6,22 @@
 package forestry.api.farming;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 
-public interface ICrop {
+public interface IFarmingManager {
+	default List<IFarmable> getFarmables(ResourceLocation farmTypeId) {
+		IFarmType farmType = getFarmType(farmTypeId);
+		return farmType == null ? List.of() : farmType.getFarmables();
+	}
+
 	/**
-	 * Harvests this crop. Performs the necessary manipulations to set the crop into a "harvested" state.
-	 *
-	 * @return Products harvested. Null if this crop cannot be harvested
+	 * @return The value of the fertilizer when used in a farm.
 	 */
-	@Nullable
-	List<ItemStack> harvest();
+	int getFertilizeValue(ItemStack stack);
 
-	BlockPos getPosition();
+	@Nullable
+	IFarmType getFarmType(ResourceLocation id);
 }

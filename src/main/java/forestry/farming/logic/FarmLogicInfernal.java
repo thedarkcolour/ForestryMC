@@ -20,30 +20,30 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.core.utils.BlockUtil;
 
 public class FarmLogicInfernal extends FarmLogicHomogeneous {
 
-	public FarmLogicInfernal(IFarmProperties properties, boolean isManual) {
+	public FarmLogicInfernal(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level level, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
 		Stack<ICrop> crops = new Stack<>();
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos.above(), direction, i);
-			if (!world.hasChunkAt(position)) {
+			if (!level.hasChunkAt(position)) {
 				break;
 			}
-			if (world.isEmptyBlock(pos)) {
+			if (level.isEmptyBlock(pos)) {
 				continue;
 			}
-			BlockState blockState = world.getBlockState(position);
+			BlockState blockState = level.getBlockState(position);
 			for (IFarmable farmable : getFarmables()) {
-				ICrop crop = farmable.getCropAt(world, position, blockState);
+				ICrop crop = farmable.getCropAt(level, position, blockState);
 				if (crop != null) {
 					crops.push(crop);
 					break;

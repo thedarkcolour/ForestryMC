@@ -8,12 +8,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+import forestry.api.farming.ForestryFarmTypes;
 import forestry.cultivation.features.CultivationTiles;
-import forestry.farming.logic.ForestryFarmIdentifier;
 
 public class TileFarmNether extends TilePlanter {
 	public TileFarmNether(BlockPos pos, BlockState state) {
-		super(CultivationTiles.NETHER.tileType(), pos, state, ForestryFarmIdentifier.INFERNAL);
+		super(CultivationTiles.NETHER.tileType(), pos, state, ForestryFarmTypes.INFERNAL);
 	}
 
 	@Override

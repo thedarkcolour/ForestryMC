@@ -10,9 +10,9 @@
  ******************************************************************************/
 package forestry.farming.logic.farmables;
 
+import com.google.common.collect.ImmutableSet;
+
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -25,26 +25,26 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
+import forestry.api.core.Product;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.core.utils.SpeciesUtil;
 import forestry.farming.logic.crops.CropDestroy;
 
 public class FarmableGE implements IFarmable {
+	private final ImmutableSet<Item> windfall;
 
-	private final Set<Item> windfall = new HashSet<>();
-
-	//TODO would be nice to make this class more granular so windfall and germling checks could be more specific
 	public FarmableGE() {
+		ImmutableSet.Builder<Item> builder = new ImmutableSet.Builder<>();
 		for (IFruit fruit : TreeChromosomes.FRUITS.values()) {
 			for (Product product : fruit.getProducts()) {
-				this.windfall.add(product.item());
+				builder.add(product.item());
 			}
 		}
+		this.windfall = builder.build();
 	}
 
 	@Override
@@ -76,7 +76,6 @@ public class FarmableGE implements IFarmable {
 
 	@Override
 	public boolean isWindfall(ItemStack stack) {
-		return windfall.contains(stack.getItem());
+		return this.windfall.contains(stack.getItem());
 	}
-
 }

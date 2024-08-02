@@ -5,7 +5,7 @@ import forestry.api.apiculture.hives.IHiveManager;
 import forestry.api.circuits.ICircuitManager;
 import forestry.api.climate.IClimateManager;
 import forestry.api.core.IErrorManager;
-import forestry.api.farming.IFarmRegistry;
+import forestry.api.farming.IFarmingManager;
 import forestry.api.genetics.IGeneticManager;
 import forestry.api.genetics.alleles.IAlleleManager;
 import forestry.api.genetics.filter.IFilterManager;
@@ -15,7 +15,7 @@ import forestry.core.circuits.CircuitManager;
 import forestry.core.climate.ForestryClimateManager;
 import forestry.core.errors.ErrorManager;
 import forestry.core.genetics.alleles.AlleleManager;
-import forestry.farming.ForestryFarmRegistry;
+import forestry.farming.FarmingManager;
 import forestry.modules.ForestryModuleManager;
 import forestry.sorting.FilterManager;
 
@@ -24,7 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class ForestryApiImpl implements IForestryApi {
 	private final IModuleManager moduleManager = new ForestryModuleManager();
-	private final IFarmRegistry farmRegistry = new ForestryFarmRegistry();
+	@Nullable
+	private IFarmingManager farmingManager;
 	private final IClimateManager biomeManager = new ForestryClimateManager();
 	private final IHiveManager hiveManager = new HiveManager();
 	private final IAlleleManager alleleRegistry = new AlleleManager();
@@ -43,8 +44,12 @@ public class ForestryApiImpl implements IForestryApi {
 	}
 
 	@Override
-	public IFarmRegistry getFarmRegistry() {
-		return this.farmRegistry;
+	public IFarmingManager getFarmingManager() {
+		IFarmingManager manager = this.farmingManager;
+		if (manager == null) {
+			throw new IllegalStateException("IFarmingManager not initialized yet");
+		}
+		return manager;
 	}
 
 	@Override
@@ -116,5 +121,10 @@ public class ForestryApiImpl implements IForestryApi {
 	@ApiStatus.Internal
 	public void setFilterManager(FilterManager filterManager) {
 		this.filterManager = filterManager;
+	}
+
+	@ApiStatus.Internal
+	public void setFarmingManager(FarmingManager farmingManager) {
+		this.farmingManager = farmingManager;
 	}
 }

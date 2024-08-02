@@ -12,45 +12,48 @@ package forestry.farming.circuits;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.chat.Component;
+import java.util.function.Supplier;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
+import net.minecraftforge.common.util.Lazy;
+
+import forestry.api.IForestryApi;
 import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmCircuit;
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmLogic;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.core.circuits.Circuit;
 
 public class CircuitFarmLogic extends Circuit implements IFarmCircuit {
-	private final IFarmProperties properties;
-	private final IFarmLogic logic;
+	private final Supplier<IFarmType> farmType;
+	private final boolean manual;
 
-	public CircuitFarmLogic(String uid, IFarmProperties instance, boolean manual) {
+	public CircuitFarmLogic(String uid, ResourceLocation farmTypeId, boolean manual) {
 		super(uid);
-		this.logic = instance.getLogic(manual);
-		this.properties = instance;
-	}
-
-	@SuppressWarnings("unused")
-	public CircuitFarmLogic(String uid, IFarmLogic logic) {
-		super(uid);
-		this.logic = logic;
-		this.properties = logic.getProperties();
+		this.farmType = Lazy.of(() -> IForestryApi.INSTANCE.getFarmingManager().getFarmType(farmTypeId));
+		this.manual = manual;
 	}
 
 	@Override
 	public String getTranslationKey() {
-		return properties.getTranslationKey();
+		return this.farmType.get().getTranslationKey();
 	}
 
 	@Override
 	public Component getDisplayName() {
-		return properties.getDisplayName(logic.isManual());
+		return this.farmType.get().getDisplayName(this.manual);
 	}
 
 	@Override
-	public IFarmLogic getFarmLogic() {
-		return logic;
+	public IFarmType getProperties() {
+		return this.farmType.get();
+	}
+
+	@Override
+	public boolean isManual() {
+		return this.manual;
 	}
 
 	@Override
@@ -73,7 +76,7 @@ public class CircuitFarmLogic extends Circuit implements IFarmCircuit {
 			return;
 		}
 
-		housing.setFarmLogic(HorizontalDirection.VALUES.get(slot), logic);
+		housing.setFarmLogic(HorizontalDirection.VALUES.get(slot), this.farmType.get().getLogic(this.manual));
 	}
 
 	@Override
@@ -94,5 +97,4 @@ public class CircuitFarmLogic extends Circuit implements IFarmCircuit {
 	@Override
 	public void onTick(int slot, Object tile) {
 	}
-
 }

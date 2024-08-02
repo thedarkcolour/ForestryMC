@@ -93,7 +93,7 @@ public class RecipeUtils {
 		}
 
 		WorktableCraftingContainer usedMatrix = new WorktableCraftingContainer();
-		NonNullList<ItemStack> stockCopy = ItemStackUtil.condenseStacks(availableItems);
+		List<ItemStack> stockCopy = ItemStackUtil.condenseStacks(availableItems);
 
 		for (int slot = 0; slot < originalMatrix.getContainerSize(); slot++) {
 			ItemStack stack = originalMatrix.getItem(slot);
@@ -118,7 +118,7 @@ public class RecipeUtils {
 		return null;
 	}
 
-	private static ItemStack getCraftingEquivalent(NonNullList<ItemStack> stockCopy, WorktableCraftingContainer originalMatrix, int slot, Level level, CraftingRecipe recipe, ItemStack expectedOutput) {
+	private static ItemStack getCraftingEquivalent(List<ItemStack> stockCopy, WorktableCraftingContainer originalMatrix, int slot, Level level, CraftingRecipe recipe, ItemStack expectedOutput) {
 		ItemStack originalStack = originalMatrix.getItem(slot);
 		for (ItemStack stockStack : stockCopy) {
 			if (!stockStack.isEmpty()) {

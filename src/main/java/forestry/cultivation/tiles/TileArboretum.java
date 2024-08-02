@@ -8,12 +8,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+import forestry.api.farming.ForestryFarmTypes;
 import forestry.cultivation.features.CultivationTiles;
-import forestry.farming.logic.ForestryFarmIdentifier;
 
 public class TileArboretum extends TilePlanter {
 	public TileArboretum(BlockPos pos, BlockState state) {
-		super(CultivationTiles.ARBORETUM.tileType(), pos, state, ForestryFarmIdentifier.ARBOREAL);
+		super(CultivationTiles.ARBORETUM.tileType(), pos, state, ForestryFarmTypes.ARBOREAL);
 	}
 
 	@Override

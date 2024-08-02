@@ -25,28 +25,28 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.Soil;
 import forestry.core.utils.BlockUtil;
 
 public abstract class FarmLogicWatered extends FarmLogicSoil {
 	private static final FluidStack STACK_WATER = new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME);
 
-	public FarmLogicWatered(IFarmProperties properties, boolean isManual) {
+	public FarmLogicWatered(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 
 	@Override
-	public boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
-		if (maintainSoil(world, farmHousing, pos, direction, extent)) {
+	public boolean cultivate(Level level, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
+		if (maintainSoil(level, farmHousing, pos, direction, extent)) {
 			return true;
 		}
 
-		if (!isManual && maintainWater(world, farmHousing, pos, direction, extent)) {
+		if (!isManual && maintainWater(level, farmHousing, pos, direction, extent)) {
 			return true;
 		}
 
-		return maintainCrops(world, farmHousing, pos.above(), direction, extent);
+		return maintainCrops(level, farmHousing, pos.above(), direction, extent);
 
 	}
 

@@ -5,6 +5,8 @@
  ******************************************************************************/
 package forestry.api.mail;
 
+import java.util.List;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 
@@ -17,7 +19,7 @@ public interface ITradeStationInfo {
 
 	ItemStack getTradegood();
 
-	NonNullList<ItemStack> getRequired();
+	List<ItemStack> getRequired();
 
 	EnumTradeStationState getState();
 }

@@ -16,12 +16,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.core.utils.BlockUtil;
 
 public class FarmLogicGourd extends FarmLogicWatered {
-	public FarmLogicGourd(IFarmProperties properties, boolean isManual) {
+	public FarmLogicGourd(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 

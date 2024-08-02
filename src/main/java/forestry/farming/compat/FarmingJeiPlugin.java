@@ -44,10 +44,8 @@ public class FarmingJeiPlugin implements IModPlugin {
 
 		for (CircuitHolder holder : IForestryApi.INSTANCE.getCircuitManager().getCircuitHolders()) {
 			if (holder.circuit() instanceof IFarmCircuit circuit) {
-				IFarmLogic logic = circuit.getFarmLogic();
-
-				if (logic.isManual()) {
-					info.add(new FarmingInfoRecipe(holder.stack(), logic.getProperties(), circuit));
+				if (circuit.isManual()) {
+					info.add(new FarmingInfoRecipe(holder.stack(), circuit.getProperties(), circuit));
 				}
 			}
 		}

@@ -29,8 +29,10 @@ import forestry.apiimpl.GeneticManager;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.circuits.CircuitManager;
 import forestry.core.errors.ErrorManager;
+import forestry.farming.FarmingManager;
 import forestry.sorting.FilterManager;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 
@@ -53,6 +55,8 @@ public class PluginManager {
 				Forestry.LOGGER.warn("Detected IForestryPlugin {} with class {} but did not load it because IForestryPlugin.shouldLoad returned false.", plugin.id(), plugin.getClass().getName());
 			}
 		});
+
+		LOADED_PLUGINS.trimToSize();
 	}
 
 	public static void registerErrors() {
@@ -144,6 +148,23 @@ public class PluginManager {
 		ForestryApiImpl api = (ForestryApiImpl) IForestryApi.INSTANCE;
 		api.setGeneticManager(new GeneticManager(taxa, speciesTypes));
 		api.setFilterManager(new FilterManager(registration.getFilterRuleTypes()));
+	}
+
+	public static void registerFarming() {
+		FarmingRegistration registration = new FarmingRegistration();
+
+		for (IForestryPlugin plugin : LOADED_PLUGINS) {
+			try {
+				plugin.registerFarming(registration);
+			} catch (Throwable t) {
+				throw new RuntimeException("An error was thrown by plugin " + plugin.id() + " during IForestryPlugin.registerFarming", t);
+			}
+		}
+
+		// Defensive copy of fertilizers
+		FarmingManager manager = new FarmingManager(new Object2IntOpenHashMap<>(registration.getFertilizers()), registration.buildFarmTypes());
+
+		((ForestryApiImpl) IForestryApi.INSTANCE).setFarmingManager(manager);
 	}
 
 	// Todo remove in 1.20 when FMLCommonSetupEvent throws exceptions again

@@ -14,12 +14,11 @@ import forestry.core.circuits.Circuit;
 import forestry.core.circuits.ISpeedUpgradable;
 
 public class CircuitSpeedUpgrade extends Circuit {
-
 	private final double speedBoost;
 	private final float powerDraw;
 
-	public CircuitSpeedUpgrade(String uid, double speedBoost, float powerDraw) {
-		super(uid);
+	public CircuitSpeedUpgrade(String id, double speedBoost, float powerDraw) {
+		super(id);
 		this.speedBoost = speedBoost;
 		this.powerDraw = powerDraw;
 	}

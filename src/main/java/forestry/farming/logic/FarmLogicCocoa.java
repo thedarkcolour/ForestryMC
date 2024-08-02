@@ -23,14 +23,13 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.Soil;
 import forestry.core.utils.BlockUtil;
@@ -40,17 +39,17 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 	private static final int[] LAYOUT_POSITIONS = new int[]{4, 1, 3, 0, 2};
 	private final IFarmable cocoa = new FarmableCocoa();
 
-	public FarmLogicCocoa(IFarmProperties properties, boolean isManual) {
+	public FarmLogicCocoa(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 
 	@Override
-	public boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
-		if (maintainSoil(world, farmHousing, pos, direction, extent)) {
+	public boolean cultivate(Level level, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
+		if (maintainSoil(level, farmHousing, pos, direction, extent)) {
 			return true;
 		}
 		BlockPos position = farmHousing.getValidPosition(direction, pos, extent, pos.above());
-		boolean result = tryPlantingCocoa(world, farmHousing, position, direction);
+		boolean result = tryPlantingCocoa(level, farmHousing, position, direction);
 
 		farmHousing.increaseExtent(direction, pos, extent);
 
@@ -116,7 +115,6 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 			case X -> delta.getX();
 			case Y -> delta.getY();
 			case Z -> delta.getZ();
-			default -> 0;
 		};
 		return Math.abs(value);
 	}
@@ -141,9 +139,9 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level level, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = housing.getValidPosition(direction, pos, extent, pos.above());
-		Collection<ICrop> crops = getHarvestBlocks(world, position);
+		Collection<ICrop> crops = getHarvestBlocks(level, position);
 		housing.increaseExtent(direction, pos, extent);
 
 		return crops;
@@ -171,14 +169,11 @@ public class FarmLogicCocoa extends FarmLogicSoil {
 		return false;
 	}
 
-	private static boolean isJungleTreeTrunk(BlockState blockState) {
-		Block block = blockState.getBlock();
-		//TODO - hopefully this is OK
-		return block == Blocks.JUNGLE_LOG;
+	private static boolean isJungleTreeTrunk(BlockState state) {
+		return state.is(BlockTags.JUNGLE_LOGS);
 	}
 
 	private Collection<ICrop> getHarvestBlocks(Level world, BlockPos position) {
-
 		Set<BlockPos> seen = new HashSet<>();
 		Stack<ICrop> crops = new Stack<>();
 

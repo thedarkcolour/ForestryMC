@@ -14,6 +14,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,7 +34,7 @@ import forestry.api.climate.IClimatised;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.farming.IFarmLogic;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.core.config.Config;
 import forestry.core.fluids.ITankManager;
@@ -61,7 +62,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	private final FarmManager manager;
 
 	private BlockPlanter.Mode mode;
-	private final IFarmProperties properties;
+	private final IFarmType properties;
 	@Nullable
 	private IFarmLogic logic;
 	@Nullable
@@ -69,19 +70,21 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	@Nullable
 	private Vec3i area;
 
-	public void setManual(BlockPlanter.Mode mode) {
-		this.mode = mode;
-		logic = properties.getLogic(this.mode == BlockPlanter.Mode.MANUAL);
-	}
-
-	protected TilePlanter(BlockEntityType type, BlockPos pos, BlockState state, String identifier) {
+	protected TilePlanter(BlockEntityType type, BlockPos pos, BlockState state, ResourceLocation farmTypeId) {
 		super(type, pos, state, 150, 1500);
-		this.properties = Preconditions.checkNotNull(IForestryApi.INSTANCE.getFarmRegistry().getProperties(identifier));
-		mode = BlockPlanter.Mode.MANAGED;
-		setInternalInventory(inventory = new InventoryPlanter(this));
+
+		this.properties = Preconditions.checkNotNull(IForestryApi.INSTANCE.getFarmingManager().getFarmType(farmTypeId));
+		this.mode = BlockPlanter.Mode.MANAGED;
+		this.inventory = new InventoryPlanter(this);
+		setInternalInventory(inventory);
 		this.manager = new FarmManager(this);
 		setEnergyPerWorkCycle(10);
 		setTicksPerWorkCycle(2);
+	}
+
+	public void setManual(BlockPlanter.Mode mode) {
+		this.mode = mode;
+		this.logic = this.properties.getLogic(this.mode == BlockPlanter.Mode.MANUAL);
 	}
 
 	@Override

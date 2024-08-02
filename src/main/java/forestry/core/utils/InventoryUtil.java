@@ -96,7 +96,7 @@ public abstract class InventoryUtil {
 	 * If the inventory doesn't have all the required items, returns false without removing anything.
 	 * If stowContainer is true, items with containers will have their container stowed.
 	 */
-	public static boolean removeSets(Container inventory, int count, NonNullList<ItemStack> set, @Nullable Player player, boolean stowContainer, boolean craftingTools, boolean doRemove) {
+	public static boolean removeSets(Container inventory, int count, List<ItemStack> set, @Nullable Player player, boolean stowContainer, boolean craftingTools, boolean doRemove) {
 		NonNullList<ItemStack> stock = getStacks(inventory);
 
 		if (doRemove) {
@@ -108,7 +108,7 @@ public abstract class InventoryUtil {
 	}
 
 	@Nullable
-	public static NonNullList<ItemStack> removeSets(Container inventory, int count, NonNullList<ItemStack> set, @Nullable Player player, boolean stowContainer, boolean craftingTools) {
+	public static NonNullList<ItemStack> removeSets(Container inventory, int count, List<ItemStack> set, @Nullable Player player, boolean stowContainer, boolean craftingTools) {
 		NonNullList<ItemStack> removed = NonNullList.withSize(set.size(), ItemStack.EMPTY);
 		NonNullList<ItemStack> stock = getStacks(inventory);
 
@@ -137,8 +137,8 @@ public abstract class InventoryUtil {
 
 	public static boolean deleteExactSet(Container inventory, NonNullList<ItemStack> required) {
 		NonNullList<ItemStack> offered = getStacks(inventory);
-		NonNullList<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(required);
-		NonNullList<ItemStack> condensedOffered = ItemStackUtil.condenseStacks(offered);
+		List<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(required);
+		List<ItemStack> condensedOffered = ItemStackUtil.condenseStacks(offered);
 
 		for (ItemStack req : condensedRequired) {
 			if (!containsExactStack(req, condensedOffered)) {
@@ -152,7 +152,7 @@ public abstract class InventoryUtil {
 		return true;
 	}
 
-	private static boolean containsExactStack(ItemStack req, NonNullList<ItemStack> condensedOffered) {
+	private static boolean containsExactStack(ItemStack req, List<ItemStack> condensedOffered) {
 		for (ItemStack offer : condensedOffered) {
 			if (offer.getCount() >= req.getCount() && ItemStackUtil.areItemStacksEqualIgnoreCount(req, offer)) {
 				return true;
@@ -203,11 +203,11 @@ public abstract class InventoryUtil {
 
 	/* CONTAINS */
 
-	public static boolean contains(Container inventory, NonNullList<ItemStack> query) {
+	public static boolean contains(Container inventory, List<ItemStack> query) {
 		return contains(inventory, query, 0, inventory.getContainerSize());
 	}
 
-	public static boolean contains(Container inventory, NonNullList<ItemStack> query, int startSlot, int slots) {
+	public static boolean contains(Container inventory, List<ItemStack> query, int startSlot, int slots) {
 		NonNullList<ItemStack> stock = getStacks(inventory, startSlot, slots);
 		return ItemStackUtil.containsSets(query, stock) > 0;
 	}

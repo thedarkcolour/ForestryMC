@@ -39,7 +39,6 @@ import forestry.farming.gui.ContainerFarm;
 import forestry.farming.multiblock.MultiblockLogicFarm;
 
 public abstract class TileFarm extends MultiblockTileEntityForestry<MultiblockLogicFarm> implements IFarmComponent, ISocketable, IStreamableGui, IErrorLogicSource, IOwnedTile, ITitled {
-
 	protected TileFarm(BlockEntityType<?> tileEntityType, BlockPos pos, BlockState state) {
 		super(tileEntityType, pos, state, new MultiblockLogicFarm());
 	}

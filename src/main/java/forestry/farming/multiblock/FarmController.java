@@ -46,6 +46,7 @@ import forestry.api.circuits.ICircuitBoard;
 import forestry.api.core.ForestryError;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
+import forestry.api.farming.ForestryFarmTypes;
 import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
@@ -61,7 +62,6 @@ import forestry.core.multiblock.MultiblockValidationException;
 import forestry.core.multiblock.RectangularMultiblockControllerBase;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.utils.PlayerUtil;
-import forestry.farming.FarmDefinition;
 import forestry.farming.FarmHelper;
 import forestry.farming.FarmManager;
 import forestry.farming.FarmTarget;
@@ -421,7 +421,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 	@Override
 	public void resetFarmLogic(Direction direction) {
-		setFarmLogic(direction, FarmDefinition.ARBOREAL.getProperties().getLogic(false));
+		setFarmLogic(direction, IForestryApi.INSTANCE.getFarmingManager().getFarmType(ForestryFarmTypes.ARBOREAL).getLogic(false));
 	}
 
 	@Override

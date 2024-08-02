@@ -25,38 +25,36 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 
 public class FarmLogicArboreal extends FarmLogicHomogeneous {
-
 	@Nullable
 	private List<IFarmable> farmables;
 
-	public FarmLogicArboreal(IFarmProperties properties, boolean isManual) {
+	public FarmLogicArboreal(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 
 	@Override
 	public List<IFarmable> getFarmables() {
 		if (farmables == null) {
-			this.farmables = new ArrayList<>(properties.getFarmables());
+			this.farmables = new ArrayList<>(type.getFarmables());
 		}
 		return farmables;
 	}
 
 	@Override
-	public List<ItemStack> collect(Level world, IFarmHousing farmHousing) {
-		return collectEntityItems(world, farmHousing, true);
+	public List<ItemStack> collect(Level level, IFarmHousing farmHousing) {
+		return collectEntityItems(level, farmHousing, true);
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing farmHousing, Direction direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level level, IFarmHousing farmHousing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = farmHousing.getValidPosition(direction, pos, extent, pos.above());
-		Collection<ICrop> crops = harvestBlocks(world, position);
+		Collection<ICrop> crops = harvestBlocks(level, position);
 		farmHousing.increaseExtent(direction, pos, extent);
 
 		return crops;

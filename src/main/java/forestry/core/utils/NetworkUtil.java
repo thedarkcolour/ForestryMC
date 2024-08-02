@@ -76,7 +76,7 @@ public class NetworkUtil {
 		NetworkHandler.CHANNEL.sendToServer(packet);
 	}
 
-	public static void writeItemStacks(FriendlyByteBuf buffer, NonNullList<ItemStack> itemStacks) {
+	public static void writeItemStacks(FriendlyByteBuf buffer, List<ItemStack> itemStacks) {
 		buffer.writeVarInt(itemStacks.size());
 		for (ItemStack stack : itemStacks) {
 			buffer.writeItem(stack);

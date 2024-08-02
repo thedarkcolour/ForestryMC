@@ -6,14 +6,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import forestry.api.farming.ForestryFarmTypes;
 import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
 import forestry.cultivation.features.CultivationTiles;
-import forestry.farming.logic.ForestryFarmIdentifier;
 
 public class TileBog extends TilePlanter {
 	public TileBog(BlockPos pos, BlockState state) {
-		super(CultivationTiles.BOG.tileType(), pos, state, ForestryFarmIdentifier.PEAT);
+		super(CultivationTiles.BOG.tileType(), pos, state, ForestryFarmTypes.PEAT);
 	}
 
 	@Override

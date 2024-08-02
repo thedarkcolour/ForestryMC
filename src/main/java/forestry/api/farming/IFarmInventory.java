@@ -5,15 +5,16 @@
  ******************************************************************************/
 package forestry.api.farming;
 
+import java.util.List;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 
 /**
  * Helper interface that every farm inventory implements.
  * <p>
  * Handles the inventory and item management of the farm. Which item the farm will accept is defined by the
- * {@link IFarmLogic}'s and the {@link IFarmProperties}.
+ * {@link IFarmLogic}'s and the {@link IFarmType}.
  */
 public interface IFarmInventory {
 	/**
@@ -22,14 +23,14 @@ public interface IFarmInventory {
 	 * @param resources A list of items to check
 	 * @return True if the inventory contains the resources; false otherwise.
 	 */
-	boolean hasResources(NonNullList<ItemStack> resources);
+	boolean hasResources(List<ItemStack> resources);
 
 	/**
 	 * Remove the given resource from the inventory, if possible
 	 *
 	 * @param resources A list of items to remove
 	 */
-	void removeResources(NonNullList<ItemStack> resources);
+	void removeResources(List<ItemStack> resources);
 
 	/**
 	 * Checks if the inventory will accept the given stack as a sapling

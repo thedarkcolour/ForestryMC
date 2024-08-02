@@ -10,8 +10,9 @@
  ******************************************************************************/
 package forestry.mail;
 
+import java.util.List;
+
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 
 import com.mojang.authlib.GameProfile;
 
@@ -24,10 +25,10 @@ public class TradeStationInfo implements ITradeStationInfo {
 	private final IMailAddress address;
 	private final GameProfile owner;
 	private final ItemStack tradegood;
-	private final NonNullList<ItemStack> required;
+	private final List<ItemStack> required;
 	private final EnumTradeStationState state;
 
-	public TradeStationInfo(IMailAddress address, GameProfile owner, ItemStack tradegood, NonNullList<ItemStack> required, EnumTradeStationState state) {
+	public TradeStationInfo(IMailAddress address, GameProfile owner, ItemStack tradegood, List<ItemStack> required, EnumTradeStationState state) {
 		if (address.getType() != EnumAddressee.TRADER) {
 			throw new IllegalArgumentException("TradeStation address must be a trader");
 		}
@@ -54,7 +55,7 @@ public class TradeStationInfo implements ITradeStationInfo {
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRequired() {
+	public List<ItemStack> getRequired() {
 		return required;
 	}
 

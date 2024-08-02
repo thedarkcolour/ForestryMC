@@ -193,8 +193,8 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 
 		if (farmWorkStatus.hasFarmland && !FarmHelper.isCycleCanceledByListeners(logic, farmSide, farmListeners)) {
 			final float hydrationModifier = hydrationManager.getHydrationModifier();
-			final int fertilizerConsumption = Math.round(logic.getProperties().getFertilizerConsumption(housing) * Config.fertilizerModifier);
-			final int liquidConsumption = logic.getProperties().getWaterConsumption(housing, hydrationModifier);
+			final int fertilizerConsumption = Math.round(logic.getType().getFertilizerConsumption(housing) * Config.fertilizerModifier);
+			final int liquidConsumption = logic.getType().getWaterConsumption(housing, hydrationModifier);
 			final FluidStack liquid = new FluidStack(Fluids.WATER, liquidConsumption);
 
 			for (FarmTarget target : farmTargets) {
@@ -237,7 +237,6 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	}
 
 	private boolean cullCrop(ICrop crop, IFarmLogic provider) {
-
 		// Let event handlers handle the harvest first.
 		for (IFarmListener listener : farmListeners) {
 			if (listener.beforeCropHarvest(crop)) {
@@ -245,7 +244,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 			}
 		}
 
-		final int fertilizerConsumption = Math.round(provider.getProperties().getFertilizerConsumption(housing) * Config.fertilizerModifier);
+		int fertilizerConsumption = Math.round(provider.getType().getFertilizerConsumption(housing) * Config.fertilizerModifier);
 
 		IErrorLogic errorLogic = housing.getErrorLogic();
 
@@ -257,7 +256,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 
 		// Check water
 		float hydrationModifier = hydrationManager.getHydrationModifier();
-		int waterConsumption = provider.getProperties().getWaterConsumption(housing, hydrationModifier);
+		int waterConsumption = provider.getType().getWaterConsumption(housing, hydrationModifier);
 		FluidStack requiredLiquid = new FluidStack(Fluids.WATER, waterConsumption);
 		boolean hasLiquid = requiredLiquid.getAmount() == 0 || housing.hasLiquid(requiredLiquid);
 

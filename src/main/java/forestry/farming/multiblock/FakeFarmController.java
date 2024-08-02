@@ -11,14 +11,12 @@
 package forestry.farming.multiblock;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -27,9 +25,6 @@ import net.minecraft.world.level.Level;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.IForestryApi;
-import forestry.api.core.HumidityType;
-import forestry.api.core.TemperatureType;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
 import forestry.core.fluids.FakeTankManager;
@@ -39,7 +34,6 @@ import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.FakeMultiblockController;
 import forestry.farming.FarmTarget;
 import forestry.farming.gui.IFarmLedgerDelegate;
-import forestry.farming.logic.ForestryFarmIdentifier;
 
 public enum FakeFarmController implements FakeMultiblockController, IFarmControllerInternal {
 	INSTANCE;
@@ -105,15 +99,14 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	public void setFarmLogic(Direction direction, IFarmLogic logic) {
 	}
 
-	//TODO: Empty / fake farm property, this is a stupid work around
 	@Override
 	public IFarmLogic getFarmLogic(Direction direction) {
-		return IForestryApi.INSTANCE.getFarmRegistry().getProperties(ForestryFarmIdentifier.ARBOREAL).getLogic(false);
+		throw new IllegalStateException();
 	}
 
 	@Override
 	public Collection<IFarmLogic> getFarmLogics() {
-		return Collections.emptySet();
+		return List.of();
 	}
 
 	@Override
@@ -151,7 +144,7 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 
 	@Override
 	public IFarmLedgerDelegate getFarmLedgerDelegate() {
-		return FakeFarmLedgerDelegate.INSTANCE;
+		throw new IllegalStateException("Invalid farm");
 	}
 
 	@Override
@@ -191,12 +184,12 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 		INSTANCE;
 
 		@Override
-		public boolean hasResources(NonNullList<ItemStack> resources) {
+		public boolean hasResources(List<ItemStack> resources) {
 			return false;
 		}
 
 		@Override
-		public void removeResources(NonNullList<ItemStack> resources) {
+		public void removeResources(List<ItemStack> resources) {
 		}
 
 		@Override
@@ -251,45 +244,6 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 		@Override
 		public boolean tryAddPendingProduce(Stack<ItemStack> pendingProduce) {
 			return false;
-		}
-	}
-
-	private enum FakeFarmLedgerDelegate implements IFarmLedgerDelegate {
-		INSTANCE;
-
-		@Override
-		public float getHydrationModifier() {
-			return 0;
-		}
-
-		@Override
-		public float getHydrationTempModifier() {
-			return 0;
-		}
-
-		@Override
-		public float getHydrationHumidModifier() {
-			return 0;
-		}
-
-		@Override
-		public float getHydrationRainfallModifier() {
-			return 0;
-		}
-
-		@Override
-		public double getDrought() {
-			return 0;
-		}
-
-		@Override
-		public TemperatureType temperature() {
-			return TemperatureType.NORMAL;
-		}
-
-		@Override
-		public HumidityType humidity() {
-			return HumidityType.NORMAL;
 		}
 	}
 }

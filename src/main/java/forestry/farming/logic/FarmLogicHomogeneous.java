@@ -18,13 +18,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.Soil;
 import forestry.core.utils.BlockUtil;
 
 public abstract class FarmLogicHomogeneous extends FarmLogicSoil {
-	public FarmLogicHomogeneous(IFarmProperties properties, boolean isManual) {
+	public FarmLogicHomogeneous(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 
@@ -39,8 +39,8 @@ public abstract class FarmLogicHomogeneous extends FarmLogicSoil {
 	}
 
 	@Override
-	public boolean cultivate(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
-		return maintainSoil(world, farmHousing, pos, direction, extent) || maintainSeedlings(world, farmHousing, pos.above(), direction, extent);
+	public boolean cultivate(Level level, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
+		return maintainSoil(level, farmHousing, pos, direction, extent) || maintainSeedlings(level, farmHousing, pos.above(), direction, extent);
 	}
 
 	private boolean maintainSoil(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {

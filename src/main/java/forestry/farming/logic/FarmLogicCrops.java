@@ -19,19 +19,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.core.utils.BlockUtil;
 
 public class FarmLogicCrops extends FarmLogicWatered {
 
-	public FarmLogicCrops(IFarmProperties properties, boolean isManual) {
+	public FarmLogicCrops(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 
 	@Override
-	public List<ItemStack> collect(Level world, IFarmHousing farmHousing) {
-		return collectEntityItems(world, farmHousing, false);
+	public List<ItemStack> collect(Level level, IFarmHousing farmHousing) {
+		return collectEntityItems(level, farmHousing, false);
 	}
 
 	@Override

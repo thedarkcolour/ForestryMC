@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.core.utils.BlockUtil;
 import forestry.farming.logic.crops.CropDestroy;
@@ -25,22 +25,21 @@ import forestry.farming.logic.farmables.FarmableChorus;
 
 public class FarmLogicEnder extends FarmLogicHomogeneous {
 	private static final Set<Direction> VALID_DIRECTIONS = ImmutableSet.of(Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
-	private final IFarmable chorusFarmable;
+	private final IFarmable chorusFarmable = FarmableChorus.INSTANCE;
 
-	public FarmLogicEnder(IFarmProperties properties, boolean isManual) {
+	public FarmLogicEnder(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
-		chorusFarmable = FarmableChorus.INSTANCE;
 	}
 
 	@Override
-	public List<ItemStack> collect(Level world, IFarmHousing farmHousing) {
-		return collectEntityItems(world, farmHousing, true);
+	public List<ItemStack> collect(Level level, IFarmHousing farmHousing) {
+		return collectEntityItems(level, farmHousing, true);
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing farmHousing, Direction direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level level, IFarmHousing farmHousing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = farmHousing.getValidPosition(direction, pos, extent, pos.above());
-		Collection<ICrop> crops = harvestBlocks(world, position);
+		Collection<ICrop> crops = harvestBlocks(level, position);
 		farmHousing.increaseExtent(direction, pos, extent);
 
 		return crops;

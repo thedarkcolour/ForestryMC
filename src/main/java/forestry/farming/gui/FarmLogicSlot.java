@@ -20,9 +20,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmLogic;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiUtil;
 import forestry.core.gui.widgets.Widget;
@@ -44,8 +43,8 @@ public class FarmLogicSlot extends Widget {
 		return farmController.getFarmLogic(farmDirection);
 	}
 
-	private IFarmProperties getProperties() {
-		return getLogic().getProperties();
+	private IFarmType getProperties() {
+		return getLogic().getType();
 	}
 
 	private ItemStack getStackIndex() {
@@ -57,7 +56,7 @@ public class FarmLogicSlot extends Widget {
 		if (!getStackIndex().isEmpty()) {
 			Minecraft minecraft = Minecraft.getInstance();
 			RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-			GuiUtil.drawItemStack(transform, Minecraft.getInstance().font, getStackIndex(), startX + xPos, startY + yPos);
+			GuiUtil.drawItemStack(transform, minecraft.font, getStackIndex(), startX + xPos, startY + yPos);
 		}
 	}
 

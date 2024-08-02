@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import forestry.api.ForestryConstants;
 import forestry.api.ForestryTags;
@@ -23,6 +24,7 @@ import forestry.api.circuits.ForestryCircuitSocketTypes;
 import forestry.api.core.ForestryError;
 import forestry.api.core.IError;
 import forestry.api.core.Product;
+import forestry.api.farming.ForestryFarmTypes;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
@@ -34,6 +36,7 @@ import forestry.api.plugin.IApicultureRegistration;
 import forestry.api.plugin.IArboricultureRegistration;
 import forestry.api.plugin.ICircuitRegistration;
 import forestry.api.plugin.IErrorRegistration;
+import forestry.api.plugin.IFarmingRegistration;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.IGeneticRegistration;
 import forestry.api.plugin.ILepidopterologyRegistration;
@@ -67,12 +70,12 @@ import forestry.arboriculture.RipeningFruit;
 import forestry.arboriculture.blocks.ForestryPodType;
 import forestry.arboriculture.genetics.DummyTreeEffect;
 import forestry.arboriculture.genetics.TreeSpeciesType;
-import forestry.core.circuits.Circuits;
 import forestry.core.features.CoreItems;
 import forestry.core.items.ItemFruit;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
-import forestry.farming.FarmDefinition;
+import forestry.factory.circuits.CircuitSpeedUpgrade;
+import forestry.farming.circuits.CircuitFarmLogic;
 import forestry.lepidopterology.LepidopterologyFilterRule;
 import forestry.lepidopterology.LepidopterologyFilterRuleType;
 import forestry.lepidopterology.genetics.ButterflySpeciesType;
@@ -242,7 +245,6 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		apiculture.addVillageBee(ForestryBeeSpecies.TROPICAL, false);
 
 		// Rare village bees
-		// todo: this is supposed to be a tolerant flyer variant
 		apiculture.addVillageBee(ForestryBeeSpecies.FOREST, true, Map.of(BeeChromosomes.TOLERATES_RAIN, ForestryAlleles.TRUE));
 		apiculture.addVillageBee(ForestryBeeSpecies.COMMON, true);
 		apiculture.addVillageBee(ForestryBeeSpecies.VALIANT, true);
@@ -335,16 +337,34 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		circuits.registerLayout(ForestryCircuitLayouts.MANUAL_FARM, ForestryCircuitSocketTypes.FARM);
 		circuits.registerLayout(ForestryCircuitLayouts.MACHINE_UPGRADE, ForestryCircuitSocketTypes.MACHINE);
 
-		// Farm
-		for (FarmDefinition definition : FarmDefinition.values()) {
-			definition.registerCircuits(circuits);
-		}
-		FarmDefinition.setCircuits();
+		// Managed Farms
+		registerFarmCircuit(circuits, EnumElectronTube.COPPER, ForestryFarmTypes.ARBOREAL, false);
+		registerFarmCircuit(circuits, EnumElectronTube.TIN, ForestryFarmTypes.PEAT, false);
+		registerFarmCircuit(circuits, EnumElectronTube.BRONZE, ForestryFarmTypes.CROPS, false);
+		registerFarmCircuit(circuits, EnumElectronTube.IRON, ForestryFarmTypes.ENDER, false);
+		registerFarmCircuit(circuits, EnumElectronTube.BLAZE, ForestryFarmTypes.INFERNAL, false);
+		registerFarmCircuit(circuits, EnumElectronTube.APATITE, ForestryFarmTypes.SHROOM, false);
+
+		// Manual Farms
+		registerFarmCircuit(circuits, EnumElectronTube.COPPER, ForestryFarmTypes.ORCHARD, true);
+		registerFarmCircuit(circuits, EnumElectronTube.TIN, ForestryFarmTypes.PEAT, true);
+		registerFarmCircuit(circuits, EnumElectronTube.BRONZE, ForestryFarmTypes.CROPS, true);
+		registerFarmCircuit(circuits, EnumElectronTube.IRON, ForestryFarmTypes.ENDER, true);
+		registerFarmCircuit(circuits, EnumElectronTube.GOLD, ForestryFarmTypes.SUCCULENTES, true);
+		registerFarmCircuit(circuits, EnumElectronTube.DIAMOND, ForestryFarmTypes.POALES, true);
+		registerFarmCircuit(circuits, EnumElectronTube.OBSIDIAN, ForestryFarmTypes.GOURD, true);
+		registerFarmCircuit(circuits, EnumElectronTube.APATITE, ForestryFarmTypes.SHROOM, true);
+		registerFarmCircuit(circuits, EnumElectronTube.LAPIS, ForestryFarmTypes.COCOA, true);
 
 		// Factory
-		circuits.registerCircuit(ForestryCircuitLayouts.MACHINE_UPGRADE, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.EMERALD, 1), Circuits.machineSpeedUpgrade1);
-		circuits.registerCircuit(ForestryCircuitLayouts.MACHINE_UPGRADE, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.BLAZE, 1), Circuits.machineSpeedUpgrade2);
-		circuits.registerCircuit(ForestryCircuitLayouts.MACHINE_UPGRADE, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.GOLD, 1), Circuits.machineEfficiencyUpgrade1);
+		circuits.registerCircuit(ForestryCircuitLayouts.MACHINE_UPGRADE, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.EMERALD, 1), new CircuitSpeedUpgrade("machine.speed.boost.1", 0.125f, 0.05f));
+		circuits.registerCircuit(ForestryCircuitLayouts.MACHINE_UPGRADE, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.BLAZE, 1), new CircuitSpeedUpgrade("machine.speed.boost.2", 0.250f, 0.10f));
+		circuits.registerCircuit(ForestryCircuitLayouts.MACHINE_UPGRADE, CoreItems.ELECTRON_TUBES.stack(EnumElectronTube.GOLD, 1), new CircuitSpeedUpgrade("machine.efficiency.1", 0, -0.10f));
+	}
+
+	private static void registerFarmCircuit(ICircuitRegistration circuits, EnumElectronTube tube, ResourceLocation typeId, boolean manual) {
+		String id = manual ? "farm.manual." + typeId.getPath() : "farm.managed." + typeId.getPath();
+		circuits.registerCircuit(manual ? ForestryCircuitLayouts.MANUAL_FARM : ForestryCircuitLayouts.MANAGED_FARM, CoreItems.ELECTRON_TUBES.stack(tube, 1), new CircuitFarmLogic(id, typeId, manual));
 	}
 
 	@Override
@@ -352,6 +372,13 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		for (IError error : ForestryError.values()) {
 			errors.registerError(error);
 		}
+	}
+
+	@Override
+	public void registerFarming(IFarmingRegistration farming) {
+		DefaultFarms.registerFarmTypes(farming);
+
+		farming.registerFertilizer(Ingredient.of(CoreItems.FERTILIZER_COMPOUND), 500);
 	}
 
 	@Override

@@ -53,6 +53,9 @@ public interface IForestryPlugin {
 	default void registerErrors(IErrorRegistration errors) {
 	}
 
+	default void registerFarming(IFarmingRegistration farming) {
+	}
+
 	/**
 	 * @return Unique ID for this plugin.
 	 */

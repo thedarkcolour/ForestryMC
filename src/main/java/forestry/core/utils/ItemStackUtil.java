@@ -11,6 +11,7 @@
 
 package forestry.core.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -56,8 +57,8 @@ public abstract class ItemStackUtil {
 		receptor.grow(canTransfer);
 	}
 
-	public static NonNullList<ItemStack> condenseStacks(NonNullList<ItemStack> stacks) {
-		Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
+	public static List<ItemStack> condenseStacks(List<ItemStack> stacks) {
+		Object2IntOpenHashMap<ItemStack> map = new Object2IntOpenHashMap<>();
 
 		for (ItemStack stack : stacks) {
 			ItemStack copy = stack.copy();
@@ -66,7 +67,7 @@ public abstract class ItemStackUtil {
 			map.put(copy, map.getInt(copy) + stack.getCount());
 		}
 
-		NonNullList<ItemStack> condensed = NonNullList.create();
+		ArrayList<ItemStack> condensed = new ArrayList<>(map.size());
 
 		for (Object2IntMap.Entry<ItemStack> entry : map.object2IntEntrySet()) {
 			ItemStack stack = entry.getKey();
@@ -127,18 +128,18 @@ public abstract class ItemStackUtil {
 	/**
 	 * Counts how many full sets are contained in the passed stock
 	 */
-	public static int containsSets(NonNullList<ItemStack> set, NonNullList<ItemStack> stock) {
+	public static int containsSets(List<ItemStack> set, List<ItemStack> stock) {
 		return containsSets(set, stock, false);
 	}
 
 	/**
 	 * Counts how many full sets are contained in the passed stock
 	 */
-	public static int containsSets(NonNullList<ItemStack> set, NonNullList<ItemStack> stock, boolean craftingTools) {
+	public static int containsSets(List<ItemStack> set, List<ItemStack> stock, boolean craftingTools) {
 		int totalSets = 0;
 
-		NonNullList<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(set);
-		NonNullList<ItemStack> condensedOffered = ItemStackUtil.condenseStacks(stock);
+		List<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(set);
+		List<ItemStack> condensedOffered = ItemStackUtil.condenseStacks(stock);
 
 		for (ItemStack req : condensedRequired) {
 			int reqCount = 0;
@@ -257,27 +258,11 @@ public abstract class ItemStackUtil {
 		world.addFreshEntity(entityitem);
 	}
 
-
 	public static ItemStack copyWithRandomSize(Product template, int max, RandomSource rand) {
 		int size = max <= 0 ? 1 : rand.nextInt(max);
 		ItemStack copy = template.createStack();
 		copy.setCount(Math.min(size, copy.getMaxStackSize()));
 		return copy;
-	}
-
-	@Nullable
-	public static Block getBlock(ItemStack stack) {
-		Item item = stack.getItem();
-
-		if (item instanceof BlockItem) {
-			return ((BlockItem) item).getBlock();
-		} else {
-			return null;
-		}
-	}
-
-	public static boolean equals(Block block, ItemStack stack) {
-		return block == getBlock(stack);
 	}
 
 	/**

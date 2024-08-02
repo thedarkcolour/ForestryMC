@@ -2,27 +2,29 @@ package forestry.farming.logic.farmables;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ChorusFlowerBlock;
+import java.util.function.Consumer;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChorusFlowerBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
-import forestry.api.farming.IFarmableInfo;
 import forestry.core.utils.BlockUtil;
 import forestry.farming.logic.crops.CropChorusFlower;
 
-public class FarmableChorus implements IFarmable {
-	public static final IFarmable INSTANCE = new FarmableChorus();
+public enum FarmableChorus implements IFarmable {
+	INSTANCE;
 
 	private final ItemStack germling;
 	private final ItemStack fruit;
-	private FarmableChorus() {
+
+	FarmableChorus() {
 		this.germling = new ItemStack(Blocks.CHORUS_FLOWER);
 		this.fruit = new ItemStack(Items.CHORUS_FRUIT);
 	}
@@ -52,9 +54,14 @@ public class FarmableChorus implements IFarmable {
 	}
 
 	@Override
-	public void addInformation(IFarmableInfo info) {
-		info.addSeedlings(germling);
-		info.addProducts(germling, fruit);
+	public void addGermlings(Consumer<ItemStack> accumulator) {
+		accumulator.accept(this.germling);
+	}
+
+	@Override
+	public void addProducts(Consumer<ItemStack> accumulator) {
+		accumulator.accept(this.germling);
+		accumulator.accept(this.fruit);
 	}
 
 	@Override

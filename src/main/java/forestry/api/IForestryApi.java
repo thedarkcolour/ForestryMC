@@ -2,20 +2,15 @@ package forestry.api;
 
 import java.util.ServiceLoader;
 
-import net.minecraft.resources.ResourceLocation;
-
-import forestry.api.apiculture.hives.IHiveDefinition;
 import forestry.api.apiculture.hives.IHiveManager;
 import forestry.api.circuits.ICircuitManager;
 import forestry.api.climate.IClimateManager;
 import forestry.api.core.IErrorManager;
-import forestry.api.farming.IFarmRegistry;
+import forestry.api.farming.IFarmingManager;
 import forestry.api.genetics.IGeneticManager;
 import forestry.api.genetics.alleles.IAlleleManager;
 import forestry.api.genetics.filter.IFilterManager;
-import forestry.api.genetics.filter.IFilterRuleType;
 import forestry.api.modules.IModuleManager;
-import forestry.api.plugin.ICircuitRegistration;
 import forestry.api.plugin.IGeneticRegistration;
 
 /**
@@ -26,7 +21,7 @@ public interface IForestryApi {
 
 	IModuleManager getModuleManager();
 
-	IFarmRegistry getFarmRegistry();
+	IFarmingManager getFarmingManager();
 
 	/**
 	 * @see forestry.api.plugin.IForestryPlugin#registerErrors
