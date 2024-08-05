@@ -3,27 +3,38 @@ package forestry.api.client.plugin;
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.client.arboriculture.ILeafSprite;
+import forestry.api.client.arboriculture.ILeafTint;
 
 /**
  * Handles client registration for Forestry plugins.
  */
 public interface IClientRegistration {
 	/**
-	 * Registers a model for a tree species's saplings. Required for all species.
+	 * Registers a model for a tree species's saplings. Required for all tree species.
 	 *
 	 * @param speciesId  The ID of the tree species to register models for.
 	 * @param blockModel The block model for the sapling.
 	 * @param itemModel  The item model for the sapling.
 	 */
-	void registerSaplingModel(ResourceLocation speciesId, ResourceLocation blockModel, ResourceLocation itemModel);
+	void setSaplingModel(ResourceLocation speciesId, ResourceLocation blockModel, ResourceLocation itemModel);
 
 	/**
-	 * Registers a custom leaf sprite for this tree. Required for all species.
+	 * Sets the leaf sprite of this species. Required for all tree species.
 	 *
 	 * @param speciesId The ID of the tree species to register models for.
-	 * @param sprite    The sprite used for leaf rendering.
+	 * @param sprite    The sprite used for leaf rendering. Can be reused for multiple species.
 	 */
-	void registerLeafSprite(ResourceLocation speciesId, ILeafSprite sprite);
+	void setLeafSprite(ResourceLocation speciesId, ILeafSprite sprite);
 
-	void registerButterflySprite();
+	/**
+	 * Sets the custom leaf tint object of this species. If none is registered, then a default tint based on the
+	 * escritoire color assigned to the tree species will be used instead.
+	 *
+	 * @param speciesId The ID of the tree species to set the tint for.
+	 * @param tint      The tint. Can be reused for multiple species.
+	 */
+	void setLeafTint(ResourceLocation speciesId, ILeafTint tint);
+
+	// todo
+	void setButterflySprite();
 }

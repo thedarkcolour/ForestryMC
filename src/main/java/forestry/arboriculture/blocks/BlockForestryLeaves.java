@@ -22,6 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.Level;
@@ -159,7 +160,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
+	public int colorMultiplier(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
 		if (level != null && pos != null) {
 			TileLeaves leaves = TileUtil.getTile(level, pos, TileLeaves.class);
 			if (leaves != null) {

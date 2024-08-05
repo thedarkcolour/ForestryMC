@@ -22,11 +22,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IArmorApiarist;
@@ -41,7 +41,6 @@ import forestry.apiculture.network.packets.PacketAlvearyChange;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.apiculture.network.packets.PacketHabitatBiomePointer;
 import forestry.apiculture.proxy.ApicultureClientHandler;
-import forestry.core.ModuleCore;
 import forestry.core.network.PacketIdClient;
 import forestry.modules.BlankForestryModule;
 
@@ -64,6 +63,23 @@ public class ModuleApiculture extends BlankForestryModule {
 	@Override
 	public void registerEvents(IEventBus modBus) {
 		modBus.addListener(ModuleApiculture::registerCapabilities);
+		modBus.addListener(ModuleApiculture::onCommonSetup);
+	}
+
+	private static void onCommonSetup(FMLCommonSetupEvent event) {
+		// BREWING RECIPES
+		BrewingRecipeRegistry.addRecipe(
+				Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD)),
+				Ingredient.of(ApicultureItems.POLLEN_CLUSTER.stack(EnumPollenCluster.NORMAL, 1)),
+				PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING));
+		BrewingRecipeRegistry.addRecipe(
+				Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD)),
+				Ingredient.of(ApicultureItems.POLLEN_CLUSTER.stack(EnumPollenCluster.CRYSTALLINE, 1)),
+				PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.REGENERATION));
+	}
+
+	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.register(IArmorApiarist.class);
 	}
 
 	@Override
@@ -76,15 +92,12 @@ public class ModuleApiculture extends BlankForestryModule {
 		BeeManager.armorApiaristHelper = new ArmorApiaristHelper();
 	}
 
-	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.register(IArmorApiarist.class);
-	}
-
-	@Override
-	public void doInit() {
-		// Inducers for swarmer
-		BeeManager.inducers.put(ApicultureItems.ROYAL_JELLY.stack(), 10);
-	}
+	//@Override
+	//public void doInit() {
+	//	// TODO move to apiculture registration
+	//	// Inducers for swarmer
+	//	BeeManager.inducers.put(ApicultureItems.ROYAL_JELLY.stack(), 10);
+	//}
 /*
 
 	// todo replace with tags "acceptable flowers," "plantable flowers," where plantable is subset of acceptable
@@ -153,19 +166,6 @@ public class ModuleApiculture extends BlankForestryModule {
 		registry.clientbound(PacketIdClient.BEE_LOGIC_ACTIVE, PacketBeeLogicActive.class, PacketBeeLogicActive::decode, PacketBeeLogicActive::handle);
 		registry.clientbound(PacketIdClient.HABITAT_BIOME_POINTER, PacketHabitatBiomePointer.class, PacketHabitatBiomePointer::decode, PacketHabitatBiomePointer::handle);
 		registry.clientbound(PacketIdClient.ALVERAY_CONTROLLER_CHANGE, PacketAlvearyChange.class, PacketAlvearyChange::decode, PacketAlvearyChange::handle);
-	}
-
-	@Override
-	public void registerRecipes() {
-		// BREWING RECIPES
-		BrewingRecipeRegistry.addRecipe(
-				Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD)),
-				Ingredient.of(ApicultureItems.POLLEN_CLUSTER.stack(EnumPollenCluster.NORMAL, 1)),
-				PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING));
-		BrewingRecipeRegistry.addRecipe(
-				Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD)),
-				Ingredient.of(ApicultureItems.POLLEN_CLUSTER.stack(EnumPollenCluster.CRYSTALLINE, 1)),
-				PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.REGENERATION));
 	}
 
 	// todo config

@@ -30,16 +30,9 @@ public class ModuleEnergy extends BlankForestryModule {
 
 	@Override
 	public void setupApi() {
-		setupFuelManager();
-	}
-
-	private static void setupFuelManager() {
 		FuelManager.biogasEngineFuel = new FluidMap<>();
 		FuelManager.peatEngineFuel = new ItemStackMap<>();
-	}
 
-	@Override
-	public void preInit() {
 		// Biogas Engine
 		Fluid biomass = ForestryFluids.BIOMASS.getFluid();
 		FuelManager.biogasEngineFuel.put(biomass, new EngineBronzeFuel(biomass,

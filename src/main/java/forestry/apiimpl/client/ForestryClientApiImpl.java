@@ -3,6 +3,7 @@ package forestry.apiimpl.client;
 import com.google.common.base.Preconditions;
 
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.data.loading.DatagenModLoader;
 
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
@@ -15,12 +16,18 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public class ForestryClientApiImpl implements IForestryClientApi {
-	private final ITextureManager textureManager = new ForestryTextureManager();
+	private final ITextureManager textureManager;
 	@Nullable
 	private ITreeClientManager treeManager;
 
 	public ForestryClientApiImpl() {
 		Preconditions.checkState(FMLEnvironment.dist == Dist.CLIENT, "Tried to load IForestryClientApi on invalid side " + FMLEnvironment.dist);
+
+		if (DatagenModLoader.isRunningDataGen()) {
+			this.textureManager = new DummyTextureManager();
+		} else {
+			this.textureManager = new ForestryTextureManager();
+		}
 	}
 
 	@Override

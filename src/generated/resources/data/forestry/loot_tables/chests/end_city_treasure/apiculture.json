@@ -9,7 +9,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:species_steadfast"
+              "species_id": "forestry:bee_steadfast",
+              "type_id": "forestry:bee_species"
             },
             {
               "add": false,
@@ -29,7 +30,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:species_ended"
+              "species_id": "forestry:bee_ended",
+              "type_id": "forestry:bee_species"
             },
             {
               "add": false,

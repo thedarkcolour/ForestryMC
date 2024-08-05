@@ -6,24 +6,15 @@
   "products": [
     {
       "chance": 0.2,
-      "item": {
-        "Count": 1,
-        "id": "forestry:honey_drop_honey"
-      }
+      "item": "forestry:honey_drop_honey"
     },
     {
       "chance": 0.2,
-      "item": {
-        "Count": 1,
-        "id": "forestry:beeswax"
-      }
+      "item": "forestry:beeswax"
     },
     {
       "chance": 0.9,
-      "item": {
-        "Count": 1,
-        "id": "minecraft:gunpowder"
-      }
+      "item": "minecraft:gunpowder"
     }
   ],
   "time": 20

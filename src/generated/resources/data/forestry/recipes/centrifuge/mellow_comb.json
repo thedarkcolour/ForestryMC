@@ -6,24 +6,15 @@
   "products": [
     {
       "chance": 0.6,
-      "item": {
-        "Count": 1,
-        "id": "forestry:honeydew"
-      }
+      "item": "forestry:honeydew"
     },
     {
       "chance": 0.2,
-      "item": {
-        "Count": 1,
-        "id": "forestry:beeswax"
-      }
+      "item": "forestry:beeswax"
     },
     {
       "chance": 0.3,
-      "item": {
-        "Count": 1,
-        "id": "minecraft:quartz"
-      }
+      "item": "minecraft:quartz"
     }
   ],
   "time": 20

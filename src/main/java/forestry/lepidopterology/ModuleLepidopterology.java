@@ -43,7 +43,7 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	public static int maxDistance = 64;
 	private static boolean allowPollination = true;
 	public static final Object2FloatOpenHashMap<String> spawnRarities = new Object2FloatOpenHashMap<>();
-	private static boolean spawnButterflysFromLeaves = true;
+	public static boolean spawnButterflysFromLeaves = true;
 	private static boolean generateCocoons = false;
 	private static float generateCocoonsAmount = 1.0f;
 	private static float serumChance = 0.55f;
@@ -76,13 +76,6 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	@Override
 	public void addToRootCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
 		command.then(CommandButterfly.register());
-	}
-
-	@Override
-	public void doInit() {
-		if (spawnButterflysFromLeaves) {
-			SpeciesUtil.TREE_TYPE.get().registerLeafTickHandler(new ButterflySpawner());
-		}
 	}
 
 	public static boolean isPollinationAllowed() {

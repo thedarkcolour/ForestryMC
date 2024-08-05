@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.arboriculture;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -19,32 +18,24 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.arboriculture.IWoodAccess;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.WoodBlockKind;
 import forestry.modules.features.FeatureBlockGroup;
 
-public class WoodAccess implements IWoodAccess {
-	@Nullable
-	private static WoodAccess INSTANCE;
-
-	public static WoodAccess getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new WoodAccess();
-		}
-		return INSTANCE;
-	}
+public enum WoodAccess implements IWoodAccess {
+	INSTANCE;
 
 	private final Map<WoodBlockKind, WoodMap> woodMaps = new EnumMap<>(WoodBlockKind.class);
 	private final List<IWoodType> registeredWoodTypes = new ArrayList<>();
 
-	private WoodAccess() {
+	WoodAccess() {
 		for (WoodBlockKind woodBlockKind : WoodBlockKind.values()) {
 			woodMaps.put(woodBlockKind, new WoodMap(woodBlockKind));
 		}

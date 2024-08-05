@@ -166,4 +166,10 @@ public class ForestryModuleManager implements IModuleManager {
 
 		return modules;
 	}
+
+	public void setupApi() {
+		for (IForestryModule module : getLoadedModules()) {
+			module.setupApi();
+		}
+	}
 }

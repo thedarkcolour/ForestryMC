@@ -9,7 +9,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:tree_acacia"
+              "species_id": "forestry:tree_acacia",
+              "type_id": "forestry:tree_species"
             }
           ],
           "name": "forestry:sapling"

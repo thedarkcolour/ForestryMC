@@ -44,7 +44,6 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import forestry.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.IWoodAccess;
 import forestry.api.arboriculture.IWoodType;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
 import forestry.api.circuits.ICircuit;
 import forestry.apiculture.blocks.BlockAlveary;
@@ -52,6 +51,7 @@ import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.blocks.BlockTypeApiculture;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.apiculture.features.ApicultureItems;
+import forestry.arboriculture.WoodAccess;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.arboriculture.features.CharcoalBlocks;
@@ -329,7 +329,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerWoodRecipes(Consumer<FinishedRecipe> helper) {
-		IWoodAccess woodAccess = TreeManager.woodAccess;
+		IWoodAccess woodAccess = WoodAccess.INSTANCE;
 		List<IWoodType> woodTypes = woodAccess.getRegisteredWoodTypes();
 
 		for (IWoodType woodType : woodTypes) {

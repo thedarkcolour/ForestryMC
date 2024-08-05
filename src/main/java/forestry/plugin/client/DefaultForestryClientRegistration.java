@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.ForestryTreeSpecies;
 import forestry.api.client.plugin.IClientRegistration;
+import forestry.arboriculture.client.BiomeLeafTint;
+import forestry.arboriculture.client.FixedLeafTint;
 import forestry.arboriculture.models.LeafSprite;
 
 public class DefaultForestryClientRegistration implements Consumer<IClientRegistration> {
@@ -57,43 +59,49 @@ public class DefaultForestryClientRegistration implements Consumer<IClientRegist
 		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.POPLAR);
 
 		// Vanilla leaf sprites
-		client.registerLeafSprite(ForestryTreeSpecies.OAK, LeafSprite.OAK);
-		client.registerLeafSprite(ForestryTreeSpecies.DARK_OAK, LeafSprite.OAK);
-		client.registerLeafSprite(ForestryTreeSpecies.BIRCH, LeafSprite.BIRCH);
-		client.registerLeafSprite(ForestryTreeSpecies.ACACIA_VANILLA, LeafSprite.ACACIA);
-		client.registerLeafSprite(ForestryTreeSpecies.SPRUCE, LeafSprite.SPRUCE);
-		client.registerLeafSprite(ForestryTreeSpecies.JUNGLE, LeafSprite.JUNGLE);
+		client.setLeafSprite(ForestryTreeSpecies.OAK, LeafSprite.OAK);
+		client.setLeafSprite(ForestryTreeSpecies.DARK_OAK, LeafSprite.OAK);
+		client.setLeafSprite(ForestryTreeSpecies.BIRCH, LeafSprite.BIRCH);
+		client.setLeafSprite(ForestryTreeSpecies.ACACIA_VANILLA, LeafSprite.ACACIA);
+		client.setLeafSprite(ForestryTreeSpecies.SPRUCE, LeafSprite.SPRUCE);
+		client.setLeafSprite(ForestryTreeSpecies.JUNGLE, LeafSprite.JUNGLE);
 
 		// Forestry leaf sprites
-		client.registerLeafSprite(ForestryTreeSpecies.LIME, LeafSprite.BIRCH);
-		client.registerLeafSprite(ForestryTreeSpecies.WALNUT, LeafSprite.ACACIA);
-		client.registerLeafSprite(ForestryTreeSpecies.CHESTNUT, LeafSprite.BIRCH);
-		client.registerLeafSprite(ForestryTreeSpecies.CHERRY, LeafSprite.BIRCH);
-		client.registerLeafSprite(ForestryTreeSpecies.LEMON, LeafSprite.OAK);
-		client.registerLeafSprite(ForestryTreeSpecies.PLUM, LeafSprite.OAK);
-		client.registerLeafSprite(ForestryTreeSpecies.MAPLE, LeafSprite.MAPLE);
-		client.registerLeafSprite(ForestryTreeSpecies.LARCH, LeafSprite.SPRUCE);
-		client.registerLeafSprite(ForestryTreeSpecies.PINE, LeafSprite.SPRUCE);
-		client.registerLeafSprite(ForestryTreeSpecies.SEQUOIA, LeafSprite.SPRUCE);
-		client.registerLeafSprite(ForestryTreeSpecies.GIANT_SEQUOIA, LeafSprite.SPRUCE);
-		client.registerLeafSprite(ForestryTreeSpecies.TEAK, LeafSprite.JUNGLE);
-		client.registerLeafSprite(ForestryTreeSpecies.IPE, LeafSprite.JUNGLE);
-		client.registerLeafSprite(ForestryTreeSpecies.KAPOK, LeafSprite.JUNGLE);
-		client.registerLeafSprite(ForestryTreeSpecies.EBONY, LeafSprite.JUNGLE);
-		client.registerLeafSprite(ForestryTreeSpecies.ZEBRAWOOD, LeafSprite.JUNGLE);
-		client.registerLeafSprite(ForestryTreeSpecies.MAHOGANY, LeafSprite.JUNGLE);
-		client.registerLeafSprite(ForestryTreeSpecies.DESERT_ACACIA, LeafSprite.ACACIA);
-		client.registerLeafSprite(ForestryTreeSpecies.PADAUK, LeafSprite.ACACIA);
-		client.registerLeafSprite(ForestryTreeSpecies.BALSA, LeafSprite.ACACIA);
-		client.registerLeafSprite(ForestryTreeSpecies.COCOBOLO, LeafSprite.MANGROVE);
-		client.registerLeafSprite(ForestryTreeSpecies.WENGE, LeafSprite.OAK);
-		client.registerLeafSprite(ForestryTreeSpecies.BAOBAB, LeafSprite.ACACIA);
-		client.registerLeafSprite(ForestryTreeSpecies.MAHOE, LeafSprite.OAK);
-		client.registerLeafSprite(ForestryTreeSpecies.WILLOW, LeafSprite.WILLOW);
-		client.registerLeafSprite(ForestryTreeSpecies.SIPIRI, LeafSprite.MANGROVE);
-		client.registerLeafSprite(ForestryTreeSpecies.PAPAYA, LeafSprite.PALM);
-		client.registerLeafSprite(ForestryTreeSpecies.DATE, LeafSprite.PALM);
-		client.registerLeafSprite(ForestryTreeSpecies.POPLAR, LeafSprite.BIRCH);
+		client.setLeafSprite(ForestryTreeSpecies.LIME, LeafSprite.BIRCH);
+		client.setLeafSprite(ForestryTreeSpecies.WALNUT, LeafSprite.ACACIA);
+		client.setLeafSprite(ForestryTreeSpecies.CHESTNUT, LeafSprite.BIRCH);
+		client.setLeafSprite(ForestryTreeSpecies.CHERRY, LeafSprite.BIRCH);
+		client.setLeafSprite(ForestryTreeSpecies.LEMON, LeafSprite.OAK);
+		client.setLeafSprite(ForestryTreeSpecies.PLUM, LeafSprite.OAK);
+		client.setLeafSprite(ForestryTreeSpecies.MAPLE, LeafSprite.MAPLE);
+		client.setLeafSprite(ForestryTreeSpecies.LARCH, LeafSprite.SPRUCE);
+		client.setLeafSprite(ForestryTreeSpecies.PINE, LeafSprite.SPRUCE);
+		client.setLeafSprite(ForestryTreeSpecies.SEQUOIA, LeafSprite.SPRUCE);
+		client.setLeafSprite(ForestryTreeSpecies.GIANT_SEQUOIA, LeafSprite.SPRUCE);
+		client.setLeafSprite(ForestryTreeSpecies.TEAK, LeafSprite.JUNGLE);
+		client.setLeafSprite(ForestryTreeSpecies.IPE, LeafSprite.JUNGLE);
+		client.setLeafSprite(ForestryTreeSpecies.KAPOK, LeafSprite.JUNGLE);
+		client.setLeafSprite(ForestryTreeSpecies.EBONY, LeafSprite.JUNGLE);
+		client.setLeafSprite(ForestryTreeSpecies.ZEBRAWOOD, LeafSprite.JUNGLE);
+		client.setLeafSprite(ForestryTreeSpecies.MAHOGANY, LeafSprite.JUNGLE);
+		client.setLeafSprite(ForestryTreeSpecies.DESERT_ACACIA, LeafSprite.ACACIA);
+		client.setLeafSprite(ForestryTreeSpecies.PADAUK, LeafSprite.ACACIA);
+		client.setLeafSprite(ForestryTreeSpecies.BALSA, LeafSprite.ACACIA);
+		client.setLeafSprite(ForestryTreeSpecies.COCOBOLO, LeafSprite.MANGROVE);
+		client.setLeafSprite(ForestryTreeSpecies.WENGE, LeafSprite.OAK);
+		client.setLeafSprite(ForestryTreeSpecies.BAOBAB, LeafSprite.ACACIA);
+		client.setLeafSprite(ForestryTreeSpecies.MAHOE, LeafSprite.OAK);
+		client.setLeafSprite(ForestryTreeSpecies.WILLOW, LeafSprite.WILLOW);
+		client.setLeafSprite(ForestryTreeSpecies.SIPIRI, LeafSprite.MANGROVE);
+		client.setLeafSprite(ForestryTreeSpecies.PAPAYA, LeafSprite.PALM);
+		client.setLeafSprite(ForestryTreeSpecies.DATE, LeafSprite.PALM);
+		client.setLeafSprite(ForestryTreeSpecies.POPLAR, LeafSprite.BIRCH);
+
+		// Vanilla leaf tints
+		client.setLeafTint(ForestryTreeSpecies.OAK, BiomeLeafTint.INSTANCE);
+		client.setLeafTint(ForestryTreeSpecies.DARK_OAK, BiomeLeafTint.INSTANCE);
+		client.setLeafTint(ForestryTreeSpecies.JUNGLE, BiomeLeafTint.INSTANCE);
+		client.setLeafTint(ForestryTreeSpecies.ACACIA_VANILLA, BiomeLeafTint.INSTANCE);
 	}
 
 	private static void registerSapling(IClientRegistration registration, String modId, ResourceLocation speciesId) {
@@ -101,10 +109,10 @@ public class DefaultForestryClientRegistration implements Consumer<IClientRegist
 		String path = speciesId.getPath().substring(5) + "_sapling";
 		ResourceLocation blockModel = new ResourceLocation(modId, "block/" + path);
 		ResourceLocation itemModel = new ResourceLocation(modId, path);
-		registration.registerSaplingModel(speciesId, blockModel, itemModel);
+		registration.setSaplingModel(speciesId, blockModel, itemModel);
 	}
 
-	private void registerLepidopterology(IClientRegistration client) {
-
+	private static void registerLepidopterology(IClientRegistration client) {
+		// todo
 	}
 }

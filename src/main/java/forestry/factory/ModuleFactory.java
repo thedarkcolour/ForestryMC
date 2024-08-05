@@ -62,16 +62,7 @@ public class ModuleFactory extends BlankForestryModule {
 		FuelManager.fermenterFuel = new ItemStackMap<>();
 		FuelManager.moistenerResource = new ItemStackMap<>();
 		FuelManager.rainSubstrate = new ItemStackMap<>();
-	}
 
-	@Override
-	public void registerPackets(IPacketRegistry registry) {
-		registry.serverbound(PacketIdServer.RECIPE_TRANSFER_REQUEST, PacketRecipeTransferRequest.class, PacketRecipeTransferRequest::decode, PacketRecipeTransferRequest::handle);
-		registry.clientbound(PacketIdClient.RECIPE_TRANSFER_UPDATE, PacketRecipeTransferUpdate.class, PacketRecipeTransferUpdate::decode, PacketRecipeTransferUpdate::handle);
-	}
-
-	@Override
-	public void preInit() {
 		// Set fuels and resources for the fermenter
 		ItemStack fertilizerCompound = CoreItems.FERTILIZER_COMPOUND.stack();
 		FuelManager.fermenterFuel.put(fertilizerCompound, new FermenterFuel(fertilizerCompound,
@@ -100,25 +91,8 @@ public class ModuleFactory extends BlankForestryModule {
 	}
 
 	@Override
-	public void registerRecipes() {
-		// / FABRICATOR
-		String[] dyes = {"dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan", "dyeLightGray", "dyeGray", "dyePink", "dyeLime",
-				"dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange", "dyeWhite"};
-
-		FluidStack liquidGlassBucket = ForestryFluids.GLASS.getFluid(FluidType.BUCKET_VOLUME);
-		FluidStack liquidGlassX4 = ForestryFluids.GLASS.getFluid(FluidType.BUCKET_VOLUME * 4);
-
-		if (!liquidGlassBucket.isEmpty() && !liquidGlassX4.isEmpty()) {
-			for (int i = 0; i < 16; i++) {
-				//TODO - needs tag loop or tag match in recipe
-				//					RecipeManagers.fabricatorManager.addRecipe(beeItems.waxCast.getWildcard(), liquidGlassBucket, new ItemStack(Blocks.STAINED_GLASS, 4, 15 - i), new Object[]{
-				//						"#", "X",
-				//						'#', dyes[i],
-				//						'X', beeItems.propolis.getWildcard()});
-			}
-			//				RecipeManagers.fabricatorManager.addRecipe(beeItems.waxCast.getWildcard(), liquidGlassX4, new ItemStack(Blocks.GLASS), new Object[]{
-			//					"X",
-			//					'X', beeItems.propolis.getWildcard()});	//TODO needs tag
-		}
+	public void registerPackets(IPacketRegistry registry) {
+		registry.serverbound(PacketIdServer.RECIPE_TRANSFER_REQUEST, PacketRecipeTransferRequest.class, PacketRecipeTransferRequest::decode, PacketRecipeTransferRequest::handle);
+		registry.clientbound(PacketIdClient.RECIPE_TRANSFER_UPDATE, PacketRecipeTransferUpdate.class, PacketRecipeTransferUpdate::decode, PacketRecipeTransferUpdate::handle);
 	}
 }

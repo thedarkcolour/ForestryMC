@@ -5,14 +5,10 @@
  ******************************************************************************/
 package forestry.api.modules;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
-
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -61,25 +57,12 @@ public interface IForestryModule {
 	}
 
 	/**
-	 * Called during Forestry's mod construction phase. Initialize any static API.
+	 * Called during Forestry's common phase. Initialize any static API.
 	 */
 	default void setupApi() {
 	}
 
-	// todo remove
-	default void preInit() {
-	}
-
 	default void registerPackets(IPacketRegistry registry) {
-	}
-
-	default void doInit() {
-	}
-
-	/** todo remove
-	 * Can be used to register recipes. Called after {@link #doInit()}.
-	 */
-	default void registerRecipes() {
 	}
 
 	/**

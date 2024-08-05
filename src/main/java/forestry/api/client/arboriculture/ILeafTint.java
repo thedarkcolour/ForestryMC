@@ -3,6 +3,7 @@ package forestry.api.client.arboriculture;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 
 /**
@@ -11,5 +12,5 @@ import net.minecraft.world.level.BlockGetter;
  * based on the escritoire color of the species.
  */
 public interface ILeafTint {
-	int get(@Nullable BlockGetter level, @Nullable BlockPos pos);
+	int get(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
 }

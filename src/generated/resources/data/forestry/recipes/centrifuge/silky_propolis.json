@@ -6,17 +6,11 @@
   "products": [
     {
       "chance": 0.6,
-      "item": {
-        "Count": 1,
-        "id": "forestry:silk_wisp"
-      }
+      "item": "forestry:silk_wisp"
     },
     {
       "chance": 0.1,
-      "item": {
-        "Count": 1,
-        "id": "forestry:propolis_normal"
-      }
+      "item": "forestry:propolis_normal"
     }
   ],
   "time": 5

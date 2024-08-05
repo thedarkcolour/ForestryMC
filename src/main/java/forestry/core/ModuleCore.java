@@ -76,6 +76,7 @@ import forestry.core.recipes.RecipeManagers;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.worldgen.VillagerJigsaw;
 import forestry.modules.BlankForestryModule;
+import forestry.modules.ForestryModuleManager;
 import forestry.modules.ModuleUtil;
 import forestry.apiimpl.plugin.PluginManager;
 
@@ -109,7 +110,9 @@ public class ModuleCore extends BlankForestryModule {
 		// Forestry's villager houses
 		event.enqueueWork(() -> {
 			VillagerJigsaw.init();
+			((ForestryModuleManager) IForestryApi.INSTANCE.getModuleManager()).setupApi();
 			PluginManager.registerCircuits();
+			EntityDataSerializers.registerSerializer(GameProfileDataSerializer.INSTANCE);
 		});
 	}
 
@@ -179,11 +182,6 @@ public class ModuleCore extends BlankForestryModule {
 	@Override
 	public List<ResourceLocation> getModuleDependencies() {
 		return List.of();
-	}
-
-	@Override
-	public void preInit() {
-		EntityDataSerializers.registerSerializer(GameProfileDataSerializer.INSTANCE);
 	}
 
 	@Override

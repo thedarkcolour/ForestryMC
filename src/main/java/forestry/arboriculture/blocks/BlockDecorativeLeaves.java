@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -90,7 +91,7 @@ public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForg
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
+	public int colorMultiplier(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
 		ITree individual = type.getIndividual();
 
 		if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {

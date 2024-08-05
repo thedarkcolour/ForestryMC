@@ -6,17 +6,12 @@
   "products": [
     {
       "chance": 1.0,
-      "item": {
-        "Count": 1,
-        "id": "forestry:refractory_wax"
-      }
+      "item": "forestry:refractory_wax"
     },
     {
       "chance": 0.7,
-      "item": {
-        "Count": 2,
-        "id": "forestry:phosphor"
-      }
+      "count": 2,
+      "item": "forestry:phosphor"
     }
   ],
   "time": 20

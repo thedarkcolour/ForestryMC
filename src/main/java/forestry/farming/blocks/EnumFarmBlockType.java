@@ -42,6 +42,7 @@ public enum EnumFarmBlockType implements IBlockSubtype {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void gatherSprites(TextureStitchEvent.Pre event) {
+		// todo make sure these sprites aren't being stitched into all atlases
 		event.addSprite(ForestryConstants.forestry("block/farm/plain"));
 		event.addSprite(ForestryConstants.forestry("block/farm/reverse"));
 		event.addSprite(ForestryConstants.forestry("block/farm/top"));

@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -18,11 +19,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.client.IForestryClientApi;
-import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.genetics.IGenome;
-import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.utils.SpeciesUtil;
 
 /**
@@ -67,7 +65,7 @@ public class BlockDefaultLeaves extends BlockAbstractLeaves {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
+	public int colorMultiplier(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
 		return IForestryClientApi.INSTANCE.getTreeManager().getTint(type.getIndividual().getSpecies()).get(level, pos);
 	}
 }

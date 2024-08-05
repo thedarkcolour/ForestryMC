@@ -52,6 +52,9 @@ import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.EntityUtil;
 import forestry.core.utils.GeneticsUtil;
+import forestry.core.utils.SpeciesUtil;
+import forestry.lepidopterology.ButterflySpawner;
+import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.blocks.BlockCocoon;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
@@ -75,6 +78,15 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		ButterflyChromosomes.COCOON.populate(registration.getCocoons());
 
 		return registration.buildSpecies();
+	}
+
+	@Override
+	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, IButterflySpecies> allSpecies) {
+		super.onSpeciesRegistered(allSpecies);
+
+		if (ModuleLepidopterology.spawnButterflysFromLeaves) {
+			SpeciesUtil.TREE_TYPE.get().registerLeafTickHandler(new ButterflySpawner());
+		}
 	}
 
 	@Override

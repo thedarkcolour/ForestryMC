@@ -64,7 +64,7 @@ public class ModuleArboriculture extends BlankForestryModule {
 
 	@Override
 	public void setupApi() {
-		TreeManager.woodAccess = WoodAccess.getInstance();
+		TreeManager.woodAccess = WoodAccess.INSTANCE;
 	}
 
 	@Override

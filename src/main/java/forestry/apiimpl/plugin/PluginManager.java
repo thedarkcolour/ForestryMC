@@ -7,8 +7,11 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 
 import net.minecraft.resources.ResourceLocation;
@@ -20,19 +23,27 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import forestry.Forestry;
 import forestry.api.IForestryApi;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.circuits.CircuitHolder;
 import forestry.api.circuits.ICircuit;
 import forestry.api.circuits.ICircuitLayout;
+import forestry.api.client.IForestryClientApi;
+import forestry.api.client.arboriculture.ILeafSprite;
+import forestry.api.client.arboriculture.ILeafTint;
 import forestry.api.core.IError;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.ITaxon;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.apiimpl.ForestryApiImpl;
 import forestry.apiimpl.GeneticManager;
+import forestry.apiimpl.client.ForestryClientApiImpl;
+import forestry.apiimpl.client.TreeClientManager;
 import forestry.apiimpl.client.plugin.ClientRegistration;
+import forestry.arboriculture.client.FixedLeafTint;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.circuits.CircuitManager;
 import forestry.core.errors.ErrorManager;
+import forestry.core.utils.SpeciesUtil;
 import forestry.farming.FarmingManager;
 import forestry.plugin.DefaultForestryPlugin;
 import forestry.sorting.FilterManager;
@@ -206,11 +217,31 @@ public class PluginManager {
 		});
 	}
 
+	// todo make this not tied to the texture stitch event
 	public static void registerSprites(TextureStitchEvent.Pre event) {
 		ClientRegistration registration = new ClientRegistration();
 
 		for (IForestryPlugin plugin : LOADED_PLUGINS) {
 			plugin.registerClient(consumer -> consumer.accept(registration));
 		}
+
+		HashMap<ResourceLocation, ILeafSprite> spritesById = registration.getLeafSprites();
+		HashMap<ResourceLocation, ILeafTint> tintsById = registration.getTints();
+
+		// Copy everything over to identity maps to minimize Map.get overhead during rendering
+		IdentityHashMap<ITreeSpecies, ILeafSprite> sprites = new IdentityHashMap<>();
+		IdentityHashMap<ITreeSpecies, ILeafTint> tints = new IdentityHashMap<>();
+
+		for (ITreeSpecies species : SpeciesUtil.TREE_TYPE.get().getAllSpecies()) {
+			ResourceLocation id = species.id();
+
+			ILeafSprite sprite = Objects.requireNonNull(spritesById.get(id));
+			ILeafTint tint = tintsById.getOrDefault(id, new FixedLeafTint(species.getEscritoireColor()));
+
+			sprites.put(species, sprite);
+			tints.put(species, tint);
+		}
+
+		((ForestryClientApiImpl) IForestryClientApi.INSTANCE).setTreeManager(new TreeClientManager(sprites, tints));
 	}
 }
