@@ -1,4 +1,4 @@
-package forestry.plugin;
+package forestry.apiimpl.plugin;
 
 import com.google.common.collect.ImmutableList;
 
@@ -16,7 +16,6 @@ import forestry.api.plugin.IBeeSpeciesBuilder;
 import forestry.apiculture.BeeSpecies;
 import forestry.apiculture.genetics.DefaultBeeJubilance;
 
-import deleteme.Todos;
 import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
 import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
 

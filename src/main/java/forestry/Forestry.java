@@ -23,7 +23,7 @@ import forestry.api.IForestryApi;
 import forestry.core.EventHandlerCore;
 import forestry.core.network.NetworkHandler;
 import forestry.modules.ForestryModuleManager;
-import forestry.plugin.PluginManager;
+import forestry.apiimpl.plugin.PluginManager;
 
 /**
  * Forestry Minecraft Mod

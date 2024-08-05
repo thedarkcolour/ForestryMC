@@ -33,7 +33,7 @@ import forestry.arboriculture.models.ModelLeaves;
 import forestry.arboriculture.models.SaplingModelLoader;
 import forestry.core.models.ClientManager;
 import forestry.core.utils.SpeciesUtil;
-import forestry.plugin.PluginManager;
+import forestry.apiimpl.plugin.PluginManager;
 
 public class ArboricultureClientHandler implements IClientModuleHandler {
 	@Override

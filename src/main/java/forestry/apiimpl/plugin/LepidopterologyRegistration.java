@@ -12,10 +12,6 @@ import forestry.api.lepidopterology.IButterflyEffect;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.plugin.IButterflySpeciesBuilder;
 import forestry.api.plugin.ILepidopterologyRegistration;
-import forestry.plugin.ButterflySpeciesBuilder;
-import forestry.plugin.MutationsRegistration;
-import forestry.plugin.Registrar;
-import forestry.plugin.SpeciesRegistration;
 
 public class LepidopterologyRegistration extends SpeciesRegistration<IButterflySpeciesBuilder, IButterflySpecies, ButterflySpeciesBuilder> implements ILepidopterologyRegistration {
 	private final Registrar<ResourceLocation, IButterflyCocoon, IButterflyCocoon> cocoons = new Registrar<>(IButterflyCocoon.class);

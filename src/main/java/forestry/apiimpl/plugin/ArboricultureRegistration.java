@@ -1,9 +1,8 @@
-package forestry.plugin;
+package forestry.apiimpl.plugin;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.awt.Color;
-import java.util.HashMap;
 
 import net.minecraft.resources.ResourceLocation;
 

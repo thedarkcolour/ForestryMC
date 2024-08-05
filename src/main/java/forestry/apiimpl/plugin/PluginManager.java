@@ -1,4 +1,4 @@
-package forestry.plugin;
+package forestry.apiimpl.plugin;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -34,6 +34,7 @@ import forestry.core.circuits.CircuitLayout;
 import forestry.core.circuits.CircuitManager;
 import forestry.core.errors.ErrorManager;
 import forestry.farming.FarmingManager;
+import forestry.plugin.DefaultForestryPlugin;
 import forestry.sorting.FilterManager;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;

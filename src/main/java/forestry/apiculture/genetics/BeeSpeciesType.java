@@ -53,7 +53,7 @@ import forestry.core.genetics.BreedingTracker;
 import forestry.core.genetics.SpeciesType;
 import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.utils.ItemStackUtil;
-import forestry.plugin.ApicultureRegistration;
+import forestry.apiimpl.plugin.ApicultureRegistration;
 
 public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IBeeSpeciesType {
 	public BeeSpeciesType(IKaryotype karyotype, ISpeciesTypeBuilder builder) {

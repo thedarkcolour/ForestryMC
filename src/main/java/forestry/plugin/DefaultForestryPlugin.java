@@ -83,12 +83,6 @@ import forestry.lepidopterology.LepidopterologyFilterRuleType;
 import forestry.lepidopterology.genetics.ButterflySpeciesType;
 import forestry.lepidopterology.genetics.DefaultCocoon;
 import forestry.plugin.client.DefaultForestryClientRegistration;
-import forestry.plugin.species.DefaultBeeSpecies;
-import forestry.plugin.species.DefaultButterflySpecies;
-import forestry.plugin.species.DefaultTreeSpecies;
-import forestry.plugin.taxonomy.BeeTaxonomy;
-import forestry.plugin.taxonomy.ButterflyTaxonomy;
-import forestry.plugin.taxonomy.TreeTaxonomy;
 import forestry.sorting.DefaultFilterRuleType;
 
 public class DefaultForestryPlugin implements IForestryPlugin {

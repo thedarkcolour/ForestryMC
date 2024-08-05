@@ -1,4 +1,4 @@
-package forestry.plugin.species;
+package forestry.plugin;
 
 import java.awt.Color;
 import java.time.Month;

@@ -1,13 +1,9 @@
-package forestry.plugin;
-
-import com.google.common.collect.ImmutableMap;
+package forestry.apiimpl.plugin;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Variant of {@link Registrar} that supports modifying objects that have already been created.

@@ -69,7 +69,7 @@ import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.RenderUtil;
-import forestry.plugin.ArboricultureRegistration;
+import forestry.apiimpl.plugin.ArboricultureRegistration;
 
 public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements ITreeSpeciesType, IBreedingTrackerHandler {
 	private final LinkedList<ILeafTickHandler> leafTickHandlers = new LinkedList<>();

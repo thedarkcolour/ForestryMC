@@ -77,7 +77,7 @@ import forestry.core.utils.NetworkUtil;
 import forestry.core.worldgen.VillagerJigsaw;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ModuleUtil;
-import forestry.plugin.PluginManager;
+import forestry.apiimpl.plugin.PluginManager;
 
 @ForestryModule
 public class ModuleCore extends BlankForestryModule {

@@ -1,4 +1,4 @@
-package forestry.plugin;
+package forestry.apiimpl.plugin;
 
 import javax.annotation.Nullable;
 import java.awt.Color;

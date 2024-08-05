@@ -1,9 +1,7 @@
-package forestry.plugin;
+package forestry.apiimpl.plugin;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
