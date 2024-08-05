@@ -2,14 +2,12 @@ package forestry.apiculture;
 
 import com.google.common.base.Preconditions;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeJubilance;
@@ -17,10 +15,10 @@ import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.core.HumidityType;
+import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IGenome;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.plugin.IBeeSpeciesBuilder;
 import forestry.apiculture.genetics.Bee;
@@ -37,8 +35,6 @@ public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSp
 	private final int body;
 	private final int outline;
 	private final int stripes;
-	@Nullable
-	private final BlockState wildHive;
 
 	public BeeSpecies(ResourceLocation id, IBeeSpeciesType speciesType, IGenome defaultGenome, IBeeSpeciesBuilder builder) {
 		super(id, speciesType, defaultGenome, builder);
@@ -52,7 +48,6 @@ public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSp
 		this.body = builder.getBody();
 		this.outline = builder.getOutline();
 		this.stripes = builder.getStripes();
-		this.wildHive = builder.getWildHive();
 	}
 
 	@Override
@@ -110,11 +105,6 @@ public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSp
 	@Override
 	public int getEscritoireColor() {
 		return this.outline;
-	}
-
-	@Override
-	public BlockState getSpawnHives() {
-		return this.wildHive;
 	}
 
 	@Override

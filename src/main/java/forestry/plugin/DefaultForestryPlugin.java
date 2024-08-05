@@ -2,6 +2,7 @@ package forestry.plugin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +22,7 @@ import forestry.api.arboriculture.ForestryTreeSpecies;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.circuits.ForestryCircuitLayouts;
 import forestry.api.circuits.ForestryCircuitSocketTypes;
+import forestry.api.client.plugin.IClientRegistration;
 import forestry.api.core.ForestryError;
 import forestry.api.core.IError;
 import forestry.api.core.Product;
@@ -80,7 +82,7 @@ import forestry.lepidopterology.LepidopterologyFilterRule;
 import forestry.lepidopterology.LepidopterologyFilterRuleType;
 import forestry.lepidopterology.genetics.ButterflySpeciesType;
 import forestry.lepidopterology.genetics.DefaultCocoon;
-import forestry.plugin.client.DefaultForestryPluginClient;
+import forestry.plugin.client.DefaultForestryClientRegistration;
 import forestry.plugin.species.DefaultBeeSpecies;
 import forestry.plugin.species.DefaultButterflySpecies;
 import forestry.plugin.species.DefaultTreeSpecies;
@@ -133,7 +135,7 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 					karyotype.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOWER)
 							.addAlleles(ForestryAlleles.DEFAULT_SAPLINGS);
 					// todo
-					karyotype.set(TreeChromosomes.FRUITS, ForestryAlleles.FRUIT_NONE);
+					karyotype.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_NONE);
 					karyotype.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_LOWEST)
 							.addAlleles(ForestryAlleles.DEFAULT_YIELDS);
 					karyotype.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWEST)
@@ -310,8 +312,6 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		arboriculture.registerFruit(ForestryFruits.PLUM, new RipeningFruit(true, 10, plums, 0x663446, 0xeeff1a, List.of(Product.of(CoreItems.FRUITS.item(ItemFruit.EnumFruit.PLUM)))));
 
 		arboriculture.registerTreeEffect(ForestryAlleles.TREE_EFFECT_NONE.alleleId(), new DummyTreeEffect(false));
-
-		arboriculture.registerClient(DefaultForestryPluginClient.Arboriculture::new);
 	}
 
 	@Override
@@ -379,6 +379,11 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		DefaultFarms.registerFarmTypes(farming);
 
 		farming.registerFertilizer(Ingredient.of(CoreItems.FERTILIZER_COMPOUND), 500);
+	}
+
+	@Override
+	public void registerClient(Consumer<Consumer<IClientRegistration>> registrar) {
+		registrar.accept(new DefaultForestryClientRegistration());
 	}
 
 	@Override

@@ -8,6 +8,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.core.ItemGroups;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
@@ -36,12 +38,13 @@ public class ItemBlockDecorativeLeaves extends ItemBlockForestry<BlockDecorative
 		BlockDecorativeLeaves block = getBlock();
 		ForestryLeafType leafType = block.getType();
 
-		IGenome genome = leafType.getIndividual().getGenome();
+		ITree individual = leafType.getIndividual();
+		IGenome genome = individual.getGenome();
 
 		if (renderPass == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
-			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUITS);
+			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
 			return fruitProvider.getDecorativeColor();
 		}
-		return genome.getActiveValue(TreeChromosomes.SPECIES).getLeafSpriteProvider().getColor(false);
+		return IForestryClientApi.INSTANCE.getTreeManager().getTint(individual.getSpecies()).get(null, null);
 	}
 }

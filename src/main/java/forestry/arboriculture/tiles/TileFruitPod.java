@@ -71,7 +71,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	public void writeData(FriendlyByteBuf data) {
 		if (fruit != null) {
 			data.writeBoolean(true);
-			data.writeResourceLocation(TreeChromosomes.FRUITS.getId(fruit));
+			data.writeResourceLocation(TreeChromosomes.FRUIT.getId(fruit));
 		} else {
 			data.writeBoolean(false);
 		}
@@ -93,7 +93,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	public void saveAdditional(CompoundTag compoundNBT) {
 		super.saveAdditional(compoundNBT);
 		if (this.fruit != null) {
-			compoundNBT.putString(NBT_FRUIT, TreeChromosomes.FRUITS.getId(fruit).toString());
+			compoundNBT.putString(NBT_FRUIT, TreeChromosomes.FRUIT.getId(fruit).toString());
 		}
 		compoundNBT.putShort(NBT_MATURITY, this.maturity);
 		compoundNBT.putFloat(NBT_YIELD, this.yield);

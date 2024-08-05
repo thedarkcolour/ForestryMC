@@ -38,7 +38,7 @@ public class MutationsRegistration implements IMutationsRegistration {
 
 	@Override
 	public IMutationBuilder add(ResourceLocation firstParent, ResourceLocation secondParent, int chance) {
-		Preconditions.checkArgument(!firstParent.equals(secondParent), "Cannot have a mutation between two of the same species.");
+		Preconditions.checkArgument(!firstParent.equals(secondParent), "Cannot have a mutation between two of the same species");
 
 		MutationPair pair = new MutationPair(firstParent, secondParent);
 
@@ -55,7 +55,7 @@ public class MutationsRegistration implements IMutationsRegistration {
 
 	@Override
 	public IMutationBuilder get(ResourceLocation firstParent, ResourceLocation secondParent) {
-		Preconditions.checkArgument(!firstParent.equals(secondParent), "Cannot have a mutation between two of the same species.");
+		Preconditions.checkArgument(!firstParent.equals(secondParent), "Cannot have a mutation between two of the same species");
 
 		MutationBuilder mutation = mutations.get(new MutationPair(firstParent, secondParent));
 		if (mutation == null) {

@@ -68,7 +68,7 @@ public interface IKaryotype {
 	/**
 	 * @return A new genome builder using this karyotype.
 	 */
-	IGenomeBuilder genomeBuilder();
+	IGenomeBuilder createGenomeBuilder();
 
 	<A extends IAllele> ImmutableCollection<A> getAlleles(IChromosome<A> chromosome);
 }

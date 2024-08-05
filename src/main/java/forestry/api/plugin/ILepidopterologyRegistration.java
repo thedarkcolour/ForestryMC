@@ -5,6 +5,7 @@ import java.awt.Color;
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.lepidopterology.IButterflyCocoon;
+import forestry.api.lepidopterology.IButterflyEffect;
 
 public interface ILepidopterologyRegistration {
 	/**
@@ -20,4 +21,6 @@ public interface ILepidopterologyRegistration {
 	IButterflySpeciesBuilder registerSpecies(ResourceLocation id, String genus, String species, boolean dominant, Color serumColor, float rarity);
 
 	void registerCocoon(ResourceLocation id, IButterflyCocoon cocoon);
+
+	void registerEffect(ResourceLocation id, IButterflyEffect effect);
 }

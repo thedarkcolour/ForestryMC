@@ -19,6 +19,14 @@ public interface IGeneticManager {
 	ITaxon getTaxon(String name);
 
 	/**
+	 * Returns a list containing this taxon and its parents in order of taxonomic rank. See {@link TaxonomicRank}.
+	 *
+	 * @param name The name of the taxon whose parent taxa to retrieve.
+	 * @return A list containing this taxon and its parents in order of taxonomic rank.
+	 */
+	ITaxon[] getParentTaxa(String name);
+
+	/**
 	 * Retrieves the registry of possible mutations for a given species type.
 	 * Register mutations using a {@link forestry.api.plugin.IForestryPlugin}.
 	 *

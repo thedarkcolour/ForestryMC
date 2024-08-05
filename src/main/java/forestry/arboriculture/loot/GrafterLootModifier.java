@@ -101,7 +101,7 @@ public class GrafterLootModifier extends LootModifier {
 		}
 		if (state.getBlock() instanceof BlockDefaultLeavesFruit) {
 			IGenome genome = tree.getGenome();
-			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUITS);
+			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
 			if (fruitProvider.isFruitLeaf(genome, world, pos)) {
 				generatedLoot.addAll(tree.produceStacks(world, pos, Integer.MAX_VALUE));
 			}

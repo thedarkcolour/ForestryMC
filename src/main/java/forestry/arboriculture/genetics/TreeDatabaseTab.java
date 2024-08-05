@@ -67,15 +67,15 @@ public class TreeDatabaseTab implements IDatabaseTab<ITree> {
 		//	container.label(fruitFamily.getName(), Alignment.TOP_CENTER, speciesStyle);
 		//}
 
-		IValueAllele<IFruit> fruit = mode == DatabaseMode.ACTIVE ? tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS) : tree.getGenome().getInactiveAllele(TreeChromosomes.FRUITS);
-		Style textStyle = GuiElementFactory.INSTANCE.getStateStyle(tree.getGenome().getActiveAllele(TreeChromosomes.FRUITS).dominant());
+		IValueAllele<IFruit> fruit = mode == DatabaseMode.ACTIVE ? tree.getGenome().getActiveAllele(TreeChromosomes.FRUIT) : tree.getGenome().getInactiveAllele(TreeChromosomes.FRUIT);
+		Style textStyle = GuiElementFactory.INSTANCE.getStateStyle(tree.getGenome().getActiveAllele(TreeChromosomes.FRUIT).dominant());
 
 		container.translated("for.gui.fruits").setStyle(GuiConstants.UNDERLINED_STYLE).setAlign(Alignment.TOP_CENTER);
 
 		//if (!species.getSuitableFruit().contains(fruit.getProvider().getFamily()) && fruit != AlleleFruits.fruitNone) {
 		//	fruitStyle = fruitStyle.withStrikethrough(true);
 		//}
-		container.label(TreeChromosomes.FRUITS.getDisplayName(fruit)).setStyle(textStyle).setAlign(Alignment.TOP_CENTER);
+		container.label(TreeChromosomes.FRUIT.getDisplayName(fruit)).setStyle(textStyle).setAlign(Alignment.TOP_CENTER);
 
 		//IFruitFamily family = fruit.getProvider().getFamily();
 

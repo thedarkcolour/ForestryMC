@@ -1,6 +1,7 @@
 package forestry.api.plugin;
 
 import javax.annotation.Nullable;
+import java.awt.Color;
 import java.util.List;
 import java.util.function.Function;
 
@@ -9,17 +10,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
+import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.arboriculture.ITreeGenData;
 import forestry.api.arboriculture.ITreeGenerator;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 
-public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, ITreeSpeciesBuilder> {
+public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, ITreeSpecies, ITreeSpeciesBuilder> {
 	/**
 	 * Shortcut to create a tree generator using the tree generator built into Forestry.
 	 */
 	ITreeSpeciesBuilder setTreeFeature(Function<ITreeGenData, Feature<NoneFeatureConfiguration>> factory);
 
+	/**
+	 * Sets the tree generator instance used to generate trees when growing from a sapling or being placed in the world.
+	 *
+	 * @param generator The tree generator instance. Use {@link #setTreeFeature} to use Forestry's default generator.
+	 */
 	ITreeSpeciesBuilder setGenerator(ITreeGenerator generator);
 
 	/**
@@ -60,6 +68,13 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, I
 	 */
 	ITreeSpeciesBuilder setRarity(float rarity);
 
+	/**
+	 * Sets the primary color of this tree species. Used for tinting leaves and Escritoire game cells.
+	 *
+	 * @param color The color.
+	 */
+	ITreeSpeciesBuilder setEscritoireColor(Color color);
+
 	@Nullable
 	ITreeGenerator getGenerator();
 
@@ -70,4 +85,6 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, I
 	boolean hasFruitLeaves();
 
 	float getRarity();
+
+	int getColor();
 }

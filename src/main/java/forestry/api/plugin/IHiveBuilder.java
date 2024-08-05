@@ -38,5 +38,5 @@ public interface IHiveBuilder {
 	 *
 	 * @param drop The supplier of the drop. Called after items and bee species are all registered.
 	 */
-	IHiveBuilder addCustomDrop(Supplier<IHiveDrop> drop);
+	IHiveBuilder addCustomDrop(IHiveDrop drop);
 }

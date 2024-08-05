@@ -3,6 +3,7 @@ package forestry.plugin;
 import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
+import java.awt.Color;
 import java.util.List;
 import java.util.function.Function;
 
@@ -14,6 +15,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 import forestry.api.arboriculture.ITreeGenData;
 import forestry.api.arboriculture.ITreeGenerator;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.plugin.ITreeSpeciesBuilder;
@@ -22,7 +24,7 @@ import forestry.arboriculture.worldgen.DefaultTreeGenerator;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
-public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSpeciesBuilder> implements ITreeSpeciesBuilder {
+public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSpecies, ITreeSpeciesBuilder> implements ITreeSpeciesBuilder {
 	@Nullable
 	private IWoodType woodType = null;
 	@Nullable
@@ -31,13 +33,14 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	private boolean hasFruitLeaves = false;
 	private final ReferenceOpenHashSet<BlockState> vanillaStates = new ReferenceOpenHashSet<>();
 	private ItemStack decorativeLeaves = ItemStack.EMPTY;
+	private int color;
 
 	public TreeSpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
 		super(id, genus, species, mutations);
 	}
 
 	@Override
-	protected ISpeciesFactory<ITreeSpeciesType, ITreeSpeciesBuilder> createSpeciesFactory() {
+	public ISpeciesFactory<ITreeSpeciesType, ITreeSpecies, ITreeSpeciesBuilder> createSpeciesFactory() {
 		return TreeSpecies::new;
 	}
 
@@ -79,6 +82,12 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	}
 
 	@Override
+	public ITreeSpeciesBuilder setEscritoireColor(Color color) {
+		this.color = color.getRGB();
+		return this;
+	}
+
+	@Override
 	public ITreeSpeciesBuilder setDecorativeLeaves(ItemStack stack) {
 		this.decorativeLeaves = stack;
 		return this;
@@ -108,5 +117,10 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	@Override
 	public float getRarity() {
 		return this.rarity;
+	}
+
+	@Override
+	public int getColor() {
+		return this.color;
 	}
 }

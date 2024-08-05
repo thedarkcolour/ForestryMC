@@ -8,7 +8,7 @@ import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.arboriculture.ForestryTreeSpecies;
-import forestry.api.arboriculture.ILeafSpriteProvider;
+import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Used for the default leaf, fruit, and decorative blocks.
- * Other mods can implement this to take advantage of Forestry's built-in leaf blocks.
+ * Other mods can use this class to take advantage of Forestry's built-in leaf blocks.
  */
 public final class ForestryLeafType implements IBlockSubtype {
 	private static final ObjectOpenHashSet<ForestryLeafType> VALUES = new ObjectOpenHashSet<>(35);
@@ -65,7 +65,6 @@ public final class ForestryLeafType implements IBlockSubtype {
 
 	// These fields are initialized later in setSpecies
 	private IFruit fruit;
-	private ILeafSpriteProvider leafSprite;
 	private ITree individual;
 
 	// Take care not to create duplicates...
@@ -75,8 +74,7 @@ public final class ForestryLeafType implements IBlockSubtype {
 	}
 
 	public void setSpecies(ITreeSpecies species) {
-		this.fruit = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUITS);
-		this.leafSprite = species.getLeafSpriteProvider();
+		this.fruit = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUIT);
 		this.individual = species.createIndividual();
 	}
 
@@ -87,10 +85,6 @@ public final class ForestryLeafType implements IBlockSubtype {
 
 	public IFruit getFruit() {
 		return this.fruit;
-	}
-
-	public ILeafSpriteProvider getLeafSpriteProvider() {
-		return this.leafSprite;
 	}
 
 	public ITree getIndividual() {

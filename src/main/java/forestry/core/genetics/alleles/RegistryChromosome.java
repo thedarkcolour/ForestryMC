@@ -55,6 +55,7 @@ public class RegistryChromosome<V extends IRegistryAlleleValue> extends ValueChr
 		return this.reverseLookup.get(value);
 	}
 
+	@Override
 	public void populate(ImmutableMap<ResourceLocation, V> registry) {
 		Preconditions.checkState(this.registry == null, "Registry has already been populated");
 
@@ -64,5 +65,10 @@ public class RegistryChromosome<V extends IRegistryAlleleValue> extends ValueChr
 		for (Map.Entry<ResourceLocation, V> entry : registry.entrySet()) {
 			this.reverseLookup.put(entry.getValue(), entry.getKey());
 		}
+	}
+
+	@Override
+	public boolean isPopulated() {
+		return this.registry != null;
 	}
 }

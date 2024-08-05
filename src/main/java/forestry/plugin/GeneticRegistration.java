@@ -39,9 +39,7 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	// Name of taxon with missing parent -> Action
 	private final HashMap<String, Consumer<ITaxonBuilder>> unknownActions = new HashMap<>();
 	// Species type builders
-	private final HashMap<ResourceLocation, SpeciesTypeBuilder> builders = new HashMap<>();
-	// Species type modifications, run just before registry is finalized
-	private final HashMap<ResourceLocation, ArrayList<Consumer<ISpeciesTypeBuilder>>> modifications = new HashMap<>();
+	private final ModifiableRegistrar<ResourceLocation, ISpeciesTypeBuilder, SpeciesTypeBuilder> speciesTypes = new ModifiableRegistrar<>(ISpeciesTypeBuilder.class);
 	// Filter rule types used by IFilterRegistry
 	private final ArrayList<IFilterRuleType> ruleTypes = new ArrayList<>();
 
@@ -87,18 +85,16 @@ public final class GeneticRegistration implements IGeneticRegistration {
 
 	@Override
 	public ISpeciesTypeBuilder registerSpeciesType(ResourceLocation id, ISpeciesTypeFactory factory) {
-		if (this.builders.containsKey(id)) {
-			throw new IllegalStateException("A species type was already registered with ID " + id + " - modify it instead using IGeneticRegistration.modifySpeciesType");
-		} else {
-			SpeciesTypeBuilder builder = new SpeciesTypeBuilder(factory);
-			this.builders.put(id, builder);
-			return builder;
-		}
+		return this.speciesTypes.create(id, new SpeciesTypeBuilder(factory));
 	}
 
 	@Override
 	public void modifySpeciesType(ResourceLocation id, Consumer<ISpeciesTypeBuilder> action) {
-		this.modifications.computeIfAbsent(id, key -> new ArrayList<>()).add(action);
+		this.speciesTypes.modify(id, action);
+	}
+
+	public ImmutableMap<ResourceLocation, ISpeciesType<?, ?>> buildSpeciesTypes() {
+		return this.speciesTypes.build(SpeciesTypeBuilder::build);
 	}
 
 	// Creates a new taxon builder and puts it in the registry, or returns the existing one if it is already registered
@@ -139,28 +135,6 @@ public final class GeneticRegistration implements IGeneticRegistration {
 	@Override
 	public void registerFilterRuleType(IFilterRuleType ruleType) {
 		this.ruleTypes.add(ruleType);
-	}
-
-	public ImmutableMap<ResourceLocation, ISpeciesType<?, ?>> buildSpeciesTypes() {
-		ImmutableMap.Builder<ResourceLocation, ISpeciesType<?, ?>> speciesTypes = ImmutableMap.builderWithExpectedSize(this.builders.size());
-
-		for (Map.Entry<ResourceLocation, SpeciesTypeBuilder> entry : this.builders.entrySet()) {
-			ResourceLocation id = entry.getKey();
-			SpeciesTypeBuilder builder = entry.getValue();
-
-			// Apply modifications if any
-			ArrayList<Consumer<ISpeciesTypeBuilder>> modifications = this.modifications.get(id);
-			if (modifications != null) {
-				for (Consumer<ISpeciesTypeBuilder> modification : modifications) {
-					modification.accept(builder);
-				}
-			}
-
-			// Build
-			speciesTypes.put(id, builder.build());
-		}
-
-		return speciesTypes.buildOrThrow();
 	}
 
 	// why did i over engineer such an insignificant mechanic
@@ -246,7 +220,6 @@ public final class GeneticRegistration implements IGeneticRegistration {
 		}
 
 		private TaxonBuilder registerChild(String name) {
-			// todo how will species add genera if taxonomy registration happens before species are registered?
 			if (this.rank == TaxonomicRank.GENUS) {
 				throw new UnsupportedOperationException("Cannot directly add species '" + name + "' as a child of the '" + this.name + "' genus. Genera are populated by the ISpeciesBuilder");
 			}

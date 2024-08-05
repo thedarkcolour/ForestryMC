@@ -8,22 +8,16 @@ package forestry.api.apiculture.hives;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 
 import forestry.api.apiculture.genetics.IBee;
 
 /**
- * Bees can be seeded either as hive drops or as mutation results.
- * <p>
- * Add IHiveDrops with HiveManager.get___Hive.addDrop
- *
- * @author SirSengir
+ * Represents an
  */
 public interface IHiveDrop {
-
-	IBee getBeeType(BlockGetter level, BlockPos pos);
+	IBee createIndividual(BlockGetter level, BlockPos pos);
 
 	List<ItemStack> getExtraItems(BlockGetter level, BlockPos pos, int fortune);
 

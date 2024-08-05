@@ -3,6 +3,7 @@ package forestry.arboriculture.models;
 import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -45,22 +46,18 @@ import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.arboriculture.tiles.TileSapling;
 import forestry.core.utils.SpeciesUtil;
 
-import deleteme.Todos;
-
 public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 	private final IdentityHashMap<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> modelsBySpecies;
 
 	public ModelSapling() {
 		this.modelsBySpecies = new IdentityHashMap<>();
-
-		// todo
-		throw Todos.unimplemented();
 	}
 
 	@Override
 	public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
 		ImmutableMap.Builder<ITreeSpecies, BakedModel> itemModels = new ImmutableMap.Builder<>();
 		ImmutableMap.Builder<ITreeSpecies, BakedModel> blockModels = new ImmutableMap.Builder<>();
+
 		for (Map.Entry<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> entry : this.modelsBySpecies.entrySet()) {
 			BakedModel blockModel = bakery.bake(entry.getValue().getFirst(), BlockModelRotation.X0_Y0, spriteGetter);
 			if (blockModel != null) {
@@ -71,12 +68,19 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 				itemModels.put(entry.getKey(), itemModel);
 			}
 		}
+
 		return new Baked(itemModels.build(), blockModels.build());
 	}
 
 	public Collection<ResourceLocation> getDependencies() {
-		return modelsBySpecies.values().stream()
-				.flatMap(pair -> Stream.of(pair.getFirst(), pair.getSecond())).collect(Collectors.toSet());
+		ArrayList<ResourceLocation> dependencies = new ArrayList<>(this.modelsBySpecies.size() * 2);
+
+		for (Pair<ResourceLocation, ResourceLocation> pair : this.modelsBySpecies.values()) {
+			dependencies.add(pair.getFirst());
+			dependencies.add(pair.getSecond());
+		}
+
+		return dependencies;
 	}
 
 	@Override

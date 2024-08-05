@@ -1,7 +1,5 @@
 package forestry.core.utils;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nullable;
@@ -17,6 +15,8 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
+
+import net.minecraftforge.common.util.Lazy;
 
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.genetics.IBeeSpecies;
@@ -44,9 +44,9 @@ import forestry.api.plugin.IGenomeBuilder;
 import forestry.core.config.Config;
 
 public class SpeciesUtil {
-	public static final Supplier<IBeeSpeciesType> BEE_TYPE = Suppliers.memoize(() -> IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.BEE, IBeeSpeciesType.class));
-	public static final Supplier<ITreeSpeciesType> TREE_TYPE = Suppliers.memoize(() -> IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.TREE, ITreeSpeciesType.class));
-	public static final Supplier<IButterflySpeciesType> BUTTERFLY_TYPE = Suppliers.memoize(() -> IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.BUTTERFLY, IButterflySpeciesType.class));
+	public static final Lazy<IBeeSpeciesType> BEE_TYPE = Lazy.of(() -> IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.BEE, IBeeSpeciesType.class));
+	public static final Lazy<ITreeSpeciesType> TREE_TYPE = Lazy.of(() -> IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.TREE, ITreeSpeciesType.class));
+	public static final Lazy<IButterflySpeciesType> BUTTERFLY_TYPE = Lazy.of(() -> IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.BUTTERFLY, IButterflySpeciesType.class));
 
 	public static ITreeSpecies getTreeSpecies(ResourceLocation id) {
 		return TREE_TYPE.get().getSpecies(id);
@@ -150,7 +150,7 @@ public class SpeciesUtil {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static <I extends IIndividual> I createOffspring(RandomSource rand, IGenome self, IGenome mate, ISpeciesMutator mutator, Function<IGenome, I> individualFactory) {
 		IKaryotype karyotype = self.getKaryotype();
-		IGenomeBuilder genome = karyotype.genomeBuilder();
+		IGenomeBuilder genome = karyotype.createGenomeBuilder();
 		ImmutableList<AllelePair<?>> parent1 = self.getAllelePairs();
 		ImmutableList<AllelePair<?>> parent2 = mate.getAllelePairs();
 

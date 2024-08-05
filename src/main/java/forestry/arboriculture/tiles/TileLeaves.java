@@ -22,7 +22,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -35,11 +34,11 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 import forestry.api.IForestryApi;
 import forestry.api.arboriculture.ForestryTreeSpecies;
-import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
@@ -58,7 +57,6 @@ import forestry.arboriculture.network.IRipeningPacketReceiver;
 import forestry.arboriculture.network.PacketRipeningUpdate;
 import forestry.core.network.packets.PacketTileStream;
 import forestry.core.utils.ColourUtil;
-import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.RenderUtil;
 import forestry.core.utils.SpeciesUtil;
@@ -70,9 +68,9 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	private static final String NBT_MATURATION = "CATMAT";
 	private static final String NBT_CATERPILLAR = "CATER";
 
-	public static final ModelProperty<ILeafSpriteProvider> SPRITE_PROVIDER = new ModelProperty<>();
-	public static final ModelProperty<Boolean> POLLINATED = new ModelProperty<>();
-	public static final ModelProperty<ResourceLocation> FRUIT_TEXTURE = new ModelProperty<>();
+	public static final ModelProperty<ITreeSpecies> PROPERTY_SPECIES = new ModelProperty<>();
+	public static final ModelProperty<Boolean> PROPERTY_POLLINATED = new ModelProperty<>();
+	public static final ModelProperty<ResourceLocation> PROPERTY_FRUIT_TEXTURE = new ModelProperty<>();
 
 	private int colourFruits;
 
@@ -194,14 +192,14 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		}
 
 		if (tree.canBearFruit() && checkFruit && level != null && !level.isClientSide) {
-			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUITS);
+			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
 			if (fruitProvider.isFruitLeaf(genome, level, getBlockPos())) {
 				isFruitLeaf = fruitProvider.getFruitChance(genome, level, getBlockPos()) >= level.random.nextFloat();
 			}
 		}
 
 		if (isFruitLeaf) {
-			IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUITS);
+			IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUIT);
 			if (this.level != null && this.level.isClientSide) {
 				this.fruitSprite = fruit.getSprite(genome, this.level, getBlockPos(), getRipeningTime());
 			}
@@ -227,9 +225,8 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public int getFoliageColour(Player player) {
-		final boolean showPollinated = isPollinatedState && GeneticsUtil.hasNaturalistEye(player);
-		final int baseColor = getLeafSpriteProvider().getColor(showPollinated);
+	public int getFoliageColour() {
+		final int baseColor = IForestryClientApi.INSTANCE.getTreeManager().getTint(this.species).get(this.level, this.worldPosition);
 
 		ITree tree = getTree();
 		if (isDestroyed(tree, damage)) {
@@ -254,58 +251,16 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 			tree = SpeciesUtil.getTreeSpecies(ForestryTreeSpecies.CHERRY).createIndividual();
 		}
 		IGenome genome = tree.getGenome();
-		IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUITS);
+		IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUIT);
 		return fruit.getColour(genome, level, getBlockPos(), getRipeningTime());
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public ResourceLocation getLeaveSprite(boolean fancy) {
-		final ILeafSpriteProvider leafSpriteProvider = getLeafSpriteProvider();
-		return leafSpriteProvider.getSprite(isPollinatedState, fancy);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private ILeafSpriteProvider getLeafSpriteProvider() {
-		if (species != null) {
-			return species.getLeafSpriteProvider();
-		} else {
-			return SpeciesUtil.getTreeSpecies(ForestryTreeSpecies.OAK).getLeafSpriteProvider();
-		}
-	}
-
-	@Nullable
-	public ResourceLocation getFruitSprite() {
-		return fruitSprite;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static ResourceLocation getLeaveSprite(ModelData data, boolean fancy) {
-		final ILeafSpriteProvider leafSpriteProvider = getLeafSpriteProvider(data);
-		final Boolean pollinated = data.get(POLLINATED);
-		return leafSpriteProvider.getSprite(pollinated != null && pollinated, fancy);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private static ILeafSpriteProvider getLeafSpriteProvider(ModelData data) {
-		final ILeafSpriteProvider leafSpriteProvider = data.get(SPRITE_PROVIDER);
-		if (leafSpriteProvider != null) {
-			return leafSpriteProvider;
-		} else {
-			return SpeciesUtil.getTreeSpecies(ForestryTreeSpecies.OAK).getLeafSpriteProvider();
-		}
-	}
-
-	@Nullable
-	public static ResourceLocation getFruitSprite(ModelData data) {
-		return data.get(FRUIT_TEXTURE);
 	}
 
 	@Override
 	public ModelData getModelData() {
 		ModelData.Builder builder = ModelData.builder();
-		builder.with(SPRITE_PROVIDER, getLeafSpriteProvider());
-		builder.with(POLLINATED, isPollinatedState);
-		builder.with(FRUIT_TEXTURE, fruitSprite);
+		builder.with(PROPERTY_SPECIES, this.species);
+		builder.with(PROPERTY_POLLINATED, this.isPollinatedState);
+		builder.with(PROPERTY_FRUIT_TEXTURE, this.fruitSprite);
 		return builder.build();
 	}
 
@@ -382,7 +337,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		data.writeByte(leafState);
 
 		if (hasFruit) {
-			String fruitAlleleUID = getTree().getGenome().getActiveAllele(TreeChromosomes.FRUITS).alleleId().toString();
+			String fruitAlleleUID = getTree().getGenome().getActiveAllele(TreeChromosomes.FRUIT).alleleId().toString();
 			int colourFruits = getFruitColour();
 
 			data.writeUtf(fruitAlleleUID);
@@ -410,7 +365,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		if (treeTemplate != null) {
 			ITree tree;
 			if (fruitId != null) {
-				tree = treeTemplate.createIndividual(Map.of(TreeChromosomes.FRUITS, ForestryAlleles.REGISTRY.getAllele(fruitId)));
+				tree = treeTemplate.createIndividual(Map.of(TreeChromosomes.FRUIT, ForestryAlleles.REGISTRY.getAllele(fruitId)));
 			} else {
 				tree = treeTemplate.createIndividual();
 			}

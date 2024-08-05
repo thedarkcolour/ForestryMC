@@ -17,7 +17,8 @@ import com.mojang.authlib.GameProfile;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.arboriculture.ILeafSpriteProvider;
+import forestry.api.client.IForestryClientApi;
+import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.IGenome;
@@ -67,8 +68,6 @@ public class BlockDefaultLeaves extends BlockAbstractLeaves {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
-		IGenome genome = type.getIndividual().getGenome();
-		ILeafSpriteProvider spriteProvider = genome.getActiveValue(TreeChromosomes.SPECIES).getLeafSpriteProvider();
-		return spriteProvider.getColor(false);
+		return IForestryClientApi.INSTANCE.getTreeManager().getTint(type.getIndividual().getSpecies()).get(level, pos);
 	}
 }

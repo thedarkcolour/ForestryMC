@@ -35,7 +35,7 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 	protected final String binomial;
 	protected final String translationKey;
 
-	public Species(ResourceLocation id, T speciesType, IGenome defaultGenome, ISpeciesBuilder<T, ?> builder) {
+	public Species(ResourceLocation id, T speciesType, IGenome defaultGenome, ISpeciesBuilder<T, ?, ?> builder) {
 		this.id = id;
 		this.speciesType = speciesType;
 		this.defaultGenome = defaultGenome;

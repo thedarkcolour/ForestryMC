@@ -167,7 +167,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 					return leaves.getFruitColour();
 				} else {
 					Player thePlayer = Minecraft.getInstance().player;
-					return leaves.getFoliageColour(thePlayer);
+					return leaves.getFoliageColour();
 				}
 			}
 		}

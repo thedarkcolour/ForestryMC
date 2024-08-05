@@ -5,6 +5,7 @@
  ******************************************************************************/
 package forestry.api.lepidopterology.genetics;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.resources.ResourceLocation;
@@ -42,9 +43,11 @@ public interface IButterflySpecies extends ISpecies<IButterfly> {
 
 	/**
 	 * Allows butterflies to restrict random spawns beyond the restrictions set by temperature() and humidity().
+	 * None of the butterflies added by base Forestry have a biome restriction.
 	 *
-	 * @return Biome tag this butterfly species can be spawned in.
+	 * @return Tag of biomes this butterfly is limited to spawning in, or null if this butterfly can spawn in any biome.
 	 */
+	@Nullable
 	TagKey<Biome> getSpawnBiomes();
 
 	/**

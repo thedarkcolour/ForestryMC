@@ -5,7 +5,7 @@
  ******************************************************************************/
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package forestry.api.plugin.client;
+package forestry.api.client.plugin;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

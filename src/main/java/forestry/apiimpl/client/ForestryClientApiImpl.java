@@ -2,24 +2,22 @@ package forestry.apiimpl.client;
 
 import com.google.common.base.Preconditions;
 
-import java.util.Map;
-
-import net.minecraft.resources.ResourceLocation;
-
-import com.mojang.datafixers.util.Pair;
-
 import net.minecraftforge.api.distmarker.Dist;
 
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.client.ITextureManager;
-import forestry.api.modules.ForestryModule;
+import forestry.api.client.arboriculture.ITreeClientManager;
 import forestry.core.render.ForestryTextureManager;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 public class ForestryClientApiImpl implements IForestryClientApi {
 	private final ITextureManager textureManager = new ForestryTextureManager();
+	@Nullable
+	private ITreeClientManager treeManager;
 
 	public ForestryClientApiImpl() {
 		Preconditions.checkState(FMLEnvironment.dist == Dist.CLIENT, "Tried to load IForestryClientApi on invalid side " + FMLEnvironment.dist);
@@ -31,7 +29,16 @@ public class ForestryClientApiImpl implements IForestryClientApi {
 	}
 
 	@Override
-	public void registerSaplingModels(Map<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> models) {
+	public ITreeClientManager getTreeManager() {
+		ITreeClientManager manager = this.treeManager;
+		if (manager == null) {
+			throw new IllegalStateException("ITreeClientManager not initialized yet");
+		}
+		return manager;
+	}
 
+	@ApiStatus.Internal
+	public void setTreeManager(ITreeClientManager treeManager) {
+		this.treeManager = treeManager;
 	}
 }

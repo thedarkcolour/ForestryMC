@@ -10,11 +10,14 @@
  ******************************************************************************/
 package forestry.lepidopterology.genetics;
 
+import com.google.common.collect.ImmutableMap;
+
 import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -29,6 +32,7 @@ import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IKaryotype;
@@ -39,7 +43,9 @@ import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
+import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.ISpeciesTypeBuilder;
+import forestry.apiimpl.plugin.LepidopterologyRegistration;
 import forestry.core.genetics.SpeciesType;
 import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.tiles.TileUtil;
@@ -55,6 +61,20 @@ import forestry.lepidopterology.tiles.TileCocoon;
 public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButterfly> implements IButterflySpeciesType {
 	public ButterflySpeciesType(IKaryotype karyotype, ISpeciesTypeBuilder builder) {
 		super(ForestrySpeciesTypes.BUTTERFLY, karyotype, builder);
+	}
+
+	@Override
+	public ImmutableMap<ResourceLocation, IButterflySpecies> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
+		LepidopterologyRegistration registration = new LepidopterologyRegistration(this);
+
+		for (IForestryPlugin plugin : plugins) {
+			plugin.registerLepidopterology(registration);
+		}
+
+		ButterflyChromosomes.EFFECT.populate(registration.getEffects());
+		ButterflyChromosomes.COCOON.populate(registration.getCocoons());
+
+		return registration.buildSpecies();
 	}
 
 	@Override

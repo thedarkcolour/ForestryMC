@@ -42,20 +42,37 @@ public interface IApicultureRegistration {
 	 * Adds a bee species to the possible bees found in apiaries in the Apiarist villager houses.
 	 * There are two pools: the common pool, which is rolled 75% of the time, and the rare pool, which is rolled 25% of the time.
 	 *
-	 * @param speciesId      The ID of the species to add.
-	 * @param rare    If true, this bee goes into the "rare" village bee pool, which is chosen 25% of the time instead of the "common" pool.
-	 * @param alleles Map of non-default alleles. Example is the rare Tolerant Flyer variant of the Forest species.
+	 * @param speciesId The ID of the species to add.
+	 * @param rare      If true, this bee goes into the "rare" village bee pool, which is chosen 25% of the time instead of the "common" pool.
+	 * @param alleles   Map of non-default alleles. Example is the rare Tolerant Flyer variant of the Forest species.
 	 */
 	void addVillageBee(ResourceLocation speciesId, boolean rare, Map<IChromosome<?>, IAllele> alleles);
 
+	/**
+	 * Shorthand for adding a village bee that uses the default genome.
+	 *
+	 * @param speciesId The ID of the species to add.
+	 * @param rare      Whether this species is added to the rare pool or the common pool.
+	 */
 	default void addVillageBee(ResourceLocation speciesId, boolean rare) {
 		addVillageBee(speciesId, rare, Map.of());
 	}
 
 	/**
 	 * Register a wild hive for world generation.
+	 *
+	 * @param id         The unique ID for this hive.
+	 * @param definition
 	 */
 	IHiveBuilder registerHive(ResourceLocation id, IHiveDefinition definition);
+
+	/**
+	 * Modifies an already registered hive.
+	 *
+	 * @param id     The ID of the hive to modify.
+	 * @param action The modification to apply to the hive builder.
+	 */
+	void modifyHive(ResourceLocation id, Consumer<IHiveBuilder> action);
 
 	void registerFlowerType(ResourceLocation id, IFlowerType type);
 

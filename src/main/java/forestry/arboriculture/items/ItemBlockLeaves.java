@@ -17,10 +17,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.FoliageColor;
 
-import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.ISpecies;
-import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.items.ItemBlockForestry;
@@ -65,7 +63,7 @@ public class ItemBlockLeaves extends ItemBlockForestry<BlockAbstractLeaves> impl
 			return tileLeaves.getFruitColour();
 		} else {
 			Player player = Minecraft.getInstance().player;
-			return tileLeaves.getFoliageColour(player);
+			return tileLeaves.getFoliageColour();
 		}
 	}
 }

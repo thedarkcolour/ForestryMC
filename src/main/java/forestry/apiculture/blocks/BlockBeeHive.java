@@ -11,12 +11,12 @@
 package forestry.apiculture.blocks;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -45,7 +45,6 @@ import forestry.apiculture.MaterialBeehive;
 import forestry.apiculture.features.ApicultureTiles;
 import forestry.apiculture.tiles.TileHive;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.SpeciesUtil;
 
 // Hives where wild bees live
 public class BlockBeeHive extends Block implements EntityBlock {
@@ -75,7 +74,6 @@ public class BlockBeeHive extends Block implements EntityBlock {
 
 	@Override
 	public void attack(BlockState state, Level world, BlockPos pos, Player player) {
-		super.attack(state, world, pos, player);
 		TileUtil.actOnTile(world, pos, IHiveTile.class, tile -> tile.onAttack(world, pos, player));
 	}
 
@@ -102,8 +100,8 @@ public class BlockBeeHive extends Block implements EntityBlock {
 		return getDrops(builder.getLevel(), pos, fortune);
 	}
 
-	private NonNullList<ItemStack> getDrops(ServerLevel world, BlockPos pos, int fortune) {
-		NonNullList<ItemStack> drops = NonNullList.create();
+	private List<ItemStack> getDrops(ServerLevel world, BlockPos pos, int fortune) {
+		List<ItemStack> drops = new ArrayList<>();
 		RandomSource random = world.getRandom();
 
 		List<IHiveDrop> hiveDrops = getDropsForHive();
@@ -117,12 +115,12 @@ public class BlockBeeHive extends Block implements EntityBlock {
 
 			for (IHiveDrop drop : hiveDrops) {
 				if (random.nextDouble() < drop.getChance(world, pos, fortune)) {
-					IBee bee = drop.getBeeType(world, pos);
+					IBee bee = drop.createIndividual(world, pos);
 					if (random.nextFloat() < drop.getIgnobleChance(world, pos, fortune)) {
 						bee.setPristine(false);
 					}
 
-					ItemStack princess = SpeciesUtil.BEE_TYPE.get().createStack(bee, BeeLifeStage.PRINCESS);
+					ItemStack princess = bee.copyWithStage(BeeLifeStage.PRINCESS);
 					drops.add(princess);
 					hasPrincess = true;
 					break;
@@ -133,8 +131,8 @@ public class BlockBeeHive extends Block implements EntityBlock {
 		// Grab drones
 		for (IHiveDrop drop : hiveDrops) {
 			if (random.nextDouble() < drop.getChance(world, pos, fortune)) {
-				IBee bee = drop.getBeeType(world, pos);
-				ItemStack drone = SpeciesUtil.BEE_TYPE.get().createStack(bee, BeeLifeStage.DRONE);
+				IBee bee = drop.createIndividual(world, pos);
+				ItemStack drone = bee.copyWithStage(BeeLifeStage.DRONE);
 				drops.add(drone);
 				break;
 			}

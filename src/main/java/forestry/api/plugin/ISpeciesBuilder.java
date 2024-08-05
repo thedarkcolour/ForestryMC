@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
@@ -14,7 +13,7 @@ import forestry.api.genetics.ISpeciesType;
 /**
  * Customize properties shared by all species types. Implement this class for your species type registration.
  */
-public interface ISpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISpeciesBuilder<T, B>> {
+public interface ISpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISpecies<?>, B extends ISpeciesBuilder<T, S, B>> {
 	/**
 	 * Overrides whether the allele of this species is dominant. Usually set first by a "registerSpecies" method parameter.
 	 */
@@ -80,7 +79,7 @@ public interface ISpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISpecie
 	/**
 	 * Use a custom class for this species. Default is usually something like {@code BeeSpecies::new}.
 	 */
-	B setFactory(ISpeciesFactory<T, B> factory);
+	B setFactory(ISpeciesFactory<T, S, B> factory);
 
 	String getGenus();
 
@@ -102,8 +101,10 @@ public interface ISpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISpecie
 
 	String getAuthority();
 
+	ISpeciesFactory<T, S, B> createSpeciesFactory();
+
 	@FunctionalInterface
-	interface ISpeciesFactory<T extends ISpeciesType<?, ?>, B extends ISpeciesBuilder<T, B>> {
-		ISpecies<?> create(ResourceLocation id, T speciesType, IGenome defaultGenome, B builder);
+	interface ISpeciesFactory<T extends ISpeciesType<S, ?>, S extends ISpecies<?>, B extends ISpeciesBuilder<T, S, B>> {
+		S create(ResourceLocation id, T speciesType, IGenome defaultGenome, B builder);
 	}
 }

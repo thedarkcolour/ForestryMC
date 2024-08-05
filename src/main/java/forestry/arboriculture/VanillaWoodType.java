@@ -58,7 +58,7 @@ public enum VanillaWoodType implements IWoodType {
 
 	@Override
 	public boolean setDefaultLeaves(LevelAccessor level, BlockPos pos, IGenome genome, RandomSource rand, @Nullable GameProfile owner) {
-		IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUITS);
+		IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUIT);
 		BlockState defaultLeaves;
 		FeatureBlockGroup<? extends Block, ForestryLeafType> leavesGroup;
 		if (fruit.isFruitLeaf(genome, level, pos) && rand.nextFloat() <= fruit.getFruitChance(genome, level, pos)) {

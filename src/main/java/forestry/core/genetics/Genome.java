@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -132,8 +133,8 @@ public final class Genome implements IGenome {
 
 	public static class Builder implements IGenomeBuilder {
 		private final IKaryotype karyotype;
-		private final Object2ObjectOpenHashMap<IChromosome<?>, IAllele> active = new Object2ObjectOpenHashMap<>();
-		private final Object2ObjectOpenHashMap<IChromosome<?>, IAllele> inactive = new Object2ObjectOpenHashMap<>();
+		private final IdentityHashMap<IChromosome<?>, IAllele> active = new IdentityHashMap<>();
+		private final IdentityHashMap<IChromosome<?>, IAllele> inactive = new IdentityHashMap<>();
 
 		public Builder(IKaryotype karyotype) {
 			Preconditions.checkNotNull(karyotype);
@@ -166,6 +167,21 @@ public final class Genome implements IGenome {
 		@Override
 		public boolean isEmpty() {
 			return this.inactive.isEmpty() && this.active.isEmpty();
+		}
+
+		@Override
+		public void setRemainingDefault() {
+			for (Map.Entry<IChromosome<?>, ? extends IAllele> entry : this.karyotype.getDefaultAlleles().entrySet()) {
+				IChromosome<?> chromosome = entry.getKey();
+				IAllele defaultAllele = entry.getValue();
+
+				if (!this.active.containsKey(chromosome)) {
+					this.active.put(chromosome, defaultAllele);
+				}
+				if (!this.inactive.containsKey(chromosome)) {
+					this.inactive.put(chromosome, defaultAllele);
+				}
+			}
 		}
 
 		@Override

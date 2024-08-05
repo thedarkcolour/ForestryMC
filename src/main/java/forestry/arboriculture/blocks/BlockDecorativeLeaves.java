@@ -2,28 +2,28 @@ package forestry.arboriculture.blocks;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IForgeShearable;
 
 import forestry.api.arboriculture.genetics.IFruit;
-import forestry.api.arboriculture.ILeafSpriteProvider;
-import forestry.api.genetics.IGenome;
+import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.blocks.IColoredBlock;
 import forestry.core.utils.BlockUtil;
@@ -32,7 +32,14 @@ public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForg
 	private final ForestryLeafType type;
 
 	public BlockDecorativeLeaves(ForestryLeafType type) {
-		super(Properties.of(Material.LEAVES).strength(0.2f).sound(SoundType.GRASS).noOcclusion().isValidSpawn(BlockUtil.IS_PARROT_OR_OCELOT).isSuffocating(BlockUtil.ALWAYS).isRedstoneConductor(BlockUtil.NEVER).isViewBlocking(BlockUtil.NEVER));
+		super(Properties.of(Material.LEAVES)
+				.strength(0.2f)
+				.sound(SoundType.GRASS)
+				.noOcclusion()
+				.isValidSpawn(BlockUtil.IS_PARROT_OR_OCELOT)
+				.isSuffocating(BlockUtil.ALWAYS)
+				.isRedstoneConductor(BlockUtil.NEVER)
+				.isViewBlocking(BlockUtil.NEVER));
 		this.type = type;
 	}
 
@@ -84,13 +91,12 @@ public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForg
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public int colorMultiplier(BlockState state, @Nullable BlockGetter level, @Nullable BlockPos pos, int tintIndex) {
-		IGenome genome = type.getIndividual().getGenome();
+		ITree individual = type.getIndividual();
 
 		if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
-			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUITS);
+			IFruit fruitProvider = individual.getGenome().getActiveValue(TreeChromosomes.FRUIT);
 			return fruitProvider.getDecorativeColor();
 		}
-		ILeafSpriteProvider spriteProvider = genome.getActiveValue(TreeChromosomes.SPECIES).getLeafSpriteProvider();
-		return spriteProvider.getColor(false);
+		return IForestryClientApi.INSTANCE.getTreeManager().getTint(individual.getSpecies()).get(level, pos);
 	}
 }

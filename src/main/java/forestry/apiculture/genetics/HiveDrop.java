@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 
@@ -23,16 +24,22 @@ import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.hives.IHiveDrop;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
+import forestry.core.utils.SpeciesUtil;
+
+import org.jetbrains.annotations.Nullable;
 
 public class HiveDrop implements IHiveDrop {
-	private final IBeeSpecies species;
+	private final ResourceLocation speciesId;
 	private final double chance;
 	private final List<ItemStack> bonus;
 	private final double ignobleChance;
 	private final Map<IChromosome<?>, IAllele> alleles;
 
-	public HiveDrop(double chance, IBeeSpecies species, List<ItemStack> bonus, float ignobleChance, Map<IChromosome<?>, IAllele> alleles) {
-		this.species = species;
+	@Nullable
+	private IBeeSpecies species;
+
+	public HiveDrop(double chance, ResourceLocation speciesId, List<ItemStack> bonus, float ignobleChance, Map<IChromosome<?>, IAllele> alleles) {
+		this.speciesId = speciesId;
 		this.chance = chance;
 		this.bonus = bonus;
 		this.ignobleChance = ignobleChance;
@@ -40,7 +47,10 @@ public class HiveDrop implements IHiveDrop {
 	}
 
 	@Override
-	public IBee getBeeType(BlockGetter level, BlockPos pos) {
+	public IBee createIndividual(BlockGetter level, BlockPos pos) {
+		if (this.species == null) {
+			this.species = SpeciesUtil.getBeeSpecies(speciesId);
+		}
 		return this.species.createIndividual(this.alleles);
 	}
 

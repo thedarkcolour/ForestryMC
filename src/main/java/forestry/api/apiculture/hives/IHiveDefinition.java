@@ -16,7 +16,6 @@ import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 
 public interface IHiveDefinition {
-
 	/**
 	 * The hive generator for this hive.
 	 */

@@ -21,6 +21,8 @@ import forestry.api.ForestryCapabilities;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
+import forestry.api.plugin.IApicultureRegistration;
+import forestry.api.plugin.IForestryPlugin;
 
 public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> extends IBreedingTrackerHandler {
 	/**
@@ -38,14 +40,6 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	 */
 	@Nullable
 	ILifeStage getLifeStage(ItemStack stack);
-
-	/**
-	 * Called when all species of this type have been registered and modified.
-	 * Used to initialize species statistics.
-	 *
-	 * @param allSpecies The map of every species ID to its species.
-	 */
-	void onSpeciesRegistered(ImmutableMap<ResourceLocation, S> allSpecies);
 
 	/**
 	 * @return The mutation manager for this species type.
@@ -205,6 +199,26 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	 * @param profile The player to whom the breeding tracker belongs to.
 	 */
 	void initializeBreedingTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile);
+
+	/**
+	 * Used to register species and related data for this species type from an {@link IForestryPlugin}.
+	 * IForestryPlugin already contains methods for each species type added by Forestry. For a modded species type,
+	 * it is recommended to offer an additional interface to be implemented by IForestryPlugins in order to handle
+	 * registration for the custom species type (ex. IBotanyPluginExtension for Binnie's flower species type) and then
+	 * checking if the plugin implements that interface.
+	 *
+	 * @param plugins The list of plugins responsible for registering species and data.
+	 * @return The map of every species registered to this species type, which later gets passed to {@link #onSpeciesRegistered}.
+	 * @see IForestryPlugin#registerApiculture(IApicultureRegistration) for an example of what data is registered.
+	 */
+	ImmutableMap<ResourceLocation, S> handleSpeciesRegistration(List<IForestryPlugin> plugins);
+
+	/**
+	 * Called when all species of this type have been registered and modified.
+	 *
+	 * @param allSpecies The map of every species ID to its species.
+	 */
+	void onSpeciesRegistered(ImmutableMap<ResourceLocation, S> allSpecies);
 
 	/**
 	 * @return This species type casted to a subclass of ISpeciesType.

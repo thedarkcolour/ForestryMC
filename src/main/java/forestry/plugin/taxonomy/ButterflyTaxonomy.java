@@ -20,6 +20,7 @@ public class ButterflyTaxonomy {
 				family.defineSubTaxon(ForestryTaxa.GENUS_ANTHOCHARIS);
 				family.defineSubTaxon(ForestryTaxa.GENUS_COLIAS);
 				family.defineSubTaxon(ForestryTaxa.GENUS_PONTIA);
+				family.defineSubTaxon(ForestryTaxa.GENUS_CELASTRINA);
 			});
 			order.defineSubTaxon(ForestryTaxa.FAMILY_BRUSH_FOOTED_BUTTERFLIES, family -> {
 				family.defineSubTaxon(ForestryTaxa.GENUS_PARARGE);

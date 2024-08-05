@@ -1,8 +1,6 @@
-/*******************************************************************************
- * Copyright 2011-2014 SirSengir
- *
- * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
- ******************************************************************************/
+/**
+ * Contains classes related to registration of Forestry data by {@link forestry.api.plugin.IForestryPlugin} plugins.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 package forestry.api.plugin;

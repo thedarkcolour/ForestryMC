@@ -10,10 +10,13 @@
  ******************************************************************************/
 package forestry.apiculture.genetics;
 
+import com.google.common.collect.ImmutableMap;
+
 import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -21,6 +24,7 @@ import net.minecraft.world.level.LevelAccessor;
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeListener;
@@ -36,16 +40,20 @@ import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
+import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.ISpeciesTypeBuilder;
 import forestry.apiculture.BeeHousingListener;
 import forestry.apiculture.BeeHousingModifier;
 import forestry.apiculture.BeekeepingLogic;
+import forestry.apiimpl.ForestryApiImpl;
 import forestry.core.genetics.BreedingTracker;
 import forestry.core.genetics.SpeciesType;
 import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.utils.ItemStackUtil;
+import forestry.plugin.ApicultureRegistration;
 
 public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IBeeSpeciesType {
 	public BeeSpeciesType(IKaryotype karyotype, ISpeciesTypeBuilder builder) {
@@ -167,5 +175,23 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 			bounty.add(ItemStackUtil.copyWithRandomSize(stack, (int) ((float) bountyLevel / 2), level.random));
 		}
 		return bounty;
+	}
+
+	@Override
+	public ImmutableMap<ResourceLocation, IBeeSpecies> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
+		ApicultureRegistration registration = new ApicultureRegistration(this);
+
+		for (IForestryPlugin plugin : plugins) {
+			plugin.registerApiculture(registration);
+		}
+
+		// populate bee registry chromosomes
+		BeeChromosomes.EFFECT.populate(registration.getBeeEffects());
+		BeeChromosomes.FLOWER_TYPE.populate(registration.getFlowerTypes());
+
+		// initialize hive manager
+		((ForestryApiImpl) IForestryApi.INSTANCE).setHiveManager(registration.buildHiveManager());
+
+		return registration.buildSpecies();
 	}
 }

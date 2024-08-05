@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -44,7 +45,7 @@ import forestry.farming.FarmHelper.Stage;
 import forestry.farming.multiblock.FarmFertilizerManager;
 import forestry.farming.multiblock.FarmHydrationManager;
 
-import deleteme.Shuffler;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IExtentCache {
 	private final Map<Direction, List<FarmTarget>> targets = new EnumMap<>(Direction.class);
@@ -135,8 +136,8 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 		FarmWorkStatus farmWorkStatus = new FarmWorkStatus();
 
 		Level level = housing.getWorldObj();
-		List<Direction> farmDirections = HorizontalDirection.VALUES;
-		Shuffler.shuffle(farmDirections, level.random);
+		ObjectArrayList<Direction> farmDirections = new ObjectArrayList<>(HorizontalDirection.VALUES);
+		Util.shuffle(farmDirections, level.random);
 		for (Direction farmSide : farmDirections) {
 			IFarmLogic logic = housing.getFarmLogic(farmSide);
 			List<FarmTarget> farmTargets = targets.get(farmSide);

@@ -12,6 +12,7 @@ import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import forestry.api.ForestryConstants;
+import forestry.api.client.IForestryClientApi;
 import forestry.arboriculture.blocks.ForestryLeafType;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.core.features.CoreBlocks;
@@ -84,7 +85,7 @@ public class ForestryBlockStateProvider extends BlockStateProvider {
 			Block defaultBlock = ArboricultureBlocks.LEAVES_DEFAULT.get(treeType).block();
 			Block defaultFruitBlock = ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(treeType).block();
 			Block decorativeBlock = ArboricultureBlocks.LEAVES_DECORATIVE.get(treeType).block();
-			ResourceLocation particle = treeType.getLeafSpriteProvider().getSprite(false, true);
+			ResourceLocation particle = IForestryClientApi.INSTANCE.getTreeManager().getLeafSprite(treeType.getIndividual().getSpecies()).get(false, true);
 			ModelFile file = models().getBuilder(path(defaultBlock)).texture("particle", particle);
 
 			getVariantBuilder(defaultBlock).partialState().modelForState().modelFile(file).addModel();

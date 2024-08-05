@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -54,6 +55,7 @@ import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
+import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.ISpeciesTypeBuilder;
 import forestry.arboriculture.PodFruit;
 import forestry.arboriculture.blocks.BlockFruitPod;
@@ -67,6 +69,7 @@ import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.RenderUtil;
+import forestry.plugin.ArboricultureRegistration;
 
 public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements ITreeSpeciesType, IBreedingTrackerHandler {
 	private final LinkedList<ILeafTickHandler> leafTickHandlers = new LinkedList<>();
@@ -78,6 +81,8 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 
 	@Override
 	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, ITreeSpecies> allSpecies) {
+		super.onSpeciesRegistered(allSpecies);
+
 		this.vanillaIndividuals.clear();
 
 		for (ITreeSpecies entry : allSpecies.values()) {
@@ -96,6 +101,23 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 				throw new IllegalStateException("Invalid ForestryLeafType " + type.getSerializedName() + ": no tree species found with ID: " + type.getSpeciesId());
 			}
 		}
+	}
+
+	@Override
+	public ImmutableMap<ResourceLocation, ITreeSpecies> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
+		ArboricultureRegistration registration = new ArboricultureRegistration(this);
+
+		for (IForestryPlugin plugin : plugins) {
+			plugin.registerArboriculture(registration);
+		}
+
+		ImmutableMap<ResourceLocation, ITreeSpecies> allSpecies = registration.buildSpecies();
+
+		// populate tree registry chromosomes
+		TreeChromosomes.EFFECT.populate(registration.getEffects());
+		TreeChromosomes.FRUIT.populate(registration.getFruits());
+
+		return allSpecies;
 	}
 
 	@Override
@@ -268,7 +290,7 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 		if (stack.isEmpty()) {
 			return 0f;
 		}
-		IFruit fruit = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUITS);
+		IFruit fruit = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUIT);
 		for (Product product : Iterables.concat(fruit.getProducts(), fruit.getSpecialty())) {
 			if (stack.is(product.item())) {
 				return 1f;

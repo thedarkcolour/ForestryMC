@@ -138,10 +138,18 @@ public interface IGenome {
 		return chromosome.getDisplayName(getInactiveAllele(chromosome));
 	}
 
+	/**
+	 * Note: Use {@link IIndividual#getSpecies} whenever possible.
+	 * @return The active species of the individual.
+	 */
 	default <S extends ISpecies<?>> S getActiveSpecies() {
 		return (S) getActiveValue(getKaryotype().getSpeciesChromosome());
 	}
 
+	/**
+	 * Note: Use {@link IIndividual#getInactiveSpecies} whenever possible.
+	 * @return The inactive species of the individual.
+	 */
 	default <S extends ISpecies<?>> S getInactiveSpecies() {
 		return (S) getInactiveValue(getKaryotype().getSpeciesChromosome());
 	}

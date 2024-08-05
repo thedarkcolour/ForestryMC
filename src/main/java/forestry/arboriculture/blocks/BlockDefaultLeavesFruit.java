@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.api.arboriculture.ILeafSpriteProvider;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
@@ -54,7 +54,7 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 			if (tree == null) {
 				return InteractionResult.FAIL;
 			}
-			IFruit fruitProvider = tree.getGenome().getActiveValue(TreeChromosomes.FRUITS);
+			IFruit fruitProvider = tree.getGenome().getActiveValue(TreeChromosomes.FRUIT);
 			List<ItemStack> products = tree.produceStacks(level, pos, fruitProvider.getRipeningPeriod());
 			level.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(type).defaultState()
 					.setValue(LeavesBlock.PERSISTENT, state.getValue(LeavesBlock.PERSISTENT))
@@ -85,7 +85,7 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 
 		// Add fruits
 		IGenome genome = tree.getGenome();
-		IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUITS);
+		IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
 		if (fruitProvider.isFruitLeaf(genome, world, pos)) {
 			List<ItemStack> produceStacks = tree.produceStacks(world, pos, Integer.MAX_VALUE);
 			drops.addAll(produceStacks);
@@ -113,7 +113,6 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 			return genome.getDecorativeColor();
 		}
 
-		ILeafSpriteProvider spriteProvider = type.getLeafSpriteProvider();
-		return spriteProvider.getColor(false);
+		return IForestryClientApi.INSTANCE.getTreeManager().getTint(type.getIndividual().getSpecies()).get(level, pos);
 	}
 }

@@ -27,7 +27,8 @@ public class ForestryApiImpl implements IForestryApi {
 	@Nullable
 	private IFarmingManager farmingManager;
 	private final IClimateManager biomeManager = new ForestryClimateManager();
-	private final IHiveManager hiveManager = new HiveManager();
+	@Nullable
+	private IHiveManager hiveManager;
 	private final IAlleleManager alleleRegistry = new AlleleManager();
 	@Nullable
 	private IGeneticManager geneticManager;
@@ -68,7 +69,11 @@ public class ForestryApiImpl implements IForestryApi {
 
 	@Override
 	public IHiveManager getHiveManager() {
-		return this.hiveManager;
+		IHiveManager manager = this.hiveManager;
+		if (manager == null) {
+			throw new IllegalStateException("IHiveManager not initialized yet");
+		}
+		return manager;
 	}
 
 	@Override
@@ -126,5 +131,10 @@ public class ForestryApiImpl implements IForestryApi {
 	@ApiStatus.Internal
 	public void setFarmingManager(FarmingManager farmingManager) {
 		this.farmingManager = farmingManager;
+	}
+
+	@ApiStatus.Internal
+	public void setHiveManager(HiveManager hiveManager) {
+		this.hiveManager = hiveManager;
 	}
 }

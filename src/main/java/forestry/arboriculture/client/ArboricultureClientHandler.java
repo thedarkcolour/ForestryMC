@@ -24,8 +24,8 @@ import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.client.IClientModuleHandler;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.arboriculture.blocks.BlockDecorativeLeaves;
 import forestry.arboriculture.features.ArboricultureBlocks;
-import forestry.arboriculture.models.LeafTexture;
 import forestry.arboriculture.models.ModelDecorativeLeaves;
 import forestry.arboriculture.models.ModelDefaultLeaves;
 import forestry.arboriculture.models.ModelDefaultLeavesFruit;
@@ -33,6 +33,7 @@ import forestry.arboriculture.models.ModelLeaves;
 import forestry.arboriculture.models.SaplingModelLoader;
 import forestry.core.models.ClientManager;
 import forestry.core.utils.SpeciesUtil;
+import forestry.plugin.PluginManager;
 
 public class ArboricultureClientHandler implements IClientModuleHandler {
 	@Override
@@ -47,7 +48,7 @@ public class ArboricultureClientHandler implements IClientModuleHandler {
 		event.enqueueWork(() -> {
 			ClientManager clientManager = ClientManager.INSTANCE;
 			clientManager.registerModel(new ModelLeaves(), ArboricultureBlocks.LEAVES);
-			clientManager.registerModel(new ModelDecorativeLeaves(), ArboricultureBlocks.LEAVES_DECORATIVE);
+			clientManager.registerModel(new ModelDecorativeLeaves<>(BlockDecorativeLeaves.class), ArboricultureBlocks.LEAVES_DECORATIVE);
 			clientManager.registerModel(new ModelDefaultLeaves(), ArboricultureBlocks.LEAVES_DEFAULT);
 			clientManager.registerModel(new ModelDefaultLeavesFruit(), ArboricultureBlocks.LEAVES_DEFAULT_FRUIT);
 
@@ -62,12 +63,11 @@ public class ArboricultureClientHandler implements IClientModuleHandler {
 	}
 
 	private static void registerSprites(TextureStitchEvent.Pre event) {
-		if (event.getAtlas().location() != InventoryMenu.BLOCK_ATLAS) {
-			return;
-		}
-		LeafTexture.registerAllSprites(event);
-		for (IValueAllele<IFruit> alleleFruit : SpeciesUtil.TREE_TYPE.get().getKaryotype().getAlleles(TreeChromosomes.FRUITS)) {
-			alleleFruit.value().registerSprites(event);
+		if (event.getAtlas().location() == InventoryMenu.BLOCK_ATLAS) {
+			for (IValueAllele<IFruit> alleleFruit : SpeciesUtil.TREE_TYPE.get().getKaryotype().getAlleles(TreeChromosomes.FRUIT)) {
+				alleleFruit.value().registerSprites(event);
+			}
+			PluginManager.registerSprites(event);
 		}
 	}
 

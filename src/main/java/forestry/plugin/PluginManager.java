@@ -7,10 +7,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.ServiceLoader;
 
 import net.minecraft.resources.ResourceLocation;
 
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -26,6 +29,7 @@ import forestry.api.genetics.ITaxon;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.apiimpl.ForestryApiImpl;
 import forestry.apiimpl.GeneticManager;
+import forestry.apiimpl.client.plugin.ClientRegistration;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.circuits.CircuitManager;
 import forestry.core.errors.ErrorManager;
@@ -134,6 +138,7 @@ public class PluginManager {
 	}
 
 	public static void registerGenetics() {
+		// registers filter rules and species types
 		GeneticRegistration registration = new GeneticRegistration();
 
 		for (IForestryPlugin plugin : LOADED_PLUGINS) {
@@ -148,6 +153,25 @@ public class PluginManager {
 		ForestryApiImpl api = (ForestryApiImpl) IForestryApi.INSTANCE;
 		api.setGeneticManager(new GeneticManager(taxa, speciesTypes));
 		api.setFilterManager(new FilterManager(registration.getFilterRuleTypes()));
+
+		LinkedHashMap<ISpeciesType<?, ?>, ImmutableMap<ResourceLocation, ?>> allSpecies = new LinkedHashMap<>(speciesTypes.size());
+
+		for (ISpeciesType<?, ?> speciesType : speciesTypes.values()) {
+			ImmutableMap<ResourceLocation, ?> species = speciesType.handleSpeciesRegistration(LOADED_PLUGINS);
+			allSpecies.put(speciesType, species);
+
+			Forestry.LOGGER.debug("Registered {} species for species type {}", species.size(), speciesType.id());
+		}
+
+		for (Map.Entry<ISpeciesType<?, ?>, ImmutableMap<ResourceLocation, ?>> entry : allSpecies.entrySet()) {
+			ISpeciesType<?, ?> speciesType = entry.getKey();
+
+			speciesType.onSpeciesRegistered((ImmutableMap) entry.getValue());
+
+			if (speciesType.getAllSpecies().isEmpty()) {
+				throw new IllegalStateException("Failed to register species for type " + speciesType.id());
+			}
+		}
 	}
 
 	public static void registerFarming() {
@@ -179,5 +203,13 @@ public class PluginManager {
 				throw asyncThrown;
 			}
 		});
+	}
+
+	public static void registerSprites(TextureStitchEvent.Pre event) {
+		ClientRegistration registration = new ClientRegistration();
+
+		for (IForestryPlugin plugin : LOADED_PLUGINS) {
+			plugin.registerClient(consumer -> consumer.accept(registration));
+		}
 	}
 }

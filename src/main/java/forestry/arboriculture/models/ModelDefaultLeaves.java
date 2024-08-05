@@ -27,7 +27,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
-import forestry.api.arboriculture.ILeafSpriteProvider;
+import forestry.api.client.IForestryClientApi;
+import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDefaultLeaves;
@@ -92,9 +93,9 @@ public class ModelDefaultLeaves extends ModelBlockCached<BlockDefaultLeaves, Mod
 		ResourceLocation speciesId = key.speciesId;
 
 		ITreeSpecies species = SpeciesUtil.getTreeSpecies(speciesId);
-		ILeafSpriteProvider leafSpriteProvider = species.getLeafSpriteProvider();
+		ILeafSprite leafSpriteProvider = IForestryClientApi.INSTANCE.getTreeManager().getLeafSprite(species);
 
-		ResourceLocation leafSpriteLocation = leafSpriteProvider.getSprite(false, key.fancy);
+		ResourceLocation leafSpriteLocation = leafSpriteProvider.get(false, key.fancy);
 		TextureAtlasSprite leafSprite = ResourceUtil.getBlockSprite(leafSpriteLocation);
 
 		// Render the plain leaf block.

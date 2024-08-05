@@ -107,8 +107,8 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 					IGenome genome = tree.getGenome();
 					ITreeSpecies primary = genome.getActiveValue(TreeChromosomes.SPECIES);
 					ITreeSpecies secondary = genome.getInactiveValue(TreeChromosomes.SPECIES);
-					IValueAllele<IFruit> activeFruit = genome.getActiveAllele(TreeChromosomes.FRUITS);
-					IValueAllele<IFruit> inactiveFruit = genome.getInactiveAllele(TreeChromosomes.FRUITS);
+					IValueAllele<IFruit> activeFruit = genome.getActiveAllele(TreeChromosomes.FRUIT);
+					IValueAllele<IFruit> inactiveFruit = genome.getInactiveAllele(TreeChromosomes.FRUIT);
 
 					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 

@@ -21,12 +21,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
-import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.ITreeSpecies;
+import forestry.api.client.IForestryClientApi;
+import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockDecorativeLeaves;
@@ -35,11 +34,9 @@ import forestry.core.models.baker.ModelBaker;
 import forestry.core.utils.ResourceUtil;
 import forestry.core.utils.SpeciesUtil;
 
-// todo this is duplicate of ModelDefaultLeavesFruit.
-@OnlyIn(Dist.CLIENT)
-public class ModelDecorativeLeaves extends ModelBlockCached<BlockDecorativeLeaves, ModelDefaultLeaves.Key> {
-	public ModelDecorativeLeaves() {
-		super(BlockDecorativeLeaves.class);
+public class ModelDecorativeLeaves<B extends Block> extends ModelBlockCached<B, ModelDefaultLeaves.Key> {
+	public ModelDecorativeLeaves(Class<B> blockClass) {
+		super(blockClass);
 	}
 
 	@Override
@@ -59,31 +56,31 @@ public class ModelDecorativeLeaves extends ModelBlockCached<BlockDecorativeLeave
 	}
 
 	@Override
-	protected void bakeBlock(BlockDecorativeLeaves block, ModelData extraData, ModelDefaultLeaves.Key key, ModelBaker baker, boolean inventory) {
+	protected void bakeBlock(B block, ModelData extraData, ModelDefaultLeaves.Key key, ModelBaker baker, boolean inventory) {
 		ResourceLocation speciesId = key.speciesId;
 
 		ITreeSpecies species = SpeciesUtil.getTreeSpecies(speciesId);
-		ILeafSpriteProvider leafSpriteProvider = species.getLeafSpriteProvider();
+		ILeafSprite sprite = IForestryClientApi.INSTANCE.getTreeManager().getLeafSprite(species);
 
-		ResourceLocation leafSpriteLocation = leafSpriteProvider.getSprite(false, key.fancy);
-		TextureAtlasSprite leafSprite = ResourceUtil.getBlockSprite(leafSpriteLocation);
+		ResourceLocation particleLocation = sprite.getParticle();
+		TextureAtlasSprite particleSprite = ResourceUtil.getBlockSprite(particleLocation);
 
 		// Render the plain leaf block.
-		baker.addBlockModel(leafSprite, BlockAbstractLeaves.FOLIAGE_COLOR_INDEX);
+		baker.addBlockModel(particleSprite, BlockAbstractLeaves.FOLIAGE_COLOR_INDEX);
 
 		// Render overlay for fruit leaves.
-		ResourceLocation fruitSpriteLocation = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUITS).getDecorativeSprite();
+		ResourceLocation fruitSpriteLocation = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUIT).getDecorativeSprite();
 		if (fruitSpriteLocation != null) {
 			TextureAtlasSprite fruitSprite = ResourceUtil.getBlockSprite(fruitSpriteLocation);
 			baker.addBlockModel(fruitSprite, BlockAbstractLeaves.FRUIT_COLOR_INDEX);
 		}
 
 		// Set the particle sprite
-		baker.setParticleSprite(leafSprite);
+		baker.setParticleSprite(particleSprite);
 	}
 
 	@Override
-	protected BakedModel bakeModel(BlockState state, ModelDefaultLeaves.Key key, BlockDecorativeLeaves block, ModelData extraData) {
+	protected BakedModel bakeModel(BlockState state, ModelDefaultLeaves.Key key, B block, ModelData extraData) {
 		ModelBaker baker = new ModelBaker();
 
 		bakeBlock(block, extraData, key, baker, false);

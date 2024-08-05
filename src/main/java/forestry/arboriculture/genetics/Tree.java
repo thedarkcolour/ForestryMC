@@ -171,16 +171,16 @@ public class Tree extends Individual<ITreeSpecies, ITree, ITreeSpeciesType> impl
 
 	@Override
 	public List<Product> getProducts() {
-		return this.genome.getActiveValue(TreeChromosomes.FRUITS).getProducts();
+		return this.genome.getActiveValue(TreeChromosomes.FRUIT).getProducts();
 	}
 
 	@Override
 	public List<Product> getSpecialties() {
-		return this.genome.getActiveValue(TreeChromosomes.FRUITS).getSpecialty();
+		return this.genome.getActiveValue(TreeChromosomes.FRUIT).getSpecialty();
 	}
 
 	@Override
 	public List<ItemStack> produceStacks(Level level, BlockPos pos, int ripeningTime) {
-		return this.genome.getActiveValue(TreeChromosomes.FRUITS).getFruits(this.genome, level, pos, ripeningTime);
+		return this.genome.getActiveValue(TreeChromosomes.FRUIT).getFruits(this.genome, level, pos, ripeningTime);
 	}
 }

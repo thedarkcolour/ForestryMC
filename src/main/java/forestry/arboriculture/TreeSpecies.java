@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.arboriculture.ILeafSpriteProvider;
 import forestry.api.arboriculture.ITreeGenerator;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
@@ -39,25 +38,23 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 	private final ITreeGenerator generator;
 	private final List<BlockState> vanillaLeafStates;
 	private final ItemStack decorativeLeaves;
+	private final int color;
 
 	public TreeSpecies(ResourceLocation id, ITreeSpeciesType speciesType, IGenome defaultGenome, ITreeSpeciesBuilder builder) {
 		super(id, speciesType, defaultGenome, builder);
 
 		this.temperature = builder.getTemperature();
 		this.humidity = builder.getHumidity();
+		// todo how to handle this being null?
 		this.generator = builder.getGenerator();
 		this.vanillaLeafStates = builder.getVanillaLeafStates();
 		this.decorativeLeaves = builder.getDecorativeLeaves();
+		this.color = builder.getColor();
 	}
 
 	@Override
 	public ITreeGenerator getGenerator() {
 		return this.generator;
-	}
-
-	@Override
-	public ILeafSpriteProvider getLeafSpriteProvider() {
-		return null;
 	}
 
 	@Override
@@ -82,7 +79,7 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 
 	@Override
 	public int getGermlingColor(ILifeStage stage, int renderPass) {
-		return stage == TreeLifeStage.POLLEN ? getLeafSpriteProvider().getColor(false) : 0xffffff;
+		return stage == TreeLifeStage.POLLEN ? getEscritoireColor() : 0xffffff;
 	}
 
 	@Override
@@ -92,7 +89,7 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 
 	@Override
 	public int getEscritoireColor() {
-		return getLeafSpriteProvider().getColor(false);
+		return this.color;
 	}
 
 	@Override
@@ -127,8 +124,8 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 			tooltip.add(Component.translatable("for.gui.fireresist").withStyle(ChatFormatting.RED));
 		}
 
-		if (genome.getActiveAllele(TreeChromosomes.FRUITS) != ForestryAlleles.FRUIT_NONE) {
-			tooltip.add(Component.literal("F: ").append(genome.getActiveName(TreeChromosomes.FRUITS)).withStyle(ChatFormatting.GREEN));
+		if (genome.getActiveAllele(TreeChromosomes.FRUIT) != ForestryAlleles.FRUIT_NONE) {
+			tooltip.add(Component.literal("F: ").append(genome.getActiveName(TreeChromosomes.FRUIT)).withStyle(ChatFormatting.GREEN));
 		}
 	}
 
@@ -155,11 +152,11 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 
 	@Override
 	public boolean allowsFruitBlocks(IGenome genome) {
-		return genome.getActiveValue(TreeChromosomes.FRUITS).requiresFruitBlocks();
+		return genome.getActiveValue(TreeChromosomes.FRUIT).requiresFruitBlocks();
 	}
 
 	@Override
 	public boolean trySpawnFruitBlock(LevelAccessor level, RandomSource rand, BlockPos pos) {
-		return this.defaultGenome.getActiveValue(TreeChromosomes.FRUITS).trySpawnFruitBlock(this.defaultGenome, level, rand, pos);
+		return this.defaultGenome.getActiveValue(TreeChromosomes.FRUIT).trySpawnFruitBlock(this.defaultGenome, level, rand, pos);
 	}
 }

@@ -54,10 +54,4 @@ public interface IBeeSpecies extends ISpecies<IBee> {
 	 * @return The color of the bee's outline. Used for tintIndex = 0.
 	 */
 	int getOutline();
-
-	/**
-	 * @return The hive block state that this species spawns naturally in. {@code null} if this species does not spawn naturally.
-	 */
-	@Nullable
-	BlockState getSpawnHives();
 }

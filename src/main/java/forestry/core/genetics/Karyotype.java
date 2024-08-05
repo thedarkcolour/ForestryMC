@@ -72,7 +72,7 @@ public class Karyotype implements IKaryotype {
 
 		if (validAlleles != null) {
 			if (chromosome instanceof IRegistryChromosome<?> registry) {
-				return registry.isValidAllele(allele);
+				return !registry.isPopulated() || registry.isValidAllele(allele);
 			} else {
 				return validAlleles.contains(allele);
 			}
@@ -110,7 +110,7 @@ public class Karyotype implements IKaryotype {
 	}
 
 	@Override
-	public IGenomeBuilder genomeBuilder() {
+	public IGenomeBuilder createGenomeBuilder() {
 		return new Genome.Builder(this);
 	}
 

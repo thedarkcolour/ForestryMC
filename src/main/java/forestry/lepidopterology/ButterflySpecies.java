@@ -1,5 +1,6 @@
 package forestry.lepidopterology;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.ChatFormatting;
@@ -9,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
+import forestry.api.ForestryConstants;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.tooltips.ToolTip;
@@ -32,11 +34,14 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 	private final boolean nocturnal;
 	private final boolean moth;
 	private final float rarity;
+	@Nullable
 	private final TagKey<Biome> spawnBiomes;
 	private final float flightDistance;
 	private final int serumColor;
 	private final List<Product> products;
 	private final List<Product> caterpillarProducts;
+	private final ResourceLocation entityTexture;
+	private final ResourceLocation itemTexture;
 
 	public ButterflySpecies(ResourceLocation id, IButterflySpeciesType speciesType, IGenome defaultGenome, IButterflySpeciesBuilder builder) {
 		super(id, speciesType, defaultGenome, builder);
@@ -51,6 +56,8 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 		this.serumColor = builder.getSerumColor();
 		this.products = builder.buildProducts();
 		this.caterpillarProducts = builder.buildCaterpillarProducts();
+		this.itemTexture = builder.getItemTexture();
+		this.entityTexture = builder.getEntityTexture();
 	}
 
 	@Override
@@ -102,12 +109,12 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 
 	@Override
 	public ResourceLocation getEntityTexture() {
-		return null;
+		return this.entityTexture;
 	}
 
 	@Override
 	public ResourceLocation getItemTexture() {
-		return null;
+		return this.itemTexture;
 	}
 
 	@Override
@@ -120,6 +127,7 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 		return this.humidity;
 	}
 
+	@Nullable
 	@Override
 	public TagKey<Biome> getSpawnBiomes() {
 		return this.spawnBiomes;

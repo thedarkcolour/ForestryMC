@@ -23,7 +23,7 @@ public class TreeChromosomes {
 	/**
 	 * Determines what fruits are grown on the tree.
 	 */
-	public static final IRegistryChromosome<IFruit> FRUITS = ForestryAlleles.REGISTRY.registryChromosome(forestry("fruits"), IFruit.class);
+	public static final IRegistryChromosome<IFruit> FRUIT = ForestryAlleles.REGISTRY.registryChromosome(forestry("fruits"), IFruit.class);
 	/**
 	 * Chance for fruit leaves and/or drops.
 	 */

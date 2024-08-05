@@ -113,7 +113,7 @@ public class DefaultFarms {
 				.setFertilizerConsumption(10)
 				.setWaterConsumption(hydrationModifier -> (int) (40 * hydrationModifier));
 		for (ITreeSpecies species : SpeciesUtil.TREE_TYPE.get().getAllSpecies()) {
-			IValueAllele<IFruit> fruitAllele = species.getDefaultGenome().getActiveAllele(TreeChromosomes.FRUITS);
+			IValueAllele<IFruit> fruitAllele = species.getDefaultGenome().getActiveAllele(TreeChromosomes.FRUIT);
 
 			if (fruitAllele != ForestryAlleles.FRUIT_NONE) {
 				IFruit fruit = fruitAllele.value();

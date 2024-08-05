@@ -1,18 +1,16 @@
 package forestry.api.client;
 
-import java.util.Map;
 import java.util.ServiceLoader;
 
-import net.minecraft.resources.ResourceLocation;
+import forestry.api.client.arboriculture.ITreeClientManager;
 
-import com.mojang.datafixers.util.Pair;
-
-import forestry.api.arboriculture.ITreeSpecies;
-
+/**
+ * The Forestry Client API manages client-only data related to Forestry.
+ */
 public interface IForestryClientApi {
 	IForestryClientApi INSTANCE = ServiceLoader.load(IForestryClientApi.class).findFirst().orElseThrow();
 
 	ITextureManager getTextureManager();
 
-	void registerSaplingModels(Map<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> models);
+	ITreeClientManager getTreeManager();
 }

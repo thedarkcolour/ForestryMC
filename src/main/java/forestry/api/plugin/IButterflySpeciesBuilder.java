@@ -1,19 +1,22 @@
 package forestry.api.plugin;
 
+import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.List;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.core.Product;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 
 /**
  * Builder used to register new butterfly and moth species and configure already existing ones.
  * Use {@link ILepidopterologyRegistration#registerSpecies} to obtain instances of this class.
  */
-public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpeciesType, IButterflySpeciesBuilder> {
+public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpeciesType, IButterflySpecies, IButterflySpeciesBuilder> {
 	/**
 	 * Overrides the serum color set in {@link ILepidopterologyRegistration#registerSpecies}.
 	 */
@@ -33,6 +36,12 @@ public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpec
 	 */
 	IButterflySpeciesBuilder setMoth(boolean moth);
 
+	/**
+	 * Sets a tag limiting the biomes this butterfly can spawn in.
+	 * By default, butterflies can spawn in any biome, given the climate at the spawn position is correct.
+	 *
+	 * @param biomeTag A set of biomes to limit spawning of this butterfly to.
+	 */
 	IButterflySpeciesBuilder setSpawnBiomes(TagKey<Biome> biomeTag);
 
 	/**
@@ -53,6 +62,7 @@ public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpec
 
 	boolean isMoth();
 
+	@Nullable
 	TagKey<Biome> getSpawnBiomes();
 
 	float getRarity();
@@ -60,4 +70,8 @@ public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpec
 	List<Product> buildProducts();
 
 	List<Product> buildCaterpillarProducts();
+
+	ResourceLocation getItemTexture();
+
+	ResourceLocation getEntityTexture();
 }

@@ -202,16 +202,16 @@ public class ForestryAlleles {
 	public static final List<IFloatAllele> DEFAULT_SAPLINGS = List.of(SAPLINGS_LOWEST, SAPLINGS_LOWER, SAPLINGS_LOW, SAPLINGS_AVERAGE, SAPLINGS_HIGH, SAPLINGS_HIGHER, SAPLINGS_HIGHEST);
 
 	// Fruits
-	public static final IRegistryAllele<IFruit> FRUIT_NONE = REGISTRY.registryAllele(ForestryFruits.NONE, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_APPLE = REGISTRY.registryAllele(ForestryFruits.APPLE, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_COCOA = REGISTRY.registryAllele(ForestryFruits.COCOA, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_CHESTNUT = REGISTRY.registryAllele(ForestryFruits.CHESTNUT, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_WALNUT = REGISTRY.registryAllele(ForestryFruits.WALNUT, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_CHERRY = REGISTRY.registryAllele(ForestryFruits.CHERRY, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_DATES = REGISTRY.registryAllele(ForestryFruits.DATES, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_PAPAYA = REGISTRY.registryAllele(ForestryFruits.PAPAYA, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_LEMON = REGISTRY.registryAllele(ForestryFruits.LEMON, TreeChromosomes.FRUITS);
-	public static final IRegistryAllele<IFruit> FRUIT_PLUM = REGISTRY.registryAllele(ForestryFruits.PLUM, TreeChromosomes.FRUITS);
+	public static final IRegistryAllele<IFruit> FRUIT_NONE = REGISTRY.registryAllele(ForestryFruits.NONE, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_APPLE = REGISTRY.registryAllele(ForestryFruits.APPLE, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_COCOA = REGISTRY.registryAllele(ForestryFruits.COCOA, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_CHESTNUT = REGISTRY.registryAllele(ForestryFruits.CHESTNUT, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_WALNUT = REGISTRY.registryAllele(ForestryFruits.WALNUT, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_CHERRY = REGISTRY.registryAllele(ForestryFruits.CHERRY, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_DATES = REGISTRY.registryAllele(ForestryFruits.DATES, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_PAPAYA = REGISTRY.registryAllele(ForestryFruits.PAPAYA, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_LEMON = REGISTRY.registryAllele(ForestryFruits.LEMON, TreeChromosomes.FRUIT);
+	public static final IRegistryAllele<IFruit> FRUIT_PLUM = REGISTRY.registryAllele(ForestryFruits.PLUM, TreeChromosomes.FRUIT);
 
 	// Tree Effect
 	public static final IValueAllele<ITreeEffect> TREE_EFFECT_NONE = REGISTRY.registryAllele(ForestryConstants.forestry("tree_effect_none"), TreeChromosomes.EFFECT);

@@ -1,16 +1,20 @@
 package forestry.api.plugin;
 
+import java.util.function.Consumer;
+
 import net.minecraft.resources.ResourceLocation;
+
+import forestry.api.client.plugin.IClientRegistration;
 
 /**
  * Entry point for registering things to the Forestry API. Forestry uses {@link java.util.ServiceLoader} to
- * load IForestryPlugin classes, so your mod jar must include a file named:
+ * load IForestryPlugin classes, so the mod jar must include a file named:
  *
  * <pre>{@code
  *     META-INF/services/forestry.api.plugin.IForestryPlugin
  * }</pre>
  * <p>
- * With a line for each IForestryPlugin class you want to register:
+ * With a line for each IForestryPlugin class to register:
  *
  * <pre>{@code
  *     com.example.examplemod.compat.ExampleForestryPlugin  # You can list multiple plugins
@@ -27,25 +31,25 @@ public interface IForestryPlugin {
 	}
 
 	/**
-	 * Override to register your bee species, effects, flower types, hives, etc. at the correct time.
+	 * Override to register bee species, effects, flower types, hives, etc. at the correct time.
 	 */
 	default void registerApiculture(IApicultureRegistration apiculture) {
 	}
 
 	/**
-	 * Override to register your tree species, fruits, etc. at the correct time.
+	 * Override to register tree species, fruits, etc. at the correct time.
 	 */
 	default void registerArboriculture(IArboricultureRegistration arboriculture) {
 	}
 
 	/**
-	 * Override to register your butterfly species at the correct time.
+	 * Override to register butterfly species at the correct time.
 	 */
 	default void registerLepidopterology(ILepidopterologyRegistration lepidopterology) {
 	}
 
 	/**
-	 * Called after all species are registered. Register your circuits and circuit layout types heere.
+	 * Called after all species are registered. Register circuits and circuit layout types heere.
 	 */
 	default void registerCircuits(ICircuitRegistration circuits) {
 	}
@@ -54,6 +58,14 @@ public interface IForestryPlugin {
 	}
 
 	default void registerFarming(IFarmingRegistration farming) {
+	}
+
+	/**
+	 * Called after all species are registered to register client-only resources for species.
+	 *
+	 * @param registrar Accepts a class that handles client registration. Consumer is for maintaining side-safety.
+	 */
+	default void registerClient(Consumer<Consumer<IClientRegistration>> registrar) {
 	}
 
 	/**

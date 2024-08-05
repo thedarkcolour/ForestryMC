@@ -14,6 +14,7 @@ import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.ForestryConstants;
 import forestry.api.ForestryTags;
+import forestry.api.client.ForestrySprites;
 
 /**
  * Many things Forestry use temperature and humidity of a biome to determine whether they can or how they can work or spawn at a given location.
@@ -21,12 +22,12 @@ import forestry.api.ForestryTags;
  * This enum concerns temperature.
  */
 public enum TemperatureType {
-	ICY(ForestryTags.Biomes.ICY_TEMPERATURE, "habitats/snow", 0xaafff0),
-	COLD(ForestryTags.Biomes.COLD_TEMPERATURE, "habitats/taiga", 0x72ddf7),
-	NORMAL(ForestryTags.Biomes.NORMAL_TEMPERATURE, "habitats/plains", 0xffd013),
-	WARM(ForestryTags.Biomes.WARM_TEMPERATURE, "habitats/jungle", 0xfb8a24),
-	HOT(ForestryTags.Biomes.HOT_TEMPERATURE, "habitats/desert", 0xd61439),
-	HELLISH(ForestryTags.Biomes.HELLISH_TEMPERATURE, "habitats/nether", 0x81032d);
+	ICY(ForestryTags.Biomes.ICY_TEMPERATURE, ForestrySprites.HABITAT_SNOW, 0xaafff0),
+	COLD(ForestryTags.Biomes.COLD_TEMPERATURE, ForestrySprites.HABITAT_TAIGA, 0x72ddf7),
+	NORMAL(ForestryTags.Biomes.NORMAL_TEMPERATURE, ForestrySprites.HABITAT_PLAINS, 0xffd013),
+	WARM(ForestryTags.Biomes.WARM_TEMPERATURE, ForestrySprites.HABITAT_JUNGLE, 0xfb8a24),
+	HOT(ForestryTags.Biomes.HOT_TEMPERATURE, ForestrySprites.HABITAT_DESERT, 0xd61439),
+	HELLISH(ForestryTags.Biomes.HELLISH_TEMPERATURE, ForestrySprites.HABITAT_NETHER, 0x81032d);
 
 	public static final List<TemperatureType> VALUES = List.of(values());
 
@@ -34,9 +35,9 @@ public enum TemperatureType {
 	public final ResourceLocation iconTexture;
 	public final int color;
 
-	TemperatureType(TagKey<Biome> tag, String iconTexture, int color) {
+	TemperatureType(TagKey<Biome> tag, ResourceLocation iconSprite, int color) {
 		this.tag = tag;
-		this.iconTexture = ForestryConstants.forestry(iconTexture);
+		this.iconTexture = iconSprite;
 		this.color = color;
 	}
 

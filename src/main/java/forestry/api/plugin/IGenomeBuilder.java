@@ -20,8 +20,8 @@ public interface IGenomeBuilder {
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	default void setUnchecked(IChromosome chromosome, AllelePair allele) {
-		this.setActive(chromosome, allele.active());
-		this.setInactive(chromosome, allele.inactive());
+		setActive(chromosome, allele.active());
+		setInactive(chromosome, allele.inactive());
 	}
 
 	/**
@@ -57,7 +57,18 @@ public interface IGenomeBuilder {
 	 */
 	<A extends IAllele> void setInactive(IChromosome<A> chromosome, A allele);
 
+	/**
+	 * @return A new genome. Later modifications to this builder will not affect the returned genome.
+	 */
 	IGenome build();
 
+	/**
+	 * @return {@code true} if no chromosomes were set in this genome.
+	 */
 	boolean isEmpty();
+
+	/**
+	 * Sets the remaining alleles in this chromosome to their defaults as specified by this genome's karyotype.
+	 */
+	void setRemainingDefault();
 }

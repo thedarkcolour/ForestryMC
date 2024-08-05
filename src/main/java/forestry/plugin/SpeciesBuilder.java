@@ -10,13 +10,13 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.plugin.IBeeSpeciesBuilder;
 import forestry.api.plugin.IGenomeBuilder;
 import forestry.api.plugin.IMutationsRegistration;
 import forestry.api.plugin.ISpeciesBuilder;
 
-public abstract class SpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISpeciesBuilder<T, B>> implements ISpeciesBuilder<T, B> {
+public abstract class SpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISpecies<?>, B extends ISpeciesBuilder<T, S, B>> implements ISpeciesBuilder<T, S, B> {
 	protected final ResourceLocation id;
 	protected final String genus;
 	protected final String species;
@@ -31,7 +31,7 @@ public abstract class SpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISp
 	protected String authority = "Sengir";
 	@Nullable
 	protected Consumer<IGenomeBuilder> genome = null;
-	protected ISpeciesFactory<T, B> factory;
+	protected ISpeciesFactory<T, S, B> factory;
 
 	public SpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
 		this.id = id;
@@ -40,9 +40,6 @@ public abstract class SpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISp
 		this.mutations = mutations;
 		this.factory = createSpeciesFactory();
 	}
-
-	// default species factory. Example is BeeSpecies::new
-	protected abstract ISpeciesFactory<T, B> createSpeciesFactory();
 
 	@Override
 	public B setDominant(boolean dominant) {
@@ -99,7 +96,7 @@ public abstract class SpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISp
 	}
 
 	@Override
-	public B setFactory(ISpeciesFactory<T, B> factory) {
+	public B setFactory(ISpeciesFactory<T, S, B> factory) {
 		this.factory = Preconditions.checkNotNull(factory);
 		return self();
 	}
@@ -144,7 +141,11 @@ public abstract class SpeciesBuilder<T extends ISpeciesType<?, ?>, B extends ISp
 		if (this.genome != null) {
 			this.genome.accept(builder);
 		}
-		return builder.build();
+		try {
+			return builder.build();
+		} catch (Throwable t) {
+			throw new RuntimeException("Error trying to register species with ID " + this.id, t);
+		}
 	}
 
 	@Override

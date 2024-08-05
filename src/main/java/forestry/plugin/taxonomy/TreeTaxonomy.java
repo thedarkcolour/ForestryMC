@@ -37,7 +37,9 @@ public class TreeTaxonomy {
 			});
 			phylum.defineSubTaxon(ForestryTaxa.CLASS_ROSIDS, klass -> {
 				klass.defineSubTaxon(ForestryTaxa.ORDER_BRASSICALES, order -> {
-					order.defineSubTaxon(ForestryTaxa.FAMILY_CARICACEAE);
+					order.defineSubTaxon(ForestryTaxa.FAMILY_CARICACEAE, family -> {
+						family.defineSubTaxon(ForestryTaxa.GENUS_CARICA);
+					});
 				});
 				klass.defineSubTaxon(ForestryTaxa.ORDER_FABALES);
 				klass.defineSubTaxon(ForestryTaxa.ORDER_FAGALES, order -> {

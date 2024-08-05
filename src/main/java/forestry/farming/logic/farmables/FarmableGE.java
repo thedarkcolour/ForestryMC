@@ -39,7 +39,7 @@ public class FarmableGE implements IFarmable {
 
 	public FarmableGE() {
 		ImmutableSet.Builder<Item> builder = new ImmutableSet.Builder<>();
-		for (IFruit fruit : TreeChromosomes.FRUITS.values()) {
+		for (IFruit fruit : TreeChromosomes.FRUIT.values()) {
 			for (Product product : fruit.getProducts()) {
 				builder.add(product.item());
 			}
