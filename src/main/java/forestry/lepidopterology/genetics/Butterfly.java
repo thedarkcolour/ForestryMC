@@ -14,9 +14,8 @@ import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -31,15 +30,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import forestry.api.IForestryApi;
-import forestry.api.core.ForestryError;
 import forestry.api.core.HumidityType;
-import forestry.api.core.IError;
+import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
-import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividual;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.IIntegerChromosome;
@@ -55,71 +50,27 @@ import forestry.core.genetics.mutations.Mutation;
 import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 
-import org.jetbrains.annotations.NotNull;
-
 public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, IButterflySpeciesType> implements IButterfly {
 	private static final RandomSource rand = RandomSource.create();
+
 	public static final Codec<Butterfly> CODEC = RecordCodecBuilder.create(instance -> {
 		Codec<IGenome> genomeCodec = SpeciesUtil.BUTTERFLY_TYPE.get().getKaryotype().getGenomeCodec();
 
-		return instance.group(
-				genomeCodec.fieldOf("genome").forGetter(IIndividual::getGenome),
-				genomeCodec.optionalFieldOf("mate", null).forGetter(IIndividual::getMate)
-		).apply(instance, Butterfly::new);
+		return IndividualLiving.livingFields(instance, genomeCodec).apply(instance, Butterfly::new);
 	});
 
 	public Butterfly(IGenome genome) {
 		super(genome);
 	}
 
-	public Butterfly(IGenome genome, @Nullable IGenome mate) {
-		super(genome);
-
-		this.mate = mate;
+	// For codec
+	private Butterfly(IGenome genome, Optional<IGenome> mate, boolean analyzed, int health, int maxHealth) {
+		super(genome, mate, analyzed, health, maxHealth);
 	}
 
 	@Override
 	public Component getDisplayName() {
 		return this.species.getDisplayName();
-	}
-
-	@Override
-	public Set<IError> getCanSpawn(IButterflyNursery nursery, @Nullable IButterflyCocoon cocoon) {
-		Level world = nursery.getWorldObj();
-
-		Set<IError> errorStates = new HashSet<>();
-		// / Night or darkness requires nocturnal species
-		boolean isDaytime = world.isDay();
-		if (!isActiveThisTime(isDaytime)) {
-			if (isDaytime) {
-				errorStates.add(ForestryError.NOT_NIGHT);
-			} else {
-				errorStates.add(ForestryError.NOT_DAY);
-			}
-		}
-
-		return addClimateErrors(nursery, errorStates);
-	}
-
-	@Override
-	public Set<IError> getCanGrow(IButterflyNursery nursery, @Nullable IButterflyCocoon cocoon) {
-		Set<IError> errorStates = new HashSet<>();
-
-		return addClimateErrors(nursery, errorStates);
-	}
-
-	@NotNull
-	private Set<IError> addClimateErrors(IButterflyNursery nursery, Set<IError> errorStates) {
-		IButterflySpecies species = genome.getActiveValue(ButterflyChromosomes.SPECIES);
-		TemperatureType actualTemperature = nursery.temperature();
-		TemperatureType baseTemperature = species.getTemperature();
-		ToleranceType toleranceTemperature = genome.getActiveValue(ButterflyChromosomes.TEMPERATURE_TOLERANCE);
-		HumidityType actualHumidity = nursery.humidity();
-		HumidityType baseHumidity = species.getHumidity();
-		ToleranceType toleranceHumidity = genome.getActiveValue(ButterflyChromosomes.HUMIDITY_TOLERANCE);
-		ClimateHelper.addClimateErrorStates(actualTemperature, actualHumidity, baseTemperature, toleranceTemperature, baseHumidity, toleranceHumidity, errorStates);
-
-		return errorStates;
 	}
 
 	@Override

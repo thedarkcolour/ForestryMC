@@ -5,20 +5,23 @@
  ******************************************************************************/
 package forestry.api.plugin;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.time.Month;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationCondition;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
-import forestry.core.genetics.mutations.Mutation;
 
 /**
  * Set custom mutation requirements
@@ -85,5 +88,12 @@ public interface IMutationBuilder {
 	 */
 	IMutationBuilder setChance(int chance);
 
-	<S extends ISpecies<?>> Mutation<S> build(ISpeciesType<S, ?> speciesType);
+	/**
+	 * Builds the mutation. Used internally.
+	 *
+	 * @param speciesType   Species type of the mutation. Do not call {@link ISpeciesType#getSpecies}.
+	 * @param speciesLookup The species by ID lookup, since species type might not have the registry yet.
+	 * @return The completed Mutation object with immutable data.
+	 */
+	<S extends ISpecies<?>> IMutation<S> build(ISpeciesType<S, ?> speciesType, ImmutableMap<ResourceLocation, S> speciesLookup);
 }

@@ -102,7 +102,9 @@ public class AlleleManager implements IAlleleManager {
 		checkAlleleRegistration();
 		return (dominant ? this.dominantIntAlleles : this.intAlleles).computeIfAbsent(value, v -> {
 			IntegerAllele allele = new IntegerAllele(v, dominant);
-			this.allelesByName.put(allele.alleleId(), allele);
+			if (this.allelesByName.put(allele.alleleId(), allele) != null) {
+				throw new IllegalStateException("An allele was already registered with ID " + allele.alleleId());
+			}
 			return allele;
 		});
 	}
@@ -110,7 +112,13 @@ public class AlleleManager implements IAlleleManager {
 	@Override
 	public IFloatAllele floatAllele(float value, boolean dominant) {
 		checkAlleleRegistration();
-		return (dominant ? this.dominantFloatAlleles : this.floatAlleles).computeIfAbsent(value, v -> new FloatAllele(v, dominant));
+		return (dominant ? this.dominantFloatAlleles : this.floatAlleles).computeIfAbsent(value, v -> {
+			FloatAllele allele = new FloatAllele(v, dominant);
+			if (this.allelesByName.put(allele.alleleId(), allele) != null) {
+				throw new IllegalStateException("An allele was already registered with ID " + allele.alleleId());
+			}
+			return allele;
+		});
 	}
 
 	@SuppressWarnings("unchecked")

@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
@@ -16,8 +15,6 @@ import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.plugin.IGenomeBuilder;
-
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public final class Genome implements IGenome {
 	final ImmutableMap<IChromosome<?>, AllelePair<?>> chromosomes;
@@ -48,7 +45,7 @@ public final class Genome implements IGenome {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <A extends IAllele> AllelePair<A> getAllelePair(IChromosome<A> chromosomeType) {
-		return (AllelePair<A>) Objects.requireNonNull(this.chromosomes.get(chromosomeType));
+		return (AllelePair<A>) this.chromosomes.get(chromosomeType);
 	}
 
 	@Override

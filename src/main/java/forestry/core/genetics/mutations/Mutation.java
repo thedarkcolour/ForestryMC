@@ -31,7 +31,6 @@ import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
-import forestry.core.features.CoreItems;
 import forestry.core.genetics.ItemResearchNote;
 
 public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
@@ -113,16 +112,16 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	}
 
 	@Override
-	public boolean isPartner(ISpecies<?> other) {
-		return this.firstParent.id().equals(other.id()) || this.secondParent.id().equals(other.id());
+	public boolean isPartner(ISpecies<?> species) {
+		return this.firstParent == species || this.secondParent == species;
 	}
 
 	@Override
 	public ISpecies<?> getPartner(ISpecies<?> species) {
-		if (firstParent.id().equals(species.id())) {
-			return secondParent;
-		} else if (secondParent.id().equals(species.id())) {
-			return firstParent;
+		if (this.firstParent == species) {
+			return this.secondParent;
+		} else if (this.secondParent == species) {
+			return this.firstParent;
 		} else {
 			throw new IllegalArgumentException("Tried to get partner for allele that is not part of this mutation.");
 		}

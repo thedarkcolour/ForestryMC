@@ -1,9 +1,14 @@
 package forestry.core.genetics;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
@@ -19,12 +24,29 @@ public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T
 
 	@Nullable
 	protected IGenome mate;
-	protected boolean isAnalyzed;
+	protected boolean analyzed;
 
-	public Individual(IGenome genome) {
+	protected Individual(IGenome genome) {
 		this.species = genome.getActiveSpecies();
 		this.inactiveSpecies = genome.getInactiveSpecies();
 		this.genome = genome;
+	}
+
+	// For codec
+	protected Individual(IGenome genome, Optional<IGenome> mate, boolean analyzed) {
+		this(genome);
+
+		this.mate = mate.orElse(null);
+		this.analyzed = analyzed;
+	}
+
+	// For "inheritance" in codecs
+	protected static <I extends IIndividual> Products.P3<RecordCodecBuilder.Mu<I>, IGenome, Optional<IGenome>, Boolean> fields(RecordCodecBuilder.Instance<I> instance, Codec<IGenome> genomeCodec) {
+		return instance.group(
+				genomeCodec.fieldOf("genome").forGetter(I::getGenome),
+				genomeCodec.optionalFieldOf("mate").forGetter(I::getMateOptional),
+				Codec.BOOL.fieldOf("analyzed").forGetter(I::isAnalyzed)
+		);
 	}
 
 	@Override
@@ -38,6 +60,10 @@ public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T
 	@Override
 	public IGenome getMate() {
 		return this.mate;
+	}
+
+	public Optional<IGenome> getMateOptional() {
+		return Optional.ofNullable(this.mate);
 	}
 
 	@Override
@@ -63,16 +89,16 @@ public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T
 
 	@Override
 	public boolean isAnalyzed() {
-		return this.isAnalyzed;
+		return this.analyzed;
 	}
 
 	@Override
 	public boolean analyze() {
-		if (this.isAnalyzed) {
+		if (this.analyzed) {
 			return false;
 		}
 
-		this.isAnalyzed = true;
+		this.analyzed = true;
 		return true;
 	}
 

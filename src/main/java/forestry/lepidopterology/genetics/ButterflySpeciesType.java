@@ -26,16 +26,18 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 
+import forestry.api.core.Product;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.ILepidopteristTracker;
@@ -67,7 +69,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 	}
 
 	@Override
-	public ImmutableMap<ResourceLocation, IButterflySpecies> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
+	public Pair<ImmutableMap<ResourceLocation, IButterflySpecies>, IMutationManager<IButterflySpecies>> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
 		LepidopterologyRegistration registration = new LepidopterologyRegistration(this);
 
 		for (IForestryPlugin plugin : plugins) {
@@ -77,12 +79,12 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		ButterflyChromosomes.EFFECT.populate(registration.getEffects());
 		ButterflyChromosomes.COCOON.populate(registration.getCocoons());
 
-		return registration.buildSpecies();
+		return registration.buildAll();
 	}
 
 	@Override
-	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, IButterflySpecies> allSpecies) {
-		super.onSpeciesRegistered(allSpecies);
+	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, IButterflySpecies> allSpecies, IMutationManager<IButterflySpecies> mutations) {
+		super.onSpeciesRegistered(allSpecies, mutations);
 
 		if (ModuleLepidopterology.spawnButterflysFromLeaves) {
 			SpeciesUtil.TREE_TYPE.get().registerLeafTickHandler(new ButterflySpawner());

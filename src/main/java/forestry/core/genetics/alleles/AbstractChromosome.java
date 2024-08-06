@@ -22,4 +22,9 @@ public abstract class AbstractChromosome<A extends IAllele> implements IChromoso
 	public String getTranslationKey(A allele) {
 		return GeneticsUtil.createTranslationKey("allele", this.id, allele.alleleId());
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + this.id + ']';
+	}
 }

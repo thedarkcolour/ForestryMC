@@ -3,7 +3,6 @@ package forestry.apiimpl;
 import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import net.minecraft.resources.ResourceLocation;
@@ -85,7 +84,7 @@ public class GeneticManager implements IGeneticManager {
 	}
 
 	@ApiStatus.Internal
-	public void setMutationsByType(ImmutableMap<ISpeciesType<?, ?>, IMutationManager<?>> mutationsByType) {
+	public void setMutations(ImmutableMap<ISpeciesType<?, ?>, IMutationManager<?>> mutationsByType) {
 		this.mutationsByType = mutationsByType;
 	}
 }

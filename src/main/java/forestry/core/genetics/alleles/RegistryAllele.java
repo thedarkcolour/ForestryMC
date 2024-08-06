@@ -14,7 +14,8 @@ public class RegistryAllele<V extends IRegistryAlleleValue> implements IRegistry
 	@Nullable
 	private V value;
 
-	public RegistryAllele(ResourceLocation id, IRegistryChromosome<V> chromosome) {
+	// Do not call directly, use IAlleleManager.registryAllele
+	RegistryAllele(ResourceLocation id, IRegistryChromosome<V> chromosome) {
 		this.id = id;
 		this.chromosome = chromosome;
 	}
@@ -26,7 +27,7 @@ public class RegistryAllele<V extends IRegistryAlleleValue> implements IRegistry
 
 	@Override
 	public boolean dominant() {
-		return value.isDominant();
+		return value().isDominant();
 	}
 
 	@Override
@@ -41,5 +42,10 @@ public class RegistryAllele<V extends IRegistryAlleleValue> implements IRegistry
 	@Override
 	public IRegistryChromosome<V> chromosome() {
 		return this.chromosome;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + this.id + ']';
 	}
 }

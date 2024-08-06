@@ -16,6 +16,8 @@ import java.util.ServiceLoader;
 
 import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.datafixers.util.Pair;
+
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -31,6 +33,7 @@ import forestry.api.client.IForestryClientApi;
 import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.client.arboriculture.ILeafTint;
 import forestry.api.core.IError;
+import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.ITaxon;
 import forestry.api.plugin.IForestryPlugin;
@@ -163,27 +166,39 @@ public class PluginManager {
 		Forestry.LOGGER.debug("Registered {} species types: {}", speciesTypes.size(), Arrays.toString(speciesTypes.keySet().toArray(new ResourceLocation[0])));
 
 		ForestryApiImpl api = (ForestryApiImpl) IForestryApi.INSTANCE;
-		api.setGeneticManager(new GeneticManager(taxa, speciesTypes));
+		GeneticManager geneticManager = new GeneticManager(taxa, speciesTypes);
+		api.setGeneticManager(geneticManager);
 		api.setFilterManager(new FilterManager(registration.getFilterRuleTypes()));
 
 		LinkedHashMap<ISpeciesType<?, ?>, ImmutableMap<ResourceLocation, ?>> allSpecies = new LinkedHashMap<>(speciesTypes.size());
+		IdentityHashMap<ISpeciesType<?, ?>, IMutationManager<?>> allMutations = new IdentityHashMap<>(speciesTypes.size());
 
 		for (ISpeciesType<?, ?> speciesType : speciesTypes.values()) {
-			ImmutableMap<ResourceLocation, ?> species = speciesType.handleSpeciesRegistration(LOADED_PLUGINS);
+			// species and mutations
+			Pair<? extends ImmutableMap<ResourceLocation, ?>, ? extends IMutationManager<?>> pair = speciesType.handleSpeciesRegistration(LOADED_PLUGINS);
+			ImmutableMap<ResourceLocation, ?> species = pair.getFirst();
+			IMutationManager<?> mutations = pair.getSecond();
+
 			allSpecies.put(speciesType, species);
+			allMutations.put(speciesType, mutations);
 
 			Forestry.LOGGER.debug("Registered {} species for species type {}", species.size(), speciesType.id());
+			Forestry.LOGGER.debug("Registered {} mutations for species type {}", mutations.getAllMutations().size(), speciesType.id());
 		}
 
 		for (Map.Entry<ISpeciesType<?, ?>, ImmutableMap<ResourceLocation, ?>> entry : allSpecies.entrySet()) {
 			ISpeciesType<?, ?> speciesType = entry.getKey();
 
-			speciesType.onSpeciesRegistered((ImmutableMap) entry.getValue());
+			speciesType.onSpeciesRegistered((ImmutableMap) entry.getValue(), (IMutationManager) allMutations.get(speciesType));
 
 			if (speciesType.getAllSpecies().isEmpty()) {
 				throw new IllegalStateException("Failed to register species for type " + speciesType.id());
 			}
+			// this will throw an exception if mutations aren't populated
+			speciesType.getMutations();
 		}
+
+		geneticManager.setMutations(ImmutableMap.copyOf(allMutations));
 	}
 
 	public static void registerFarming() {

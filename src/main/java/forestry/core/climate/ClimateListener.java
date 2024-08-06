@@ -1,6 +1,7 @@
 package forestry.core.climate;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -29,8 +30,6 @@ import forestry.core.network.packets.PacketClimateListenerUpdateRequest;
 import forestry.core.render.ParticleRender;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.TickHelper;
-
-import deleteme.Todos;
 
 public class ClimateListener implements IClimateListener {
 	public static final int SERVER_UPDATE = 250;
@@ -153,7 +152,7 @@ public class ClimateListener implements IClimateListener {
 
 	@Override
 	public void syncToClient() {
-		if (!cachedState.equals(cachedClientState)) {
+		if (!Objects.equals(this.cachedClientState, this.cachedState)) {
 			Level level = getWorldObj();
 
 			if (!level.isClientSide) {

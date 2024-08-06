@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,10 +39,9 @@ import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeEffect;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
+import forestry.api.core.Product;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividual;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.genetics.Individual;
@@ -52,20 +52,15 @@ public class Tree extends Individual<ITreeSpecies, ITree, ITreeSpeciesType> impl
 	public static final Codec<Tree> CODEC = RecordCodecBuilder.create(instance -> {
 		Codec<IGenome> genomeCodec = SpeciesUtil.TREE_TYPE.get().getKaryotype().getGenomeCodec();
 
-		return instance.group(
-				genomeCodec.fieldOf("genome").forGetter(IIndividual::getGenome),
-				genomeCodec.optionalFieldOf("mate", null).forGetter(IIndividual::getMate)
-		).apply(instance, Tree::new);
+		return Individual.fields(instance, genomeCodec).apply(instance, Tree::new);
 	});
 
 	public Tree(IGenome genome) {
 		super(genome);
 	}
 
-	public Tree(IGenome genome, @Nullable IGenome mate) {
-		super(genome);
-
-		this.mate = mate;
+	private Tree(IGenome genome, Optional<IGenome> mate, boolean analyzed) {
+		super(genome, mate, analyzed);
 	}
 
 	/* EFFECTS */

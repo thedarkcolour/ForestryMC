@@ -7,14 +7,12 @@ package forestry.api.lepidopterology.genetics;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import forestry.api.core.IError;
 import forestry.api.genetics.IIndividualLiving;
 import forestry.api.lepidopterology.IButterflyCocoon;
 import forestry.api.lepidopterology.IButterflyNursery;
@@ -42,26 +40,6 @@ public interface IButterfly extends IIndividualLiving {
 	 */
 	@Nullable
 	IButterfly spawnCaterpillar(IButterflyNursery nursery);
-
-	/**
-	 * Determines whether the caterpillar can grow.
-	 *
-	 * @param cocoon  the {@link IButterflyCocoon} the caterpillar resides in.
-	 * @param nursery the {@link IButterflyNursery} of the caterpillar.
-	 * @return an empty set if the caterpillar can grow, a set of error states if the caterpillar can not grow
-	 * @since 5.3.3
-	 */
-	Set<IError> getCanGrow(IButterflyNursery nursery, @Nullable IButterflyCocoon cocoon);
-
-	/**
-	 * Determines whether the caterpillar can spawn. (Used to auto-spawn butterflies out of a cocoon.)
-	 *
-	 * @param cocoon  the {@link IButterflyCocoon} the caterpillar resides in.
-	 * @param nursery the {@link IButterflyNursery} of the caterpillar.
-	 * @return an empty set if the caterpillar can spawn, a set of error states if the caterpillar can not spawn
-	 * @since 5.3.3
-	 */
-	Set<IError> getCanSpawn(IButterflyNursery nursery, @Nullable IButterflyCocoon cocoon);
 
 	/**
 	 * @param playerKill Whether or not the butterfly was killed by a player.

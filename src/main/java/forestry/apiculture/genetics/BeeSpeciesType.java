@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 
 import forestry.api.IForestryApi;
@@ -40,6 +41,7 @@ import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
@@ -49,11 +51,11 @@ import forestry.apiculture.BeeHousingListener;
 import forestry.apiculture.BeeHousingModifier;
 import forestry.apiculture.BeekeepingLogic;
 import forestry.apiimpl.ForestryApiImpl;
+import forestry.apiimpl.plugin.ApicultureRegistration;
 import forestry.core.genetics.BreedingTracker;
 import forestry.core.genetics.SpeciesType;
 import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.utils.ItemStackUtil;
-import forestry.apiimpl.plugin.ApicultureRegistration;
 
 public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IBeeSpeciesType {
 	public BeeSpeciesType(IKaryotype karyotype, ISpeciesTypeBuilder builder) {
@@ -178,7 +180,7 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 	}
 
 	@Override
-	public ImmutableMap<ResourceLocation, IBeeSpecies> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
+	public Pair<ImmutableMap<ResourceLocation, IBeeSpecies>, IMutationManager<IBeeSpecies>> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
 		ApicultureRegistration registration = new ApicultureRegistration(this);
 
 		for (IForestryPlugin plugin : plugins) {
@@ -192,6 +194,6 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 		// initialize hive manager
 		((ForestryApiImpl) IForestryApi.INSTANCE).setHiveManager(registration.buildHiveManager());
 
-		return registration.buildSpecies();
+		return registration.buildAll();
 	}
 }

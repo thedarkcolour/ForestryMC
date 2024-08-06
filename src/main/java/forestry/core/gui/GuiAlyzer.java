@@ -120,6 +120,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		IValueAllele<S> inactiveSpecies = species.inactive();
 		Map<ISpecies<?>, ItemStack> iconStacks = activeSpecies.value().getType().getAlyzerPlugin().getIconStacks();
 
+		// todo fix Icon Stacks being empty for butterflies
 		GuiUtil.drawItemStack(transform, this, iconStacks.get(activeSpecies.value()), leftPos + textLayout.column1 + columnwidth - 20, topPos + 10);
 		GuiUtil.drawItemStack(transform, this, iconStacks.get(inactiveSpecies.value()), leftPos + textLayout.column2 + columnwidth - 20, topPos + 10);
 

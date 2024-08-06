@@ -6,39 +6,15 @@
 package forestry.api.genetics;
 
 import java.util.Locale;
-import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-import forestry.api.core.ForestryError;
 import forestry.api.core.HumidityType;
-import forestry.api.core.IError;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.ToleranceType;
 
 public class ClimateHelper {
-	public static void addClimateErrorStates(TemperatureType temperature, HumidityType humidity,
-			TemperatureType baseTemp, ToleranceType tolTemp,
-			HumidityType baseHumid, ToleranceType tolHumid, Set<IError> errorStates) {
-
-		if (!isWithinLimits(temperature, baseTemp, tolTemp)) {
-			if (baseTemp.ordinal() > temperature.ordinal()) {
-				errorStates.add(ForestryError.TOO_COLD);
-			} else {
-				errorStates.add(ForestryError.TOO_HOT);
-			}
-		}
-
-		if (!isWithinLimits(humidity, baseHumid, tolHumid)) {
-			if (baseHumid.ordinal() > humidity.ordinal()) {
-				errorStates.add(ForestryError.TOO_ARID);
-			} else {
-				errorStates.add(ForestryError.TOO_HUMID);
-			}
-		}
-	}
-
 	public static int getColor(TemperatureType temperature) {
 		return switch (temperature) {
 			case ICY -> 0xe6e6fa;

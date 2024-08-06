@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 
 import forestry.api.arboriculture.IArboristTracker;
@@ -51,12 +52,14 @@ import forestry.api.genetics.IBreedingTrackerHandler;
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.ISpeciesTypeBuilder;
+import forestry.apiimpl.plugin.ArboricultureRegistration;
 import forestry.arboriculture.PodFruit;
 import forestry.arboriculture.blocks.BlockFruitPod;
 import forestry.arboriculture.blocks.ForestryLeafType;
@@ -69,7 +72,6 @@ import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.RenderUtil;
-import forestry.apiimpl.plugin.ArboricultureRegistration;
 
 public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements ITreeSpeciesType, IBreedingTrackerHandler {
 	private final LinkedList<ILeafTickHandler> leafTickHandlers = new LinkedList<>();
@@ -80,8 +82,8 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 	}
 
 	@Override
-	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, ITreeSpecies> allSpecies) {
-		super.onSpeciesRegistered(allSpecies);
+	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, ITreeSpecies> allSpecies, IMutationManager<ITreeSpecies> mutations) {
+		super.onSpeciesRegistered(allSpecies, mutations);
 
 		this.vanillaIndividuals.clear();
 
@@ -104,20 +106,18 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 	}
 
 	@Override
-	public ImmutableMap<ResourceLocation, ITreeSpecies> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
+	public Pair<ImmutableMap<ResourceLocation, ITreeSpecies>, IMutationManager<ITreeSpecies>> handleSpeciesRegistration(List<IForestryPlugin> plugins) {
 		ArboricultureRegistration registration = new ArboricultureRegistration(this);
 
 		for (IForestryPlugin plugin : plugins) {
 			plugin.registerArboriculture(registration);
 		}
 
-		ImmutableMap<ResourceLocation, ITreeSpecies> allSpecies = registration.buildSpecies();
-
 		// populate tree registry chromosomes
 		TreeChromosomes.EFFECT.populate(registration.getEffects());
 		TreeChromosomes.FRUIT.populate(registration.getFruits());
 
-		return allSpecies;
+		return registration.buildAll();
 	}
 
 	@Override

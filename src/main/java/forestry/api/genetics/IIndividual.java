@@ -1,6 +1,7 @@
 package forestry.api.genetics;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -44,8 +45,17 @@ public interface IIndividual {
 
 	void setMate(@Nullable IGenome mate);
 
+	/**
+	 * @return The genome of this individual's mate, or {@code null} if this individual has no mate.
+	 */
 	@Nullable
 	IGenome getMate();
+
+	/**
+	 * An optional getter for {@link #getMate}. Used only for Codec purposes, prefer {@link #getMate} when possible.
+	 * @return An optional containing this individual's mate genome, or empty if this individual has no mate.
+	 */
+	Optional<IGenome> getMateOptional();
 
 	/**
 	 * @return {@code true} if this individual has been analyzed and a summary of its genome should be displayed in its tooltip.
@@ -76,7 +86,7 @@ public interface IIndividual {
 	 * Copies this individual and all of its properties EXCEPT FOR ITS MATE.
 	 * Override this method in subclasses to make sure all information is copied.
 	 *
-	 * @return An exact copy of this individual.
+	 * @return An exact copy of this individual WITHOUT A MATE.
 	 */
 	IIndividual copy();
 

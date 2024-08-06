@@ -1,8 +1,10 @@
 package forestry.apiimpl.plugin;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.plugin.IGenomeBuilder;
@@ -161,5 +164,10 @@ public abstract class SpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISp
 	@Override
 	public String getAuthority() {
 		return this.authority;
+	}
+
+	@Override
+	public List<IMutation<S>> buildMutations(ISpeciesType<S, ?> speciesType, ImmutableMap<ResourceLocation, S> speciesLookup) {
+		return this.mutations.build(speciesType, speciesLookup);
 	}
 }

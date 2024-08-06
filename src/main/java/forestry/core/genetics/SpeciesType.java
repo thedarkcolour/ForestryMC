@@ -26,7 +26,6 @@ import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.plugin.ISpeciesTypeBuilder;
 
-import deleteme.Todos;
 import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
 
 public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> implements ISpeciesType<S, I> {
@@ -40,6 +39,8 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 	private int speciesCount = -1;
 	@Nullable
 	private ImmutableMap<ResourceLocation, S> allSpecies;
+	@Nullable
+	protected IMutationManager<S> mutations;
 
 	public SpeciesType(ResourceLocation id, IKaryotype karyotype, ISpeciesTypeBuilder builder) {
 		this.id = id;
@@ -64,7 +65,7 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 	@Override
 	@SuppressWarnings("unchecked")
 	public S getDefaultSpecies() {
-		return (S) this.karyotype.getDefaultAllele(this.karyotype.getSpeciesChromosome());
+		return (S) this.karyotype.getDefaultAllele(this.karyotype.getSpeciesChromosome()).value();
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 	}
 
 	@Override
-	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, S> allSpecies) {
+	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, S> allSpecies, IMutationManager<S> mutations) {
 		this.speciesCount = 0;
 
 		for (S species : allSpecies.values()) {
@@ -98,12 +99,18 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 			}
 		}
 
+		// Note for subclasses: you must call this super method or set the allSpecies yourself. same goes for mutations
 		this.allSpecies = allSpecies;
+		this.mutations = mutations;
 	}
 
 	@Override
 	public IMutationManager<S> getMutations() {
-		throw Todos.unimplemented();
+		var manager = this.mutations;
+		if (manager == null) {
+			throw new IllegalStateException("Mutations have not been registered yet.");
+		}
+		return manager;
 	}
 
 	@Override

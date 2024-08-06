@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
@@ -72,26 +73,23 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	public static final Codec<Bee> CODEC = RecordCodecBuilder.create(instance -> {
 		Codec<IGenome> genomeCodec = SpeciesUtil.BEE_TYPE.get().getKaryotype().getGenomeCodec();
 
-		return instance.group(
-				genomeCodec.fieldOf("genome").forGetter(IIndividual::getGenome),
-				genomeCodec.optionalFieldOf("mate", null).forGetter(IIndividual::getMate),
+		return IndividualLiving.livingFields(instance, genomeCodec).and(instance.group(
 				Codec.BOOL.fieldOf("pristine").forGetter(IBee::isPristine),
 				Codec.INT.optionalFieldOf("generation", 0).forGetter(IBee::getGeneration)
-		).apply(instance, Bee::new);
+		)).apply(instance, Bee::new);
 	});
 
-	private int generation;
 	private boolean pristine = true;
+	private int generation;
 
 	public Bee(IGenome genome) {
 		super(genome);
 	}
 
-	// for codec. other places should use setters
-	private Bee(IGenome genome, @Nullable IGenome mate, boolean pristine, int generation) {
-		super(genome);
+	// For codec
+	private Bee(IGenome genome, Optional<IGenome> mate, boolean analyzed, int health, int maxHealth, boolean pristine, int generation) {
+		super(genome, mate, analyzed, health, maxHealth);
 
-		this.mate = mate;
 		this.pristine = pristine;
 		this.generation = generation;
 	}
@@ -168,15 +166,6 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		return effect.doFX(genome, storedData, housing);
 	}
 
-	// / INFORMATION
-
-	/*@Override
-	public IBee copy() {
-		CompoundTag compound = new CompoundTag();
-		this.write(compound);
-		return new Bee(compound);
-	}*/
-
 	@Override
 	public boolean canSpawn() {
 		return mate != null;
@@ -216,42 +205,40 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 			}
 		}
 
-		// / Check for the sky, except if in hell
-		if (!world.dimensionType().hasCeiling()) {//TODO: We used 'isNether' earlier not sure if 'hasCeiling' is the right replacment method
+		// Check for the sky, except if in hell
+		if (!world.dimensionType().hasCeiling()) {
 			if (!housing.canBlockSeeTheSky() && !canWorkUnderground(beeModifier)) {
 				errorStates.add(ForestryError.NO_SKY);
 			}
 		}
 
-		// / And finally climate check
-		IBeeSpecies species = genome.getActiveValue(BeeChromosomes.SPECIES);
-		{
-			TemperatureType actualTemperature = housing.temperature();
-			TemperatureType beeBaseTemperature = species.getTemperature();
-			ToleranceType beeToleranceTemperature = genome.getActiveValue(BeeChromosomes.TEMPERATURE_TOLERANCE);
+		// And finally climate check
+		IBeeSpecies species = this.species;
 
-			if (!ClimateHelper.isWithinLimits(actualTemperature, beeBaseTemperature, beeToleranceTemperature)) {
-				if (beeBaseTemperature.ordinal() > actualTemperature.ordinal()) {
-					errorStates.add(ForestryError.TOO_COLD);
-				} else {
-					errorStates.add(ForestryError.TOO_HOT);
-				}
+		TemperatureType actualTemperature = housing.temperature();
+		TemperatureType beeBaseTemperature = species.getTemperature();
+		ToleranceType beeToleranceTemperature = genome.getActiveValue(BeeChromosomes.TEMPERATURE_TOLERANCE);
+
+		if (!ClimateHelper.isWithinLimits(actualTemperature, beeBaseTemperature, beeToleranceTemperature)) {
+			if (beeBaseTemperature.ordinal() > actualTemperature.ordinal()) {
+				errorStates.add(ForestryError.TOO_COLD);
+			} else {
+				errorStates.add(ForestryError.TOO_HOT);
 			}
 		}
 
-		{
-			HumidityType actualHumidity = housing.humidity();
-			HumidityType beeBaseHumidity = species.getHumidity();
-			ToleranceType beeToleranceHumidity = genome.getActiveValue(BeeChromosomes.HUMIDITY_TOLERANCE);
+		HumidityType actualHumidity = housing.humidity();
+		HumidityType beeBaseHumidity = species.getHumidity();
+		ToleranceType beeToleranceHumidity = genome.getActiveValue(BeeChromosomes.HUMIDITY_TOLERANCE);
 
-			if (!ClimateHelper.isWithinLimits(actualHumidity, beeBaseHumidity, beeToleranceHumidity)) {
-				if (beeBaseHumidity.ordinal() > actualHumidity.ordinal()) {
-					errorStates.add(ForestryError.TOO_ARID);
-				} else {
-					errorStates.add(ForestryError.TOO_HUMID);
-				}
+		if (!ClimateHelper.isWithinLimits(actualHumidity, beeBaseHumidity, beeToleranceHumidity)) {
+			if (beeBaseHumidity.ordinal() > actualHumidity.ordinal()) {
+				errorStates.add(ForestryError.TOO_ARID);
+			} else {
+				errorStates.add(ForestryError.TOO_HUMID);
 			}
 		}
+
 
 		return errorStates;
 	}
@@ -444,7 +431,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 
 		return SpeciesUtil.createOffspring(housing.getWorldObj().random, this.genome, mate, mutator, genome -> {
 			//IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(level);
-			return new Bee(genome, null, this.pristine, generation); /*mode.isOffspringPristine(this)*/
+			return new Bee(genome, null, false, this.health, this.maxHealth, this.pristine, generation); /*mode.isOffspringPristine(this)*/
 		});
 	}
 

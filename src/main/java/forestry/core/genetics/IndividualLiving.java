@@ -10,19 +10,22 @@
  ******************************************************************************/
 package forestry.core.genetics;
 
+import java.util.Optional;
+
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
-import forestry.api.genetics.IIndividualLiving;
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IIndividualLiving;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IIntegerChromosome;
 
 public abstract class IndividualLiving<S extends ISpecies<I>, I extends IIndividualLiving, T extends ISpeciesType<S, I>> extends Individual<S, I, T> implements IIndividualLiving {
-	private static final String NBT_HEALTH = "Health";
-	private static final String NBT_MAX_HEALTH = "MaxH";
-
 	protected int health;
 	protected int maxHealth;
 
@@ -32,6 +35,22 @@ public abstract class IndividualLiving<S extends ISpecies<I>, I extends IIndivid
 		int health = genome.getActiveValue(getLifespanChromosome());
 		this.health = health;
 		this.maxHealth = health;
+	}
+
+	// For codec
+	protected IndividualLiving(IGenome genome, Optional<IGenome> mate, boolean analyzed, int health, int maxHealth) {
+		super(genome, mate, analyzed);
+
+		this.health = health;
+		this.maxHealth = maxHealth;
+	}
+
+	// For "inheritance" in codecs
+	protected static <I extends IIndividualLiving> Products.P5<RecordCodecBuilder.Mu<I>, IGenome, Optional<IGenome>, Boolean, Integer, Integer> livingFields(RecordCodecBuilder.Instance<I> instance, Codec<IGenome> genomeCodec) {
+		return Individual.fields(instance, genomeCodec).and(instance.group(
+				Codec.INT.fieldOf("health").forGetter(I::getHealth),
+				Codec.INT.fieldOf("max_heath").forGetter(I::getMaxHealth)
+		));
 	}
 
 	protected abstract IIntegerChromosome getLifespanChromosome();
@@ -49,13 +68,7 @@ public abstract class IndividualLiving<S extends ISpecies<I>, I extends IIndivid
 
 	@Override
 	public final void setHealth(int health) {
-		if (health < 0) {
-			health = 0;
-		} else if (health > getMaxHealth()) {
-			health = getMaxHealth();
-		}
-
-		this.health = health;
+		this.health = Mth.clamp(health, 0, getMaxHealth());
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationCondition;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
@@ -43,10 +45,10 @@ public class MutationsRegistration implements IMutationsRegistration {
 		MutationPair pair = new MutationPair(firstParent, secondParent);
 
 		// order does not matter in mutations
-		if (mutations.get(pair) == null && mutations.get(new MutationPair(secondParent, firstParent)) == null) {
+		if (this.mutations.get(pair) == null && this.mutations.get(new MutationPair(secondParent, firstParent)) == null) {
 			MutationBuilder mutation = new MutationBuilder(pair, this.speciesId);
 			mutation.setChance(chance);
-			mutations.put(pair, mutation);
+			this.mutations.put(pair, mutation);
 			return mutation;
 		} else {
 			throw new IllegalStateException("A mutation with the given parents was already registered, use IMutationsRegistration#get instead: " + pair);
@@ -57,11 +59,21 @@ public class MutationsRegistration implements IMutationsRegistration {
 	public IMutationBuilder get(ResourceLocation firstParent, ResourceLocation secondParent) {
 		Preconditions.checkArgument(!firstParent.equals(secondParent), "Cannot have a mutation between two of the same species");
 
-		MutationBuilder mutation = mutations.get(new MutationPair(firstParent, secondParent));
+		MutationBuilder mutation = this.mutations.get(new MutationPair(firstParent, secondParent));
 		if (mutation == null) {
-			mutation = mutations.get(new MutationPair(secondParent, firstParent));
+			mutation = this.mutations.get(new MutationPair(secondParent, firstParent));
 		}
 		return mutation;
+	}
+
+	public <S extends ISpecies<?>> List<IMutation<S>> build(ISpeciesType<S, ?> speciesType, ImmutableMap<ResourceLocation, S> speciesLookup) {
+		ArrayList<IMutation<S>> mutations = new ArrayList<>(this.mutations.size());
+
+		for (MutationBuilder builder : this.mutations.values()) {
+			mutations.add(builder.build(speciesType, speciesLookup));
+		}
+
+		return mutations;
 	}
 
 	private record MutationPair(ResourceLocation first, ResourceLocation second) {
@@ -152,8 +164,8 @@ public class MutationsRegistration implements IMutationsRegistration {
 		}
 
 		@Override
-		public <S extends ISpecies<?>> Mutation<S> build(ISpeciesType<S, ?> speciesType) {
-			return new Mutation<>(speciesType, speciesType.getSpecies(this.pair.first), speciesType.getSpecies(this.pair.second), speciesType.getSpecies(this.result), this.extraAlleles.build(), this.chance, this.conditions);
+		public <S extends ISpecies<?>> IMutation<S> build(ISpeciesType<S, ?> speciesType, ImmutableMap<ResourceLocation, S> speciesLookup) {
+			return new Mutation<>(speciesType, speciesLookup.get(this.pair.first), speciesLookup.get(this.pair.second), speciesLookup.get(this.result), this.extraAlleles.build(), this.chance, this.conditions);
 		}
 	}
 }

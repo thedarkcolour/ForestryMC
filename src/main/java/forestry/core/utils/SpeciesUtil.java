@@ -18,6 +18,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraftforge.common.util.Lazy;
 
+import forestry.Forestry;
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
@@ -92,7 +93,7 @@ public class SpeciesUtil {
 	}
 
 	public static <I extends IIndividual> I deserializeIndividual(ISpeciesType<?, I> type, Tag nbt) {
-		return type.getIndividualCodec().decode(NbtOps.INSTANCE, nbt).result().orElseThrow().getFirst();
+		return type.getIndividualCodec().decode(NbtOps.INSTANCE, nbt).resultOrPartial(Forestry.LOGGER::error).orElseThrow().getFirst();
 	}
 
 	@Nullable
@@ -117,11 +118,11 @@ public class SpeciesUtil {
 			secondGenome = parent1;
 		}
 
-		ISpeciesType<?, ?> speciesType = parent1.getActiveValue(speciesChromosome).getType();
+		ISpeciesType<S, ?> speciesType = parent1.getActiveSpecies();
 		IBreedingTracker tracker = profile == null ? null : speciesType.getBreedingTracker(level, profile);
 		IClimateProvider climate = IForestryApi.INSTANCE.getClimateManager().getDefaultClimate(level, pos);
 
-		for (IMutation<?> mutation : speciesType.getMutations().getAllMutations(level.random)) {
+		for (IMutation<?> mutation : speciesType.getMutations().getCombinationsShuffled(firstParent, secondParent, level.random)) {
 			float chance = chanceGetter.getChance(mutation, level, pos, firstParent, secondParent, firstGenome, secondGenome, climate);
 			if (chance <= 0) {
 				continue;

@@ -58,9 +58,9 @@ public interface IMutation<S extends ISpecies<?>> {
 	List<IMutationCondition> getConditions();
 
 	/**
-	 * @return {@code true} if the passed allele is one of the alleles participating in this mutation.
+	 * @return {@code true} if the passed species is one of the alleles participating in this mutation.
 	 */
-	boolean isPartner(ISpecies<?> allele);
+	boolean isPartner(ISpecies<?> species);
 
 	/**
 	 * @return The other parent in this mutation besides the given species.
