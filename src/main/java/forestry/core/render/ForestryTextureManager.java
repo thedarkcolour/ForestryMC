@@ -16,17 +16,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.client.event.TextureStitchEvent;
-
 import forestry.api.IForestryApi;
 import forestry.api.client.ForestrySprites;
 import forestry.api.client.ITextureManager;
 import forestry.api.core.IError;
 
 public class ForestryTextureManager implements ITextureManager {
-	private final ForestrySpriteUploader uploader = new ForestrySpriteUploader(Minecraft.getInstance().textureManager, ForestrySprites.TEXTURE_ATLAS, "gui");
+	private final ForestryAtlasHolder uploader = new ForestryAtlasHolder(Minecraft.getInstance().textureManager, ForestrySprites.TEXTURE_ATLAS, "gui");
 
-	public ForestrySpriteUploader getSpriteUploader() {
+	public ForestryAtlasHolder getSpriteUploader() {
 		return this.uploader;
 	}
 
@@ -46,11 +44,5 @@ public class ForestryTextureManager implements ITextureManager {
 	@Override
 	public TextureAtlasSprite getSprite(ResourceLocation location) {
 		return this.uploader.getSprite(location);
-	}
-
-	public void registerSprites(TextureStitchEvent.Pre registry) {
-		//for (ISpriteRegister spriteRegister : spriteRegisters) {
-		//	spriteRegister.registerSprites(registry);
-		//}
 	}
 }

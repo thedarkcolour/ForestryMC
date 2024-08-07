@@ -96,7 +96,6 @@ public class CoreClientHandler implements IClientModuleHandler {
 
 	private static void handleTextureRemap(TextureStitchEvent.Pre event) {
 		if (event.getAtlas().location() == InventoryMenu.BLOCK_ATLAS) {
-			IForestryClientApi.INSTANCE.getTextureManager().registerSprites(event);
 			ModelBlockCached.clear();
 		}
 	}
@@ -129,6 +128,8 @@ public class CoreClientHandler implements IClientModuleHandler {
 		event.registerReloadListener(((ForestryTextureManager) IForestryClientApi.INSTANCE.getTextureManager()).getSpriteUploader());
 		event.registerReloadListener(ColourProperties.INSTANCE);
 		event.registerReloadListener(GuiElementFactory.INSTANCE);
+
+		((ForestryTextureManager) IForestryClientApi.INSTANCE.getTextureManager()).init();
 	}
 
 	private static void registerBlockColors(RegisterColorHandlersEvent.Block event) {

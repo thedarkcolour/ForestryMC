@@ -29,6 +29,4 @@ public interface ITextureManager {
 	default TextureAtlasSprite getSprite(String path) {
 		return getSprite(ForestryConstants.forestry(path));
 	}
-
-	void registerSprites(TextureStitchEvent.Pre event);
 }
