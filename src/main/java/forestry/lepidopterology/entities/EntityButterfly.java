@@ -185,7 +185,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		IButterfly butterfly = null;
 		if (nbt.contains(NBT_BUTTERFLY)) {
-			butterfly = SpeciesUtil.deserializeButterfly(nbt.getCompound(NBT_BUTTERFLY));
+			butterfly = SpeciesUtil.deserializeIndividual(SpeciesUtil.BUTTERFLY_TYPE.get(), nbt.getCompound(NBT_BUTTERFLY));
 		}
 		setIndividual(butterfly);
 

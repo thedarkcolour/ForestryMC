@@ -23,13 +23,18 @@ public final class Genome implements IGenome {
 	private boolean isDefaultGenome;
 	private boolean hasCachedDefaultGenome;
 
-	public Genome(IKaryotype karyotype, Map<IChromosome<?>, AllelePair<?>> chromosomes) {
-		this(karyotype, ImmutableMap.copyOf(chromosomes));
-	}
-
 	public Genome(IKaryotype karyotype, ImmutableMap<IChromosome<?>, AllelePair<?>> chromosomes) {
 		this.karyotype = karyotype;
 		this.chromosomes = chromosomes;
+	}
+
+	// Used by codec only
+	public static IGenome fromUnsortedAlleles(Karyotype karyotype, Map<IChromosome<?>, AllelePair<?>> map) {
+		ImmutableMap.Builder<IChromosome<?>, AllelePair<?>> sorted = ImmutableMap.builderWithExpectedSize(map.size());
+		for (IChromosome<?> chromosome : karyotype.getChromosomes()) {
+			sorted.put(chromosome, map.get(chromosome));
+		}
+		return new Genome(karyotype, sorted.buildOrThrow());
 	}
 
 	@Override
@@ -151,6 +156,8 @@ public final class Genome implements IGenome {
 		public <A extends IAllele> void setActive(IChromosome<A> chromosome, A allele) {
 			if (this.karyotype.isAlleleValid(chromosome, allele)) {
 				this.active.put(chromosome, allele);
+			} else {
+				throw new IllegalArgumentException("Invalid allele " + allele.alleleId() + " for chromosome " + chromosome.id());
 			}
 		}
 

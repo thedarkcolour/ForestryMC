@@ -110,7 +110,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		Tag caterpillarNbt = nbt.get(NBT_CATERPILLAR);
 		if (caterpillarNbt != null) {
 			this.maturationTime = nbt.getInt(NBT_MATURATION);
-			this.caterpillar = SpeciesUtil.deserializeButterfly(caterpillarNbt);
+			this.caterpillar = SpeciesUtil.deserializeIndividual(SpeciesUtil.BUTTERFLY_TYPE.get(), caterpillarNbt);
 		}
 
 		ITree tree = getTree();

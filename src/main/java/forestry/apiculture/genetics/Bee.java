@@ -431,7 +431,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 
 		return SpeciesUtil.createOffspring(housing.getWorldObj().random, this.genome, mate, mutator, genome -> {
 			//IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(level);
-			return new Bee(genome, null, false, this.health, this.maxHealth, this.pristine, generation); /*mode.isOffspringPristine(this)*/
+			return new Bee(genome, Optional.empty(), false, this.maxHealth, this.maxHealth, this.pristine, generation); /*mode.isOffspringPristine(this)*/
 		});
 	}
 

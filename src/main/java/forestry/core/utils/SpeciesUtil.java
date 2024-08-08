@@ -38,7 +38,6 @@ import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.IRegistryAllele;
 import forestry.api.genetics.alleles.IRegistryChromosome;
-import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.api.plugin.IGenomeBuilder;
@@ -88,9 +87,6 @@ public class SpeciesUtil {
 		return individualCodec.encodeStart(NbtOps.INSTANCE, individual).result().orElse(null);
 	}
 
-	public static IButterfly deserializeButterfly(Tag nbt) {
-		return deserializeIndividual(BUTTERFLY_TYPE.get(), nbt);
-	}
 
 	public static <I extends IIndividual> I deserializeIndividual(ISpeciesType<?, I> type, Tag nbt) {
 		return type.getIndividualCodec().decode(NbtOps.INSTANCE, nbt).resultOrPartial(Forestry.LOGGER::error).orElseThrow().getFirst();
@@ -152,6 +148,7 @@ public class SpeciesUtil {
 	public static <I extends IIndividual> I createOffspring(RandomSource rand, IGenome self, IGenome mate, ISpeciesMutator mutator, Function<IGenome, I> individualFactory) {
 		IKaryotype karyotype = self.getKaryotype();
 		IGenomeBuilder genome = karyotype.createGenomeBuilder();
+		// todo why is this sorted incorrectly?
 		ImmutableList<AllelePair<?>> parent1 = self.getAllelePairs();
 		ImmutableList<AllelePair<?>> parent2 = mate.getAllelePairs();
 

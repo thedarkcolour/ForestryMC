@@ -10,12 +10,9 @@
  ******************************************************************************/
 package forestry.lepidopterology.tiles;
 
-import com.google.common.base.Preconditions;
-
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +50,7 @@ public class TileCocoon extends BlockEntity implements IOwnedTile {
 		super.load(compoundNBT);
 
 		if (compoundNBT.contains("Caterpillar")) {
-			caterpillar = SpeciesUtil.deserializeButterfly(compoundNBT.get("Caterpillar"));
+			caterpillar = SpeciesUtil.deserializeIndividual(SpeciesUtil.BUTTERFLY_TYPE.get(), compoundNBT.getCompound("Caterpillar"));
 		}
 		this.ownerHandler.read(compoundNBT);
 		this.maturationTime = compoundNBT.getInt("CATMAT");

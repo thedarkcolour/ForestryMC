@@ -42,7 +42,7 @@ public class Karyotype implements IKaryotype {
 
 		Keyable chromosomesKeyable = Keyable.forStrings(() -> this.chromosomes.keySet().stream().map(chromosome -> chromosome.id().toString()));
 		this.genomeCodec = Codec.simpleMap(IForestryApi.INSTANCE.getAlleleManager().chromosomeCodec(), AllelePair.CODEC, chromosomesKeyable)
-				.xmap(map -> (IGenome) new Genome(this, map), IGenome::getChromosomes).codec();
+				.xmap(map -> Genome.fromUnsortedAlleles(this, map), IGenome::getChromosomes).codec();
 	}
 
 	@Override
