@@ -11,6 +11,7 @@
 package forestry.lepidopterology.items;
 
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -54,7 +55,7 @@ public class ItemButterflyGE extends ItemGE implements IColoredItem {
 
 	@Override
 	protected IButterflySpecies getSpecies(ItemStack stack) {
-		return IIndividualHandlerItem.getIndividual(stack).getGenome().getActiveValue(ButterflyChromosomes.SPECIES);
+		return IIndividualHandlerItem.getSpecies(stack, SpeciesUtil.BUTTERFLY_TYPE.get());
 	}
 
 	@Override
@@ -206,7 +207,7 @@ public class ItemButterflyGE extends ItemGE implements IColoredItem {
 
 	@Override
 	public int getColorFromItemStack(ItemStack stack, int tintIndex) {
-		if (this.stage == ButterflyLifeStage.SERUM && tintIndex == 1 && stack.hasTag()) {
+		if (tintIndex == 1 && stack.hasTag()) {
 			IButterflySpecies species = getSpecies(stack);
 			return species.getSerumColor();
 		}

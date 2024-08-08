@@ -4,11 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
 import forestry.api.ForestryConstants;
 import forestry.api.ForestryTags;
+import forestry.apiculture.blocks.NaturalistChestBlockType;
 import forestry.apiculture.items.*;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.world.level.ItemLike;
@@ -90,6 +92,8 @@ import forestry.modules.features.FeatureItem;
 import forestry.sorting.features.SortingBlocks;
 import forestry.storage.features.BackpackItems;
 import forestry.worktable.features.WorktableBlocks;
+
+import static forestry.core.data.models.ForestryBlockStateProvider.path;
 
 public class ForestryRecipeProvider extends RecipeProvider {
 
@@ -223,7 +227,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_casing", has(ForestryTags.Items.BEE_COMBS)).save(helper);
 		//TODO minecarts and candles once they are flattened
 
-		ShapedRecipeBuilder.shaped(ApicultureBlocks.BEE_CHEST.block())
+		ShapedRecipeBuilder.shaped(CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.APIARIST_CHEST))
 				.define('G', Tags.Items.GLASS)
 				.define('X', ForestryTags.Items.BEE_COMBS)
 				.define('Y', Tags.Items.CHESTS_WOODEN)
@@ -320,7 +324,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('#', Tags.Items.RODS_WOODEN)
 				.pattern("  B").pattern(" # ").pattern("#  ")
 				.unlockedBy("has_bronze", has(ForestryTags.Items.INGOTS_BRONZE)).save(helper);
-		ShapedRecipeBuilder.shaped(ArboricultureBlocks.TREE_CHEST.block())
+		ShapedRecipeBuilder.shaped(CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.ARBORIST_CHEST))
 				.define('#', Tags.Items.GLASS)
 				.define('X', ItemTags.SAPLINGS)
 				.define('Y', Tags.Items.CHESTS_WOODEN)
@@ -397,7 +401,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern("X#X").pattern("VYV").pattern("X#X")
 				.unlockedBy("has_bone", has(Tags.Items.BONES)).save(helper);
 
-		Block beeChest = ArboricultureBlocks.TREE_CHEST.block();
+		ItemLike beeChest = CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.ARBORIST_CHEST);
 		ShapedRecipeBuilder.shaped(BackpackItems.APIARIST_BACKPACK)
 				.define('#', ItemTags.WOOL)
 				.define('V', Tags.Items.RODS_WOODEN)
@@ -434,7 +438,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern("X#X").pattern("VYV").pattern("X#X")
 				.unlockedBy("has_feather", has(Tags.Items.FEATHERS)).save(helper);
 
-		Block butterflyChest = LepidopterologyBlocks.BUTTERFLY_CHEST.block();
+		ItemLike butterflyChest = CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.LEPIDOPTERIST_CHEST);
 		ShapedRecipeBuilder.shaped(BackpackItems.LEPIDOPTERIST_BACKPACK)
 				.define('#', ItemTags.WOOL)
 				.define('V', butterflyChest)
@@ -837,26 +841,27 @@ public class ForestryRecipeProvider extends RecipeProvider {
 
 	private void registerDatabaseRecipes(Consumer<FinishedRecipe> helper) {
 		//TODO create FallbackIngredient implementation
-		List<FeatureBlock<?, ?>> features = Lists.newArrayList(ApicultureBlocks.BEE_CHEST, ArboricultureBlocks.TREE_CHEST, LepidopterologyBlocks.BUTTERFLY_CHEST);
+		Collection<? extends Block> features = CoreBlocks.NATURALIST_CHEST.getBlocks();
 		List<Ingredient> possibleSpecials = Lists.newArrayList(Ingredient.of(ApicultureItems.ROYAL_JELLY.item()), Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.PLUM).item()), Ingredient.of(Tags.Items.CHESTS_WOODEN));
 		Ingredient possibleSpecial = Ingredient.merge(possibleSpecials);
-		for (FeatureBlock<?, ?> featureBlock1 : features) {
-			for (FeatureBlock<?, ?> featureBlock2 : features) {
-				if (featureBlock1.equals(featureBlock2)) {
+
+		for (Block featureBlock1 : features) {
+			for (Block featureBlock2 : features) {
+				if (featureBlock1 == featureBlock2) {
 					continue;
 				}
 
 				ShapedRecipeBuilder.shaped(DatabaseBlocks.DATABASE.block())
 						.define('#', CoreItems.PORTABLE_ALYZER)
 						.define('C', possibleSpecial)
-						.define('S', featureBlock1.block())
-						.define('F', featureBlock2.block())
+						.define('S', featureBlock1)
+						.define('F', featureBlock2)
 						.define('W', ItemTags.PLANKS)
 						.define('I', ForestryTags.Items.INGOTS_BRONZE)
 						.define('Y', CoreItems.STURDY_CASING)
 						.pattern("I#I").pattern("FYS").pattern("WCW")
 						.unlockedBy("has_casing", has(CoreItems.STURDY_CASING))
-						.save(helper, ForestryConstants.forestry("database_" + featureBlock1.getName() + "_" + featureBlock2.getName()));
+						.save(helper, ForestryConstants.forestry("database_" + path(featureBlock1) + "_" + path(featureBlock2)));
 			}
 		}
 	}
@@ -982,7 +987,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 	private void registerLepidopterologyRecipes(Consumer<FinishedRecipe> helper) {
 		//TODO tag?
 		//TODO tag?
-		ShapedRecipeBuilder.shaped(LepidopterologyBlocks.BUTTERFLY_CHEST.block())
+		ShapedRecipeBuilder.shaped(CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.LEPIDOPTERIST_CHEST))
 				.define('#', Tags.Items.GLASS)
 				.define('X', LepidopterologyItems.BUTTERFLY_GE)    //TODO tag?
 				.define('Y', Tags.Items.CHESTS_WOODEN)

@@ -75,7 +75,7 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		if (tree == null) {
 			return ItemStack.EMPTY;
 		}
-		ITreeSpecies species = tree.getGenome().getActiveValue(TreeChromosomes.SPECIES);
+		ITreeSpecies species = tree.getSpecies();
 		return species.getDecorativeLeaves();
 	}
 

@@ -89,8 +89,6 @@ public class ModuleCore extends BlankForestryModule {
 
 	@Override
 	public void registerEvents(IEventBus modBus) {
-		CoreFeatures.CONFIGURED_FEATURES.register(modBus);
-		CoreFeatures.PLACED_FEATURES.register(modBus);
 		modBus.addListener(ModuleCore::onCommonSetup);
 		modBus.addListener(ModuleCore::registerGlobalLootModifiers);
 		modBus.addListener(EventPriority.LOWEST, ModuleCore::postItemRegistry);

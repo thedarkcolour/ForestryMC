@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 public class RenderForestryTile<T extends BlockEntity> implements BlockEntityRenderer<T> {
-
 	private final IForestryRenderer<T> renderer;
 	private final RenderHelper helper = new RenderHelper();
 

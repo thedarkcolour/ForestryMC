@@ -10,6 +10,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.client.ITextureManager;
 import forestry.api.client.arboriculture.ITreeClientManager;
+import forestry.api.client.lepidopterology.IButterflyClientManager;
 import forestry.core.render.ForestryTextureManager;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -19,6 +20,8 @@ public class ForestryClientApiImpl implements IForestryClientApi {
 	private final ITextureManager textureManager;
 	@Nullable
 	private ITreeClientManager treeManager;
+	@Nullable
+	private IButterflyClientManager butterflyManager;
 
 	public ForestryClientApiImpl() {
 		Preconditions.checkState(FMLEnvironment.dist == Dist.CLIENT, "Tried to load IForestryClientApi on invalid side " + FMLEnvironment.dist);
@@ -44,8 +47,21 @@ public class ForestryClientApiImpl implements IForestryClientApi {
 		return manager;
 	}
 
+	@Override
+	public IButterflyClientManager getButterflyManager() {
+		IButterflyClientManager manager = this.butterflyManager;
+		if (manager == null) {
+			throw new IllegalStateException("IButterflyClientManager not initialized yet");
+		}
+		return manager;
+	}
+
 	@ApiStatus.Internal
 	public void setTreeManager(ITreeClientManager treeManager) {
 		this.treeManager = treeManager;
+	}
+
+	public void setButterflyManager(IButterflyClientManager butterflyManager) {
+		this.butterflyManager = butterflyManager;
 	}
 }

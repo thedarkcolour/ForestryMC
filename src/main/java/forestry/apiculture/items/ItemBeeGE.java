@@ -28,7 +28,6 @@ import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.core.ItemGroups;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
-import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
 import forestry.core.utils.SpeciesUtil;
@@ -45,7 +44,7 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 
 	@Override
 	protected IBeeSpecies getSpecies(ItemStack stack) {
-		return (IBeeSpecies) IIndividualHandlerItem.getIndividual(stack).getSpecies();
+		return IIndividualHandlerItem.getSpecies(stack, SpeciesUtil.BEE_TYPE.get());
 	}
 
 	@Override
@@ -74,21 +73,11 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 		}
 	}
 
-	public void addCreativeItems(List<ItemStack> subItems, boolean hideSecrets) {
-		//so need to adjust init sequence
-		for (IBeeSpecies species : SpeciesUtil.getAllBeeSpecies()) {
-			// Don't show secret bees unless ordered to.
-			if (hideSecrets && species.isSecret() && !Config.isDebug) {
-				continue;
-			}
-			subItems.add(species.createStack(this.stage));
-		}
-	}
-
 	@Override
-	public int getColorFromItemStack(ItemStack itemstack, int tintIndex) {
-		if (!itemstack.hasTag()) {
+	public int getColorFromItemStack(ItemStack stack, int tintIndex) {
+		if (!stack.hasTag()) {
 			if (tintIndex == 1) {
+				// 1 = body
 				return 0xffdc16;
 			} else if (tintIndex == 2) {
 				// 2 = stripes
@@ -98,12 +87,13 @@ public class ItemBeeGE extends ItemGE implements IColoredItem {
 				return 0xffffff;
 			}
 		} else {
-			IBeeSpecies species = getSpecies(itemstack);
+			IBeeSpecies species = getSpecies(stack);
 
 			return switch (tintIndex) {
 				case 2 -> species.getStripes();
 				case 1 -> species.getBody();
-				default -> species.getOutline();
+				case 0 -> species.getOutline();
+				default -> 0xffffff;
 			};
 		}
 	}

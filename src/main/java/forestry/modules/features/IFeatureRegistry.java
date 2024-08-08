@@ -34,15 +34,18 @@ import forestry.api.storage.EnumBackpackType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegisterEvent;
 
-// todo this isn't an API. remove the interface
 public interface IFeatureRegistry {
-	String getModId();
-
 	/**
 	 * @return The internal deferred registry instance managed by this feature registry.
 	 * If a deferred registry does not exist for the given registry, then one is created.
 	 */
 	<V> DeferredRegister<V> getRegistry(ResourceKey<? extends Registry<V>> registry);
+
+	/**
+	 * @return The internal deferred registry for the given key, {@code null} if one has not been created.
+	 */
+	@Nullable
+	<V> DeferredRegister<V> getRegistryNullable(ResourceKey<? extends Registry<V>> registry);
 
 	<B extends Block, I extends BlockItem> FeatureBlock<B, I> block(Supplier<B> constructor, String name);
 

@@ -19,9 +19,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import forestry.core.blocks.BlockBase;
-import forestry.core.blocks.IBlockTypeTesr;
-import forestry.core.blocks.IMachinePropertiesTesr;
-import forestry.core.blocks.MachinePropertiesTesr;
+import forestry.core.blocks.IBlockType;
+import forestry.core.blocks.IMachineProperties;
+import forestry.core.blocks.MachineProperties;
 import forestry.core.config.Constants;
 import forestry.core.tiles.IForestryTicker;
 import forestry.core.tiles.TileBase;
@@ -36,21 +36,19 @@ import forestry.factory.tiles.TileSqueezer;
 import forestry.factory.tiles.TileStill;
 import forestry.modules.features.FeatureTileType;
 
-public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
-	BOTTLER(() -> FactoryTiles.BOTTLER, "bottler", TileBottler::serverTick),
-	CARPENTER(() -> FactoryTiles.CARPENTER, "carpenter", TileCarpenter::serverTick),
-	CENTRIFUGE(() -> FactoryTiles.CENTRIFUGE, "centrifuge", TileCentrifuge::serverTick),
-	FERMENTER(() -> FactoryTiles.FERMENTER, "fermenter", TileFermenter::serverTick),
-	MOISTENER(() -> FactoryTiles.MOISTENER, "moistener", TileMoistener::serverTick),
-	SQUEEZER(() -> FactoryTiles.SQUEEZER, "squeezer", TileSqueezer::serverTick),
-	STILL(() -> FactoryTiles.STILL, "still", TileStill::serverTick),
-	RAINMAKER(() -> FactoryTiles.RAINMAKER, "rainmaker", Constants.TEXTURE_PATH_BLOCK + "/rainmaker_");
+public enum BlockTypeFactoryTesr implements IBlockType {
+	BOTTLER(FactoryTiles.BOTTLER, "bottler", TileBottler::serverTick),
+	CARPENTER(FactoryTiles.CARPENTER, "carpenter", TileCarpenter::serverTick),
+	CENTRIFUGE(FactoryTiles.CENTRIFUGE, "centrifuge", TileCentrifuge::serverTick),
+	FERMENTER(FactoryTiles.FERMENTER, "fermenter", TileFermenter::serverTick),
+	MOISTENER(FactoryTiles.MOISTENER, "moistener", TileMoistener::serverTick),
+	SQUEEZER(FactoryTiles.SQUEEZER, "squeezer", TileSqueezer::serverTick),
+	STILL(FactoryTiles.STILL, "still", TileStill::serverTick),
+	RAINMAKER(FactoryTiles.RAINMAKER, "rainmaker", Constants.TEXTURE_PATH_BLOCK + "/rainmaker_");
 
-	public static final BlockTypeFactoryTesr[] VALUES = values();
+	private final IMachineProperties<?> machineProperties;
 
-	private final IMachinePropertiesTesr<?> machineProperties;
-
-	<T extends TileBase> BlockTypeFactoryTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, @Nullable IForestryTicker<T> serverTicker) {
+	<T extends TileBase> BlockTypeFactoryTesr(FeatureTileType<T> teClass, String name, @Nullable IForestryTicker<T> serverTicker) {
 		final VoxelShape nsBase = Block.box(2D, 2D, 4D, 14, 14, 12);
 		final VoxelShape nsFront = Block.box(0D, 0D, 0D, 16, 16, 4);
 		final VoxelShape nsBack = Block.box(0D, 0D, 12D, 16, 16, 16);
@@ -60,8 +58,7 @@ public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
 		final VoxelShape ewBack = Block.box(12D, 0D, 0D, 16, 16, 16);
 		final VoxelShape ew = Shapes.or(ewBase, ewFront, ewBack);
 
-		this.machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
-				.setParticleTexture(name + ".0")
+		this.machineProperties = new MachineProperties.Builder<>(teClass, name)
 				.setServerTicker(serverTicker)
 				.setShape((state, reader, pos, context) -> {
 					Direction direction = state.getValue(BlockBase.FACING);
@@ -70,13 +67,12 @@ public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
 				.create();
 	}
 
-	<T extends TileMill> BlockTypeFactoryTesr(Supplier<FeatureTileType<? extends T>> teClass, String name, String renderMillTexture) {
+	<T extends TileMill> BlockTypeFactoryTesr(FeatureTileType<T> teClass, String name, String renderMillTexture) {
 		final VoxelShape pedestal = Block.box(0D, 0D, 0D, 16, 1, 16);
 		final VoxelShape column = Block.box(5D, 1D, 4D, 11, 16, 12);
 		final VoxelShape extension = Block.box(1D, 8D, 7D, 15, 10, 9);
 
-		this.machineProperties = new MachinePropertiesTesr.Builder<>(teClass, name)
-				.setParticleTexture(name + ".0")
+		this.machineProperties = new MachineProperties.Builder<>(teClass, name)
 				.setShape(() -> Shapes.or(pedestal, column, extension))
 				.setClientTicker(TileMill::clientTick)
 				.setServerTicker(TileMill::serverTick)
@@ -84,7 +80,7 @@ public enum BlockTypeFactoryTesr implements IBlockTypeTesr {
 	}
 
 	@Override
-	public IMachinePropertiesTesr<?> getMachineProperties() {
+	public IMachineProperties<?> getMachineProperties() {
 		return machineProperties;
 	}
 

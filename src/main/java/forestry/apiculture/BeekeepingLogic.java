@@ -46,8 +46,8 @@ import forestry.api.core.IErrorLogic;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.core.config.Constants;
 import forestry.core.utils.NetworkUtil;
@@ -121,7 +121,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		if (compoundNBT.contains("queen")) {
 			CompoundTag queenNBT = compoundNBT.getCompound("queen");
 			this.queenStack = ItemStack.of(queenNBT);
-			this.queen = (IBee) IIndividualHandlerItem.get(queenStack);
+			this.queen = (IBee) IIndividualHandlerItem.getIndividual(queenStack);
 		}
 
 		setActive(compoundNBT.getBoolean("Active"));
@@ -180,7 +180,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 		ItemStack newQueenStack = beeInventory.getQueen();
 		IIndividualHandlerItem handler = IIndividualHandlerItem.get(newQueenStack);
-		ILifeStage beeType = handler.getStage();
+		ILifeStage beeType = handler == null ? null : handler.getStage();
 		// check if we're breeding
 		if (beeType == BeeLifeStage.PRINCESS) {
 			boolean hasDrone = SpeciesUtil.BEE_TYPE.get().isDrone(beeInventory.getDrone());
@@ -204,7 +204,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		// if the princess changed into a queen, or if a queen died
 		if (this.queenStack != newQueenStack) {
 			if (!newQueenStack.isEmpty()) {
-				this.queen = (IBee) IIndividualHandlerItem.get(newQueenStack);
+				this.queen = (IBee) IIndividualHandlerItem.getIndividual(newQueenStack);
 				if (this.queen != null) {
 					hasFlowersCache.onNewQueen(this.queen, this.housing);
 				}

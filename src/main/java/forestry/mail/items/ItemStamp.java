@@ -18,8 +18,7 @@ import forestry.api.mail.IStamps;
 import forestry.core.items.ItemOverlay;
 
 public class ItemStamp extends ItemOverlay implements IStamps {
-
-	private EnumStampDefinition def;
+	private final EnumStampDefinition def;
 
 	public ItemStamp(EnumStampDefinition def) {
 		super(ItemGroups.tabForestry, def);

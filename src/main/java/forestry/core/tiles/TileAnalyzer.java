@@ -245,8 +245,9 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	}
 
 	public ItemStack getIndividualOnDisplay() {
-		if (level.isClientSide) {
-			return individualOnDisplayClient;
+		// null in BEWLR
+		if (this.level == null || this.level.isClientSide) {
+			return this.individualOnDisplayClient;
 		}
 		return getItem(InventoryAnalyzer.SLOT_ANALYZE);
 	}

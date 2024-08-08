@@ -12,19 +12,29 @@ package forestry.core.render;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
 import forestry.api.ForestryConstants;
@@ -32,101 +42,90 @@ import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TileAnalyzer;
 
-public class RenderAnalyzer implements IForestryRenderer<TileAnalyzer> {
-	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("analyzer");
-	
+public class RenderAnalyzer implements BlockEntityRenderer<TileAnalyzer> {
 	private static final String TOWER2 = "tower2";
 	private static final String TOWER1 = "tower1";
 	private static final String COVER = "cover";
 	private static final String PEDESTAL = "pedestal";
+
+	private static final ResourceLocation TEXTURE0 = ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/analyzer_pedestal.png");
+	private static final ResourceLocation TEXTURE1 = ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/analyzer_tower1.png");
+	private static final ResourceLocation TEXTURE2 = ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/analyzer_tower2.png");
+
+	private final ItemRenderer itemRenderer;
 	private final ModelPart pedestal;
 	private final ModelPart cover;
 	private final ModelPart tower1;
 	private final ModelPart tower2;
 
-	private final ResourceLocation[] textures;
+	public RenderAnalyzer(BlockEntityRendererProvider.Context ctx) {
+		this.itemRenderer = ctx.getItemRenderer();
 
-	public RenderAnalyzer(final ModelPart root) {
-        this.pedestal = root.getChild(PEDESTAL);
-        this.cover = root.getChild(COVER);
-        this.tower1 = root.getChild(TOWER1);
-        this.tower2 = root.getChild(TOWER2);
-
-		this.textures = new ResourceLocation[]{
-				ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/analyzer_pedestal.png"),
-				ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/analyzer_tower1.png"),
-				ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/analyzer_tower2.png"),
-		};
+		ModelPart root = ctx.bakeLayer(ForestryModelLayers.ANALYZER_LAYER);
+		this.pedestal = root.getChild(PEDESTAL);
+		this.cover = root.getChild(COVER);
+		this.tower1 = root.getChild(TOWER1);
+		this.tower2 = root.getChild(TOWER2);
 	}
-	
+
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-        
-        partdefinition.addOrReplaceChild(PEDESTAL, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-8F, -8F, -8F, 16, 1, 16), PartPose.offset(8, 8, 8));
-        partdefinition.addOrReplaceChild(COVER, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-8F, -8F, -8F, 16, 1, 16), PartPose.offset(8, 8, 8)); 
-        partdefinition.addOrReplaceChild(TOWER1, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-8, -7, -7, 2, 14, 14), PartPose.offset(8, 8, 8));
-        partdefinition.addOrReplaceChild(TOWER2, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(6, -7, -7, 2, 14, 14), PartPose.offset(8, 8, 8));
-        
-        return LayerDefinition.create(meshdefinition, 64, 32);
+		PartDefinition partdefinition = meshdefinition.getRoot();
+
+		partdefinition.addOrReplaceChild(PEDESTAL, CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0, 0, 0, 16, 1, 16), PartPose.offset(0, 0, 0));
+		partdefinition.addOrReplaceChild(COVER, CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0, 0, 0, 16, 1, 16), PartPose.offsetAndRotation(16, 16, 0, 0, 0, Mth.PI));
+		partdefinition.addOrReplaceChild(TOWER1, CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0, 0, 0, 2, 14, 14), PartPose.offset(0, 1, 1));
+		partdefinition.addOrReplaceChild(TOWER2, CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0, 0, 0, 2, 14, 14), PartPose.offset(14, 1, 1));
+
+		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
 	@Override
-	public void renderTile(TileAnalyzer tile, RenderHelper helper) {
-		Level worldObj = tile.getWorldObj();
-		BlockState blockState = worldObj.getBlockState(tile.getBlockPos());
-		if (blockState.getBlock() instanceof BlockBase) {
-			Direction facing = blockState.getValue(BlockBase.FACING);
-			render(tile.getIndividualOnDisplay(), worldObj, facing, helper);
+	public void render(TileAnalyzer analyzer, float partialTick, PoseStack stack, MultiBufferSource buffers, int light, int overlay) {
+		stack.pushPose();
+		Direction facing = analyzer.getBlockState().getValue(BlockBase.FACING);
+		if (facing != Direction.SOUTH) {
+			stack.translate(0.5, 0.5, 0.5);
+			switch (facing) {
+				case EAST -> stack.mulPose(Vector3f.YP.rotation(Mth.HALF_PI));
+				case WEST -> stack.mulPose(Vector3f.YP.rotation(-Mth.HALF_PI));
+				case NORTH -> stack.mulPose(Vector3f.YP.rotation(Mth.PI));
+			}
+			stack.translate(-0.5, -0.5, -0.5);
+		}
+
+		VertexConsumer buffer0 = buffers.getBuffer(RenderType.entityCutout(TEXTURE0));
+		this.pedestal.render(stack, buffer0, light, overlay);
+		this.cover.render(stack, buffer0, light, overlay);
+		this.tower1.render(stack, buffers.getBuffer(RenderType.entityCutout(TEXTURE1)), light, overlay);
+		this.tower2.render(stack, buffers.getBuffer(RenderType.entityCutout(TEXTURE2)), light, overlay);
+
+		stack.popPose();
+
+		ItemStack displayStack = analyzer.getIndividualOnDisplay();
+		if (!displayStack.isEmpty()) {
+			stack.pushPose();
+			stack.translate(0.5f, 0.2f, 0.5f);
+
+			Level level = analyzer.getLevel();
+			BakedModel itemModel = this.itemRenderer.getModel(displayStack, level, null, 1);
+			boolean isGui3d = itemModel.isGui3d();
+			float smoothTick = ((float) (int) level.getGameTime()) + partialTick;
+			float f1 = Mth.sin(smoothTick / 10.0f) * 0.1f + 0.1f;
+			float f2 = itemModel.getTransforms().getTransform(ItemTransforms.TransformType.GROUND).scale.y();
+			stack.translate(0, f1 + 0.25f * f2, 0);
+			stack.mulPose(Vector3f.YP.rotation(smoothTick / 20f));
+
+			this.itemRenderer.render(displayStack, ItemTransforms.TransformType.GROUND, false, stack, buffers, light, OverlayTexture.NO_OVERLAY, itemModel);
+
+			if (!isGui3d) {
+				stack.translate(0.0, 0.0, 0.09375F);
+			}
+			stack.popPose();
 		}
 	}
-
-	@Override
-	public void renderItem(ItemStack stack, RenderHelper helper) {
-		render(ItemStack.EMPTY, null, Direction.WEST, helper);
-	}
-
-	private void render(ItemStack itemstack, @Nullable Level world, Direction orientation, RenderHelper helper) {
-		Vector3f rotation = new Vector3f(0, 0, 0);
-		switch (orientation) {
-			case EAST:
-				rotation.setY((float) Math.PI / 2);
-				break;
-			case WEST:
-				rotation.setY((float) -Math.PI / 2);
-				break;
-			case SOUTH:
-				break;
-			case NORTH:
-			default:
-				rotation.setY((float) Math.PI);
-				break;
-		}
-		helper.setRotation(rotation);
-		helper.push();
-
-		helper.renderModel(textures[0], pedestal);
-		helper.renderModel(textures[0], new Vector3f(0, 0, (float) Math.PI), cover);
-
-		helper.renderModel(textures[1], tower1);
-
-		helper.renderModel(textures[2], tower2);
-		helper.pop();
-		if (itemstack.isEmpty() || world == null) {
-			return;
-		}
-		float renderScale = 1.0f;
-
-		helper.push();
-		helper.translate(0.5f, 0.2f, 0.5f);
-		helper.scale(renderScale, renderScale, renderScale);
-
-		helper.renderItem(itemstack, world);
-		helper.pop();
-	}
-
 }

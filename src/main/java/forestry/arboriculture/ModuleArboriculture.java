@@ -47,8 +47,6 @@ public class ModuleArboriculture extends BlankForestryModule {
 
 	@Override
 	public void registerEvents(IEventBus modBus) {
-		RegisterVillager.POINTS_OF_INTEREST.register(modBus);
-		RegisterVillager.PROFESSIONS.register(modBus);
 		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
 
 		modBus.addListener(ModuleArboriculture::registerCapabilities);

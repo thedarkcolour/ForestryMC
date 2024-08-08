@@ -1,12 +1,14 @@
 package forestry.core.render;
 
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -22,13 +24,11 @@ import forestry.energy.blocks.EngineBlock;
 import forestry.energy.tiles.EngineBlockEntity;
 
 public class RenderEngine implements IForestryRenderer<EngineBlockEntity> {
-	private static final float[] angleMap = new float[6];
+	private static final float[] ANGLE_MAP = new float[6];
 
 	private enum Textures {
 		BASE, PISTON, EXTENSION, TRUNK_HIGHEST, TRUNK_HIGHER, TRUNK_HIGH, TRUNK_MEDIUM, TRUNK_LOW
 	}
-
-	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("engine");
 
 	private final ResourceLocation[] textures;
 	private final ModelPart boiler;
@@ -37,15 +37,17 @@ public class RenderEngine implements IForestryRenderer<EngineBlockEntity> {
 	private final ModelPart extension;
 
 	static {
-		angleMap[Direction.EAST.ordinal()] = -Mth.HALF_PI;
-		angleMap[Direction.NORTH.ordinal()] = -Mth.HALF_PI;
-		angleMap[Direction.WEST.ordinal()] = Mth.HALF_PI;
-		angleMap[Direction.SOUTH.ordinal()] = Mth.HALF_PI;
-		angleMap[Direction.UP.ordinal()] = 0;
-		angleMap[Direction.DOWN.ordinal()] = Mth.PI;
+		ANGLE_MAP[Direction.EAST.ordinal()] = -Mth.HALF_PI;
+		ANGLE_MAP[Direction.NORTH.ordinal()] = -Mth.HALF_PI;
+		ANGLE_MAP[Direction.WEST.ordinal()] = Mth.HALF_PI;
+		ANGLE_MAP[Direction.SOUTH.ordinal()] = Mth.HALF_PI;
+		ANGLE_MAP[Direction.UP.ordinal()] = 0;
+		ANGLE_MAP[Direction.DOWN.ordinal()] = Mth.PI;
 	}
 
-	public RenderEngine(ModelPart root, String baseTexture) {
+	public RenderEngine(BlockEntityRendererProvider.Context ctx, String baseTexture) {
+		ModelPart root = ctx.bakeLayer(ForestryModelLayers.ENGINE_LAYER);
+
 		this.boiler = root.getChild("boiler");
 		this.trunk = root.getChild("trunk");
 		this.piston = root.getChild("piston");
@@ -115,12 +117,12 @@ public class RenderEngine implements IForestryRenderer<EngineBlockEntity> {
 			case EAST:
 			case WEST:
 			case DOWN:
-				rotation.setZ(angleMap[orientation.ordinal()]);
+				rotation.setZ(ANGLE_MAP[orientation.ordinal()]);
 				break;
 			case SOUTH:
 			case NORTH:
 			default:
-				rotation.setX(angleMap[orientation.ordinal()]);
+				rotation.setX(ANGLE_MAP[orientation.ordinal()]);
 				break;
 		}
 

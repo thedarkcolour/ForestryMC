@@ -109,7 +109,7 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 		}
 		if (capability == ForestryCapabilities.CLIMATE_LISTENER) {
 			IClimateListener listener = getMultiblockLogic().getController().getClimateListener();
-			return LazyOptional.of(() -> listener).cast();
+			return listener == null ? LazyOptional.empty() : LazyOptional.of(() -> listener).cast();
 		}
 		return LazyOptional.empty();
 	}

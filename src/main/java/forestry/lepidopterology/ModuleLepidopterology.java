@@ -23,12 +23,12 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import forestry.api.client.IClientModuleHandler;
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
-import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.commands.CommandButterfly;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyEntities;
@@ -49,18 +49,24 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	private static float serumChance = 0.55f;
 	private static float secondSerumChance = 0;
 
-	public ModuleLepidopterology() {
-		MinecraftForge.EVENT_BUS.addListener(ForgeEvents::onEntityTravelToDimension);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onAttributeCreate);
+	@Override
+	public void registerEvents(IEventBus modBus) {
+		MinecraftForge.EVENT_BUS.addListener(ModuleLepidopterology::onEntityTravelToDimension);
+		modBus.addListener(ModuleLepidopterology::onAttributeCreate);
+	}
 
-		if (generateCocoons) {
-			if (generateCocoonsAmount > 0.0) {
-				IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-				LepidopterologyFeatures.FEATURES.register(modEventBus);
-				LepidopterologyFeatures.CONFIGURED_FEATURES.register(modEventBus);
-				LepidopterologyFeatures.PLACED_FEATURES.register(modEventBus);
-			}
+	public static void onEntityTravelToDimension(EntityTravelToDimensionEvent event) {
+		if (event.getEntity() instanceof EntityButterfly) {
+			event.setCanceled(true);
 		}
+	}
+
+	public static void onAttributeCreate(EntityAttributeCreationEvent event) {
+		event.put(LepidopterologyEntities.BUTTERFLY.entityType(), LepidopterologyEntities.BUTTERFLY.createAttributes().build());
+	}
+
+	public static void onCommonSetup(FMLCommonSetupEvent event) {
+
 	}
 
 	@Override
@@ -105,17 +111,5 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	@Override
 	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
 		registrar.accept(new LepidopterologyClientHandler());
-	}
-
-	private static class ForgeEvents {
-		public static void onEntityTravelToDimension(EntityTravelToDimensionEvent event) {
-			if (event.getEntity() instanceof EntityButterfly) {
-				event.setCanceled(true);
-			}
-		}
-
-		public static void onAttributeCreate(EntityAttributeCreationEvent event) {
-			event.put(LepidopterologyEntities.BUTTERFLY.entityType(), LepidopterologyEntities.BUTTERFLY.createAttributes().build());
-		}
 	}
 }

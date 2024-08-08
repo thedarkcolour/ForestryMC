@@ -82,7 +82,7 @@ public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, I
 		BlockPos pos = new BlockPos(x, y, z);
 		Holder<Biome> biome = level.getBiome(pos);
 		IButterflySpecies species = getGenome().getActiveValue(ButterflyChromosomes.SPECIES);
-		return biome.is(species.getSpawnBiomes()) && isAcceptedEnvironment(level, pos);
+		return (species.getSpawnBiomes() == null || biome.is(species.getSpawnBiomes())) && isAcceptedEnvironment(level, pos);
 	}
 
 	@Override

@@ -5,17 +5,7 @@
         "items": [
           {
             "items": [
-              "forestry:bee_comb_darkened"
-            ]
-          },
-          {
-            "items": [
-              "forestry:bee_comb_silky"
-            ]
-          },
-          {
-            "items": [
-              "forestry:bee_comb_honey"
+              "forestry:bee_comb_mellow"
             ]
           },
           {
@@ -25,7 +15,7 @@
           },
           {
             "items": [
-              "forestry:bee_comb_mellow"
+              "forestry:bee_comb_stringy"
             ]
           },
           {
@@ -35,22 +25,7 @@
           },
           {
             "items": [
-              "forestry:bee_comb_frozen"
-            ]
-          },
-          {
-            "items": [
-              "forestry:bee_comb_parched"
-            ]
-          },
-          {
-            "items": [
-              "forestry:bee_comb_omega"
-            ]
-          },
-          {
-            "items": [
-              "forestry:bee_comb_mossy"
+              "forestry:bee_comb_powdery"
             ]
           },
           {
@@ -60,12 +35,17 @@
           },
           {
             "items": [
-              "forestry:bee_comb_powdery"
+              "forestry:bee_comb_frozen"
             ]
           },
           {
             "items": [
-              "forestry:bee_comb_wheaten"
+              "forestry:bee_comb_silky"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_omega"
             ]
           },
           {
@@ -75,17 +55,37 @@
           },
           {
             "items": [
+              "forestry:bee_comb_reddened"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_honey"
+            ]
+          },
+          {
+            "items": [
               "forestry:bee_comb_irradiated"
             ]
           },
           {
             "items": [
-              "forestry:bee_comb_stringy"
+              "forestry:bee_comb_mossy"
             ]
           },
           {
             "items": [
-              "forestry:bee_comb_reddened"
+              "forestry:bee_comb_darkened"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_wheaten"
+            ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_parched"
             ]
           }
         ]

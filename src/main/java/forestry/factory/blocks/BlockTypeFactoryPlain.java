@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.factory.blocks;
 
-import java.util.function.Supplier;
-
 import forestry.core.blocks.IBlockType;
 import forestry.core.blocks.IMachineProperties;
 import forestry.core.blocks.MachineProperties;
@@ -23,19 +21,21 @@ import forestry.factory.tiles.TileRaintank;
 import forestry.modules.features.FeatureTileType;
 
 public enum BlockTypeFactoryPlain implements IBlockType {
-	FABRICATOR(() -> FactoryTiles.FABRICATOR, "fabricator", TileFabricator::serverTick),
-	RAINTANK(() -> FactoryTiles.RAIN_TANK, "raintank", TileRaintank::serverTick);
+	FABRICATOR(FactoryTiles.FABRICATOR, "fabricator", TileFabricator::serverTick),
+	RAINTANK(FactoryTiles.RAIN_TANK, "raintank", TileRaintank::serverTick);
 
 	public static final BlockTypeFactoryPlain[] VALUES = values();
 
-	private final IMachineProperties machineProperties;
+	private final IMachineProperties<?> machineProperties;
 
-	<T extends TileForestry> BlockTypeFactoryPlain(Supplier<FeatureTileType<? extends T>> teClass, String name, IForestryTicker<T> serverTicker) {
-		this.machineProperties = new MachineProperties.Builder<>(teClass, name).setServerTicker(serverTicker).create();
+	<T extends TileForestry> BlockTypeFactoryPlain(FeatureTileType<T> teClass, String name, IForestryTicker<T> serverTicker) {
+		this.machineProperties = new MachineProperties.Builder<>(teClass, name)
+				.setServerTicker(serverTicker)
+				.create();
 	}
 
 	@Override
-	public IMachineProperties getMachineProperties() {
+	public IMachineProperties<?> getMachineProperties() {
 		return machineProperties;
 	}
 

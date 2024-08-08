@@ -1,24 +1,23 @@
 package forestry.apiculture.particles;
 
-import forestry.api.ForestryConstants;
-import forestry.core.utils.ForgeUtils;
-import forestry.modules.features.FeatureProvider;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import forestry.api.modules.ForestryModuleIds;
+import forestry.modules.features.FeatureProvider;
+import forestry.modules.features.IFeatureRegistry;
+import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class ApicultureParticles {
-	private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, ForestryConstants.MOD_ID);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.APICULTURE);
+
+	private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = REGISTRY.getRegistry(Registry.PARTICLE_TYPE_REGISTRY);
 
 	public static final RegistryObject<ParticleType<BeeParticleData>> BEE_EXPLORER_PARTICLE = PARTICLE_TYPES.register("bee_explore_particle", BeeParticleType::new);
 	public static final RegistryObject<ParticleType<BeeParticleData>> BEE_ROUND_TRIP_PARTICLE = PARTICLE_TYPES.register("bee_round_trip_particle", BeeParticleType::new);
@@ -28,20 +27,4 @@ public class ApicultureParticles {
 			return BeeTargetParticleData.CODEC;
 		}
 	});
-
-	static {
-		IEventBus modBus = ForgeUtils.modBus();
-
-		PARTICLE_TYPES.register(modBus);
-
-		if (FMLEnvironment.dist == Dist.CLIENT) {
-			modBus.addListener(ApicultureParticles::registerParticleFactory);
-		}
-	}
-
-	private static void registerParticleFactory(RegisterParticleProvidersEvent event) {
-		event.register(ApicultureParticles.BEE_EXPLORER_PARTICLE.get(), BeeExploreParticle.Factory::new);
-		event.register(ApicultureParticles.BEE_ROUND_TRIP_PARTICLE.get(), BeeRoundTripParticle.Factory::new);
-		event.register(ApicultureParticles.BEE_TARGET_ENTITY_PARTICLE.get(), BeeTargetEntityParticle.Factory::new);
-	}
 }

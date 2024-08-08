@@ -63,10 +63,9 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 		IIndividual individual = IIndividualHandlerItem.getIndividual(specimen);
 
 		if (individual != null) {
-			IGenome genome = individual.getGenome();
-			ISpeciesType<?, ?> type = genome.getActiveSpecies().getType();
+			ISpeciesType<?, ?> type = individual.getType();
 
-			this.tokenCount = getTokenCount(genome);
+			this.tokenCount = getTokenCount(individual);
 
 			for (int i = 0; i < this.tokenCount / 2; i++) {
 				ISpecies<?> randomSpecies = type.getRandomSpecies(rand);
@@ -172,10 +171,9 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 		tokenCount = 0;
 	}
 
-	private static int getTokenCount(IGenome genome) {
-		var speciesPair = genome.getAllelePair(genome.getKaryotype().getSpeciesChromosome());
-		ISpecies<?> species1 = speciesPair.active().value();
-		ISpecies<?> species2 = speciesPair.inactive().value();
+	private static int getTokenCount(IIndividual individual) {
+		ISpecies<?> species1 = individual.getSpecies();
+		ISpecies<?> species2 = individual.getInactiveSpecies();
 
 		int tokenCount = species1.getComplexity() + species2.getComplexity();
 

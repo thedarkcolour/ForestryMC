@@ -6,7 +6,6 @@ import forestry.core.items.*;
 import forestry.core.items.definitions.ToolTier;
 import net.minecraft.world.item.Item;
 
-import forestry.core.ModuleCore;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.circuits.ItemCircuitBoard;
 import forestry.core.genetics.ItemResearchNote;

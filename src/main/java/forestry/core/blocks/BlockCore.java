@@ -16,6 +16,6 @@ import net.minecraft.world.level.material.Material;
 
 public class BlockCore extends BlockBase<BlockTypeCoreTesr> {
 	public BlockCore(BlockTypeCoreTesr blockType) {
-		super(blockType, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD));
+		super(blockType, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD).noOcclusion());
 	}
 }

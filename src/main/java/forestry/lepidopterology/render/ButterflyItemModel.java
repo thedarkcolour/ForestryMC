@@ -19,6 +19,8 @@ import com.google.gson.JsonParseException;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -28,6 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -54,21 +57,24 @@ import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import forestry.api.ForestryConstants;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.models.AbstractBakedModel;
 import forestry.core.models.TRSRBakedModel;
 import forestry.core.utils.ResourceUtil;
 import forestry.core.utils.SpeciesUtil;
 
-public class ButterflyItemModel extends AbstractBakedModel {
-	private final ImmutableMap<String, BakedModel> subModels;
-	private final Cache<Pair<String, Float>, BakedModel> cache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
+import it.unimi.dsi.fastutil.floats.FloatObjectPair;
 
-	public ButterflyItemModel(ImmutableMap<String, BakedModel> subModels) {
+public class ButterflyItemModel extends AbstractBakedModel {
+	private final IdentityHashMap<IButterflySpecies, BakedModel> subModels;
+	private final Cache<FloatObjectPair<String>, BakedModel> cache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
+
+	public ButterflyItemModel(IdentityHashMap<IButterflySpecies, BakedModel> subModels) {
 		this.subModels = subModels;
 	}
 
@@ -78,10 +84,6 @@ public class ButterflyItemModel extends AbstractBakedModel {
 	}
 
 	private class OverrideList extends ItemOverrides {
-		public OverrideList() {
-			super();
-		}
-
 		@Override
 		public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int p_173469_) {
 			IIndividual individual = Objects.requireNonNull(IIndividualHandlerItem.getIndividual(stack));
@@ -90,10 +92,9 @@ public class ButterflyItemModel extends AbstractBakedModel {
 			float size = genome.getActiveValue(ButterflyChromosomes.SIZE);
 			// should this be using the path? or the ID?
 			try {
-				return cache.get(Pair.of(species.id().getPath(), size), () -> {
-					String identifier = species.id().getPath();
+				return cache.get(FloatObjectPair.of(size, species.id().getPath()), () -> {
 					// todo include scale, otherwise having the float in the pair is useless
-					return new SeparateTransformsModel.Baked(false, true, false, ResourceUtil.getMissingTexture(), ItemOverrides.EMPTY, new TRSRBakedModel(subModels.get(identifier), 0, 0, 0, 1), ImmutableMap.of());
+					return new SeparateTransformsModel.Baked(false, true, false, ResourceUtil.getMissingTexture(), ItemOverrides.EMPTY, new TRSRBakedModel(subModels.get(species), 0, 0, 0, size), ImmutableMap.of());
 				});
 			} catch (ExecutionException e) {
 				throw new RuntimeException(e);
@@ -104,7 +105,7 @@ public class ButterflyItemModel extends AbstractBakedModel {
 			float scale = 1F / 16F;
 			float sSize = size * 1.15F;
 			Vector3f scaledSize = new Vector3f(sSize, sSize, sSize);
-			ImmutableMap.Builder<ItemTransforms.TransformType, Transformation> builder = ImmutableMap.builder();
+			ImmutableMap.Builder<ItemTransforms.TransformType, Transformation> builder = ImmutableMap.builderWithExpectedSize(5);
 			builder.put(ItemTransforms.TransformType.FIXED,
 					new Transformation(new Vector3f(scale * 0.5F, scale - (size / 0.75F) * scale, scale * 1.25F), null, scaledSize, null));
 			builder.put(ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND,
@@ -119,42 +120,47 @@ public class ButterflyItemModel extends AbstractBakedModel {
 		}
 	}
 
-	public record Geometry(ImmutableMap<String, String> subModels) implements IUnbakedGeometry<Geometry> {
+	public record Geometry(
+			IdentityHashMap<IButterflySpecies, ResourceLocation> subModels) implements IUnbakedGeometry<Geometry> {
 		@Override
 		public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
 			UnbakedModel modelButterfly = bakery.getModel(ForestryConstants.forestry("item/butterfly"));
+
 			if (!(modelButterfly instanceof BlockModel modelBlock)) {
 				return null;
 			}
-			ImmutableMap.Builder<String, BakedModel> subModelBuilder = new ImmutableMap.Builder<>();
-			for (Map.Entry<String, String> subModel : this.subModels.entrySet()) {
-				String identifier = subModel.getKey();
-				String texture = subModel.getValue();
+			ResourceLocation parentLocation = modelBlock.getParentLocation();
+			List<BlockElement> elements = modelBlock.getElements();
+			IdentityHashMap<IButterflySpecies, BakedModel> subModelBuilder = new IdentityHashMap<>();
 
-				BlockModel model = new BlockModel(modelBlock.getParentLocation(), modelBlock.getElements(), ImmutableMap.of("butterfly", Either.left(new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(texture)))), modelBlock.hasAmbientOcclusion, modelBlock.getGuiLight(), modelBlock.getTransforms(), modelBlock.getOverrides());
+			for (Map.Entry<IButterflySpecies, ResourceLocation> subModel : this.subModels.entrySet()) {
+				IButterflySpecies identifier = subModel.getKey();
+				ResourceLocation texture = subModel.getValue();
+
+				BlockModel model = new BlockModel(parentLocation, elements, ImmutableMap.of("butterfly", Either.left(new Material(InventoryMenu.BLOCK_ATLAS, texture))), modelBlock.hasAmbientOcclusion, modelBlock.getGuiLight(), modelBlock.getTransforms(), modelBlock.getOverrides());
 				ResourceLocation location = ForestryConstants.forestry("item/butterfly");
 				ModelState transform = ResourceUtil.loadTransform(ForestryConstants.forestry("item/butterfly"));
 				subModelBuilder.put(identifier, model.bake(bakery, model, spriteGetter, transform, location, true));
 			}
-			return new ButterflyItemModel(subModelBuilder.build());
+			return new ButterflyItemModel(subModelBuilder);
 		}
 
 		@Override
 		public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-			return subModels.values().stream().map((location) -> new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(location))).collect(Collectors.toSet());
+			return this.subModels.values().stream().map(location -> new Material(InventoryMenu.BLOCK_ATLAS, location)).collect(Collectors.toSet());
 		}
 	}
 
 	public static class Loader implements IGeometryLoader<ButterflyItemModel.Geometry> {
 		@Override
 		public ButterflyItemModel.Geometry read(JsonObject modelContents, JsonDeserializationContext context) throws JsonParseException {
-			ImmutableMap.Builder<String, String> subModels = new ImmutableMap.Builder<>();
+			IdentityHashMap<IButterflySpecies, ResourceLocation> subModels = new IdentityHashMap<>();
 
 			for (IButterflySpecies species : SpeciesUtil.getAllButterflySpecies()) {
-				ResourceLocation registryName = species.id();
-				subModels.put(registryName.getPath(), species.getItemTexture().toString());
+				Pair<ResourceLocation, ResourceLocation> pair = IForestryClientApi.INSTANCE.getButterflyManager().getTextures(species);
+				subModels.put(species, pair.getFirst());
 			}
-			return new ButterflyItemModel.Geometry(subModels.build());
+			return new ButterflyItemModel.Geometry(subModels);
 		}
 	}
 }

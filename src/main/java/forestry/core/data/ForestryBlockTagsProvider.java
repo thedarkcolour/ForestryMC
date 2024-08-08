@@ -29,7 +29,6 @@ import forestry.factory.features.FactoryBlocks;
 import forestry.farming.blocks.BlockFarm;
 import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
-import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.mail.features.MailBlocks;
 import forestry.modules.features.FeatureBlockGroup;
 
@@ -41,8 +40,8 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 	@Override
 	protected void addTags() {
 		// todo figure out what belongs in these tags?
-		tag(ForestryTags.Blocks.MINEABLE_SCOOP);
-		tag(ForestryTags.Blocks.MINEABLE_GRAFTER);
+		tag(ForestryTags.Blocks.MINEABLE_SCOOP).add(ApicultureBlocks.BEEHIVE.blockArray());
+		tag(ForestryTags.Blocks.MINEABLE_GRAFTER).addTag(BlockTags.LEAVES);
 
 		for (EnumFarmMaterial material : EnumFarmMaterial.values()) {
 			tag(ForestryTags.Blocks.VALID_FARM_BASE).add(material.getBase());
@@ -51,9 +50,7 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 
 		tag(BlockTags.MINEABLE_WITH_AXE)
-				.add(ApicultureBlocks.BEE_CHEST.block())
-				.add(LepidopterologyBlocks.BUTTERFLY_CHEST.block())
-				.add(ArboricultureBlocks.TREE_CHEST.block())
+				.add(CoreBlocks.NATURALIST_CHEST.blockArray())
 				.add(CharcoalBlocks.WOOD_PILE.block());
 
 		tag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -96,7 +93,7 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 		tag(BlockTags.NEEDS_STONE_TOOL).addTag(ForestryTags.Blocks.ORES_TIN).addTag(ForestryTags.Blocks.ORES_APATITE).addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
 
 		tag(ForestryTags.Blocks.CHARCOAL_BLOCK).add(CharcoalBlocks.CHARCOAL.block());
-		tag(Tags.Blocks.CHESTS).add(ApicultureBlocks.BEE_CHEST.block());
+		tag(Tags.Blocks.CHESTS).add(CoreBlocks.NATURALIST_CHEST.getBlocks().toArray(Block[]::new));
 		tag(BlockTags.PLANKS).add(ArboricultureBlocks.PLANKS.blockArray());
 		tag(BlockTags.LOGS).add(ArboricultureBlocks.LOGS.blockArray());
 		tag(BlockTags.LOGS_THAT_BURN).add(ArboricultureBlocks.LOGS.blockArray());
@@ -138,9 +135,6 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 		tag(BlockTags.SAPLINGS).add(ArboricultureBlocks.SAPLING_GE.block());
 		tag(BlockTags.LEAVES).add(ArboricultureBlocks.LEAVES.block()).add(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.blockArray()).add(ArboricultureBlocks.LEAVES_DEFAULT.blockArray()).add(ArboricultureBlocks.LEAVES_DECORATIVE.blockArray());
-		tag(Tags.Blocks.CHESTS).add(ArboricultureBlocks.TREE_CHEST.block());
-
-		tag(Tags.Blocks.CHESTS).add(LepidopterologyBlocks.BUTTERFLY_CHEST.block());
 
 		addToTag(Tags.Blocks.ORES, ForestryTags.Blocks.ORES_TIN, ForestryTags.Blocks.ORES_APATITE);
 		tag(ForestryTags.Blocks.ORES_TIN).add(CoreBlocks.TIN_ORE.block(), CoreBlocks.DEEPSLATE_TIN_ORE.block());
@@ -156,6 +150,17 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 		tag(ForestryTags.Blocks.PAPAYA_LOGS).add(ArboricultureBlocks.LOGS.get(ForestryWoodType.PAPAYA).block());
 
 		tag(BlockTags.DIRT).add(CoreBlocks.HUMUS.block());
+
+		tag(ForestryTags.Blocks.VANILLA_FLOWERS).addTag(BlockTags.FLOWERS);
+		tag(ForestryTags.Blocks.NETHER_FLOWERS).add(Blocks.NETHER_WART, Blocks.WARPED_FUNGUS, Blocks.POTTED_WARPED_FUNGUS, Blocks.CRIMSON_FUNGUS, Blocks.POTTED_CRIMSON_FUNGUS, Blocks.CRIMSON_ROOTS, Blocks.POTTED_CRIMSON_ROOTS, Blocks.WARPED_ROOTS, Blocks.POTTED_WARPED_ROOTS);
+		tag(ForestryTags.Blocks.CACTI_FLOWERS).add(Blocks.CACTUS);
+		// todo is there a mushroom tag in later versions? should i add the nether fungi to this tag?
+		tag(ForestryTags.Blocks.MUSHROOMS_FLOWERS).add(Blocks.RED_MUSHROOM, Blocks.POTTED_RED_MUSHROOM, Blocks.BROWN_MUSHROOM, Blocks.POTTED_BROWN_MUSHROOM);
+		tag(ForestryTags.Blocks.END_FLOWERS).add(Blocks.DRAGON_EGG, Blocks.CHORUS_PLANT, Blocks.CHORUS_FLOWER);
+		tag(ForestryTags.Blocks.JUNGLE_FLOWERS).add(Blocks.VINE, Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT);
+		tag(ForestryTags.Blocks.SNOW_FLOWERS).addTag(BlockTags.FLOWERS);
+		tag(ForestryTags.Blocks.WHEAT_FLOWERS).add(Blocks.WHEAT);
+		tag(ForestryTags.Blocks.GOURD_FLOWERS).add(Blocks.MELON_STEM, Blocks.ATTACHED_MELON_STEM, Blocks.PUMPKIN_STEM, Blocks.ATTACHED_PUMPKIN_STEM);
 	}
 
 	@SafeVarargs

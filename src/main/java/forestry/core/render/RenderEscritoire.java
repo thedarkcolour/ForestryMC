@@ -19,13 +19,13 @@ import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TileEscritoire;
 
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -33,13 +33,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RenderEscritoire implements IForestryRenderer<TileEscritoire> {
-	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("escritoire");
-
 	private static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/escritoire.png");
 
-	private enum Parts {
-		DESK, STANDRB, STANDRF, STANDLB, STANDLF, DRAWERS, STANDLOWLF, STANDLOWRB, STANDLOWRF, STANDLOWLB
-	}
+	private static final String DESK = "DESK";
+	private static final String STANDRB = "STANDRB";
+	private static final String STANDRF = "STANDRF";
+	private static final String STANDLB = "STANDLB";
+	private static final String STANDLF = "STANDLF";
+	private static final String DRAWERS = "DRAWERS";
+	private static final String STANDLOWLF = "STANDLOWLF";
+	private static final String STANDLOWRB = "STANDLOWRB";
+	private static final String STANDLOWRF = "STANDLOWRF";
+	private static final String STANDLOWLB = "STANDLOWLB";
+
 	private final ModelPart desk;
 	private final ModelPart standRB;
 	private final ModelPart standRF;
@@ -51,42 +57,44 @@ public class RenderEscritoire implements IForestryRenderer<TileEscritoire> {
 	private final ModelPart standLowRF;
 	private final ModelPart standLowLB;
 	
-	public RenderEscritoire(ModelPart root) {
-		desk = root.getChild(Parts.DESK.name());
-		standRB = root.getChild(Parts.STANDRB.name());
-		standRF = root.getChild(Parts.STANDRF.name());
-		standLB = root.getChild(Parts.STANDLB.name());
-		standLF = root.getChild(Parts.STANDLF.name());
-		drawers = root.getChild(Parts.DRAWERS.name());
-		standLowRB = root.getChild(Parts.STANDLOWRB.name());
-		standLowRF = root.getChild(Parts.STANDLOWRF.name());
-		standLowLB = root.getChild(Parts.STANDLOWLB.name());
-		standLowLF = root.getChild(Parts.STANDLOWLF.name());
+	public RenderEscritoire(BlockEntityRendererProvider.Context ctx) {
+		ModelPart root = ctx.bakeLayer(ForestryModelLayers.ESCRITOIRE_LAYER);
+
+		this.desk = root.getChild(DESK);
+		this.standRB = root.getChild(STANDRB);
+		this.standRF = root.getChild(STANDRF);
+		this.standLB = root.getChild(STANDLB);
+		this.standLF = root.getChild(STANDLF);
+		this.drawers = root.getChild(DRAWERS);
+		this.standLowRB = root.getChild(STANDLOWRB);
+		this.standLowRF = root.getChild(STANDLOWRF);
+		this.standLowLB = root.getChild(STANDLOWLB);
+		this.standLowLF = root.getChild(STANDLOWLF);
 	}
 	
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
         
-        partdefinition.addOrReplaceChild(Parts.DESK.name(), CubeListBuilder.create().texOffs(0, 0)
+        partdefinition.addOrReplaceChild(DESK, CubeListBuilder.create().texOffs(0, 0)
             	.addBox(-8F, 3F, -7.8F, 16, 2, 15).mirror(), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(Parts.STANDRB.name(), CubeListBuilder.create().texOffs(38, 18)
+        partdefinition.addOrReplaceChild(STANDRB, CubeListBuilder.create().texOffs(38, 18)
             	.addBox(5F, 4F, 5F, 2, 6, 2).mirror(), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(Parts.STANDRF.name(), CubeListBuilder.create().texOffs(38, 18)
+        partdefinition.addOrReplaceChild(STANDRF, CubeListBuilder.create().texOffs(38, 18)
             	.addBox(5F, 4F, -7F, 2, 6, 2).mirror(), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(Parts.STANDLB.name(), CubeListBuilder.create().texOffs(38, 18)
+        partdefinition.addOrReplaceChild(STANDLB, CubeListBuilder.create().texOffs(38, 18)
             	.addBox(-7F, 4F, 5F, 2, 6, 2).mirror(), PartPose.offset(0, 0, 0));        
-        partdefinition.addOrReplaceChild(Parts.STANDLF.name(), CubeListBuilder.create().texOffs(38, 18)
+        partdefinition.addOrReplaceChild(STANDLF, CubeListBuilder.create().texOffs(38, 18)
             	.addBox(-7F, 4F, -7F, 2, 6, 2).mirror(), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(Parts.DRAWERS.name(), CubeListBuilder.create().texOffs(0, 18)
+        partdefinition.addOrReplaceChild(DRAWERS, CubeListBuilder.create().texOffs(0, 18)
             	.addBox(-7.5F, -2F, 4.5F, 15, 5, 3).mirror(), PartPose.offset(0, 0, 0)); 
-        partdefinition.addOrReplaceChild(Parts.STANDLOWRB.name(), CubeListBuilder.create().texOffs(0, 26)
+        partdefinition.addOrReplaceChild(STANDLOWRB, CubeListBuilder.create().texOffs(0, 26)
             	.addBox(5.5F, 10F, 5.5F, 1, 4, 1).mirror(), PartPose.offset(0, 0, 0)); 
-        partdefinition.addOrReplaceChild(Parts.STANDLOWRF.name(), CubeListBuilder.create().texOffs(0, 26)
+        partdefinition.addOrReplaceChild(STANDLOWRF, CubeListBuilder.create().texOffs(0, 26)
             	.addBox(5.5F, 10F, -6.5F, 1, 4, 1).mirror(), PartPose.offset(0, 0, 0)); 
-        partdefinition.addOrReplaceChild(Parts.STANDLOWLB.name(), CubeListBuilder.create().texOffs(0, 26)
+        partdefinition.addOrReplaceChild(STANDLOWLB, CubeListBuilder.create().texOffs(0, 26)
             	.addBox(-6.5F, 10F, 5.5F, 1, 4, 1).mirror(), PartPose.offset(0, 0, 0)); 
-        partdefinition.addOrReplaceChild(Parts.STANDLOWLF.name(), CubeListBuilder.create().texOffs(0, 26)
+        partdefinition.addOrReplaceChild(STANDLOWLF, CubeListBuilder.create().texOffs(0, 26)
             	.addBox(-6.5F, 10F, -6.5F, 1, 4, 1).mirror(), PartPose.offset(0, 0, 0));
 		
 		return LayerDefinition.create(meshdefinition, 64, 32);

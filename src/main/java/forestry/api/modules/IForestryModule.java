@@ -57,6 +57,7 @@ public interface IForestryModule {
 	}
 
 	/**
+	 * Note: this is generally not recommended to use.
 	 * Called during Forestry's common phase. Initialize any static API.
 	 */
 	default void setupApi() {

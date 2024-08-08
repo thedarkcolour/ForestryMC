@@ -519,8 +519,8 @@ public class DefaultBeeSpecies {
 		// todo Bissextile (Leap Year secret)
 
 		// American (July 4th secret)
-		apiculture.registerSpecies(ForestryBeeSpecies.PATRIOTIC, GENUS_FESTIVE, SPECIES_PATRIOTIC, true, new Color(0xb31942))
-				.setBody(new Color(0x0a3161))
+		apiculture.registerSpecies(ForestryBeeSpecies.PATRIOTIC, GENUS_FESTIVE, SPECIES_PATRIOTIC, true, new Color(0x0a3161))
+				.setBody(new Color(0xb31942))
 				.setStripes(new Color(0xffffff))
 				.addProduct(new ItemStack(Items.GUNPOWDER), 0.45f)
 				// todo specialty is a random firework
@@ -537,7 +537,6 @@ public class DefaultBeeSpecies {
 								.restrictDateRange(Month.JULY, 1, Month.JULY, 17);
 					}
 				})
-				.setGlint(true)
 				.setSecret(true);
 
 		// Rural

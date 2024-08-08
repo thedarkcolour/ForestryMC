@@ -15,20 +15,19 @@ import com.mojang.math.Vector3f;
 import forestry.api.ForestryConstants;
 import forestry.core.tiles.TileMill;
 
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+// This is called Mill because it used to be for the Forester and other blocks in older versions of Forestry
 public class RenderMill implements IForestryRenderer<TileMill> {
-	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("mill");
-	
 	private enum Textures {PEDESTAL, EXTENSION, BLADE_1, BLADE_2, CHARGE}
 	
 	private final ResourceLocation[] textures;
@@ -38,7 +37,9 @@ public class RenderMill implements IForestryRenderer<TileMill> {
 	private final ModelPart blade1;
 	private final ModelPart blade2;
 
-	public RenderMill(ModelPart root, String baseTexture) {
+	public RenderMill(BlockEntityRendererProvider.Context ctx, String baseTexture) {
+		ModelPart root = ctx.bakeLayer(ForestryModelLayers.MILL_LAYER);
+
 		this.pedestal = root.getChild(Textures.PEDESTAL.name());
 		this.column = root.getChild(Textures.CHARGE.name());
 		this.extension = root.getChild(Textures.EXTENSION.name());

@@ -10,13 +10,13 @@
  ******************************************************************************/
 package forestry.core.render;
 
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -39,8 +39,6 @@ import forestry.core.tiles.IRenderableTile;
 import forestry.core.tiles.TileBase;
 
 public class RenderMachine implements IForestryRenderer<TileBase> {
-	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("machine");
-	
 	private static final String BASE_FRONT = "basefront";
 	private static final String BASE_BACK = "baseback";
 	private static final String RESOURCE_TANK = "resourceTank";
@@ -57,7 +55,9 @@ public class RenderMachine implements IForestryRenderer<TileBase> {
 
 	private final EnumMap<EnumTankLevel, ResourceLocation> texturesTankLevels = new EnumMap<>(EnumTankLevel.class);
 
-	public RenderMachine(ModelPart root, String baseTexture) {
+	public RenderMachine(BlockEntityRendererProvider.Context ctx, String baseTexture) {
+		ModelPart root = ctx.bakeLayer(ForestryModelLayers.MACHINE_LAYER);
+
 		basefront = root.getChild(BASE_FRONT);
 		baseback = root.getChild(BASE_BACK);
 		resourceTank = root.getChild(RESOURCE_TANK);

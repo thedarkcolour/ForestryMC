@@ -13,10 +13,8 @@ package forestry.core.models;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -30,10 +28,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 
 import forestry.core.blocks.IColoredBlock;
 import forestry.core.items.definitions.IColoredItem;
@@ -47,14 +42,14 @@ import forestry.modules.features.FeatureTable;
 public enum ClientManager {
 	INSTANCE;
 
-	private static final ItemColor FORESTRY_ITEM_COLOR = (stack, tintIndex) -> {
+	public static final ItemColor FORESTRY_ITEM_COLOR = (stack, tintIndex) -> {
 		Item item = stack.getItem();
 		if (item instanceof IColoredItem coloredItem) {
 			return coloredItem.getColorFromItemStack(stack, tintIndex);
 		}
 		return 0xffffff;
 	};
-	private static final BlockColor FORESTRY_BLOCK_COLOR = (state, level, pos, tintIndex) -> {
+	public static final BlockColor FORESTRY_BLOCK_COLOR = (state, level, pos, tintIndex) -> {
 		Block block = state.getBlock();
 		if (level != null && pos != null && block instanceof IColoredBlock coloredBlock) {
 			return coloredBlock.colorMultiplier(state, level, pos, tintIndex);
@@ -65,26 +60,9 @@ public enum ClientManager {
 	/* CUSTOM MODELS*/
 	private final List<BlockModelEntry> customBlockModels = new ArrayList<>();
 	private final List<ModelEntry> customModels = new ArrayList<>();
-	/* ITEM AND BLOCK REGISTERS*/
-	private Set<IColoredBlock> blockColorList = new HashSet<>();
-	private Set<IColoredItem> itemColorList = new HashSet<>();
 	/* DEFAULT ITEM AND BLOCK MODEL STATES*/
 	@Nullable
 	private ModelState defaultBlockState;
-
-	@OnlyIn(Dist.CLIENT)
-	public void registerBlockClient(Block block) {
-		if (block instanceof IColoredBlock coloredBlock) {
-			blockColorList.add(coloredBlock);
-		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void registerItemClient(Item item) {
-		if (item instanceof IColoredItem coloredItem) {
-			itemColorList.add(coloredItem);
-		}
-	}
 
 	public ModelState getDefaultBlockState() {
 		if (defaultBlockState == null) {
@@ -136,28 +114,6 @@ public enum ClientManager {
 		for (final ModelEntry entry : customModels) {
 			registry.put(entry.modelLocation, entry.model);
 		}
-	}
-
-	@SuppressWarnings("DataFlowIssue")
-	public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-		for (IColoredBlock blockColor : blockColorList) {
-			if (blockColor instanceof Block tintedBlock) {
-				event.register(FORESTRY_BLOCK_COLOR, tintedBlock);
-			}
-		}
-		// block colors are only registered once
-		blockColorList = null;
-	}
-
-	@SuppressWarnings("DataFlowIssue")
-	public void registerItemColors(RegisterColorHandlersEvent.Item event) {
-		for (IColoredItem itemColor : itemColorList) {
-			if (itemColor instanceof Item tintedItem) {
-				event.register(FORESTRY_ITEM_COLOR, tintedItem);
-			}
-		}
-		// item colors are only registered once
-		itemColorList = null;
 	}
 
 	private record BlockModelEntry(BakedModel model, Block block, @Nullable BlockItem item,

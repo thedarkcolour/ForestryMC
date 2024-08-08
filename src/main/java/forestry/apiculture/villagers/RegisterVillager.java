@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -17,16 +18,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import forestry.api.ForestryConstants;
 import forestry.api.apiculture.ForestryBeeSpecies;
 import forestry.api.apiculture.genetics.BeeLifeStage;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.apiculture.blocks.BlockTypeApiculture;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.apiculture.features.ApicultureItems;
@@ -38,32 +37,27 @@ import forestry.core.registration.VillagerTrade.GiveItemForEmeralds;
 import forestry.core.registration.VillagerTrade.GiveItemForItemAndEmerald;
 import forestry.core.registration.VillagerTrade.GiveItemForLogAndEmerald;
 import forestry.core.registration.VillagerTrade.GiveItemForTwoItems;
-import forestry.core.utils.ForgeUtils;
 import forestry.core.utils.SpeciesUtil;
 import forestry.modules.features.FeatureProvider;
+import forestry.modules.features.IFeatureRegistry;
+import forestry.modules.features.ModFeatureRegistry;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 @FeatureProvider
 public class RegisterVillager {
-	public static final ResourceLocation BEEKEEPER = ForestryConstants.forestry("beekeeper");
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.APICULTURE);
 
-	private static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ForestryConstants.MOD_ID);
-	private static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, ForestryConstants.MOD_ID);
+	private static final DeferredRegister<PoiType> POINTS_OF_INTEREST = REGISTRY.getRegistry(Registry.POINT_OF_INTEREST_TYPE_REGISTRY);
+	private static final DeferredRegister<VillagerProfession> PROFESSIONS = REGISTRY.getRegistry(Registry.VILLAGER_PROFESSION_REGISTRY);
+
+	public static final ResourceLocation BEEKEEPER = ForestryConstants.forestry("beekeeper");
 
 	public static final RegistryObject<PoiType> POI_APIARY = POINTS_OF_INTEREST.register("apiary", () -> new PoiType(Set.copyOf(ApicultureBlocks.BASE.get(BlockTypeApiculture.APIARY).block().getStateDefinition().getPossibleStates()), 1, 1));
 	@SuppressWarnings("DataFlowIssue")
 	public static final RegistryObject<VillagerProfession> PROF_BEEKEEPER = PROFESSIONS.register(BEEKEEPER.getPath(), () -> new VillagerProfession(BEEKEEPER.toString(), e -> e.is(POI_APIARY.getKey()), e -> e.is(POI_APIARY.getKey()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_FISHERMAN));
 
-	static {
-		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
-
-		IEventBus modBus = ForgeUtils.modBus();
-		POINTS_OF_INTEREST.register(modBus);
-		PROFESSIONS.register(modBus);
-	}
-
-	private static void villagerTrades(VillagerTradesEvent event) {
+	public static void villagerTrades(VillagerTradesEvent event) {
 		if (event.getType().equals(PROF_BEEKEEPER.get())) {
 			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 			trades.get(1).add(new GiveHoneyCombForItem(ApicultureItems.BEE_COMBS.getItems(), Items.WHEAT, new VillagerTrade.PriceInterval(2, 4), new VillagerTrade.PriceInterval(8, 12), 8, 2, 0F));

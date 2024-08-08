@@ -169,7 +169,13 @@ public class ForestryModuleManager implements IModuleManager {
 
 	public void setupApi() {
 		for (IForestryModule module : getLoadedModules()) {
-			module.setupApi();
+			try {
+				module.setupApi();
+			} catch (Throwable t) {
+				// this exception normally gets swallowed, so log it and rethrow
+				Forestry.LOGGER.fatal("Module {} threw an error in its IForestryModule.setupApi method", module.getId(), t);
+				throw new RuntimeException(t);
+			}
 		}
 	}
 }

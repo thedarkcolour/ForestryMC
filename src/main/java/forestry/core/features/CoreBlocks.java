@@ -10,15 +10,17 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 
 import forestry.api.modules.ForestryModuleIds;
-import forestry.core.ModuleCore;
+import forestry.apiculture.blocks.NaturalistChestBlockType;
+import forestry.core.blocks.BlockBase;
 import forestry.core.blocks.BlockBogEarth;
 import forestry.core.blocks.BlockCore;
 import forestry.core.blocks.BlockHumus;
 import forestry.core.blocks.BlockResourceStorage;
+import forestry.core.blocks.BlockTesr;
 import forestry.core.blocks.BlockTypeCoreTesr;
 import forestry.core.blocks.EnumResourceType;
-import forestry.core.items.ItemBlockBase;
 import forestry.core.items.ItemBlockForestry;
+import forestry.core.items.ItemBlockTesr;
 import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureBlockGroup;
 import forestry.modules.features.FeatureProvider;
@@ -29,7 +31,7 @@ import forestry.modules.features.ModFeatureRegistry;
 public class CoreBlocks {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.CORE);
 
-	public static final FeatureBlockGroup<BlockCore, BlockTypeCoreTesr> BASE = REGISTRY.blockGroup(BlockCore::new, BlockTypeCoreTesr.VALUES).itemWithType(ItemBlockBase::new).create();
+	public static final FeatureBlockGroup<BlockCore, BlockTypeCoreTesr> BASE = REGISTRY.blockGroup(BlockCore::new, BlockTypeCoreTesr.values()).item(ItemBlockTesr::new).create();
 	public static final FeatureBlock<BlockBogEarth, ItemBlockForestry> BOG_EARTH = REGISTRY.block(BlockBogEarth::new, ItemBlockForestry::new, "bog_earth");
 	public static final FeatureBlock<Block, ItemBlockForestry> PEAT = REGISTRY.block(() -> new Block(Block.Properties.of(Material.DIRT)
 			.strength(0.5f)
@@ -42,6 +44,7 @@ public class CoreBlocks {
 	public static final FeatureBlock<Block, BlockItem> DEEPSLATE_TIN_ORE = REGISTRY.block(() -> new DropExperienceBlock(BlockBehaviour.Properties.copy(TIN_ORE.block())), ItemBlockForestry::new, "deepslate_tin_ore");
 	public static final FeatureBlock<Block, BlockItem> RAW_TIN_BLOCK = REGISTRY.block(() -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.RAW_COPPER_BLOCK)), ItemBlockForestry::new, "raw_tin_block");
 
-	private CoreBlocks() {
-	}
+	public static final FeatureBlockGroup<BlockTesr<NaturalistChestBlockType>, NaturalistChestBlockType> NATURALIST_CHEST = REGISTRY.blockGroup(type -> {
+		return new BlockTesr<>(type, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD));
+	}, NaturalistChestBlockType.values()).item(ItemBlockTesr::new).create();
 }

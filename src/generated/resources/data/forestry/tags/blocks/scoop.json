@@ -1,3 +1,12 @@
 {
-  "values": []
+  "values": [
+    "forestry:beehive_meadows",
+    "forestry:beehive_swarm",
+    "forestry:beehive_desert",
+    "forestry:beehive_jungle",
+    "forestry:beehive_end",
+    "forestry:beehive_forest",
+    "forestry:beehive_snow",
+    "forestry:beehive_swamp"
+  ]
 }

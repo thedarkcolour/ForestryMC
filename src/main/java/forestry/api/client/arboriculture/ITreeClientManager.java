@@ -1,5 +1,9 @@
 package forestry.api.client.arboriculture;
 
+import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.datafixers.util.Pair;
+
 import forestry.api.arboriculture.ITreeSpecies;
 
 import org.jetbrains.annotations.Nullable;
@@ -17,4 +21,11 @@ public interface ITreeClientManager {
 	 * @return The leaf tint for the given species.
 	 */
 	ILeafTint getTint(@Nullable ITreeSpecies species);
+
+	/**
+	 * @return A pair containing locations of the block and item models for this species, in that order.
+	 */
+	Pair<ResourceLocation, ResourceLocation> getSaplingModels(ITreeSpecies species);
+
+	Iterable<Pair<ResourceLocation, ResourceLocation>> getAllSaplingModels();
 }

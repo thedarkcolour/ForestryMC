@@ -11,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import forestry.api.ForestryCapabilities;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 
 /**
  * The item form of {@link IIndividualHandler}.
@@ -71,7 +73,18 @@ public interface IIndividualHandlerItem extends IIndividualHandler {
 	@Nullable
 	@SuppressWarnings({"ConstantValue", "DataFlowIssue"})
 	static IIndividual getIndividual(ItemStack stack) {
+		// hack fix for creative tabs
+		// todo should i copy this to the other methods too?
+		stack.reviveCaps();
 		IIndividualHandlerItem handler = stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM, null).orElse(null);
 		return handler != null ? handler.getIndividual() : null;
+	}
+
+	/**
+	 * Gets the species of the current item stack, or returns the default species for the species type.
+	 */
+	static <S extends ISpecies<?>> S getSpecies(ItemStack stack, ISpeciesType<S, ?> type) {
+		IIndividual individual = getIndividual(stack);
+		return individual != null ? (S) individual.getSpecies() : type.getDefaultSpecies();
 	}
 }

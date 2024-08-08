@@ -6,8 +6,6 @@ import java.util.function.Function;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.WoodBlockKind;
@@ -29,7 +27,6 @@ import forestry.arboriculture.blocks.BlockForestrySlab;
 import forestry.arboriculture.blocks.BlockForestryStairs;
 import forestry.arboriculture.blocks.BlockFruitPod;
 import forestry.arboriculture.blocks.BlockSapling;
-import forestry.arboriculture.blocks.BlockTypeArboricultureTesr;
 import forestry.arboriculture.blocks.ForestryLeafType;
 import forestry.arboriculture.blocks.ForestryPodType;
 import forestry.arboriculture.items.ItemBlockDecorativeLeaves;
@@ -37,8 +34,6 @@ import forestry.arboriculture.items.ItemBlockLeaves;
 import forestry.arboriculture.items.ItemBlockWood;
 import forestry.arboriculture.items.ItemBlockWoodDoor;
 import forestry.arboriculture.items.ItemBlockWoodSlab;
-import forestry.core.blocks.BlockBase;
-import forestry.core.items.ItemBlockBase;
 import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureBlockGroup;
 import forestry.modules.features.FeatureGroup;
@@ -94,9 +89,6 @@ public class ArboricultureBlocks {
 	public static final FeatureBlockGroup<BlockDecorativeLeaves, ForestryLeafType> LEAVES_DECORATIVE = REGISTRY.blockGroup(BlockDecorativeLeaves::new, ForestryLeafType.values()).item(ItemBlockDecorativeLeaves::new).identifier("decorative_leaves", FeatureGroup.IdentifierType.AFFIX).create();
 	public static final FeatureBlockGroup<BlockFruitPod, ForestryPodType> PODS = REGISTRY.blockGroup(BlockFruitPod::new, ForestryPodType.values()).identifier("pods").create();
 
-	/* MACHINES */
-	public static final FeatureBlock<BlockBase<BlockTypeArboricultureTesr>, ItemBlockBase<BlockBase<BlockTypeArboricultureTesr>>> TREE_CHEST = REGISTRY.block(() -> new BlockBase<>(BlockTypeArboricultureTesr.ARB_CHEST, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD)), (block) -> new ItemBlockBase<>(block, BlockTypeArboricultureTesr.ARB_CHEST), "tree_chest");
-
 	private static <B extends Block & IWoodTyped, S extends IWoodType> FeatureBlockGroup<B, S> woodGroup(BiFunction<Boolean, S, B> constructor, WoodBlockKind kind, boolean fireproof, S[] types) {
 		return woodGroup(constructor, ItemBlockWood::new, kind, fireproof, types);
 	}
@@ -116,8 +108,5 @@ public class ArboricultureBlocks {
 	private static <B extends Block & IWoodTyped, S extends IWoodType> FeatureBlockGroup<B, S> registerWood(FeatureBlockGroup<B, S> group, WoodBlockKind kind) {
 		REGISTRY.addRegistryListener(Registry.ITEM_REGISTRY, event -> WoodAccess.INSTANCE.registerFeatures(group, kind));
 		return group;
-	}
-
-	private ArboricultureBlocks() {
 	}
 }

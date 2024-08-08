@@ -67,7 +67,6 @@ public class ArboricultureClientHandler implements IClientModuleHandler {
 			for (IValueAllele<IFruit> alleleFruit : SpeciesUtil.TREE_TYPE.get().getKaryotype().getAlleles(TreeChromosomes.FRUIT)) {
 				alleleFruit.value().registerSprites(event);
 			}
-			PluginManager.registerSprites(event);
 		}
 	}
 

@@ -34,22 +34,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryObject;
-
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.core.IBlockSubtype;
 import forestry.api.core.IItemSubtype;
 import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
-import forestry.core.blocks.BlockBase;
 import forestry.modules.ModuleUtil;
 import forestry.storage.ModuleStorage;
 
@@ -59,16 +53,11 @@ public class ModFeatureRegistry {
 
 	private final HashMap<ResourceLocation, ModuleFeatureRegistry> modules = new LinkedHashMap<>();
 	private final IEventBus modBus;
-	private final String modId;
 
 	private ModFeatureRegistry(String modId) {
-		this.modId = modId;
 		this.modBus = ModuleUtil.getModBus(modId);
 
 		this.modBus.addListener(EventPriority.LOWEST, this::postRegistry);
-		if (FMLEnvironment.dist == Dist.CLIENT) {
-			this.modBus.addListener(this::clientSetupRenderers);
-		}
 	}
 
 	public void register(IModFeature feature) {
@@ -78,12 +67,6 @@ public class ModFeatureRegistry {
 	public void postRegistry(RegisterEvent event) {
 		for (ModuleFeatureRegistry features : modules.values()) {
 			features.postRegistry(event);
-		}
-	}
-
-	public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		for (ModuleFeatureRegistry features : modules.values()) {
-			features.clientSetupRenderers(event);
 		}
 	}
 
@@ -118,11 +101,6 @@ public class ModFeatureRegistry {
 		}
 
 		@Override
-		public String getModId() {
-			return this.moduleId.getNamespace();
-		}
-
-		@Override
 		@SuppressWarnings("unchecked")
 		public <V> DeferredRegister<V> getRegistry(ResourceKey<? extends Registry<V>> registryKey) {
 			String modId = this.moduleId.getNamespace();
@@ -131,6 +109,13 @@ public class ModFeatureRegistry {
 				registry.register(this.modBus);
 				return registry;
 			});
+		}
+
+		@Nullable
+		@Override
+		@SuppressWarnings("unchecked")
+		public <V> DeferredRegister<V> getRegistryNullable(ResourceKey<? extends Registry<V>> registry) {
+			return this.registries.get(registry);
 		}
 
 		@Override
@@ -258,24 +243,6 @@ public class ModFeatureRegistry {
 		public void postRegistry(RegisterEvent event) {
 			for (Consumer<RegisterEvent> listener : registryListeners.get(event.getRegistryKey())) {
 				listener.accept(event);
-			}
-			// todo move these into the correct event (RegisterColorHandlersEvent)
-			/*if (event.getRegistryKey() == Registry.BLOCK_REGISTRY && featureByRegistry.containsKey(Registry.BLOCK_REGISTRY)) {
-				for (RegistryObject<Block> entry : getRegistry(Registry.BLOCK_REGISTRY).getEntries()) {
-					Proxies.common.registerBlock(entry.get());
-				}
-			} else if (event.getRegistryKey() == Registry.ITEM_REGISTRY && featureByRegistry.containsKey(Registry.ITEM_REGISTRY)) {
-				for (RegistryObject<Item> entry : getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
-					Proxies.common.registerItem(entry.get());
-				}
-			}*/
-		}
-
-		public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
-			for (RegistryObject<Block> feature : getRegistry(Registry.BLOCK_REGISTRY).getEntries()) {
-				if (feature.get() instanceof BlockBase<?> block) {
-					block.clientSetupRenderers(event);
-				}
 			}
 		}
 	}

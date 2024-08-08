@@ -22,6 +22,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -41,12 +42,12 @@ import forestry.apiculture.network.packets.PacketAlvearyChange;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.apiculture.network.packets.PacketHabitatBiomePointer;
 import forestry.apiculture.proxy.ApicultureClientHandler;
+import forestry.apiculture.villagers.RegisterVillager;
 import forestry.core.network.PacketIdClient;
 import forestry.modules.BlankForestryModule;
 
 @ForestryModule
 public class ModuleApiculture extends BlankForestryModule {
-	public static String beekeepingMode = "NORMAL";
 	public static int ticksPerBeeWorkCycle = 550;
 	public static boolean hivesDamageOnPeaceful = false;
 	public static boolean hivesDamageUnderwater = true;
@@ -64,6 +65,8 @@ public class ModuleApiculture extends BlankForestryModule {
 	public void registerEvents(IEventBus modBus) {
 		modBus.addListener(ModuleApiculture::registerCapabilities);
 		modBus.addListener(ModuleApiculture::onCommonSetup);
+
+		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
 	}
 
 	private static void onCommonSetup(FMLCommonSetupEvent event) {

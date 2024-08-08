@@ -41,7 +41,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fluids.FluidUtil;
 
 import forestry.api.farming.HorizontalDirection;
@@ -57,11 +56,10 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	 */
 	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class, HorizontalDirection.VALUES);
 
-	private final boolean hasTESR;
 	public final P blockType;
 
 	private static Block.Properties createProperties(IBlockType type, Block.Properties properties) {
-		if (type instanceof IBlockTypeTesr || type instanceof IBlockTypeCustom) {
+		if (type instanceof IBlockTypeCustom) {
 			properties = properties.noOcclusion();
 		}
 		return properties.strength(2.0f);
@@ -75,7 +73,6 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 		}
 
 		this.blockType = blockType;
-		this.hasTESR = blockType instanceof IBlockTypeTesr;
 
 		blockType.getMachineProperties().setBlock(this);
 	}
@@ -97,15 +94,6 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	@OnlyIn(Dist.CLIENT)
 	public float getShadeBrightness(BlockState p_220080_1_, BlockGetter p_220080_2_, BlockPos p_220080_3_) {
 		return 0.2F;
-	}
-
-	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		if (hasTESR) {
-			return RenderShape.ENTITYBLOCK_ANIMATED;
-		} else {
-			return RenderShape.MODEL;
-		}
 	}
 
 	@Override
@@ -180,10 +168,6 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 		if (tile instanceof ISocketable socketable) {
 			InventoryUtil.dropSockets(socketable, level, pos);
 		}
-	}
-
-	public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		blockType.getMachineProperties().clientSetupRenderers(event);
 	}
 
 	@Override

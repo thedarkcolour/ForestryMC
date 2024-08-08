@@ -18,13 +18,13 @@ import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
 import forestry.core.tiles.TileNaturalistChest;
 
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -32,8 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RenderNaturalistChest implements IForestryRenderer<TileNaturalistChest> {
-	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("naturalistchest");
-
 	private static final String LID = "lid";
 	private static final String BASE = "base";
 	private static final String LOCK = "lock";
@@ -43,7 +41,9 @@ public class RenderNaturalistChest implements IForestryRenderer<TileNaturalistCh
 	private final ModelPart lock;
 	private final ResourceLocation texture;
 	
-	public RenderNaturalistChest(ModelPart root, String textureName) {
+	public RenderNaturalistChest(BlockEntityRendererProvider.Context ctx, String textureName) {
+		ModelPart root = ctx.bakeLayer(ForestryModelLayers.NATURALIST_CHEST_LAYER);
+
 		this.lid = root.getChild(LID);
 		this.base = root.getChild(BASE);
 		this.lock = root.getChild(LOCK);

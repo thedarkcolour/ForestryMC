@@ -1,12 +1,7 @@
 package forestry.core.data;
 
-import java.util.Set;
-
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -15,10 +10,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import forestry.api.IForestryApi;
-import forestry.api.client.IForestryClientApi;
-import forestry.api.modules.IForestryModule;
-import forestry.apiimpl.client.ForestryClientApiImpl;
-import forestry.apiimpl.client.TreeClientManager;
 import forestry.apiimpl.plugin.PluginManager;
 import forestry.core.data.models.ForestryBlockStateProvider;
 import forestry.core.data.models.ForestryItemModelProvider;
@@ -53,11 +44,6 @@ public class Data {
 	public static void setupDataGenApi(GatherDataEvent event) {
 		((ForestryModuleManager) IForestryApi.INSTANCE.getModuleManager()).setupApi();
 
-		PluginManager.registerSprites(new TextureStitchEvent.Pre(null, Set.of()) {
-			@Override
-			public boolean addSprite(ResourceLocation sprite) {
-				return true;
-			}
-		});
+		PluginManager.registerClient();
 	}
 }

@@ -11,7 +11,9 @@ import forestry.api.client.arboriculture.ILeafTint;
 import forestry.api.client.plugin.IClientRegistration;
 
 public class ClientRegistration implements IClientRegistration {
-	// ID -> (block model, item model)
+	// ID -> (butterfly item texture, entity texture)
+	private final HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> butterflyTextures = new HashMap<>();
+	// ID -> (sapling block model, item model)
 	private final HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> saplingModels = new HashMap<>();
 	// ID -> leaf sprite
 	private final HashMap<ResourceLocation, ILeafSprite> leafSprites = new HashMap<>();
@@ -34,8 +36,8 @@ public class ClientRegistration implements IClientRegistration {
 	}
 
 	@Override
-	public void setButterflySprite() {
-
+	public void setButterflySprites(ResourceLocation speciesId, ResourceLocation itemTexture, ResourceLocation entityTexture) {
+		this.butterflyTextures.put(speciesId, Pair.of(itemTexture, entityTexture));
 	}
 
 	public HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> getSaplingModels() {
@@ -48,5 +50,9 @@ public class ClientRegistration implements IClientRegistration {
 
 	public HashMap<ResourceLocation, ILeafTint> getTints() {
 		return this.leafTints;
+	}
+
+	public HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> getButterflyTextures() {
+		return this.butterflyTextures;
 	}
 }

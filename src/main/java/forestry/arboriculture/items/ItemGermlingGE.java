@@ -53,7 +53,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 
 	@Override
 	protected ITreeSpecies getSpecies(ItemStack stack) {
-		return IIndividualHandlerItem.getIndividual(stack).getGenome().getActiveValue(TreeChromosomes.SPECIES);
+		return IIndividualHandlerItem.getSpecies(stack, SpeciesUtil.TREE_TYPE.get());
 	}
 
 	@Override

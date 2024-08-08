@@ -54,14 +54,23 @@ public abstract class ItemGE extends ItemForestry {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		if (nbt != null) {
+		Tag parent;
+
+		if (nbt != null && nbt.contains("Parent")) {
 			// serializable caps returned by this method are saved under "Parent". I love undocumented Forge code!!!
-			Tag parent = nbt.get("Parent");
-			if (parent != null) {
-				return new SerializableIndividualHandlerItem(getType(), stack, SpeciesUtil.deserializeIndividual(getType(), parent), this.stage);
-			}
+			parent = nbt.get("Parent");
+		} else if (stack.getTag() != null && stack.getTagElement("ForgeCaps") != null && stack.getTagElement("ForgeCaps").contains("Parent")) {
+			// Individual.saveToStack saves to NBT manually to bypass the cap nbt being null without setting the field
+			parent = stack.getTagElement("ForgeCaps").get("Parent");
+		} else {
+			parent = null;
 		}
-		return new SerializableIndividualHandlerItem(getType(), stack, getType().getDefaultSpecies().createIndividual(), this.stage);
+
+		if (parent == null) {
+			return new SerializableIndividualHandlerItem(getType(), stack, getType().getDefaultSpecies().createIndividual(), this.stage);
+		}
+
+		return new SerializableIndividualHandlerItem(getType(), stack, SpeciesUtil.deserializeIndividual(getType(), parent), this.stage);
 	}
 
 	@Override

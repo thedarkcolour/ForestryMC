@@ -40,12 +40,12 @@ public class MutationManager<S extends ISpecies<?>> implements IMutationManager<
 
 	@Override
 	public List<IMutation<S>> getMutationsFrom(S species) {
-		return this.mutationsFrom.get(species);
+		return this.mutationsFrom.getOrDefault(species, List.of());
 	}
 
 	@Override
 	public List<IMutation<S>> getMutationsInto(S species) {
-		return this.mutationsInto.get(species);
+		return this.mutationsInto.getOrDefault(species, List.of());
 	}
 
 	@Override

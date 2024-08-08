@@ -41,7 +41,7 @@ public class InventoryEscritoire extends InventoryAdapterTile<TileEscritoire> {
 			}
 			IIndividual individual = IIndividualHandlerItem.getIndividual(specimen);
 			if (individual != null) {
-				return individual.getType().getResearchSuitability(individual.getSpecies().cast(), specimen) > 0f;
+				return individual.getType().getResearchSuitability(individual.getSpecies().cast(), stack) > 0f;
 			}
 			return false;
 		}

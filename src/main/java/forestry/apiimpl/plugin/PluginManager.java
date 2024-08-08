@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
@@ -18,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -36,9 +36,11 @@ import forestry.api.core.IError;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.ITaxon;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.apiimpl.ForestryApiImpl;
 import forestry.apiimpl.GeneticManager;
+import forestry.apiimpl.client.ButterflyClientManager;
 import forestry.apiimpl.client.ForestryClientApiImpl;
 import forestry.apiimpl.client.TreeClientManager;
 import forestry.apiimpl.client.plugin.ClientRegistration;
@@ -232,31 +234,65 @@ public class PluginManager {
 		});
 	}
 
-	// todo make this not tied to the texture stitch event
-	public static void registerSprites(TextureStitchEvent.Pre event) {
+	public static void registerClient() {
 		ClientRegistration registration = new ClientRegistration();
 
 		for (IForestryPlugin plugin : LOADED_PLUGINS) {
 			plugin.registerClient(consumer -> consumer.accept(registration));
 		}
 
+		// Trees
 		HashMap<ResourceLocation, ILeafSprite> spritesById = registration.getLeafSprites();
 		HashMap<ResourceLocation, ILeafTint> tintsById = registration.getTints();
-
+		HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> modelsById = registration.getSaplingModels();
+		List<ITreeSpecies> treeSpecies = SpeciesUtil.TREE_TYPE.get().getAllSpecies();
 		// Copy everything over to identity maps to minimize Map.get overhead during rendering
-		IdentityHashMap<ITreeSpecies, ILeafSprite> sprites = new IdentityHashMap<>();
-		IdentityHashMap<ITreeSpecies, ILeafTint> tints = new IdentityHashMap<>();
+		IdentityHashMap<ITreeSpecies, ILeafSprite> sprites = new IdentityHashMap<>(treeSpecies.size());
+		IdentityHashMap<ITreeSpecies, ILeafTint> tints = new IdentityHashMap<>(treeSpecies.size());
+		IdentityHashMap<ITreeSpecies, Pair<ResourceLocation, ResourceLocation>> models = new IdentityHashMap<>(treeSpecies.size());
 
-		for (ITreeSpecies species : SpeciesUtil.TREE_TYPE.get().getAllSpecies()) {
+		for (ITreeSpecies species : treeSpecies) {
 			ResourceLocation id = species.id();
 
 			ILeafSprite sprite = Objects.requireNonNull(spritesById.get(id));
 			ILeafTint tint = tintsById.getOrDefault(id, new FixedLeafTint(species.getEscritoireColor()));
+			Pair<ResourceLocation, ResourceLocation> modelPair = modelsById.get(id);
 
 			sprites.put(species, sprite);
 			tints.put(species, tint);
+
+			if (modelPair != null) {
+				models.put(species, modelPair);
+			} else {
+				// default sapling block and item models
+				models.put(species, Pair.of(
+						new ResourceLocation(id.getNamespace(), "block/sapling/" + id.getPath()),
+						new ResourceLocation(id.getNamespace(), "item/sapling/" + id.getPath())
+				));
+			}
 		}
 
-		((ForestryClientApiImpl) IForestryClientApi.INSTANCE).setTreeManager(new TreeClientManager(sprites, tints));
+		((ForestryClientApiImpl) IForestryClientApi.INSTANCE).setTreeManager(new TreeClientManager(sprites, tints, models));
+
+		// Butterflies
+		HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> butterflyTexturesById = registration.getButterflyTextures();
+		List<IButterflySpecies> butterflySpecies = SpeciesUtil.BUTTERFLY_TYPE.get().getAllSpecies();
+		IdentityHashMap<IButterflySpecies, Pair<ResourceLocation, ResourceLocation>> butterflyTextures = new IdentityHashMap<>(butterflySpecies.size());
+
+		for (IButterflySpecies species : butterflySpecies) {
+			ResourceLocation id = species.id();
+			Pair<ResourceLocation, ResourceLocation> texturePair = modelsById.get(id);
+
+			if (texturePair != null) {
+				butterflyTextures.put(species, texturePair);
+			} else {
+				// default butterfly item and entity textures
+				butterflyTextures.put(species, butterflyTexturesById.getOrDefault(id, Pair.of(
+						new ResourceLocation(id.getNamespace(), "item/butterfly/" + id.getPath()),
+						new ResourceLocation(id.getNamespace(), "entity/butterfly/" + id.getPath())
+				)));
+			}
+		}
+		((ForestryClientApiImpl) IForestryClientApi.INSTANCE).setButterflyManager(new ButterflyClientManager(butterflyTextures));
 	}
 }

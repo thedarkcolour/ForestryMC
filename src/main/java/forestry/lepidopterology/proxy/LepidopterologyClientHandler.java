@@ -15,6 +15,7 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import forestry.api.client.IClientModuleHandler;
+import forestry.core.render.ForestryModelLayers;
 import forestry.lepidopterology.features.LepidopterologyEntities;
 import forestry.lepidopterology.render.ButterflyEntityRenderer;
 import forestry.lepidopterology.render.ButterflyItemModel;
@@ -33,7 +34,7 @@ public class LepidopterologyClientHandler implements IClientModuleHandler {
 	}
 
 	public static void setupLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
-		event.registerLayerDefinition(ButterflyModel.LAYER, ButterflyModel::createLayer);
+		event.registerLayerDefinition(ForestryModelLayers.BUTTERFLY_LAYER, ButterflyModel::createLayer);
 	}
 
 	public static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {

@@ -14,10 +14,10 @@ import net.minecraft.resources.ResourceLocation;
  *
  * @see ForestryTextureManager
  */
-public class ForestrySpriteUploader extends TextureAtlasHolder implements Consumer<ResourceLocation> {
+public class ForestryAtlasHolder extends TextureAtlasHolder implements Consumer<ResourceLocation> {
 	private final ArrayList<ResourceLocation> registeredSprites = new ArrayList<>();
 
-	public ForestrySpriteUploader(TextureManager manager, ResourceLocation atlasLocation, String prefix) {
+	public ForestryAtlasHolder(TextureManager manager, ResourceLocation atlasLocation, String prefix) {
 		super(manager, atlasLocation, prefix);
 	}
 

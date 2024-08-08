@@ -1,8 +1,10 @@
 package forestry.core.genetics;
 
 import javax.annotation.Nullable;
+import java.lang.invoke.VarHandle;
 import java.util.Optional;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
@@ -111,8 +113,12 @@ public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T
 	@Override
 	public void saveToStack(ItemStack stack) {
 		Tag individual = SpeciesUtil.serializeIndividual(this);
+
 		if (individual != null) {
-			stack.getOrCreateTag().put("individual", individual);
+			// Forge being annoying
+			CompoundTag forgeCaps = new CompoundTag();
+			forgeCaps.put("Parent", individual);
+			stack.getOrCreateTag().put("ForgeCaps", forgeCaps);
 		}
 	}
 

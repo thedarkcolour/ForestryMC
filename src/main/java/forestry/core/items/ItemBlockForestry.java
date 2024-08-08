@@ -29,7 +29,6 @@ import forestry.api.core.ItemGroups;
 import forestry.core.utils.ItemTooltipUtil;
 
 public class ItemBlockForestry<B extends Block> extends BlockItem {
-
 	private final int burnTime;
 
 	public ItemBlockForestry(B block, Item.Properties builder) {

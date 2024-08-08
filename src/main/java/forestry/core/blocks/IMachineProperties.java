@@ -27,9 +27,6 @@ import forestry.core.tiles.TileForestry;
 public interface IMachineProperties<T extends TileForestry> extends StringRepresentable, IShapeProvider {
 	BlockEntityType<? extends T> getTeType();
 
-	default void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
-	}
-
 	@Nullable
 	BlockEntity createTileEntity(BlockPos pos, BlockState state);
 
