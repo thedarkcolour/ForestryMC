@@ -32,6 +32,9 @@ import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.core.utils.TickHelper;
 
+// Cache used to determine if a beehive has a suitable flower nearby.
+// This passively checks one block a tick in a spiraling pattern centered on the hive,
+// but the entire area is checked at once when a player opens the hive GUI.
 public class HasFlowersCache implements INbtWritable, INbtReadable {
 	private static final String NBT_KEY = "hasFlowerCache";
 	private static final String NBT_KEY_FLOWERS = "flowers";

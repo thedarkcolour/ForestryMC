@@ -3,7 +3,6 @@ package forestry.apiculture;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,6 +22,8 @@ public class FlowerType implements IFlowerType {
 
 	@Override
 	public boolean isAcceptableFlower(Level level, BlockPos pos) {
+		// for debugging purposes
+		//level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(Blocks.REDSTONE_BLOCK.defaultBlockState()));
 		return level.getBlockState(pos).is(this.acceptableFlowers);
 	}
 

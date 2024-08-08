@@ -10,10 +10,7 @@
  ******************************************************************************/
 package forestry.apiculture.tiles;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,10 +24,7 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
-import forestry.api.ForestryCapabilities;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.climate.IClimateProvider;
@@ -51,7 +45,7 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 	private final String hintKey;
 	private final OwnerHandler ownerHandler = new OwnerHandler();
 	private final IBeekeepingLogic beeLogic;
-	protected final IClimateProvider climate;
+	protected IClimateProvider climate = FakeClimateProvider.INSTANCE;
 
 	// CLIENT
 	private int breedingProgressPercent = 0;
@@ -60,7 +54,12 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 		super(type, pos, state);
 		this.hintKey = hintKey;
 		this.beeLogic = SpeciesUtil.BEE_TYPE.get().createBeekeepingLogic(this);
-		this.climate = this.level == null ? FakeClimateProvider.INSTANCE : new ClimateProvider(this.level, pos);
+	}
+
+	@Override
+	public void setLevel(Level level) {
+		super.setLevel(level);
+		this.climate = new ClimateProvider(level, this.worldPosition);
 	}
 
 	@Override

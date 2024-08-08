@@ -226,6 +226,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 			errorLogic.setCondition(true, errorState);
 		}
 
+		// might be worth only running this check in absence of other errors
 		this.hasFlowersCache.update(this.queen, this.housing);
 
 		boolean hasFlowers = this.hasFlowersCache.hasFlowers();
