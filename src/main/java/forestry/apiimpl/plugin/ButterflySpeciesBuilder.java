@@ -22,10 +22,6 @@ public class ButterflySpeciesBuilder extends SpeciesBuilder<IButterflySpeciesTyp
 	private float rarity = 0.1f;
 	@Nullable
 	private TagKey<Biome> spawnBiomes = null;
-	@Nullable
-	private ResourceLocation itemTexture;
-	@Nullable
-	private ResourceLocation entityTexture;
 
 	public ButterflySpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
 		super(id, genus, species, mutations);
@@ -108,26 +104,18 @@ public class ButterflySpeciesBuilder extends SpeciesBuilder<IButterflySpeciesTyp
 
 	@Override
 	public List<Product> buildProducts() {
-		return null;
+		// todo implement
+		return List.of();
 	}
 
 	@Override
 	public List<Product> buildCaterpillarProducts() {
-		return null;
+		// todo implement
+		return List.of();
 	}
 
 	@Override
 	public ISpeciesFactory<IButterflySpeciesType, IButterflySpecies, IButterflySpeciesBuilder> createSpeciesFactory() {
 		return ButterflySpecies::new;
-	}
-
-	@Override
-	public ResourceLocation getItemTexture() {
-		return this.itemTexture == null ? new ResourceLocation(id.getNamespace(), "item/butterfly/" + this.id.getPath()) : this.itemTexture;
-	}
-
-	@Override
-	public ResourceLocation getEntityTexture() {
-		return this.entityTexture == null ? new ResourceLocation(id.getNamespace(), "textures/entity/butterfly/" + this.id.getPath()) : this.entityTexture;
 	}
 }

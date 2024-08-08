@@ -22,16 +22,6 @@ public interface IButterflySpecies extends ISpecies<IButterfly> {
 	IButterflySpeciesType getType();
 
 	/**
-	 * @return Path of the texture to use for entity rendering.
-	 */
-	ResourceLocation getEntityTexture();
-
-	/**
-	 * @return Path of the texture to the item model.
-	 */
-	ResourceLocation getItemTexture();
-
-	/**
 	 * @return The ideal temperature for this butterfly to spawn and fly around in.
 	 */
 	TemperatureType getTemperature();

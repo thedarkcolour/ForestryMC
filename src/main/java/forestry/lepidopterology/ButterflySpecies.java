@@ -40,8 +40,6 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 	private final int serumColor;
 	private final List<Product> products;
 	private final List<Product> caterpillarProducts;
-	private final ResourceLocation entityTexture;
-	private final ResourceLocation itemTexture;
 
 	public ButterflySpecies(ResourceLocation id, IButterflySpeciesType speciesType, IGenome defaultGenome, IButterflySpeciesBuilder builder) {
 		super(id, speciesType, defaultGenome, builder);
@@ -56,8 +54,6 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 		this.serumColor = builder.getSerumColor();
 		this.products = builder.buildProducts();
 		this.caterpillarProducts = builder.buildCaterpillarProducts();
-		this.itemTexture = builder.getItemTexture();
-		this.entityTexture = builder.getEntityTexture();
 	}
 
 	@Override
@@ -105,16 +101,6 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 		}
 
 		tooltip.addAll(toolTip.getLines());
-	}
-
-	@Override
-	public ResourceLocation getEntityTexture() {
-		return this.entityTexture;
-	}
-
-	@Override
-	public ResourceLocation getItemTexture() {
-		return this.itemTexture;
 	}
 
 	@Override

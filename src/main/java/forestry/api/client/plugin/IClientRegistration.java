@@ -11,7 +11,7 @@ import forestry.api.client.arboriculture.ILeafTint;
 public interface IClientRegistration {
 	/**
 	 * Registers the block and item models for a tree species's saplings. If you do not call this, Forestry will
-	 * use {@code "<namespace>:block/sapling/<id>"} and {@code "<namespace>:item/sapling/<id>"} as defaults.
+	 * use {@code "<namespace>:block/sapling/<id without tree_>"} and {@code "<namespace>:item/sapling/<id without tree_>"} as defaults.
 	 *
 	 * @param speciesId  The ID of the tree species to register models for.
 	 * @param blockModel The block model for the sapling.
@@ -38,7 +38,7 @@ public interface IClientRegistration {
 
 	/**
 	 * Sets the sprites used by Forestry butterflies for item/entity rendering. If none is set, Forestry will
-	 * use use {@code "<namespace>:item/butterfly/<id>"} and {@code "<namespace>:entity/butterfly/<id>"} as defaults.
+	 * use {@code "<namespace>:item/butterfly/<id without butterfly_>"} and {@code "<namespace>:textures/entity/butterfly/<id without butterfly_>.png"} as defaults.
 	 * The texture maps are different between the item and entity models, so the returned textures should be different too.
 	 *
 	 * @param speciesId     The ID of the species to set the sprite for.

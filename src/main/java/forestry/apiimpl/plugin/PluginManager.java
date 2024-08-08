@@ -254,7 +254,7 @@ public class PluginManager {
 		for (ITreeSpecies species : treeSpecies) {
 			ResourceLocation id = species.id();
 
-			ILeafSprite sprite = Objects.requireNonNull(spritesById.get(id));
+			ILeafSprite sprite = Objects.requireNonNull(spritesById.get(id), "No leaf tint registered for tree species " + id);
 			ILeafTint tint = tintsById.getOrDefault(id, new FixedLeafTint(species.getEscritoireColor()));
 			Pair<ResourceLocation, ResourceLocation> modelPair = modelsById.get(id);
 
@@ -288,9 +288,10 @@ public class PluginManager {
 				butterflyTextures.put(species, texturePair);
 			} else {
 				// default butterfly item and entity textures
+				String path = id.getPath().replace("butterfly_", "");
 				butterflyTextures.put(species, butterflyTexturesById.getOrDefault(id, Pair.of(
-						new ResourceLocation(id.getNamespace(), "item/butterfly/" + id.getPath()),
-						new ResourceLocation(id.getNamespace(), "entity/butterfly/" + id.getPath())
+						new ResourceLocation(id.getNamespace(), "item/butterfly/" + path),
+						new ResourceLocation(id.getNamespace(), "textures/entity/butterfly/" + path + ".png")
 				)));
 			}
 		}

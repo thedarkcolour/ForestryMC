@@ -45,7 +45,6 @@ public interface IGenomeBuilder {
 	 */
 	<A extends IAllele> void setActive(IChromosome<A> chromosome, A allele);
 
-
 	/**
 	 * Sets the inactive (non-expressed) allele for the chromosome in this genome.
 	 * Inactive alleles have little to no influence on an individual, but are still important for inheritance/breeding.

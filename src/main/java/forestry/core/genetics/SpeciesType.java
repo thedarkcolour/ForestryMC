@@ -204,6 +204,9 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 
 	@Override
 	public ItemStack createStack(I individual, ILifeStage type) {
+		if (!this.stages.containsValue(type)) {
+			throw new IllegalArgumentException("Invalid life stage for species type " + this.id + ": " + type);
+		}
 		ItemStack stack = new ItemStack(type.getItemForm());
 		individual.saveToStack(stack);
 		return stack;

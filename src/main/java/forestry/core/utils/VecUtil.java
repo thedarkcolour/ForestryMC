@@ -122,8 +122,9 @@ public final class VecUtil {
 		@Nullable
 		protected BlockPos.MutableBlockPos nextPos() {
 			if (this.theBlockPos == null) {
-				this.theBlockPos = new BlockPos.MutableBlockPos(center.getX(), maxY, center.getZ());
-				int y = Math.min(this.maxY, this.level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, this.theBlockPos).getY());
+				this.theBlockPos = new BlockPos.MutableBlockPos(this.center.getX(), this.maxY, this.center.getZ());
+				// in 1.12, this returned heightmap value. in 1.13+ it returns heightmap value + 1, so we have to subtract 1.
+				int y = Math.min(this.maxY, this.level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, this.theBlockPos.getX(), this.theBlockPos.getZ()) - 1);
 				this.theBlockPos.setY(y);
 				return this.theBlockPos;
 			} else if (spiralLayer > maxSpiralLayers) {
@@ -165,7 +166,8 @@ public final class VecUtil {
 					}
 
 					this.theBlockPos.set(x, y, z);
-					y = Math.min(this.maxY, this.level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, this.theBlockPos).getY());
+					// 1.13 adds a +1 to the heightmap value, so we have to counter it with a -1.
+					y = Math.min(this.maxY, this.level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1);
 				}
 
 				return this.theBlockPos.set(x, y, z);

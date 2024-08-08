@@ -55,6 +55,7 @@ import net.minecraftforge.common.IPlantable;
 import forestry.api.ForestryTags;
 import forestry.api.IForestryApi;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IGenome;
@@ -374,17 +375,15 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 		IGenome genome = contained.getGenome();
 
-		isImmuneToFire = genome.getActiveValue(ButterflyChromosomes.FIREPROOF);
-		size = genome.getActiveValue(ButterflyChromosomes.SIZE);
-		// todo
-		//		setSize(size, 0.4f);
+		this.isImmuneToFire = genome.getActiveValue(ButterflyChromosomes.FIREPROOF);
+		this.size = genome.getActiveValue(ButterflyChromosomes.SIZE);
 		this.species = genome.getActiveValue(ButterflyChromosomes.SPECIES);
 
 		if (!level.isClientSide) {
 			entityData.set(DATAWATCHER_ID_SIZE, (int) (size * 100));
-			entityData.set(DATAWATCHER_ID_SPECIES, species.id().toString());
+			entityData.set(DATAWATCHER_ID_SPECIES, this.species.id().toString());
 		} else {
-			textureResource = species.getEntityTexture();
+			textureResource = IForestryClientApi.INSTANCE.getButterflyManager().getTextures(this.species).getSecond();
 		}
 	}
 
@@ -497,7 +496,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 				if (species != null) {
 					this.species = species;
-					this.textureResource = this.species.getEntityTexture();
+					this.textureResource = IForestryClientApi.INSTANCE.getButterflyManager().getTextures(this.species).getSecond();
 					this.size = entityData.get(DATAWATCHER_ID_SIZE) / 100f;
 				}
 			}

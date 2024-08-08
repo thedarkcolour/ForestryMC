@@ -34,16 +34,19 @@ import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
+import forestry.core.utils.GeneticsUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
 
 	// todo reloadable
-	private final IdentityHashMap<ISpecies<?>, ItemStack> iconStacks = new IdentityHashMap<>();
+	private final IdentityHashMap<ISpecies<?>, ItemStack> iconStacks = GeneticsUtil.getIconStacks(ButterflyLifeStage.BUTTERFLY, SpeciesUtil.BUTTERFLY_TYPE.get());
 
 	@Override
 	public void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack) {

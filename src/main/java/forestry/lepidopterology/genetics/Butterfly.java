@@ -140,7 +140,7 @@ public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, I
 
 		PathfinderMob creature = entity.getEntity();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
-		List<Product> products = getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getButterflyLoot();
+		List<Product> products = species.getButterflyLoot();
 		RandomSource rand = creature.level.random;
 
 		for (Product product : products) {

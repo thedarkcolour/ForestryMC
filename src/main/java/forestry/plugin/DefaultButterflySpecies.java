@@ -272,6 +272,7 @@ public class DefaultButterflySpecies {
 				})
 				.addMutations(mutations -> {
 					mutations.add(ForestryButterflySpecies.LATTICED_HEATH, ForestryButterflySpecies.BRIMSTONE, 7);
-				});
+				})
+				.setAuthority("Nedelosk");
 	}
 }

@@ -70,8 +70,4 @@ public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpec
 	List<Product> buildProducts();
 
 	List<Product> buildCaterpillarProducts();
-
-	ResourceLocation getItemTexture();
-
-	ResourceLocation getEntityTexture();
 }
