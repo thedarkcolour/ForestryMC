@@ -33,11 +33,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import forestry.api.ForestryCapabilities;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.climate.IClimatised;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.apiculture.gui.IGuiBeeHousingDelegate;
-import forestry.core.climate.ClimateListener;
+import forestry.core.climate.ClimateProvider;
+import forestry.core.climate.FakeClimateProvider;
 import forestry.core.network.IStreamableGui;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
@@ -46,11 +47,11 @@ import forestry.core.render.ParticleRender;
 import forestry.core.tiles.TileBase;
 import forestry.core.utils.SpeciesUtil;
 
-public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing, IOwnedTile, IClimatised, IGuiBeeHousingDelegate, IStreamableGui {
+public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing, IOwnedTile, IClimateProvider, IGuiBeeHousingDelegate, IStreamableGui {
 	private final String hintKey;
 	private final OwnerHandler ownerHandler = new OwnerHandler();
 	private final IBeekeepingLogic beeLogic;
-	protected final ClimateListener climateListener;
+	protected final IClimateProvider climate;
 
 	// CLIENT
 	private int breedingProgressPercent = 0;
@@ -59,7 +60,7 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 		super(type, pos, state);
 		this.hintKey = hintKey;
 		this.beeLogic = SpeciesUtil.BEE_TYPE.get().createBeekeepingLogic(this);
-		this.climateListener = new ClimateListener(this);
+		this.climate = this.level == null ? FakeClimateProvider.INSTANCE : new ClimateProvider(this.level, pos);
 	}
 
 	@Override
@@ -111,20 +112,12 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 	/* ICLIMATISED */
 	@Override
 	public TemperatureType temperature() {
-		return climateListener.temperature();
+		return climate.temperature();
 	}
 
 	@Override
 	public HumidityType humidity() {
-		return climateListener.humidity();
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-		if (capability == ForestryCapabilities.CLIMATE_LISTENER) {
-			return LazyOptional.of(() -> climateListener).cast();
-		}
-		return super.getCapability(capability, facing);
+		return climate.humidity();
 	}
 
 	/* UPDATING */
@@ -137,7 +130,6 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 				doPollenFX(level, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
 			}
 		}
-		climateListener.updateClientSide(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)

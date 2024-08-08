@@ -23,13 +23,13 @@ import net.minecraft.world.level.Level;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.IErrorLogic;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.errors.FakeErrorLogic;
 import forestry.core.owner.FakeOwnerHandler;
 import forestry.core.owner.IOwnerHandler;
 
-public interface FakeMultiblockController extends IMultiblockControllerInternal, ILocatable {
+public interface FakeMultiblockController extends IMultiblockControllerInternal, ILocationProvider {
 	@Override
 	default void attachBlock(IMultiblockComponent part) {
 	}

@@ -8,7 +8,7 @@
  * Various Contributors including, but not limited to:
  * SirSengir (original work), CovertJaguar, Player, Binnie, MysteriousAges
  ******************************************************************************/
-package forestry.core;
+package forestry.core.climate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -16,15 +16,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.IForestryApi;
+import forestry.api.climate.IBiomeProvider;
 import forestry.api.climate.IClimateProvider;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 
 // todo do any mods change biomes in the world?
-public class DefaultClimateProvider implements IClimateProvider {
+public class ClimateProvider implements IClimateProvider, IBiomeProvider {
 	private final Holder<Biome> biome;
 
-	public DefaultClimateProvider(Level level, BlockPos pos) {
+	public ClimateProvider(Level level, BlockPos pos) {
 		this.biome = level.getBiome(pos);
 	}
 

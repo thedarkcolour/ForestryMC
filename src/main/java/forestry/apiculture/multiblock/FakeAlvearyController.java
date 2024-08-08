@@ -26,7 +26,6 @@ import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.climate.IClimateListener;
 import forestry.apiculture.FakeBeekeepingLogic;
 import forestry.apiculture.tiles.FakeBeeHousingInventory;
 import forestry.core.inventory.FakeInventoryAdapter;
@@ -95,11 +94,6 @@ public enum FakeAlvearyController implements FakeMultiblockController, IAlvearyC
 	@Override
 	public IInventoryAdapter getInternalInventory() {
 		return FakeInventoryAdapter.instance();
-	}
-
-	@Override
-	public IClimateListener getClimateListener() {
-		return null;
 	}
 
 	@Override

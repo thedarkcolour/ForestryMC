@@ -1,4 +1,4 @@
-package forestry.core;
+package forestry.core.climate;
 
 import javax.annotation.Nullable;
 
@@ -12,7 +12,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.LogicalSide;
 
-import forestry.api.climate.IClimatised;
+import forestry.api.climate.IClimateProvider;
 import forestry.core.render.ParticleRender;
 import forestry.api.client.IClientModuleHandler;
 
@@ -20,9 +20,9 @@ import forestry.api.client.IClientModuleHandler;
 public class ClimateHandlerClient implements IClientModuleHandler {
 	// The current climate state at the position of the player.
 	@Nullable
-	private static IClimatised currentState = null;
+	private static IClimateProvider currentState = null;
 
-	public static void setCurrentState(IClimatised currentState) {
+	public static void setCurrentState(IClimateProvider currentState) {
 		ClimateHandlerClient.currentState = currentState;
 	}
 

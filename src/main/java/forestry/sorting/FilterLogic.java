@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.IForestryApi;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.IAlleleManager;
@@ -25,12 +25,12 @@ import forestry.sorting.network.packets.PacketFilterChangeRule;
 import forestry.sorting.network.packets.PacketGuiFilterUpdate;
 
 public class FilterLogic implements IFilterLogic {
-	private final ILocatable locatable;
+	private final ILocationProvider locatable;
 	private final INetworkHandler networkHandler;
 	private IFilterRuleType[] filterRules = new IFilterRuleType[6];
 	private AlleleFilter[][] genomeFilter = new AlleleFilter[6][3];
 
-	public FilterLogic(ILocatable locatable, INetworkHandler networkHandler) {
+	public FilterLogic(ILocationProvider locatable, INetworkHandler networkHandler) {
 		this.locatable = locatable;
 		this.networkHandler = networkHandler;
 

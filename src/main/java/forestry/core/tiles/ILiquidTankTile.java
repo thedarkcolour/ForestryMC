@@ -10,9 +10,9 @@
  ******************************************************************************/
 package forestry.core.tiles;
 
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.core.fluids.ITankManager;
 
-public interface ILiquidTankTile extends ILocatable {
+public interface ILiquidTankTile extends ILocationProvider {
 	ITankManager getTankManager();
 }

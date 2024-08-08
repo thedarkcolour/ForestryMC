@@ -12,7 +12,6 @@ package forestry.apiculture.multiblock;
 
 import net.minecraft.world.level.Level;
 
-import forestry.api.climate.IClimateListener;
 import forestry.api.multiblock.IMultiblockLogicAlveary;
 import forestry.core.multiblock.MultiblockLogic;
 
@@ -31,25 +30,17 @@ public class MultiblockLogicAlveary extends MultiblockLogic<IAlvearyControllerIn
 	}
 
 	@Override
-	public IAlvearyControllerInternal createNewController(Level world) {
-		return new AlvearyController(world);
+	public IAlvearyControllerInternal createNewController(Level level) {
+		return new AlvearyController(level);
 	}
 
 	@Override
 	public void becomeMultiblockSaveDelegate() {
 		super.becomeMultiblockSaveDelegate();
-		IClimateListener listener = getController().getClimateListener();
-		if (listener != null) {
-			listener.markLocatableDirty();
-		}
 	}
 
 	@Override
 	public void forfeitMultiblockSaveDelegate() {
 		super.forfeitMultiblockSaveDelegate();
-		IClimateListener listener = getController().getClimateListener();
-		if (listener != null) {
-			listener.markLocatableDirty();
-		}
 	}
 }

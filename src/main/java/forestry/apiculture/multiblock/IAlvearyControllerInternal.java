@@ -10,24 +10,15 @@
  ******************************************************************************/
 package forestry.apiculture.multiblock;
 
-import javax.annotation.Nullable;
-
-import forestry.api.climate.IClimateListener;
-import forestry.api.climate.IClimatised;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.multiblock.IAlvearyController;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.IMultiblockControllerInternal;
 import forestry.core.network.IStreamableGui;
 import forestry.core.owner.IOwnedTile;
 
-public interface IAlvearyControllerInternal extends IAlvearyController, IMultiblockControllerInternal, IClimatised, IOwnedTile, IStreamableGui {
+public interface IAlvearyControllerInternal extends IAlvearyController, IMultiblockControllerInternal, IClimateProvider, IOwnedTile, IStreamableGui {
 	IInventoryAdapter getInternalInventory();
-
-	/**
-	 * @return {@code null} if this multiblock is not assembled.
-	 */
-	@Nullable
-	IClimateListener getClimateListener();
 
 	int getHealthScaled(int i);
 }

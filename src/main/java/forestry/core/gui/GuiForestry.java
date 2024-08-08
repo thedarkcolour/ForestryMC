@@ -35,7 +35,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import forestry.api.ForestryConstants;
 import forestry.api.client.ForestrySprites;
 import forestry.api.client.IForestryClientApi;
-import forestry.api.climate.IClimatised;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.core.IErrorLogicSource;
 import forestry.api.core.IErrorSource;
 import forestry.core.config.Config;
@@ -121,7 +121,7 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 		ledgerManager.add(errorSource.getErrorLogic());
 	}
 
-	protected final void addClimateLedger(IClimatised climatised) {
+	protected final void addClimateLedger(IClimateProvider climatised) {
 		ledgerManager.add(new ClimateLedger(ledgerManager, climatised));
 	}
 

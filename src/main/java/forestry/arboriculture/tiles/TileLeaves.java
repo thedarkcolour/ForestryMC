@@ -39,6 +39,7 @@ import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.client.IForestryClientApi;
+import forestry.api.climate.IBiomeProvider;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
@@ -61,7 +62,7 @@ import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.RenderUtil;
 import forestry.core.utils.SpeciesUtil;
 
-public class TileLeaves extends TileTreeContainer implements IPollinatable, IFruitBearer, IButterflyNursery, IRipeningPacketReceiver {
+public class TileLeaves extends TileTreeContainer implements IPollinatable, IFruitBearer, IButterflyNursery, IRipeningPacketReceiver, IBiomeProvider {
 	private static final String NBT_RIPENING = "RT";
 	private static final String NBT_DAMAGE = "ENC";
 	private static final String NBT_FRUIT_LEAF = "FL";

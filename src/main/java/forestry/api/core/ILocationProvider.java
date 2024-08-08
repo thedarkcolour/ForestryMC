@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
  * SpecialSource issue https://github.com/md-5/SpecialSource/issues/12
  * TODO rename to getBlockPos, getLevel in 1.21
  */
-public interface ILocatable {
+public interface ILocationProvider {
 	BlockPos getCoordinates();
 
 	@Nullable

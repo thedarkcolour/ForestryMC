@@ -30,7 +30,7 @@ public class MultiblockLogicFarm extends MultiblockLogic<IFarmControllerInternal
 	}
 
 	@Override
-	public IFarmControllerInternal createNewController(Level world) {
-		return new FarmController(world);
+	public IFarmControllerInternal createNewController(Level level) {
+		return new FarmController(level);
 	}
 }

@@ -39,7 +39,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.core.errors.ErrorLogic;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
@@ -47,7 +47,7 @@ import forestry.core.network.IStreamable;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.TickHelper;
 
-public abstract class TileForestry extends BlockEntity implements IStreamable, IErrorLogicSource, WorldlyContainer, IFilterSlotDelegate, ITitled, ILocatable, MenuProvider {
+public abstract class TileForestry extends BlockEntity implements IStreamable, IErrorLogicSource, WorldlyContainer, IFilterSlotDelegate, ITitled, ILocationProvider, MenuProvider {
 	private final ErrorLogic errorHandler = new ErrorLogic();
 	private final AdjacentTileCache tileCache = new AdjacentTileCache(this);
 
@@ -278,7 +278,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 			} else {
 				return LazyOptional.of(() -> new InvWrapper(getInternalInventory())).cast();
 			}
-
 		}
 		return super.getCapability(capability, facing);
 	}

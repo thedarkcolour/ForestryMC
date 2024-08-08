@@ -25,7 +25,7 @@ import com.mojang.authlib.GameProfile;
 import forestry.api.IForestryApi;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
@@ -33,7 +33,7 @@ import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
 
-public abstract class MultiblockControllerForestry extends MultiblockControllerBase implements WorldlyContainer, IOwnedTile, IErrorLogicSource, ILocatable {
+public abstract class MultiblockControllerForestry extends MultiblockControllerBase implements WorldlyContainer, IOwnedTile, IErrorLogicSource, ILocationProvider {
 	private final OwnerHandler ownerHandler;
 	private final IErrorLogic errorLogic;
 

@@ -43,21 +43,18 @@ import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IForestryModule;
 import forestry.api.modules.IPacketRegistry;
+import forestry.apiimpl.plugin.PluginManager;
 import forestry.arboriculture.loot.CountBlockFunction;
 import forestry.arboriculture.loot.GrafterLootModifier;
 import forestry.core.blocks.TileStreamUpdateTracker;
 import forestry.core.client.CoreClientHandler;
 import forestry.core.climate.ForestryClimateManager;
-import forestry.core.features.CoreFeatures;
 import forestry.core.loot.ConditionLootModifier;
 import forestry.core.loot.OrganismFunction;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
 import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.network.packets.PacketChipsetClick;
-import forestry.core.network.packets.PacketClimateListenerUpdate;
-import forestry.core.network.packets.PacketClimateListenerUpdateRequest;
-import forestry.core.network.packets.PacketClimateUpdate;
 import forestry.core.network.packets.PacketErrorUpdate;
 import forestry.core.network.packets.PacketGenomeTrackerSync;
 import forestry.core.network.packets.PacketGuiEnergy;
@@ -78,7 +75,6 @@ import forestry.core.worldgen.VillagerJigsaw;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleManager;
 import forestry.modules.ModuleUtil;
-import forestry.apiimpl.plugin.PluginManager;
 
 @ForestryModule
 public class ModuleCore extends BlankForestryModule {
@@ -188,8 +184,6 @@ public class ModuleCore extends BlankForestryModule {
 		registry.serverbound(PacketIdServer.PIPETTE_CLICK, PacketPipetteClick.class, PacketPipetteClick::decode, PacketPipetteClick::handle);
 		registry.serverbound(PacketIdServer.CHIPSET_CLICK, PacketChipsetClick.class, PacketChipsetClick::decode, PacketChipsetClick::handle);
 		registry.serverbound(PacketIdServer.SOLDERING_IRON_CLICK, PacketSolderingIronClick.class, PacketSolderingIronClick::decode, PacketSolderingIronClick::handle);
-		//registry.serverbound(PacketIdServer.SELECT_CLIMATE_TARGETED, PacketSelectClimateTargeted.class, PacketSelectClimateTargeted::decode, PacketSelectClimateTargeted::handle);
-		registry.serverbound(PacketIdServer.CLIMATE_LISTENER_UPDATE_REQUEST, PacketClimateListenerUpdateRequest.class, PacketClimateListenerUpdateRequest::decode, PacketClimateListenerUpdateRequest::handle);
 
 		registry.clientbound(PacketIdClient.ERROR_UPDATE, PacketErrorUpdate.class, PacketErrorUpdate::decode, PacketErrorUpdate::handle);
 		registry.clientbound(PacketIdClient.GUI_UPDATE, PacketGuiStream.class, PacketGuiStream::decode, PacketGuiStream::handle);
@@ -201,9 +195,7 @@ public class ModuleCore extends BlankForestryModule {
 		registry.clientbound(PacketIdClient.ITEMSTACK_DISPLAY, PacketItemStackDisplay.class, PacketItemStackDisplay::decode, PacketItemStackDisplay::handle);
 		registry.clientbound(PacketIdClient.GENOME_TRACKER_UPDATE, PacketTankLevelUpdate.class, PacketTankLevelUpdate::decode, PacketTankLevelUpdate::handle);
 		registry.clientbound(PacketIdClient.TANK_LEVEL_UPDATE, PacketGenomeTrackerSync.class, PacketGenomeTrackerSync::decode, PacketGenomeTrackerSync::handle);
-		registry.clientbound(PacketIdClient.UPDATE_CLIMATE, PacketClimateUpdate.class, PacketClimateUpdate::decode, PacketClimateUpdate::handle);
-		registry.clientbound(PacketIdClient.CLIMATE_LISTENER_UPDATE, PacketClimateListenerUpdate.class, PacketClimateListenerUpdate::decode, PacketClimateListenerUpdate::handle);
-		registry.clientbound(PacketIdClient.CLIMATE_PLAYER, PacketClimateListenerUpdate.class, PacketClimateListenerUpdate::decode, PacketClimateListenerUpdate::handle);
+		registry.clientbound(PacketIdClient.RECIPE_CACHE, RecipeCachePacket.class, RecipeCachePacket::decode, RecipeCachePacket::handle);
 	}
 
 	@Override

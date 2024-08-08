@@ -36,13 +36,15 @@ import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.climate.IClimateControlled;
-import forestry.api.climate.IClimateListener;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.apiculture.AlvearyBeeModifier;
 import forestry.apiculture.InventoryBeeHousing;
+import forestry.core.climate.ClimateProvider;
+import forestry.core.climate.FakeClimateProvider;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.IMultiblockControllerInternal;
@@ -54,7 +56,7 @@ import forestry.core.utils.SpeciesUtil;
 public class AlvearyController extends RectangularMultiblockControllerBase implements IAlvearyControllerInternal, IClimateControlled {
 	private final InventoryBeeHousing inventory;
 	private final IBeekeepingLogic beekeepingLogic;
-	private final IClimateListener listener;
+	private final IClimateProvider climate;
 
 	private byte temperatureSteps;
 	private byte humiditySteps;
@@ -72,8 +74,9 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 		super(world, AlvearyMultiblockSizeLimits.instance);
 		this.inventory = new InventoryBeeHousing(9);
 		this.beekeepingLogic = SpeciesUtil.BEE_TYPE.get().createBeekeepingLogic(this);
-		this.listener = IForestryApi.INSTANCE.getClimateManager().createListener(this);
 
+		BlockPos referenceCoord = getReferenceCoord();
+		this.climate = referenceCoord == null ? FakeClimateProvider.INSTANCE : new ClimateProvider(this.level, referenceCoord);
 		this.beeModifiers.add(new AlvearyBeeModifier());
 	}
 
@@ -94,11 +97,6 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 		} else {
 			return FakeInventoryAdapter.instance();
 		}
-	}
-
-	@Override
-	public IClimateListener getClimateListener() {
-		return this.listener;
 	}
 
 	@Override
@@ -274,7 +272,6 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 				ParticleRender.addEntityHoneyDustFX(level, fxX + leftRightSpreadFromCenter, fxY, fxZ + distanceFromCenter);
 			}
 		}
-		listener.updateClientSide(false);
 	}
 
 	@Override

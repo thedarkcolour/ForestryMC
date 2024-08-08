@@ -29,7 +29,7 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.network.NetworkHooks;
 
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.api.multiblock.IMultiblockLogic;
 import forestry.api.multiblock.MultiblockTileEntityBase;
 import forestry.core.config.Constants;
@@ -37,7 +37,7 @@ import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.tiles.IFilterSlotDelegate;
 
-public abstract class MultiblockTileEntityForestry<T extends IMultiblockLogic> extends MultiblockTileEntityBase<T> implements WorldlyContainer, IFilterSlotDelegate, ILocatable, MenuProvider {
+public abstract class MultiblockTileEntityForestry<T extends IMultiblockLogic> extends MultiblockTileEntityBase<T> implements WorldlyContainer, IFilterSlotDelegate, ILocationProvider, MenuProvider {
 	@Nullable
 	private GameProfile owner;
 

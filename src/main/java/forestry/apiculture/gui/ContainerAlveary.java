@@ -10,15 +10,13 @@
  ******************************************************************************/
 package forestry.apiculture.gui;
 
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 
-import forestry.api.ForestryCapabilities;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.apiculture.features.ApicultureMenuTypes;
 import forestry.apiculture.multiblock.TileAlveary;
 import forestry.core.gui.ContainerTile;
-import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.TileUtil;
 
@@ -33,11 +31,6 @@ public class ContainerAlveary extends ContainerTile<TileAlveary> {
 		ContainerBeeHelper.addSlots(this, tile, false);
 
 		tile.getBeekeepingLogic().clearCachedValues();
-		tile.getCapability(ForestryCapabilities.CLIMATE_LISTENER).ifPresent(listener -> {
-			if (playerInv.player instanceof ServerPlayer serverPlayer) {
-				listener.syncToClient(serverPlayer);
-			}
-		});
 	}
 
 	private int beeProgress = -1;

@@ -11,10 +11,8 @@
 package forestry.apiculture.gui;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 
-import forestry.api.ForestryCapabilities;
 import forestry.api.modules.IForestryPacketClient;
 import forestry.apiculture.features.ApicultureMenuTypes;
 import forestry.apiculture.tiles.TileBeeHousingBase;
@@ -41,11 +39,6 @@ public class ContainerBeeHousing extends ContainerAnalyzerProvider<TileBeeHousin
 		ContainerBeeHelper.addSlots(this, tile, hasFrames);
 
 		tile.getBeekeepingLogic().clearCachedValues();
-		tile.getCapability(ForestryCapabilities.CLIMATE_LISTENER).ifPresent(listener -> {
-			if (playerInv.player instanceof ServerPlayer serverPlayer) {
-				listener.syncToClient(serverPlayer);
-			}
-		});
 
 		this.delegate = tile;
 		this.icon = icon;

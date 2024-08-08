@@ -13,7 +13,7 @@ package forestry.core.gui.ledgers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.client.IForestryClientApi;
-import forestry.api.climate.IClimatised;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ClimateHelper;
 
@@ -23,19 +23,17 @@ import net.minecraft.network.chat.Component;
  * A ledger containing climate information.
  */
 public class ClimateLedger extends Ledger {
+	private final IClimateProvider climateProvider;
 
-	private final IClimatised tile;
-
-	public ClimateLedger(LedgerManager manager, IClimatised tile) {
+	public ClimateLedger(LedgerManager manager, IClimateProvider climateProvider) {
 		super(manager, "climate");
-		this.tile = tile;
+		this.climateProvider = climateProvider;
 		maxHeight = 72;
 	}
 
 	@Override
 	public void draw(PoseStack transform, int y, int x) {
-
-		TemperatureType temperature = tile.temperature();
+		TemperatureType temperature = climateProvider.temperature();
 
 		// Draw background
 		drawBackground(transform, y, x);
@@ -50,18 +48,18 @@ public class ClimateLedger extends Ledger {
 		drawHeader(transform, Component.translatable("for.gui.climate"), x + 22, y + 8);
 
 		drawSubheader(transform, Component.translatable("for.gui.temperature").append(":"), x + 22, y + 20);
-		drawText(transform, ClimateHelper.toDisplay(temperature).getString() + ' ' + tile.temperature(), x + 22, y + 32);
+		drawText(transform, ClimateHelper.toDisplay(temperature).getString(), x + 22, y + 32);
 
 		drawSubheader(transform, Component.translatable("for.gui.humidity").append(":"), x + 22, y + 44);
-		drawText(transform, ClimateHelper.toDisplay(tile.humidity()).getString() + ' ' + tile.humidity(), x + 22, y + 56);
+		drawText(transform, ClimateHelper.toDisplay(climateProvider.humidity()).getString(), x + 22, y + 56);
 	}
 
 	@Override
 	public Component getTooltip() {
 		return Component.literal("T: ")
-			.append(ClimateHelper.toDisplay(tile.temperature()))
+			.append(ClimateHelper.toDisplay(climateProvider.temperature()))
 			.append(Component.literal(" / H: "))
-			.append(ClimateHelper.toDisplay(tile.humidity()));
+			.append(ClimateHelper.toDisplay(climateProvider.humidity()));
 	}
 
 }

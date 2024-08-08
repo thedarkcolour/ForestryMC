@@ -1,7 +1,6 @@
 package forestry.core.climate;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -12,21 +11,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.climate.ClimateState;
-import forestry.api.climate.IClimateHousing;
-import forestry.api.climate.IClimateListener;
-import forestry.api.climate.IClimateProvider;
-import forestry.api.climate.IClimateTransformer;
-import forestry.api.core.HumidityType;
-import forestry.api.core.ILocatable;
-import forestry.api.core.TemperatureType;
 import forestry.api.climate.IClimateManager;
-import forestry.core.DefaultClimateProvider;
+import forestry.api.climate.IClimateProvider;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 
 import org.jetbrains.annotations.ApiStatus;
 
 public class ForestryClimateManager implements IClimateManager {
-	private final HashMap<ResourceKey<Biome>, TemperatureType> temperatures = new HashMap<>();
-	private final HashMap<ResourceKey<Biome>, HumidityType> humidities = new HashMap<>();
+	private final IdentityHashMap<ResourceKey<Biome>, TemperatureType> temperatures = new IdentityHashMap<>();
+	private final IdentityHashMap<ResourceKey<Biome>, HumidityType> humidities = new IdentityHashMap<>();
 
 	@Override
 	public TemperatureType getTemperature(Holder<Biome> biome) {
@@ -52,19 +46,19 @@ public class ForestryClimateManager implements IClimateManager {
 
 	@Override
 	public IClimateProvider getDefaultClimate(Level world, BlockPos pos) {
-		return new DefaultClimateProvider(world, pos);
+		return new ClimateProvider(world, pos);
 	}
 
-	@Nullable
 	@Override
 	public ClimateState getState(ServerLevel level, BlockPos pos) {
-		return WorldClimateHolder.get(level).getAdjustedState(pos);
+		// todo implement climate modifiers
+		return getBiomeState(level, pos);
 	}
 
 	@Override
 	public ClimateState getBiomeState(Level level, BlockPos coordinates) {
-		Biome biome = level.getBiome(coordinates).value();
-		return new ClimateState(biome.getTemperature(coordinates), biome.getDownfall());
+		Holder<Biome> biome = level.getBiome(coordinates);
+		return new ClimateState(getTemperature(biome), getHumidity(biome));
 	}
 
 	@ApiStatus.Internal
@@ -98,15 +92,5 @@ public class ForestryClimateManager implements IClimateManager {
 				this.humidities.put(holder.key(), HumidityType.getFromValue(holder.value().getDownfall()));
 			}
 		});
-	}
-
-	@Override
-	public IClimateTransformer createTransformer(IClimateHousing housing) {
-		return new ClimateTransformer(housing);
-	}
-
-	@Override
-	public IClimateListener createListener(ILocatable locatable) {
-		return new ClimateListener(locatable);
 	}
 }

@@ -8,14 +8,14 @@ package forestry.api.lepidopterology;
 import javax.annotation.Nullable;
 
 import forestry.api.climate.IClimateProvider;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.api.genetics.IIndividual;
 import forestry.api.lepidopterology.genetics.IButterfly;
 
 /**
  * A butterfly nursery is a place, usually a leaf block, where caterpillars laid by mated butterflies mature into cocoons.
  */
-public interface IButterflyNursery extends ILocatable, IClimateProvider {
+public interface IButterflyNursery extends ILocationProvider, IClimateProvider {
 	@Nullable
 	IButterfly getCaterpillar();
 

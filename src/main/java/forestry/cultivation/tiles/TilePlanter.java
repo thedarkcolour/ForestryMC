@@ -30,7 +30,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import forestry.api.IForestryApi;
-import forestry.api.climate.IClimatised;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.farming.IFarmLogic;
@@ -56,7 +56,7 @@ import forestry.farming.FarmTarget;
 import forestry.farming.gui.IFarmLedgerDelegate;
 import forestry.farming.multiblock.IFarmInventoryInternal;
 
-public abstract class TilePlanter extends TilePowered implements IFarmHousingInternal, IClimatised, ILiquidTankTile, IOwnedTile, IStreamableGui {
+public abstract class TilePlanter extends TilePowered implements IFarmHousingInternal, IClimateProvider, ILiquidTankTile, IOwnedTile, IStreamableGui {
 	private final InventoryPlanter inventory;
 	private final OwnerHandler ownerHandler = new OwnerHandler();
 	private final FarmManager manager;

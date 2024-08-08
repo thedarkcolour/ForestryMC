@@ -10,12 +10,12 @@ import forestry.api.core.TemperatureType;
 /**
  * Data object for handling a climate's temperature and humidity.
  */
-public record ClimateState(TemperatureType temperature, HumidityType humidity) implements IClimatised {
+public record ClimateState(TemperatureType temperature, HumidityType humidity) implements IClimateProvider {
 	public ClimateState(float baseTemperature, float downfall) {
 		this(TemperatureType.getFromValue(baseTemperature), HumidityType.getFromValue(downfall));
 	}
 
-	public ClimateState(IClimatised climatised) {
+	public ClimateState(IClimateProvider climatised) {
 		this(climatised.temperature(), climatised.humidity());
 	}
 

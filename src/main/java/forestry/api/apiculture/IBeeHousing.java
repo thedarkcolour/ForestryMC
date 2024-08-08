@@ -12,11 +12,12 @@ import net.minecraft.world.phys.Vec3;
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
+import forestry.api.climate.IBiomeProvider;
 import forestry.api.climate.IClimateProvider;
 import forestry.api.core.IErrorLogicSource;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 
-public interface IBeeHousing extends IErrorLogicSource, IClimateProvider, ILocatable {
+public interface IBeeHousing extends IErrorLogicSource, IClimateProvider, IBiomeProvider, ILocationProvider {
 
 	/**
 	 * Used by {@link IBeeSpeciesType#createBeeHousingModifier(IBeeHousing)}
