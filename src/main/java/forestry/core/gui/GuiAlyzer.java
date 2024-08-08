@@ -247,7 +247,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.authority").append(": ").append(individual.getSpecies().getAuthority()), 12);
 
 		textLayout.newLine();
-		String description = GeneticsUtil.createDescriptionKey(individual.getSpecies());
+		String description = individual.getSpecies().getDescriptionTranslationKey();
 		if (Translator.canTranslateToLocal(description)) {
 			String[] tokens = description.split("\\|");
 			textLayout.drawSplitLine(transform, tokens[0], 12, 200, 0x666666);

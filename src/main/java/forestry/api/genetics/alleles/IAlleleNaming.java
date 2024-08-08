@@ -9,7 +9,7 @@ import forestry.api.ForestryConstants;
 import forestry.api.core.ToleranceType;
 
 /**
- * Used to generate names for values when registering value alleles.
+ * Used to generate unique IDs for values when registering value alleles.
  */
 public interface IAlleleNaming<V> {
 	/**
@@ -41,7 +41,7 @@ public interface IAlleleNaming<V> {
 	};
 
 	/**
-	 * @return The name of the allele that should contain this value.
+	 * @return The ID of the allele that should contain this value.
 	 * Generally, dominant alleles have a "d" suffix to differentiate them from recessive alleles.
 	 * Alleles that wrap equal values, like two instances of the same string value, should return
 	 * the same allele, even if the identities of the values are different.

@@ -67,7 +67,8 @@ public class DefaultTreeSpecies {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
 					genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
 					genome.set(TreeChromosomes.GIRTH, ForestryAlleles.GIRTH_2);
-				});
+				})
+				.setAuthority("Binnie");
 
 		// Birch (Silver Birch)
 		arboriculture.registerSpecies(ForestryTreeSpecies.BIRCH, GENUS_BETULA, SPECIES_BIRCH, false, new Color(8431445), VanillaWoodType.BIRCH)
@@ -343,7 +344,8 @@ public class DefaultTreeSpecies {
 
 		// Vanilla Acacia TODO should probably switch with desert acacia since aneura are from Australia
 		arboriculture.registerSpecies(ForestryTreeSpecies.ACACIA_VANILLA, GENUS_ACACIA, SPECIES_ACACIA, true, new Color(0x616101), VanillaWoodType.ACACIA)
-				.setTreeFeature(FeatureAcaciaVanilla::new);
+				.setTreeFeature(FeatureAcaciaVanilla::new)
+				.setAuthority("Binnie");
 
 		// Desert Acacia
 		arboriculture.registerSpecies(ForestryTreeSpecies.DESERT_ACACIA, GENUS_ACACIA, SPECIES_DESERT_ACACIA, true, new Color(0x748C1C), ForestryWoodType.ACACIA_DESERT)

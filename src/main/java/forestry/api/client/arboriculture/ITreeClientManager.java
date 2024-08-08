@@ -18,7 +18,7 @@ public interface ITreeClientManager {
 	ILeafSprite getLeafSprite(@Nullable ITreeSpecies species);
 
 	/**
-	 * @return The leaf tint for the given species.
+	 * @return The leaf tint for the given species, or {@link ILeafTint#DEFAULT} if none was found.
 	 */
 	ILeafTint getTint(@Nullable ITreeSpecies species);
 

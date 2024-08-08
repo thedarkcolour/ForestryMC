@@ -118,7 +118,7 @@ public class SpeciesUtil {
 			secondGenome = parent1;
 		}
 
-		ISpeciesType<S, ?> speciesType = parent1.getActiveSpecies();
+		ISpeciesType<S, ?> speciesType = parent1.getActiveSpecies().getType().cast();
 		IBreedingTracker tracker = profile == null ? null : speciesType.getBreedingTracker(level, profile);
 		IClimateProvider climate = IForestryApi.INSTANCE.getClimateManager().getDefaultClimate(level, pos);
 

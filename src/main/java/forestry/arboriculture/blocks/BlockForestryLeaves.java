@@ -13,7 +13,6 @@ package forestry.arboriculture.blocks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -167,7 +166,6 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 				if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
 					return leaves.getFruitColour();
 				} else {
-					Player thePlayer = Minecraft.getInstance().player;
 					return leaves.getFoliageColour();
 				}
 			}

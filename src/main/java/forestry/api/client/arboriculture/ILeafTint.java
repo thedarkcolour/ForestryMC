@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.FoliageColor;
 
 /**
  * Responsible for tinting leaf colors according to their environment.
@@ -12,5 +12,10 @@ import net.minecraft.world.level.BlockGetter;
  * based on the escritoire color of the species.
  */
 public interface ILeafTint {
+	/**
+	 * A default fallback tint.
+	 */
+	ILeafTint DEFAULT = (level, pos) -> FoliageColor.getDefaultColor();
+
 	int get(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
 }

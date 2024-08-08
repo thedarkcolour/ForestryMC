@@ -27,6 +27,13 @@ public interface ISpecies<I extends IIndividual> extends IRegistryAlleleValue {
 	}
 
 	/**
+	 * @return The translation key for the description of this species used by the Portable Analyzer.
+	 */
+	default String getDescriptionTranslationKey() {
+		return getTranslationKey() + ".desc";
+	}
+
+	/**
 	 * @return The default genome for this species.
 	 */
 	IGenome getDefaultGenome();

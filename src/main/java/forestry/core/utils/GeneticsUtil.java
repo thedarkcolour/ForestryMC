@@ -273,10 +273,6 @@ public class GeneticsUtil {
 		return translationKey.toString();
 	}
 
-	public static String createDescriptionKey(ISpecies<?> id) {
-		return createTranslationKey("species", id.getType().id(), id.id()) + ".desc";
-	}
-
 	public static IdentityHashMap<ISpecies<?>, ItemStack> getIconStacks(ILifeStage stage, ISpeciesType<?, ?> type) {
 		IdentityHashMap<ISpecies<?>, ItemStack> map = new IdentityHashMap<>();
 		getIconStacks(map, stage, type);
@@ -289,7 +285,7 @@ public class GeneticsUtil {
 
 		for (ItemStack stack : itemList) {
 			IIndividualHandlerItem.ifPresent(stack, individual -> {
-				ISpecies<?> species = individual.getGenome().getActiveSpecies();
+				ISpecies<?> species = individual.getSpecies();
 				map.put(species, stack);
 			});
 		}

@@ -28,6 +28,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.client.IForestryClientApi;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.blocks.BlockForestryLeaves;
@@ -100,8 +101,12 @@ public class ModelLeaves extends ModelBlockCached<BlockForestryLeaves, ModelLeav
 	private Key getKey(ModelData extraData) {
 		boolean fancy = Minecraft.useFancyGraphics();
 
+		ITreeSpecies species = extraData.get(TileLeaves.PROPERTY_SPECIES);
+		if (species == null) {
+			species = SpeciesUtil.TREE_TYPE.get().getDefaultSpecies();
+		}
 		ResourceLocation leafLocation = IForestryClientApi.INSTANCE.getTreeManager()
-				.getLeafSprite(extraData.get(TileLeaves.PROPERTY_SPECIES))
+				.getLeafSprite(species)
 				.get(Boolean.TRUE.equals(extraData.get(TileLeaves.PROPERTY_POLLINATED)), fancy);
 		ResourceLocation fruitLocation = extraData.get(TileLeaves.PROPERTY_FRUIT_TEXTURE);
 

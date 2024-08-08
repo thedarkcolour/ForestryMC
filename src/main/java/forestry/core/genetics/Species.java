@@ -48,7 +48,7 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 		this.species = builder.getSpecies();
 		this.genus = IForestryApi.INSTANCE.getGeneticManager().getTaxon(builder.getGenus());
 		this.binomial = createBinomial(this.genus.name(), this.species);
-		this.translationKey = GeneticsUtil.createTranslationKey("species", speciesType.id(), id);
+		this.translationKey = GeneticsUtil.createTranslationKey("allele", speciesType.id(), id);
 	}
 
 	private static String createBinomial(String genus, String species) {

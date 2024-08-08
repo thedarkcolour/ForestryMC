@@ -118,7 +118,7 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 			return 0xffffff;
 		}
 
-		int iconColor = tokenIndividual.getGenome().getActiveSpecies().getEscritoireColor();
+		int iconColor = tokenIndividual.getSpecies().getEscritoireColor();
 
 		if (state == State.MATCHED) {
 			return ColourUtil.multiplyRGBComponents(iconColor, 0.7f);

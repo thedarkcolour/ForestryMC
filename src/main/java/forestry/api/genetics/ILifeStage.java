@@ -3,6 +3,7 @@ package forestry.api.genetics;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 
+// todo add "getTranslationKey" that accepts a species so that moths and butterflies can have different names
 /**
  * The replacement for the old ISpeciesType class. Denotes different forms of the same species (ex. larvae, princess, queen, drone)
  *
@@ -12,7 +13,7 @@ import net.minecraft.world.item.Item;
  */
 public interface ILifeStage extends StringRepresentable {
 	/**
-	 * @return The simple name of this life stage (ex. {@code "drone"}), used in commands and item naming.
+	 * @return The simple name of this life stage (ex. {@code "drone"}), used in commands.
 	 */
 	@Override
 	String getSerializedName();

@@ -34,7 +34,7 @@ public class TreeClientManager implements ITreeClientManager {
 
 	@Override
 	public ILeafTint getTint(@Nullable ITreeSpecies species) {
-		return this.tints.get(species);
+		return this.tints.getOrDefault(species, ILeafTint.DEFAULT);
 	}
 
 	@Override

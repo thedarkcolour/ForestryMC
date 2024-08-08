@@ -537,6 +537,7 @@ public class DefaultBeeSpecies {
 								.restrictDateRange(Month.JULY, 1, Month.JULY, 17);
 					}
 				})
+				.setAuthority("TheDarkColour")
 				.setSecret(true);
 
 		// Rural
@@ -557,7 +558,8 @@ public class DefaultBeeSpecies {
 				.addMutations(mutations -> {
 					mutations.add(ForestryBeeSpecies.RURAL, ForestryBeeSpecies.UNWEARY, 10)
 							.restrictBiomeType(ForestryTags.Biomes.PLAINS_CATEGORY);
-				});
+				})
+				.setAuthority("MysteriousAges");
 
 		// Agrarian
 		apiculture.registerSpecies(ForestryBeeSpecies.AGRARIAN, GENUS_AGRARIAN, SPECIES_AGRARIAN, true, new Color(0xFFCA75))
@@ -573,7 +575,8 @@ public class DefaultBeeSpecies {
 					mutations.add(ForestryBeeSpecies.FARMERLY, ForestryBeeSpecies.INDUSTRIOUS, 6)
 							.restrictBiomeType(ForestryTags.Biomes.PLAINS_CATEGORY);
 				})
-				.setGlint(true);
+				.setGlint(true)
+				.setAuthority("MysteriousAges");
 
 		// Marshy
 		apiculture.registerSpecies(ForestryBeeSpecies.MARSHY, GENUS_BOGGY, SPECIES_MARSHY, true, new Color(0x546626))
@@ -593,7 +596,8 @@ public class DefaultBeeSpecies {
 					mutations.add(ForestryBeeSpecies.MARSHY, ForestryBeeSpecies.NOBLE, 15)
 							.restrictTemperature(TemperatureType.WARM)
 							.restrictHumidity(HumidityType.DAMP);
-				});
+				})
+				.setAuthority("MysteriousAges");
 
 		// Boggy
 		apiculture.registerSpecies(ForestryBeeSpecies.BOGGY, GENUS_BOGGY, SPECIES_BOGGY, true, new Color(0x698948))
@@ -610,7 +614,8 @@ public class DefaultBeeSpecies {
 					mutations.add(ForestryBeeSpecies.MARSHY, ForestryBeeSpecies.MIRY, 9)
 							.restrictTemperature(TemperatureType.WARM)
 							.restrictHumidity(HumidityType.DAMP);
-				});
+				})
+				.setAuthority("MysteriousAges");
 
 		// Monastic
 		apiculture.registerSpecies(ForestryBeeSpecies.MONASTIC, GENUS_MONASTIC, SPECIES_MONASTIC, false, new Color(0x42371c))

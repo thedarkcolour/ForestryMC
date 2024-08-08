@@ -264,10 +264,11 @@ public class PluginManager {
 			if (modelPair != null) {
 				models.put(species, modelPair);
 			} else {
-				// default sapling block and item models
+				// default sapling block and item models (removes the "tree_" prefix)
+				String path = id.getPath().replace("tree_", "");
 				models.put(species, Pair.of(
-						new ResourceLocation(id.getNamespace(), "block/sapling/" + id.getPath()),
-						new ResourceLocation(id.getNamespace(), "item/sapling/" + id.getPath())
+						new ResourceLocation(id.getNamespace(), "block/sapling/" + path),
+						new ResourceLocation(id.getNamespace(), "item/sapling/" + path)
 				));
 			}
 		}

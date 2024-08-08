@@ -4,11 +4,9 @@ import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.ForestryTreeSpecies;
 import forestry.api.client.plugin.IClientRegistration;
 import forestry.arboriculture.client.BiomeLeafTint;
-import forestry.arboriculture.client.FixedLeafTint;
 import forestry.arboriculture.models.LeafSprite;
 
 public class DefaultForestryClientRegistration implements Consumer<IClientRegistration> {
@@ -26,37 +24,6 @@ public class DefaultForestryClientRegistration implements Consumer<IClientRegist
 		registerSapling(client, "minecraft", ForestryTreeSpecies.ACACIA_VANILLA);
 		registerSapling(client, "minecraft", ForestryTreeSpecies.SPRUCE);
 		registerSapling(client, "minecraft", ForestryTreeSpecies.JUNGLE);
-
-		// Forestry sapling models
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.LIME);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.WALNUT);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.CHESTNUT);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.CHERRY);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.LEMON);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.PLUM);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.MAPLE);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.LARCH);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.PINE);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.SEQUOIA);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.GIANT_SEQUOIA);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.TEAK);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.IPE);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.KAPOK);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.EBONY);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.ZEBRAWOOD);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.MAHOGANY);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.DESERT_ACACIA);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.PADAUK);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.BALSA);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.COCOBOLO);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.WENGE);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.BAOBAB);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.MAHOE);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.WILLOW);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.SIPIRI);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.PAPAYA);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.DATE);
-		registerSapling(client, ForestryConstants.MOD_ID, ForestryTreeSpecies.POPLAR);
 
 		// Vanilla leaf sprites
 		client.setLeafSprite(ForestryTreeSpecies.OAK, LeafSprite.OAK);
@@ -108,7 +75,7 @@ public class DefaultForestryClientRegistration implements Consumer<IClientRegist
 		// remove the "tree/" prefix and add "_sapling"
 		String path = speciesId.getPath().substring(5) + "_sapling";
 		ResourceLocation blockModel = new ResourceLocation(modId, "block/" + path);
-		ResourceLocation itemModel = new ResourceLocation(modId, path);
+		ResourceLocation itemModel = new ResourceLocation(modId, "item/" + path);
 		registration.setSaplingModel(speciesId, blockModel, itemModel);
 	}
 
