@@ -62,11 +62,10 @@ public class ModelDecorativeLeaves<B extends Block> extends ModelBlockCached<B, 
 		ITreeSpecies species = SpeciesUtil.getTreeSpecies(speciesId);
 		ILeafSprite sprite = IForestryClientApi.INSTANCE.getTreeManager().getLeafSprite(species);
 
-		ResourceLocation particleLocation = sprite.getParticle();
-		TextureAtlasSprite particleSprite = ResourceUtil.getBlockSprite(particleLocation);
-
+		ResourceLocation textureLocation = sprite.get(false, key.fancy);
+		TextureAtlasSprite textureSprite = ResourceUtil.getBlockSprite(textureLocation);
 		// Render the plain leaf block.
-		baker.addBlockModel(particleSprite, BlockAbstractLeaves.FOLIAGE_COLOR_INDEX);
+		baker.addBlockModel(textureSprite, BlockAbstractLeaves.FOLIAGE_COLOR_INDEX);
 
 		// Render overlay for fruit leaves.
 		ResourceLocation fruitSpriteLocation = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUIT).getDecorativeSprite();
@@ -76,6 +75,8 @@ public class ModelDecorativeLeaves<B extends Block> extends ModelBlockCached<B, 
 		}
 
 		// Set the particle sprite
+		ResourceLocation particleLocation = sprite.getParticle();
+		TextureAtlasSprite particleSprite = ResourceUtil.getBlockSprite(particleLocation);
 		baker.setParticleSprite(particleSprite);
 	}
 

@@ -62,7 +62,7 @@ public class LeafSprite implements ILeafSprite {
 
 	@Override
 	public ResourceLocation getParticle() {
-		return null;
+		return this.fancy;
 	}
 }
 
