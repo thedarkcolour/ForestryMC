@@ -13,6 +13,9 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+/**
+ * Used to display information in the Portable Analyzer.
+ */
 public interface IAlyzerPlugin {
 	void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack);
 

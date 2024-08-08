@@ -32,6 +32,7 @@ import forestry.core.utils.SpeciesUtil;
 public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 	INSTANCE;
 
+	// todo reloadable
 	private final Map<ISpecies<?>, ItemStack> iconStacks = GeneticsUtil.getIconStacks(BeeLifeStage.DRONE, SpeciesUtil.BEE_TYPE.get());
 
 	@Override

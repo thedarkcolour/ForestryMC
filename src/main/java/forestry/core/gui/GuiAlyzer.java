@@ -249,6 +249,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.newLine();
 		String description = individual.getSpecies().getDescriptionTranslationKey();
 		if (Translator.canTranslateToLocal(description)) {
+			description = Component.translatable(description).getString();
 			String[] tokens = description.split("\\|");
 			textLayout.drawSplitLine(transform, tokens[0], 12, 200, 0x666666);
 			if (tokens.length > 1) {

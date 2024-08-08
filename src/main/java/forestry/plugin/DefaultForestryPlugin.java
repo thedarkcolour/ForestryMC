@@ -78,6 +78,7 @@ import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
 import forestry.factory.circuits.CircuitSpeedUpgrade;
 import forestry.farming.circuits.CircuitFarmLogic;
+import forestry.lepidopterology.DummyButterflyEffect;
 import forestry.lepidopterology.LepidopterologyFilterRule;
 import forestry.lepidopterology.LepidopterologyFilterRuleType;
 import forestry.lepidopterology.genetics.ButterflySpeciesType;
@@ -322,6 +323,8 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 				Product.of(CoreItems.CRAFTING_MATERIALS.item(EnumCraftingMaterial.SILK_WISP), 3, 0.75f),
 				Product.of(CoreItems.CRAFTING_MATERIALS.item(EnumCraftingMaterial.SILK_WISP), 2, 0.25f)
 		)));
+
+		lepidopterology.registerEffect(ForestryAlleles.BUTTERFLY_EFFECT_NONE.alleleId(), new DummyButterflyEffect());
 	}
 
 	@Override

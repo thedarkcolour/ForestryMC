@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +50,7 @@ import forestry.arboriculture.loot.GrafterLootModifier;
 import forestry.core.blocks.TileStreamUpdateTracker;
 import forestry.core.client.CoreClientHandler;
 import forestry.core.climate.ForestryClimateManager;
+import forestry.core.commands.DiagnosticsCommand;
 import forestry.core.loot.ConditionLootModifier;
 import forestry.core.loot.OrganismFunction;
 import forestry.core.network.PacketIdClient;
@@ -158,6 +160,8 @@ public class ModuleCore extends BlankForestryModule {
 
 	private static void registerCommands(RegisterCommandsEvent event) {
 		LiteralArgumentBuilder<CommandSourceStack> forestryCommand = LiteralArgumentBuilder.literal("forestry");
+
+		forestryCommand.then(DiagnosticsCommand.register());
 
 		for (IForestryModule module : IForestryApi.INSTANCE.getModuleManager().getModulesForMod(ForestryConstants.MOD_ID)) {
 			if (module instanceof BlankForestryModule forestryModule) {
