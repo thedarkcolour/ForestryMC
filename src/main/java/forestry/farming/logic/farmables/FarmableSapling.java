@@ -56,7 +56,8 @@ public class FarmableSapling implements IFarmable {
 		InteractionResult actionResult = copy.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, result));
 		player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 		if (actionResult.consumesAction()) {
-			BlockUtil.sendPlaceSound(level, pos, Blocks.OAK_SAPLING.defaultBlockState());
+			Block block = Block.byItem(germling.getItem());
+			BlockUtil.sendPlaceSound(level, pos, block == Blocks.AIR ? Blocks.OAK_SAPLING.defaultBlockState() : block.defaultBlockState());
 			return true;
 		}
 		return false;

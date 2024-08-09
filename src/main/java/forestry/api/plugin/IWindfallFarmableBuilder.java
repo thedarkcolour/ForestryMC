@@ -24,5 +24,5 @@ public interface IWindfallFarmableBuilder {
 	 *
 	 * @param windfall The collection of windfall items to add.
 	 */
-	IWindfallFarmableBuilder addWindfalls(Iterable<? extends Item> windfall);
+	IWindfallFarmableBuilder addWindfall(Iterable<? extends Item> windfall);
 }

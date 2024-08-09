@@ -22,6 +22,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmListener;
@@ -88,7 +89,7 @@ public class FarmHelper {
 	}
 
 	public static void createTargets(Level world, IFarmHousing farmHousing, Map<Direction, List<FarmTarget>> targets, BlockPos targetStart, final int allowedExtent, final int farmSizeNorthSouth, final int farmSizeEastWest, BlockPos minFarmCoord, BlockPos maxFarmCoord) {
-		for (Direction farmSide : Direction.values()) {
+		for (Direction farmSide : HorizontalDirection.VALUES) {
 
 			final int farmWidth;
 			if (farmSide == Direction.NORTH || farmSide == Direction.SOUTH) {

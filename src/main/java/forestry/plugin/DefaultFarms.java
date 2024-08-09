@@ -38,6 +38,7 @@ import forestry.farming.logic.farmables.FarmableAgingCrop;
 import forestry.farming.logic.farmables.FarmableChorus;
 import forestry.farming.logic.farmables.FarmableGE;
 import forestry.farming.logic.farmables.FarmableGourd;
+import forestry.farming.logic.farmables.FarmableMangroveTree;
 import forestry.farming.logic.farmables.FarmableSapling;
 import forestry.farming.logic.farmables.FarmableStacked;
 
@@ -56,7 +57,7 @@ public class DefaultFarms {
 		IFarmTypeBuilder crops = farming.createFarmType(ForestryFarmTypes.CROPS, FarmLogicCrops::new, new ItemStack(Items.WHEAT))
 				.setWaterConsumption(hydrationModifier -> (int) (20 * hydrationModifier))
 				.setFertilizerConsumption(5)
-				.addSoil(Blocks.DIRT);
+				.addSoil(new ItemStack(Blocks.DIRT), Blocks.FARMLAND.defaultBlockState());
 		addCropFarmables(crops);
 
 		// Gourd (Pumpkin and Melon)
@@ -143,15 +144,15 @@ public class DefaultFarms {
 	}
 
 	private static void addTreeFarmables(IFarmTypeBuilder arboreal) {
-		arboreal.addWindfallFarmable(Items.OAK_SAPLING, FarmableSapling::new, builder -> builder.addWindfalls(List.of(Items.APPLE, Items.STICK)));
+		arboreal.addWindfallFarmable(Items.OAK_SAPLING, FarmableSapling::new, builder -> builder.addWindfall(List.of(Items.APPLE, Items.STICK)));
 		arboreal.addWindfallFarmable(Items.BIRCH_SAPLING, FarmableSapling::new, builder -> builder.addWindfall(Items.STICK));
 		arboreal.addWindfallFarmable(Items.SPRUCE_SAPLING, FarmableSapling::new, builder -> builder.addWindfall(Items.STICK));
-		arboreal.addWindfallFarmable(Items.JUNGLE_SAPLING, FarmableSapling::new, builder -> builder.addWindfalls(List.of(Items.STICK, Items.COCOA_BEANS)));
+		arboreal.addWindfallFarmable(Items.JUNGLE_SAPLING, FarmableSapling::new, builder -> builder.addWindfall(List.of(Items.STICK, Items.COCOA_BEANS)));
 		arboreal.addWindfallFarmable(Items.DARK_OAK_SAPLING, FarmableSapling::new, builder -> builder.addWindfall(Items.STICK));
 		arboreal.addWindfallFarmable(Items.ACACIA_SAPLING, FarmableSapling::new, builder -> builder.addWindfall(Items.STICK));
-		arboreal.addWindfallFarmable(Items.AZALEA, FarmableSapling::new, builder -> builder.addWindfall(Items.STICK));
-		arboreal.addWindfallFarmable(Items.FLOWERING_AZALEA, FarmableSapling::new, builder -> builder.addWindfalls(List.of(Items.STICK, Items.AZALEA)));
-		arboreal.addWindfallFarmable(Items.MANGROVE_PROPAGULE, FarmableSapling::new, builder -> builder.addWindfall(Items.STICK));
+		//arboreal.addWindfallFarmable(Items.AZALEA, FarmableSapling::new, builder -> builder.addWindfall(Items.STICK));
+		//arboreal.addWindfallFarmable(Items.FLOWERING_AZALEA, FarmableSapling::new, builder -> builder.addWindfall(List.of(Items.STICK, Items.AZALEA)));
+		arboreal.addWindfallFarmable(Items.MANGROVE_PROPAGULE, FarmableMangroveTree::new, builder -> builder.addWindfall(List.of(Items.STICK, Items.MOSS_CARPET)));
 		// todo 1.20.1
 		//arboreal.addWindfallFarmable(Items.CHERRY_SAPLING, FarmableSapling::new, builder -> builder.addWindfall(Items.STICK));
 		arboreal.addFarmable(new FarmableGE());

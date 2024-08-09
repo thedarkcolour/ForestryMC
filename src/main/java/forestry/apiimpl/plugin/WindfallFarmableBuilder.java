@@ -23,7 +23,7 @@ public class WindfallFarmableBuilder implements IWindfallFarmableBuilder {
 	}
 
 	@Override
-	public IWindfallFarmableBuilder addWindfalls(Iterable<? extends Item> windfall) {
+	public IWindfallFarmableBuilder addWindfall(Iterable<? extends Item> windfall) {
 		this.windfalls.addAll(windfall);
 		return this;
 	}
