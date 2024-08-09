@@ -172,7 +172,7 @@ public class TileEscritoire extends TileBase implements WorldlyContainer, ISlotP
 	}
 
 	public ItemStack getIndividualOnDisplay() {
-		if (level.isClientSide) {
+		if (level == null || level.isClientSide) {
 			return individualOnDisplayClient;
 		}
 		return getItem(InventoryAnalyzer.SLOT_ANALYZE);

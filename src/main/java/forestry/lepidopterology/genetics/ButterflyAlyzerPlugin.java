@@ -39,6 +39,8 @@ import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
+import forestry.core.gui.widgets.ItemStackWidget;
+import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
 
@@ -192,19 +194,17 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 			IIndividualHandlerItem.ifPresent(stack, individual -> {
 				IGenome genome = individual.getGenome();
 				TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
-				ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+				WidgetManager widgetManager = guiAlyzer.getWidgetManager();
 
 				textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
 
 				textLayout.drawLine(transform, Component.translatable("for.gui.loot.butterfly").append(":"), GuiAlyzer.COLUMN_0);
 				textLayout.newLine();
 
-				int guiLeft = guiAlyzer.getGuiLeft();
-				int guiTop = guiAlyzer.getGuiTop();
 				int x = GuiAlyzer.COLUMN_0;
 
 				for (Product product : genome.getActiveValue(ButterflyChromosomes.SPECIES).getButterflyLoot()) {
-					itemRenderer.renderGuiItem(product.createStack(), guiLeft + x, guiTop + textLayout.getLineY());
+					widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 					x += 18;
 					if (x > 148) {
 						x = GuiAlyzer.COLUMN_0;
@@ -220,7 +220,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 
 				x = GuiAlyzer.COLUMN_0;
 				for (Product product : genome.getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarProducts()) {
-					itemRenderer.renderGuiItem(product.createStack(), guiLeft + x, guiTop + textLayout.getLineY());
+					widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 					x += 18;
 					if (x > 148) {
 						x = GuiAlyzer.COLUMN_0;
@@ -236,7 +236,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 
 				x = GuiAlyzer.COLUMN_0;
 				for (Product product : genome.getActiveValue(ButterflyChromosomes.COCOON).getProducts()) {
-					itemRenderer.renderGuiItem(product.createStack(), guiLeft + x, guiTop + textLayout.getLineY());
+					widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 					x += 18;
 					if (x > 148) {
 						x = GuiAlyzer.COLUMN_0;

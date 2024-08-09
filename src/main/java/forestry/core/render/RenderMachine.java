@@ -16,9 +16,13 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,6 +34,9 @@ import java.util.EnumMap;
 import java.util.Locale;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
 import forestry.api.ForestryConstants;
@@ -37,8 +44,10 @@ import forestry.core.blocks.BlockBase;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.tiles.IRenderableTile;
 import forestry.core.tiles.TileBase;
+import forestry.core.tiles.TileNaturalistChest;
+import forestry.core.utils.RenderUtil;
 
-public class RenderMachine implements IForestryRenderer<TileBase> {
+public class RenderMachine implements BlockEntityRenderer<TileBase> {
 	private static final String BASE_FRONT = "basefront";
 	private static final String BASE_BACK = "baseback";
 	private static final String RESOURCE_TANK = "resourceTank";
@@ -77,74 +86,25 @@ public class RenderMachine implements IForestryRenderer<TileBase> {
 	}
 	
 	public static LayerDefinition createBodyLayer() {
-		MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
+		MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
         
-        partdefinition.addOrReplaceChild(BASE_FRONT, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-8F, -8F, -8F, 16, 4, 16), PartPose.offset(8, 8, 8));
-        partdefinition.addOrReplaceChild(BASE_BACK, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-8F, 4F, -8F, 16, 4, 16), PartPose.offset(8, 8, 8));
-        partdefinition.addOrReplaceChild(RESOURCE_TANK, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-6F, -8F, -6F, 12, 16, 6), PartPose.offset(8, 8, 8));
-        partdefinition.addOrReplaceChild(PRODUCT_TANK, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-6F, -8F, 0F, 12, 16, 6), PartPose.offset(8, 8, 8));
+        root.addOrReplaceChild(BASE_FRONT, CubeListBuilder.create().texOffs(0, 0)
+            	.addBox(0f, 0f, 0f, 16, 4, 16), PartPose.offset(0, 0, 0));
+        root.addOrReplaceChild(BASE_BACK, CubeListBuilder.create().texOffs(0, 0)
+            	.addBox(0f, 0f, 0f, 16, 4, 16), PartPose.offset(0, 12, 0));
+        root.addOrReplaceChild(RESOURCE_TANK, CubeListBuilder.create().texOffs(0, 0)
+            	.addBox(0f, 0f, 0f, 12, 16, 6), PartPose.offset(2, 0, 2));
+        root.addOrReplaceChild(PRODUCT_TANK, CubeListBuilder.create().texOffs(0, 0)
+            	.addBox(0f, 0f, 0f, 12, 16, 6), PartPose.offset(2, 0, 8));
 		
-		return LayerDefinition.create(meshdefinition, 64, 32);
+		return LayerDefinition.create(mesh, 64, 32);
 	}
 
-	@Override
-	public void renderTile(TileBase tile, RenderHelper helper) {
-		IRenderableTile generator = (IRenderableTile) tile;
-		Level worldObj = tile.getWorldObj();
-		BlockState blockState = worldObj.getBlockState(tile.getBlockPos());
-		if (blockState.getBlock() instanceof BlockBase) {
-			Direction facing = blockState.getValue(BlockBase.FACING);
-			render(generator.getResourceTankInfo(), generator.getProductTankInfo(), facing, helper);
-		}
-	}
+	private void renderTank(PoseStack stack, ModelPart tankModel, MultiBufferSource buffers, ResourceLocation textureBase, TankRenderInfo renderInfo, int light, int overlay) {
+		tankModel.render(stack, buffers.getBuffer(RenderType.entityCutout(textureBase)), light, overlay);
 
-	@Override
-	public void renderItem(ItemStack stack, RenderHelper helper) {
-		render(TankRenderInfo.EMPTY, TankRenderInfo.EMPTY, Direction.SOUTH, helper);
-	}
-
-	private void render(TankRenderInfo resourceTankInfo, TankRenderInfo productTankInfo, Direction orientation, RenderHelper helper) {
-		Vector3f rotation = new Vector3f(0, 0, 0);
-
-		switch (orientation) {
-			case EAST:
-				rotation.set(0, (float) Math.PI, (float) -Math.PI / 2);
-				break;
-			case WEST:
-				rotation.set(0, 0, (float) Math.PI / 2);
-				break;
-			case UP:
-				break;
-			case DOWN:
-				rotation.set(0, 0, (float) Math.PI);
-				break;
-			case SOUTH:
-				rotation.set((float) Math.PI / 2, 0, (float) Math.PI / 2);
-				break;
-			case NORTH:
-			default:
-				rotation.set((float) -Math.PI / 2, 0, (float) Math.PI / 2);
-				break;
-		}
-
-		helper.setRotation(rotation);
-		helper.renderModel(textureBase, basefront, baseback);
-
-		renderTank(resourceTank, textureResourceTank, resourceTankInfo, helper);
-		renderTank(productTank, textureProductTank, productTankInfo, helper);
-
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-	}
-
-	private void renderTank(ModelPart tankModel, ResourceLocation textureBase, TankRenderInfo renderInfo, RenderHelper helper) {
-		helper.renderModel(textureBase, tankModel);
-
-		ResourceLocation textureResourceTankLevel = texturesTankLevels.get(renderInfo.getLevel());
+		ResourceLocation textureResourceTankLevel = this.texturesTankLevels.get(renderInfo.getLevel());
 		if (textureResourceTankLevel == null) {
 			return;
 		}
@@ -158,14 +118,39 @@ public class RenderMachine implements IForestryRenderer<TileBase> {
 				color = definition.getParticleColor().getRGB();
 			}
 		}
-		float[] colors = new float[3];
-		colors[0] = (color >> 16 & 255) / 255f;
-		colors[1] = (color >> 8 & 255) / 255f;
-		colors[2] = (color & 255) / 255f;
-		helper.color(colors[0], colors[1], colors[2], 1.0f);
+		float r = (color >> 16 & 255) / 255f;
+		float g = (color >> 8 & 255) / 255f;
+		float b = (color & 255) / 255f;
 
-		helper.renderModel(textureResourceTankLevel, tankModel);
+		tankModel.render(stack, buffers.getBuffer(RenderType.entityCutout(textureResourceTankLevel)), light, overlay, r, g, b, 1.0f);
+	}
 
-		helper.color(1.0f, 1.0f, 1.0f, 1.0f);
+	@Override
+	public void render(TileBase machine, float partialTick, PoseStack stack, MultiBufferSource buffers, int light, int overlay) {
+		stack.pushPose();
+		// flip the machine on its side
+		stack.translate(0.5, 0.5, 0.5);
+		stack.mulPose(Vector3f.XP.rotation(Mth.HALF_PI));
+		stack.translate(-0.5, -0.5, -0.5);
+		// apply direction rotation
+		Direction orientation = machine.getBlockState().getValue(BlockBase.FACING);
+		RenderUtil.rotateByHorizontalDirection(stack, orientation);
+		// render bases
+		VertexConsumer base = buffers.getBuffer(RenderType.entityCutout(textureBase));
+		this.basefront.render(stack, base, light, overlay);
+		this.baseback.render(stack, base, light, overlay);
+
+		// rotate for the tank "slices"
+		stack.translate(0.5, 0.5, 0.5);
+		stack.mulPose(Vector3f.YP.rotation(-Mth.HALF_PI));
+		stack.translate(-0.5, -0.5, -0.5);
+		// render the two tank "slices"
+		IRenderableTile tile = ((IRenderableTile) machine);
+		TankRenderInfo resourceTankInfo = tile.getResourceTankInfo();
+		TankRenderInfo productTankInfo = tile.getProductTankInfo();
+		renderTank(stack, resourceTank, buffers, textureResourceTank, resourceTankInfo, light, overlay);
+		renderTank(stack, productTank, buffers, textureProductTank, productTankInfo, light, overlay);
+
+		stack.popPose();
 	}
 }

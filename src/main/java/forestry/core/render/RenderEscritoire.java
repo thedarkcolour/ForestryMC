@@ -10,150 +10,86 @@
  ******************************************************************************/
 package forestry.core.render;
 
-import javax.annotation.Nullable;
-
-import com.mojang.math.Vector3f;
-
-import forestry.api.ForestryConstants;
-import forestry.core.blocks.BlockBase;
-import forestry.core.config.Constants;
-import forestry.core.tiles.TileEscritoire;
-
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 
-public class RenderEscritoire implements IForestryRenderer<TileEscritoire> {
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import forestry.api.ForestryConstants;
+import forestry.core.blocks.BlockBase;
+import forestry.core.config.Constants;
+import forestry.core.tiles.TileEscritoire;
+import forestry.core.utils.RenderUtil;
+
+public class RenderEscritoire implements BlockEntityRenderer<TileEscritoire> {
 	private static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_BLOCK + "/escritoire.png");
 
-	private static final String DESK = "DESK";
-	private static final String STANDRB = "STANDRB";
-	private static final String STANDRF = "STANDRF";
-	private static final String STANDLB = "STANDLB";
-	private static final String STANDLF = "STANDLF";
-	private static final String DRAWERS = "DRAWERS";
-	private static final String STANDLOWLF = "STANDLOWLF";
-	private static final String STANDLOWRB = "STANDLOWRB";
-	private static final String STANDLOWRF = "STANDLOWRF";
-	private static final String STANDLOWLB = "STANDLOWLB";
+	private final ItemRenderer itemRenderer;
+	private final ModelPart root;
 
-	private final ModelPart desk;
-	private final ModelPart standRB;
-	private final ModelPart standRF;
-	private final ModelPart standLB;
-	private final ModelPart standLF;
-	private final ModelPart drawers;
-	private final ModelPart standLowLF;
-	private final ModelPart standLowRB;
-	private final ModelPart standLowRF;
-	private final ModelPart standLowLB;
-	
 	public RenderEscritoire(BlockEntityRendererProvider.Context ctx) {
-		ModelPart root = ctx.bakeLayer(ForestryModelLayers.ESCRITOIRE_LAYER);
-
-		this.desk = root.getChild(DESK);
-		this.standRB = root.getChild(STANDRB);
-		this.standRF = root.getChild(STANDRF);
-		this.standLB = root.getChild(STANDLB);
-		this.standLF = root.getChild(STANDLF);
-		this.drawers = root.getChild(DRAWERS);
-		this.standLowRB = root.getChild(STANDLOWRB);
-		this.standLowRF = root.getChild(STANDLOWRF);
-		this.standLowLB = root.getChild(STANDLOWLB);
-		this.standLowLF = root.getChild(STANDLOWLF);
+		this.itemRenderer = ctx.getItemRenderer();
+		this.root = ctx.bakeLayer(ForestryModelLayers.ESCRITOIRE_LAYER);
 	}
-	
+
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-        
-        partdefinition.addOrReplaceChild(DESK, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-8F, 3F, -7.8F, 16, 2, 15).mirror(), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(STANDRB, CubeListBuilder.create().texOffs(38, 18)
-            	.addBox(5F, 4F, 5F, 2, 6, 2).mirror(), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(STANDRF, CubeListBuilder.create().texOffs(38, 18)
-            	.addBox(5F, 4F, -7F, 2, 6, 2).mirror(), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(STANDLB, CubeListBuilder.create().texOffs(38, 18)
-            	.addBox(-7F, 4F, 5F, 2, 6, 2).mirror(), PartPose.offset(0, 0, 0));        
-        partdefinition.addOrReplaceChild(STANDLF, CubeListBuilder.create().texOffs(38, 18)
-            	.addBox(-7F, 4F, -7F, 2, 6, 2).mirror(), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(DRAWERS, CubeListBuilder.create().texOffs(0, 18)
-            	.addBox(-7.5F, -2F, 4.5F, 15, 5, 3).mirror(), PartPose.offset(0, 0, 0)); 
-        partdefinition.addOrReplaceChild(STANDLOWRB, CubeListBuilder.create().texOffs(0, 26)
-            	.addBox(5.5F, 10F, 5.5F, 1, 4, 1).mirror(), PartPose.offset(0, 0, 0)); 
-        partdefinition.addOrReplaceChild(STANDLOWRF, CubeListBuilder.create().texOffs(0, 26)
-            	.addBox(5.5F, 10F, -6.5F, 1, 4, 1).mirror(), PartPose.offset(0, 0, 0)); 
-        partdefinition.addOrReplaceChild(STANDLOWLB, CubeListBuilder.create().texOffs(0, 26)
-            	.addBox(-6.5F, 10F, 5.5F, 1, 4, 1).mirror(), PartPose.offset(0, 0, 0)); 
-        partdefinition.addOrReplaceChild(STANDLOWLF, CubeListBuilder.create().texOffs(0, 26)
-            	.addBox(-6.5F, 10F, -6.5F, 1, 4, 1).mirror(), PartPose.offset(0, 0, 0));
-		
+		PartDefinition partdefinition = meshdefinition.getRoot();
+
+		partdefinition.addOrReplaceChild("desk", CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0, 0, 0, 16, 2, 15).mirror(), PartPose.offsetAndRotation(0, 9.5f, 0.4f, 0.0872665f, 0, 0));
+		partdefinition.addOrReplaceChild("standrb", CubeListBuilder.create().texOffs(38, 18)
+				.addBox(0f, 0f, 0f, 2, 6, 2).mirror(), PartPose.offset(13, 4, 13));
+		partdefinition.addOrReplaceChild("standrf", CubeListBuilder.create().texOffs(38, 18)
+				.addBox(0f, 0f, 0f, 2, 6, 2).mirror(), PartPose.offset(13, 4, 1));
+		partdefinition.addOrReplaceChild("standlb", CubeListBuilder.create().texOffs(38, 18)
+				.addBox(0f, 0f, 0f, 2, 6, 2).mirror(), PartPose.offset(1, 4, 1));
+		partdefinition.addOrReplaceChild("standlf", CubeListBuilder.create().texOffs(38, 18)
+				.addBox(0f, 0f, 0f, 2, 6, 2).mirror(), PartPose.offset(1, 4, 13));
+		partdefinition.addOrReplaceChild("drawers", CubeListBuilder.create().texOffs(0, 18)
+				.addBox(0f, 0f, 0f, 15, 5, 3).mirror(), PartPose.offset(0.5f, 11, 0.5f));
+		partdefinition.addOrReplaceChild("standlowrb", CubeListBuilder.create().texOffs(0, 26)
+				.addBox(0f, 0f, 0f, 1, 4, 1).mirror(), PartPose.offset(13.5f, 0, 13.5f));
+		partdefinition.addOrReplaceChild("standlowrf", CubeListBuilder.create().texOffs(0, 26)
+				.addBox(0f, 0f, 0f, 1, 4, 1).mirror(), PartPose.offset(13.5f, 0, 1.5f));
+		partdefinition.addOrReplaceChild("standlowlb", CubeListBuilder.create().texOffs(0, 26)
+				.addBox(0f, 0f, 0f, 1, 4, 1).mirror(), PartPose.offset(1.5f, 0, 1.5f));
+		partdefinition.addOrReplaceChild("standlowlf", CubeListBuilder.create().texOffs(0, 26)
+				.addBox(0f, 0f, 0f, 1, 4, 1).mirror(), PartPose.offset(1.5f, 0, 13.5f));
+
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
 	@Override
-	public void renderTile(TileEscritoire tile, RenderHelper helper) {
-		Level world = tile.getWorldObj();
-		BlockState blockState = world.getBlockState(tile.getBlockPos());
-		if (blockState.getBlock() instanceof BlockBase) {
-			Direction facing = blockState.getValue(BlockBase.FACING);
-			render(tile.getIndividualOnDisplay(), world, facing, helper);
+	public void render(TileEscritoire escritoire, float partialTick, PoseStack stack, MultiBufferSource buffers, int light, int overlay) {
+		stack.pushPose();
+		Direction facing = escritoire.getBlockState().getValue(BlockBase.FACING);
+		RenderUtil.rotateByHorizontalDirection(stack, facing);
+		VertexConsumer buffer = buffers.getBuffer(RenderType.entityCutout(TEXTURE));
+
+		this.root.render(stack, buffer, light, overlay);
+
+		ItemStack displayStack = escritoire.getIndividualOnDisplay();
+		if (!displayStack.isEmpty()) {
+			stack.pushPose();
+			stack.translate(0.5, 0.65, 0.5);
+			stack.scale(0.75f, 0.75f, 0.75f);
+			RenderUtil.renderDisplayStack(stack, this.itemRenderer, displayStack, escritoire.getLevel(), partialTick, buffers, light);
+			stack.popPose();
 		}
-	}
-
-	@Override
-	public void renderItem(ItemStack stack, RenderHelper helper) {
-		render(ItemStack.EMPTY, null, Direction.SOUTH, helper);
-	}
-
-	private void render(ItemStack itemstack, @Nullable Level world, Direction orientation, RenderHelper helper) {
-		helper.push();
-		{
-			helper.translate(0.5f, 0.875f, 0.5f);
-
-			Vector3f rotation = new Vector3f((float) Math.PI, 0.0f, 0.0f);
-
-			switch (orientation) {
-				case EAST:
-					rotation.setY((float) Math.PI / 2);
-					break;
-				case SOUTH:
-					break;
-				case NORTH:
-					rotation.setY((float) Math.PI);
-					break;
-				case WEST:
-				default:
-					rotation.setY((float) -Math.PI / 2);
-					break;
-			}
-			helper.setRotation(rotation);
-			helper.renderModel(TEXTURE, new Vector3f(0.0872665F, 0, 0), desk);
-			helper.renderModel(TEXTURE,
-				standRB, standRF, standLB, standLF, drawers, standLowLF, standLowRB, standLowRF, standLowLB);
-		}
-		helper.pop();
-
-		if (!itemstack.isEmpty() && world != null) {
-
-			float renderScale = 0.75f;
-
-			helper.push();
-			{
-				helper.translate(0.5f, 0.6f, 0.5f);
-				helper.scale(renderScale, renderScale, renderScale);
-				helper.renderItem(itemstack, world);
-			}
-			helper.pop();
-		}
+		stack.popPose();
 	}
 }

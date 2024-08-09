@@ -1,7 +1,5 @@
 package forestry.energy.blocks;
 
-import java.util.EnumMap;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -29,23 +27,23 @@ import forestry.energy.tiles.EngineBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class EngineBlock extends BlockBase<EngineBlockType> {
-	private static final EnumMap<Direction, VoxelShape> SHAPE_FOR_DIRECTIONS = new EnumMap<>(Direction.class);
+	private static final VoxelShape[] SHAPE_FOR_DIRECTIONS = new VoxelShape[6];
 
 	public static final EnumProperty<Direction> VERTICAL_FACING = EnumProperty.create("facing", Direction.class, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.DOWN, Direction.UP);
 
 	static {
-		SHAPE_FOR_DIRECTIONS.put(Direction.EAST, Shapes.or(Block.box(0, 0, 0, 6, 16, 16), Block.box(6, 2, 2, 10, 14, 14), Block.box(10, 4, 4, 16, 12, 12)));
-		SHAPE_FOR_DIRECTIONS.put(Direction.WEST, Shapes.or(Block.box(0, 4, 4, 6, 12, 12), Block.box(6, 2, 2, 10, 14, 14), Block.box(10, 0, 0, 16, 16, 16)));
-		SHAPE_FOR_DIRECTIONS.put(Direction.SOUTH, Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(2, 2, 6, 14, 14, 10), Block.box(4, 4, 10, 12, 12, 16)));
-		SHAPE_FOR_DIRECTIONS.put(Direction.NORTH, Shapes.or(Block.box(4, 4, 0, 12, 12, 6), Block.box(2, 2, 6, 14, 14, 10), Block.box(0, 0, 10, 16, 16, 16)));
-		SHAPE_FOR_DIRECTIONS.put(Direction.UP, Shapes.or(Block.box(0, 0, 0, 16, 6, 16), Block.box(2, 6, 2, 14, 10, 14), Block.box(4, 10, 4, 12, 16, 12)));
-		SHAPE_FOR_DIRECTIONS.put(Direction.DOWN, Shapes.or(Block.box(0, 10, 0, 16, 16, 16), Block.box(2, 6, 2, 14, 10, 14), Block.box(4, 0, 4, 12, 6, 12)));
+		SHAPE_FOR_DIRECTIONS[Direction.EAST.ordinal()] = Shapes.or(Block.box(0, 0, 0, 6, 16, 16), Block.box(6, 2, 2, 10, 14, 14), Block.box(10, 4, 4, 16, 12, 12));
+		SHAPE_FOR_DIRECTIONS[Direction.WEST.ordinal()] = Shapes.or(Block.box(0, 4, 4, 6, 12, 12), Block.box(6, 2, 2, 10, 14, 14), Block.box(10, 0, 0, 16, 16, 16));
+		SHAPE_FOR_DIRECTIONS[Direction.SOUTH.ordinal()] = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(2, 2, 6, 14, 14, 10), Block.box(4, 4, 10, 12, 12, 16));
+		SHAPE_FOR_DIRECTIONS[Direction.NORTH.ordinal()] = Shapes.or(Block.box(4, 4, 0, 12, 12, 6), Block.box(2, 2, 6, 14, 14, 10), Block.box(0, 0, 10, 16, 16, 16));
+		SHAPE_FOR_DIRECTIONS[Direction.UP.ordinal()] = Shapes.or(Block.box(0, 0, 0, 16, 6, 16), Block.box(2, 6, 2, 14, 10, 14), Block.box(4, 10, 4, 12, 16, 12));
+		SHAPE_FOR_DIRECTIONS[Direction.DOWN.ordinal()] = Shapes.or(Block.box(0, 10, 0, 16, 16, 16), Block.box(2, 6, 2, 14, 10, 14), Block.box(4, 0, 4, 12, 6, 12));
 	}
 
 	public EngineBlock(EngineBlockType blockType) {
 		super(blockType, Properties.of(Material.METAL).sound(SoundType.METAL));
 
-		registerDefaultState(getStateDefinition().any().setValue(VERTICAL_FACING, Direction.NORTH));
+		registerDefaultState(getStateDefinition().any().setValue(VERTICAL_FACING, Direction.UP));
 	}
 
 	@Override
@@ -53,21 +51,10 @@ public class EngineBlock extends BlockBase<EngineBlockType> {
 		builder.add(VERTICAL_FACING);
 	}
 
-	// todo config to disable the clockwork engine
-/*
-	@Override
-	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> stacks) {
-		if (blockType == BlockTypeEngine.CLOCKWORK && !Preference.CLOCKWORK_ENGINE) {
-			return;
-		}
-
-		super.fillItemCategory(group, stacks);
-	}*/
-
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
 		Direction orientation = state.getValue(VERTICAL_FACING);
-		return SHAPE_FOR_DIRECTIONS.get(orientation);
+		return SHAPE_FOR_DIRECTIONS[orientation.ordinal()];
 	}
 
 	@Override

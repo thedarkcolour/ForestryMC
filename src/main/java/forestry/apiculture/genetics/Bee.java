@@ -67,7 +67,7 @@ import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 
 public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> implements IBee {
 	public static final Codec<Bee> CODEC = RecordCodecBuilder.create(instance -> {
@@ -304,15 +304,15 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 			return stacks;
 		} else {
 			// No duplicates
-			Object2ObjectOpenCustomHashMap<Product, Void> products = new Object2ObjectOpenCustomHashMap<>(primary.getProducts().size(), Product.ITEM_ONLY_STRATEGY);
+			ObjectOpenCustomHashSet<Product> products = new ObjectOpenCustomHashSet<>(primary.getProducts().size(), Product.ITEM_ONLY_STRATEGY);
 			ArrayList<ItemStack> stacks = new ArrayList<>(products.size() + secondary.getProducts().size());
 
 			for (var product : primary.getProducts()) {
-				products.put(product, null);
+				products.add(product);
 				stacks.add(product.createStack());
 			}
 			for (var product : secondary.getProducts()) {
-				if (!products.containsKey(product)) {
+				if (!products.contains(product)) {
 					stacks.add(product.createStack());
 				}
 			}

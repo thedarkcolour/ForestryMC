@@ -39,6 +39,7 @@ import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
 import forestry.core.features.CoreMenuTypes;
 import forestry.core.features.CoreTiles;
+import forestry.core.features.FluidsItems;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.gui.ContainerNaturalistInventory;
 import forestry.core.gui.GuiAlyzer;
@@ -56,7 +57,6 @@ import forestry.core.render.ForestryTextureManager;
 import forestry.core.render.RenderAnalyzer;
 import forestry.core.render.RenderEngine;
 import forestry.core.render.RenderEscritoire;
-import forestry.core.render.RenderForestryTile;
 import forestry.core.render.RenderMachine;
 import forestry.core.render.RenderMill;
 import forestry.core.render.RenderNaturalistChest;
@@ -125,24 +125,24 @@ public class CoreClientHandler implements IClientModuleHandler {
 	private static void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		// Core
 		event.registerBlockEntityRenderer(CoreTiles.ANALYZER.tileType(), RenderAnalyzer::new);
-		event.registerBlockEntityRenderer(CoreTiles.ESCRITOIRE.tileType(), ctx -> new RenderForestryTile<>(new RenderEscritoire(ctx)));
+		event.registerBlockEntityRenderer(CoreTiles.ESCRITOIRE.tileType(), RenderEscritoire::new);
 		// Apiculture/Arboriculture/Lepidopterology
-		event.registerBlockEntityRenderer(CoreTiles.APIARIST_CHEST.tileType(), ctx -> new RenderForestryTile<>(new RenderNaturalistChest(ctx, "apiaristchest")));
-		event.registerBlockEntityRenderer(CoreTiles.ARBORIST_CHEST.tileType(), ctx -> new RenderForestryTile<>(new RenderNaturalistChest(ctx, "arbchest")));
-		event.registerBlockEntityRenderer(CoreTiles.LEPIDOPTERIST_CHEST.tileType(), ctx -> new RenderForestryTile<>(new RenderNaturalistChest(ctx, "lepichest")));
+		event.registerBlockEntityRenderer(CoreTiles.APIARIST_CHEST.tileType(), ctx -> new RenderNaturalistChest(ctx, "apiaristchest"));
+		event.registerBlockEntityRenderer(CoreTiles.ARBORIST_CHEST.tileType(), ctx -> new RenderNaturalistChest(ctx, "arbchest"));
+		event.registerBlockEntityRenderer(CoreTiles.LEPIDOPTERIST_CHEST.tileType(), ctx -> new RenderNaturalistChest(ctx, "lepichest"));
 		// Engine
-		event.registerBlockEntityRenderer(EnergyTiles.CLOCKWORK_ENGINE.tileType(), ctx -> new RenderForestryTile<>(new RenderEngine(ctx, Constants.TEXTURE_PATH_BLOCK + "/engine_copper")));
-		event.registerBlockEntityRenderer(EnergyTiles.BIOGAS_ENGINE.tileType(), ctx -> new RenderForestryTile<>(new RenderEngine(ctx, Constants.TEXTURE_PATH_BLOCK + "/engine_bronze")));
-		event.registerBlockEntityRenderer(EnergyTiles.PEAT_ENGINE.tileType(), ctx -> new RenderForestryTile<>(new RenderEngine(ctx, Constants.TEXTURE_PATH_BLOCK + "/engine_clock")));
+		event.registerBlockEntityRenderer(EnergyTiles.CLOCKWORK_ENGINE.tileType(), ctx -> new RenderEngine(ctx, Constants.TEXTURE_PATH_BLOCK + "/engine_clock_"));
+		event.registerBlockEntityRenderer(EnergyTiles.BIOGAS_ENGINE.tileType(), ctx -> new RenderEngine(ctx, Constants.TEXTURE_PATH_BLOCK + "/engine_bronze_"));
+		event.registerBlockEntityRenderer(EnergyTiles.PEAT_ENGINE.tileType(), ctx -> new RenderEngine(ctx, Constants.TEXTURE_PATH_BLOCK + "/engine_copper_"));
 		// Factory
-		event.registerBlockEntityRenderer(FactoryTiles.BOTTLER.tileType(), ctx -> new RenderForestryTile<>(new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/bottler_")));
-		event.registerBlockEntityRenderer(FactoryTiles.CARPENTER.tileType(), ctx -> new RenderForestryTile<>(new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/carpenter_")));
-		event.registerBlockEntityRenderer(FactoryTiles.CENTRIFUGE.tileType(), ctx -> new RenderForestryTile<>(new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/centrifuge_")));
-		event.registerBlockEntityRenderer(FactoryTiles.FERMENTER.tileType(), ctx -> new RenderForestryTile<>(new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/fermenter_")));
-		event.registerBlockEntityRenderer(FactoryTiles.MOISTENER.tileType(), ctx -> new RenderForestryTile<>(new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/moistener_")));
-		event.registerBlockEntityRenderer(FactoryTiles.SQUEEZER.tileType(), ctx -> new RenderForestryTile<>(new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/squeezer_")));
-		event.registerBlockEntityRenderer(FactoryTiles.STILL.tileType(), ctx -> new RenderForestryTile<>(new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/still_")));
-		event.registerBlockEntityRenderer(FactoryTiles.RAINMAKER.tileType(), ctx -> new RenderForestryTile<>(new RenderMill(ctx, Constants.TEXTURE_PATH_BLOCK + "/rainmaker_")));
+		event.registerBlockEntityRenderer(FactoryTiles.BOTTLER.tileType(), ctx -> new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/bottler_"));
+		event.registerBlockEntityRenderer(FactoryTiles.CARPENTER.tileType(), ctx -> new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/carpenter_"));
+		event.registerBlockEntityRenderer(FactoryTiles.CENTRIFUGE.tileType(), ctx -> new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/centrifuge_"));
+		event.registerBlockEntityRenderer(FactoryTiles.FERMENTER.tileType(), ctx -> new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/fermenter_"));
+		event.registerBlockEntityRenderer(FactoryTiles.MOISTENER.tileType(), ctx -> new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/moistener_"));
+		event.registerBlockEntityRenderer(FactoryTiles.SQUEEZER.tileType(), ctx -> new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/squeezer_"));
+		event.registerBlockEntityRenderer(FactoryTiles.STILL.tileType(), ctx -> new RenderMachine(ctx, Constants.TEXTURE_PATH_BLOCK + "/still_"));
+		event.registerBlockEntityRenderer(FactoryTiles.RAINMAKER.tileType(), ctx -> new RenderMill(ctx, Constants.TEXTURE_PATH_BLOCK + "/rainmaker_"));
 	}
 
 	private static void handleTextureRemap(TextureStitchEvent.Pre event) {
@@ -173,6 +173,7 @@ public class CoreClientHandler implements IClientModuleHandler {
 		// Core
 		event.register(ClientManager.FORESTRY_ITEM_COLOR, CoreItems.ELECTRON_TUBES.itemArray());
 		event.register(ClientManager.FORESTRY_ITEM_COLOR, CoreItems.CIRCUITBOARDS.itemArray());
+		event.register(ClientManager.FORESTRY_ITEM_COLOR, FluidsItems.CONTAINERS.itemArray());
 		// Apiculture
 		event.register(ClientManager.FORESTRY_ITEM_COLOR, ApicultureBlocks.BEE_COMB.blockArray());
 		event.register(ClientManager.FORESTRY_ITEM_COLOR,

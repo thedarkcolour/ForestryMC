@@ -15,14 +15,36 @@ import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 
 /**
- * The item form of {@link IIndividualHandler}.
- * These two interfaces are like IFluidHandlerItem and IFluidHandler, but for Forestry's genetic information.
+ * The individual handler manages an item's genetic information.
+ * It contains the {@link IIndividual} and {@link ILifeStage} of the item.
+ * This class can be thought of as the {@link IIndividual} analog of IFluidItemHandler.
+ * In 1.21, this will be replaced by Components.
  */
-public interface IIndividualHandlerItem extends IIndividualHandler {
+public interface IIndividualHandlerItem {
 	/**
 	 * @return The item containing this individual.
 	 */
 	ItemStack getContainer();
+
+	/**
+	 * @return The species type of this individual. Used for serialization/deserialization purposes, among other things.
+	 */
+	ISpeciesType<?, ?> getSpeciesType();
+
+	/**
+	 * @return The life stage of this individual
+	 */
+	ILifeStage getStage();
+
+	/**
+	 * @return The individual contained in this handler
+	 */
+	IIndividual getIndividual();
+
+	/**
+	 * @return {@code true} if this individual is the genetic form. Returns false for things like Vanilla saplings.
+	 */
+	boolean isGeneticForm();
 
 	static void ifPresent(ItemStack stack, BiConsumer<IIndividual, ILifeStage> action) {
 		stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM, null).ifPresent(handler -> action.accept(handler.getIndividual(), handler.getStage()));

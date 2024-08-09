@@ -6,7 +6,6 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 
 import forestry.api.apiculture.IArmorApiarist;
 import forestry.api.core.IArmorNaturalist;
-import forestry.api.genetics.capability.IIndividualHandler;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.filter.IFilterLogic;
 
@@ -23,8 +22,6 @@ public class ForestryCapabilities {
 	});
 
 	// Genetics
-	public static Capability<IIndividualHandler> INDIVIDUAL_HANDLER = CapabilityManager.get(new CapabilityToken<>() {
-	});
 	public static Capability<IIndividualHandlerItem> INDIVIDUAL_HANDLER_ITEM = CapabilityManager.get(new CapabilityToken<>() {
 	});
 

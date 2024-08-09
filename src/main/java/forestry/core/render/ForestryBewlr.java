@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.apiculture.blocks.NaturalistChestBlockType;
+import forestry.core.blocks.BlockBase;
 import forestry.core.blocks.BlockTypeCoreTesr;
 import forestry.core.features.CoreBlocks;
 import forestry.core.tiles.TileAnalyzer;
@@ -23,6 +25,7 @@ import forestry.core.tiles.TileApiaristChest;
 import forestry.core.tiles.TileArboristChest;
 import forestry.core.tiles.TileEscritoire;
 import forestry.core.tiles.TileLepidopteristChest;
+import forestry.energy.blocks.EngineBlock;
 import forestry.energy.blocks.EngineBlockType;
 import forestry.energy.features.EnergyBlocks;
 import forestry.energy.tiles.BiogasEngineBlockEntity;
@@ -75,7 +78,11 @@ public class ForestryBewlr extends BlockEntityWithoutLevelRenderer {
 	}
 
 	private static void addTile(IdentityHashMap<Item, BlockEntity> map, FeatureBlock<?, ?> block, BiFunction<BlockPos, BlockState, BlockEntity> factory) {
-		map.put(block.item(), factory.apply(BlockPos.ZERO, block.defaultState()));
+		BlockState state = block.defaultState();
+		if (state.hasProperty(BlockBase.FACING)) {
+			state = state.setValue(BlockBase.FACING, Direction.SOUTH);
+		}
+		map.put(block.item(), factory.apply(BlockPos.ZERO, state));
 	}
 
 	@Override

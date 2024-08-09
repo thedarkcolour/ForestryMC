@@ -53,7 +53,9 @@ public class TileMillRainmaker extends TileMill {
 				RainSubstrate substrate = FuelManager.rainSubstrate.get(heldItem);
 				if (substrate.item().sameItem(heldItem)) {
 					addCharge(substrate);
-					heldItem.shrink(1);
+					if (!player.isCreative()) {
+						heldItem.shrink(1);
+					}
 				}
 			}
 			sendNetworkUpdate();
