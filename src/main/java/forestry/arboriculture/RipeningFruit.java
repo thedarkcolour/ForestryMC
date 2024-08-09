@@ -86,4 +86,9 @@ public class RipeningFruit extends Fruit {
 	public void registerSprites(TextureStitchEvent.Pre event) {
 		event.addSprite(this.sprite);
 	}
+
+	@Override
+	public int getRipeningPeriod() {
+		return this.ripeningPeriod;
+	}
 }

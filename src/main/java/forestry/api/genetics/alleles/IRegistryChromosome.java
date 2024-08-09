@@ -2,6 +2,7 @@ package forestry.api.genetics.alleles;
 
 import com.google.common.collect.ImmutableMap;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +23,17 @@ public interface IRegistryChromosome<V extends IRegistryAlleleValue> extends IVa
 	/**
 	 * @return The value with the given ID from the registry this chromosome represents.
 	 * @throws IllegalStateException If the registry is not yet populated.
+	 * @throws RuntimeException If the registry does not contain an allele with the given ID.
+	 *
 	 */
 	V get(ResourceLocation id);
+
+	/**
+	 * @return The value with the given ID from the registry this chromosome represents, or {@code null} if the ID is not valid.
+	 * @throws IllegalStateException If the registry is not yet populated.
+	 */
+	@Nullable
+	V getSafe(ResourceLocation id);
 
 	/**
 	 * @return A collections of all values in this chromosome.
