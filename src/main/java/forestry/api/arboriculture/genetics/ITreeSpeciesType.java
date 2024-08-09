@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -53,8 +54,18 @@ public interface ITreeSpeciesType extends ISpeciesType<ITreeSpecies, ITree>, IPo
 	 * Does not affect the block in the world, just returns an individual.
 	 *
 	 * @param state A vanilla block, like oak leaves.
-	 * @return The individual for this vanilla block
+	 * @return The individual for this vanilla block, or {@code null} if none exists for this block.
 	 */
 	@Nullable
 	ITree getVanillaIndividual(BlockState state);
+
+	/**
+	 * Tries to get genetic information of a species from a mundane/vanilla item, like Oak Sapling to Apple Oak Sapling.
+	 * Does not affect the item, just returns a default individual.
+	 *
+	 * @param item A mundane/vanilla item like Oak Sapling.
+	 * @return The individual for this vanilla item, or {@code null} if none exists for this item.
+	 */
+	@Nullable
+	ITree getVanillaIndividual(Item item);
 }

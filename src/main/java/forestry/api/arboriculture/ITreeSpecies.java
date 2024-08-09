@@ -2,6 +2,7 @@ package forestry.api.arboriculture;
 
 import java.util.List;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -37,6 +38,11 @@ public interface ITreeSpecies extends ISpecies<ITree>, ITreeGenData {
 	 * @return A list of mundane forms of this species's leaf blocks. Example: Vanilla leaves, Forestry decorative leaves
 	 */
 	List<BlockState> getVanillaLeafStates();
+
+	/**
+	 * @return A list of mundane item forms of this species's saplings. Example: Oak Sapling, Birch Sapling
+	 */
+	List<Item> getVanillaSaplingItems();
 
 	int getGermlingColor(ILifeStage stage, int renderPass);
 }

@@ -4,10 +4,13 @@ import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
 import java.awt.Color;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -22,16 +25,14 @@ import forestry.api.plugin.ITreeSpeciesBuilder;
 import forestry.arboriculture.TreeSpecies;
 import forestry.arboriculture.worldgen.DefaultTreeGenerator;
 
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-
 public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSpecies, ITreeSpeciesBuilder> implements ITreeSpeciesBuilder {
 	@Nullable
 	private IWoodType woodType = null;
 	@Nullable
 	private ITreeGenerator generator = null;
 	private float rarity = 1.0f;
-	private boolean hasFruitLeaves = false;
-	private final ReferenceOpenHashSet<BlockState> vanillaStates = new ReferenceOpenHashSet<>();
+	private final HashSet<BlockState> vanillaStates = new HashSet<>();
+	private final HashSet<Item> vanillaItems = new HashSet<>();
 	private ItemStack decorativeLeaves = ItemStack.EMPTY;
 	private int color;
 
@@ -64,14 +65,8 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	}
 
 	@Override
-	public ITreeSpeciesBuilder addVanillaStates(List<BlockState> states) {
+	public ITreeSpeciesBuilder addVanillaStates(Collection<BlockState> states) {
 		this.vanillaStates.addAll(states);
-		return this;
-	}
-
-	@Override
-	public ITreeSpeciesBuilder setHasFruitLeaves(boolean hasFruitLeaves) {
-		this.hasFruitLeaves = hasFruitLeaves;
 		return this;
 	}
 
@@ -105,13 +100,13 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	}
 
 	@Override
-	public ItemStack getDecorativeLeaves() {
-		return this.decorativeLeaves;
+	public List<Item> getVanillaSaplingItems() {
+		return List.copyOf(this.vanillaItems);
 	}
 
 	@Override
-	public boolean hasFruitLeaves() {
-		return this.hasFruitLeaves;
+	public ItemStack getDecorativeLeaves() {
+		return this.decorativeLeaves;
 	}
 
 	@Override

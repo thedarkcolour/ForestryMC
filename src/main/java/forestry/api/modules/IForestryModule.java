@@ -50,7 +50,6 @@ public interface IForestryModule {
 	}
 
 	/**
-	 * todo test that this is enough indirection
 	 * Runs at mod construction on the logical client, after {@link #registerEvents}.
 	 */
 	default void registerClientHandler(Consumer<IClientModuleHandler> registrar) {

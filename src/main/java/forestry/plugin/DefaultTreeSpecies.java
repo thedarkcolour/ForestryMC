@@ -2,14 +2,18 @@ package forestry.plugin;
 
 import java.awt.Color;
 
-import forestry.arboriculture.VanillaWoodType;
+import net.minecraft.world.level.block.Blocks;
+
 import forestry.api.arboriculture.ForestryTreeSpecies;
-import forestry.arboriculture.ForestryWoodType;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.plugin.IArboricultureRegistration;
+import forestry.arboriculture.ForestryWoodType;
+import forestry.arboriculture.VanillaWoodType;
+import forestry.arboriculture.blocks.ForestryLeafType;
+import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.worldgen.FeatureAcacia;
 import forestry.arboriculture.worldgen.FeatureAcaciaVanilla;
 import forestry.arboriculture.worldgen.FeatureBalsa;
@@ -54,6 +58,8 @@ public class DefaultTreeSpecies {
 		// Oak (English Oak)
 		arboriculture.registerSpecies(ForestryTreeSpecies.OAK, GENUS_QUERCUS, SPECIES_OAK, false, new Color(4764952), VanillaWoodType.OAK)
 				.setTreeFeature(FeatureOak::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.OAK))
+				.addVanillaStates(Blocks.OAK_LEAVES.getStateDefinition().getPossibleStates())
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_APPLE);
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
@@ -63,6 +69,8 @@ public class DefaultTreeSpecies {
 		// Dark Oak (Black Oak)
 		arboriculture.registerSpecies(ForestryTreeSpecies.DARK_OAK, GENUS_QUERCUS, SPECIES_DARK_OAK, false, new Color(4764952), VanillaWoodType.DARK_OAK)
 				.setTreeFeature(FeatureDarkOak::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.DARK_OAK))
+				.addVanillaStates(Blocks.DARK_OAK_LEAVES.getStateDefinition().getPossibleStates())
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
 					genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
@@ -73,6 +81,8 @@ public class DefaultTreeSpecies {
 		// Birch (Silver Birch)
 		arboriculture.registerSpecies(ForestryTreeSpecies.BIRCH, GENUS_BETULA, SPECIES_BIRCH, false, new Color(8431445), VanillaWoodType.BIRCH)
 				.setTreeFeature(FeatureBirch::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.BIRCH))
+				.addVanillaStates(Blocks.BIRCH_LEAVES.getStateDefinition().getPossibleStates())
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
 					genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
@@ -81,6 +91,7 @@ public class DefaultTreeSpecies {
 		// Silver Lime
 		arboriculture.registerSpecies(ForestryTreeSpecies.LIME, GENUS_TILIA, SPECIES_LIME, true, new Color(0x5ea107), ForestryWoodType.LIME)
 				.setTreeFeature(FeatureSilverLime::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.LIME))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
 					genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
@@ -94,6 +105,7 @@ public class DefaultTreeSpecies {
 		// Walnut (English Walnut)
 		arboriculture.registerSpecies(ForestryTreeSpecies.WALNUT, GENUS_JUGLANS, SPECIES_WALNUT, true, new Color(0x798c55), ForestryWoodType.WALNUT)
 				.setTreeFeature(FeatureWalnut::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.WALNUT))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_WALNUT);
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOWER);
@@ -104,12 +116,12 @@ public class DefaultTreeSpecies {
 				})
 				.addMutations(mutations -> {
 					mutations.add(ForestryTreeSpecies.LIME, ForestryTreeSpecies.CHERRY, 10);
-				})
-				.setHasFruitLeaves(true);
+				});
 
 		// Chestnut (Spanish Chestnut)
 		arboriculture.registerSpecies(ForestryTreeSpecies.CHESTNUT, GENUS_CASTANEA, SPECIES_CHESTNUT, true, new Color(0x5ea107), ForestryWoodType.CHESTNUT)
 				.setTreeFeature(FeatureChestnut::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.CHESTNUT))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_CHESTNUT);
 					genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_AVERAGE);
@@ -120,13 +132,13 @@ public class DefaultTreeSpecies {
 				.addMutations(mutations -> {
 					mutations.add(ForestryTreeSpecies.WALNUT, ForestryTreeSpecies.LIME, 10);
 					mutations.add(ForestryTreeSpecies.WALNUT, ForestryTreeSpecies.CHERRY, 10);
-				})
-				.setHasFruitLeaves(true);
+				});
 
 		// Cherry (East Asian Cherry) TODO This should be replaced by Vanilla cherry tree in 1.20
 		// The real life version of this tree doesn't actually produce fruit.
 		arboriculture.registerSpecies(ForestryTreeSpecies.CHERRY, GENUS_PRUNUS, SPECIES_CHERRY, true, new Color(0xe691da), ForestryWoodType.CHERRY)
 				.setTreeFeature(FeatureCherry::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.CHERRY))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_CHERRY);
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
@@ -137,12 +149,12 @@ public class DefaultTreeSpecies {
 				.addMutations(mutations -> {
 					mutations.add(ForestryTreeSpecies.LIME, ForestryTreeSpecies.OAK, 10);
 					mutations.add(ForestryTreeSpecies.LIME, ForestryTreeSpecies.BIRCH, 10);
-				})
-				.setHasFruitLeaves(true);
+				});
 
 		// Lemon
 		arboriculture.registerSpecies(ForestryTreeSpecies.LEMON, GENUS_CITRUS, SPECIES_LEMON, true, new Color(0x88af54), ForestryWoodType.CITRUS)
 				.setTreeFeature(FeatureLemon::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.LEMON))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_LEMON);
 					genome.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_LOWER);
@@ -152,12 +164,12 @@ public class DefaultTreeSpecies {
 				})
 				.addMutations(mutations -> {
 					mutations.add(ForestryTreeSpecies.LIME, ForestryTreeSpecies.CHERRY, 5);
-				})
-				.setHasFruitLeaves(true);
+				});
 
 		// Plum (Common Plum)
 		arboriculture.registerSpecies(ForestryTreeSpecies.PLUM, GENUS_PRUNUS, SPECIES_PLUM, true, new Color(0x589246), ForestryWoodType.PLUM)
 				.setTreeFeature(FeaturePlum::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.PLUM))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -169,12 +181,12 @@ public class DefaultTreeSpecies {
 				.addMutations(mutations -> {
 					mutations.add(ForestryTreeSpecies.LEMON, ForestryTreeSpecies.CHERRY, 5);
 				})
-				.setRarity(0.005f)
-				.setHasFruitLeaves(true);
+				.setRarity(0.005f);
 
 		// Maple (Sugar Maple)
 		arboriculture.registerSpecies(ForestryTreeSpecies.MAPLE, GENUS_ACER, SPECIES_MAPLE, true, new Color(0xd4f425), ForestryWoodType.MAPLE)
 				.setTreeFeature(FeatureMaple::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.MAPLE))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
 					genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
@@ -188,6 +200,8 @@ public class DefaultTreeSpecies {
 		// Spruce (Norway Spruce)
 		arboriculture.registerSpecies(ForestryTreeSpecies.SPRUCE, GENUS_PICEA, SPECIES_SPRUCE, false, new Color(6396257), VanillaWoodType.SPRUCE)
 				.setTreeFeature(FeatureSpruce::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.SPRUCE))
+				.addVanillaStates(Blocks.SPRUCE_LEAVES.getStateDefinition().getPossibleStates())
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_AVERAGE);
@@ -197,6 +211,7 @@ public class DefaultTreeSpecies {
 		// Larch (European Larch)
 		arboriculture.registerSpecies(ForestryTreeSpecies.LARCH, GENUS_LARIX, SPECIES_LARCH, true, new Color(0x698f90), ForestryWoodType.LARCH)
 				.setTreeFeature(FeatureLarch::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.LARCH))
 				.setTemperature(TemperatureType.COLD)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
@@ -212,6 +227,7 @@ public class DefaultTreeSpecies {
 		// Pine (Bull Pine)
 		arboriculture.registerSpecies(ForestryTreeSpecies.PINE, GENUS_PINUS, SPECIES_PINE, true, new Color(0xfeff8f), ForestryWoodType.PINE)
 				.setTreeFeature(FeaturePine::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.PINE))
 				.setTemperature(TemperatureType.COLD)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
@@ -226,6 +242,7 @@ public class DefaultTreeSpecies {
 		// Sequoia (Coast Redwood)
 		arboriculture.registerSpecies(ForestryTreeSpecies.SEQUOIA, GENUS_SEQUOIA, SPECIES_SEQUOIA, false, new Color(0x418e71), ForestryWoodType.SEQUOIA)
 				.setTreeFeature(FeatureSequoia::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.SEQUOIA))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_LARGEST);
 					genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
@@ -240,6 +257,7 @@ public class DefaultTreeSpecies {
 		// Giant Sequoia
 		arboriculture.registerSpecies(ForestryTreeSpecies.GIANT_SEQUOIA, GENUS_SEQUOIADENDRON, SPECIES_GIANT_SEQUOIA, false, new Color(0x738434), ForestryWoodType.GIGANTEUM)
 				.setTreeFeature(FeatureGiganteum::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.GIANT_SEQUOIA))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_GIGANTIC);
 					genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWEST);
@@ -256,6 +274,8 @@ public class DefaultTreeSpecies {
 		// Jungle (Might be based on Teak, not sure)
 		arboriculture.registerSpecies(ForestryTreeSpecies.JUNGLE, GENUS_TROPICAL, SPECIES_JUNGLE, false, new Color(4764952), VanillaWoodType.JUNGLE)
 				.setTreeFeature(FeatureJungle::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.JUNGLE))
+				.addVanillaStates(Blocks.JUNGLE_LEAVES.getStateDefinition().getPossibleStates())
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_COCOA);
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_LARGER);
@@ -265,6 +285,7 @@ public class DefaultTreeSpecies {
 		// Teak
 		arboriculture.registerSpecies(ForestryTreeSpecies.TEAK, GENUS_TECTONA, SPECIES_TEAK, true, new Color(0xfeff8f), ForestryWoodType.TEAK)
 				.setTreeFeature(FeatureTeak::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.TEAK))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -278,6 +299,7 @@ public class DefaultTreeSpecies {
 		// Ipe (Yellow Ipe) TODO: Should be Handroanthus serratifolius
 		arboriculture.registerSpecies(ForestryTreeSpecies.IPE, GENUS_TABEBUIA, SPECIES_IPE, true, new Color(0xfdd207), ForestryWoodType.IPE)
 				.setTreeFeature(FeatureIpe::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.IPE))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_LARGE);
@@ -290,6 +312,7 @@ public class DefaultTreeSpecies {
 		// Kapok
 		arboriculture.registerSpecies(ForestryTreeSpecies.KAPOK, GENUS_CEIBA, SPECIES_KAPOK, true, new Color(0x89987b), ForestryWoodType.KAPOK)
 				.setTreeFeature(FeatureKapok::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.KAPOK))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_LARGE);
 					genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);
@@ -302,6 +325,7 @@ public class DefaultTreeSpecies {
 		// Ebony (Myrtle Ebony)
 		arboriculture.registerSpecies(ForestryTreeSpecies.EBONY, GENUS_DIOSPYROS, SPECIES_EBONY, true, new Color(0xa2d24a), ForestryWoodType.EBONY)
 				.setTreeFeature(FeatureEbony::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.EBONY))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -315,6 +339,7 @@ public class DefaultTreeSpecies {
 		// Zebrawood (Wood is called "zebrawood" but species is glassywood. should this be changed?)
 		arboriculture.registerSpecies(ForestryTreeSpecies.ZEBRAWOOD, GENUS_ASTRONIUM, SPECIES_ZEBRAWOOD, false, new Color(0xa2d24a), ForestryWoodType.ZEBRAWOOD)
 				.setTreeFeature(FeatureZebrawood::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.ZEBRAWOOD))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -329,6 +354,7 @@ public class DefaultTreeSpecies {
 		// Mahogany TODO taxonomy is wrong
 		arboriculture.registerSpecies(ForestryTreeSpecies.MAHOGANY, GENUS_MAHOGANY, SPECIES_MAHOGONY, true, new Color(0x8ab154), ForestryWoodType.MAHOGANY)
 				.setTreeFeature(FeatureMahogany::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.MAHOGANY))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -345,11 +371,14 @@ public class DefaultTreeSpecies {
 		// Vanilla Acacia TODO should probably switch with desert acacia since aneura are from Australia
 		arboriculture.registerSpecies(ForestryTreeSpecies.ACACIA_VANILLA, GENUS_ACACIA, SPECIES_ACACIA, true, new Color(0x616101), VanillaWoodType.ACACIA)
 				.setTreeFeature(FeatureAcaciaVanilla::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.ACACIA_VANILLA))
+				.addVanillaStates(Blocks.ACACIA_LEAVES.getStateDefinition().getPossibleStates())
 				.setAuthority("Binnie");
 
 		// Desert Acacia
 		arboriculture.registerSpecies(ForestryTreeSpecies.DESERT_ACACIA, GENUS_ACACIA, SPECIES_DESERT_ACACIA, true, new Color(0x748C1C), ForestryWoodType.ACACIA_DESERT)
 				.setTreeFeature(FeatureAcacia::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.DESERT_ACACIA))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.ARID)
 				.addMutations(mutations -> {
@@ -360,6 +389,7 @@ public class DefaultTreeSpecies {
 		// Padauk (African Padauk)
 		arboriculture.registerSpecies(ForestryTreeSpecies.PADAUK, GENUS_PTEROCARPUS, SPECIES_PADAUK, true, new Color(0xd0df8c), ForestryWoodType.PADAUK)
 				.setTreeFeature(FeaturePadauk::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.PADAUK))
 				.setTemperature(TemperatureType.WARM)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWER);
@@ -373,6 +403,7 @@ public class DefaultTreeSpecies {
 		// Balsa
 		arboriculture.registerSpecies(ForestryTreeSpecies.BALSA, GENUS_OCHROMA, SPECIES_BALSA, true, new Color(0x59ac00), ForestryWoodType.BALSA)
 				.setTreeFeature(FeatureBalsa::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.BALSA))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -388,6 +419,7 @@ public class DefaultTreeSpecies {
 		// Cocobolo
 		arboriculture.registerSpecies(ForestryTreeSpecies.COCOBOLO, GENUS_DALBERGIA, SPECIES_COCOBOLO, false, new Color(0x6aa17a), ForestryWoodType.COCOBOLO)
 				.setTreeFeature(FeatureCocobolo::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.COCOBOLO))
 				.setTemperature(TemperatureType.WARM)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_LARGEST);
@@ -400,6 +432,7 @@ public class DefaultTreeSpecies {
 		// Wenge
 		arboriculture.registerSpecies(ForestryTreeSpecies.WENGE, GENUS_MILLETTIA, SPECIES_WENGE, true, new Color(0xada157), ForestryWoodType.WENGE)
 				.setTreeFeature(FeatureWenge::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.WENGE))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -414,6 +447,7 @@ public class DefaultTreeSpecies {
 		// Baobab
 		arboriculture.registerSpecies(ForestryTreeSpecies.BAOBAB, GENUS_ADANSONIA, SPECIES_BAOBAB, true, new Color(0xfeff8f), ForestryWoodType.BAOBAB)
 				.setTreeFeature(FeatureBaobab::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.BAOBAB))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -430,6 +464,7 @@ public class DefaultTreeSpecies {
 		// Mahoe
 		arboriculture.registerSpecies(ForestryTreeSpecies.MAHOE, GENUS_TALIPARITI, SPECIES_MAHOE, true, new Color(0xa0ba1b), ForestryWoodType.MAHOE)
 				.setTreeFeature(FeatureMahoe::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.MAHOE))
 				.setTemperature(TemperatureType.WARM)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_SMALL);
@@ -444,6 +479,7 @@ public class DefaultTreeSpecies {
 		// Willow
 		arboriculture.registerSpecies(ForestryTreeSpecies.WILLOW, GENUS_SALIX, SPECIES_WILLOW, true, new Color(0xa3b8a5), ForestryWoodType.WILLOW)
 				.setTreeFeature(FeatureWillow::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.WILLOW))
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_AVERAGE);
@@ -466,6 +502,7 @@ public class DefaultTreeSpecies {
 		// Sipiri
 		arboriculture.registerSpecies(ForestryTreeSpecies.SIPIRI, GENUS_CHLOROCARDIUM, SPECIES_SIPIRI, true, new Color(0x678911), ForestryWoodType.GREENHEART)
 				.setTreeFeature(FeatureGreenheart::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.SIPIRI))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -483,6 +520,7 @@ public class DefaultTreeSpecies {
 		// Papaya
 		arboriculture.registerSpecies(ForestryTreeSpecies.PAPAYA, GENUS_CARICA, SPECIES_PAPAYA, true, new Color(0x6d9f58), ForestryWoodType.PAPAYA)
 				.setTreeFeature(FeaturePapaya::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.PAPAYA))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -499,6 +537,7 @@ public class DefaultTreeSpecies {
 		// Date
 		arboriculture.registerSpecies(ForestryTreeSpecies.DATE, GENUS_PHOENIX, SPECIES_DATE, true, new Color(0xcbcd79), ForestryWoodType.PALM)
 				.setTreeFeature(FeatureDate::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.DATE))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.DAMP)
 				.setGenome(genome -> {
@@ -516,6 +555,7 @@ public class DefaultTreeSpecies {
 		// Poplar
 		arboriculture.registerSpecies(ForestryTreeSpecies.POPLAR, GENUS_POPULUS, SPECIES_POPLAR, true, new Color(0xa3b8a5), ForestryWoodType.POPLAR)
 				.setTreeFeature(FeaturePoplar::new)
+				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.POPLAR))
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_SMALL);
 					genome.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOW);

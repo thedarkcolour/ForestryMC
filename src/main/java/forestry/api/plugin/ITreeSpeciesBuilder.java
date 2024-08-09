@@ -2,15 +2,16 @@ package forestry.api.plugin;
 
 import javax.annotation.Nullable;
 import java.awt.Color;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.arboriculture.ITreeGenData;
 import forestry.api.arboriculture.ITreeGenerator;
 import forestry.api.arboriculture.ITreeSpecies;
@@ -42,19 +43,17 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, I
 	 *
 	 * @param states A list of mundane (no BE) states to add as members of this species.
 	 */
-	ITreeSpeciesBuilder addVanillaStates(List<BlockState> states);
+	ITreeSpeciesBuilder addVanillaStates(Collection<BlockState> states);
 
 	/**
 	 * Sets the decorative leaves block for this tree species. Used by shears and pick-block.
 	 * The decorative form has no genome or block entity which is better for performance, but has no functionality.
+	 * Calling this method is not required but highly recommended.
 	 *
 	 * @param stack The item form of the decorative leaves for this species.
 	 * @return The decorative form of this species's leaves block.
 	 */
 	ITreeSpeciesBuilder setDecorativeLeaves(ItemStack stack);
-
-	// todo not sure if this is needed
-	ITreeSpeciesBuilder setHasFruitLeaves(boolean hasFruitLeaves);
 
 	/**
 	 * Overrides the wood type set in {@link IArboricultureRegistration#registerSpecies}.
@@ -80,9 +79,9 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, I
 
 	List<BlockState> getVanillaLeafStates();
 
-	ItemStack getDecorativeLeaves();
+	List<Item> getVanillaSaplingItems();
 
-	boolean hasFruitLeaves();
+	ItemStack getDecorativeLeaves();
 
 	float getRarity();
 

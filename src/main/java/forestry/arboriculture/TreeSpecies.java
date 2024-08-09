@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,6 +38,7 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 	private final HumidityType humidity;
 	private final ITreeGenerator generator;
 	private final List<BlockState> vanillaLeafStates;
+	private final List<Item> vanillaSaplingItems;
 	private final ItemStack decorativeLeaves;
 	private final int color;
 
@@ -48,6 +50,7 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 		// todo how to handle this being null?
 		this.generator = builder.getGenerator();
 		this.vanillaLeafStates = builder.getVanillaLeafStates();
+		this.vanillaSaplingItems = builder.getVanillaSaplingItems();
 		this.decorativeLeaves = builder.getDecorativeLeaves();
 		this.color = builder.getColor();
 	}
@@ -75,6 +78,11 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 	@Override
 	public List<BlockState> getVanillaLeafStates() {
 		return this.vanillaLeafStates;
+	}
+
+	@Override
+	public List<Item> getVanillaSaplingItems() {
+		return this.vanillaSaplingItems;
 	}
 
 	@Override

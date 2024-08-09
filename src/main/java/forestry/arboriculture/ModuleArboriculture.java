@@ -24,6 +24,9 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import forestry.api.arboriculture.TreeManager;
+import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.client.IClientModuleHandler;
 import forestry.api.core.IArmorNaturalist;
 import forestry.api.genetics.IIndividual;
@@ -34,8 +37,9 @@ import forestry.arboriculture.client.ArboricultureClientHandler;
 import forestry.arboriculture.commands.CommandTree;
 import forestry.arboriculture.network.PacketRipeningUpdate;
 import forestry.arboriculture.villagers.RegisterVillager;
-import forestry.core.ModuleCore;
+import forestry.core.genetics.capability.IndividualHandlerItem;
 import forestry.core.network.PacketIdClient;
+import forestry.core.utils.SpeciesUtil;
 import forestry.modules.BlankForestryModule;
 
 @ForestryModule
@@ -54,10 +58,17 @@ public class ModuleArboriculture extends BlankForestryModule {
 	}
 
 	private static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-		// todo attach vanilla capabilities to saplings
-		/*if (!event.getCapabilities().containsKey(IIndividual.CAPABILITY_ID)) {
+		// Add genetics capabilities to vanilla saplings
+		if (!event.getCapabilities().containsKey(IIndividual.CAPABILITY_ID)) {
+			ItemStack stack = event.getObject();
 
-		}*/
+			ITreeSpeciesType type = SpeciesUtil.TREE_TYPE.get();
+			ITree individual = type.getVanillaIndividual(stack.getItem());
+
+			if (individual != null) {
+				event.addCapability(IIndividual.CAPABILITY_ID, new IndividualHandlerItem(type, stack, individual, TreeLifeStage.SAPLING));
+			}
+		}
 	}
 
 	@Override

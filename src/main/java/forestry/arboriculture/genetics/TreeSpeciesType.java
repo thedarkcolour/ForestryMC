@@ -24,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -74,8 +75,10 @@ import forestry.core.utils.BlockUtil;
 import forestry.core.utils.RenderUtil;
 
 public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements ITreeSpeciesType, IBreedingTrackerHandler {
+	// todo make both of these reloadable
 	private final LinkedList<ILeafTickHandler> leafTickHandlers = new LinkedList<>();
 	private final IdentityHashMap<BlockState, ITree> vanillaIndividuals = new IdentityHashMap<>();
+	private final IdentityHashMap<Item, ITree> vanillaItems = new IdentityHashMap<>();
 
 	public TreeSpeciesType(IKaryotype karyotype, ISpeciesTypeBuilder builder) {
 		super(ForestrySpeciesTypes.TREE, karyotype, builder);
@@ -86,12 +89,16 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 		super.onSpeciesRegistered(allSpecies, mutations);
 
 		this.vanillaIndividuals.clear();
+		this.vanillaItems.clear();
 
 		for (ITreeSpecies entry : allSpecies.values()) {
 			ITree defaultIndividual = entry.createIndividual();
 
 			for (BlockState state : entry.getVanillaLeafStates()) {
 				this.vanillaIndividuals.put(state, defaultIndividual);
+			}
+			for (Item item : entry.getVanillaSaplingItems()) {
+				this.vanillaItems.put(item, defaultIndividual);
 			}
 		}
 		for (ForestryLeafType type : ForestryLeafType.allValues()) {
@@ -278,6 +285,12 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 	@Override
 	public ITree getVanillaIndividual(BlockState state) {
 		return this.vanillaIndividuals.get(state);
+	}
+
+	@Nullable
+	@Override
+	public ITree getVanillaIndividual(Item item) {
+		return this.vanillaItems.get(item);
 	}
 
 	@Override
