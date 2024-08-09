@@ -31,8 +31,11 @@ public class ButterflyEntityRenderer extends MobRenderer<EntityButterfly, Butter
 			return;
 		}
 
+		transform.pushPose();
+		transform.translate(0, 0.2, 0);
 		model.setScale(entity.getSize());
 		super.render(entity, entityYaw, partialTickTime, transform, buffer, packedLight);
+		transform.popPose();
 	}
 
 	@Override

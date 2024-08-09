@@ -70,5 +70,8 @@ public interface IButterfly extends IIndividualLiving {
 	@Override
 	IButterflySpecies getSpecies();
 
+	@Override
+	IButterflySpecies getInactiveSpecies();
+
 	Component getDisplayName();
 }

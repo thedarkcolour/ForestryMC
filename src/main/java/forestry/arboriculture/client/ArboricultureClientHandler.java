@@ -22,7 +22,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.client.IClientModuleHandler;
-import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.client.IForestryClientApi;
+import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.BlockDecorativeLeaves;
 import forestry.arboriculture.features.ArboricultureBlocks;
@@ -32,8 +33,6 @@ import forestry.arboriculture.models.ModelDefaultLeavesFruit;
 import forestry.arboriculture.models.ModelLeaves;
 import forestry.arboriculture.models.SaplingModelLoader;
 import forestry.core.models.ClientManager;
-import forestry.core.utils.SpeciesUtil;
-import forestry.apiimpl.plugin.PluginManager;
 
 public class ArboricultureClientHandler implements IClientModuleHandler {
 	@Override
@@ -59,13 +58,22 @@ public class ArboricultureClientHandler implements IClientModuleHandler {
 			ArboricultureBlocks.LEAVES_DECORATIVE.getBlocks().forEach(block -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped()));
 			ItemBlockRenderTypes.setRenderLayer(ArboricultureBlocks.SAPLING_GE.block(), RenderType.cutout());
 			ArboricultureBlocks.DOORS.getBlocks().forEach(block -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent()));
+
+			ArboricultureBlocks.PODS.getBlocks().forEach(block -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped()));
 		});
 	}
 
 	private static void registerSprites(TextureStitchEvent.Pre event) {
 		if (event.getAtlas().location() == InventoryMenu.BLOCK_ATLAS) {
-			for (IValueAllele<IFruit> alleleFruit : SpeciesUtil.TREE_TYPE.get().getKaryotype().getAlleles(TreeChromosomes.FRUIT)) {
-				alleleFruit.value().registerSprites(event);
+			// todo move into IClientRegistration
+			for (IFruit fruit : TreeChromosomes.FRUIT.values()) {
+				fruit.registerSprites(event);
+			}
+			for (ILeafSprite sprite : IForestryClientApi.INSTANCE.getTreeManager().getAllLeafSprites()) {
+				event.addSprite(sprite.get(true, true));
+				event.addSprite(sprite.get(true, false));
+				event.addSprite(sprite.get(false, true));
+				event.addSprite(sprite.get(false, false));
 			}
 		}
 	}

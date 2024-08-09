@@ -1,8 +1,8 @@
 package forestry.apiimpl.client;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
-
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +33,12 @@ public class TreeClientManager implements ITreeClientManager {
 	}
 
 	@Override
+	public Collection<ILeafSprite> getAllLeafSprites() {
+		// remove duplicates
+		return new HashSet<>(this.sprites.values());
+	}
+
+	@Override
 	public ILeafTint getTint(@Nullable ITreeSpecies species) {
 		return this.tints.getOrDefault(species, ILeafTint.DEFAULT);
 	}
@@ -47,7 +53,7 @@ public class TreeClientManager implements ITreeClientManager {
 	}
 
 	@Override
-	public Iterable<Pair<ResourceLocation, ResourceLocation>> getAllSaplingModels() {
-		return Iterables.unmodifiableIterable(this.models.values());
+	public Collection<Pair<ResourceLocation, ResourceLocation>> getAllSaplingModels() {
+		return Collections.unmodifiableCollection(this.models.values());
 	}
 }

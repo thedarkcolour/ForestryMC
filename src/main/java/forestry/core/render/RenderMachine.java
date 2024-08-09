@@ -128,13 +128,13 @@ public class RenderMachine implements BlockEntityRenderer<TileBase> {
 	@Override
 	public void render(TileBase machine, float partialTick, PoseStack stack, MultiBufferSource buffers, int light, int overlay) {
 		stack.pushPose();
-		// flip the machine on its side
-		stack.translate(0.5, 0.5, 0.5);
-		stack.mulPose(Vector3f.XP.rotation(Mth.HALF_PI));
-		stack.translate(-0.5, -0.5, -0.5);
 		// apply direction rotation
 		Direction orientation = machine.getBlockState().getValue(BlockBase.FACING);
 		RenderUtil.rotateByHorizontalDirection(stack, orientation);
+		// flip the machine on its side
+		stack.translate(0.5, 0.5, 0.5);
+		stack.mulPose(Vector3f.XP.rotation(-Mth.HALF_PI));
+		stack.translate(-0.5, -0.5, -0.5);
 		// render bases
 		VertexConsumer base = buffers.getBuffer(RenderType.entityCutout(textureBase));
 		this.basefront.render(stack, base, light, overlay);

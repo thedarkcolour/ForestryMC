@@ -28,9 +28,6 @@ public interface ITree extends IIndividual {
 
 	IEffectData[] doFX(IEffectData[] storedData, Level level, BlockPos pos);
 
-	/**
-	 * @since Forestry 4.0
-	 */
 	List<ITree> getSaplings(Level level, @Nullable GameProfile playerProfile, BlockPos pos, float modifier);
 
 	List<Product> getProducts();
@@ -59,10 +56,13 @@ public interface ITree extends IIndividual {
 	ITree copy();
 
 	@Override
+	ITreeSpeciesType getType();
+
+	@Override
 	ITreeSpecies getSpecies();
 
 	@Override
-	ITreeSpeciesType getType();
+	ITreeSpecies getInactiveSpecies();
 
 	boolean canBearFruit();
 }

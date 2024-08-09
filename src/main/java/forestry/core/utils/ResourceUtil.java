@@ -43,10 +43,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @OnlyIn(Dist.CLIENT)
 public class ResourceUtil {
-
-	private ResourceUtil() {
-	}
-
 	public static ResourceManager resourceManager() {
 		return Minecraft.getInstance().getResourceManager();
 	}

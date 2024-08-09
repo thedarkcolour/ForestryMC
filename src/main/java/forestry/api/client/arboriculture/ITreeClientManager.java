@@ -1,5 +1,7 @@
 package forestry.api.client.arboriculture;
 
+import java.util.Collection;
+
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.datafixers.util.Pair;
@@ -18,6 +20,11 @@ public interface ITreeClientManager {
 	ILeafSprite getLeafSprite(@Nullable ITreeSpecies species);
 
 	/**
+	 * @return A collection of every leaf sprite that was registered.
+	 */
+	Collection<ILeafSprite> getAllLeafSprites();
+
+	/**
 	 * @return The leaf tint for the given species, or {@link ILeafTint#DEFAULT} if none was found.
 	 */
 	ILeafTint getTint(@Nullable ITreeSpecies species);
@@ -27,5 +34,5 @@ public interface ITreeClientManager {
 	 */
 	Pair<ResourceLocation, ResourceLocation> getSaplingModels(ITreeSpecies species);
 
-	Iterable<Pair<ResourceLocation, ResourceLocation>> getAllSaplingModels();
+	Collection<Pair<ResourceLocation, ResourceLocation>> getAllSaplingModels();
 }

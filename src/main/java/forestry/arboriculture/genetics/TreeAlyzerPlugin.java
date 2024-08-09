@@ -13,31 +13,26 @@ package forestry.arboriculture.genetics;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import forestry.api.ForestryCapabilities;
 import forestry.api.arboriculture.ITreeSpecies;
-import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.genetics.IAlyzerPlugin;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
-import forestry.api.genetics.ISpecies;
 import forestry.api.core.Product;
-import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.IAlyzerPlugin;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
-
-import forestry.api.genetics.IGenome;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
 
@@ -102,13 +97,13 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM).ifPresent(individual -> {
+			IIndividualHandlerItem.ifPresent(stack, individual -> {
 				if (individual instanceof ITree tree) {
 					IGenome genome = tree.getGenome();
-					ITreeSpecies primary = genome.getActiveValue(TreeChromosomes.SPECIES);
-					ITreeSpecies secondary = genome.getInactiveValue(TreeChromosomes.SPECIES);
-					IValueAllele<IFruit> activeFruit = genome.getActiveAllele(TreeChromosomes.FRUIT);
-					IValueAllele<IFruit> inactiveFruit = genome.getInactiveAllele(TreeChromosomes.FRUIT);
+					ITreeSpecies primary = tree.getSpecies();
+					ITreeSpecies secondary = tree.getInactiveSpecies();
+					Component activeFruit = genome.getActiveName(TreeChromosomes.FRUIT);
+					Component inactiveFruit = genome.getInactiveName(TreeChromosomes.FRUIT);
 
 					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
@@ -130,6 +125,8 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 					Component fireproofInactive = genome.getInactiveValue(TreeChromosomes.FIREPROOF) ? yes : no;
 
 					guiAlyzer.drawRow(transform, Component.translatable("for.gui.fireproof"), fireproofActive, fireproofInactive, tree, TreeChromosomes.FIREPROOF);
+					textLayout.newLine();
+					guiAlyzer.drawRow(transform, Component.translatable("for.gui.fruits"), activeFruit, inactiveFruit, tree, TreeChromosomes.FRUIT);
 
 					textLayout.newLine();
 /*
@@ -200,7 +197,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 	@Override
 	public void drawAnalyticsPage3(PoseStack transform, Screen gui, ItemStack stack) {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
-			stack.getCapability(ForestryCapabilities.INDIVIDUAL_HANDLER_ITEM).ifPresent(individual -> {
+			IIndividualHandlerItem.ifPresent(stack, individual -> {
 				if (individual instanceof ITree tree) {
 					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 					WidgetManager widgetManager = guiAlyzer.getWidgetManager();
@@ -230,7 +227,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 
 					x = GuiAlyzer.COLUMN_0;
 					for (Product product : tree.getProducts()) {
-						Minecraft.getInstance().getItemRenderer().renderGuiItem(product.createStack(), guiAlyzer.getGuiLeft() + x, guiAlyzer.getGuiTop() + textLayout.getLineY());
+						widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 						x += 18;
 						if (x > 148) {
 							x = GuiAlyzer.COLUMN_0;

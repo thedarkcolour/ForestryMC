@@ -6,7 +6,7 @@ import net.minecraft.world.level.material.Material;
 
 public class BlockTesr<P extends Enum<P> & IBlockType> extends BlockBase<P> {
 	public BlockTesr(P blockType, Properties properties) {
-		super(blockType, properties);
+		super(blockType, properties.noOcclusion());
 	}
 
 	public BlockTesr(P blockType, Material material) {
