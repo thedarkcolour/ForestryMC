@@ -57,13 +57,13 @@ public record Product(Item item, int count, @Nullable CompoundTag tag, float cha
 	static {
 		ITEM_ONLY_STRATEGY = new Hash.Strategy<>() {
 			@Override
-			public int hashCode(Product o) {
-				return o.item.hashCode();
+			public int hashCode(@Nullable Product o) {
+				return o == null ? 0 : o.item.hashCode();
 			}
 
 			@Override
-			public boolean equals(Product a, Product b) {
-				return a.item == b.item;
+			public boolean equals(@Nullable Product a, @Nullable Product b) {
+				return (a == null || b == null) ? a == b : a.item == b.item;
 			}
 		};
 
