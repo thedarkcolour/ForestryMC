@@ -54,10 +54,11 @@ import forestry.core.utils.ItemTooltipUtil;
 import forestry.core.utils.NetworkUtil;
 
 public class BlockAlveary extends BlockStructure implements EntityBlock {
-	private static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
+	public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 	private static final EnumProperty<AlvearyPlainType> PLAIN_TYPE = EnumProperty.create("type", AlvearyPlainType.class);
 
-	private enum State implements StringRepresentable {
+	// TODO change this to boolean in 1.20.1
+	public enum State implements StringRepresentable {
 		ON, OFF;
 
 		@Override
@@ -94,7 +95,6 @@ public class BlockAlveary extends BlockStructure implements EntityBlock {
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		super.createBlockStateDefinition(builder);
 		builder.add(PLAIN_TYPE, STATE);
 	}
 
@@ -118,18 +118,19 @@ public class BlockAlveary extends BlockStructure implements EntityBlock {
 
 	public BlockState getNewState(TileAlveary tile) {
 		BlockState state = this.defaultBlockState();
-		Level world = tile.getLevel();
-		BlockPos pos = tile.getBlockPos();
 
 		if (tile instanceof IActivatable activatable) {
 			state = state.setValue(STATE, activatable.isActive() ? State.ON : State.OFF);
 		} else if (getType() == BlockAlvearyType.PLAIN) {
+			Level level = tile.getLevel();
+			BlockPos pos = tile.getBlockPos();
+
 			if (!tile.getMultiblockLogic().getController().isAssembled()) {
 				state = state.setValue(PLAIN_TYPE, AlvearyPlainType.NORMAL);
 			} else {
-				BlockState blockStateAbove = world.getBlockState(pos.above());
+				BlockState blockStateAbove = level.getBlockState(pos.above());
 				if (blockStateAbove.is(BlockTags.WOODEN_SLABS)) {
-					List<Direction> blocksTouching = getBlocksTouching(world, pos);
+					List<Direction> blocksTouching = getBlocksTouching(level, pos);
 					switch (blocksTouching.size()) {
 						case 3:
 							state = state.setValue(PLAIN_TYPE, AlvearyPlainType.ENTRANCE);

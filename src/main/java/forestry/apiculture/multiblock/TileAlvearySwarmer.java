@@ -16,32 +16,31 @@ import java.util.Map.Entry;
 import java.util.Stack;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.multiblock.IAlvearyComponent;
+import forestry.apiculture.blocks.BlockAlveary;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.gui.ContainerAlvearySwarmer;
-import forestry.apiculture.inventory.InventorySwarmer;
 import forestry.apiculture.hives.Hive;
 import forestry.apiculture.hives.HiveDecorator;
 import forestry.apiculture.hives.HiveDefinitionSwarmer;
+import forestry.apiculture.inventory.InventorySwarmer;
 import forestry.core.inventory.IInventoryAdapter;
-import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
 import forestry.core.utils.ItemStackUtil;
-import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SpeciesUtil;
 
 public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer, IActivatable, IAlvearyComponent.Active {
@@ -176,7 +175,6 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		}
 	}
 
-
 	@Override
 	public void saveAdditional(CompoundTag compoundNBT) {
 		super.saveAdditional(compoundNBT);
@@ -208,10 +206,7 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 
 		this.active = active;
 
-		// todo is this necessary? should just be a blockstate update
-		if (level != null && !level.isClientSide) {
-			NetworkUtil.sendNetworkPacket(new PacketActiveUpdate(this), worldPosition, level);
-		}
+		this.level.setBlockAndUpdate(this.worldPosition, this.getBlockState().setValue(BlockAlveary.STATE, active ? BlockAlveary.State.ON : BlockAlveary.State.OFF));
 	}
 
 	@Override

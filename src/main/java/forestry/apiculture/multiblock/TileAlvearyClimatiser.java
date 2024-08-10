@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.climate.IClimateControlled;
 import forestry.api.multiblock.IAlvearyComponent;
+import forestry.apiculture.blocks.BlockAlveary;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.core.tiles.IActivatable;
 import forestry.energy.EnergyHelper;
@@ -106,6 +107,7 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;
+		this.level.setBlockAndUpdate(this.worldPosition, getBlockState().setValue(BlockAlveary.STATE, active ? BlockAlveary.State.ON : BlockAlveary.State.OFF));
 	}
 
 	@Override
