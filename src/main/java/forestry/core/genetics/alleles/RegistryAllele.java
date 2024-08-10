@@ -18,6 +18,7 @@ public class RegistryAllele<V extends IRegistryAlleleValue> implements IRegistry
 	RegistryAllele(ResourceLocation id, IRegistryChromosome<V> chromosome) {
 		this.id = id;
 		this.chromosome = chromosome;
+		((RegistryChromosome<V>) chromosome).add(id, this);
 	}
 
 	@Override

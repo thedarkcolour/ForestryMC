@@ -35,7 +35,7 @@ public class TreeChromosomes {
 	/**
 	 * Unimplemented. All trees added by base Forestry have {@link ForestryAlleles#TREE_EFFECT_NONE}.
 	 */
-	public static final IRegistryChromosome<ITreeEffect> EFFECT = ForestryAlleles.REGISTRY.registryChromosome(forestry("effect"), ITreeEffect.class);
+	public static final IRegistryChromosome<ITreeEffect> EFFECT = ForestryAlleles.REGISTRY.registryChromosome(forestry("tree_effect"), ITreeEffect.class);
 	/**
 	 * Amount of random ticks which need to elapse before a sapling will grow into a tree.
 	 */

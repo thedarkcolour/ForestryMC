@@ -101,6 +101,7 @@ public class Karyotype implements IKaryotype {
 	public <A extends IAllele> ImmutableSet<A> getAlleles(IChromosome<A> chromosome) {
 		Preconditions.checkArgument(isChromosomeValid(chromosome), "Chromosome not present in karyotype");
 
+		// todo should this return non-empty for registry chromosomes? would use an instanceof
 		return (ImmutableSet<A>) this.chromosomes.get(chromosome);
 	}
 

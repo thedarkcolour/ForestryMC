@@ -41,6 +41,11 @@ public interface IRegistryChromosome<V extends IRegistryAlleleValue> extends IVa
 	Collection<V> values();
 
 	/**
+	 * @return A collection of all alleles in this chromosome.
+	 */
+	Collection<IRegistryAllele<V>> alleles();
+
+	/**
 	 * Gets the allele ID of a value in this chromosome and returns it.
 	 *
 	 * @param value The value.

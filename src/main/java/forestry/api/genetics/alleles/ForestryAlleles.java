@@ -36,7 +36,7 @@ public class ForestryAlleles {
 
 	public static final List<IBooleanAllele> DEFAULT_BOOLEANS = List.of(TRUE, FALSE);
 
-	// Lifespan
+	// Bee Lifespan
 	public static final IIntegerAllele LIFESPAN_SHORTEST = REGISTRY.intAllele(10, true);
 	public static final IIntegerAllele LIFESPAN_SHORTER = REGISTRY.intAllele(20, true);
 	public static final IIntegerAllele LIFESPAN_SHORT = REGISTRY.intAllele(30, true);

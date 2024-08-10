@@ -72,8 +72,8 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 				guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.size"), butterfly, ButterflyChromosomes.SIZE);
 				textLayout.newLine();
 
-				guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.lifespan"), butterfly, ButterflyChromosomes.LIFESPAN);
-				textLayout.newLine();
+				//guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.lifespan"), butterfly, ButterflyChromosomes.LIFESPAN);
+				//textLayout.newLine();
 
 				guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.speed"), butterfly, ButterflyChromosomes.SPEED);
 				textLayout.newLine();

@@ -49,6 +49,20 @@ public interface ISpecies<I extends IIndividual> extends IRegistryAlleleValue {
 	String getBinomial();
 
 	/**
+	 * @return The scientific species name, the second half of the scientific name after the genus.
+	 */
+	String getSpeciesName();
+
+	/**
+	 * @return The genus of this species.
+	 */
+	ITaxon getGenus();
+
+	default String getGenusName() {
+		return getGenus().name();
+	}
+
+	/**
 	 * @return The type of species this is.
 	 */
 	ISpeciesType<? extends ISpecies<I>, I> getType();
@@ -106,8 +120,6 @@ public interface ISpecies<I extends IIndividual> extends IRegistryAlleleValue {
 	 */
 	@Override
 	boolean isDominant();
-
-	ITaxon getGenus();
 
 	String getAuthority();
 

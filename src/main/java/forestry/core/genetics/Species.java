@@ -68,6 +68,16 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 	}
 
 	@Override
+	public String getSpeciesName() {
+		return this.species;
+	}
+
+	@Override
+	public ITaxon getGenus() {
+		return this.genus;
+	}
+
+	@Override
 	public String getTranslationKey() {
 		return this.translationKey;
 	}
@@ -103,11 +113,6 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 	@Override
 	public boolean hasGlint() {
 		return this.glint;
-	}
-
-	@Override
-	public ITaxon getGenus() {
-		return this.genus;
 	}
 
 	@Override

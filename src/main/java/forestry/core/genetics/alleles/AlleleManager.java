@@ -12,6 +12,9 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 
+import forestry.Forestry;
+import forestry.api.IForestryApi;
+import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IAlleleManager;
 import forestry.api.genetics.alleles.IAlleleNaming;
@@ -27,6 +30,7 @@ import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.IValueChromosome;
+import forestry.core.utils.SpeciesUtil;
 
 import it.unimi.dsi.fastutil.floats.Float2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -254,6 +258,31 @@ public class AlleleManager implements IAlleleManager {
 			this.floatAlleles.trim();
 			this.dominantIntAlleles.trim();
 			this.intAlleles.trim();
+
+			boolean hasErrors = false;
+
+			for (ISpeciesType<?, ?> type : IForestryApi.INSTANCE.getGeneticManager().getSpeciesTypes()) {
+				for (IChromosome<?> chromosome : type.getKaryotype().getChromosomes()) {
+					if (chromosome instanceof RegistryChromosome<?> registry) {
+						boolean missingValues = false;
+
+						for (IRegistryAllele<?> allele : registry.alleles()) {
+							if (allele.value() == null) {
+								if (!missingValues) {
+									Forestry.LOGGER.error("Registry chromosome {} is missing values for the following alleles: ", chromosome.id());
+									hasErrors = true;
+									missingValues = true;
+								}
+								Forestry.LOGGER.error("  > {}", allele.alleleId());
+							}
+						}
+					}
+				}
+			}
+
+			if (hasErrors) {
+				throw new IllegalStateException("Missing values for certain IRegistryAllele - check log for details");
+			}
 		}
 	}
 }

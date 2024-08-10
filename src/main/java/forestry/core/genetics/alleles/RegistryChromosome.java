@@ -5,17 +5,20 @@ import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IRegistryAllele;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.IRegistryChromosome;
 
 public class RegistryChromosome<V extends IRegistryAlleleValue> extends ValueChromosome<V> implements IRegistryChromosome<V> {
+	private final HashMap<ResourceLocation, IRegistryAllele<V>> alleles = new HashMap<>();
 	@Nullable
 	private ImmutableMap<ResourceLocation, V> registry;
 	@Nullable
@@ -56,6 +59,13 @@ public class RegistryChromosome<V extends IRegistryAlleleValue> extends ValueChr
 	}
 
 	@Override
+	public Collection<IRegistryAllele<V>> alleles() {
+		Preconditions.checkState(this.registry != null, "Registry not yet populated");
+
+		return Collections.unmodifiableCollection(this.alleles.values());
+	}
+
+	@Override
 	public ResourceLocation getId(V value) {
 		Preconditions.checkState(this.reverseLookup != null, "Registry not yet populated");
 
@@ -77,5 +87,10 @@ public class RegistryChromosome<V extends IRegistryAlleleValue> extends ValueChr
 	@Override
 	public boolean isPopulated() {
 		return this.registry != null;
+	}
+
+	// called by AlleleManager
+	void add(ResourceLocation id, RegistryAllele<V> allele) {
+		this.alleles.put(id, allele);
 	}
 }

@@ -48,6 +48,7 @@ import forestry.arboriculture.client.FixedLeafTint;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.circuits.CircuitManager;
 import forestry.core.errors.ErrorManager;
+import forestry.core.genetics.alleles.AlleleManager;
 import forestry.core.utils.SpeciesUtil;
 import forestry.farming.FarmingManager;
 import forestry.plugin.DefaultForestryPlugin;
@@ -155,9 +156,9 @@ public class PluginManager {
 	}
 
 	public static void registerGenetics() {
-		// registers filter rules and species types
 		GeneticRegistration registration = new GeneticRegistration();
 
+		// Register SPECIES TYPES, karyotypes, filter rules and set up taxonomy
 		for (IForestryPlugin plugin : LOADED_PLUGINS) {
 			plugin.registerGenetics(registration);
 		}
@@ -168,13 +169,19 @@ public class PluginManager {
 		Forestry.LOGGER.debug("Registered {} species types: {}", speciesTypes.size(), Arrays.toString(speciesTypes.keySet().toArray(new ResourceLocation[0])));
 
 		ForestryApiImpl api = (ForestryApiImpl) IForestryApi.INSTANCE;
+		AlleleManager alleleManager = ((AlleleManager) api.getAlleleManager());
 		GeneticManager geneticManager = new GeneticManager(taxa, speciesTypes);
 		api.setGeneticManager(geneticManager);
 		api.setFilterManager(new FilterManager(registration.getFilterRuleTypes()));
 
+		// block registration of new chromosomes
+		alleleManager.setRegistrationState(AlleleManager.REGISTRATION_CHROMOSOMES_COMPLETE);
+
+		// Register SPECIES for each type
 		LinkedHashMap<ISpeciesType<?, ?>, ImmutableMap<ResourceLocation, ?>> allSpecies = new LinkedHashMap<>(speciesTypes.size());
 		IdentityHashMap<ISpeciesType<?, ?>, IMutationManager<?>> allMutations = new IdentityHashMap<>(speciesTypes.size());
 
+		// go through species builders and build each species
 		for (ISpeciesType<?, ?> speciesType : speciesTypes.values()) {
 			// species and mutations
 			Pair<? extends ImmutableMap<ResourceLocation, ?>, ? extends IMutationManager<?>> pair = speciesType.handleSpeciesRegistration(LOADED_PLUGINS);
@@ -187,6 +194,9 @@ public class PluginManager {
 			Forestry.LOGGER.debug("Registered {} species for species type {}", species.size(), speciesType.id());
 			Forestry.LOGGER.debug("Registered {} mutations for species type {}", mutations.getAllMutations().size(), speciesType.id());
 		}
+
+		// block registration of new alleles and verify all registry alleles have values
+		alleleManager.setRegistrationState(AlleleManager.REGISTRATION_ALLELES_COMPLETE);
 
 		for (Map.Entry<ISpeciesType<?, ?>, ImmutableMap<ResourceLocation, ?>> entry : allSpecies.entrySet()) {
 			ISpeciesType<?, ?> speciesType = entry.getKey();

@@ -10,10 +10,10 @@
  ******************************************************************************/
 package forestry.core.gui;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -46,7 +46,6 @@ import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.render.ColourProperties;
-import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.Translator;
 
 // Portable analyzer
@@ -208,8 +207,9 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.classification").append(":"), 12);
 		textLayout.newLine();
 
-		Stack<ITaxon> hierarchy = new Stack<>();
-		ITaxon taxon = individual.getSpecies().getGenus();
+		ArrayDeque<ITaxon> hierarchy = new ArrayDeque<>();
+		ISpecies<?> species = individual.getSpecies();
+		ITaxon taxon = species.getGenus();
 		while (taxon != null) {
 			if (!taxon.name().isEmpty()) {
 				hierarchy.push(taxon);
@@ -227,27 +227,27 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 				continue;
 			}
 
-			textLayout.drawLine(transform, group.name(), x, group.rank().getColour());
+			String name = Character.toUpperCase(group.name().charAt(0)) + group.name().substring(1);
+			textLayout.drawLine(transform, name, x, group.rank().getColour());
 			textLayout.drawLine(transform, group.rank().name(), 170, group.rank().getColour());
 			textLayout.newLineCompressed();
 			x += 12;
 		}
 
 		// Add the species name
-		String binomial = individual.getSpecies().getBinomial();
-		// todo shorten the name to G. species
-		//if (group != null && group.rank() == TaxonomicRank.GENUS) {
-		//	binomial = group.getScientific().substring(0, 1) + ". " + binomial.toLowerCase(Locale.ENGLISH);
-		//}
+		String binomial = species.getBinomial();
+		if (font.width(binomial) > 96) {
+			binomial = Character.toUpperCase(species.getGenusName().charAt(0)) + ". " + species.getSpeciesName();
+		}
 
 		textLayout.drawLine(transform, binomial, x, 0xebae85);
 		textLayout.drawLine(transform, "SPECIES", 170, 0xebae85);
 
 		textLayout.newLine();
-		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.authority").append(": ").append(individual.getSpecies().getAuthority()), 12);
+		textLayout.drawLine(transform, Component.translatable("for.gui.alyzer.authority").append(": ").append(species.getAuthority()), 12);
 
 		textLayout.newLine();
-		String description = individual.getSpecies().getDescriptionTranslationKey();
+		String description = species.getDescriptionTranslationKey();
 		if (Translator.canTranslateToLocal(description)) {
 			description = Component.translatable(description).getString();
 			String[] tokens = description.split("\\|");
