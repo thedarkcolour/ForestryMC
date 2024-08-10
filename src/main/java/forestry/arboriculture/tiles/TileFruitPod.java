@@ -28,9 +28,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.IForestryApi;
 import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.IFruitBearer;
 import forestry.api.genetics.IGenome;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.TreeChromosomes;
@@ -134,11 +134,11 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 		if (fruit == null) {
 			return ItemStack.EMPTY;
 		}
-		List<Product> products = fruit.getProducts();
+		List<IProduct> products = fruit.getProducts();
 
 		ItemStack pickBlock = ItemStack.EMPTY;
 		float maxChance = 0.0f;
-		for (Product product : products) {
+		for (IProduct product : products) {
 			if (maxChance < product.chance()) {
 				maxChance = product.chance();
 				pickBlock = product.createStack();

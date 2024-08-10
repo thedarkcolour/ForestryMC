@@ -13,27 +13,23 @@ package forestry.core.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 
-import javax.annotation.Nullable;
-
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+import forestry.api.core.IProduct;
 import forestry.api.core.Product;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public abstract class ItemStackUtil {
 	private static final int[] EMPTY_CONSUME = new int[0];
@@ -258,9 +254,9 @@ public abstract class ItemStackUtil {
 		world.addFreshEntity(entityitem);
 	}
 
-	public static ItemStack copyWithRandomSize(Product template, int max, RandomSource rand) {
+	public static ItemStack copyWithRandomSize(IProduct template, int max, RandomSource rand) {
 		int size = max <= 0 ? 1 : rand.nextInt(max);
-		ItemStack copy = template.createStack();
+		ItemStack copy = template.createRandomStack(rand);
 		copy.setCount(Math.min(size, copy.getMaxStackSize()));
 		return copy;
 	}

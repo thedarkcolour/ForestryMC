@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
 import forestry.api.genetics.alleles.TreeChromosomes;
@@ -40,7 +40,7 @@ public class FarmableGE implements IFarmable {
 	public FarmableGE() {
 		ImmutableSet.Builder<Item> builder = new ImmutableSet.Builder<>();
 		for (IFruit fruit : TreeChromosomes.FRUIT.values()) {
-			for (Product product : fruit.getProducts()) {
+			for (IProduct product : fruit.getProducts()) {
 				builder.add(product.item());
 			}
 		}

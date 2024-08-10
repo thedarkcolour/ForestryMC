@@ -19,6 +19,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.arboriculture.ITreeSpecies;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IIndividual;
 import forestry.api.core.Product;
@@ -30,9 +31,9 @@ public interface ITree extends IIndividual {
 
 	List<ITree> getSaplings(Level level, @Nullable GameProfile playerProfile, BlockPos pos, float modifier);
 
-	List<Product> getProducts();
+	List<IProduct> getProducts();
 
-	List<Product> getSpecialties();
+	List<IProduct> getSpecialties();
 
 	List<ItemStack> produceStacks(Level level, BlockPos pos, int ripeningTime);
 

@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.NetherWartBlock;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.farming.ForestryFarmTypes;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.IValueAllele;
@@ -119,8 +119,8 @@ public class DefaultFarms {
 			if (fruitAllele != ForestryAlleles.FRUIT_NONE) {
 				IFruit fruit = fruitAllele.value();
 				orchard.addGermling(species.createStack(TreeLifeStage.SAPLING))
-						.addProducts(fruit.getProducts().stream().map(Product::createStack).toList())
-						.addProducts(fruit.getSpecialty().stream().map(Product::createStack).toList());
+						.addProducts(fruit.getProducts().stream().map(IProduct::createStack).toList())
+						.addProducts(fruit.getSpecialty().stream().map(IProduct::createStack).toList());
 			}
 		}
 

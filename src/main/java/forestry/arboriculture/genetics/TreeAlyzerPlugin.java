@@ -22,7 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ISpecies;
@@ -208,7 +208,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 					textLayout.newLine();
 
 					int x = GuiAlyzer.COLUMN_0;
-					for (Product product : tree.getProducts()) {
+					for (IProduct product : tree.getProducts()) {
 						widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 						x += 18;
 						if (x > 148) {
@@ -226,7 +226,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 					textLayout.newLine();
 
 					x = GuiAlyzer.COLUMN_0;
-					for (Product product : tree.getProducts()) {
+					for (IProduct product : tree.getProducts()) {
 						widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 						x += 18;
 						if (x > 148) {

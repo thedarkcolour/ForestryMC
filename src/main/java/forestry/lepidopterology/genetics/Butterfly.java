@@ -31,6 +31,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import forestry.api.IForestryApi;
 import forestry.api.core.HumidityType;
+import forestry.api.core.IProduct;
 import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ClimateHelper;
@@ -140,12 +141,12 @@ public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, I
 
 		PathfinderMob creature = entity.getEntity();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
-		List<Product> products = species.getButterflyLoot();
+		List<IProduct> products = species.getButterflyLoot();
 		RandomSource rand = creature.level.random;
 
-		for (Product product : products) {
+		for (IProduct product : products) {
 			if (rand.nextFloat() < product.chance() * metabolism) {
-				drop.add(product.createStack());
+				drop.add(product.createRandomStack(rand));
 			}
 		}
 
@@ -156,11 +157,11 @@ public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, I
 	public List<ItemStack> getCaterpillarDrop(IButterflyNursery nursery, boolean playerKill, int lootLevel) {
 		ArrayList<ItemStack> drop = new ArrayList<>();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
-		List<Product> products = getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarProducts();
+		List<IProduct> products = getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarProducts();
 
-		for (Product product : products) {
+		for (IProduct product : products) {
 			if (rand.nextFloat() < product.chance() * metabolism) {
-				drop.add(product.createStack());
+				drop.add(product.createRandomStack(rand));
 			}
 		}
 
@@ -171,11 +172,11 @@ public class Butterfly extends IndividualLiving<IButterflySpecies, IButterfly, I
 	public List<ItemStack> getCocoonDrop(boolean includeButterfly, IButterflyCocoon cocoon) {
 		ArrayList<ItemStack> drop = new ArrayList<>();
 		float metabolism = (float) getGenome().getActiveValue(ButterflyChromosomes.METABOLISM) / 10;
-		List<Product> products = cocoon.getProducts();
+		List<IProduct> products = cocoon.getProducts();
 
-		for (Product product : products) {
+		for (IProduct product : products) {
 			if (rand.nextFloat() < product.chance() * metabolism) {
-				drop.add(product.createStack());
+				drop.add(product.createRandomStack(rand));
 			}
 		}
 

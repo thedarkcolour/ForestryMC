@@ -22,8 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
 import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.IGenome;
-import forestry.api.core.Product;
 
 public class DummyFruit implements IFruit {
 	private final boolean dominant;
@@ -73,12 +73,12 @@ public class DummyFruit implements IFruit {
 	}
 
 	@Override
-	public List<Product> getProducts() {
+	public List<IProduct> getProducts() {
 		return List.of();
 	}
 
 	@Override
-	public List<Product> getSpecialty() {
+	public List<IProduct> getSpecialty() {
 		return List.of();
 	}
 
@@ -88,9 +88,4 @@ public class DummyFruit implements IFruit {
 		return getDecorativeSprite();
 	}
 
-	@Nullable
-	@Override
-	public String getModelName() {
-		return null;
-	}
 }

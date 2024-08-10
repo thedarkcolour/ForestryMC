@@ -15,6 +15,7 @@ import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.core.HumidityType;
+import forestry.api.core.IProduct;
 import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ClimateHelper;
@@ -27,8 +28,8 @@ import forestry.core.genetics.Species;
 
 public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSpecies {
 	private final boolean nocturnal;
-	private final List<Product> products;
-	private final List<Product> specialties;
+	private final List<IProduct> products;
+	private final List<IProduct> specialties;
 	private final TemperatureType temperature;
 	private final HumidityType humidity;
 	private final IBeeJubilance jubilance;
@@ -56,12 +57,12 @@ public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSp
 	}
 
 	@Override
-	public List<Product> getProducts() {
+	public List<IProduct> getProducts() {
 		return this.products;
 	}
 
 	@Override
-	public List<Product> getSpecialties() {
+	public List<IProduct> getSpecialties() {
 		return this.specialties;
 	}
 

@@ -35,7 +35,7 @@ import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
@@ -152,12 +152,12 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 
 	@Override
 	public float getResearchSuitability(IBeeSpecies species, ItemStack stack) {
-		for (Product product : species.getProducts()) {
+		for (IProduct product : species.getProducts()) {
 			if (stack.is(product.item())) {
 				return 1.0f;
 			}
 		}
-		for (Product product : species.getSpecialties()) {
+		for (IProduct product : species.getSpecialties()) {
 			if (stack.is(product.item())) {
 				return 1.0f;
 			}
@@ -169,11 +169,11 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 	public List<ItemStack> getResearchBounty(IBeeSpecies species, Level level, GameProfile researcher, IBee individual, int bountyLevel) {
 		List<ItemStack> bounty = super.getResearchBounty(species, level, researcher, individual, bountyLevel);
 		if (bountyLevel > 10) {
-			for (Product stack : species.getSpecialties()) {
+			for (IProduct stack : species.getSpecialties()) {
 				bounty.add(ItemStackUtil.copyWithRandomSize(stack, (int) ((float) bountyLevel / 2), level.random));
 			}
 		}
-		for (Product stack : species.getProducts()) {
+		for (IProduct stack : species.getProducts()) {
 			bounty.add(ItemStackUtil.copyWithRandomSize(stack, (int) ((float) bountyLevel / 2), level.random));
 		}
 		return bounty;

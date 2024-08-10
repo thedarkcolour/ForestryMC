@@ -45,7 +45,7 @@ import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
@@ -304,7 +304,7 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 			return 0f;
 		}
 		IFruit fruit = species.getDefaultGenome().getActiveValue(TreeChromosomes.FRUIT);
-		for (Product product : Iterables.concat(fruit.getProducts(), fruit.getSpecialty())) {
+		for (IProduct product : Iterables.concat(fruit.getProducts(), fruit.getSpecialty())) {
 			if (stack.is(product.item())) {
 				return 1f;
 			}

@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.HumidityType;
+import forestry.api.core.IProduct;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ISpecies;
@@ -19,12 +20,12 @@ public interface IBeeSpecies extends ISpecies<IBee> {
 	/**
 	 * @return The list of possible items that can be produced by this bee.
 	 */
-	List<Product> getProducts();
+	List<IProduct> getProducts();
 
 	/**
 	 * @return The list of possible items that this bee can only produce when in a jubilant state.
 	 */
-	List<Product> getSpecialties();
+	List<IProduct> getSpecialties();
 
 	/**
 	 * @return The preferred/ideal temperature for this bee.

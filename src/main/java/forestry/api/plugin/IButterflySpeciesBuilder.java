@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
+import forestry.api.core.IProduct;
 import forestry.api.core.Product;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
@@ -49,11 +50,6 @@ public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpec
 	 */
 	IButterflySpeciesBuilder setRarity(float rarity);
 
-	/**
-	 * @param texturePath String texture path for this butterfly e.g. "forestry:butterfly/..."
-	 */
-	IButterflySpeciesBuilder setTexture(String texturePath);
-
 	int getSerumColor();
 
 	float getFlightDistance();
@@ -67,7 +63,7 @@ public interface IButterflySpeciesBuilder extends ISpeciesBuilder<IButterflySpec
 
 	float getRarity();
 
-	List<Product> buildProducts();
+	List<IProduct> buildProducts();
 
-	List<Product> buildCaterpillarProducts();
+	List<IProduct> buildCaterpillarProducts();
 }

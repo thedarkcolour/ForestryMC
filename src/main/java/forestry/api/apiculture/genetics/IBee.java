@@ -69,8 +69,14 @@ public interface IBee extends IIndividualLiving {
 
 	List<Holder.Reference<Biome>> getSuitableBiomes(Registry<Biome> registry);
 
+	/**
+	 * @return A list of item stacks used for displaying this bee's products in the Analyzer GUI.
+	 */
 	List<ItemStack> getProduceList();
 
+	/**
+	 * @return A list of item stacks used for displaying this bee's specialty products in the Analyzer GUI.
+	 */
 	List<ItemStack> getSpecialtyList();
 
 	List<ItemStack> produceStacks(IBeeHousing housing);

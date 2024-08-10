@@ -12,6 +12,7 @@ import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.ForestryConstants;
 import forestry.api.core.HumidityType;
+import forestry.api.core.IProduct;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.ClimateHelper;
@@ -38,8 +39,8 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 	private final TagKey<Biome> spawnBiomes;
 	private final float flightDistance;
 	private final int serumColor;
-	private final List<Product> products;
-	private final List<Product> caterpillarProducts;
+	private final List<IProduct> products;
+	private final List<IProduct> caterpillarProducts;
 
 	public ButterflySpecies(ResourceLocation id, IButterflySpeciesType speciesType, IGenome defaultGenome, IButterflySpeciesBuilder builder) {
 		super(id, speciesType, defaultGenome, builder);
@@ -140,12 +141,12 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 	}
 
 	@Override
-	public List<Product> getButterflyLoot() {
+	public List<IProduct> getButterflyLoot() {
 		return this.products;
 	}
 
 	@Override
-	public List<Product> getCaterpillarProducts() {
+	public List<IProduct> getCaterpillarProducts() {
 		return this.caterpillarProducts;
 	}
 

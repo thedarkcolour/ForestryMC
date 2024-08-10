@@ -1,27 +1,22 @@
 package forestry.apiimpl.plugin;
 
-import com.google.common.collect.ImmutableList;
-
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.IBeeJubilance;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.plugin.IBeeSpeciesBuilder;
 import forestry.apiculture.BeeSpecies;
 import forestry.apiculture.genetics.DefaultBeeJubilance;
 
-import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
-import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
-
 public class BeeSpeciesBuilder extends SpeciesBuilder<IBeeSpeciesType, IBeeSpecies, IBeeSpeciesBuilder> implements IBeeSpeciesBuilder {
-	private final Reference2FloatOpenHashMap<ItemStack> products = new Reference2FloatOpenHashMap<>();
-	private final Reference2FloatOpenHashMap<ItemStack> specialties = new Reference2FloatOpenHashMap<>();
+	private final ArrayList<IProduct> products = new ArrayList<>();
+	private final ArrayList<IProduct> specialties = new ArrayList<>();
 	private int bodyColor = 0xffdc16;
 	private int stripesColor = 0;
 	private int outlineColor = -1;
@@ -38,14 +33,14 @@ public class BeeSpeciesBuilder extends SpeciesBuilder<IBeeSpeciesType, IBeeSpeci
 	}
 
 	@Override
-	public IBeeSpeciesBuilder addProduct(ItemStack stack, float chance) {
-		this.products.put(stack, chance);
+	public IBeeSpeciesBuilder addProduct(IProduct product) {
+		this.products.add(product);
 		return this;
 	}
 
 	@Override
-	public IBeeSpeciesBuilder addSpecialty(ItemStack stack, float chance) {
-		this.specialties.put(stack, chance);
+	public IBeeSpeciesBuilder addSpecialty(IProduct specialty) {
+		this.specialties.add(specialty);
 		return this;
 	}
 
@@ -85,22 +80,13 @@ public class BeeSpeciesBuilder extends SpeciesBuilder<IBeeSpeciesType, IBeeSpeci
 	}
 
 	@Override
-	public List<Product> buildProducts() {
-		return buildProductsFromStacks(this.products);
+	public List<IProduct> buildProducts() {
+		return List.copyOf(this.products);
 	}
 
 	@Override
-	public List<Product> buildSpecialties() {
-		return buildProductsFromStacks(this.specialties);
-	}
-
-	private static List<Product> buildProductsFromStacks(Reference2FloatOpenHashMap<ItemStack> stacks) {
-		ImmutableList.Builder<Product> builder = ImmutableList.builderWithExpectedSize(stacks.size());
-		for (Reference2FloatMap.Entry<ItemStack> entry : stacks.reference2FloatEntrySet()) {
-			ItemStack stack = entry.getKey();
-			builder.add(new Product(stack.getItem(), stack.getCount(), stack.getTag(), entry.getFloatValue()));
-		}
-		return builder.build();
+	public List<IProduct> buildSpecialties() {
+		return List.copyOf(this.specialties);
 	}
 
 	@Override

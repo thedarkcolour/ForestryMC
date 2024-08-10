@@ -13,6 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.core.HumidityType;
+import forestry.api.core.IProduct;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ISpecies;
 import forestry.api.core.Product;
@@ -63,12 +64,12 @@ public interface IButterflySpecies extends ISpecies<IButterfly> {
 	/**
 	 * @return The loot that drops if you kill a butterfly.
 	 */
-	List<Product> getButterflyLoot();
+	List<IProduct> getButterflyLoot();
 
 	/**
 	 * @return The loot that drops if you destroy a leaf that contains a caterpillar.
 	 */
-	List<Product> getCaterpillarProducts();
+	List<IProduct> getCaterpillarProducts();
 
 	/**
 	 * @return The color of this butterfly's serum item. Also used for escritoire cells.

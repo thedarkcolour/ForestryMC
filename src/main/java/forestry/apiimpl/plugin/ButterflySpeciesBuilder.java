@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.api.plugin.IButterflySpeciesBuilder;
@@ -67,11 +67,6 @@ public class ButterflySpeciesBuilder extends SpeciesBuilder<IButterflySpeciesTyp
 	}
 
 	@Override
-	public IButterflySpeciesBuilder setTexture(String texturePath) {
-		return null;
-	}
-
-	@Override
 	public int getSerumColor() {
 		return this.serumColor;
 	}
@@ -103,13 +98,13 @@ public class ButterflySpeciesBuilder extends SpeciesBuilder<IButterflySpeciesTyp
 	}
 
 	@Override
-	public List<Product> buildProducts() {
+	public List<IProduct> buildProducts() {
 		// todo implement
 		return List.of();
 	}
 
 	@Override
-	public List<Product> buildCaterpillarProducts() {
+	public List<IProduct> buildCaterpillarProducts() {
 		// todo implement
 		return List.of();
 	}

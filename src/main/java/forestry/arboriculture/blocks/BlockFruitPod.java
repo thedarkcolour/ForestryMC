@@ -46,10 +46,6 @@ public class BlockFruitPod extends CocoaBlock implements EntityBlock {
 		this.podType = podType;
 	}
 
-	public ForestryPodType getPodType() {
-		return podType;
-	}
-
 	@Override
 	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
 		TileFruitPod tile = TileUtil.getTile(world, pos, TileFruitPod.class);
@@ -78,6 +74,7 @@ public class BlockFruitPod extends CocoaBlock implements EntityBlock {
 	@Override
 	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
 		if (!level.isClientSide && blockEntity instanceof TileFruitPod tile) {
+			// todo replace with loot table
 			for (ItemStack drop : tile.getDrops()) {
 				ItemStackUtil.dropItemStackAsEntity(drop, level, pos);
 			}

@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.core.IProduct;
 import forestry.api.core.Product;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
@@ -203,7 +204,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 
 				int x = GuiAlyzer.COLUMN_0;
 
-				for (Product product : genome.getActiveValue(ButterflyChromosomes.SPECIES).getButterflyLoot()) {
+				for (IProduct product : genome.getActiveValue(ButterflyChromosomes.SPECIES).getButterflyLoot()) {
 					widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 					x += 18;
 					if (x > 148) {
@@ -219,7 +220,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 				textLayout.newLine();
 
 				x = GuiAlyzer.COLUMN_0;
-				for (Product product : genome.getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarProducts()) {
+				for (IProduct product : genome.getActiveValue(ButterflyChromosomes.SPECIES).getCaterpillarProducts()) {
 					widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 					x += 18;
 					if (x > 148) {
@@ -235,7 +236,7 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 				textLayout.newLine();
 
 				x = GuiAlyzer.COLUMN_0;
-				for (Product product : genome.getActiveValue(ButterflyChromosomes.COCOON).getProducts()) {
+				for (IProduct product : genome.getActiveValue(ButterflyChromosomes.COCOON).getProducts()) {
 					widgetManager.add(new ItemStackWidget(widgetManager, x, textLayout.getLineY(), product.createStack()));
 					x += 18;
 					if (x > 148) {

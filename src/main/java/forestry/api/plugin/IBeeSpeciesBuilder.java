@@ -1,16 +1,14 @@
 package forestry.api.plugin;
 
-import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.List;
-import java.util.function.Supplier;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.IBeeJubilance;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
+import forestry.api.core.IProduct;
 import forestry.api.core.Product;
 
 /**
@@ -19,20 +17,38 @@ import forestry.api.core.Product;
  */
 public interface IBeeSpeciesBuilder extends ISpeciesBuilder<IBeeSpeciesType, IBeeSpecies, IBeeSpeciesBuilder> {
 	/**
+	 * Adds a product to this species.
+	 *
+	 * @param product A product that can be produced by this species.
+	 */
+	IBeeSpeciesBuilder addProduct(IProduct product);
+
+	/**
 	 * Adds a product to this bee species.
 	 *
-	 * @param stack  A supplier that creates a new instance of the result.
+	 * @param stack  The item stack the product should produce.
 	 * @param chance A float between 0 and 1. The chance that this product is produced during a single work cycle.
 	 */
-	IBeeSpeciesBuilder addProduct(ItemStack stack, float chance);
+	default IBeeSpeciesBuilder addProduct(ItemStack stack, float chance) {
+		return addProduct(new Product(stack.getItem(), stack.getCount(), stack.getTag(), chance));
+	}
+
+	/**
+	 * Adds a specialty product to this species, only produced when the bee in a jubilant state.
+	 *
+	 * @param specialty A product that can only be produced by this species when in its jubilant state.
+	 */
+	IBeeSpeciesBuilder addSpecialty(IProduct specialty);
 
 	/**
 	 * Adds a specialty to the bee species, a product only produced when the bee is in a jubilant state.
 	 *
-	 * @param stack  A supplier that creates a new instance of the result.
+	 * @param stack  The item stack the product should produce.
 	 * @param chance A float between 0 and 1. The chance that this product is produced during a single work cycle.
 	 */
-	IBeeSpeciesBuilder addSpecialty(ItemStack stack, float chance);
+	default IBeeSpeciesBuilder addSpecialty(ItemStack stack, float chance) {
+		return addSpecialty(new Product(stack.getItem(), stack.getCount(), stack.getTag(), chance));
+	}
 
 	/**
 	 * Sets the color of the bee's body. The default is yellow, {@code #ffdc16}, used by most bees.
@@ -60,9 +76,9 @@ public interface IBeeSpeciesBuilder extends ISpeciesBuilder<IBeeSpeciesType, IBe
 	 */
 	IBeeSpeciesBuilder setNocturnal(boolean nocturnal);
 
-	List<Product> buildProducts();
+	List<IProduct> buildProducts();
 
-	List<Product> buildSpecialties();
+	List<IProduct> buildSpecialties();
 
 	int getBody();
 

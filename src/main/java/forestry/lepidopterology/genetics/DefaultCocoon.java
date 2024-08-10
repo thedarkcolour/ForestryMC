@@ -2,20 +2,20 @@ package forestry.lepidopterology.genetics;
 
 import java.util.List;
 
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.lepidopterology.IButterflyCocoon;
 
 public class DefaultCocoon implements IButterflyCocoon {
 	private final String texture;
-	private final List<Product> products;
+	private final List<IProduct> products;
 
-	public DefaultCocoon(String texture, List<Product> products) {
+	public DefaultCocoon(String texture, List<IProduct> products) {
 		this.texture = texture;
 		this.products = products;
 	}
 
 	@Override
-	public List<Product> getProducts() {
+	public List<IProduct> getProducts() {
 		return this.products;
 	}
 
@@ -33,5 +33,4 @@ public class DefaultCocoon implements IButterflyCocoon {
 			return "late";
 		}
 	}
-
 }

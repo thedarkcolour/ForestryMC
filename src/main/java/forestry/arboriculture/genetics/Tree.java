@@ -39,7 +39,7 @@ import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeEffect;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.AllelePair;
@@ -165,12 +165,12 @@ public class Tree extends Individual<ITreeSpecies, ITree, ITreeSpeciesType> impl
 	}
 
 	@Override
-	public List<Product> getProducts() {
+	public List<IProduct> getProducts() {
 		return this.genome.getActiveValue(TreeChromosomes.FRUIT).getProducts();
 	}
 
 	@Override
-	public List<Product> getSpecialties() {
+	public List<IProduct> getSpecialties() {
 		return this.genome.getActiveValue(TreeChromosomes.FRUIT).getSpecialty();
 	}
 

@@ -46,6 +46,7 @@ import forestry.api.climate.IClimateManager;
 import forestry.api.core.ForestryError;
 import forestry.api.core.HumidityType;
 import forestry.api.core.IError;
+import forestry.api.core.IProduct;
 import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.ToleranceType;
@@ -295,7 +296,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		IBeeSpecies secondary = this.genome.getInactiveValue(BeeChromosomes.SPECIES);
 
 		if (primary == secondary) {
-			List<Product> products = primary.getProducts();
+			List<IProduct> products = primary.getProducts();
 			ArrayList<ItemStack> stacks = new ArrayList<>(products.size());
 
 			for (var product : products) {
@@ -304,7 +305,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 			return stacks;
 		} else {
 			// No duplicates
-			ObjectOpenCustomHashSet<Product> products = new ObjectOpenCustomHashSet<>(primary.getProducts().size(), Product.ITEM_ONLY_STRATEGY);
+			ObjectOpenCustomHashSet<IProduct> products = new ObjectOpenCustomHashSet<>(primary.getProducts().size(), Product.ITEM_ONLY_STRATEGY);
 			ArrayList<ItemStack> stacks = new ArrayList<>(products.size() + secondary.getProducts().size());
 
 			for (var product : primary.getProducts()) {
@@ -323,7 +324,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 
 	@Override
 	public List<ItemStack> getSpecialtyList() {
-		List<Product> products = this.genome.getActiveValue(BeeChromosomes.SPECIES).getSpecialties();
+		List<IProduct> products = this.genome.getActiveValue(BeeChromosomes.SPECIES).getSpecialties();
 		ArrayList<ItemStack> stacks = new ArrayList<>(products.size());
 
 		for (var product : products) {
@@ -340,8 +341,8 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 
 		ArrayList<ItemStack> stacks = new ArrayList<>();
 
-		IBeeSpecies primary = genome.getActiveValue(BeeChromosomes.SPECIES);
-		IBeeSpecies secondary = genome.getInactiveValue(BeeChromosomes.SPECIES);
+		IBeeSpecies primary = this.species;
+		IBeeSpecies secondary = this.inactiveSpecies;
 
 		IBeeModifier beeHousingModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 		//IBeeModifier beeModeModifier = mode.getBeeModifier();
@@ -350,17 +351,16 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		float speed = genome.getActiveValue(BeeChromosomes.SPEED) * beeHousingModifier.getProductionModifier(genome, 1f)/* * beeModeModifier.getProductionModifier(genome, 1f)*/;
 		RandomSource rand = level.random;
 
-		// todo should we borrow the formula from GTNH fork?
 		// / Primary Products
 		for (var product : primary.getProducts()) {
 			if (rand.nextFloat() < product.chance() * speed) {
-				stacks.add(product.createStack());
+				stacks.add(product.createRandomStack(rand));
 			}
 		}
 		// / Secondary Products
 		for (var product : secondary.getProducts()) {
 			if (rand.nextFloat() < Math.round(product.chance() / 2f) * speed) {
-				stacks.add(product.createStack());
+				stacks.add(product.createRandomStack(rand));
 			}
 		}
 
@@ -368,7 +368,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		if (primary.isJubilant(genome, housing) && secondary.isJubilant(genome, housing)) {
 			for (var product : primary.getSpecialties()) {
 				if (rand.nextFloat() < product.chance() * speed) {
-					stacks.add(product.createStack());
+					stacks.add(product.createRandomStack(rand));
 				}
 			}
 		}

@@ -21,8 +21,8 @@ import net.minecraft.world.level.block.Block;
 
 import forestry.api.ForestryTags;
 import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.IGenome;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.blocks.ForestryPodType;
 import forestry.core.utils.BlockUtil;
@@ -32,7 +32,7 @@ import forestry.core.utils.SpeciesUtil;
 public class PodFruit extends Fruit {
 	private final ForestryPodType type;
 
-	public PodFruit(boolean dominant, ForestryPodType type, List<Product> products) {
+	public PodFruit(boolean dominant, ForestryPodType type, List<IProduct> products) {
 		super(dominant, 2, products);
 
 		this.type = type;
@@ -55,11 +55,6 @@ public class PodFruit extends Fruit {
 			IFruit activeAllele = genome.getActiveValue(TreeChromosomes.FRUIT);
 			return SpeciesUtil.TREE_TYPE.get().setFruitBlock(world, genome, activeAllele, genome.getActiveValue(TreeChromosomes.YIELD), pos);
 		}
-	}
-
-	@Override
-	public String getModelName() {
-		return this.type.getSerializedName();
 	}
 
 	@Override

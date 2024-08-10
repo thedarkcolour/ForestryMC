@@ -23,8 +23,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
+import forestry.api.core.IProduct;
 import forestry.api.genetics.IGenome;
-import forestry.api.core.Product;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.utils.SpeciesUtil;
@@ -82,14 +82,14 @@ public interface IFruit extends IRegistryAlleleValue {
 	 *
 	 * @return A unmodifiable list that contains all products and their associated drop chances.
 	 */
-	List<Product> getProducts();
+	List<IProduct> getProducts();
 
 	/**
 	 * A unmodifiable list that contains all specialties and their associated drop chances.
 	 *
 	 * @return A unmodifiable list that contains all products and their associated drop chances.
 	 */
-	List<Product> getSpecialty();
+	List<IProduct> getSpecialty();
 
 	/**
 	 * Returns all drops of this block if you harvest it.
@@ -98,12 +98,6 @@ public interface IFruit extends IRegistryAlleleValue {
 	 * @param ripeningTime The repining time of the block. From 0 to {@link #getRipeningPeriod()}.
 	 */
 	List<ItemStack> getFruits(IGenome genome, Level level, BlockPos pos, int ripeningTime);
-
-	/**
-	 * @return The location of the pod model in the "modid:pods/" folder.
-	 */
-	@Nullable
-	String getModelName();
 
 	/**
 	 * @param ripeningTime Elapsed ripening time for the fruit.

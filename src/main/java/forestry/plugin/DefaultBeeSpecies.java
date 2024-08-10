@@ -15,6 +15,7 @@ import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.plugin.IApicultureRegistration;
 import forestry.apiculture.features.ApicultureItems;
+import forestry.apiculture.genetics.FireworkProduct;
 import forestry.apiculture.genetics.HermitBeeJubilance;
 import forestry.apiculture.items.EnumHoneyComb;
 import forestry.apiculture.items.EnumPollenCluster;
@@ -523,6 +524,7 @@ public class DefaultBeeSpecies {
 				.setBody(new Color(0xb31942))
 				.setStripes(new Color(0xffffff))
 				.addProduct(new ItemStack(Items.GUNPOWDER), 0.45f)
+				.addProduct(new FireworkProduct(0.20f))
 				// todo specialty is a random firework
 				.setGenome(genome -> {
 					genome.set(BeeChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_UP_2);
@@ -537,6 +539,7 @@ public class DefaultBeeSpecies {
 								.restrictDateRange(Month.JULY, 1, Month.JULY, 17);
 					}
 				})
+				.setNocturnal(true)
 				.setAuthority("TheDarkColour")
 				.setSecret(true);
 

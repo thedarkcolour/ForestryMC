@@ -29,7 +29,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 
-import forestry.api.core.Product;
+import forestry.api.core.IProduct;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
@@ -222,12 +222,12 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 
 	@Override
 	public float getResearchSuitability(IButterflySpecies species, ItemStack stack) {
-		for (Product product : species.getButterflyLoot()) {
+		for (IProduct product : species.getButterflyLoot()) {
 			if (stack.is(product.item())) {
 				return 1.0f;
 			}
 		}
-		for (Product product : species.getCaterpillarProducts()) {
+		for (IProduct product : species.getCaterpillarProducts()) {
 			if (stack.is(product.item())) {
 				return 1.0f;
 			}
