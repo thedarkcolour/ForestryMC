@@ -94,7 +94,6 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		// Bee type
 		genetics.registerSpeciesType(ForestrySpeciesTypes.BEE, BeeSpeciesType::new)
 				.setKaryotype(karyotype -> {
-					// TODO Allowed alleles are added later by IApicultureRegistration
 					karyotype.setSpecies(BeeChromosomes.SPECIES, ForestryBeeSpecies.FOREST);
 					karyotype.set(BeeChromosomes.SPEED, ForestryAlleles.SPEED_SLOWEST)
 							.addAlleles(ForestryAlleles.DEFAULT_SPEEDS);
@@ -109,11 +108,9 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 					karyotype.set(BeeChromosomes.NEVER_SLEEPS, false);
 					karyotype.set(BeeChromosomes.CAVE_DWELLING, false);
 					karyotype.set(BeeChromosomes.TOLERATES_RAIN, false);
-					// TODO Allowed alleles are added later by IApicultureRegistration
 					karyotype.set(BeeChromosomes.FLOWER_TYPE, ForestryAlleles.FLOWER_TYPE_VANILLA);
 					karyotype.set(BeeChromosomes.TERRITORY, ForestryAlleles.TERRITORY_AVERAGE)
 							.addAlleles(ForestryAlleles.DEFAULT_TERRITORIES);
-					// TODO Allowed alleles are added later by IApicultureRegistration
 					karyotype.set(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_NONE);
 					karyotype.set(BeeChromosomes.POLLINATION, ForestryAlleles.POLLINATION_SLOWEST)
 							.addAlleles(ForestryAlleles.DEFAULT_POLLINATIONS);
@@ -129,13 +126,11 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 							.addAlleles(ForestryAlleles.DEFAULT_HEIGHTS);
 					karyotype.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOWER)
 							.addAlleles(ForestryAlleles.DEFAULT_SAPLINGS);
-					// todo
 					karyotype.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_NONE);
 					karyotype.set(TreeChromosomes.YIELD, ForestryAlleles.YIELD_LOWEST)
 							.addAlleles(ForestryAlleles.DEFAULT_YIELDS);
 					karyotype.set(TreeChromosomes.SAPPINESS, ForestryAlleles.SAPPINESS_LOWEST)
 							.addAlleles(ForestryAlleles.DEFAULT_SAPPINESSES);
-					// todo allowed alleles are added later
 					karyotype.set(TreeChromosomes.EFFECT, ForestryAlleles.TREE_EFFECT_NONE);
 					karyotype.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_AVERAGE)
 							.addAlleles(ForestryAlleles.DEFAULT_MATURATIONS);
@@ -149,7 +144,6 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		// Butterfly type
 		genetics.registerSpeciesType(ForestrySpeciesTypes.BUTTERFLY, ButterflySpeciesType::new)
 				.setKaryotype(karyotype -> {
-					// todo
 					karyotype.setSpecies(ButterflyChromosomes.SPECIES, ForestryButterflySpecies.MONARCH);
 					karyotype.set(ButterflyChromosomes.SIZE, ForestryAlleles.SIZE_SMALL)
 							.addAlleles(ForestryAlleles.DEFAULT_SIZES);
@@ -169,9 +163,7 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 					karyotype.set(ButterflyChromosomes.TOLERATES_RAIN, false);
 					karyotype.set(ButterflyChromosomes.FIREPROOF, false);
 					karyotype.set(ButterflyChromosomes.FLOWER_TYPE, ForestryAlleles.FLOWER_TYPE_VANILLA);
-					// todo
 					karyotype.set(ButterflyChromosomes.EFFECT, ForestryAlleles.BUTTERFLY_EFFECT_NONE);
-					// todo
 					karyotype.set(ButterflyChromosomes.COCOON, ForestryAlleles.COCOON_DEFAULT);
 				})
 				.addStages(ButterflyLifeStage.BUTTERFLY, ButterflyLifeStage.SERUM, ButterflyLifeStage.CATERPILLAR, ButterflyLifeStage.COCOON)

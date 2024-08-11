@@ -530,6 +530,7 @@ public class DefaultBeeSpecies {
 					genome.set(BeeChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_UP_2);
 					genome.set(BeeChromosomes.HUMIDITY_TOLERANCE, ForestryAlleles.TOLERANCE_UP_1);
 					genome.set(BeeChromosomes.TERRITORY, ForestryAlleles.TERRITORY_LARGEST);
+					genome.set(BeeChromosomes.NEVER_SLEEPS, true);
 					// todo fireworks on 4th of July effect
 					//genome.set(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_PATRIOTIC);
 				})
@@ -539,7 +540,6 @@ public class DefaultBeeSpecies {
 								.restrictDateRange(Month.JULY, 1, Month.JULY, 17);
 					}
 				})
-				.setNocturnal(true)
 				.setAuthority("TheDarkColour")
 				.setSecret(true);
 
