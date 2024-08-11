@@ -59,7 +59,6 @@ import forestry.apiculture.ModuleApiculture;
 import forestry.apiculture.WorldgenBeekeepingLogic;
 import forestry.apiculture.blocks.BlockBeeHive;
 import forestry.apiculture.features.ApicultureTiles;
-import forestry.core.config.Config;
 import forestry.core.inventory.InventoryAdapter;
 import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
@@ -96,7 +95,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 	}
 
 	public void tick() {
-		if (Config.generateBeehivesDebug) {
+		if (false) {
 			return;
 		}
 		tickHelper.onTick();

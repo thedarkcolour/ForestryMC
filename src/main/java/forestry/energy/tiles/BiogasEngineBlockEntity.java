@@ -51,6 +51,8 @@ import forestry.energy.menu.BiogasEngineMenu;
 import static net.minecraftforge.fluids.FluidType.BUCKET_VOLUME;
 
 public class BiogasEngineBlockEntity extends EngineBlockEntity implements WorldlyContainer, ILiquidTankTile {
+	public static final int ENGINE_BRONZE_HEAT_MAX = 10000;
+	public static final int ENGINE_BRONZE_HEAT_GENERATION_ENERGY = 1;
 	private final FilteredTank fuelTank;
 	private final FilteredTank heatingTank;
 	private final StandardTank burnTank;
@@ -61,7 +63,7 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 	private final LazyOptional<IFluidHandler> fluidCap;
 
 	public BiogasEngineBlockEntity(BlockPos pos, BlockState state) {
-		super(EnergyTiles.BIOGAS_ENGINE.tileType(), pos, state, "engine.bronze", Constants.ENGINE_BRONZE_HEAT_MAX, 300000);
+		super(EnergyTiles.BIOGAS_ENGINE.tileType(), pos, state, "engine.bronze", ENGINE_BRONZE_HEAT_MAX, 300000);
 
 		setInternalInventory(new InventoryEngineBiogas(this));
 
@@ -189,11 +191,11 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 		if (isRedstoneActivated() && burnTank.getFluidAmount() > 0) {
 			double heatStage = getHeatLevel();
 			if (heatStage >= 0.75) {
-				generate += Constants.ENGINE_BRONZE_HEAT_GENERATION_ENERGY * 3;
+				generate += ENGINE_BRONZE_HEAT_GENERATION_ENERGY * 3;
 			} else if (heatStage > 0.24) {
-				generate += Constants.ENGINE_BRONZE_HEAT_GENERATION_ENERGY * 2;
+				generate += ENGINE_BRONZE_HEAT_GENERATION_ENERGY * 2;
 			} else if (heatStage > 0.2) {
-				generate += Constants.ENGINE_BRONZE_HEAT_GENERATION_ENERGY;
+				generate += ENGINE_BRONZE_HEAT_GENERATION_ENERGY;
 			}
 		}
 

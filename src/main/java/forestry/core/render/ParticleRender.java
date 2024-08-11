@@ -3,20 +3,20 @@ package forestry.core.render;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.ParticleStatus;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.Level;
 
 import com.mojang.math.Vector3f;
 
@@ -29,25 +29,24 @@ import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.apiculture.particles.ParticleSnow;
 import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.particles.BeeParticleData;
 import forestry.apiculture.particles.BeeTargetParticleData;
-import forestry.core.config.Config;
+import forestry.apiculture.particles.ParticleSnow;
+import forestry.core.config.ForestryConfig;
 import forestry.core.entities.ParticleIgnition;
 import forestry.core.entities.ParticleSmoke;
 import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
-
-import forestry.api.genetics.IGenome;
 
 @OnlyIn(Dist.CLIENT)
 public class ParticleRender {
 	private static final DustParticleOptions HONEY_DUST = new DustParticleOptions(new Vector3f(0.9F, 0.75F, 0.0F), 1.0F);
 
 	public static boolean shouldSpawnParticle(Level world) {
-		if (!Config.enableParticleFX) {
+		if (!ForestryConfig.CLIENT.showParticles.get()) {
 			return false;
 		}
 

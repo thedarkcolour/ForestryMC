@@ -12,7 +12,7 @@ package forestry.lepidopterology.entities;
 
 import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IPollinatable;
-import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.core.config.ForestryConfig;
 import forestry.core.utils.GeneticsUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 
@@ -51,7 +51,7 @@ public class AIButterflyPollinate extends AIButterflyInteract {
 					entity.setPollen(checkPollinatable.getPollen());
 					entity.changeExhaustion(-entity.getExhaustion());
 				} else if (checkPollinatable.canMateWith(entity.getPollen())) {
-					IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(null, entity.level, rest, false);
+					IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(null, entity.level, rest, ForestryConfig.SERVER.pollinateVanillaLeaves.get());
 					if (realPollinatable != null) {
 						realPollinatable.mateWith(entity.getPollen());
 						entity.setPollen(null);

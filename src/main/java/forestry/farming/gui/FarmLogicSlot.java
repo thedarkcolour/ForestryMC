@@ -22,14 +22,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmType;
-import forestry.core.config.Config;
 import forestry.core.gui.GuiUtil;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.farming.multiblock.IFarmControllerInternal;
 
 public class FarmLogicSlot extends Widget {
-
 	private final IFarmControllerInternal farmController;
 	private final Direction farmDirection;
 
@@ -74,7 +72,7 @@ public class FarmLogicSlot extends Widget {
 		public void refresh() {
 			toolTip.clear();
 			toolTip.add(getProperties().getDisplayName(getLogic().isManual()));
-			toolTip.add(Component.translatable("for.gui.farm.fertilizer", Math.round(getProperties().getFertilizerConsumption(farmController) * Config.fertilizerModifier)));
+			toolTip.add(Component.translatable("for.gui.farm.fertilizer", getProperties().getFertilizerConsumption(farmController)));
 			toolTip.add(Component.translatable("for.gui.farm.water", getProperties().getWaterConsumption(farmController, farmController.getFarmLedgerDelegate().getHydrationModifier())));
 		}
 	};

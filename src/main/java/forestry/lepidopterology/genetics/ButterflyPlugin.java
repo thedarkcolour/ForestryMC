@@ -3,7 +3,6 @@ package forestry.lepidopterology.genetics;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.ISpecies;
@@ -11,9 +10,9 @@ import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.api.lepidopterology.ForestryButterflySpecies;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.core.config.Config;
 import forestry.core.genetics.analyzer.DatabasePlugin;
 import forestry.core.genetics.analyzer.MutationsTab;
+import forestry.core.gui.GuiForestry;
 import forestry.core.utils.SpeciesUtil;
 
 public class ButterflyPlugin extends DatabasePlugin<IButterfly> {
@@ -33,6 +32,6 @@ public class ButterflyPlugin extends DatabasePlugin<IButterfly> {
 
 	@Override
 	public List<String> getHints() {
-		return Config.hints.get("flutterlyzer");
+		return GuiForestry.HINTS.get("flutterlyzer");
 	}
 }

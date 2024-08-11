@@ -12,8 +12,6 @@ package forestry.lepidopterology.worldgen;
 
 import javax.annotation.Nullable;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -28,17 +26,17 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import forestry.Forestry;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
-import forestry.core.config.Config;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.lepidopterology.tiles.TileCocoon;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 	public CocoonDecorator() {
@@ -100,10 +98,6 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 
 		cocoonBlock.onPlace(state, world.getLevel(), pos, cocoonBlock.defaultBlockState(), false);
 		world.getLevel().setBlocksDirty(pos, state, cocoonBlock.defaultBlockState());
-
-		if (Config.logCocoonPlacement) {
-			Forestry.LOGGER.info("Placed {} at {}", cocoonBlock, pos);
-		}
 
 		return true;
 	}

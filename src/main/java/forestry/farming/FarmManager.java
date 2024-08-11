@@ -33,7 +33,6 @@ import forestry.api.farming.ICrop;
 import forestry.api.farming.IExtentCache;
 import forestry.api.farming.IFarmListener;
 import forestry.api.farming.IFarmLogic;
-import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.StandardTank;
@@ -194,7 +193,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 
 		if (farmWorkStatus.hasFarmland && !FarmHelper.isCycleCanceledByListeners(logic, farmSide, farmListeners)) {
 			final float hydrationModifier = hydrationManager.getHydrationModifier();
-			final int fertilizerConsumption = Math.round(logic.getType().getFertilizerConsumption(housing) * Config.fertilizerModifier);
+			final int fertilizerConsumption = Math.round(logic.getType().getFertilizerConsumption(housing));
 			final int liquidConsumption = logic.getType().getWaterConsumption(housing, hydrationModifier);
 			final FluidStack liquid = new FluidStack(Fluids.WATER, liquidConsumption);
 
@@ -245,7 +244,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 			}
 		}
 
-		int fertilizerConsumption = Math.round(provider.getType().getFertilizerConsumption(housing) * Config.fertilizerModifier);
+		int fertilizerConsumption = provider.getType().getFertilizerConsumption(housing);
 
 		IErrorLogic errorLogic = housing.getErrorLogic();
 

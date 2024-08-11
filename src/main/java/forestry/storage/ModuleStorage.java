@@ -29,7 +29,7 @@ import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.storage.IBackpackInterface;
-import forestry.core.config.Config;
+import forestry.core.config.ForestryConfig;
 import forestry.modules.BlankForestryModule;
 import forestry.storage.client.StorageClientHandler;
 
@@ -59,7 +59,8 @@ public class ModuleStorage extends BlankForestryModule {
 	}
 
 	private static void onLevelTick(TickEvent.LevelTickEvent event) {
-		if (Config.enableBackpackResupply) {
+		// todo use register/unregister on the IEventBus
+		if (ForestryConfig.SERVER.enableBackpackResupply.get()) {
 			if (event.phase == TickEvent.Phase.END) {
 				for (Player player : event.level.players()) {
 					BackpackResupplyHandler.resupply(player);

@@ -41,7 +41,7 @@ import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.api.plugin.IGenomeBuilder;
-import forestry.core.config.Config;
+import forestry.core.config.ForestryConfig;
 
 public class SpeciesUtil {
 	public static final Lazy<IBeeSpeciesType> BEE_TYPE = Lazy.of(() -> IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(ForestrySpeciesTypes.BEE, IBeeSpeciesType.class));
@@ -124,8 +124,8 @@ public class SpeciesUtil {
 				continue;
 			}
 			if (tracker != null && tracker.isResearched(mutation)) {
-				float mutationBoost = chance * (Config.researchMutationBoostMultiplier - 1.0f);
-				mutationBoost = Math.min(Config.maxResearchMutationBoostPercent, mutationBoost);
+				float mutationBoost = chance * (ForestryConfig.SERVER.researchMutationBoostMultiplier.get().floatValue() - 1.0f);
+				mutationBoost = Math.min(ForestryConfig.SERVER.maxResearchMutationBoostPercent.get().floatValue(), mutationBoost);
 				chance += mutationBoost;
 			}
 			if (chance > level.random.nextFloat() * 100) {

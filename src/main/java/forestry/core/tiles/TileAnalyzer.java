@@ -38,7 +38,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
-import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.api.core.ForestryError;
 import forestry.core.features.CoreTiles;
@@ -58,6 +57,8 @@ import forestry.core.utils.SpeciesUtil;
 public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiquidTankTile, IItemStackDisplay {
 	private static final int TIME_TO_ANALYZE = 125;
 	private static final int HONEY_REQUIRED = 100;
+	// Genetics
+	public static int analyzerEnergyPerWork = 20320;
 
 	private final FilteredTank resourceTank;
 	private final TankManager tankManager;
@@ -237,7 +238,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			setEnergyPerWorkCycle(0);
 		} else {
 			setTicksPerWorkCycle(TIME_TO_ANALYZE);
-			setEnergyPerWorkCycle(Config.analyzerEnergyPerWork);
+			setEnergyPerWorkCycle(analyzerEnergyPerWork);
 		}
 
 		PacketItemStackDisplay packet = new PacketItemStackDisplay(this, getIndividualOnDisplay());

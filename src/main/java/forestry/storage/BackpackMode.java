@@ -24,10 +24,10 @@ public enum BackpackMode implements StringRepresentable {
 	public static final BackpackMode[] VALUES = values();
 
 	@Nullable
-	private final String translationkey;
+	private final String translationKey;
 
-	BackpackMode(@Nullable String translationkey) {
-		this.translationkey = translationkey;
+	BackpackMode(@Nullable String translationKey) {
+		this.translationKey = translationKey;
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public enum BackpackMode implements StringRepresentable {
 	}
 
 	@Nullable
-	public String getTranslationkey() {
-		return translationkey;
+	public String getTranslationKey() {
+		return this.translationKey;
 	}
 }

@@ -52,7 +52,7 @@ import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
 import forestry.api.multiblock.IFarmComponent;
 import forestry.api.multiblock.IMultiblockComponent;
-import forestry.core.config.Config;
+import forestry.core.config.ForestryConfig;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
@@ -368,7 +368,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		int sizeEastWest = Math.abs(max.getX() - min.getX()) + 1;
 
 		// Set the maximum allowed extent.
-		allowedExtent = Math.max(sizeNorthSouth, sizeEastWest) * Config.farmSize + 1;
+		allowedExtent = Math.max(sizeNorthSouth, sizeEastWest) * ForestryConfig.SERVER.multiFarmSize.get() + 1;
 
 		FarmHelper.createTargets(level, this, targets, targetStart, allowedExtent, sizeNorthSouth, sizeEastWest, min, max);
 		FarmHelper.setExtents(level, this, targets);
@@ -487,7 +487,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 	@Override
 	public boolean isSquare() {
-		return Config.squareFarms;
+		return ForestryConfig.SERVER.squareMultiFarms.get();
 	}
 
 	@Override

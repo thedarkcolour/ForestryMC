@@ -28,8 +28,8 @@ import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
-import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
+import forestry.core.gui.GuiForestry;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
@@ -248,7 +248,7 @@ public enum TreeAlyzerPlugin implements IAlyzerPlugin {
 
 	@Override
 	public List<String> getHints() {
-		return Config.hints.get("treealyzer");
+		return GuiForestry.HINTS.get("treealyzer");
 	}
 
 }

@@ -10,17 +10,8 @@
  ******************************************************************************/
 package forestry.core.items;
 
-import forestry.api.core.ItemGroups;
-import forestry.core.config.Config;
-import forestry.core.config.Constants;
-import forestry.core.fluids.ForestryFluids;
-import forestry.core.items.definitions.DrinkProperties;
-import forestry.core.items.definitions.EnumContainerType;
-import forestry.core.items.definitions.FluidHandlerItemForestry;
-import forestry.core.items.definitions.IColoredItem;
-import forestry.core.models.FluidContainerModel;
-import forestry.core.utils.ModUtil;
-import forestry.core.utils.Translator;
+import javax.annotation.Nullable;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -43,6 +34,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -55,7 +47,16 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nullable;
+import forestry.api.core.ItemGroups;
+import forestry.core.config.Constants;
+import forestry.core.fluids.ForestryFluids;
+import forestry.core.items.definitions.DrinkProperties;
+import forestry.core.items.definitions.EnumContainerType;
+import forestry.core.items.definitions.FluidHandlerItemForestry;
+import forestry.core.items.definitions.IColoredItem;
+import forestry.core.models.FluidContainerModel;
+import forestry.core.utils.ModUtil;
+import forestry.core.utils.Translator;
 
 public class ItemFluidContainerForestry extends ItemForestry implements IColoredItem {
 	private final EnumContainerType type;
@@ -187,25 +188,23 @@ public class ItemFluidContainerForestry extends ItemForestry implements IColored
 				return new InteractionResultHolder<>(InteractionResult.FAIL, heldItem);
 			}
 		} else {
-			if (Config.CapsuleFluidPickup) {
-				BlockHitResult target = getPlayerPOVHitResult(world, player, ClipContext.Fluid.SOURCE_ONLY);
-				if (target.getType() != HitResult.Type.BLOCK) {
-					return InteractionResultHolder.pass(heldItem);
+			BlockHitResult target = getPlayerPOVHitResult(world, player, ClipContext.Fluid.SOURCE_ONLY);
+			if (target.getType() != HitResult.Type.BLOCK) {
+				return InteractionResultHolder.pass(heldItem);
+			}
+			ItemStack singleBucket = heldItem.copy();
+			singleBucket.setCount(1);
+
+			FluidActionResult filledResult = FluidUtil.tryPickUpFluid(singleBucket, player, world, target.getBlockPos(), target.getDirection());
+			if (filledResult.isSuccess()) {
+				ItemHandlerHelper.giveItemToPlayer(player, filledResult.result);
+
+				if (!player.isCreative()) {
+					// Remove consumed empty container
+					heldItem.shrink(1);
 				}
-				ItemStack singleBucket = heldItem.copy();
-				singleBucket.setCount(1);
 
-				FluidActionResult filledResult = FluidUtil.tryPickUpFluid(singleBucket, player, world, target.getBlockPos(), target.getDirection());
-				if (filledResult.isSuccess()) {
-					ItemHandlerHelper.giveItemToPlayer(player, filledResult.result);
-
-					if (!player.isCreative()) {
-						// Remove consumed empty container
-						heldItem.shrink(1);
-					}
-
-					return InteractionResultHolder.success(heldItem);
-				}
+				return InteractionResultHolder.success(heldItem);
 			}
 			return super.use(world, player, handIn);
 		}

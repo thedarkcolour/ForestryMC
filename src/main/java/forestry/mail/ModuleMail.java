@@ -27,8 +27,7 @@ import forestry.api.mail.PostManager;
 import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IPacketRegistry;
-import forestry.core.ModuleCore;
-import forestry.core.config.Config;
+import forestry.core.config.ForestryConfig;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
 import forestry.mail.client.MailClientHandler;
@@ -53,9 +52,7 @@ public class ModuleMail extends BlankForestryModule {
 	public void registerEvents(IEventBus modBus) {
 		MinecraftForge.EVENT_BUS.addListener(ModuleMail::onWorldLoad);
 
-		if (Config.mailAlertEnabled) {
-			MinecraftForge.EVENT_BUS.register(new EventHandlerMailAlert());
-		}
+		MinecraftForge.EVENT_BUS.register(new EventHandlerMailAlert());
 	}
 
 	private static void onWorldLoad(LevelEvent.Load event) {

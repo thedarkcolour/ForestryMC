@@ -36,7 +36,7 @@ import forestry.api.core.TemperatureType;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
-import forestry.core.config.Config;
+import forestry.core.config.ForestryConfig;
 import forestry.core.fluids.ITankManager;
 import forestry.core.network.IStreamableGui;
 import forestry.core.owner.IOwnedTile;
@@ -149,10 +149,10 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 		BlockPos minPos = worldPosition;
 		BlockPos maxPos = worldPosition;
 		int size = 1;
-		int extend = Config.planterExtend;
+		int extend = ForestryConfig.SERVER.legacyFarmsPlanterRings.get();
 
-		if (Config.ringFarms) {
-			int ringSize = Config.ringSize;
+		if (ForestryConfig.SERVER.legacyFarmsUseRings.get()) {
+			int ringSize = ForestryConfig.SERVER.legacyFarmsRingSize.get();
 			minPos = worldPosition.offset(-ringSize, 0, -ringSize);
 			maxPos = worldPosition.offset(ringSize, 0, ringSize);
 			size = 1 + ringSize * 2;
@@ -177,10 +177,10 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	public Vec3i getArea() {
 		if (area == null) {
 			int basisArea = 5;
-			if (Config.ringFarms) {
-				basisArea = basisArea + 1 + Config.ringSize * 2;
+			if (ForestryConfig.SERVER.legacyFarmsUseRings.get()) {
+				basisArea = basisArea + 1 + ForestryConfig.SERVER.legacyFarmsRingSize.get() * 2;
 			}
-			area = new Vec3i(basisArea + Config.planterExtend, 13, basisArea + Config.planterExtend);
+			area = new Vec3i(basisArea + ForestryConfig.SERVER.legacyFarmsPlanterRings.get(), 13, basisArea + ForestryConfig.SERVER.legacyFarmsPlanterRings.get());
 		}
 		return area;
 	}

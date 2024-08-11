@@ -72,7 +72,7 @@ public class CoreItems {
 	public static final FeatureItemGroup<ItemElectronTube, EnumElectronTube> ELECTRON_TUBES = REGISTRY.itemGroup(ItemElectronTube::new, "electron_tube", EnumElectronTube.values());
 
 	/* Armor */
-	public static final FeatureItem<ItemArmorNaturalist> SPECTACLES = REGISTRY.item(ItemArmorNaturalist::new, "naturalist_helmet");
+	public static final FeatureItem<ItemSpectacles> SPECTACLES = REGISTRY.item(ItemSpectacles::new, "naturalist_helmet");
 
 	/* Peat */
 	public static final FeatureItem<ItemForestry> PEAT = REGISTRY.item(() -> new ItemForestry(new ItemProperties().burnTime(2000)), "peat");

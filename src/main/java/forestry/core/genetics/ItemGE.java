@@ -27,13 +27,13 @@ import net.minecraft.world.level.Level;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import forestry.Forestry;
 import forestry.api.ForestryCapabilities;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.core.config.Config;
 import forestry.core.genetics.capability.SerializableIndividualHandlerItem;
 import forestry.core.items.ItemForestry;
 import forestry.core.utils.GeneticsUtil;
@@ -125,7 +125,7 @@ public abstract class ItemGE extends ItemForestry {
 	public static <S extends ISpecies<I>, I extends IIndividual> void addCreativeItems(ILifeStage stage, List<ItemStack> subItems, boolean hideSecrets, ISpeciesType<S, I> type) {
 		for (S species : type.getAllSpecies()) {
 			// Don't show secrets unless ordered to.
-			if (hideSecrets && species.isSecret() && !Config.isDebug) {
+			if (hideSecrets && species.isSecret() && !Forestry.DEBUG) {
 				continue;
 			}
 

@@ -23,13 +23,9 @@ import net.minecraft.util.FormattedCharSequence;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.api.ForestryConstants;
 import forestry.api.client.ForestrySprites;
 import forestry.api.client.IForestryClientApi;
-import forestry.core.config.Config;
 import forestry.core.config.Constants;
 import forestry.core.config.SessionVars;
 import forestry.core.gui.GuiForestry;
@@ -37,9 +33,9 @@ import forestry.core.gui.GuiForestry;
 /**
  * Side ledger for guis
  */
-@OnlyIn(Dist.CLIENT)
 public abstract class Ledger {
-
+	// Gui tabs (Ledger)
+	public static final int guiTabSpeed = 8;
 	protected static final int minWidth = 24;
 	public static final int minHeight = 24;
 	protected final int maxWidth;
@@ -108,7 +104,7 @@ public abstract class Ledger {
 			updateTime = System.currentTimeMillis();
 		}
 
-		float moveAmount = Config.guiTabSpeed * (updateTime - lastUpdateTime) / msPerUpdate;
+		float moveAmount = guiTabSpeed * (updateTime - lastUpdateTime) / msPerUpdate;
 
 		lastUpdateTime = updateTime;
 
@@ -152,12 +148,10 @@ public abstract class Ledger {
 		this.y = y;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public final void draw(PoseStack transform) {
 		draw(transform, y, x);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public abstract void draw(PoseStack transform, int y, int x);
 
 	public abstract Component getTooltip();

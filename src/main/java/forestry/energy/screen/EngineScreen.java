@@ -8,11 +8,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.ForestryConstants;
 import forestry.api.client.IForestryClientApi;
-import forestry.core.config.Config;
 import forestry.core.gui.GuiForestryTitled;
+import forestry.core.gui.GuiUtil;
 import forestry.core.gui.ledgers.Ledger;
 import forestry.core.gui.ledgers.LedgerManager;
-import forestry.core.render.ForestryTextureManager;
 import forestry.energy.tiles.EngineBlockEntity;
 
 public class EngineScreen<M extends AbstractContainerMenu, E extends EngineBlockEntity> extends GuiForestryTitled<M> {
@@ -43,10 +42,10 @@ public class EngineScreen<M extends AbstractContainerMenu, E extends EngineBlock
 				drawHeader(transform, Component.translatable("for.gui.energy"), x + 22, y + 8);
 
 				drawSubheader(transform, Component.translatable("for.gui.currentOutput").append(":"), x + 22, y + 20);
-				drawText(transform, Config.energyDisplayMode.formatRate(engine.getCurrentOutput()), x + 22, y + 32);
+				drawText(transform, GuiUtil.formatRate(engine.getCurrentOutput()), x + 22, y + 32);
 
 				drawSubheader(transform, Component.translatable("for.gui.stored").append(":"), x + 22, y + 44);
-				drawText(transform, Config.energyDisplayMode.formatEnergyValue(engine.getEnergyManager().getEnergyStored()), x + 22, y + 56);
+				drawText(transform, GuiUtil.formatEnergyValue(engine.getEnergyManager().getEnergyStored()), x + 22, y + 56);
 
 				drawSubheader(transform, Component.translatable("for.gui.heat").append(":"), x + 22, y + 68);
 				drawText(transform, (double) engine.getHeat() / (double) 10 + 20.0 + " C", x + 22, y + 80);
@@ -55,7 +54,7 @@ public class EngineScreen<M extends AbstractContainerMenu, E extends EngineBlock
 
 		@Override
 		public Component getTooltip() {
-			return Component.translatable(Config.energyDisplayMode.formatRate(engine.getCurrentOutput()));
+			return Component.translatable(GuiUtil.formatRate(engine.getCurrentOutput()));
 		}
 	}
 

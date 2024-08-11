@@ -11,10 +11,10 @@ import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.items.EnumHoneyComb;
-import forestry.core.config.Config;
 import forestry.core.genetics.analyzer.DatabasePlugin;
 import forestry.core.genetics.analyzer.MutationsTab;
 import forestry.core.genetics.analyzer.ProductsTab;
+import forestry.core.gui.GuiForestry;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
 
@@ -39,6 +39,6 @@ public class BeePlugin extends DatabasePlugin<IBee> {
 
 	@Override
 	public List<String> getHints() {
-		return Config.hints.get("beealyzer");
+		return GuiForestry.HINTS.get("beealyzer");
 	}
 }

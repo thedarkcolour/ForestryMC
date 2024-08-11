@@ -10,11 +10,11 @@ import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.gatgets.DatabaseMode;
 import forestry.arboriculture.features.ArboricultureItems;
-import forestry.core.config.Config;
 import forestry.core.features.CoreItems;
 import forestry.core.genetics.analyzer.DatabasePlugin;
 import forestry.core.genetics.analyzer.MutationsTab;
 import forestry.core.genetics.analyzer.ProductsTab;
+import forestry.core.gui.GuiForestry;
 import forestry.core.items.ItemFruit;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
@@ -39,6 +39,6 @@ public class TreePlugin extends DatabasePlugin<ITree> {
 
 	@Override
 	public List<String> getHints() {
-		return Config.hints.get("treealyzer");
+		return GuiForestry.HINTS.get("treealyzer");
 	}
 }

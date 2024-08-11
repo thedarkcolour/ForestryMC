@@ -20,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
-import forestry.core.config.Constants;
 import forestry.storage.gui.ContainerNaturalistBackpack;
 import forestry.storage.inventory.ItemInventoryBackpackPaged;
 
@@ -41,7 +40,7 @@ public class ItemBackpackNaturalist extends ItemBackpack {
 
 	@Override
 	public AbstractContainerMenu getContainer(int windowId, Player player, ItemStack heldItem) {
-		ItemInventoryBackpackPaged inventory = new ItemInventoryBackpackPaged(player, Constants.SLOTS_BACKPACK_APIARIST, heldItem, this);
+		ItemInventoryBackpackPaged inventory = new ItemInventoryBackpackPaged(player, ItemBackpack.SLOTS_BACKPACK_APIARIST, heldItem, this);
 		return new ContainerNaturalistBackpack(windowId, player.getInventory(), inventory, 0, typeId);
 	}
 }

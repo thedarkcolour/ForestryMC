@@ -11,7 +11,6 @@
 package forestry.lepidopterology.items;
 
 import java.util.List;
-import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -27,15 +26,14 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import forestry.Forestry;
 import forestry.api.core.ItemGroups;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
-import forestry.core.config.Config;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
 import forestry.core.utils.BlockUtil;
@@ -75,7 +73,7 @@ public class ItemButterflyGE extends ItemGE implements IColoredItem {
 			for (int age = 0; age < MAX_AGE; age++) {
 				for (IButterflySpecies species : SpeciesUtil.getAllButterflySpecies()) {
 					// Don't show secret butterflies unless ordered to.
-					if (hideSecrets && species.isSecret() && !Config.isDebug) {
+					if (hideSecrets && species.isSecret() && !Forestry.DEBUG) {
 						continue;
 					}
 
@@ -89,7 +87,7 @@ public class ItemButterflyGE extends ItemGE implements IColoredItem {
 		} else {
 			for (IButterflySpecies species : SpeciesUtil.BUTTERFLY_TYPE.get().getAllSpecies()) {
 				// Don't show secret butterflies unless ordered to.
-				if (hideSecrets && species.isSecret() && !Config.isDebug) {
+				if (hideSecrets && species.isSecret() && !Forestry.DEBUG) {
 					continue;
 				}
 

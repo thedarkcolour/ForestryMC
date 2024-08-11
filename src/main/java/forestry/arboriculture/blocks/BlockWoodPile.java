@@ -29,8 +29,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.arboriculture.ICharcoalManager;
 import forestry.api.arboriculture.ICharcoalPileWall;
 import forestry.api.arboriculture.TreeManager;
+import forestry.arboriculture.charcoal.CharcoalManager;
 import forestry.arboriculture.features.CharcoalBlocks;
-import forestry.core.config.Config;
 
 // TODO: Fix propagation, aging
 public class BlockWoodPile extends Block {
@@ -108,7 +108,7 @@ public class BlockWoodPile extends Block {
 				if (state.getValue(AGE) < 7) {
 					world.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), Block.UPDATE_CLIENTS);
 				} else {
-					BlockState ashState = CharcoalBlocks.ASH.setValue(BlockAsh.AMOUNT, Math.min(Math.round(Config.charcoalAmountBase + getCharcoalAmount(world, pos)), 63));
+					BlockState ashState = CharcoalBlocks.ASH.setValue(BlockAsh.AMOUNT, Math.min(Math.round(CharcoalManager.charcoalAmountBase + getCharcoalAmount(world, pos)), 63));
 					world.setBlock(pos, ashState, Block.UPDATE_CLIENTS);
 				}
 			}
@@ -165,7 +165,7 @@ public class BlockWoodPile extends Block {
 		for (Direction facing : Direction.VALUES) {
 			charcoalAmount += getCharcoalFaceAmount(world, pos, facing);
 		}
-		return Mth.clamp(charcoalAmount / 6, Config.charcoalAmountBase, 63.0F - Config.charcoalAmountBase);
+		return Mth.clamp(charcoalAmount / 6, CharcoalManager.charcoalAmountBase, 63.0F - CharcoalManager.charcoalAmountBase);
 	}
 
 	private int getCharcoalFaceAmount(Level world, BlockPos pos, Direction facing) {
@@ -174,7 +174,7 @@ public class BlockWoodPile extends Block {
 		BlockPos.MutableBlockPos testPos = pos.mutable();
 		testPos.move(facing);
 		int i = 0;
-		while (i < Config.charcoalWallCheckRange && world.hasChunkAt(testPos) && !world.isEmptyBlock(testPos)) {
+		while (i < CharcoalManager.charcoalWallCheckRange && world.hasChunkAt(testPos) && !world.isEmptyBlock(testPos)) {
 			BlockState state = world.getBlockState(testPos);
 			ICharcoalPileWall wall = charcoalManager.getWall(state);
 			if (wall != null) {

@@ -22,16 +22,17 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import forestry.Forestry;
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.hives.IHive;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
-import forestry.core.config.Config;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
+	// todo make configurable
+	public static final float generateBeehivesAmount = 1.0f;
+
 	public HiveDecorator() {
 		super(NoneFeatureConfiguration.CODEC);
 	}
@@ -76,14 +77,7 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 
 		hiveBlock.onPlace(state, world.getLevel(), pos, hiveState, false);
 
-		if (!Config.generateBeehivesDebug) {
-			hive.postGen(world, rand, pos);
-		}
-
-		if (Config.logHivePlacement) {
-			//getCoordinatesAsString
-			Forestry.LOGGER.info("Placed {} at {}", hive, pos.toShortString());
-		}
+		hive.postGen(world, rand, pos);
 
 		return true;
 	}
@@ -104,7 +98,7 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 			HumidityType humidity = IForestryApi.INSTANCE.getClimateManager().getHumidity(biome);
 
 			for (IHive hive : hives) {
-				if (hive.genChance() * Config.generateBeehivesAmount * hives.size() / 8 >= rand.nextFloat() * 0.5f) {
+				if (hive.genChance() * generateBeehivesAmount * hives.size() / 8 >= rand.nextFloat() * 0.5f) {
 					if (hive.isGoodBiome(biome) && hive.isGoodHumidity(humidity)) {
 						int x = pos.getX() + rand.nextInt(16);
 						int z = pos.getZ() + rand.nextInt(16);

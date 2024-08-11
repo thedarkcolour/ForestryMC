@@ -16,14 +16,17 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 
 import forestry.api.ForestryConstants;
 import forestry.api.IForestryApi;
+import forestry.apiimpl.plugin.PluginManager;
 import forestry.core.EventHandlerCore;
+import forestry.core.config.ForestryConfig;
 import forestry.core.network.NetworkHandler;
 import forestry.modules.ForestryModuleManager;
-import forestry.apiimpl.plugin.PluginManager;
 
 /**
  * Forestry Minecraft Mod
@@ -32,6 +35,7 @@ import forestry.apiimpl.plugin.PluginManager;
  */
 @Mod(ForestryConstants.MOD_ID)
 public class Forestry {
+	public static final boolean DEBUG = ModList.get().isLoaded("modkit");
 	public static final Logger LOGGER = LogManager.getLogger(ForestryConstants.MOD_ID);
 
 	public Forestry() {
@@ -42,5 +46,7 @@ public class Forestry {
 
 		PluginManager.loadPlugins();
 		PluginManager.registerErrors();
+
+		ForestryConfig.register(ModLoadingContext.get());
 	}
 }

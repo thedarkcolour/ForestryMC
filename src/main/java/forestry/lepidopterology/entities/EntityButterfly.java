@@ -68,7 +68,7 @@ import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
-import forestry.core.config.Config;
+import forestry.core.config.ForestryConfig;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.SpeciesUtil;
@@ -129,7 +129,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 
 	// Returns true if too many butterflies are in the same area according to config values
 	public static boolean isMaxButterflyCluster(Vec3 center, Level level) {
-		return level.getEntities(null, AABB.ofSize(center, Config.butterflyClusterWidth, Config.butterflyClusterHeight, Config.butterflyClusterWidth)).size() > Config.butterflyClusterLimit;
+		return level.getEntities(null, AABB.ofSize(center, ForestryConfig.SERVER.butterflyClusterWidth.get(), ForestryConfig.SERVER.butterflyClusterHeight.get(), ForestryConfig.SERVER.butterflyClusterWidth.get())).size() > ForestryConfig.SERVER.butterflyClusterLimit.get();
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.world.level.block.Block;
@@ -12,22 +11,24 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.arboriculture.ICharcoalManager;
 import forestry.api.arboriculture.ICharcoalPileWall;
-import forestry.core.config.Config;
 
 public class CharcoalManager implements ICharcoalManager {
+	// Charcoal
+	public static final int charcoalAmountBase = 8;
+	public static final int charcoalWallCheckRange = 16;
 	private final List<ICharcoalPileWall> walls = new ArrayList<>();
 
 	@Override
 	public void registerWall(Block block, int amount) {
 		Preconditions.checkNotNull(block, "block must not be null.");
-		Preconditions.checkArgument(amount > (-Config.charcoalAmountBase) && amount < (63 - Config.charcoalAmountBase), "amount must be bigger than -10 and smaller than 64.");
+		Preconditions.checkArgument(amount > (-charcoalAmountBase) && amount < (63 - charcoalAmountBase), "amount must be bigger than -10 and smaller than 64.");
 		walls.add(new CharcoalPileWall(block, amount));
 	}
 
 	@Override
 	public void registerWall(BlockState blockState, int amount) {
 		Preconditions.checkNotNull(blockState, "block state must not be null.");
-		Preconditions.checkArgument(amount > (-Config.charcoalAmountBase) && amount < (63 - Config.charcoalAmountBase), "amount must be bigger than -10 and smaller than 64.");
+		Preconditions.checkArgument(amount > (-charcoalAmountBase) && amount < (63 - charcoalAmountBase), "amount must be bigger than -10 and smaller than 64.");
 		walls.add(new CharcoalPileWall(blockState, amount));
 	}
 

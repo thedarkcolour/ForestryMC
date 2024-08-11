@@ -14,16 +14,13 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.core.IProduct;
-import forestry.api.core.Product;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IAlyzerPlugin;
@@ -37,8 +34,8 @@ import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
-import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
+import forestry.core.gui.GuiForestry;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
@@ -257,6 +254,6 @@ public enum ButterflyAlyzerPlugin implements IAlyzerPlugin {
 
 	@Override
 	public List<String> getHints() {
-		return Config.hints.get("flutterlyzer");
+		return GuiForestry.HINTS.get("flutterlyzer");
 	}
 }

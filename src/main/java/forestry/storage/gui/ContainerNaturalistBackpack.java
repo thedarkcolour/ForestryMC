@@ -18,13 +18,13 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.api.IForestryApi;
 import forestry.api.genetics.ISpeciesType;
-import forestry.core.config.Constants;
 import forestry.core.gui.ContainerItemInventory;
 import forestry.core.gui.ContainerNaturalistInventory;
 import forestry.core.gui.IGuiSelectable;
 import forestry.core.gui.INaturalistMenu;
 import forestry.storage.features.BackpackMenuTypes;
 import forestry.storage.inventory.ItemInventoryBackpackPaged;
+import forestry.storage.items.ItemBackpack;
 import forestry.storage.items.ItemBackpackNaturalist;
 
 public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInventoryBackpackPaged> implements IGuiSelectable, INaturalistMenu {
@@ -58,7 +58,7 @@ public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInve
 	public static ContainerNaturalistBackpack fromNetwork(int windowId, Inventory playerInventory, FriendlyByteBuf buffer) {
 		ItemStack parent = buffer.readItem();
 		ItemBackpackNaturalist backpack = (ItemBackpackNaturalist) parent.getItem();
-		ItemInventoryBackpackPaged paged = new ItemInventoryBackpackPaged(playerInventory.player, Constants.SLOTS_BACKPACK_APIARIST, parent, backpack);
+		ItemInventoryBackpackPaged paged = new ItemInventoryBackpackPaged(playerInventory.player, ItemBackpack.SLOTS_BACKPACK_APIARIST, parent, backpack);
 		int page = buffer.readByte();
 		return new ContainerNaturalistBackpack(windowId, playerInventory, paged, page, buffer.readResourceLocation());
 	}

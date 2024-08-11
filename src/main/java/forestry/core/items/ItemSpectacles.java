@@ -23,30 +23,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.api.ForestryConstants;
 import forestry.api.core.ItemGroups;
 import forestry.core.config.Constants;
 import forestry.core.utils.ItemTooltipUtil;
 
-public class ItemArmorNaturalist extends ArmorItem {
+public class ItemSpectacles extends ArmorItem {
+	public static final String TEXTURE_NATURALIST_ARMOR_PRIMARY = ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_PATH_ITEM + "/naturalist_armor_1.png";
 
-	public ItemArmorNaturalist() {
-		super(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, (new Item.Properties())
-				.durability(100)
-				.tab(ItemGroups.tabForestry));
+	public ItemSpectacles() {
+		super(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, (new Item.Properties()).durability(100).tab(ItemGroups.tabForestry));
 	}
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-		return ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_NATURALIST_ARMOR_PRIMARY;
+		return TEXTURE_NATURALIST_ARMOR_PRIMARY;
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced) {
-		ItemTooltipUtil.addInformation(stack, world, tooltip, advanced);
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag advanced) {
+		ItemTooltipUtil.addInformation(stack, level, tooltip, advanced);
 	}
 }

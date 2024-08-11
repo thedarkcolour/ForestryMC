@@ -1,18 +1,14 @@
 package forestry.core.items.definitions;
 
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
-
-import forestry.core.config.Config;
 
 /**
  * Fluid handler that consumes the container item after it was used.
- * <p>
- * This function can be disabled in the config with {@link Config#nonConsumableCapsules}.
  */
 public class FluidHandlerItemForestry extends FluidHandlerItemStackSimple.Consumable {
 	private final EnumContainerType containerType;
@@ -54,15 +50,6 @@ public class FluidHandlerItemForestry extends FluidHandlerItemStackSimple.Consum
 	protected void setFluid(FluidStack fluid) {
 		super.setFluid(fluid);
 		container.setDamageValue(1); // show the filled container model
-	}
-
-	@Override
-	protected void setContainerToEmpty() {
-		if (Config.nonConsumableCapsules) {        //default behaviour of FluidHandlerItemStack
-			container.getTag().remove(FLUID_NBT_KEY);
-		} else {
-			super.setContainerToEmpty();
-		}
 	}
 }
 

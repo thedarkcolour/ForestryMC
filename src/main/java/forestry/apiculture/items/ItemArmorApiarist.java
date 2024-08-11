@@ -28,9 +28,10 @@ import forestry.core.features.CoreItems;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 
 public class ItemArmorApiarist extends ArmorItem {
+	public static final String TEXTURE_APIARIST_ARMOR_PRIMARY = ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_PATH_ITEM + "/apiarist_armor_1.png";
+	public static final String TEXTURE_APIARIST_ARMOR_SECONDARY = ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_PATH_ITEM + "/apiarist_armor_2.png";
 
 	public static final class ApiaristArmorMaterial implements ArmorMaterial {
-
 		private static final int[] reductions = new int[]{1, 2, 3, 1};
 
 		@Override
@@ -55,7 +56,7 @@ public class ItemArmorApiarist extends ArmorItem {
 
 		@Override
 		public Ingredient getRepairIngredient() {
-			return Ingredient.of(CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.WOVEN_SILK, 1));
+			return Ingredient.of(CoreItems.CRAFTING_MATERIALS.get(EnumCraftingMaterial.WOVEN_SILK).get());
 		}
 
 		@Override
@@ -81,9 +82,9 @@ public class ItemArmorApiarist extends ArmorItem {
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 		if (ApicultureItems.APIARIST_LEGS.itemEqual(stack)) {
-			return ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_APIARIST_ARMOR_SECONDARY;
+			return TEXTURE_APIARIST_ARMOR_SECONDARY;
 		} else {
-			return ForestryConstants.MOD_ID + ":" + Constants.TEXTURE_APIARIST_ARMOR_PRIMARY;
+			return TEXTURE_APIARIST_ARMOR_PRIMARY;
 		}
 	}
 }

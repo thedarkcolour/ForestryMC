@@ -60,8 +60,8 @@ import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IIntegerChromosome;
-import forestry.core.config.Config;
 import forestry.core.config.Constants;
+import forestry.core.config.ForestryConfig;
 import forestry.core.genetics.IndividualLiving;
 import forestry.core.genetics.mutations.Mutation;
 import forestry.core.utils.GeneticsUtil;
@@ -529,7 +529,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 				continue;
 			}
 
-			IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(housing.getOwner(), level, posBlock, Config.pollinateVanillaTrees);
+			IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(housing.getOwner(), level, posBlock, ForestryConfig.SERVER.pollinateVanillaLeaves.get());
 
 			if (realPollinatable != null) {
 				realPollinatable.mateWith(pollen);

@@ -77,6 +77,10 @@ import forestry.storage.items.ItemCrated;
 
 public class ForestryMachineRecipeProvider extends RecipeProvider {
 
+	public static final int STILL_DESTILLATION_DURATION = 100;
+	public static final int STILL_DESTILLATION_INPUT = 10;
+	public static final int STILL_DESTILLATION_OUTPUT = 3;
+
 	public ForestryMachineRecipeProvider(DataGenerator generatorIn) {
 		super(generatorIn);
 	}
@@ -1098,11 +1102,11 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerStill(Consumer<FinishedRecipe> consumer) {
-		FluidStack biomass = ForestryFluids.BIOMASS.getFluid(Constants.STILL_DESTILLATION_INPUT);
-		FluidStack ethanol = ForestryFluids.BIO_ETHANOL.getFluid(Constants.STILL_DESTILLATION_OUTPUT);
+		FluidStack biomass = ForestryFluids.BIOMASS.getFluid(STILL_DESTILLATION_INPUT);
+		FluidStack ethanol = ForestryFluids.BIO_ETHANOL.getFluid(STILL_DESTILLATION_OUTPUT);
 
 		new StillRecipeBuilder()
-				.setTimePerUnit(Constants.STILL_DESTILLATION_DURATION)
+				.setTimePerUnit(STILL_DESTILLATION_DURATION)
 				.setInput(biomass)
 				.setOutput(ethanol)
 				.build(consumer, id("still", "ethanol"));

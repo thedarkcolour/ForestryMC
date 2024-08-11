@@ -25,6 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import forestry.api.mail.IMailAddress;
 import forestry.api.mail.PostManager;
+import forestry.core.config.ForestryConfig;
 import forestry.core.utils.NetworkUtil;
 import forestry.mail.gui.GuiMailboxInfo;
 import forestry.mail.network.packets.PacketPOBoxInfoResponse;
@@ -34,11 +35,11 @@ public class EventHandlerMailAlert {
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
-		if (event.phase == TickEvent.Phase.END &&
-				Minecraft.getInstance().level != null &&
-				GuiMailboxInfo.INSTANCE.hasPOBoxInfo()) {
-			//TODO: Test / Find a valid matrix stack
-			GuiMailboxInfo.INSTANCE.render(new PoseStack());
+		if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().level != null && GuiMailboxInfo.INSTANCE.hasPOBoxInfo()) {
+			if (ForestryConfig.SERVER.mailAlertsEnabled.get()) {
+				//TODO: Test / Find a valid matrix stack
+				GuiMailboxInfo.INSTANCE.render(new PoseStack());
+			}
 		}
 	}
 

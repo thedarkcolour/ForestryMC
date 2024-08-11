@@ -21,8 +21,8 @@ import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.api.genetics.alleles.IValueAllele;
-import forestry.core.config.Config;
 import forestry.core.gui.GuiAlyzer;
+import forestry.core.gui.GuiForestry;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
@@ -244,7 +244,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 
 	@Override
 	public List<String> getHints() {
-		return Config.hints.get("beealyzer");
+		return GuiForestry.HINTS.get("beealyzer");
 	}
 
 }

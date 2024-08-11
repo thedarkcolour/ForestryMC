@@ -44,8 +44,7 @@ import forestry.api.core.ItemGroups;
 import forestry.api.storage.BackpackStowEvent;
 import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
-import forestry.core.config.Config;
-import forestry.core.config.Constants;
+import forestry.core.config.ForestryConfig;
 import forestry.core.inventory.ItemHandlerInventoryManipulator;
 import forestry.core.inventory.ItemInventory;
 import forestry.core.inventory.StandardStackFilters;
@@ -58,6 +57,9 @@ import forestry.storage.gui.ContainerBackpack;
 import forestry.storage.inventory.ItemInventoryBackpack;
 
 public class ItemBackpack extends ItemWithGui implements IColoredItem {
+	public static final int SLOTS_BACKPACK_DEFAULT = 15;
+	public static final int SLOTS_BACKPACK_WOVEN = 45;
+	public static final int SLOTS_BACKPACK_APIARIST = 125;
 	private final IBackpackDefinition definition;
 	private final EnumBackpackType type;
 
@@ -139,10 +141,10 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 	private static void switchMode(ItemStack itemstack) {
 		BackpackMode mode = getMode(itemstack);
 		int nextMode = mode.ordinal() + 1;
-		if (!Config.enableBackpackResupply && nextMode == BackpackMode.RESUPPLY.ordinal()) {
+		if (!ForestryConfig.SERVER.enableBackpackResupply.get() && nextMode == BackpackMode.RESUPPLY.ordinal()) {
 			nextMode++;
 		}
-		nextMode %= BackpackMode.values().length;
+		nextMode %= BackpackMode.VALUES.length;
 		itemstack.setDamageValue(nextMode);
 	}
 
@@ -205,7 +207,7 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 		int occupied = ItemInventory.getOccupiedSlotCount(itemstack);
 
 		BackpackMode mode = getMode(itemstack);
-		String infoKey = mode.getTranslationkey();
+		String infoKey = mode.getTranslationKey();
 		if (infoKey != null) {
 			list.add(Component.translatable(infoKey).withStyle(ChatFormatting.GRAY));
 		}
@@ -230,9 +232,9 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 
 	private static int getSlotsForType(EnumBackpackType type) {
 		return switch (type) {
-			case NATURALIST -> Constants.SLOTS_BACKPACK_APIARIST;
-			case WOVEN -> Constants.SLOTS_BACKPACK_WOVEN;
-			case NORMAL -> Constants.SLOTS_BACKPACK_DEFAULT;
+			case NATURALIST -> SLOTS_BACKPACK_APIARIST;
+			case WOVEN -> SLOTS_BACKPACK_WOVEN;
+			case NORMAL -> SLOTS_BACKPACK_DEFAULT;
 		};
 	}
 
