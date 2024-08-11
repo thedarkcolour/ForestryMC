@@ -113,9 +113,9 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 			return null;
 		}
 
-		BlockPos pos = getValidCocoonPos(level, coordinates, caterpillar, owner, createNursery);
+		BlockPos pos = getValidCocoonPos(level, coordinates, owner, createNursery);
 		if (pos == null) {
-			return pos;
+			return null;
 		}
 		// todo replace with cocoon allele
 		BlockState state = LepidopterologyBlocks.COCOON.defaultState().setValue(BlockCocoon.AGE, age);
@@ -142,14 +142,14 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 	}
 
 	@Nullable
-	private BlockPos getValidCocoonPos(LevelAccessor world, BlockPos pos, IButterfly caterpillar, GameProfile gameProfile, boolean createNursery) {
-		if (isPositionValid(world, pos.below(), caterpillar, gameProfile, createNursery)) {
+	private static BlockPos getValidCocoonPos(LevelAccessor world, BlockPos pos, GameProfile gameProfile, boolean createNursery) {
+		if (isPositionValid(world, pos.below(), gameProfile, createNursery)) {
 			return pos.below();
 		}
 		for (int tries = 0; tries < 3; tries++) {
 			for (int y = 1; y < world.getRandom().nextInt(5); y++) {
 				BlockPos coordinate = pos.offset(world.getRandom().nextInt(6) - 3, -y, world.getRandom().nextInt(6) - 3);
-				if (isPositionValid(world, coordinate, caterpillar, gameProfile, createNursery)) {
+				if (isPositionValid(world, coordinate, gameProfile, createNursery)) {
 					return coordinate;
 				}
 			}
@@ -158,23 +158,19 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		return null;
 	}
 
-	public boolean isPositionValid(LevelAccessor world, BlockPos pos, IButterfly caterpillar, GameProfile gameProfile, boolean createNursery) {
+	public static boolean isPositionValid(LevelAccessor world, BlockPos pos, GameProfile gameProfile, boolean createNursery) {
 		BlockState blockState = world.getBlockState(pos);
 		if (BlockUtil.canReplace(blockState, world, pos)) {
 			BlockPos nurseryPos = pos.above();
 			IButterflyNursery nursery = GeneticsUtil.getNursery(world, nurseryPos);
-			if (isNurseryValid(nursery, caterpillar)) {
+			if (nursery != null) {
 				return true;
 			} else if (createNursery && GeneticsUtil.canCreateNursery(world, nurseryPos)) {
 				nursery = GeneticsUtil.getOrCreateNursery(gameProfile, world, nurseryPos, false);
-				return isNurseryValid(nursery, caterpillar);
+				return nursery != null && nursery.getCaterpillar() == null;
 			}
 		}
 		return false;
-	}
-
-	private boolean isNurseryValid(@Nullable IButterflyNursery nursery, IButterfly caterpillar) {
-		return nursery != null && nursery.canNurse(caterpillar);
 	}
 
 	@Override

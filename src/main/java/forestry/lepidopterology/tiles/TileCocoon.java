@@ -88,7 +88,7 @@ public class TileCocoon extends BlockEntity implements IOwnedTile {
 			int age = getBlockState().getValue(BlockCocoon.AGE);
 			if (age < 2) {
 				maturationTime = 0;
-				BlockState blockState = getBlockState().setValue(BlockCocoon.AGE, age);
+				BlockState blockState = getBlockState().setValue(BlockCocoon.AGE, age + 1);
 				level.setBlock(worldPosition, blockState, Block.UPDATE_NEIGHBORS | Block.UPDATE_CLIENTS);
 			} else if (this.caterpillar.canTakeFlight(level, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ())) {
 				List<ItemStack> cocoonDrops = this.caterpillar.getCocoonDrop(this.isSolid, this.caterpillar.getGenome().getActiveValue(ButterflyChromosomes.COCOON));

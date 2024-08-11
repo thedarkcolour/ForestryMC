@@ -32,7 +32,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import forestry.api.IForestryApi;
 import forestry.api.core.HumidityType;
 import forestry.api.core.IProduct;
-import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IGenome;
