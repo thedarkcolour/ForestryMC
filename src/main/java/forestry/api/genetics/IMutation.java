@@ -1,16 +1,16 @@
 package forestry.api.genetics;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.genetics.alleles.IAllele;
-import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.AllelePair;
 
 /**
  * Represents a mutation between two species (in any order) into a third species.
@@ -38,9 +38,9 @@ public interface IMutation<S extends ISpecies<?>> {
 	S getResult();
 
 	/**
-	 * @return Any non-default alleles that the resulting individual of this mutation will have.
+	 * @return The list of alleles the resulting individual should have. Usually the default genome of result species.
 	 */
-	Map<IChromosome<?>, IAllele> getResultAlleles();
+	ImmutableList<AllelePair<?>> getResultAlleles();
 
 	/**
 	 * @return Unmodified base chance for mutation to fire.

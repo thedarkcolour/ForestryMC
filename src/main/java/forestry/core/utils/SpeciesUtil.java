@@ -132,7 +132,7 @@ public class SpeciesUtil {
 				if (tracker != null) {
 					tracker.registerMutation(mutation);
 				}
-				return mutation.getResult().getDefaultGenome().getAllelePairs();
+				return mutation.getResultAlleles();
 			}
 		}
 

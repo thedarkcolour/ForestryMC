@@ -19,7 +19,7 @@ import forestry.api.plugin.IGenomeBuilder;
  */
 public interface IKaryotype {
 	/**
-	 * @return All chromosomes types of this IKaryotype.
+	 * @return All chromosomes types of this IKaryotype, in the order they were defined.
 	 */
 	ImmutableList<IChromosome<?>> getChromosomes();
 

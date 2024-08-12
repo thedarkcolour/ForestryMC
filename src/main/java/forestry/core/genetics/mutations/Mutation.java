@@ -29,8 +29,10 @@ import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationCondition;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;
 import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.IKaryotype;
 import forestry.core.genetics.ItemResearchNote;
 
 public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
@@ -41,7 +43,7 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	private final S firstParent;
 	private final S secondParent;
 	private final S result;
-	private final Map<IChromosome<?>, IAllele> resultAlleles;
+	private final ImmutableList<AllelePair<?>> resultAlleles;
 	private final boolean secret;
 
 	public Mutation(ISpeciesType<S, ?> type, S firstParent, S secondParent, S result, Map<IChromosome<?>, IAllele> resultAlleles, int chance, List<IMutationCondition> conditions) {
@@ -56,8 +58,26 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 		this.firstParent = firstParent;
 		this.secondParent = secondParent;
 		this.result = result;
-		this.resultAlleles = resultAlleles;
+		this.resultAlleles = buildResultAlleles(type.getKaryotype(), result.getDefaultGenome(), resultAlleles);
 		this.secret = result.isSecret() || firstParent.isSecret() || secondParent.isSecret();
+	}
+
+	private static ImmutableList<AllelePair<?>> buildResultAlleles(IKaryotype karyotype, IGenome defaultGenome, Map<IChromosome<?>, IAllele> resultAlleles) {
+		if (resultAlleles.isEmpty()) {
+			return defaultGenome.getAllelePairs();
+		}
+		ImmutableList.Builder<AllelePair<?>> newAlleles = ImmutableList.builderWithExpectedSize(karyotype.size());
+
+		for (IChromosome<?> chromosome : karyotype.getChromosomes()) {
+			IAllele customAllele = resultAlleles.get(chromosome);
+			if (customAllele != null) {
+				newAlleles.add(AllelePair.both(customAllele));
+			} else {
+				newAlleles.add(defaultGenome.getAllelePair(chromosome));
+			}
+		}
+
+		return newAlleles.build();
 	}
 
 	public static float getChance(IMutation<?> mutation, Level level, BlockPos pos, ISpecies<?> firstParent, ISpecies<?> secondParent, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate) {
@@ -102,7 +122,7 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	}
 
 	@Override
-	public Map<IChromosome<?>, IAllele> getResultAlleles() {
+	public ImmutableList<AllelePair<?>> getResultAlleles() {
 		return this.resultAlleles;
 	}
 
