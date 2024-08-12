@@ -30,7 +30,7 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	private IWoodType woodType = null;
 	@Nullable
 	private ITreeGenerator generator = null;
-	private float rarity = 1.0f;
+	private float rarity = 0.0f;
 	private final HashSet<BlockState> vanillaStates = new HashSet<>();
 	private final HashSet<Item> vanillaItems = new HashSet<>();
 	private ItemStack decorativeLeaves = ItemStack.EMPTY;
@@ -78,6 +78,7 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 
 	@Override
 	public ITreeSpeciesBuilder setRarity(float rarity) {
+		Preconditions.checkArgument(0f <= rarity && rarity <= 1f, "Tree species rarity must be between 0 and 1.");
 		this.rarity = rarity;
 		return this;
 	}

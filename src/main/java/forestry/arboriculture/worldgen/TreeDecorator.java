@@ -43,7 +43,7 @@ import forestry.core.utils.BlockUtil;
 import forestry.core.utils.SpeciesUtil;
 
 public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
-	private static final IdentityHashMap<ResourceKey<Biome>, ArrayList<ITree>> BIOME_CACHE = new IdentityHashMap<>();
+	private static final IdentityHashMap<ResourceKey<Biome>, List<ITree>> BIOME_CACHE = new IdentityHashMap<>();
 
 	public TreeDecorator() {
 		super(NoneFeatureConfiguration.CODEC);
@@ -76,21 +76,27 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 		return null;
 	}
 
-	private static void generateBiomeCache(WorldGenLevel level) {
+	// haven't looked into whether this is redundant but better safe than sorry
+	private static synchronized void generateBiomeCache(WorldGenLevel level) {
+		if (!BIOME_CACHE.isEmpty()) {
+			return;
+		}
 		List<ITreeSpecies> allSpecies = SpeciesUtil.getAllTreeSpecies();
 		IClimateManager manager = IForestryApi.INSTANCE.getClimateManager();
 		// correctly dedupe ITree instances with map instead of using set
 		IdentityHashMap<ITreeSpecies, ITree> treeInstances = new IdentityHashMap<>(allSpecies.size());
 
 		level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).holders().forEach(biome -> {
-			ArrayList<ITree> trees = BIOME_CACHE.computeIfAbsent(biome.key(), k -> new ArrayList<>());
+			List<ITree> trees = BIOME_CACHE.computeIfAbsent(biome.key(), k -> new ArrayList<>());
 			TemperatureType temperature = manager.getTemperature(biome);
 			HumidityType humidity = manager.getHumidity(biome);
 
 			for (ITreeSpecies species : allSpecies) {
-				// todo tolerance chromosomes
-				if (temperature == species.getTemperature() && humidity == species.getHumidity()) {
-					trees.add(treeInstances.computeIfAbsent(species, k -> species.createIndividual()));
+				if (species.getRarity() > 0.0f) {
+					// todo tolerance chromosomes
+					if (temperature == species.getTemperature() && humidity == species.getHumidity()) {
+						trees.add(treeInstances.computeIfAbsent(species, k -> species.createIndividual()));
+					}
 				}
 			}
 		});
@@ -102,6 +108,7 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 		RandomSource rand = context.random();
 		BlockPos pos = context.origin();
 
+		// todo configurable
 		float globalRarity = TreeConfig.getSpawnRarity();
 		if (globalRarity <= 0.0F) {
 			return false;
@@ -111,16 +118,16 @@ public class TreeDecorator extends Feature<NoneFeatureConfiguration> {
 			generateBiomeCache(level);
 		}
 
-		for (int tries = 0; tries < 4 + rand.nextInt(2); tries++) {
+		for (int tries = 0; tries < 4; tries++) {
 			int x = pos.getX() + rand.nextInt(16);
 			int z = pos.getZ() + rand.nextInt(16);
 
 			Holder<Biome> biome = level.getBiome(pos);
-			ArrayList<ITree> trees = BIOME_CACHE.computeIfAbsent(biome.unwrapKey().get(), k -> new ArrayList<>());
+			List<ITree> trees = BIOME_CACHE.computeIfAbsent(biome.unwrapKey().get(), k -> List.of());
 
 			for (ITree tree : trees) {
 				ITreeSpecies species = tree.getSpecies();
-				if (TreeConfig.getSpawnRarity() * globalRarity >= rand.nextFloat()) {
+				if (species.getRarity() * globalRarity >= rand.nextFloat()) {
 					BlockPos validPos = getValidPos(level, x, z, tree);
 					if (validPos == null) {
 						continue;

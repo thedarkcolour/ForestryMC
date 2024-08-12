@@ -52,7 +52,12 @@ public class HiveManager implements IHiveManager {
 
 	@Override
 	public List<IHiveDrop> getDrops(ResourceLocation id) {
-		return Objects.requireNonNull(this.registry.get(id), "No hive registered with name " + id).getDrops();
+		IHive hive = this.registry.get(id);
+		if (hive == null) {
+			return List.of();
+		} else {
+			return hive.getDrops();
+		}
 	}
 
 	@Override

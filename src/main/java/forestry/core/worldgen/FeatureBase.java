@@ -18,7 +18,6 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public abstract class FeatureBase extends Feature<NoneFeatureConfiguration> {
-
 	protected FeatureBase() {
 		super(NoneFeatureConfiguration.CODEC);
 	}
@@ -29,5 +28,4 @@ public abstract class FeatureBase extends Feature<NoneFeatureConfiguration> {
 	}
 
 	public abstract boolean place(LevelAccessor world, RandomSource rand, BlockPos pos, boolean forced);
-
 }

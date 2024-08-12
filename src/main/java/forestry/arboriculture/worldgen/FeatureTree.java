@@ -40,7 +40,7 @@ public abstract class FeatureTree extends FeatureArboriculture {
 	@Override
 	public Set<BlockPos> generateTrunk(LevelAccessor world, RandomSource rand, TreeBlockTypeLog wood, BlockPos startPos) {
 		FeatureHelper.generateTreeTrunk(world, rand, wood, startPos, height, girth, 0, 0, null, 0);
-		return Collections.emptySet();
+		return Set.of();
 	}
 
 	@Override

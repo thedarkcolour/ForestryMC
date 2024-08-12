@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.ForestryConstants;
 import forestry.api.apiculture.ForestryBeeSpecies;
 import forestry.api.core.IBlockSubtype;
 
@@ -16,7 +17,7 @@ public enum BlockHiveType implements IBlockSubtype {
 	END(ForestryBeeSpecies.ENDED),
 	SNOW(ForestryBeeSpecies.WINTRY),
 	SWAMP(ForestryBeeSpecies.MARSHY),
-	SWARM(ForestryBeeSpecies.FOREST);
+	SWARM(ForestryConstants.forestry("none"));
 
 	public static final BlockHiveType[] VALUES = values();
 

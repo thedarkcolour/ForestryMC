@@ -15,6 +15,7 @@ import forestry.api.climate.IClimateManager;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.apiculture.features.ApicultureFeatures;
+import forestry.arboriculture.features.ArboricultureFeatures;
 
 public class ForestryBiomeModifier implements BiomeModifier {
 	// should this be wrapped in Lazy singleton?
@@ -26,6 +27,8 @@ public class ForestryBiomeModifier implements BiomeModifier {
 			IClimateManager climates = IForestryApi.INSTANCE.getClimateManager();
 			TemperatureType temperature = climates.getTemperature(biome);
 			HumidityType humidity = climates.getHumidity(biome);
+
+			builder.getGenerationSettings().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ArboricultureFeatures.PLACED_TREE_DECORATOR.getHolder().get());
 
 			for (IHive hive : IForestryApi.INSTANCE.getHiveManager().getHives()) {
 				if (hive.isGoodBiome(biome) && hive.isGoodTemperature(temperature) && hive.isGoodHumidity(humidity)) {

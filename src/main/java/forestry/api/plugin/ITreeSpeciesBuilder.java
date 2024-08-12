@@ -69,7 +69,8 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, I
 	ITreeSpeciesBuilder setWoodType(IWoodType woodType);
 
 	/**
-	 * Sets the rarity for this tree to generate during world generation.
+	 * Sets the rarity for this tree to generate in a chunk during world generation.
+	 * By default, the rarity is 0, which means the tree never spawns naturally.
 	 *
 	 * @param rarity A float between 0 and 1 that determines how often this tree spawns naturally.
 	 */

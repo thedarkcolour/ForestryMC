@@ -45,4 +45,9 @@ public interface ITreeSpecies extends ISpecies<ITree>, ITreeGenData {
 	List<Item> getVanillaSaplingItems();
 
 	int getGermlingColor(ILifeStage stage, int renderPass);
+
+	/**
+	 * @return The chance between 0 and 1 that this tree will spawn in a chunk during world generation. Default is 0.
+	 */
+	float getRarity();
 }
