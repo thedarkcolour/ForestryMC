@@ -18,7 +18,6 @@ import forestry.api.apiculture.genetics.IBeeEffect;
  * @author Vexatos
  */
 public interface IArmorApiaristHelper {
-
 	/**
 	 * Called when the apiarist's armor acts as protection against an attack.
 	 *

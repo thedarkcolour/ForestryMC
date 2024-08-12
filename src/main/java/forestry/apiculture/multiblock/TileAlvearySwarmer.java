@@ -11,9 +11,8 @@
 package forestry.apiculture.multiblock;
 
 import javax.annotation.Nullable;
+import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Stack;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +25,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.apiculture.BeeManager;
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
@@ -40,12 +39,11 @@ import forestry.apiculture.hives.HiveDefinitionSwarmer;
 import forestry.apiculture.inventory.InventorySwarmer;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.tiles.IActivatable;
-import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.SpeciesUtil;
 
 public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer, IActivatable, IAlvearyComponent.Active {
 	private final InventorySwarmer inventory;
-	private final Stack<ItemStack> pendingSpawns = new Stack<>();
+	private final ArrayDeque<ItemStack> pendingSpawns = new ArrayDeque<>();
 	private boolean active;
 
 	public TileAlvearySwarmer(BlockPos pos, BlockState state) {
@@ -84,28 +82,27 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 			return;
 		}
 
-		int chance = consumeInducerAndGetChance();
+		float chance = consumeInducerAndGetChance();
 		if (chance == 0) {
 			return;
 		}
 
 		// Try to spawn princess
-		if (level.random.nextInt(1000) >= chance) {
-			return;
+		if (level.random.nextFloat() < chance) {
+			// Queue swarm spawn
+			IIndividualHandlerItem.ifPresent(princessStack, individual -> {
+				if (individual instanceof IBee princess) {
+					// setting pristine for the new copy is a pain in the ass so do this instead
+					princess.setPristine(false);
+					this.pendingSpawns.push(princess.copyWithStage(BeeLifeStage.PRINCESS));
+					princess.setPristine(true);
+				}
+			});
 		}
-
-		// Queue swarm spawn
-		IIndividualHandlerItem.ifPresent(princessStack, individual -> {
-			if (individual instanceof IBee princess) {
-				princess.setPristine(false);
-				this.pendingSpawns.push(princess.copyWithStage(BeeLifeStage.PRINCESS));
-			}
-		});
 	}
 
 	@Override
 	public void updateClient(int tickCount) {
-
 	}
 
 	@Nullable
@@ -119,18 +116,17 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		return null;
 	}
 
-	private int consumeInducerAndGetChance() {
+	private float consumeInducerAndGetChance() {
 		for (int slotIndex = 0; slotIndex < getContainerSize(); slotIndex++) {
 			ItemStack stack = getItem(slotIndex);
-			for (Entry<ItemStack, Integer> entry : BeeManager.inducers.entrySet()) {
-				if (ItemStackUtil.isIdenticalItem(entry.getKey(), stack)) {
-					removeItem(slotIndex, 1);
-					return entry.getValue();
-				}
+			float chance = IForestryApi.INSTANCE.getHiveManager().getSwarmingMaterialChance(stack.getItem());
+			if (chance != 0.0f) {
+				removeItem(slotIndex, 1);
+				return chance;
 			}
 		}
 
-		return 0;
+		return 0f;
 	}
 
 	private void trySpawnSwarm() {

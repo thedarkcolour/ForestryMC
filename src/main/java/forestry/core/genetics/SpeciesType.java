@@ -223,4 +223,9 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 		List<S> allSpecies = getAllSpecies();
 		return allSpecies.get(rand.nextInt(allSpecies.size())).createIndividual();
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + this.id + ']';
+	}
 }

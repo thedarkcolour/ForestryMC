@@ -6,8 +6,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmType;
@@ -18,7 +18,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class FarmingRegistration implements IFarmingRegistration {
 	private final ModifiableRegistrar<ResourceLocation, IFarmTypeBuilder, FarmTypeBuilder> farmTypes = new ModifiableRegistrar<>(IFarmTypeBuilder.class);
-	private final Object2IntOpenHashMap<Ingredient> fertilizers = new Object2IntOpenHashMap<>();
+	private final Object2IntOpenHashMap<Item> fertilizers = new Object2IntOpenHashMap<>();
 
 	@Override
 	public IFarmTypeBuilder createFarmType(ResourceLocation id, BiFunction<IFarmType, Boolean, IFarmLogic> logicFactory, ItemStack icon) {
@@ -31,11 +31,11 @@ public class FarmingRegistration implements IFarmingRegistration {
 	}
 
 	@Override
-	public void registerFertilizer(Ingredient fertilizer, int amount) {
+	public void registerFertilizer(Item fertilizer, int amount) {
 		this.fertilizers.put(fertilizer, amount);
 	}
 
-	public Object2IntOpenHashMap<Ingredient> getFertilizers() {
+	public Object2IntOpenHashMap<Item> getFertilizers() {
 		return this.fertilizers;
 	}
 

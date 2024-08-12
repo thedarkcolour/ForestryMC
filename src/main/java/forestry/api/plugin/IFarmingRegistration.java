@@ -4,8 +4,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmType;
@@ -41,5 +41,5 @@ public interface IFarmingRegistration {
 	 * @param fertilizer The ingredient to match items against.
 	 * @param amount     The amount of fertilizer a single item is worth. Forestry's fertilizer is worth {@code 500}.
 	 */
-	void registerFertilizer(Ingredient fertilizer, int amount);
+	void registerFertilizer(Item fertilizer, int amount);
 }

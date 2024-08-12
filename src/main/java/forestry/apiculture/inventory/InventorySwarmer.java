@@ -12,10 +12,9 @@ package forestry.apiculture.inventory;
 
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.apiculture.BeeManager;
+import forestry.api.IForestryApi;
 import forestry.apiculture.multiblock.TileAlvearySwarmer;
 import forestry.core.inventory.InventoryAdapterTile;
-import forestry.core.utils.ItemStackUtil;
 
 public class InventorySwarmer extends InventoryAdapterTile<TileAlvearySwarmer> {
 	public InventorySwarmer(TileAlvearySwarmer alvearySwarmer) {
@@ -24,6 +23,6 @@ public class InventorySwarmer extends InventoryAdapterTile<TileAlvearySwarmer> {
 
 	@Override
 	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
-		return ItemStackUtil.containsItemStack(BeeManager.inducers.keySet(), stack);
+		return IForestryApi.INSTANCE.getHiveManager().getSwarmingMaterialChance(stack.getItem()) != 0f;
 	}
 }

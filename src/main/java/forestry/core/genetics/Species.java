@@ -142,4 +142,9 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 			tooltip.add(Component.translatable(hybridKey, primary.getDisplayName(), secondary.getDisplayName()).withStyle(ChatFormatting.BLUE));
 		}
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + this.id + ']';
+	}
 }

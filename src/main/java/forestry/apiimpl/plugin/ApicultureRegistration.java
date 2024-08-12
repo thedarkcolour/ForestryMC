@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBeeEffect;
@@ -23,12 +24,15 @@ import forestry.api.plugin.IHiveBuilder;
 import forestry.apiculture.VillageHive;
 import forestry.apiculture.hives.HiveManager;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+
 public class ApicultureRegistration extends SpeciesRegistration<IBeeSpeciesBuilder, IBeeSpecies, BeeSpeciesBuilder> implements IApicultureRegistration {
 	private final ModifiableRegistrar<ResourceLocation, IHiveBuilder, HiveBuilder> hives = new ModifiableRegistrar<>(IHiveBuilder.class);
 	private final Registrar<ResourceLocation, IFlowerType, IFlowerType> flowerTypes = new Registrar<>(IFlowerType.class);
 	private final Registrar<ResourceLocation, IBeeEffect, IBeeEffect> beeEffects = new Registrar<>(IBeeEffect.class);
 	private final ArrayList<VillageHive> commonVillageHives = new ArrayList<>();
 	private final ArrayList<VillageHive> rareVillageHives = new ArrayList<>();
+	private final Object2FloatOpenHashMap<Item> swarmerMaterials = new Object2FloatOpenHashMap<>();
 
 	public ApicultureRegistration(ISpeciesType<IBeeSpecies, ?> type) {
 		super(type);
@@ -79,7 +83,12 @@ public class ApicultureRegistration extends SpeciesRegistration<IBeeSpeciesBuild
 		this.hives.modify(id, builder);
 	}
 
+	@Override
+	public void registerSwarmerMaterial(Item swarmItem, float swarmChance) {
+		this.swarmerMaterials.put(swarmItem, swarmChance);
+	}
+
 	public HiveManager buildHiveManager() {
-		return new HiveManager(this.hives.build(HiveBuilder::build), ImmutableList.copyOf(this.commonVillageHives), ImmutableList.copyOf(this.rareVillageHives));
+		return new HiveManager(this.hives.build(HiveBuilder::build), ImmutableList.copyOf(this.commonVillageHives), ImmutableList.copyOf(this.rareVillageHives), new Object2FloatOpenHashMap<>(this.swarmerMaterials));
 	}
 }

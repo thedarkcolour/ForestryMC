@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBeeEffect;
@@ -77,4 +78,13 @@ public interface IApicultureRegistration {
 	void registerFlowerType(ResourceLocation id, IFlowerType type);
 
 	void registerBeeEffect(ResourceLocation id, IBeeEffect effect);
+
+	/**
+	 * Registers an ingredient to be used in the Alveary Swarmer block, which creates swarm hives around the alveary
+	 * containing ignoble princesses with copies of the queen's genome.
+	 *
+	 * @param swarmItem  The item to be used.
+	 * @param swarmChance The chance a swarm hive is created. For Royal Jelly, this is {@code 0.01} or 1%.
+	 */
+	void registerSwarmerMaterial(Item swarmItem, float swarmChance);
 }
