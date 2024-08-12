@@ -44,7 +44,6 @@ import forestry.core.utils.SpeciesUtil;
 public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer, IActivatable, IAlvearyComponent.Active {
 	private final InventorySwarmer inventory;
 	private final ArrayDeque<ItemStack> pendingSpawns = new ArrayDeque<>();
-	private boolean active;
 
 	public TileAlvearySwarmer(BlockPos pos, BlockState state) {
 		super(BlockAlvearyType.SWARMER, pos, state);
@@ -144,25 +143,10 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		}
 	}
 
-	/* NETWORK */
-
-	@Override
-	protected void encodeDescriptionPacket(CompoundTag packetData) {
-		super.encodeDescriptionPacket(packetData);
-		packetData.putBoolean("Active", active);
-	}
-
-	@Override
-	protected void decodeDescriptionPacket(CompoundTag packetData) {
-		super.decodeDescriptionPacket(packetData);
-		setActive(packetData.getBoolean("Active"));
-	}
-
 	/* SAVING & LOADING */
 	@Override
 	public void load(CompoundTag compoundNBT) {
 		super.load(compoundNBT);
-		setActive(compoundNBT.getBoolean("Active"));
 
 		ListTag nbttaglist = compoundNBT.getList("PendingSpawns", 10);
 		for (int i = 0; i < nbttaglist.size(); i++) {
@@ -174,7 +158,6 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 	@Override
 	public void saveAdditional(CompoundTag compoundNBT) {
 		super.saveAdditional(compoundNBT);
-		compoundNBT.putBoolean("Active", active);
 
 		ListTag nbttaglist = new ListTag();
 		ItemStack[] offspring = pendingSpawns.toArray(new ItemStack[0]);
@@ -191,18 +174,14 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 
 	@Override
 	public boolean isActive() {
-		return active;
+		return getBlockState().getValue(BlockAlveary.STATE) == BlockAlveary.State.ON;
 	}
 
 	@Override
 	public void setActive(boolean active) {
-		if (this.active == active) {
-			return;
+		if (isActive() != active) {
+			this.level.setBlockAndUpdate(this.worldPosition, this.getBlockState().setValue(BlockAlveary.STATE, active ? BlockAlveary.State.ON : BlockAlveary.State.OFF));
 		}
-
-		this.active = active;
-
-		this.level.setBlockAndUpdate(this.worldPosition, this.getBlockState().setValue(BlockAlveary.STATE, active ? BlockAlveary.State.ON : BlockAlveary.State.OFF));
 	}
 
 	@Override

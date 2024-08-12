@@ -37,13 +37,9 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 
 	private final ForestryEnergyStorage energyStorage;
 	private final LazyOptional<ForestryEnergyStorage> energyCap;
-
 	private final byte temperatureSteps;
 
 	private int workingTime = 0;
-
-	// CLIENT
-	private boolean active;
 
 	protected TileAlvearyClimatiser(BlockAlvearyType alvearyType, BlockPos pos, BlockState state, byte temperatureSteps) {
 		super(alvearyType, pos, state);
@@ -75,7 +71,6 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 		super.load(compoundNBT);
 		energyStorage.read(compoundNBT);
 		workingTime = compoundNBT.getInt("Heating");
-		setActive(workingTime > 0);
 	}
 
 	@Override
@@ -89,25 +84,24 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 	@Override
 	protected void encodeDescriptionPacket(CompoundTag packetData) {
 		super.encodeDescriptionPacket(packetData);
-		packetData.putBoolean("Active", active);
 	}
 
 	@Override
 	protected void decodeDescriptionPacket(CompoundTag packetData) {
 		super.decodeDescriptionPacket(packetData);
-		setActive(packetData.getBoolean("Active"));
 	}
 
 	/* IActivatable */
 	@Override
 	public boolean isActive() {
-		return this.active;
+		return getBlockState().getValue(BlockAlveary.STATE) == BlockAlveary.State.ON;
 	}
 
 	@Override
 	public void setActive(boolean active) {
-		this.active = active;
-		this.level.setBlockAndUpdate(this.worldPosition, getBlockState().setValue(BlockAlveary.STATE, active ? BlockAlveary.State.ON : BlockAlveary.State.OFF));
+		if (isActive() != active) {
+			this.level.setBlockAndUpdate(this.worldPosition, getBlockState().setValue(BlockAlveary.STATE, active ? BlockAlveary.State.ON : BlockAlveary.State.OFF));
+		}
 	}
 
 	@Override

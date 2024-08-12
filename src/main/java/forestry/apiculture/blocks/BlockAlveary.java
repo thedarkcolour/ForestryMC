@@ -177,6 +177,7 @@ public class BlockAlveary extends BlockStructure implements EntityBlock {
 		});
 	}
 
+	// todo this method isn't client only
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag) {

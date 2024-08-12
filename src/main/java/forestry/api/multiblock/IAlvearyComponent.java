@@ -56,5 +56,4 @@ public interface IAlvearyComponent<T extends IMultiblockLogicAlveary> extends IM
 
 		void updateClient(int tickCount);
 	}
-
 }

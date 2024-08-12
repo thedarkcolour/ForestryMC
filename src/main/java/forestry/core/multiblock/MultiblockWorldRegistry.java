@@ -123,7 +123,7 @@ public class MultiblockWorldRegistry {
 					}
 
 					// This can occur on slow machines.
-					if (orphan instanceof BlockEntity && ((BlockEntity) orphan).isRemoved()) {
+					if (orphan instanceof BlockEntity entity && entity.isRemoved()) {
 						continue;
 					}
 
