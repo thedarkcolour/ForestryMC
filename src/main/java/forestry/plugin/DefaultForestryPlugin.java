@@ -239,7 +239,6 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		apiculture.addVillageBee(ForestryBeeSpecies.VALIANT, true);
 
 		// Default flower types
-
 		// todo plantable flower tags
 		apiculture.registerFlowerType(ForestryFlowerTypes.VANILLA, new FlowerType(ForestryTags.Blocks.VANILLA_FLOWERS, true));
 		apiculture.registerFlowerType(ForestryFlowerTypes.NETHER, new FlowerType(ForestryTags.Blocks.NETHER_FLOWERS, false));
@@ -270,6 +269,8 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		apiculture.registerBeeEffect(ForestryBeeEffects.REPULSION, new RepulsionBeeEffect());
 		apiculture.registerBeeEffect(ForestryBeeEffects.FERTILE, new FertileBeeEffect());
 		apiculture.registerBeeEffect(ForestryBeeEffects.MYCOPHILIC, new FungificationBeeEffect());
+
+		apiculture.registerSwarmerMaterial(ApicultureItems.ROYAL_JELLY.get(), 0.01f);
 	}
 
 	private static Supplier<List<ItemStack>> getHoneyComb(EnumHoneyComb type) {
@@ -367,7 +368,7 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 	public void registerFarming(IFarmingRegistration farming) {
 		DefaultFarms.registerFarmTypes(farming);
 
-		farming.registerFertilizer(Ingredient.of(CoreItems.FERTILIZER_COMPOUND), 500);
+		farming.registerFertilizer(CoreItems.FERTILIZER_COMPOUND.get(), 500);
 	}
 
 	@Override
