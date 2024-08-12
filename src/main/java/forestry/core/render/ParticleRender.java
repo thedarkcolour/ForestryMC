@@ -24,13 +24,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.IBeeModifier;
-import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.apiculture.genetics.Bee;
+import forestry.apiculture.genetics.effects.ThrottledBeeEffect;
 import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.particles.BeeParticleData;
 import forestry.apiculture.particles.BeeTargetParticleData;
@@ -88,7 +88,7 @@ public class ParticleRender {
 
 		if (housing instanceof IHiveTile) {
 			if (((IHiveTile) housing).isAngry() || randomInt >= 85) {
-				List<LivingEntity> entitiesInRange = IBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
+				List<LivingEntity> entitiesInRange = ThrottledBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
 				if (!entitiesInRange.isEmpty()) {
 					LivingEntity entity = entitiesInRange.get(world.random.nextInt(entitiesInRange.size()));
 					//Particle particle = new ParticleBeeTargetEntity(world, particleStart, entity, color);
@@ -273,10 +273,7 @@ public class ParticleRender {
 	}
 
 	public static Vec3i getModifiedArea(IGenome genome, IBeeHousing housing) {
-		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
-		float territoryModifier = beeModifier.getTerritoryModifier(genome, 1f);
-
-		Vec3i area = VecUtil.scale(genome.getActiveValue(BeeChromosomes.TERRITORY), territoryModifier);
+		Vec3i area = Bee.getAdjustedTerritory(genome, SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing));
 		int x = area.getX();
 		int y = area.getY();
 		int z = area.getZ();

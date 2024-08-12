@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.climate.IClimateProvider;
 import forestry.api.genetics.ClimateHelper;
-import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IGenome;
 
 import forestry.api.core.HumidityType;
@@ -32,13 +32,13 @@ public class MutationConditionHumidity implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level level, BlockPos pos, ISpecies<?> allele0, ISpecies<?> allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
+	public float modifyChance(Level level, BlockPos pos, IMutation<?> mutation, IGenome genome0, IGenome genome1, IClimateProvider climate, float currentChance) {
 		HumidityType biomeHumidity = climate.humidity();
 
 		if (biomeHumidity.ordinal() < minHumidity.ordinal() || biomeHumidity.ordinal() > maxHumidity.ordinal()) {
-			return 0;
+			return 0f;
 		}
-		return 1;
+		return currentChance;
 	}
 
 	@Override

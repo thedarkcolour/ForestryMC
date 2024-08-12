@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
@@ -48,7 +47,7 @@ public class RadioactiveBeeEffect extends ThrottledBeeEffect {
 	}
 
 	private void harmEntities(IGenome genome, IBeeHousing housing) {
-		List<LivingEntity> entities = IBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
+		List<LivingEntity> entities = ThrottledBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
 		for (LivingEntity entity : entities) {
 			int damage = 8;
 

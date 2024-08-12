@@ -39,7 +39,7 @@ public class MutationsRegistration implements IMutationsRegistration {
 	}
 
 	@Override
-	public IMutationBuilder add(ResourceLocation firstParent, ResourceLocation secondParent, int chance) {
+	public IMutationBuilder add(ResourceLocation firstParent, ResourceLocation secondParent, float chance) {
 		Preconditions.checkArgument(!firstParent.equals(secondParent), "Cannot have a mutation between two of the same species");
 
 		MutationPair pair = new MutationPair(firstParent, secondParent);
@@ -84,7 +84,7 @@ public class MutationsRegistration implements IMutationsRegistration {
 		private final MutationPair pair;
 		private final ResourceLocation result;
 		private final ImmutableMap.Builder<IChromosome<?>, IAllele> extraAlleles = new ImmutableMap.Builder<>();
-		private int chance = -1;
+		private float chance = -1;
 
 		private MutationBuilder(MutationPair pair, ResourceLocation result) {
 			this.pair = pair;
@@ -158,7 +158,8 @@ public class MutationsRegistration implements IMutationsRegistration {
 		}
 
 		@Override
-		public IMutationBuilder setChance(int chance) {
+		public IMutationBuilder setChance(float chance) {
+			Preconditions.checkArgument(chance >= 0.0f && chance <= 1.0f, "Mutation chance must be within 0 and 1");
 			this.chance = chance;
 			return this;
 		}

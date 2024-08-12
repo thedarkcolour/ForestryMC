@@ -15,7 +15,6 @@ import java.util.List;
 import net.minecraft.world.entity.monster.Monster;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.apiculture.entities.AIAvoidPlayers;
@@ -27,7 +26,7 @@ public class RepulsionBeeEffect extends ThrottledBeeEffect {
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		List<Monster> mobs = IBeeEffect.getEntitiesInRange(genome, housing, Monster.class);
+		List<Monster> mobs = ThrottledBeeEffect.getEntitiesInRange(genome, housing, Monster.class);
 		for (Monster mob : mobs) {
 			if (!isMobAvoidingPlayers(mob)) {
 				mob.goalSelector.addGoal(3, new AIAvoidPlayers(mob, 6.0f, 0.25f, 0.3f));

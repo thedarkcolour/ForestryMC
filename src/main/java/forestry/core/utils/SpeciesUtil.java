@@ -118,8 +118,8 @@ public class SpeciesUtil {
 		IBreedingTracker tracker = profile == null ? null : speciesType.getBreedingTracker(level, profile);
 		IClimateProvider climate = IForestryApi.INSTANCE.getClimateManager().getDefaultClimate(level, pos);
 
-		for (IMutation<?> mutation : speciesType.getMutations().getCombinationsShuffled(firstParent, secondParent, level.random)) {
-			float chance = chanceGetter.getChance(mutation, level, pos, firstParent, secondParent, firstGenome, secondGenome, climate);
+		for (IMutation<S> mutation : speciesType.getMutations().getCombinationsShuffled(firstParent, secondParent, level.random)) {
+			float chance = chanceGetter.getChance(mutation, level, pos, firstGenome, secondGenome, climate);
 			if (chance <= 0) {
 				continue;
 			}
@@ -141,14 +141,13 @@ public class SpeciesUtil {
 
 	@FunctionalInterface
 	public interface IMutationChanceGetter<S extends ISpecies<?>> {
-		float getChance(IMutation<?> mutation, Level level, BlockPos pos, S firstParent, S secondParent, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate);
+		float getChance(IMutation<S> mutation, Level level, BlockPos pos, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate);
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static <I extends IIndividual> I createOffspring(RandomSource rand, IGenome self, IGenome mate, ISpeciesMutator mutator, Function<IGenome, I> individualFactory) {
 		IKaryotype karyotype = self.getKaryotype();
 		IGenomeBuilder genome = karyotype.createGenomeBuilder();
-		// todo why is this sorted incorrectly?
 		ImmutableList<AllelePair<?>> parent1 = self.getAllelePairs();
 		ImmutableList<AllelePair<?>> parent2 = mate.getAllelePairs();
 

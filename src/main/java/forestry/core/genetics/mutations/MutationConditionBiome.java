@@ -18,8 +18,8 @@ import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.climate.IClimateProvider;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationCondition;
-import forestry.api.genetics.ISpecies;
 
 // todo separate classes for single biome and tag
 public class MutationConditionBiome implements IMutationCondition {
@@ -30,8 +30,8 @@ public class MutationConditionBiome implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level level, BlockPos pos, ISpecies<?> allele0, ISpecies<?> allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
-		return level.getBiome(pos).is(this.validBiomes) ? 1f : 0f;
+	public float modifyChance(Level level, BlockPos pos, IMutation<?> mutation, IGenome genome0, IGenome genome1, IClimateProvider climate, float currentChance) {
+		return level.getBiome(pos).is(this.validBiomes) ? currentChance : 0f;
 	}
 
 	@Override

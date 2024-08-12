@@ -25,6 +25,13 @@ import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.plugin.IApicultureRegistration;
 import forestry.api.plugin.IForestryPlugin;
 
+/**
+ * Represents a type of species/individuals. Replaces the old ISpeciesRoot.
+ * Register new species types in {@link IForestryPlugin#registerGenetics}.
+ *
+ * @param <S> The interface type of the species this type contains.
+ * @param <I> The interface type of individuals who are members of this species type.
+ */
 public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> extends IBreedingTrackerHandler {
 	/**
 	 * @return The unique ID of this species type.

@@ -45,6 +45,7 @@ public final class VecUtil {
 		return new BlockPos(x, y, z);
 	}
 
+	// todo look into usages and replace with adjusted territory respecting IBeeModifiers
 	public static BlockPos scale(Vec3i vec, float factor) {
 		return new BlockPos(vec.getX() * factor, vec.getY() * factor, vec.getZ() * factor);
 	}

@@ -21,7 +21,6 @@ import net.minecraft.world.level.Level;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.core.genetics.EffectData;
 
@@ -57,7 +56,7 @@ public class CreeperBeeEffect extends ThrottledBeeEffect {
 			return storedData;
 		}
 
-		List<Player> players = IBeeEffect.getEntitiesInRange(genome, housing, Player.class);
+		List<Player> players = ThrottledBeeEffect.getEntitiesInRange(genome, housing, Player.class);
 		for (Player player : players) {
 			int chance = explosionChance;
 			storedData.setInteger(indexExplosionForce, defaultForce);

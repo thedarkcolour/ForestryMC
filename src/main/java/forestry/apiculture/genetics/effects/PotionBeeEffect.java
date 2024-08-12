@@ -29,7 +29,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.core.render.ParticleRender;
@@ -57,7 +56,7 @@ public class PotionBeeEffect extends ThrottledBeeEffect {
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
 		RandomSource rand = housing.getWorldObj().random;
-		List<LivingEntity> entities = IBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
+		List<LivingEntity> entities = ThrottledBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
 
 		for (LivingEntity entity : entities) {
 			if (rand.nextFloat() >= chance) {

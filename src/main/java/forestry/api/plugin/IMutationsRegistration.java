@@ -11,13 +11,23 @@ public interface IMutationsRegistration {
 	 * The ordering of the parents does not matter for mutations.
 	 *
 	 * @param firstParent  One of the species involved in this mutation.
-	 * @param secondParent The other species involved in this mutation.
-	 * @param chance       The chance (with 100 as the maximum) of this mutation occurring.
-	 * @throws IllegalArgumentException If both parent species are the same species.
+	 * @param secondParent The other species involved in this mutation. Must not be the same as {@code firstParent}.
+	 * @param chance       The chance (between 0 and 1 inclusive) of this mutation occurring.
+	 * @throws IllegalArgumentException If both parent species are the same species, or if chance is not [0,1].
 	 * @throws IllegalStateException    If there is already a mutation builder for the given parents.
 	 *                                  Use {@link #get} to modify the existing one.
 	 */
-	IMutationBuilder add(ResourceLocation firstParent, ResourceLocation secondParent, int chance);
+	IMutationBuilder add(ResourceLocation firstParent, ResourceLocation secondParent, float chance);
+
+	/**
+	 * Shortcut method for using legacy chance values. Chance must be between 0 and 100, inclusive.
+	 *
+	 * @deprecated Use the overload that takes a float instead.
+	 */
+	@Deprecated
+	default IMutationBuilder add(ResourceLocation firstParent, ResourceLocation secondParent, int chance) {
+		return add(firstParent, secondParent, chance / 100.0f);
+	}
 
 	/**
 	 * Retrieves an already existing mutation so that it can be further customized.

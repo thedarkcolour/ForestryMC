@@ -213,7 +213,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 
 		int line = 48;
 		int column;
-		EnumMutateChance chance = EnumMutateChance.rateChance(combination.getBaseChance());
+		EnumMutateChance chance = EnumMutateChance.rateChance(combination.getChance());
 		if (chance == EnumMutateChance.HIGHEST) {
 			line += 16;
 			column = 228;
@@ -240,7 +240,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 	}
 
 	private void drawUnknownIcon(PoseStack transform, IMutation<?> mutation, int x) {
-		float chance = mutation.getBaseChance();
+		float chance = mutation.getChance();
 
 		int line;
 		int column;

@@ -43,9 +43,9 @@ public interface IMutation<S extends ISpecies<?>> {
 	ImmutableList<AllelePair<?>> getResultAlleles();
 
 	/**
-	 * @return Unmodified base chance for mutation to fire.
+	 * @return Unmodified base chance for mutation to occur.
 	 */
-	int getBaseChance();
+	float getChance();
 
 	/**
 	 * @return Collection of localized, human-readable strings describing special mutation conditions, if any.

@@ -330,7 +330,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 	}
 
 	private void drawProbabilityArrow(PoseStack transform, IMutation<?> combination, int x, int y, IBreedingTracker breedingTracker) {
-		float chance = combination.getBaseChance();
+		float chance = combination.getChance();
 		int line = 247;
 		int column = switch (EnumMutateChance.rateChance(chance)) {
 			case HIGHER -> 100 + 15;

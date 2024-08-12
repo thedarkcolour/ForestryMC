@@ -17,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 
 import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.core.utils.DamageSourceForestry;
@@ -31,7 +30,7 @@ public class MisanthropeBeeEffect extends ThrottledBeeEffect {
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		List<Player> players = IBeeEffect.getEntitiesInRange(genome, housing, Player.class);
+		List<Player> players = ThrottledBeeEffect.getEntitiesInRange(genome, housing, Player.class);
 		for (Player player : players) {
 			int damage = 4;
 

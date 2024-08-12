@@ -37,7 +37,7 @@ import forestry.core.genetics.ItemResearchNote;
 
 public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	private final ISpeciesType<S, ?> type;
-	private final int chance;
+	private final float chance;
 	private final List<IMutationCondition> conditions;
 	private final List<Component> specialConditions;
 	private final S firstParent;
@@ -46,7 +46,7 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	private final ImmutableList<AllelePair<?>> resultAlleles;
 	private final boolean secret;
 
-	public Mutation(ISpeciesType<S, ?> type, S firstParent, S secondParent, S result, Map<IChromosome<?>, IAllele> resultAlleles, int chance, List<IMutationCondition> conditions) {
+	public Mutation(ISpeciesType<S, ?> type, S firstParent, S secondParent, S result, Map<IChromosome<?>, IAllele> resultAlleles, float chance, List<IMutationCondition> conditions) {
 		this.type = type;
 		this.chance = chance;
 		this.conditions = conditions;
@@ -80,10 +80,10 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 		return newAlleles.build();
 	}
 
-	public static float getChance(IMutation<?> mutation, Level level, BlockPos pos, ISpecies<?> firstParent, ISpecies<?> secondParent, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate) {
-		float mutationChance = mutation.getBaseChance();
+	public static float getChance(IMutation<?> mutation, Level level, BlockPos pos, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate) {
+		float mutationChance = mutation.getChance();
 		for (IMutationCondition condition : mutation.getConditions()) {
-			mutationChance *= condition.getChance(level, pos, firstParent, secondParent, firstGenome, secondGenome, climate);
+			mutationChance = condition.modifyChance(level, pos, mutation, firstGenome, secondGenome, climate, mutationChance);
 			if (mutationChance == 0f) {
 				return 0f;
 			}
@@ -127,7 +127,7 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	}
 
 	@Override
-	public int getBaseChance() {
+	public float getChance() {
 		return this.chance;
 	}
 

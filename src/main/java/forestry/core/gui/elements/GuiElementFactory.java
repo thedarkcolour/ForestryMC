@@ -216,7 +216,7 @@ public enum GuiElementFactory implements ResourceManagerReloadListener {
 	}
 
 	private static void createProbabilityArrow(ContainerElement element, IMutation<?> combination, int x, int y, IBreedingTracker breedingTracker) {
-		float chance = combination.getBaseChance();
+		float chance = combination.getChance();
 		int line = 247;
 		int column = 100;
 		switch (EnumMutateChance.rateChance(chance)) {
@@ -244,7 +244,7 @@ public enum GuiElementFactory implements ResourceManagerReloadListener {
 	}
 
 	private static DrawableElement createProbabilityAdd(IMutation mutation, int x, int y) {
-		float chance = mutation.getBaseChance();
+		float chance = mutation.getChance();
 		int line = 247;
 		int column = 190;
 		switch (EnumMutateChance.rateChance(chance)) {

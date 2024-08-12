@@ -10,11 +10,22 @@
  ******************************************************************************/
 package forestry.apiculture.genetics.effects;
 
+import java.util.List;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
+
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
+import forestry.apiculture.genetics.Bee;
 import forestry.core.genetics.EffectData;
+import forestry.core.utils.SpeciesUtil;
+import forestry.core.utils.VecUtil;
 
 public abstract class ThrottledBeeEffect extends DummyBeeEffect implements IBeeEffect {
 	private final boolean isCombinable;
@@ -26,6 +37,23 @@ public abstract class ThrottledBeeEffect extends DummyBeeEffect implements IBeeE
 		this.throttle = throttle;
 		this.isCombinable = isCombinable;
 		this.requiresWorkingQueen = requiresWorking;
+	}
+
+	public static AABB getBounding(IBeeHousing housing, IGenome genome) {
+		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
+		Vec3i territory = Bee.getAdjustedTerritory(genome, beeModifier);
+
+		Vec3i offset = VecUtil.scale(territory, -1 / 2.0f);
+
+		BlockPos min = housing.getCoordinates().offset(offset);
+		BlockPos max = min.offset(territory);
+
+		return new AABB(min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ());
+	}
+
+	public static <T extends Entity> List<T> getEntitiesInRange(IGenome genome, IBeeHousing housing, Class<T> entityClass) {
+		AABB boundingBox = getBounding(housing, genome);
+		return housing.getWorldObj().getEntitiesOfClass(entityClass, boundingBox);
 	}
 
 	@Override

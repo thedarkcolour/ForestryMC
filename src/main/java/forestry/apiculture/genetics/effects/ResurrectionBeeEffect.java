@@ -24,7 +24,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.core.utils.EntityUtil;
@@ -41,7 +40,7 @@ public class ResurrectionBeeEffect extends ThrottledBeeEffect {
 
 	@Override
 	public IEffectData doEffectThrottled(IGenome genome, IEffectData storedData, IBeeHousing housing) {
-		List<ItemEntity> entities = IBeeEffect.getEntitiesInRange(genome, housing, ItemEntity.class);
+		List<ItemEntity> entities = ThrottledBeeEffect.getEntitiesInRange(genome, housing, ItemEntity.class);
 		if (entities.isEmpty()) {
 			return storedData;
 		}

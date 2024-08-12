@@ -26,15 +26,17 @@ public enum EnumMutateChance {
 	}
 
 	public static EnumMutateChance rateChance(float percent) {
-		if (percent >= 20) {
+		int percentInt = Math.round(percent * 100);
+
+		if (percentInt >= 20) {
 			return HIGHEST;
-		} else if (percent >= 15) {
+		} else if (percentInt >= 15) {
 			return HIGHER;
-		} else if (percent >= 12) {
+		} else if (percentInt >= 12) {
 			return HIGH;
-		} else if (percent >= 10) {
+		} else if (percentInt >= 10) {
 			return NORMAL;
-		} else if (percent >= 5) {
+		} else if (percentInt >= 5) {
 			return LOW;
 		} else {
 			return LOWEST;

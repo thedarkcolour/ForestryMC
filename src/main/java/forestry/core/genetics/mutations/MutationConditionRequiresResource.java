@@ -16,8 +16,8 @@ import java.util.List;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.climate.IClimateProvider;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationCondition;
-import forestry.api.genetics.ISpecies;
 import forestry.core.tiles.TileUtil;
 import forestry.api.genetics.IGenome;
 
@@ -36,7 +36,7 @@ public class MutationConditionRequiresResource implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level level, BlockPos pos, ISpecies<?> allele0, ISpecies<?> allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
+	public float modifyChance(Level level, BlockPos pos, IMutation<?> mutation, IGenome genome0, IGenome genome1, IClimateProvider climate, float currentChance) {
 		BlockEntity tile;
 		do {
 			pos = pos.below();
@@ -44,7 +44,7 @@ public class MutationConditionRequiresResource implements IMutationCondition {
 		} while (tile instanceof IBeeHousing);
 
 		BlockState blockState = level.getBlockState(pos);
-		return this.acceptedBlockStates.contains(blockState) ? 1 : 0;
+		return this.acceptedBlockStates.contains(blockState) ? currentChance : 0f;
 	}
 
 	@Override

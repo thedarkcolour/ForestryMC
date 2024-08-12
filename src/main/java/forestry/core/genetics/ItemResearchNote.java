@@ -128,7 +128,7 @@ public class ItemResearchNote extends ItemForestry {
 
 		Component species1 = Component.literal("'").append(mutation.getFirstParent().getDisplayName()).append("'").withStyle(ChatFormatting.YELLOW);
 		Component species2 = Component.literal("'").append(mutation.getSecondParent().getDisplayName()).append("'").withStyle(ChatFormatting.YELLOW);
-		String mutationChanceKey = EnumMutateChance.rateChance(mutation.getBaseChance()).toString().toLowerCase(Locale.ENGLISH);
+		String mutationChanceKey = EnumMutateChance.rateChance(mutation.getChance()).toString().toLowerCase(Locale.ENGLISH);
 		Component mutationChance = Component.translatable("for.researchNote.chance." + mutationChanceKey).withStyle(ChatFormatting.BLUE);
 		Component speciesResult = mutation.getResult().getDisplayName().copy().withStyle(ChatFormatting.LIGHT_PURPLE);
 

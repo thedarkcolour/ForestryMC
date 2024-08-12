@@ -294,7 +294,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 			// Age the queen
 			IGenome mate = queen.getMate();
-			float lifespanModifier = beeModifier.getLifespanModifier(queen.getGenome(), mate, 1.0f);
+			float lifespanModifier = beeModifier.modifyAging(queen.getGenome(), mate, 1.0f);
 			queen.age(world, lifespanModifier);
 
 			// Write the changed queen back into the item stack.

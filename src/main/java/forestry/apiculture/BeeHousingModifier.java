@@ -12,10 +12,13 @@ package forestry.apiculture;
 
 import javax.annotation.Nullable;
 
-import forestry.api.genetics.IGenome;
+import net.minecraft.core.Vec3i;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
+import forestry.api.apiculture.genetics.IBeeSpecies;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 
 public class BeeHousingModifier implements IBeeModifier {
 	private final IBeeHousing beeHousing;
@@ -25,57 +28,51 @@ public class BeeHousingModifier implements IBeeModifier {
 	}
 
 	@Override
-	public float getTerritoryModifier(IGenome genome, final float currentModifier) {
-		float modifierValue = 1.0f;
+	public Vec3i modifyTerritory(IGenome genome, Vec3i currentModifier) {
 		for (IBeeModifier modifier : beeHousing.getBeeModifiers()) {
-			modifierValue *= modifier.getTerritoryModifier(genome, modifierValue * currentModifier);
+			currentModifier = modifier.modifyTerritory(genome, currentModifier);
 		}
-		return modifierValue;
+		return currentModifier;
 	}
 
 	@Override
-	public float getMutationModifier(IGenome genome, IGenome mate, final float currentModifier) {
-		float modifierValue = 1.0f;
+	public float modifyMutationChance(IGenome genome, IGenome mate, IMutation<IBeeSpecies> mutation, float currentChance) {
 		for (IBeeModifier modifier : beeHousing.getBeeModifiers()) {
-			modifierValue *= modifier.getMutationModifier(genome, mate, modifierValue * currentModifier);
+			currentChance = modifier.modifyMutationChance(genome, mate, mutation, currentChance);
 		}
-		return modifierValue;
+		return currentChance;
 	}
 
 	@Override
-	public float getLifespanModifier(IGenome genome, @Nullable IGenome mate, final float currentModifier) {
-		float modifierValue = 1.0f;
+	public float modifyAging(IGenome genome, @Nullable IGenome mate, float currentAging) {
 		for (IBeeModifier modifier : beeHousing.getBeeModifiers()) {
-			modifierValue *= modifier.getLifespanModifier(genome, mate, modifierValue * currentModifier);
+			currentAging = modifier.modifyAging(genome, mate, currentAging);
 		}
-		return modifierValue;
+		return currentAging;
 	}
 
 	@Override
-	public float getProductionModifier(IGenome genome, final float currentModifier) {
-		float modifierValue = 1.0f;
+	public float modifyProductionSpeed(IGenome genome, float currentSpeed) {
 		for (IBeeModifier modifier : beeHousing.getBeeModifiers()) {
-			modifierValue *= modifier.getProductionModifier(genome, modifierValue * currentModifier);
+			currentSpeed = modifier.modifyProductionSpeed(genome, currentSpeed);
 		}
-		return modifierValue;
+		return currentSpeed;
 	}
 
 	@Override
-	public float getFloweringModifier(IGenome genome, final float currentModifier) {
-		float modifierValue = 1.0f;
+	public float modifyPollination(IGenome genome, float currentPollination) {
 		for (IBeeModifier modifier : beeHousing.getBeeModifiers()) {
-			modifierValue *= modifier.getFloweringModifier(genome, modifierValue * currentModifier);
+			currentPollination = modifier.modifyPollination(genome, currentPollination);
 		}
-		return modifierValue;
+		return currentPollination;
 	}
 
 	@Override
-	public float getGeneticDecay(IGenome genome, final float currentModifier) {
-		float modifierValue = 1.0f;
+	public float modifyGeneticDecay(IGenome genome, float currentDecay) {
 		for (IBeeModifier modifier : beeHousing.getBeeModifiers()) {
-			modifierValue *= modifier.getGeneticDecay(genome, modifierValue * currentModifier);
+			currentDecay = modifier.modifyGeneticDecay(genome, currentDecay);
 		}
-		return modifierValue;
+		return currentDecay;
 	}
 
 	@Override

@@ -85,8 +85,11 @@ public interface IMutationBuilder {
 
 	/**
 	 * Override the chance set in {@link forestry.api.plugin.IMutationsRegistration#add}.
+	 *
+	 * @param chance The chance of this mutation occurring between 0 and 1, inclusive.
+	 * @throws IllegalArgumentException If chance is not in [0, 1].
 	 */
-	IMutationBuilder setChance(int chance);
+	IMutationBuilder setChance(float chance);
 
 	/**
 	 * Builds the mutation. Used internally.

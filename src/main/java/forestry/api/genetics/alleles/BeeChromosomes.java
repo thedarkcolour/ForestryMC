@@ -19,7 +19,7 @@ public class BeeChromosomes {
 	 */
 	public static final IRegistryChromosome<IBeeSpecies> SPECIES = ForestryAlleles.REGISTRY.registryChromosome(ForestrySpeciesTypes.BEE, IBeeSpecies.class);
 	/**
-	 * Determines a queen's production speed.
+	 * Determines a queen's production speed. Shows up as "worker" in the portable analyzer.
 	 */
 	public static final IFloatChromosome SPEED = ForestryAlleles.REGISTRY.floatChromosome(forestry("speed"));
 	/**
@@ -31,11 +31,11 @@ public class BeeChromosomes {
 	 */
 	public static final IIntegerChromosome FERTILITY = ForestryAlleles.REGISTRY.intChromosome(forestry("fertility"));
 	/**
-	 * Determines the acceptable range of temperatures from a bee's ideal temperature. Reused by trees and butterflies.
+	 * Determines the acceptable range of temperatures from a bee's ideal temperature. Reused by butterflies.
 	 */
 	public static final IValueChromosome<ToleranceType> TEMPERATURE_TOLERANCE = ForestryAlleles.REGISTRY.valueChromosome(forestry("temperature_tolerance"), ToleranceType.class);
 	/**
-	 * Determines the acceptable range of humidities from a bee's ideal humidity. Reused by trees and butterflies.
+	 * Determines the acceptable range of humidities from a bee's ideal humidity. Reused by butterflies.
 	 */
 	public static final IValueChromosome<ToleranceType> HUMIDITY_TOLERANCE = ForestryAlleles.REGISTRY.valueChromosome(forestry("humidity_tolerance"), ToleranceType.class);
 	/**
@@ -43,7 +43,7 @@ public class BeeChromosomes {
 	 */
 	public static final IBooleanChromosome NEVER_SLEEPS = ForestryAlleles.REGISTRY.booleanChromosome(forestry("never_sleeps"));
 	/**
-	 * TODO document
+	 * Whether this bee can work when the sky above its housing is obstructed.
 	 */
 	public static final IBooleanChromosome CAVE_DWELLING = ForestryAlleles.REGISTRY.booleanChromosome(forestry("cave_dwelling"));
 	/**

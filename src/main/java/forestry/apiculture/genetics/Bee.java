@@ -284,7 +284,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	public void age(Level world, float housingLifespanModifier) {
 		IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(world);
 		IBeeModifier beeModifier = mode.getBeeModifier();
-		float finalModifier = housingLifespanModifier * beeModifier.getLifespanModifier(genome, mate, housingLifespanModifier);
+		float finalModifier = housingLifespanModifier * beeModifier.modifyAging(genome, mate, housingLifespanModifier);
 
 		super.age(world, finalModifier);
 	}*/
@@ -348,7 +348,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		//IBeeModifier beeModeModifier = mode.getBeeModifier();
 
 		// Bee genetic speed * beehousing * beekeeping mode
-		float speed = genome.getActiveValue(BeeChromosomes.SPEED) * beeHousingModifier.getProductionModifier(genome, 1f)/* * beeModeModifier.getProductionModifier(genome, 1f)*/;
+		float speed = beeHousingModifier.modifyProductionSpeed(genome, genome.getActiveValue(BeeChromosomes.SPEED))/* * beeModeModifier.modifyProductionSpeed(genome, 1f)*/;
 		RandomSource rand = level.random;
 
 		// / Primary Products
@@ -392,7 +392,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 			RandomSource rand = housing.getWorldObj().random;
 
 			if ((this.generation > 96 + rand.nextInt(6) + rand.nextInt(6)) &&
-					(rand.nextFloat() < 0.02f * beeModifier.getGeneticDecay(this.genome, 1f))) {
+					(rand.nextFloat() < 0.02f * beeModifier.modifyGeneticDecay(this.genome, 1f))) {
 				return null;
 			}
 		}
@@ -438,27 +438,27 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	@Nullable
 	@SuppressWarnings("CodeBlock2Expr")
 	private static ImmutableList<AllelePair<?>> mutateSpecies(IBeeHousing housing, IGenome parent1, IGenome parent2) {
-		return SpeciesUtil.mutateSpecies(housing.getWorldObj(), housing.getCoordinates(), housing.getOwner(), parent1, parent2, BeeChromosomes.SPECIES, (mutation, level, pos, firstParent, secondParent, firstGenome, secondGenome, climate) -> {
-			return getChance(mutation, housing, firstParent, secondParent, firstGenome, secondGenome);
+		return SpeciesUtil.mutateSpecies(housing.getWorldObj(), housing.getCoordinates(), housing.getOwner(), parent1, parent2, BeeChromosomes.SPECIES, (mutation, level, pos, firstGenome, secondGenome, climate) -> {
+			return getChance(mutation, housing, firstGenome, secondGenome);
 		});
 	}
 
-	private static float getChance(IMutation<?> mutation, IBeeHousing housing, IBeeSpecies firstParent, IBeeSpecies secondParent, IGenome genome0, IGenome genome1) {
+	private static float getChance(IMutation<IBeeSpecies> mutation, IBeeHousing housing, IGenome genome0, IGenome genome1) {
 		Level level = housing.getWorldObj();
 		BlockPos housingPos = housing.getCoordinates();
 
-		float processedChance = Mutation.getChance(mutation, level, housingPos, firstParent, secondParent, genome0, genome1, housing);
-		if (processedChance <= 0) {
+		float currentChance = Mutation.getChance(mutation, level, housingPos, genome0, genome1, housing);
+		if (currentChance <= 0) {
 			return 0;
 		}
 
 		IBeeModifier beeHousingModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 		//IBeeModifier beeModeModifier = BeeManager.beeRoot.getBeekeepingMode(world).getBeeModifier();
 
-		processedChance *= beeHousingModifier.getMutationModifier(genome0, genome1, processedChance);
-		//processedChance *= beeModeModifier.getMutationModifier(genome0, genome1, processedChance);
+		currentChance = beeHousingModifier.modifyMutationChance(genome0, genome1, mutation, currentChance);
+		//currentChance *= beeModeModifier.modifyMutationChance(genome0, genome1, currentChance);
 
-		return processedChance;
+		return currentChance;
 	}
 
 	/* FLOWERS */
@@ -467,7 +467,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	public IIndividual retrievePollen(IBeeHousing housing) {
 		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 
-		int chance = Math.round(genome.getActiveValue(BeeChromosomes.POLLINATION) * beeModifier.getFloweringModifier(getGenome(), 1f));
+		int chance = getAdjustedPollination(this.genome, beeModifier);
 
 		Level level = housing.getWorldObj();
 		RandomSource random = level.random;
@@ -477,7 +477,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 			return null;
 		}
 
-		Vec3i area = getArea(genome, beeModifier);
+		Vec3i area = getAdjustedTerritory(genome, beeModifier);
 		Vec3i offset = new Vec3i(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
 		BlockPos housingPos = housing.getCoordinates();
 
@@ -498,7 +498,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	public boolean pollinateRandom(IBeeHousing housing, IIndividual pollen) {
 		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 
-		int chance = (int) (genome.getActiveValue(BeeChromosomes.POLLINATION) * beeModifier.getFloweringModifier(getGenome(), 1f));
+		int chance = getAdjustedPollination(genome, beeModifier);
 
 		Level level = housing.getWorldObj();
 		RandomSource random = level.random;
@@ -508,7 +508,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 			return false;
 		}
 
-		Vec3i area = getArea(genome, beeModifier);
+		Vec3i area = getAdjustedTerritory(genome, beeModifier);
 		Vec3i offset = new Vec3i(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
 		BlockPos housingPos = housing.getCoordinates();
 
@@ -545,7 +545,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	public BlockPos plantFlowerRandom(IBeeHousing housing, List<BlockState> potentialFlowers) {
 		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
 
-		int chance = Math.round(genome.getActiveValue(BeeChromosomes.POLLINATION) * beeModifier.getFloweringModifier(getGenome(), 1f));
+		int chance = getAdjustedPollination(this.genome, beeModifier);
 
 		Level level = housing.getWorldObj();
 		RandomSource random = level.random;
@@ -556,7 +556,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		}
 		// Gather required info
 		IFlowerType flowerType = genome.getActiveValue(BeeChromosomes.FLOWER_TYPE);
-		Vec3i area = getArea(genome, beeModifier);
+		Vec3i area = getAdjustedTerritory(genome, beeModifier);
 		Vec3i offset = new Vec3i(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
 		BlockPos housingPos = housing.getCoordinates();
 
@@ -574,7 +574,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	@Override
 	public Iterator<BlockPos.MutableBlockPos> getAreaIterator(IBeeHousing housing) {
 		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
-		Vec3i area = getArea(this.genome, beeModifier);
+		Vec3i area = getAdjustedTerritory(this.genome, beeModifier);
 		BlockPos housingPos = housing.getCoordinates();
 		BlockPos minPos = housingPos.offset(-area.getX() / 2, -area.getY() / 2, -area.getZ() / 2);
 		BlockPos maxPos = minPos.offset(area);
@@ -582,10 +582,13 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		return VecUtil.getAllInBoxFromCenterMutable(level, minPos, housingPos, maxPos);
 	}
 
-	private static Vec3i getArea(IGenome genome, IBeeModifier beeModifier) {
-		Vec3i genomeTerritory = genome.getActiveValue(BeeChromosomes.TERRITORY);
-		float housingModifier = beeModifier.getTerritoryModifier(genome, 1f);
-		return VecUtil.scale(genomeTerritory, housingModifier * 3.0f);
+	// todo reimplement beekeeping mode through config
+	public static Vec3i getAdjustedTerritory(IGenome genome, IBeeModifier beeModifier) {
+		return beeModifier.modifyTerritory(genome, genome.getActiveValue(BeeChromosomes.TERRITORY));
+	}
+
+	private static int getAdjustedPollination(IGenome genome, IBeeModifier beeModifier) {
+		return Math.round(beeModifier.modifyPollination(genome, genome.getActiveValue(BeeChromosomes.POLLINATION)));
 	}
 
 	@Override

@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.IBeeEffect;
 import forestry.api.genetics.IEffectData;
 import forestry.core.genetics.EffectData;
 import forestry.core.render.ParticleRender;
@@ -78,7 +77,7 @@ public class FungificationBeeEffect extends ThrottledBeeEffect {
 	}
 
 	private static void doEntityEffect(IGenome genome, IBeeHousing housing) {
-		List<Cow> cows = IBeeEffect.getEntitiesInRange(genome, housing, Cow.class);
+		List<Cow> cows = ThrottledBeeEffect.getEntitiesInRange(genome, housing, Cow.class);
 		for (Cow cow : cows) {
 			if (convertCowToMooshroom(cow)) {
 				return;

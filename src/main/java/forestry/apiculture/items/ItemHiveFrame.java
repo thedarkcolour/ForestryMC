@@ -13,33 +13,25 @@ package forestry.apiculture.items;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.apiculture.DefaultBeeModifier;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.hives.IHiveFrame;
 import forestry.api.core.ItemGroups;
+import forestry.api.genetics.IGenome;
 import forestry.core.items.ItemForestry;
 
-import forestry.api.genetics.IGenome;
-
 public class ItemHiveFrame extends ItemForestry implements IHiveFrame {
-
 	private final HiveFrameBeeModifier beeModifier;
 
 	public ItemHiveFrame(int maxDamage, float geneticDecay) {
-		super((new Item.Properties())
-				.durability(maxDamage)
-				.tab(ItemGroups.tabApiculture));
+		super(new Item.Properties().durability(maxDamage).tab(ItemGroups.tabApiculture));
 
 		this.beeModifier = new HiveFrameBeeModifier(geneticDecay);
 	}
@@ -59,16 +51,15 @@ public class ItemHiveFrame extends ItemForestry implements IHiveFrame {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced) {
 		super.appendHoverText(stack, world, tooltip, advanced);
-		beeModifier.addInformation(stack, world, tooltip, advanced);
+		beeModifier.addInformation(tooltip);
 		if (!stack.isDamaged()) {
 			tooltip.add(Component.translatable("item.forestry.durability", stack.getMaxDamage()));
 		}
 	}
 
-	private static class HiveFrameBeeModifier extends DefaultBeeModifier {
+	private static class HiveFrameBeeModifier implements IBeeModifier {
 		private static final float production = 2f;
 		private final float geneticDecay;
 
@@ -77,17 +68,16 @@ public class ItemHiveFrame extends ItemForestry implements IHiveFrame {
 		}
 
 		@Override
-		public float getProductionModifier(IGenome genome, float currentModifier) {
-			return currentModifier < 10f ? production : 1f;
+		public float modifyProductionSpeed(IGenome genome, float currentSpeed) {
+			return currentSpeed < 10f ? production : 1f;
 		}
 
 		@Override
-		public float getGeneticDecay(IGenome genome, float currentModifier) {
+		public float modifyGeneticDecay(IGenome genome, float currentDecay) {
 			return this.geneticDecay;
 		}
 
-		@OnlyIn(Dist.CLIENT)
-		public void addInformation(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced) {
+		public void addInformation(List<Component> tooltip) {
 			tooltip.add(Component.translatable("item.forestry.bee.modifier.production", production));
 			tooltip.add(Component.translatable("item.forestry.bee.modifier.genetic.decay", geneticDecay));
 		}
