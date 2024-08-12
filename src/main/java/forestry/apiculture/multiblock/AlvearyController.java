@@ -213,12 +213,10 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	protected void onAssimilate(IMultiblockControllerInternal assimilated) {
-
 	}
 
 	@Override
 	public void onAssimilated(IMultiblockControllerInternal assimilator) {
-
 	}
 
 	@Override
@@ -232,14 +230,13 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 			beekeepingLogic.doWork();
 		}
 
-		// climate blocks will increase climate every tick
-		for (IAlvearyComponent.Climatiser climatiser : climatisers) {
+		// the old equalizeChange would cap out the climate increases from the climate blocks
+		this.temperatureSteps = 0;
+		this.humiditySteps = 0;
+		// climate blocks will increase climate every tick and must go before the canWork check
+		for (IAlvearyComponent.Climatiser climatiser : this.climatisers) {
 			climatiser.changeClimate(tickCount, this);
 		}
-
-		// the old equalizeChange would cap out the climate increases from the climate blocks
-		temperatureSteps = 0;
-		humiditySteps = 0;
 
 		return canWork;
 	}
@@ -325,7 +322,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public HumidityType humidity() {
-		return IForestryApi.INSTANCE.getClimateManager().getHumidity(getBiome()).up(this.humiditySteps);
+		return this.climate.humidity().up(this.humiditySteps);
 	}
 
 	@Override
