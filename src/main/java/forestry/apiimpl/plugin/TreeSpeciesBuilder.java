@@ -71,6 +71,12 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	}
 
 	@Override
+	public ITreeSpeciesBuilder addVanillaSapling(Item sapling) {
+		this.vanillaItems.add(sapling);
+		return this;
+	}
+
+	@Override
 	public ITreeSpeciesBuilder setRarity(float rarity) {
 		this.rarity = rarity;
 		return this;

@@ -46,6 +46,14 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, I
 	ITreeSpeciesBuilder addVanillaStates(Collection<BlockState> states);
 
 	/**
+	 * Adds a mundane item (no genetic component/NBT) that Forestry should consider as members of this species.
+	 * Used by the portable analyzer to convert vanilla saplings into their Forestry equivalents when analyzing.
+	 *
+	 * @param sapling The item that should count as this species.
+	 */
+	ITreeSpeciesBuilder addVanillaSapling(Item sapling);
+
+	/**
 	 * Sets the decorative leaves block for this tree species. Used by shears and pick-block.
 	 * The decorative form has no genome or block entity which is better for performance, but has no functionality.
 	 * Calling this method is not required but highly recommended.

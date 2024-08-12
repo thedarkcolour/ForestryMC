@@ -2,6 +2,7 @@ package forestry.plugin;
 
 import java.awt.Color;
 
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import forestry.api.arboriculture.ForestryTreeSpecies;
@@ -60,6 +61,7 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureOak::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.OAK))
 				.addVanillaStates(Blocks.OAK_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaSapling(Items.OAK_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_APPLE);
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
@@ -71,6 +73,7 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureDarkOak::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.DARK_OAK))
 				.addVanillaStates(Blocks.DARK_OAK_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaSapling(Items.DARK_OAK_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
 					genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
@@ -83,6 +86,7 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureBirch::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.BIRCH))
 				.addVanillaStates(Blocks.BIRCH_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaSapling(Items.BIRCH_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
 					genome.set(TreeChromosomes.MATURATION, ForestryAlleles.MATURATION_FASTER);
@@ -139,6 +143,8 @@ public class DefaultTreeSpecies {
 		arboriculture.registerSpecies(ForestryTreeSpecies.CHERRY, GENUS_PRUNUS, SPECIES_CHERRY, true, new Color(0xe691da), ForestryWoodType.CHERRY)
 				.setTreeFeature(FeatureCherry::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.CHERRY))
+				//.addVanillaStates(Blocks.CHERRY_LEAVES.getStateDefinition().getPossibleStates())
+				//.addVanillaItems(Items.CHERRY_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_CHERRY);
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_LOW);
@@ -202,6 +208,7 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureSpruce::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.SPRUCE))
 				.addVanillaStates(Blocks.SPRUCE_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaSapling(Items.SPRUCE_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_AVERAGE);
@@ -276,6 +283,7 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureJungle::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.JUNGLE))
 				.addVanillaStates(Blocks.JUNGLE_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaSapling(Items.SPRUCE_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_COCOA);
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_LARGER);
@@ -373,6 +381,7 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureAcaciaVanilla::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.ACACIA_VANILLA))
 				.addVanillaStates(Blocks.ACACIA_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaSapling(Items.ACACIA_SAPLING)
 				.setAuthority("Binnie");
 
 		// Desert Acacia
