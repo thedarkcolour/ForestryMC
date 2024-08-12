@@ -1,7 +1,7 @@
 {
   "values": [
-    "forestry:tree_chest",
     "forestry:bee_chest",
+    "forestry:tree_chest",
     "forestry:butterfly_chest"
   ]
 }

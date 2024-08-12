@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -51,8 +51,8 @@ public abstract class FeatureGroup<B extends FeatureGroup.Builder<S, ? extends F
 	public Optional<F> findFeature(String typeName) {
 		return featureByType.entrySet().stream()
 				.filter(e -> e.getKey().getSerializedName().equals(typeName))
-			.findFirst()
-			.flatMap(e -> Optional.of(e.getValue()));
+				.findFirst()
+				.flatMap(e -> Optional.of(e.getValue()));
 	}
 
 	public boolean itemEqual(ItemStack stack) {
@@ -89,7 +89,7 @@ public abstract class FeatureGroup<B extends FeatureGroup.Builder<S, ? extends F
 
 	public static abstract class Builder<S extends IFeatureSubtype, G> {
 		protected final IFeatureRegistry registry;
-		protected final Set<S> subTypes = new HashSet<>();
+		protected final Set<S> subTypes = new LinkedHashSet<>();
 		protected IdentifierType identifierType = IdentifierType.TYPE_ONLY;
 		protected String identifier = StringUtils.EMPTY;
 

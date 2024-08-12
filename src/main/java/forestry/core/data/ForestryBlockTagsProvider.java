@@ -3,6 +3,7 @@ package forestry.core.data;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import net.minecraft.data.DataGenerator;
@@ -25,6 +26,7 @@ import forestry.arboriculture.features.CharcoalBlocks;
 import forestry.core.blocks.EnumResourceType;
 import forestry.core.features.CoreBlocks;
 import forestry.database.features.DatabaseBlocks;
+import forestry.energy.features.EnergyBlocks;
 import forestry.factory.features.FactoryBlocks;
 import forestry.farming.blocks.BlockFarm;
 import forestry.farming.blocks.EnumFarmMaterial;
@@ -60,6 +62,7 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 				.add(CoreBlocks.DEEPSLATE_TIN_ORE.block())
 				.add(CoreBlocks.RAW_TIN_BLOCK.block())
 				.add(CharcoalBlocks.CHARCOAL.block())
+				.add(EnergyBlocks.ENGINES.blockArray())
 				.add(DatabaseBlocks.DATABASE.block());
 
 		for (BlockFarm block : FarmingBlocks.FARM.getBlocks()) {
@@ -90,7 +93,10 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 				.addTag(ForestryTags.Blocks.ORES_TIN)
 				.addTag(ForestryTags.Blocks.ORES_APATITE)
 				.addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
-		tag(BlockTags.NEEDS_STONE_TOOL).addTag(ForestryTags.Blocks.ORES_TIN).addTag(ForestryTags.Blocks.ORES_APATITE).addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
+		tag(BlockTags.NEEDS_STONE_TOOL)
+				.addTag(ForestryTags.Blocks.ORES_TIN)
+				.addTag(ForestryTags.Blocks.ORES_APATITE)
+				.addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
 
 		tag(ForestryTags.Blocks.CHARCOAL_BLOCK).add(CharcoalBlocks.CHARCOAL.block());
 		tag(Tags.Blocks.CHESTS).add(CoreBlocks.NATURALIST_CHEST.getBlocks().toArray(Block[]::new));
@@ -157,7 +163,7 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 		// todo is there a mushroom tag in later versions? should i add the nether fungi to this tag?
 		tag(ForestryTags.Blocks.MUSHROOMS_FLOWERS).add(Blocks.RED_MUSHROOM, Blocks.POTTED_RED_MUSHROOM, Blocks.BROWN_MUSHROOM, Blocks.POTTED_BROWN_MUSHROOM);
 		tag(ForestryTags.Blocks.END_FLOWERS).add(Blocks.DRAGON_EGG, Blocks.CHORUS_PLANT, Blocks.CHORUS_FLOWER);
-		tag(ForestryTags.Blocks.JUNGLE_FLOWERS).add(Blocks.VINE, Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT);
+		tag(ForestryTags.Blocks.JUNGLE_FLOWERS).add(Blocks.VINE, Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT, Blocks.FERN, Blocks.LARGE_FERN, Blocks.POTTED_FERN);
 		tag(ForestryTags.Blocks.SNOW_FLOWERS).addTag(BlockTags.FLOWERS);
 		tag(ForestryTags.Blocks.WHEAT_FLOWERS).add(Blocks.WHEAT);
 		tag(ForestryTags.Blocks.GOURD_FLOWERS).add(Blocks.MELON_STEM, Blocks.ATTACHED_MELON_STEM, Blocks.PUMPKIN_STEM, Blocks.ATTACHED_PUMPKIN_STEM);
@@ -177,7 +183,7 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 	}
 
 	private static Collection<Block> union(FeatureBlockGroup<?, ?>... features) {
-		Set<Block> set = new HashSet<>();
+		Set<Block> set = new LinkedHashSet<>();
 
 		for (FeatureBlockGroup<?, ?> feature : features) {
 			set.addAll(feature.getBlocks());

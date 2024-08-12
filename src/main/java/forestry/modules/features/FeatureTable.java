@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableTable;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,6 @@ import forestry.api.core.IItemProvider;
 import forestry.modules.features.FeatureGroup.IdentifierType;
 
 public abstract class FeatureTable<B extends FeatureTable.Builder<R, C, ? extends FeatureTable<B, F, R, C>>, F extends IModFeature, R extends IFeatureSubtype, C extends IFeatureSubtype> {
-
 	protected final ImmutableTable<R, C, F> featureByTypes;
 
 	public FeatureTable(B builder) {
@@ -59,14 +58,14 @@ public abstract class FeatureTable<B extends FeatureTable.Builder<R, C, ? extend
 	public boolean itemEqual(ItemStack stack) {
 		return getFeatures().stream()
 			.filter(f -> f instanceof IItemProvider)
-			.map(f -> (IItemProvider) f)
+			.map(f -> (IItemProvider<?>) f)
 			.anyMatch(f -> f.itemEqual(stack));
 	}
 
 	public boolean itemEqual(Item item) {
 		return getFeatures().stream()
 			.filter(f -> f instanceof IItemProvider)
-			.map(f -> (IItemProvider) f)
+			.map(f -> (IItemProvider<?>) f)
 			.anyMatch(f -> f.itemEqual(item));
 	}
 
@@ -79,13 +78,13 @@ public abstract class FeatureTable<B extends FeatureTable.Builder<R, C, ? extend
 		if (!(featureBlock instanceof IItemProvider)) {
 			throw new IllegalStateException("This feature group has no item registered for the given sub type to create a stack for.");
 		}
-		return ((IItemProvider) featureBlock).stack(amount);
+		return ((IItemProvider<?>) featureBlock).stack(amount);
 	}
 
 	public static abstract class Builder<R extends IFeatureSubtype, C extends IFeatureSubtype, G> {
 		protected final IFeatureRegistry registry;
-		protected final Set<R> rowTypes = new HashSet<>();
-		protected final Set<C> columnTypes = new HashSet<>();
+		protected final Set<R> rowTypes = new LinkedHashSet<>();
+		protected final Set<C> columnTypes = new LinkedHashSet<>();
 		protected IdentifierType identifierType = IdentifierType.TYPE_ONLY;
 		protected String identifier = StringUtils.EMPTY;
 
