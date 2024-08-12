@@ -65,7 +65,7 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 	public void updateServer(int tickCount) {
 		if (!pendingSpawns.isEmpty()) {
 			setActive(true);
-			if (tickCount % 1000 == 0) {
+			if (tickCount % 300 == 0) {
 				trySpawnSwarm();
 			}
 		} else {

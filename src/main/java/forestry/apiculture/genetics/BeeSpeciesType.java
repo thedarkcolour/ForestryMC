@@ -44,6 +44,7 @@ import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IKaryotype;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.ISpeciesTypeBuilder;
@@ -79,12 +80,9 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 
 	@Override
 	public boolean isMated(ItemStack stack) {
-		if (getLifeStage(stack) != BeeLifeStage.QUEEN) {
-			return false;
-		}
-
-		CompoundTag nbt = stack.getTag();
-		return nbt != null && nbt.contains("Mate");
+		return IIndividualHandlerItem.filter(stack, (individual, stage) -> {
+			return stage == BeeLifeStage.QUEEN && individual.getMate() != null;
+		});
 	}
 
 	@Override
