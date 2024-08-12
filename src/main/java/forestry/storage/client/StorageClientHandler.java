@@ -28,27 +28,25 @@ import forestry.storage.items.ItemBackpack;
 public class StorageClientHandler implements IClientModuleHandler {
 	public static final ModelResourceLocation FILLED_CRATE_MODEL = new ModelResourceLocation(ForestryConstants.MOD_ID, "filled_crate", "inventory");
 
-	public StorageClientHandler() {
-		IFeatureRegistry backpacksRegistry = ModFeatureRegistry.get(ForestryModuleIds.STORAGE);
-
-		backpacksRegistry.addRegistryListener(Registry.ITEM_REGISTRY, event -> {
-			@SuppressWarnings("deprecation")
-			ItemPropertyFunction itemPropertyFunction = (stack, clientLevel, holder, idk) -> ItemBackpack.getMode(stack).ordinal();
-
-			for (RegistryObject<Item> entry : backpacksRegistry.getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
-				if (entry.get() instanceof ItemBackpack) {
-					ItemProperties.register(entry.get(), new ResourceLocation("mode"), itemPropertyFunction);
-				}
-			}
-		});
-	}
-
 	@Override
 	public void registerEvents(IEventBus modBus) {
 		modBus.addListener(StorageClientHandler::registerAdditionalModels);
 		modBus.addListener(StorageClientHandler::registerModelLoaders);
 		modBus.addListener(StorageClientHandler::onModelBake);
 		modBus.addListener(StorageClientHandler::onClientSetup);
+
+		IFeatureRegistry registry = ModFeatureRegistry.get(ForestryModuleIds.STORAGE);
+
+		registry.addRegistryListener(Registry.ITEM_REGISTRY, event -> {
+			@SuppressWarnings("deprecation")
+			ItemPropertyFunction itemPropertyFunction = (stack, clientLevel, holder, idk) -> ItemBackpack.getMode(stack).ordinal();
+
+			for (RegistryObject<Item> entry : registry.getRegistry(Registry.ITEM_REGISTRY).getEntries()) {
+				if (entry.get() instanceof ItemBackpack) {
+					ItemProperties.register(entry.get(), new ResourceLocation("mode"), itemPropertyFunction);
+				}
+			}
+		});
 	}
 
 	private static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
