@@ -27,5 +27,5 @@ public class ApicultureFeatures {
 
 	public static final RegistryObject<HiveDecorator> HIVE_DECORATOR = FEATURES.register("hive", HiveDecorator::new);
 	public static final RegistryObject<ConfiguredFeature<?, ?>> CONFIGURED_HIVE_DECORATOR = CONFIGURED_FEATURES.register("hive", () -> new ConfiguredFeature<>(HIVE_DECORATOR.get(), FeatureConfiguration.NONE));
-	public static final RegistryObject<?> PLACED_HIVE_DECORATOR = PLACED_FEATURES.register("hive", () -> new PlacedFeature(CONFIGURED_HIVE_DECORATOR.getHolder().get(), List.of()));
+	public static final RegistryObject<PlacedFeature> PLACED_HIVE_DECORATOR = PLACED_FEATURES.register("hive", () -> new PlacedFeature(CONFIGURED_HIVE_DECORATOR.getHolder().get(), List.of()));
 }

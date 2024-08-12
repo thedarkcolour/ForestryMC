@@ -40,6 +40,7 @@ dependencies {
 	compileOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouli_version:api")
 	runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouli_version")
 	runtimeOnly fg.deobf("curse.maven:spit-it-out-857141:4888738")
+	runtimeOnly fg.deobf("curse.maven:cyanide-541676:4126944")
 }
 
 java {

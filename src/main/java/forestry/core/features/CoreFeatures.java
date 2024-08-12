@@ -12,10 +12,15 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
+import com.mojang.serialization.Codec;
+
+import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import forestry.api.modules.ForestryModuleIds;
+import forestry.core.worldgen.ForestryBiomeModifier;
 import forestry.modules.features.FeatureProvider;
 import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
@@ -26,6 +31,7 @@ public class CoreFeatures {
 
 	private static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = REGISTRY.getRegistry(Registry.CONFIGURED_FEATURE_REGISTRY);
 	private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = REGISTRY.getRegistry(Registry.PLACED_FEATURE_REGISTRY);
+	private static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIERS = REGISTRY.getRegistry(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS);
 
 	private static final RegistryObject<ConfiguredFeature<?, ?>> ORE_APATITE = CONFIGURED_FEATURES.register("ore_apatite",
 			() -> new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(List.of(
@@ -49,4 +55,7 @@ public class CoreFeatures {
 			() -> new PlacedFeature(ORE_TIN.getHolder().get(), OrePlacements.commonOrePlacement(16, HeightRangePlacement.triangle(
 					VerticalAnchor.bottom(), VerticalAnchor.absolute(64)
 			))));
+
+	// Responsible for hives + trees
+	private static final RegistryObject<Codec<ForestryBiomeModifier>> FORESTRY = BIOME_MODIFIERS.register("forestry", () -> ForestryBiomeModifier.CODEC);
 }

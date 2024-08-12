@@ -88,24 +88,24 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 		RandomSource rand = context.random();
 		BlockPos pos = context.origin();
 
-		ObjectArrayList<IHive> hives = new ObjectArrayList<>(IForestryApi.INSTANCE.getHiveManager().getHives());
+		Holder<Biome> biome = level.getBiome(pos);
+		HumidityType humidity = IForestryApi.INSTANCE.getClimateManager().getHumidity(biome);
+		TemperatureType temperature = IForestryApi.INSTANCE.getClimateManager().getTemperature(biome);
 
-		hives.removeIf(hive -> !(hive.getHiveDescription() == HiveDefinition.FOREST || hive.getHiveDescription() == HiveDefinition.MEADOWS));
+		ObjectArrayList<IHive> hives = new ObjectArrayList<>(IForestryApi.INSTANCE.getHiveManager().getHives());
+		int numTries = (int) Math.ceil(hives.size() / 2f);
+		// todo shouldn't this check temperature too?
+		hives.removeIf(hive -> !hive.isGoodBiome(biome) || !hive.isGoodHumidity(humidity) || !hive.isGoodTemperature(temperature));
 		Util.shuffle(hives, rand);
 
-		for (int tries = 0; tries < 10; tries++) {
-			Holder<Biome> biome = level.getBiome(pos);
-			HumidityType humidity = IForestryApi.INSTANCE.getClimateManager().getHumidity(biome);
-
+		for (int tries = 0; tries < numTries; tries++) {
 			for (IHive hive : hives) {
-				if (hive.genChance() * generateBeehivesAmount * hives.size() / 8 >= rand.nextFloat() * 0.5f) {
-					if (hive.isGoodBiome(biome) && hive.isGoodHumidity(humidity)) {
-						int x = pos.getX() + rand.nextInt(16);
-						int z = pos.getZ() + rand.nextInt(16);
+				if (hive.genChance() * generateBeehivesAmount * hives.size() / 8 >= rand.nextFloat() * 100.0f) {
+					int x = pos.getX() + rand.nextInt(16);
+					int z = pos.getZ() + rand.nextInt(16);
 
-						if (tryGenHive(level, rand, x, z, hive)) {
-							return true;
-						}
+					if (tryGenHive(level, rand, x, z, hive)) {
+						return true;
 					}
 				}
 			}

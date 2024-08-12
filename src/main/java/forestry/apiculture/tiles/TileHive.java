@@ -95,9 +95,6 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 	}
 
 	public void tick() {
-		if (false) {
-			return;
-		}
 		tickHelper.onTick();
 
 		if (level.isClientSide) {
