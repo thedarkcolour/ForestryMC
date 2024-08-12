@@ -10,6 +10,10 @@
  ******************************************************************************/
 package forestry.farming.logic.farmables;
 
+import com.google.common.collect.ImmutableSet;
+
+import java.util.function.Consumer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -30,20 +34,18 @@ import net.minecraft.world.phys.Vec3;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
-import forestry.api.farming.IFarmableInfo;
 import forestry.core.utils.BlockUtil;
-import forestry.core.utils.ItemStackUtil;
 import forestry.farming.logic.crops.CropDestroy;
 
 public class FarmableSapling implements IFarmable {
-	protected final ItemStack germling;
+	protected final Item germling;
 	protected final Block saplingBlock;
-	protected final ItemStack[] windfall;
+	protected final ImmutableSet<Item> windfall;
 
-	public FarmableSapling(final ItemStack germling, final ItemStack[] windfall) {
+	public FarmableSapling(Item germling, ImmutableSet<Item> windfall) {
 		this.germling = germling;
 		this.windfall = windfall;
-		this.saplingBlock = ItemStackUtil.getBlock(germling);
+		this.saplingBlock = Block.byItem(germling);
 	}
 
 	@Override
@@ -54,7 +56,8 @@ public class FarmableSapling implements IFarmable {
 		InteractionResult actionResult = copy.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, result));
 		player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 		if (actionResult.consumesAction()) {
-			BlockUtil.sendPlaceSound(level, pos, Blocks.OAK_SAPLING.defaultBlockState());
+			Block block = Block.byItem(germling.getItem());
+			BlockUtil.sendPlaceSound(level, pos, block == Blocks.AIR ? Blocks.OAK_SAPLING.defaultBlockState() : block.defaultBlockState());
 			return true;
 		}
 		return false;
@@ -76,36 +79,23 @@ public class FarmableSapling implements IFarmable {
 
 	@Override
 	public boolean isGermling(ItemStack stack) {
-		//if (ignoreMetadata) {
-		return ItemStack.isSame(germling, new ItemStack((stack.getItem())));
-		/*}
-		return ItemStack.isSame(germling, itemstack);*/
+		return stack.is(this.germling);
 	}
 
 	@Override
-	public void addInformation(IFarmableInfo info) {
-		NonNullList<ItemStack> germlings = NonNullList.create();
-		//if (ignoreMetadata) {
-		Item germlingItem = germling.getItem();
-		CreativeModeTab tab = germlingItem.getItemCategory();
-		if (tab != null) {
-			germlingItem.fillItemCategory(tab, germlings);
+	public void addGermlings(Consumer<ItemStack> accumulator) {
+		accumulator.accept(new ItemStack(this.germling));
+	}
+
+	@Override
+	public void addProducts(Consumer<ItemStack> accumulator) {
+		for (Item item : this.windfall) {
+			accumulator.accept(new ItemStack(item));
 		}
-		//}
-		if (germlings.isEmpty()) {
-			germlings.add(germling);
-		}
-		info.addSeedlings(germlings);
-		info.addProducts(windfall);
 	}
 
 	@Override
 	public boolean isWindfall(ItemStack stack) {
-		for (ItemStack drop : windfall) {
-			if (drop.sameItem(stack)) {
-				return true;
-			}
-		}
-		return false;
+		return this.windfall.contains(stack.getItem());
 	}
 }

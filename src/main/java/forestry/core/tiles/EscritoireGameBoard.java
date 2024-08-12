@@ -14,29 +14,25 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-import genetics.api.individual.IIndividual;
-import genetics.api.individual.IKaryotype;
-import genetics.api.root.IIndividualRoot;
-
-import genetics.utils.RootUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 
 import forestry.api.core.INbtWritable;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.NetworkUtil;
 
 public class EscritoireGameBoard implements INbtWritable, IStreamable {
-	private static final Random rand = new Random();
+	private static final RandomSource rand = RandomSource.create();
 	private static final int TOKEN_COUNT_MAX = 22;
 	private static final int TOKEN_COUNT_MIN = 6;
 
@@ -44,11 +40,10 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	private int tokenCount;
 
 	public EscritoireGameBoard() {
-
 	}
 
 	public EscritoireGameBoard(CompoundTag nbt) {
-		tokenCount = nbt.getInt("TokenCount");
+		this.tokenCount = nbt.getInt("TokenCount");
 
 		if (tokenCount > 0) {
 			EscritoireGameToken[] tokens = new EscritoireGameToken[tokenCount];
@@ -65,25 +60,23 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 	}
 
 	public boolean initialize(ItemStack specimen) {
-		IIndividual individual = RootUtils.getIndividual(specimen);
-		if (individual == null) {
-			return false;
+		IIndividual individual = IIndividualHandlerItem.getIndividual(specimen);
+
+		if (individual != null) {
+			ISpeciesType<?, ?> type = individual.getType();
+
+			this.tokenCount = getTokenCount(individual);
+
+			for (int i = 0; i < this.tokenCount / 2; i++) {
+				ISpecies<?> randomSpecies = type.getRandomSpecies(rand);
+				gameTokens.add(new EscritoireGameToken(randomSpecies));
+				gameTokens.add(new EscritoireGameToken(randomSpecies));
+			}
+			Collections.shuffle(gameTokens);
+
+			return true;
 		}
-
-		IGenome genome = individual.getGenome();
-		IKaryotype karyotype = genome.getKaryotype();
-		IIndividualRoot root = genome.getPrimary().getRoot();
-
-		tokenCount = getTokenCount(genome);
-
-		for (int i = 0; i < tokenCount / 2; i++) {
-			IAllele[] randomTemplate = root.getTemplates().getRandomTemplate(rand);
-			String speciesUid = randomTemplate[karyotype.getSpeciesType().getIndex()].getRegistryName().toString();
-			gameTokens.add(new EscritoireGameToken(speciesUid));
-			gameTokens.add(new EscritoireGameToken(speciesUid));
-		}
-		Collections.shuffle(gameTokens);
-		return true;
+		return false;
 	}
 
 	@Nullable
@@ -178,9 +171,9 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 		tokenCount = 0;
 	}
 
-	private static int getTokenCount(IGenome genome) {
-		IAlleleForestrySpecies species1 = genome.getPrimary(IAlleleForestrySpecies.class);
-		IAlleleForestrySpecies species2 = genome.getSecondary(IAlleleForestrySpecies.class);
+	private static int getTokenCount(IIndividual individual) {
+		ISpecies<?> species1 = individual.getSpecies();
+		ISpecies<?> species2 = individual.getInactiveSpecies();
 
 		int tokenCount = species1.getComplexity() + species2.getComplexity();
 
@@ -222,16 +215,15 @@ public class EscritoireGameBoard implements INbtWritable, IStreamable {
 		return compoundNBT;
 	}
 
-	/* IStreamable */
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-		data.writeVarInt(tokenCount);
-		NetworkUtil.writeStreamables(data, gameTokens);
+		data.writeVarInt(this.tokenCount);
+		NetworkUtil.writeStreamables(data, this.gameTokens);
 	}
 
 	@Override
 	public void readData(FriendlyByteBuf data) {
-		tokenCount = data.readVarInt();
-		NetworkUtil.readStreamables(data, gameTokens, EscritoireGameToken::new);
+		this.tokenCount = data.readVarInt();
+		NetworkUtil.readStreamables(data, this.gameTokens, EscritoireGameToken::new);
 	}
 }

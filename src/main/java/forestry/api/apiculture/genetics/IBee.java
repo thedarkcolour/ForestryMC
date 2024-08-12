@@ -6,24 +6,26 @@
 package forestry.api.apiculture.genetics;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IIndividualLiving;
-
-import genetics.api.individual.IIndividual;
+import forestry.api.genetics.ISpecies;
 
 /**
  * Other implementations than Forestry's default one are not supported.
@@ -33,9 +35,9 @@ import genetics.api.individual.IIndividual;
 public interface IBee extends IIndividualLiving {
 
 	/**
-	 * @return true if the individual is originally of natural origin.
+	 * @return true if the individual is originally of pristine/natural origin.
 	 */
-	boolean isNatural();
+	boolean isPristine();
 
 	/**
 	 * @return generation this individual is removed from the original individual.
@@ -45,7 +47,7 @@ public interface IBee extends IIndividualLiving {
 	/**
 	 * Set the natural flag on this bee.
 	 */
-	void setIsNatural(boolean flag);
+	void setPristine(boolean flag);
 
 	IEffectData[] doEffect(IEffectData[] storedData, IBeeHousing housing);
 
@@ -63,15 +65,21 @@ public interface IBee extends IIndividualLiving {
 	 * @param housing the {@link IBeeHousing} the bee currently resides in.
 	 * @return an empty set if the queen can work, a set of error states if the queen can not work
 	 */
-	Set<IErrorState> getCanWork(IBeeHousing housing);
+	Set<IError> getCanWork(IBeeHousing housing);
 
-	List<Biome> getSuitableBiomes();
+	List<Holder.Reference<Biome>> getSuitableBiomes(Registry<Biome> registry);
 
-	NonNullList<ItemStack> getProduceList();
+	/**
+	 * @return A list of item stacks used for displaying this bee's products in the Analyzer GUI.
+	 */
+	List<ItemStack> getProduceList();
 
-	NonNullList<ItemStack> getSpecialtyList();
+	/**
+	 * @return A list of item stacks used for displaying this bee's specialty products in the Analyzer GUI.
+	 */
+	List<ItemStack> getSpecialtyList();
 
-	NonNullList<ItemStack> produceStacks(IBeeHousing housing);
+	List<ItemStack> produceStacks(IBeeHousing housing);
 
 	@Nullable
 	IBee spawnPrincess(IBeeHousing housing);
@@ -94,4 +102,17 @@ public interface IBee extends IIndividualLiving {
 
 	boolean pollinateRandom(IBeeHousing housing, IIndividual pollen);
 
+	Iterator<BlockPos.MutableBlockPos> getAreaIterator(IBeeHousing housing);
+
+	@Override
+	IBee copy();
+
+	@Override
+	IBeeSpeciesType getType();
+
+	@Override
+	IBeeSpecies getSpecies();
+
+	@Override
+	IBeeSpecies getInactiveSpecies();
 }

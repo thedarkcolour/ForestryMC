@@ -19,11 +19,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
-import forestry.core.config.Config;
-
 public class BlockHumus extends Block {
-	private static final int degradeDelimiter = Config.humusDegradeDelimiter;
-	public static final IntegerProperty DEGRADE = IntegerProperty.create("degrade", 0, degradeDelimiter); // degradation level of humus
+	private static final int DEGRADE_STEPS = 3;
+
+	public static final IntegerProperty DEGRADE = IntegerProperty.create("degrade", 0, DEGRADE_STEPS);
 
 	public BlockHumus() {
 		super(Block.Properties.of(Material.DIRT)
@@ -78,7 +77,7 @@ public class BlockHumus extends Block {
 		int degrade = blockState.getValue(DEGRADE);
 		degrade++;
 
-		if (degrade >= degradeDelimiter) {
+		if (degrade >= DEGRADE_STEPS) {
 			world.setBlock(pos, Blocks.SAND.defaultBlockState(), UPDATE_CLIENTS);
 		} else {
 			world.setBlock(pos, blockState.setValue(DEGRADE, degrade), UPDATE_CLIENTS);

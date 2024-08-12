@@ -11,34 +11,35 @@
 package forestry.factory.tiles;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
 import forestry.core.fluids.ContainerFiller;
 import forestry.core.fluids.DrainOnlyFluidHandlerWrapper;
 import forestry.core.fluids.FilteredTank;
@@ -69,7 +70,7 @@ public class TileRaintank extends TileBase implements WorldlyContainer, ILiquidT
 		super(FactoryTiles.RAIN_TANK.tileType(), pos, state);
 		setInternalInventory(new InventoryRaintank(this));
 
-		resourceTank = new FilteredTank(Constants.RAINTANK_TANK_CAPACITY).setFilters(Fluids.WATER);
+		resourceTank = new FilteredTank(Constants.RAINTANK_TANK_CAPACITY).setFilters(List.of(Fluids.WATER));
 
 		tankManager = new TankManager(this, resourceTank);
 
@@ -107,13 +108,13 @@ public class TileRaintank extends TileBase implements WorldlyContainer, ILiquidT
 			IErrorLogic errorLogic = getErrorLogic();
 
 			Biome biome = level.getBiome(pos).value();
-			errorLogic.setCondition(!(biome.getPrecipitation() == Biome.Precipitation.RAIN), EnumErrorCode.NO_RAIN_BIOME);
+			errorLogic.setCondition(!(biome.getPrecipitation() == Biome.Precipitation.RAIN), ForestryError.NO_RAIN_BIOME);
 
 			BlockPos posAbove = pos.above();
 			boolean hasSky = level.canSeeSkyFromBelowWater(posAbove);
-			errorLogic.setCondition(!hasSky, EnumErrorCode.NO_SKY_RAIN_TANK);
+			errorLogic.setCondition(!hasSky, ForestryError.NO_SKY_RAIN_TANK);
 
-			errorLogic.setCondition(!level.isRainingAt(posAbove), EnumErrorCode.NOT_RAINING);
+			errorLogic.setCondition(!level.isRainingAt(posAbove), ForestryError.NOT_RAINING);
 
 			if (!errorLogic.hasErrors()) {
 				resourceTank.fillInternal(WATER_PER_UPDATE, IFluidHandler.FluidAction.EXECUTE);

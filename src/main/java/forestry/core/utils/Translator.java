@@ -9,8 +9,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
 public class Translator {
-	private Translator() {}
-
 	public static boolean canTranslateToLocal(String key) {
 		return Language.getInstance().has(key);
 	}

@@ -11,9 +11,6 @@
 package forestry.arboriculture.blocks;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,37 +30,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 
-import forestry.api.arboriculture.genetics.IAlleleFruit;
-import forestry.arboriculture.genetics.alleles.AlleleFruits;
 import forestry.arboriculture.tiles.TileFruitPod;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.ItemStackUtil;
 
-//eg    public static final Block COCOA = register("cocoa", new CocoaBlock(Block.Properties.create(Material.PLANTS).tickRandomly().hardnessAndResistance(0.2F, 3.0F).sound(SoundType.WOOD)));
 public class BlockFruitPod extends CocoaBlock implements EntityBlock {
+	private final ForestryPodType podType;
 
-	public static List<BlockFruitPod> create() {
-		List<BlockFruitPod> blocks = new ArrayList<>();
-		for (IAlleleFruit fruit : AlleleFruits.getFruitAllelesWithModels()) {
-			BlockFruitPod block = new BlockFruitPod(fruit);
-			blocks.add(block);
-		}
-		return blocks;
-	}
-
-	private final IAlleleFruit fruit;
-
-	public BlockFruitPod(IAlleleFruit fruit) {
+	public BlockFruitPod(ForestryPodType podType) {
 		super(BlockSapling.Properties.of(Material.PLANT)
 				.randomTicks()
 				.strength(0.2f, 3.0f)
 				.sound(SoundType.WOOD));
-		this.fruit = fruit;
-	}
-
-	public IAlleleFruit getFruit() {
-		return fruit;
+		this.podType = podType;
 	}
 
 	@Override
@@ -94,6 +74,7 @@ public class BlockFruitPod extends CocoaBlock implements EntityBlock {
 	@Override
 	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
 		if (!level.isClientSide && blockEntity instanceof TileFruitPod tile) {
+			// todo replace with loot table
 			for (ItemStack drop : tile.getDrops()) {
 				ItemStackUtil.dropItemStackAsEntity(drop, level, pos);
 			}
@@ -105,15 +86,8 @@ public class BlockFruitPod extends CocoaBlock implements EntityBlock {
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		Direction facing = state.getValue(FACING);
-		return BlockUtil.isValidPodLocation(world, pos, facing, fruit.getProvider().getLogTag());
+		return BlockUtil.isValidPodLocation(world, pos, facing, podType.getFruit().getLogTag());
 	}
-
-	//TODO onBlockHarvested??
-	//	@Override
-	//	public void breakBlock(World world, BlockPos pos, BlockState state) {
-	//		world.removeTileEntity(pos);
-	//		super.breakBlock(world, pos, state);
-	//	}
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

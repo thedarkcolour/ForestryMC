@@ -10,12 +10,13 @@
  ******************************************************************************/
 package forestry.farming.gui;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.core.config.Constants;
 import forestry.core.gui.GuiForestryTitled;
 import forestry.core.gui.widgets.SocketWidget;
@@ -36,10 +37,10 @@ public class GuiFarm extends GuiForestryTitled<ContainerFarm> {
 
 		IFarmControllerInternal farmController = tile.getMultiblockLogic().getController();
 
-		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 69, 22, FarmDirection.NORTH));
-		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 69, 58, FarmDirection.SOUTH));
-		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 51, 40, FarmDirection.WEST));
-		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 87, 40, FarmDirection.EAST));
+		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 69, 22, Direction.NORTH));
+		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 69, 58, Direction.SOUTH));
+		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 51, 40, Direction.WEST));
+		widgetManager.add(new FarmLogicSlot(farmController, widgetManager, 87, 40, Direction.EAST));
 
 		this.imageWidth = 216;
 		this.imageHeight = 220;

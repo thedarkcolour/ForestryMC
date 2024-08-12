@@ -10,58 +10,42 @@
  ******************************************************************************/
 package forestry.core.items;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
 import javax.annotation.Nullable;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.circuits.ChipsetManager;
+import forestry.api.IForestryApi;
 import forestry.api.circuits.ICircuit;
 import forestry.api.circuits.ICircuitLayout;
-import forestry.core.ItemGroupForestry;
-import forestry.core.config.Config;
-import forestry.core.items.definitions.EnumElectronTube;
+import forestry.api.circuits.ICircuitManager;
+import forestry.api.core.ItemGroups;
 import forestry.core.utils.ItemTooltipUtil;
 
+import it.unimi.dsi.fastutil.Pair;
+
 public class ItemElectronTube extends ItemOverlay {
-
-	private final EnumElectronTube type;
-
-	public ItemElectronTube(EnumElectronTube type) {
-		super(ItemGroupForestry.tabForestry, type);
-		this.type = type;
-	}
-
-	public EnumElectronTube getType() {
-		return type;
+	public ItemElectronTube(ItemOverlay.IOverlayInfo type) {
+		super(ItemGroups.tabForestry, type);
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack itemstack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
 		super.appendHoverText(itemstack, world, list, flag);
-		Multimap<ICircuitLayout, ICircuit> circuits = getCircuits(itemstack);
+		ArrayList<Pair<ICircuitLayout, ICircuit>> circuits = getCircuits(itemstack);
 		if (!circuits.isEmpty()) {
 			if (Screen.hasShiftDown()) {
-				for (ICircuitLayout circuitLayout : circuits.keys()) {
-					list.add(circuitLayout.getUsage().withStyle(ChatFormatting.WHITE, ChatFormatting.UNDERLINE));
-					for (ICircuit circuit : circuits.get(circuitLayout)) {
-						circuit.addTooltip(list);
-					}
+				for (var entry : circuits) {
+					list.add(entry.left().getUsage().withStyle(ChatFormatting.WHITE, ChatFormatting.UNDERLINE));
+					entry.right().addTooltip(list);
 				}
 			} else {
 				ItemTooltipUtil.addShiftInformation(itemstack, world, list, flag);
@@ -74,27 +58,23 @@ public class ItemElectronTube extends ItemOverlay {
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
 		if (this.allowedIn(tab)) {
-			if (Config.isDebug || !type.isSecret()) {
-				ItemStack stack = new ItemStack(this);
-				if (!getCircuits(stack).isEmpty()) {
-					subItems.add(new ItemStack(this));
-				}
+			ItemStack stack = new ItemStack(this);
+			if (!getCircuits(stack).isEmpty()) {
+				items.add(stack);
 			}
 		}
 	}
 
-	private static Multimap<ICircuitLayout, ICircuit> getCircuits(ItemStack itemStack) {
-		Multimap<ICircuitLayout, ICircuit> circuits = ArrayListMultimap.create();
-		Collection<ICircuitLayout> allLayouts = ChipsetManager.circuitRegistry.getRegisteredLayouts().values();
+	private static ArrayList<Pair<ICircuitLayout, ICircuit>> getCircuits(ItemStack stack) {
+		ArrayList<Pair<ICircuitLayout, ICircuit>> circuits = new ArrayList<>();
+		ICircuitManager manager = IForestryApi.INSTANCE.getCircuitManager();
 
-		for (ICircuitLayout circuitLayout : allLayouts) {
-			try {
-				ChipsetManager.solderManager.getCircuit(null, circuitLayout, itemStack)
-					.ifPresent(iCircuit -> circuits.put(circuitLayout, iCircuit));
-			} catch (NullPointerException ignored) {
-				// Hack, but MineColonies wants to discover all items on launch for some reason. See #2629
+		for (ICircuitLayout layout : manager.getLayouts()) {
+			ICircuit circuit = manager.getCircuit(layout, stack);
+			if (circuit != null) {
+				circuits.add(Pair.of(layout, circuit));
 			}
 		}
 

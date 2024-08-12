@@ -6,16 +6,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
 import forestry.core.blocks.BlockBase;
 
 import org.jetbrains.annotations.Nullable;
 
-// todo add to correct tags
 public class WorktableBlock extends BlockBase<WorktableBlockType> {
 	public WorktableBlock(WorktableBlockType blockType) {
-		super(blockType, Properties.of(Material.METAL));
+		super(blockType, Properties.of(Material.WOOD).sound(SoundType.WOOD));
 	}
 
 	@Override

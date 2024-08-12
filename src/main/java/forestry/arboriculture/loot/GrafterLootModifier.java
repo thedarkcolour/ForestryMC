@@ -1,19 +1,8 @@
 package forestry.arboriculture.loot;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import forestry.api.arboriculture.IFruitProvider;
-import forestry.api.arboriculture.IToolGrafter;
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
-import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.ITreeRoot;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
-import forestry.api.genetics.IFruitBearer;
-import forestry.arboriculture.blocks.BlockDefaultLeavesFruit;
-import forestry.arboriculture.genetics.TreeHelper;
-import genetics.api.individual.IGenome;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import javax.annotation.Nullable;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -30,13 +19,27 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.Vec3;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.event.ForgeEventFactory;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import forestry.api.arboriculture.IToolGrafter;
+import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.genetics.IFruitBearer;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.arboriculture.blocks.BlockDefaultLeavesFruit;
+import forestry.core.utils.SpeciesUtil;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.NotNull;
 
 public class GrafterLootModifier extends LootModifier {
 
@@ -90,7 +93,7 @@ public class GrafterLootModifier extends LootModifier {
 		List<ITree> saplings = tree.getSaplings(world, player.getGameProfile(), pos, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				generatedLoot.add(TreeManager.treeRoot.getTypes().createStack(sapling, EnumGermlingType.SAPLING));
+				generatedLoot.add(sapling.copyWithStage(TreeLifeStage.SAPLING));
 			}
 		}
 		if (tileEntity instanceof IFruitBearer bearer) {
@@ -98,7 +101,7 @@ public class GrafterLootModifier extends LootModifier {
 		}
 		if (state.getBlock() instanceof BlockDefaultLeavesFruit) {
 			IGenome genome = tree.getGenome();
-			IFruitProvider fruitProvider = genome.getActiveAllele(TreeChromosomes.FRUITS).getProvider();
+			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
 			if (fruitProvider.isFruitLeaf(genome, world, pos)) {
 				generatedLoot.addAll(tree.produceStacks(world, pos, Integer.MAX_VALUE));
 			}
@@ -107,12 +110,13 @@ public class GrafterLootModifier extends LootModifier {
 
 	@Nullable
 	private ITree getTree(BlockState state, @Nullable BlockEntity entity) {
-		ITreeRoot root = TreeHelper.getRoot();
-		ITree tree = root.translateMember(state);
+		ITreeSpeciesType type = SpeciesUtil.TREE_TYPE.get();
+		ITree tree = type.getVanillaIndividual(state);
 		if (tree != null || entity == null) {
 			return tree;
+		} else {
+			return type.getTree(entity);
 		}
-		return TreeHelper.getRoot().getTree(entity);
 	}
 
 	@Override

@@ -10,47 +10,50 @@
  ******************************************************************************/
 package forestry.core.genetics;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividualLiving;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.IIntegerChromosome;
 
-import genetics.api.individual.IGenome;
-import genetics.api.individual.Individual;
+public abstract class IndividualLiving<S extends ISpecies<I>, I extends IIndividualLiving, T extends ISpeciesType<S, I>> extends Individual<S, I, T> implements IIndividualLiving {
+	protected int health;
+	protected int maxHealth;
 
-public abstract class IndividualLiving extends Individual implements IIndividualLiving {
-	private static final String NBT_HEALTH = "Health";
-	private static final String NBT_MAX_HEALTH = "MaxH";
+	protected IndividualLiving(IGenome genome) {
+		super(genome);
 
-	private int health;
-	private int maxHealth;
-
-	protected IndividualLiving(IGenome genome, @Nullable IGenome mate) {
-		super(genome, mate);
+		int health = genome.getActiveValue(getLifespanChromosome());
+		this.health = health;
+		this.maxHealth = health;
 	}
 
-	protected IndividualLiving(IGenome genome, @Nullable IGenome mate, int newHealth) {
-		super(genome, mate);
-		health = maxHealth = newHealth;
+	// For codec
+	protected IndividualLiving(IGenome genome, Optional<IGenome> mate, boolean analyzed, int health, int maxHealth) {
+		super(genome, mate, analyzed);
+
+		this.health = health;
+		this.maxHealth = maxHealth;
 	}
 
-	protected IndividualLiving(CompoundTag nbt) {
-		super(nbt);
-		health = nbt.getInt(NBT_HEALTH);
-		maxHealth = nbt.getInt(NBT_MAX_HEALTH);
+	// For "inheritance" in codecs
+	protected static <I extends IIndividualLiving> Products.P5<RecordCodecBuilder.Mu<I>, IGenome, Optional<IGenome>, Boolean, Integer, Integer> livingFields(RecordCodecBuilder.Instance<I> instance, Codec<IGenome> genomeCodec) {
+		return Individual.fields(instance, genomeCodec).and(instance.group(
+				Codec.INT.fieldOf("health").forGetter(I::getHealth),
+				Codec.INT.fieldOf("max_heath").forGetter(I::getMaxHealth)
+		));
 	}
 
-	@Override
-	public CompoundTag write(CompoundTag compound) {
-		compound = super.write(compound);
-
-		compound.putInt(NBT_HEALTH, health);
-		compound.putInt(NBT_MAX_HEALTH, maxHealth);
-
-		return compound;
-	}
+	protected abstract IIntegerChromosome getLifespanChromosome();
 
 	/* GENERATION */
 	@Override
@@ -65,13 +68,7 @@ public abstract class IndividualLiving extends Individual implements IIndividual
 
 	@Override
 	public final void setHealth(int health) {
-		if (health < 0) {
-			health = 0;
-		} else if (health > getMaxHealth()) {
-			health = getMaxHealth();
-		}
-
-		this.health = health;
+		this.health = Mth.clamp(health, 0, getMaxHealth());
 	}
 
 	@Override
@@ -80,8 +77,7 @@ public abstract class IndividualLiving extends Individual implements IIndividual
 	}
 
 	@Override
-	public void age(Level world, float lifespanModifier) {
-
+	public void age(Level level, float lifespanModifier) {
 		if (lifespanModifier < 0.001f) {
 			setHealth(0);
 			return;
@@ -93,9 +89,17 @@ public abstract class IndividualLiving extends Individual implements IIndividual
 			decreaseHealth();
 			ageModifier--;
 		}
-		if (world.random.nextFloat() < ageModifier) {
+		if (level.random.nextFloat() < ageModifier) {
 			decreaseHealth();
 		}
+	}
+
+	@Override
+	public I copy() {
+		I individual = super.copy();
+		individual.setHealth(this.getHealth());
+		((IndividualLiving<?, ?, ?>) individual).maxHealth = this.maxHealth;
+		return individual;
 	}
 
 	private void decreaseHealth() {
@@ -103,5 +107,4 @@ public abstract class IndividualLiving extends Individual implements IIndividual
 			setHealth(health - 1);
 		}
 	}
-
 }

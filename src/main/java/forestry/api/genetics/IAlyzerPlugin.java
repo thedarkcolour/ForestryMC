@@ -10,28 +10,26 @@ import java.util.Map;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+/**
+ * Used to display information in the Portable Analyzer.
+ */
 public interface IAlyzerPlugin {
+	void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack stack);
 
-	@OnlyIn(Dist.CLIENT)
-	void drawAnalyticsPage1(PoseStack transform, Screen gui, ItemStack itemStack);
+	void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack stack);
 
-	@OnlyIn(Dist.CLIENT)
-	void drawAnalyticsPage2(PoseStack transform, Screen gui, ItemStack itemStack);
-
-	@OnlyIn(Dist.CLIENT)
-	void drawAnalyticsPage3(PoseStack transform, ItemStack itemStack, Screen gui);
+	void drawAnalyticsPage3(PoseStack transform, Screen gui, ItemStack stack);
 
 	/**
 	 * The hints that will be shown in the alyzer gui.
 	 */
 	List<String> getHints();
 
-	Map<ResourceLocation, ItemStack> getIconStacks();
+	/**
+	 * @return Icon stacks used by this plugin for rendering.
+	 */
+	Map<ISpecies<?>, ItemStack> getIconStacks();
 }

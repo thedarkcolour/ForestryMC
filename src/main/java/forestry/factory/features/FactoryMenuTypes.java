@@ -1,6 +1,6 @@
 package forestry.factory.features;
 
-import forestry.factory.ModuleFactory;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.factory.gui.ContainerBottler;
 import forestry.factory.gui.ContainerCarpenter;
 import forestry.factory.gui.ContainerCentrifuge;
@@ -17,7 +17,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class FactoryMenuTypes {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleFactory.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.FACTORY);
 
 	public static final FeatureMenuType<ContainerBottler> BOTTLER = REGISTRY.menuType(ContainerBottler::fromNetwork, "bottler");
 	public static final FeatureMenuType<ContainerCarpenter> CARPENTER = REGISTRY.menuType(ContainerCarpenter::fromNetwork, "carpenter");

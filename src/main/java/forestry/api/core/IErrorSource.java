@@ -5,11 +5,13 @@
  ******************************************************************************/
 package forestry.api.core;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 public interface IErrorSource {
+	IErrorSource EMPTY = Set::of;
+
 	/**
-	 * @return the active error states. An empty Set indicates no errors.
+	 * @return The current errors in this error source, or an empty set if there are no errors.
 	 */
-	ImmutableSet<IErrorState> getErrorStates();
+	Set<IError> getErrors();
 }

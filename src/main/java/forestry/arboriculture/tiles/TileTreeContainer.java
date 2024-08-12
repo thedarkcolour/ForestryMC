@@ -10,43 +10,34 @@
  ******************************************************************************/
 package forestry.arboriculture.tiles;
 
-import com.google.common.base.Preconditions;
-
 import javax.annotation.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.arboriculture.genetics.Tree;
 import forestry.core.network.IStreamable;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.RenderUtil;
-
-import genetics.api.alleles.IAllele;
+import forestry.core.utils.SpeciesUtil;
 
 /**
  * This is the base TE class for any block that needs to contain tree genome information.
- *
- * @author SirSengir
  */
 public abstract class TileTreeContainer extends BlockEntity implements IStreamable, IOwnedTile {
-
 	@Nullable
 	private ITree containedTree;
 	private final OwnerHandler ownerHandler = new OwnerHandler();
@@ -57,51 +48,50 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 
 	/* SAVING & LOADING */
 	@Override
-	public void load(CompoundTag compoundNBT) {
-		super.load(compoundNBT);
+	public void saveAdditional(CompoundTag nbt) {
+		super.saveAdditional(nbt);
 
-		if (compoundNBT.contains("ContainedTree")) {
-			containedTree = new Tree(compoundNBT.getCompound("ContainedTree"));
+		if (this.containedTree != null) {
+			Tag serialized = SpeciesUtil.serializeIndividual(this.containedTree);
+			if (serialized != null) {
+				nbt.put("ContainedTree", serialized);
+			}
 		}
-		ownerHandler.read(compoundNBT);
+		this.ownerHandler.write(nbt);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag compoundNBT) {
-		super.saveAdditional(compoundNBT);
+	public void load(CompoundTag nbt) {
+		super.load(nbt);
 
-		if (containedTree != null) {
-			CompoundTag subcompound = new CompoundTag();
-			containedTree.write(subcompound);
-			compoundNBT.put("ContainedTree", subcompound);
+		Tag treeNbt = nbt.get("ContainedTree");
+
+		if (treeNbt != null) {
+			this.containedTree = SpeciesUtil.deserializeIndividual(SpeciesUtil.TREE_TYPE.get(), treeNbt);
 		}
-		ownerHandler.write(compoundNBT);
+		this.ownerHandler.read(nbt);
 	}
 
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-		String speciesUID = "";
 		ITree tree = getTree();
 		if (tree != null) {
-			speciesUID = tree.getIdentifier();
+			data.writeBoolean(true);
+			ResourceLocation speciesId = tree.getSpecies().id();
+			data.writeResourceLocation(speciesId);
+		} else {
+			data.writeBoolean(false);
 		}
-		data.writeUtf(speciesUID);
 	}
 
 	@Override
 	public void readData(FriendlyByteBuf data) {
-		String speciesUID = data.readUtf();
-		ITree tree = getTree(speciesUID);
-		setTree(tree);
+		if (data.readBoolean()) {
+			ResourceLocation speciesId = data.readResourceLocation();
+			ITree tree = SpeciesUtil.getTreeSpecies(speciesId).createIndividual();
+			setTree(tree);
+		}
 	}
-
-	private static ITree getTree(String speciesUID) {
-		IAllele[] treeTemplate = TreeManager.treeRoot.getTemplates().getTemplate(speciesUID);
-		Preconditions.checkArgument(treeTemplate.length > 0, "There is no tree template for speciesUID %s", speciesUID);
-		return TreeManager.treeRoot.templateAsIndividual(treeTemplate);
-	}
-
-	/* CLIENT INFORMATION */
 
 	/* CONTAINED TREE */
 	public void setTree(ITree tree) {
@@ -134,7 +124,6 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		super.onDataPacket(net, pkt);
 		CompoundTag nbt = pkt.getTag();
@@ -148,10 +137,8 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void handleUpdateTag(CompoundTag tag) {
 		super.handleUpdateTag(tag);
 		NBTUtilForestry.readStreamableFromNbt(this, tag);
 	}
-
 }

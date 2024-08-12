@@ -41,7 +41,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:species_common"
+              "species_id": "forestry:bee_common",
+              "type_id": "forestry:bee_species"
             }
           ],
           "name": "forestry:bee_drone_ge",
@@ -52,7 +53,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:species_meadows"
+              "species_id": "forestry:bee_meadows",
+              "type_id": "forestry:bee_species"
             }
           ],
           "name": "forestry:bee_drone_ge",

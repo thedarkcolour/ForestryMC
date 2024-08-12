@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -11,14 +12,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.core.utils.BlockUtil;
 import forestry.farming.logic.crops.CropDestroy;
@@ -26,22 +25,21 @@ import forestry.farming.logic.farmables.FarmableChorus;
 
 public class FarmLogicEnder extends FarmLogicHomogeneous {
 	private static final Set<Direction> VALID_DIRECTIONS = ImmutableSet.of(Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
-	private final IFarmable chorusFarmable;
+	private final IFarmable chorusFarmable = FarmableChorus.INSTANCE;
 
-	public FarmLogicEnder(IFarmProperties properties, boolean isManual) {
+	public FarmLogicEnder(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
-		chorusFarmable = FarmableChorus.INSTANCE;
 	}
 
 	@Override
-	public NonNullList<ItemStack> collect(Level world, IFarmHousing farmHousing) {
-		return collectEntityItems(world, farmHousing, true);
+	public List<ItemStack> collect(Level level, IFarmHousing farmHousing) {
+		return collectEntityItems(level, farmHousing, true);
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing farmHousing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level level, IFarmHousing farmHousing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = farmHousing.getValidPosition(direction, pos, extent, pos.above());
-		Collection<ICrop> crops = harvestBlocks(world, position);
+		Collection<ICrop> crops = harvestBlocks(level, position);
 		farmHousing.increaseExtent(direction, pos, extent);
 
 		return crops;
@@ -93,7 +91,7 @@ public class FarmLogicEnder extends FarmLogicHomogeneous {
 	}
 
 	@Override
-	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent) {
+	protected boolean maintainSeedlings(Level world, IFarmHousing farmHousing, BlockPos pos, Direction direction, int extent) {
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
 			BlockState state = world.getBlockState(position);

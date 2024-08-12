@@ -2,8 +2,8 @@ package forestry.apiculture.genetics;
 
 import forestry.api.core.tooltips.ToolTip;
 
-import genetics.api.individual.IGenome;
-import genetics.api.individual.IIndividual;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IIndividual;
 
 public interface IGeneticTooltipProvider<I extends IIndividual> {
 	/**

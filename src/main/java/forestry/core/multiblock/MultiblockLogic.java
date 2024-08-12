@@ -52,7 +52,7 @@ public abstract class MultiblockLogic<T extends IMultiblockControllerInternal> i
 	@Override
 	public abstract T getController();
 
-	public abstract T createNewController(Level world);
+	public abstract T createNewController(Level level);
 
 	/**
 	 * This is called when a block is being marked as valid by the chunk, but has not yet fully

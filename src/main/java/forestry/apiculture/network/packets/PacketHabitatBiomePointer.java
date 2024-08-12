@@ -15,7 +15,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 
 public record PacketHabitatBiomePointer(BlockPos pos) implements IForestryPacketClient {

@@ -32,7 +32,7 @@ import forestry.api.core.IErrorLogic;
 import forestry.api.mail.IMailAddress;
 import forestry.api.mail.IStamps;
 import forestry.api.mail.PostManager;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
@@ -64,9 +64,9 @@ public class TileTrader extends TileBase implements IOwnedTile {
 	}
 
 	@Override
-	public void onRemoval() {
-		if (isLinked() && !level.isClientSide) {
-			PostManager.postRegistry.deleteTradeStation((ServerLevel) level, address);
+	public void onDropContents(ServerLevel level) {
+		if (isLinked()) {
+			PostManager.postRegistry.deleteTradeStation((ServerLevel) this.level, address);
 		}
 	}
 
@@ -128,24 +128,24 @@ public class TileTrader extends TileBase implements IOwnedTile {
 
 		IErrorLogic errorLogic = getErrorLogic();
 
-		errorLogic.setCondition(!hasPostageMin(3), EnumErrorCode.NO_STAMPS);
-		errorLogic.setCondition(!hasPaperMin(2), EnumErrorCode.NO_PAPER);
+		errorLogic.setCondition(!hasPostageMin(3), ForestryError.NO_STAMPS);
+		errorLogic.setCondition(!hasPaperMin(2), ForestryError.NO_PAPER);
 
 		Container inventory = getInternalInventory();
 		ItemStack tradeGood = inventory.getItem(TradeStation.SLOT_TRADEGOOD);
-		errorLogic.setCondition(tradeGood.isEmpty(), EnumErrorCode.NO_TRADE);
+		errorLogic.setCondition(tradeGood.isEmpty(), ForestryError.NO_TRADE);
 
 		boolean hasRequest = hasItemCount(TradeStation.SLOT_EXCHANGE_1, TradeStation.SLOT_EXCHANGE_COUNT, ItemStack.EMPTY, 1);
-		errorLogic.setCondition(!hasRequest, EnumErrorCode.NO_TRADE);
+		errorLogic.setCondition(!hasRequest, ForestryError.NO_TRADE);
 
 		if (!tradeGood.isEmpty()) {
 			boolean hasSupplies = hasItemCount(TradeStation.SLOT_SEND_BUFFER, TradeStation.SLOT_SEND_BUFFER_COUNT, tradeGood, tradeGood.getCount());
-			errorLogic.setCondition(!hasSupplies, EnumErrorCode.NO_SUPPLIES);
+			errorLogic.setCondition(!hasSupplies, ForestryError.NO_SUPPLIES);
 		}
 
 		if (inventory instanceof TradeStation && updateOnInterval(200)) {
 			boolean canReceivePayment = ((TradeStation) inventory).canReceivePayment();
-			errorLogic.setCondition(!canReceivePayment, EnumErrorCode.NO_SPACE_INVENTORY);
+			errorLogic.setCondition(!canReceivePayment, ForestryError.NO_SPACE_INVENTORY);
 		}
 	}
 
@@ -157,7 +157,7 @@ public class TileTrader extends TileBase implements IOwnedTile {
 
 		IErrorLogic errorLogic = getErrorLogic();
 
-		return !errorLogic.contains(EnumErrorCode.NOT_ALPHANUMERIC) && !errorLogic.contains(EnumErrorCode.NOT_UNIQUE);
+		return !errorLogic.contains(ForestryError.NOT_ALPHANUMERIC) && !errorLogic.contains(ForestryError.NOT_UNIQUE);
 	}
 
 	/**
@@ -280,10 +280,10 @@ public class TileTrader extends TileBase implements IOwnedTile {
 			IErrorLogic errorLogic = getErrorLogic();
 
 			boolean hasValidTradeAddress = PostManager.postRegistry.isValidTradeAddress(world, address);
-			errorLogic.setCondition(!hasValidTradeAddress, EnumErrorCode.NOT_ALPHANUMERIC);
+			errorLogic.setCondition(!hasValidTradeAddress, ForestryError.NOT_ALPHANUMERIC);
 
 			boolean hasUniqueTradeAddress = PostManager.postRegistry.isAvailableTradeAddress(world, address);
-			errorLogic.setCondition(!hasUniqueTradeAddress, EnumErrorCode.NOT_UNIQUE);
+			errorLogic.setCondition(!hasUniqueTradeAddress, ForestryError.NOT_UNIQUE);
 
 			if (hasValidTradeAddress & hasUniqueTradeAddress) {
 				this.address = address;

@@ -1,10 +1,12 @@
 package forestry.core.utils;
 
-import java.util.Random;
-
 public final class TickHelper {
-	private static final Random rand = new Random();
-	private int tickCount = rand.nextInt(2048);
+	private int tickCount;
+
+	// offset is used to avoid multiple tick helpers all ticking at the same times
+	public TickHelper(int offset) {
+		this.tickCount = offset % 2048;
+	}
 
 	public void onTick() {
 		tickCount++;

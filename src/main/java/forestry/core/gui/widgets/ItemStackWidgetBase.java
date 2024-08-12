@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.core.gui.widgets;
 
-import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -30,7 +29,7 @@ public abstract class ItemStackWidgetBase extends Widget {
 	protected abstract ItemStack getItemStack();
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		ItemStack itemStack = getItemStack();
 		if (!itemStack.isEmpty()) {
 			//RenderHelper.enableGUIStandardItemLighting(); TODO Gui Light

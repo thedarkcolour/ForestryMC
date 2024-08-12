@@ -1,15 +1,13 @@
 package forestry.arboriculture.models;
 
-import com.google.common.collect.ImmutableMap;
-
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
@@ -35,74 +33,82 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
-import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
-import forestry.arboriculture.genetics.TreeDefinition;
+import forestry.api.arboriculture.ForestryTreeSpecies;
+import forestry.api.arboriculture.ITreeSpecies;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
+import forestry.api.client.IForestryClientApi;
+import forestry.api.client.arboriculture.ITreeClientManager;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.arboriculture.tiles.TileSapling;
-
-import genetics.api.GeneticHelper;
-import genetics.api.organism.IOrganism;
-import genetics.utils.AlleleUtils;
+import forestry.core.utils.SpeciesUtil;
 
 public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
-
-	private final Map<IAlleleTreeSpecies, Pair<ResourceLocation, ResourceLocation>> modelsBySpecies;
-
-	public ModelSapling() {
-		this.modelsBySpecies = AlleleUtils.filteredStream(TreeChromosomes.SPECIES)
-				.collect(Collectors.toMap(allele -> allele, allele -> Pair.of(allele.getBlockModel(), allele.getItemModel())));
-	}
-
 	@Override
 	public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
-		ImmutableMap.Builder<IAlleleTreeSpecies, BakedModel> itemModels = new ImmutableMap.Builder<>();
-		ImmutableMap.Builder<IAlleleTreeSpecies, BakedModel> blockModels = new ImmutableMap.Builder<>();
-		for (Map.Entry<IAlleleTreeSpecies, Pair<ResourceLocation, ResourceLocation>> entry : modelsBySpecies.entrySet()) {
-			BakedModel blockModel = bakery.bake(entry.getValue().getFirst(), BlockModelRotation.X0_Y0, spriteGetter);
+		IdentityHashMap<ITreeSpecies, BakedModel> itemModels = new IdentityHashMap<>();
+		IdentityHashMap<ITreeSpecies, BakedModel> blockModels = new IdentityHashMap<>();
+
+		ITreeClientManager treeManager = IForestryClientApi.INSTANCE.getTreeManager();
+		for (ITreeSpecies species : SpeciesUtil.getAllTreeSpecies()) {
+			Pair<ResourceLocation, ResourceLocation> pair = treeManager.getSaplingModels(species);
+			ResourceLocation blockModelLocation = pair.getFirst();
+			ResourceLocation itemModelLocation = pair.getSecond();
+
+			BakedModel blockModel = bakery.bake(blockModelLocation, BlockModelRotation.X0_Y0, spriteGetter);
 			if (blockModel != null) {
-				blockModels.put(entry.getKey(), blockModel);
+				blockModels.put(species, blockModel);
 			}
-			BakedModel itemModel = bakery.bake(entry.getValue().getSecond(), BlockModelRotation.X0_Y0, spriteGetter);
+			BakedModel itemModel = bakery.bake(itemModelLocation, BlockModelRotation.X0_Y0, spriteGetter);
 			if (itemModel != null) {
-				itemModels.put(entry.getKey(), itemModel);
+				itemModels.put(species, itemModel);
 			}
 		}
-		return new Baked(itemModels.build(), blockModels.build());
-	}
 
-	public Collection<ResourceLocation> getDependencies() {
-		return modelsBySpecies.values().stream()
-				.flatMap(pair -> Stream.of(pair.getFirst(), pair.getSecond())).collect(Collectors.toSet());
+		return new Baked(itemModels, blockModels);
 	}
 
 	@Override
 	public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-		return getDependencies().stream()
-				.flatMap(location -> modelGetter.apply(location).getMaterials(modelGetter, missingTextureErrors).stream())
-				.collect(Collectors.toSet());
+		ITreeClientManager manager = IForestryClientApi.INSTANCE.getTreeManager();
+		HashSet<ResourceLocation> locations = new HashSet<>();
+
+		for (Pair<ResourceLocation, ResourceLocation> pair : manager.getAllSaplingModels()) {
+			locations.add(pair.getFirst());
+			locations.add(pair.getSecond());
+		}
+
+		HashSet<Material> materials = new HashSet<>();
+
+		for (ResourceLocation location : locations) {
+			materials.addAll(modelGetter.apply(location).getMaterials(modelGetter, missingTextureErrors));
+		}
+
+		return materials;
 	}
 
 	public static class Baked implements BakedModel {
-		private final Map<IAlleleTreeSpecies, BakedModel> itemModels;
-		private final Map<IAlleleTreeSpecies, BakedModel> blockModels;
+		private final IdentityHashMap<ITreeSpecies, BakedModel> itemModels;
+		private final IdentityHashMap<ITreeSpecies, BakedModel> blockModels;
 		private final BakedModel defaultBlock;
 		private final BakedModel defaultItem;
 		@Nullable
 		private ItemOverrides overrideList;
 
-		public Baked(Map<IAlleleTreeSpecies, BakedModel> itemModels, Map<IAlleleTreeSpecies, BakedModel> blockModels) {
+		public Baked(IdentityHashMap<ITreeSpecies, BakedModel> itemModels, IdentityHashMap<ITreeSpecies, BakedModel> blockModels) {
 			this.itemModels = itemModels;
 			this.blockModels = blockModels;
-			this.defaultBlock = blockModels.get(TreeDefinition.Oak.getSpecies());
-			this.defaultItem = itemModels.get(TreeDefinition.Oak.getSpecies());
+			ITreeSpeciesType speciesType = SpeciesUtil.TREE_TYPE.get();
+			ITreeSpecies oakSpecies = speciesType.getSpecies(ForestryTreeSpecies.OAK);
+			this.defaultBlock = Objects.requireNonNull(blockModels.get(oakSpecies));
+			this.defaultItem = Objects.requireNonNull(itemModels.get(oakSpecies));
 		}
 
 		@Override
 		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
-			IAlleleTreeSpecies species = extraData.get(TileSapling.TREE_SPECIES);
+			ITreeSpecies species = extraData.get(TileSapling.TREE_SPECIES);
 			if (species == null) {
-				species = TreeDefinition.Oak.getSpecies();
+				species = SpeciesUtil.getTreeSpecies(ForestryTreeSpecies.OAK);
 			}
 			return blockModels.get(species).getQuads(state, side, rand);
 		}
@@ -139,7 +145,7 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 
 		@Override
 		public TextureAtlasSprite getParticleIcon(ModelData data) {
-			IAlleleTreeSpecies species = data.get(TileSapling.TREE_SPECIES);
+			ITreeSpecies species = data.get(TileSapling.TREE_SPECIES);
 
 			return blockModels.getOrDefault(species, defaultBlock).getParticleIcon();
 		}
@@ -153,16 +159,15 @@ public class ModelSapling implements IUnbakedGeometry<ModelSapling> {
 		}
 
 		public class OverrideList extends ItemOverrides {
-
 			@Nullable
 			@Override
 			public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int p_173469_) {
-				IOrganism<ITree> organism = GeneticHelper.getOrganism(stack);
-				if (organism.isEmpty()) {
+				IIndividual individual = IIndividualHandlerItem.getIndividual(stack);
+				if (individual == null) {
 					return model;
+				} else {
+					return itemModels.getOrDefault(individual.getSpecies(), model);
 				}
-				IAlleleTreeSpecies species = organism.getAllele(TreeChromosomes.SPECIES, true);
-				return itemModels.getOrDefault(species, model);
 			}
 		}
 	}

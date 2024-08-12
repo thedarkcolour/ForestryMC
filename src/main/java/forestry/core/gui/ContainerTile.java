@@ -10,20 +10,19 @@
  ******************************************************************************/
 package forestry.core.gui;
 
-import com.google.common.collect.ImmutableSet;
-
 import javax.annotation.Nullable;
+import java.util.Set;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.core.IError;
 import forestry.api.core.IErrorLogicSource;
-import forestry.api.core.IErrorState;
 import forestry.core.network.packets.PacketErrorUpdate;
 import forestry.core.network.packets.PacketGuiEnergy;
 import forestry.core.network.packets.PacketGuiStream;
@@ -36,7 +35,7 @@ import forestry.energy.ForestryEnergyStorage;
 public abstract class ContainerTile<T extends BlockEntity> extends ContainerForestry {
 	protected final T tile;
 	@Nullable
-	private ImmutableSet<IErrorState> previousErrorStates;
+	private Set<IError> previousErrorStates;
 	private int previousEnergyManagerData = 0;
 	private int previousWorkCounter = 0;
 	private int previousTicksPerWorkCycle = 0;
@@ -58,8 +57,8 @@ public abstract class ContainerTile<T extends BlockEntity> extends ContainerFore
 	}
 
 	@Override
-	public final boolean stillValid(Player PlayerEntity) {
-		return TileUtil.isUsableByPlayer(PlayerEntity, tile);
+	public final boolean stillValid(Player player) {
+		return TileUtil.isUsableByPlayer(player, tile);
 	}
 
 	@Override
@@ -67,14 +66,14 @@ public abstract class ContainerTile<T extends BlockEntity> extends ContainerFore
 		super.broadcastChanges();
 
 		if (tile instanceof IErrorLogicSource errorLogicSource) {
-			ImmutableSet<IErrorState> errorStates = errorLogicSource.getErrorLogic().getErrorStates();
+			Set<IError> errorStates = errorLogicSource.getErrorLogic().getErrors();
 
 			if (!errorStates.equals(previousErrorStates)) {
 				PacketErrorUpdate packet = new PacketErrorUpdate(tile, errorLogicSource);
 				sendPacketToListeners(packet);
 			}
 
-			previousErrorStates = errorStates;
+			previousErrorStates = Set.copyOf(errorStates);
 		}
 
 		if (tile instanceof IPowerHandler) {

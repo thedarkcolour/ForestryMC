@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import forestry.core.config.Constants;
@@ -13,8 +14,8 @@ import net.minecraftforge.registries.RegistryObject;
 public class FeatureItem<I extends Item> extends ModFeature implements IItemFeature<I> {
 	private final RegistryObject<I> itemObject;
 
-	public FeatureItem(IFeatureRegistry registry, String moduleID, String identifier, Supplier<I> constructor) {
-		super(moduleID, registry.getModId(), identifier);
+	public FeatureItem(IFeatureRegistry registry, ResourceLocation moduleId, String identifier, Supplier<I> constructor) {
+		super(moduleId, identifier);
 		this.itemObject = registry.getRegistry(Registry.ITEM_REGISTRY).register(identifier, constructor);
 	}
 

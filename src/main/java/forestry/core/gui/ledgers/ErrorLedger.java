@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.core.utils.StringUtil;
 
 /**
@@ -25,17 +25,17 @@ import forestry.core.utils.StringUtil;
 public class ErrorLedger extends Ledger {
 
 	@Nullable
-	private IErrorState state;
+	private IError state;
 
 	public ErrorLedger(LedgerManager manager) {
 		super(manager, "error", false);
 		maxHeight = 72;
 	}
 
-	public void setState(@Nullable IErrorState state) {
+	public void setState(@Nullable IError state) {
 		this.state = state;
 		if (state != null) {
-			int lineHeight = StringUtil.getLineHeight(maxTextWidth, getTooltip(), Component.translatable(state.getUnlocalizedHelp()));
+			int lineHeight = StringUtil.getLineHeight(maxTextWidth, getTooltip(), Component.translatable(state.getHelpTranslationKey()));
 			maxHeight = lineHeight + 20;
 		}
 	}
@@ -63,7 +63,7 @@ public class ErrorLedger extends Ledger {
 			y += drawHeader(transform, getTooltip(), xHeader, y);
 			y += 4;
 
-			Component helpString = Component.translatable(state.getUnlocalizedHelp());
+			Component helpString = Component.translatable(state.getHelpTranslationKey());
 			drawSplitText(transform, helpString, xBody, y, maxTextWidth);
 		}
 	}
@@ -78,7 +78,7 @@ public class ErrorLedger extends Ledger {
 		if (state == null) {
 			return Component.literal("");
 		}
-		return Component.translatable(state.getUnlocalizedDescription());
+		return Component.translatable(state.getDescriptionTranslationKey());
 	}
 
 }

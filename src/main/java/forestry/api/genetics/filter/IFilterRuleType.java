@@ -1,27 +1,34 @@
 package forestry.api.genetics.filter;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+/**
+ * A filter rule type is a filter option that can be set in the Genetic Filter block.
+ * <p>
+ * Some filter rule types can be marked as "containers" which means that other {@link IFilterRule}
+ * can be added to their filtering logic. An example would the the default "cave" filter type, which is supposed to filter
+ * by organisms that live in caves. It doesn't filter anything by default, but the apiculture module adds a filter logic
+ * that filters bees depending on if they have the {@link forestry.api.genetics.alleles.BeeChromosomes#CAVE_DWELLING} trait.
+ * Modded species types could also take advantage of the cave filter type by adding another IFilterRule to the cave rule type.
+ */
 public interface IFilterRuleType extends IFilterRule {
-	void addLogic(IFilterRule logic);
+	default void addLogic(IFilterRule logic) {
+	}
 
 	/**
-	 * @return True if  a other logic can be added to this type.
+	 * @return True if logic can be added to this type through {@link #addLogic}.
 	 */
-	boolean isContainer();
+	default boolean isContainer() {
+		return false;
+	}
 
 	/**
-	 * @return A unique identifier for the rule.
+	 * @return A unique ID for the rule.
 	 */
-	String getUID();
+	String getId();
 
-	@OnlyIn(Dist.CLIENT)
-	TextureAtlasSprite getSprite();
-
-	@OnlyIn(Dist.CLIENT)
-	ResourceLocation getTextureMap();
+	/**
+	 * @return The resource location for the sprite used to select this rule type in the Genetic Filter screen.
+	 */
+	ResourceLocation getSprite();
 }

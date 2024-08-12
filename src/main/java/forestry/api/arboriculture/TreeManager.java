@@ -5,50 +5,14 @@
  ******************************************************************************/
 package forestry.api.arboriculture;
 
-import javax.annotation.Nullable;
-
-import genetics.api.GeneticsAPI;
-import genetics.api.root.IRootDefinition;
-
-import forestry.api.arboriculture.genetics.ITreeFactory;
-import forestry.api.arboriculture.genetics.ITreeMutationFactory;
-import forestry.api.arboriculture.genetics.ITreeRoot;
-
 public class TreeManager {
-
-	/**
-	 * Convenient access to AlleleManager.alleleRegistry.getSpeciesRoot("rootTrees")
-	 *
-	 * @implNote Only null if the "arboriculture" module is not enabled.
-	 */
-	public static ITreeRoot treeRoot;
-
 	/**
 	 * Convenient access to wood items.
 	 */
 	public static IWoodAccess woodAccess;
 
 	/**
-	 * Used to create new trees.
-	 *
-	 * @implNote Only null if the "arboriculture" module is not enabled.
-	 */
-	@Nullable
-	public static ITreeFactory treeFactory;
-
-	/**
-	 * Used to create new tree mutations.
-	 *
-	 * @implNote Only null if the "arboriculture" module is not enabled.
-	 */
-	@Nullable
-	public static ITreeMutationFactory treeMutationFactory;
-
-	/**
 	 * Can be used to add new charcoal pile walls.
-	 *
-	 * @implNote Only null if the "charcoal" module is not enabled.
 	 */
-	@Nullable
 	public static ICharcoalManager charcoalManager;
 }

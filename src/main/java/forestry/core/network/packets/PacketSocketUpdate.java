@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import forestry.core.circuits.ISocketable;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;

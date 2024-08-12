@@ -13,8 +13,9 @@ package forestry.factory.inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 
-import forestry.api.recipes.RecipeManagers;
+import forestry.core.recipes.RecipeManagers;
 import forestry.core.inventory.InventoryAdapterTile;
+import forestry.core.utils.RecipeUtils;
 import forestry.core.utils.SlotUtil;
 import forestry.factory.tiles.TileCentrifuge;
 
@@ -28,8 +29,8 @@ public class InventoryCentrifuge extends InventoryAdapterTile<TileCentrifuge> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return slotIndex == SLOT_RESOURCE && RecipeManagers.centrifugeManager.findMatchingRecipe(tile.getLevel().getRecipeManager(), itemStack) != null;
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return slotIndex == SLOT_RESOURCE && RecipeUtils.getCentrifugeRecipe(tile.getLevel().getRecipeManager(), stack) != null;
 	}
 
 	@Override

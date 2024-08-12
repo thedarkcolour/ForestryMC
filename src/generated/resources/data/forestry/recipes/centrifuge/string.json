@@ -6,10 +6,7 @@
   "products": [
     {
       "chance": 0.15,
-      "item": {
-        "Count": 1,
-        "id": "forestry:silk_wisp"
-      }
+      "item": "forestry:silk_wisp"
     }
   ],
   "time": 5

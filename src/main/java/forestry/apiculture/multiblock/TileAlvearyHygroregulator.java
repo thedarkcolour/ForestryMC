@@ -13,13 +13,13 @@ package forestry.apiculture.multiblock;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -30,16 +30,17 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import forestry.api.climate.IClimateControlled;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.api.recipes.IHygroregulatorRecipe;
-import forestry.api.recipes.RecipeManagers;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.gui.ContainerAlvearyHygroregulator;
 import forestry.apiculture.inventory.InventoryHygroregulator;
 import forestry.core.config.Constants;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
+import forestry.core.fluids.FluidRecipeFilter;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.tiles.ILiquidTankTile;
+import forestry.core.utils.RecipeUtils;
 
 public class TileAlvearyHygroregulator extends TileAlveary implements Container, ILiquidTankTile, IAlvearyComponent.Climatiser {
 	private final TankManager tankManager;
@@ -48,15 +49,14 @@ public class TileAlvearyHygroregulator extends TileAlveary implements Container,
 
 	@Nullable
 	private IHygroregulatorRecipe currentRecipe;
-	private int transferTime;
+	// number of ticks the current temperature change lasts for.
+	private int heatTicks;
 
 	public TileAlvearyHygroregulator(BlockPos pos, BlockState state) {
 		super(BlockAlvearyType.HYGRO, pos, state);
 
 		this.inventory = new InventoryHygroregulator(this);
-
-		this.liquidTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(() -> RecipeManagers.hygroregulatorManager.getRecipeFluids(level.getRecipeManager()));
-
+		this.liquidTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilter(FluidRecipeFilter.HYGROREGULATOR_INPUT);
 		this.tankManager = new TankManager(this, liquidTank);
 	}
 
@@ -73,33 +73,32 @@ public class TileAlvearyHygroregulator extends TileAlveary implements Container,
 	/* UPDATING */
 	@Override
 	public void changeClimate(int tickCount, IClimateControlled climateControlled) {
-		if (transferTime <= 0) {
-			FluidStack fluid = liquidTank.getFluid();
-			if (!fluid.isEmpty()) {
-				currentRecipe = RecipeManagers.hygroregulatorManager.findMatchingRecipe(level.getRecipeManager(), fluid)
-						.orElse(null);
+		if (this.heatTicks <= 0) {
+			FluidStack fluid = this.liquidTank.getFluid();
 
-				if (currentRecipe != null) {
-					liquidTank.drainInternal(currentRecipe.getResource().getAmount(), IFluidHandler.FluidAction.EXECUTE);
-					transferTime = currentRecipe.getTransferTime();
+			if (!fluid.isEmpty()) {
+				this.currentRecipe = RecipeUtils.getHygroRegulatorRecipe(this.level.getRecipeManager(), fluid);
+
+				if (this.currentRecipe != null) {
+					this.liquidTank.drainInternal(this.currentRecipe.getInputFluid().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+					this.heatTicks = 20;
 				}
 			}
 		}
 
-		if (transferTime > 0) {
-
-			transferTime--;
-			if (currentRecipe != null) {
-				climateControlled.addHumidityChange(currentRecipe.getHumidChange(), 0.0f, 1.0f);
-				climateControlled.addTemperatureChange(currentRecipe.getTempChange(), 0.0f, 2.0f);
+		if (this.heatTicks > 0) {
+			this.heatTicks--;
+			if (this.currentRecipe != null) {
+				climateControlled.addHumidityChange(this.currentRecipe.getHumiditySteps());
+				climateControlled.addTemperatureChange(this.currentRecipe.getTemperatureSteps());
 			} else {
-				transferTime = 0;
+				this.heatTicks = 0;
 			}
 		}
 
 		if (tickCount % 20 == 0) {
 			// Check if we have suitable items waiting in the item slot
-			FluidHelper.drainContainers(tankManager, this, 0);
+			FluidHelper.drainContainers(this.tankManager, this, 0);
 		}
 	}
 
@@ -109,12 +108,11 @@ public class TileAlvearyHygroregulator extends TileAlveary implements Container,
 		super.load(compoundNBT);
 		tankManager.read(compoundNBT);
 
-		transferTime = compoundNBT.getInt("TransferTime");
+		heatTicks = compoundNBT.getInt("TransferTime");
 
 		if (compoundNBT.contains("CurrentLiquid")) {
 			FluidStack liquid = FluidStack.loadFluidStackFromNBT(compoundNBT.getCompound("CurrentLiquid"));
-			currentRecipe = RecipeManagers.hygroregulatorManager.findMatchingRecipe(level.getRecipeManager(), liquid)
-					.orElse(null);
+			currentRecipe = RecipeUtils.getHygroRegulatorRecipe(level.getRecipeManager(), liquid);
 		}
 	}
 
@@ -124,16 +122,15 @@ public class TileAlvearyHygroregulator extends TileAlveary implements Container,
 		super.saveAdditional(compoundNBT);
 		tankManager.write(compoundNBT);
 
-		compoundNBT.putInt("TransferTime", transferTime);
+		compoundNBT.putInt("TransferTime", heatTicks);
 		if (currentRecipe != null) {
 			CompoundTag subcompound = new CompoundTag();
-			currentRecipe.getResource().writeToNBT(subcompound);
+			currentRecipe.getInputFluid().writeToNBT(subcompound);
 			compoundNBT.put("CurrentLiquid", subcompound);
 		}
 	}
 
 	/* ILIQUIDTANKCONTAINER */
-
 	@Override
 	public TankManager getTankManager() {
 		return tankManager;

@@ -10,43 +10,41 @@
  ******************************************************************************/
 package forestry.farming.logic.farmables;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.world.level.block.state.BlockState;
+import javax.annotation.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.arboriculture.TreeManager;
+import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.ITreeRoot;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
+import forestry.api.core.IProduct;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
-import forestry.api.genetics.alleles.AlleleManager;
-import forestry.api.genetics.products.Product;
+import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.arboriculture.features.ArboricultureBlocks;
+import forestry.core.utils.SpeciesUtil;
 import forestry.farming.logic.crops.CropDestroy;
 
 public class FarmableGE implements IFarmable {
+	private final ImmutableSet<Item> windfall;
 
-	private final Set<Item> windfall = new HashSet<>();
-
-	//TODO would be nice to make this class more granular so windfall and germling checks could be more specific
 	public FarmableGE() {
-		windfall.addAll(AlleleManager.geneticRegistry.getRegisteredFruitFamilies().values().stream()
-			.map(TreeManager.treeRoot::getFruitProvidersForFruitFamily)
-			.flatMap(Collection::stream)
-			.flatMap(p -> Stream.concat(p.getProducts().getPossibleProducts().stream(), p.getSpecialty().getPossibleProducts().stream()))
-			.map(Product::getItem)
-			.collect(Collectors.toSet()));
+		ImmutableSet.Builder<Item> builder = new ImmutableSet.Builder<>();
+		for (IFruit fruit : TreeChromosomes.FRUIT.values()) {
+			for (IProduct product : fruit.getProducts()) {
+				builder.add(product.item());
+			}
+		}
+		this.windfall = builder.build();
 	}
 
 	@Override
@@ -66,20 +64,18 @@ public class FarmableGE implements IFarmable {
 
 	@Override
 	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
-		ITreeRoot treeRoot = TreeManager.treeRoot;
+		ITreeSpeciesType treeRoot = SpeciesUtil.TREE_TYPE.get();
 
-		ITree tree = treeRoot.create(germling);
-		return tree != null && treeRoot.plantSapling(level, tree, player.getGameProfile(), pos);
+		return IIndividualHandlerItem.filter(germling, individual -> individual instanceof ITree tree && treeRoot.plantSapling(level, tree, player.getGameProfile(), pos));
 	}
 
 	@Override
 	public boolean isGermling(ItemStack stack) {
-		return TreeManager.treeRoot.isMember(stack);
+		return SpeciesUtil.TREE_TYPE.get().isMember(stack);
 	}
 
 	@Override
 	public boolean isWindfall(ItemStack stack) {
-		return windfall.contains(stack.getItem());
+		return this.windfall.contains(stack.getItem());
 	}
-
 }

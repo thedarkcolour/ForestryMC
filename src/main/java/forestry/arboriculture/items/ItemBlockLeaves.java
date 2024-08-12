@@ -12,24 +12,19 @@ package forestry.arboriculture.items;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.FoliageColor;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.arboriculture.ModuleArboriculture;
+import forestry.api.genetics.ISpecies;
 import forestry.arboriculture.blocks.BlockAbstractLeaves;
 import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.items.ItemBlockForestry;
 import forestry.core.items.definitions.IColoredItem;
-import forestry.core.utils.Translator;
 
 public class ItemBlockLeaves extends ItemBlockForestry<BlockAbstractLeaves> implements IColoredItem {
-
 	public ItemBlockLeaves(BlockAbstractLeaves block) {
 		super(block);
 	}
@@ -47,23 +42,18 @@ public class ItemBlockLeaves extends ItemBlockForestry<BlockAbstractLeaves> impl
 		if (tree == null) {
 			return Component.translatable("for.leaves.corrupted");
 		}
-		return getDisplayName(tree);
+		return getDisplayName(tree.getSpecies());
 	}
 
-	public static Component getDisplayName(ITree tree) {
-		IAlleleTreeSpecies primary = (IAlleleTreeSpecies) tree.getGenome().getPrimary();
-		String customTreeKey = "for.trees.custom.leaves." + primary.getSpeciesIdentifier();
-		return Translator.tryTranslate(customTreeKey, () -> {
-			Component leaves = Component.translatable("for.trees.grammar.leaves.type");
-			return Component.translatable("for.trees.grammar.leaves", primary.getDisplayName(), leaves);
-		});
+	public static Component getDisplayName(ISpecies<?> species) {
+		Component leaves = Component.translatable("for.trees.grammar.leaves.type");
+		return Component.translatable("for.trees.grammar.leaves", species.getDisplayName(), leaves);
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
 		if (itemStack.getTag() == null) {
-			return ModuleArboriculture.PROXY.getFoliageColorDefault();
+			return FoliageColor.getDefaultColor();
 		}
 
 		TileLeaves tileLeaves = new TileLeaves(BlockPos.ZERO, getBlock().defaultBlockState());
@@ -73,8 +63,7 @@ public class ItemBlockLeaves extends ItemBlockForestry<BlockAbstractLeaves> impl
 			return tileLeaves.getFruitColour();
 		} else {
 			Player player = Minecraft.getInstance().player;
-			return tileLeaves.getFoliageColour(player);
+			return tileLeaves.getFoliageColour();
 		}
 	}
-
 }

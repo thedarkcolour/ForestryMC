@@ -13,11 +13,8 @@ package forestry.core.items;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 
 import forestry.api.core.IItemSubtype;
-import forestry.core.ItemGroupForestry;
-import forestry.core.config.Config;
 import forestry.core.items.definitions.IColoredItem;
 
 /**
@@ -29,32 +26,19 @@ import forestry.core.items.definitions.IColoredItem;
  * @see forestry.mail.items.ItemStamp
  */
 public class ItemOverlay extends ItemForestry implements IColoredItem {
-
+	// Variant of subtype that has primary/secondary color fields
 	public interface IOverlayInfo extends IItemSubtype {
 		int getPrimaryColor();
 
 		int getSecondaryColor();
-
-		boolean isSecret();
 	}
 
 	protected final IOverlayInfo overlay;
 
 	public ItemOverlay(CreativeModeTab tab, IOverlayInfo overlay) {
-		super((new Item.Properties())
-				.tab(tab)
-				.tab(ItemGroupForestry.tabForestry));
+		super(new Item.Properties().tab(tab));
 
 		this.overlay = overlay;
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
-		if (this.allowedIn(tab)) {
-			if (Config.isDebug || !overlay.isSecret()) {
-				subItems.add(new ItemStack(this));
-			}
-		}
 	}
 
 	@Override

@@ -13,16 +13,20 @@ package forestry.apiculture.multiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-import genetics.api.individual.IGenome;
-
-import forestry.api.apiculture.DefaultBeeModifier;
 import forestry.api.apiculture.IBeeModifier;
+import forestry.api.apiculture.genetics.IBeeSpecies;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.apiculture.blocks.BlockAlvearyType;
 
 public class TileAlvearyStabiliser extends TileAlveary implements IAlvearyComponent.BeeModifier {
-
-	private static final IBeeModifier beeModifier = new AlvearyStabiliserBeeModifier();
+	private static final IBeeModifier MODIFIER = new IBeeModifier() {
+		@Override
+		public float modifyMutationChance(IGenome genome, IGenome mate, IMutation<IBeeSpecies> mutation, float currentChance) {
+			return 0.0f;
+		}
+	};
 
 	public TileAlvearyStabiliser(BlockPos pos, BlockState state) {
 		super(BlockAlvearyType.STABILISER, pos, state);
@@ -30,13 +34,6 @@ public class TileAlvearyStabiliser extends TileAlveary implements IAlvearyCompon
 
 	@Override
 	public IBeeModifier getBeeModifier() {
-		return beeModifier;
-	}
-
-	private static class AlvearyStabiliserBeeModifier extends DefaultBeeModifier {
-		@Override
-		public float getMutationModifier(IGenome genome, IGenome mate, float currentModifier) {
-			return 0.0f;
-		}
+		return MODIFIER;
 	}
 }

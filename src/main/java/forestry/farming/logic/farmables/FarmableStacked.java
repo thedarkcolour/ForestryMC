@@ -10,16 +10,17 @@
  ******************************************************************************/
 package forestry.farming.logic.farmables;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import java.util.function.Consumer;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
-import forestry.api.farming.IFarmableInfo;
 import forestry.core.utils.BlockUtil;
 import forestry.farming.logic.crops.CropDestroy;
 
@@ -62,9 +63,13 @@ public class FarmableStacked implements IFarmable {
 	}
 
 	@Override
-	public void addInformation(IFarmableInfo info) {
-		info.addSeedlings(germling);
-		info.addProducts(fruit);
+	public void addGermlings(Consumer<ItemStack> accumulator) {
+		accumulator.accept(this.germling);
+	}
+
+	@Override
+	public void addProducts(Consumer<ItemStack> accumulator) {
+		accumulator.accept(this.fruit);
 	}
 
 	@Override

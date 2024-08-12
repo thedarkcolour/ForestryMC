@@ -31,8 +31,6 @@ public enum EnumElectronTube implements ItemOverlay.IOverlayInfo {
 	ENDER(new Color(0x33adad), new Color(0x255661)),
 	ORCHID(new Color(0x820208), new Color(0xc64f3f));
 
-	public static final EnumElectronTube[] VALUES = values();
-
 	private final String uid;
 	private final int primaryColor;
 	private final int secondaryColor;
@@ -60,10 +58,5 @@ public enum EnumElectronTube implements ItemOverlay.IOverlayInfo {
 	@Override
 	public int getSecondaryColor() {
 		return secondaryColor;
-	}
-
-	@Override
-	public boolean isSecret() {
-		return false;
 	}
 }

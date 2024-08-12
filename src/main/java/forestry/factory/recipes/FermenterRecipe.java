@@ -13,6 +13,8 @@ package forestry.factory.recipes;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -24,9 +26,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import forestry.api.recipes.IFermenterRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 
 public class FermenterRecipe implements IFermenterRecipe {
-
 	private final ResourceLocation id;
 	private final Ingredient resource;
 	private final int fermentationValue;
@@ -62,14 +64,13 @@ public class FermenterRecipe implements IFermenterRecipe {
 		this.fluidResource = fluidResource;
 	}
 
-
 	@Override
-	public Ingredient getResource() {
+	public Ingredient getInputItem() {
 		return resource;
 	}
 
 	@Override
-	public FluidStack getFluidResource() {
+	public FluidStack getInputFluid() {
 		return fluidResource;
 	}
 
@@ -89,8 +90,13 @@ public class FermenterRecipe implements IFermenterRecipe {
 	}
 
 	@Override
-	public int compareTo(IFermenterRecipe o) {
-		return !resource.isEmpty() ? -1 : 1;
+	public boolean matches(ItemStack inputItem, FluidStack inputFluid) {
+		return this.resource.test(inputItem) && this.fluidResource.isFluidEqual(inputFluid);
+	}
+
+	@Override
+	public ItemStack getResultItem() {
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -98,8 +104,17 @@ public class FermenterRecipe implements IFermenterRecipe {
 		return id;
 	}
 
-	public static class Serializer implements RecipeSerializer<FermenterRecipe> {
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return FactoryRecipeTypes.CARPENTER.serializer();
+	}
 
+	@Override
+	public RecipeType<?> getType() {
+		return FactoryRecipeTypes.CARPENTER.type();
+	}
+
+	public static class Serializer implements RecipeSerializer<FermenterRecipe> {
 		@Override
 		public FermenterRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			Ingredient resource = RecipeSerializers.deserialize(json.get("resource"));

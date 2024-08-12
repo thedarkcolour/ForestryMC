@@ -1,6 +1,6 @@
 package forestry.cultivation.features;
 
-import forestry.cultivation.ModuleCultivation;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.cultivation.blocks.BlockTypePlanter;
 import forestry.cultivation.tiles.TileArboretum;
 import forestry.cultivation.tiles.TileBog;
@@ -16,7 +16,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class CultivationTiles {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCultivation.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.CULTIVATION);
 
 	public static final FeatureTileType<TileArboretum> ARBORETUM = REGISTRY.tile(TileArboretum::new, "arboretum", () -> CultivationBlocks.PLANTER.getRowBlocks(BlockTypePlanter.ARBORETUM));
 	public static final FeatureTileType<TileBog> BOG = REGISTRY.tile(TileBog::new, "bog", () -> CultivationBlocks.PLANTER.getRowBlocks(BlockTypePlanter.PEAT_POG));

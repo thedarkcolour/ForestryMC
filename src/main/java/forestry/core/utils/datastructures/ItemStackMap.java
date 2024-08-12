@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.io.Serial;
 
+// todo  remove
 public class ItemStackMap<T> extends StackMap<ItemStack, T> {
 	@Serial
 	private static final long serialVersionUID = -8511966739130702305L;

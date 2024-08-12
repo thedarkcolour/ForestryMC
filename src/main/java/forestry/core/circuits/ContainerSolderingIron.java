@@ -26,8 +26,8 @@ import forestry.core.gui.IGuiSelectable;
 import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.gui.slots.SlotOutput;
 import forestry.core.inventory.ItemInventorySolderingIron;
-import forestry.core.network.IForestryPacketClient;
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.packets.PacketGuiLayoutSelect;
 import forestry.core.network.packets.PacketGuiSelectRequest;
 import forestry.core.utils.NetworkUtil;
@@ -88,7 +88,7 @@ public class ContainerSolderingIron extends ContainerItemInventory<ItemInventory
 			inventory.regressLayout();
 		}
 
-		IForestryPacketClient packetResponse = new PacketGuiLayoutSelect(inventory.getLayout().getUID());
+		IForestryPacketClient packetResponse = new PacketGuiLayoutSelect(inventory.getLayout().getId());
 		NetworkUtil.sendToPlayer(packetResponse, player);
 	}
 

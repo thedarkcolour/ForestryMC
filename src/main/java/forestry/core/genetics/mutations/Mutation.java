@@ -10,167 +10,138 @@
  ******************************************************************************/
 package forestry.core.genetics.mutations;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-import deleteme.BiomeCategory;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import com.mojang.authlib.GameProfile;
+
 import forestry.api.climate.IClimateProvider;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-import forestry.api.genetics.IMutationBuilder;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationCondition;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.alleles.AllelePair;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.api.genetics.alleles.IKaryotype;
+import forestry.core.genetics.ItemResearchNote;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IGenome;
-import genetics.api.mutation.IMutation;
+public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
+	private final ISpeciesType<S, ?> type;
+	private final float chance;
+	private final List<IMutationCondition> conditions;
+	private final List<Component> specialConditions;
+	private final S firstParent;
+	private final S secondParent;
+	private final S result;
+	private final ImmutableList<AllelePair<?>> resultAlleles;
+	private final boolean secret;
 
-public abstract class Mutation implements IMutation, IMutationBuilder {
-
-	private final int chance;
-	private final IAlleleForestrySpecies firstParent;
-	private final IAlleleForestrySpecies secondParent;
-
-	private final IAllele[] template;
-
-	private final List<IMutationCondition> mutationConditions = new ArrayList<>();
-	private final List<Component> specialConditions = new ArrayList<>();
-
-	private boolean isSecret = false;
-
-	protected Mutation(IAlleleForestrySpecies firstParent, IAlleleForestrySpecies secondParent, IAllele[] template, int chance) {
+	public Mutation(ISpeciesType<S, ?> type, S firstParent, S secondParent, S result, Map<IChromosome<?>, IAllele> resultAlleles, float chance, List<IMutationCondition> conditions) {
+		this.type = type;
+		this.chance = chance;
+		this.conditions = conditions;
+		ImmutableList.Builder<Component> specialConditions = ImmutableList.builderWithExpectedSize(conditions.size());
+		for (IMutationCondition condition : conditions) {
+			specialConditions.add(condition.getDescription());
+		}
+		this.specialConditions = specialConditions.build();
 		this.firstParent = firstParent;
 		this.secondParent = secondParent;
-		this.template = template;
-		this.chance = chance;
+		this.result = result;
+		this.resultAlleles = buildResultAlleles(type.getKaryotype(), result.getDefaultGenome(), resultAlleles);
+		this.secret = result.isSecret() || firstParent.isSecret() || secondParent.isSecret();
+	}
+
+	private static ImmutableList<AllelePair<?>> buildResultAlleles(IKaryotype karyotype, IGenome defaultGenome, Map<IChromosome<?>, IAllele> resultAlleles) {
+		if (resultAlleles.isEmpty()) {
+			return defaultGenome.getAllelePairs();
+		}
+		ImmutableList.Builder<AllelePair<?>> newAlleles = ImmutableList.builderWithExpectedSize(karyotype.size());
+
+		for (IChromosome<?> chromosome : karyotype.getChromosomes()) {
+			IAllele customAllele = resultAlleles.get(chromosome);
+			if (customAllele != null) {
+				newAlleles.add(AllelePair.both(customAllele));
+			} else {
+				newAlleles.add(defaultGenome.getAllelePair(chromosome));
+			}
+		}
+
+		return newAlleles.build();
+	}
+
+	public static float getChance(IMutation<?> mutation, Level level, BlockPos pos, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate) {
+		float mutationChance = mutation.getChance();
+		for (IMutationCondition condition : mutation.getConditions()) {
+			mutationChance = condition.modifyChance(level, pos, mutation, firstGenome, secondGenome, climate, mutationChance);
+			if (mutationChance == 0f) {
+				return 0f;
+			}
+		}
+		return Math.max(0f, mutationChance);
+	}
+
+	@Override
+	public ISpeciesType<S, ?> getType() {
+		return this.type;
+	}
+
+	@Override
+	public List<IMutationCondition> getConditions() {
+		return this.conditions;
 	}
 
 	@Override
 	public Collection<Component> getSpecialConditions() {
-		return specialConditions;
+		return this.specialConditions;
 	}
 
 	@Override
-	public Mutation setIsSecret() {
-		isSecret = true;
-		return this;
+	public S getFirstParent() {
+		return this.firstParent;
 	}
 
 	@Override
-	public Mutation restrictTemperature(EnumTemperature temperature) {
-		return restrictTemperature(temperature, temperature);
+	public S getSecondParent() {
+		return this.secondParent;
 	}
 
 	@Override
-	public Mutation restrictTemperature(EnumTemperature minTemperature, EnumTemperature maxTemperature) {
-		IMutationCondition mutationCondition = new MutationConditionTemperature(minTemperature, maxTemperature);
-		return addMutationCondition(mutationCondition);
+	public S getResult() {
+		return this.result;
 	}
 
 	@Override
-	public Mutation restrictHumidity(EnumHumidity humidity) {
-		return restrictHumidity(humidity, humidity);
+	public ImmutableList<AllelePair<?>> getResultAlleles() {
+		return this.resultAlleles;
 	}
 
 	@Override
-	public Mutation restrictHumidity(EnumHumidity minHumidity, EnumHumidity maxHumidity) {
-		IMutationCondition mutationCondition = new MutationConditionHumidity(minHumidity, maxHumidity);
-		return addMutationCondition(mutationCondition);
+	public float getChance() {
+		return this.chance;
 	}
 
 	@Override
-	public Mutation restrictBiomeType(BiomeCategory... types) {
-		IMutationCondition mutationCondition = new MutationConditionBiome(types);
-		return addMutationCondition(mutationCondition);
+	public boolean isPartner(ISpecies<?> species) {
+		return this.firstParent == species || this.secondParent == species;
 	}
 
 	@Override
-	public Mutation requireDay() {
-		IMutationCondition mutationCondition = new MutationConditionDaytime(true);
-		return addMutationCondition(mutationCondition);
-	}
-
-	@Override
-	public Mutation requireNight() {
-		IMutationCondition mutationCondition = new MutationConditionDaytime(false);
-		return addMutationCondition(mutationCondition);
-	}
-
-	@Override
-	public Mutation restrictDateRange(int startMonth, int startDay, int endMonth, int endDay) {
-		IMutationCondition mutationCondition = new MutationConditionTimeLimited(startMonth, startDay, endMonth, endDay);
-		return addMutationCondition(mutationCondition);
-	}
-
-	@Override
-	public Mutation requireResource(BlockState... acceptedBlockStates) {
-		IMutationCondition mutationCondition = new MutationConditionRequiresResource(acceptedBlockStates);
-		return addMutationCondition(mutationCondition);
-	}
-
-	@Override
-	public Mutation addMutationCondition(IMutationCondition mutationCondition) {
-		mutationConditions.add(mutationCondition);
-		specialConditions.add(mutationCondition.getDescription());
-		return this;
-	}
-
-	protected float getChance(Level world, BlockPos pos, IAllele firstParent, IAllele secondParent, IGenome firstGenome, IGenome secondGenome, IClimateProvider climate) {
-		float mutationChance = chance;
-		for (IMutationCondition mutationCondition : mutationConditions) {
-			mutationChance *= mutationCondition.getChance(world, pos, firstParent, secondParent, firstGenome, secondGenome, climate);
-			if (mutationChance == 0) {
-				return 0;
-			}
-		}
-		return mutationChance;
-	}
-
-	@Override
-	public IAlleleSpecies getFirstParent() {
-		return firstParent;
-	}
-
-	@Override
-	public IAlleleSpecies getSecondParent() {
-		return secondParent;
-	}
-
-	@Override
-	public IAlleleSpecies getResultingSpecies() {
-		return (IAlleleSpecies) template[0];//ToDo: More testing ?
-	}
-
-	@Override
-	public float getBaseChance() {
-		return chance;
-	}
-
-	@Override
-	public IAllele[] getTemplate() {
-		return template;
-	}
-
-	@Override
-	public boolean isPartner(IAllele allele) {
-		return firstParent.getRegistryName().equals(allele.getRegistryName()) || secondParent.getRegistryName().equals(allele.getRegistryName());
-	}
-
-	@Override
-	public IAllele getPartner(IAllele allele) {
-		if (firstParent.getRegistryName().equals(allele.getRegistryName())) {
-			return secondParent;
-		} else if (secondParent.getRegistryName().equals(allele.getRegistryName())) {
-			return firstParent;
+	public ISpecies<?> getPartner(ISpecies<?> species) {
+		if (this.firstParent == species) {
+			return this.secondParent;
+		} else if (this.secondParent == species) {
+			return this.firstParent;
 		} else {
 			throw new IllegalArgumentException("Tried to get partner for allele that is not part of this mutation.");
 		}
@@ -178,18 +149,11 @@ public abstract class Mutation implements IMutation, IMutationBuilder {
 
 	@Override
 	public boolean isSecret() {
-		return isSecret;
+		return this.secret;
 	}
 
 	@Override
-	public String toString() {
-		MoreObjects.ToStringHelper stringHelper = MoreObjects.toStringHelper(this)
-			.add("first", firstParent)
-			.add("second", secondParent)
-			.add("result", template[0]);
-		if (!specialConditions.isEmpty()) {
-			stringHelper.add("conditions", getSpecialConditions());
-		}
-		return stringHelper.toString();
+	public ItemStack getMutationNote(GameProfile researcher) {
+		return ItemResearchNote.createMutationNoteStack(researcher, this);
 	}
 }

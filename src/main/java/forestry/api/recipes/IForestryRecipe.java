@@ -5,24 +5,17 @@
  ******************************************************************************/
 package forestry.api.recipes;
 
-import java.util.UUID;
-
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 public interface IForestryRecipe extends Recipe<Container> {
-
-	static ResourceLocation anonymous() {
-		return new ResourceLocation("forestry", "anonymous_" + UUID.randomUUID());
-	}
-
 	// <editor-fold desc="Ignore these methods, we just piggy back off Minecraft's system for recipe sync">
 	@Deprecated
 	@Override
@@ -40,12 +33,6 @@ public interface IForestryRecipe extends Recipe<Container> {
 	@Override
 	default boolean canCraftInDimensions(int width, int height) {
 		return false;
-	}
-
-	@Deprecated
-	@Override
-	default ItemStack getResultItem() {
-		return ItemStack.EMPTY;
 	}
 
 	@Deprecated

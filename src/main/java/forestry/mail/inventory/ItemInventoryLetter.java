@@ -19,9 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
 import forestry.api.core.IErrorSource;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 import forestry.api.mail.ILetter;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.inventory.ItemInventory;
 import forestry.core.items.ItemWithGui;
 import forestry.core.utils.SlotUtil;
@@ -96,30 +96,30 @@ public class ItemInventoryLetter extends ItemInventory implements IErrorSource {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (letter.isProcessed()) {
 			return false;
 		} else if (SlotUtil.isSlotInRange(slotIndex, Letter.SLOT_POSTAGE_1, Letter.SLOT_POSTAGE_COUNT)) {
-			Item item = itemStack.getItem();
+			Item item = stack.getItem();
 			return item instanceof ItemStamp;
 		} else if (SlotUtil.isSlotInRange(slotIndex, Letter.SLOT_ATTACHMENT_1, Letter.SLOT_ATTACHMENT_COUNT)) {
-			return !(itemStack.getItem() instanceof ItemWithGui);
+			return !(stack.getItem() instanceof ItemWithGui);
 		}
 		return false;
 	}
 
 	/* IErrorSource */
 	@Override
-	public ImmutableSet<IErrorState> getErrorStates() {
+	public ImmutableSet<IError> getErrors() {
 
-		ImmutableSet.Builder<IErrorState> errorStates = ImmutableSet.builder();
+		ImmutableSet.Builder<IError> errorStates = ImmutableSet.builder();
 
 		if (!letter.hasRecipient()) {
-			errorStates.add(EnumErrorCode.NO_RECIPIENT);
+			errorStates.add(ForestryError.NO_RECIPIENT);
 		}
 
 		if (!letter.isProcessed() && !letter.isPostPaid()) {
-			errorStates.add(EnumErrorCode.NOT_POST_PAID);
+			errorStates.add(ForestryError.NOT_POST_PAID);
 		}
 
 		return errorStates.build();

@@ -1,9 +1,10 @@
 package forestry.arboriculture.charcoal.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.ICharcoalPileWall;
 import forestry.arboriculture.features.CharcoalBlocks;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 import forestry.core.recipes.jei.ForestryRecipeCategory;
 import mezz.jei.api.constants.VanillaTypes;
@@ -31,7 +32,7 @@ public class CharcoalPileWallCategory extends ForestryRecipeCategory<ICharcoalPi
 
 	public CharcoalPileWallCategory(IGuiHelper helper) {
 		super(helper.createBlankDrawable(120, 38), "for.jei.charcoal.pile");
-		ResourceLocation resourceLocation = new ResourceLocation(Constants.MOD_ID, "textures/gui/jei/recipes.png");
+		ResourceLocation resourceLocation = ForestryConstants.forestry("textures/gui/jei/recipes.png");
 		arrow = helper.createDrawable(resourceLocation, 0, 14, 22, 16);
 		IDrawableStatic arrowAnimated = helper.createDrawable(resourceLocation, 22, 14, 22, 16);
 		this.arrowAnimated = helper.createAnimatedDrawable(arrowAnimated, 160, StartDirection.LEFT, false);

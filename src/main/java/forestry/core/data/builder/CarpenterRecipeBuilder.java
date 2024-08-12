@@ -19,14 +19,14 @@ import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.recipes.ICarpenterRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class CarpenterRecipeBuilder {
@@ -124,7 +124,7 @@ public class CarpenterRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return ICarpenterRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.CARPENTER.serializer();
 		}
 
 		@Override

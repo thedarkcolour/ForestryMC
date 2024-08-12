@@ -11,18 +11,16 @@
 package forestry.arboriculture.commands;
 
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
 import forestry.api.arboriculture.genetics.ITree;
 
-import genetics.commands.SpeciesNotFoundException;
-
 public class ForestSpawner implements ITreeSpawner {
 	@Override
-	public int spawn(CommandSourceStack source, ITree tree, Player player) throws SpeciesNotFoundException {
+	public int spawn(CommandSourceStack source, ITree tree, Player player) {
 		Vec3 look = player.getLookAngle();
 
 		int x = (int) Math.round(player.getX() + 16 * look.x);
@@ -34,10 +32,9 @@ public class ForestSpawner implements ITreeSpawner {
 			int spawnZ = z + player.level.random.nextInt(32) - 16;
 			BlockPos pos = new BlockPos(spawnX, y, spawnZ);
 
-			TreeGenHelper.generateTree(tree, (ServerLevel) player.level, pos);
+			TreeGenHelper.generateTree(tree.getSpecies(), (ServerLevel) player.level, pos);
 		}
 
 		return 1;
 	}
-
 }

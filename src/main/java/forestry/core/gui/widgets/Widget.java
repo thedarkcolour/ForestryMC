@@ -14,16 +14,12 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.api.core.tooltips.IToolTipProvider;
 import forestry.api.core.tooltips.ToolTip;
 
 /**
  * Basic non-ItemStack slot
  */
-@OnlyIn(Dist.CLIENT)
 public abstract class Widget implements IToolTipProvider {
 	protected final WidgetManager manager;
 	protected final int xPos;
@@ -53,10 +49,9 @@ public abstract class Widget implements IToolTipProvider {
 		return yPos;
 	}
 
-	public abstract void draw(PoseStack transform, int startY, int startX);
+	public abstract void draw(PoseStack transform, int startX, int startY);
 
 	public void update(int mouseX, int mouseY) {
-
 	}
 
 	@Nullable

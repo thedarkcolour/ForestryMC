@@ -10,13 +10,14 @@
  ******************************************************************************/
 package forestry.apiculture;
 
-import genetics.api.individual.IGenome;
+import net.minecraft.core.Vec3i;
 
-import forestry.api.apiculture.DefaultBeeModifier;
+import forestry.api.apiculture.IBeeModifier;
+import forestry.api.genetics.IGenome;
 
-public class AlvearyBeeModifier extends DefaultBeeModifier {
+public class AlvearyBeeModifier implements IBeeModifier {
 	@Override
-	public float getTerritoryModifier(IGenome genome, float currentModifier) {
-		return 2.0f;
+	public Vec3i modifyTerritory(IGenome genome, Vec3i currentModifier) {
+		return currentModifier.multiply(2);
 	}
 }

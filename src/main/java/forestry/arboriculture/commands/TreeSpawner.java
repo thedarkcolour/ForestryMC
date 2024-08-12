@@ -18,12 +18,9 @@ import net.minecraft.world.phys.Vec3;
 
 import forestry.api.arboriculture.genetics.ITree;
 
-import genetics.commands.SpeciesNotFoundException;
-
 public class TreeSpawner implements ITreeSpawner {
-
 	@Override
-	public int spawn(CommandSourceStack source, ITree tree, Player player) throws SpeciesNotFoundException {
+	public int spawn(CommandSourceStack source, ITree tree, Player player) {
 		Vec3 look = player.getLookAngle();
 
 		int x = (int) Math.round(player.getX() + 3 * look.x);
@@ -31,7 +28,7 @@ public class TreeSpawner implements ITreeSpawner {
 		int z = (int) Math.round(player.getZ() + 3 * look.z);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		TreeGenHelper.generateTree(tree, (ServerLevel) player.level, pos);
+		TreeGenHelper.generateTree(tree.getSpecies(), (ServerLevel) player.level, pos);
 		return 1;
 	}
 }

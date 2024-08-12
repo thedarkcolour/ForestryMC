@@ -1,27 +1,35 @@
 package forestry.factory.recipes.jei;
 
-import deleteme.RegistryNameFinder;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
+
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
 import forestry.api.fuels.FuelManager;
 import forestry.api.fuels.RainSubstrate;
-import forestry.api.recipes.ICarpenterRecipe;
-import forestry.api.recipes.ICentrifugeRecipe;
-import forestry.api.recipes.IFabricatorRecipe;
-import forestry.api.recipes.IFermenterRecipe;
-import forestry.api.recipes.IMoistenerRecipe;
-import forestry.api.recipes.ISqueezerRecipe;
-import forestry.api.recipes.IStillRecipe;
-import forestry.api.recipes.RecipeManagers;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.ClientsideCode;
-import forestry.core.config.Constants;
 import forestry.core.features.FluidsItems;
 import forestry.core.gui.GuiForestry;
 import forestry.core.recipes.jei.ForestryRecipeType;
 import forestry.core.utils.JeiUtil;
-import forestry.factory.ModuleFactory;
+import forestry.core.utils.ModUtil;
+import forestry.core.utils.RecipeUtils;
 import forestry.factory.blocks.BlockFactoryPlain;
 import forestry.factory.blocks.BlockTypeFactoryPlain;
 import forestry.factory.blocks.BlockTypeFactoryTesr;
 import forestry.factory.features.FactoryBlocks;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.gui.GuiBottler;
 import forestry.factory.gui.GuiCarpenter;
 import forestry.factory.gui.GuiCentrifuge;
@@ -30,7 +38,6 @@ import forestry.factory.gui.GuiFermenter;
 import forestry.factory.gui.GuiMoistener;
 import forestry.factory.gui.GuiSqueezer;
 import forestry.factory.gui.GuiStill;
-import forestry.factory.recipes.jei.bottler.BottlerRecipe;
 import forestry.factory.recipes.jei.bottler.BottlerRecipeCategory;
 import forestry.factory.recipes.jei.bottler.BottlerRecipeMaker;
 import forestry.factory.recipes.jei.carpenter.CarpenterRecipeCategory;
@@ -43,7 +50,7 @@ import forestry.factory.recipes.jei.moistener.MoistenerRecipeCategory;
 import forestry.factory.recipes.jei.rainmaker.RainmakerRecipeCategory;
 import forestry.factory.recipes.jei.squeezer.SqueezerRecipeCategory;
 import forestry.factory.recipes.jei.still.StillRecipeCategory;
-import forestry.modules.ForestryModuleUids;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -58,28 +65,12 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 @JeiPlugin
-@OnlyIn(Dist.CLIENT)
 public class FactoryJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.FACTORY);
+		return ForestryModuleIds.FACTORY;
 	}
 
 	@Override
@@ -89,40 +80,39 @@ public class FactoryJeiPlugin implements IModPlugin {
 
 		List<IRecipeCategory<?>> categories = new ArrayList<>();
 
-		if (ModuleFactory.machineEnabled()) {
+		if (true) {
 			categories.add(new BottlerRecipeCategory(guiHelper));
 		}
 
-		if (ModuleFactory.machineEnabled()) {
+		if (true) {
 			categories.add(new CarpenterRecipeCategory(guiHelper));
 		}
 
-		if (ModuleFactory.machineEnabled()) {
+		if (true) {
 			categories.add(new CentrifugeRecipeCategory(guiHelper));
 		}
 
-		if (ModuleFactory.machineEnabled()) {
-			RecipeManager recipeManager = ClientsideCode.getRecipeManager();
-			categories.add(new FabricatorRecipeCategory(guiHelper, recipeManager));
+		if (true) {
+			categories.add(new FabricatorRecipeCategory(guiHelper));
 		}
 
-		if (ModuleFactory.machineEnabled()) {
+		if (true) {
 			categories.add(new FermenterRecipeCategory(guiHelper));
 		}
 
-		if (ModuleFactory.machineEnabled()) {
+		if (true) {
 			categories.add(new MoistenerRecipeCategory(guiHelper));
 		}
 
-		if (ModuleFactory.machineEnabled()) {
+		if (true) {
 			categories.add(new RainmakerRecipeCategory(guiHelper));
 		}
 
-		if (ModuleFactory.machineEnabled()) {
+		if (true) {
 			categories.add(new SqueezerRecipeCategory(guiHelper));
 		}
 
-		if (ModuleFactory.machineEnabled()) {
+		if (true) {
 			categories.add(new StillRecipeCategory(guiHelper));
 		}
 
@@ -131,148 +121,64 @@ public class FactoryJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registry) {
-		RecipeManager recipeManager = ClientsideCode.getRecipeManager();
+		RecipeManager manager = ClientsideCode.getRecipeManager();
 
-		if (ModuleFactory.machineEnabled()) {
-			List<BottlerRecipe> recipes = BottlerRecipeMaker.getBottlerRecipes(registry.getIngredientManager());
-			registry.addRecipes(ForestryRecipeType.BOTTLER, recipes);
-		}
+		registry.addRecipes(ForestryRecipeType.BOTTLER, BottlerRecipeMaker.getBottlerRecipes(registry.getIngredientManager()));
+		registry.addRecipes(ForestryRecipeType.CARPENTER, RecipeUtils.getRecipes(manager, FactoryRecipeTypes.CARPENTER).toList());
+		registry.addRecipes(ForestryRecipeType.CENTRIFUGE, RecipeUtils.getRecipes(manager, FactoryRecipeTypes.CENTRIFUGE).toList());
+		registry.addRecipes(ForestryRecipeType.FABRICATOR, RecipeUtils.getRecipes(manager, FactoryRecipeTypes.FABRICATOR).toList());
+		registry.addRecipes(ForestryRecipeType.FERMENTER, RecipeUtils.getRecipes(manager, FactoryRecipeTypes.FERMENTER).toList());
+		registry.addRecipes(ForestryRecipeType.MOISTENER, RecipeUtils.getRecipes(manager, FactoryRecipeTypes.MOISTENER).toList());
+		registry.addRecipes(ForestryRecipeType.RAINMAKER, FuelManager.rainSubstrate.values().stream()
+				.sorted(Comparator.comparing(RainSubstrate::duration))
+				.toList());
+		registry.addRecipes(ForestryRecipeType.SQUEEZER, RecipeUtils.getRecipes(manager, FactoryRecipeTypes.SQUEEZER).toList());
+		registry.addRecipes(ForestryRecipeType.STILL, RecipeUtils.getRecipes(manager, FactoryRecipeTypes.STILL).toList());
 
-		if (ModuleFactory.machineEnabled()) {
-			List<ICarpenterRecipe> recipes = RecipeManagers.carpenterManager.getRecipes(recipeManager).toList();
-			registry.addRecipes(ForestryRecipeType.CARPENTER, recipes);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			List<ICentrifugeRecipe> recipes = RecipeManagers.centrifugeManager.getRecipes(recipeManager).toList();
-			registry.addRecipes(ForestryRecipeType.CENTRIFUGE, recipes);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			List<IFabricatorRecipe> recipes = RecipeManagers.fabricatorManager.getRecipes(recipeManager).toList();
-			registry.addRecipes(ForestryRecipeType.FABRICATOR, recipes);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			List<IFermenterRecipe> recipes = RecipeManagers.fermenterManager.getRecipes(recipeManager).toList();
-			registry.addRecipes(ForestryRecipeType.FERMENTER, recipes);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			List<IMoistenerRecipe> recipes = RecipeManagers.moistenerManager.getRecipes(recipeManager).toList();
-			registry.addRecipes(ForestryRecipeType.MOISTENER, recipes);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			List<RainSubstrate> recipes = FuelManager.rainSubstrate.values().stream()
-					.sorted(Comparator.comparing(RainSubstrate::duration))
-					.toList();
-			registry.addRecipes(ForestryRecipeType.RAINMAKER, recipes);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			List<ISqueezerRecipe> recipes = RecipeManagers.squeezerManager.getRecipes(recipeManager).toList();
-			registry.addRecipes(ForestryRecipeType.SQUEEZER, recipes);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			List<IStillRecipe> recipes = RecipeManagers.stillManager.getRecipes(recipeManager).toList();
-			registry.addRecipes(ForestryRecipeType.STILL, recipes);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			BlockFactoryPlain rainTank = FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.RAINTANK).block();
-			JeiUtil.addDescription(registry, rainTank);
-		}
+		BlockFactoryPlain rainTank = FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.RAINTANK).block();
+		JeiUtil.addDescription(registry, rainTank);
 	}
 
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeTransferHandler(new CarpenterRecipeTransferHandler(), ForestryRecipeType.CARPENTER);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeTransferHandler(new FabricatorRecipeTransferHandler(), ForestryRecipeType.FABRICATOR);
-		}
+		registry.addRecipeTransferHandler(new CarpenterRecipeTransferHandler(), ForestryRecipeType.CARPENTER);
+		registry.addRecipeTransferHandler(new FabricatorRecipeTransferHandler(), ForestryRecipeType.FABRICATOR);
 	}
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.BOTTLER).block()), ForestryRecipeType.BOTTLER);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.CARPENTER).block()), ForestryRecipeType.CARPENTER);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.CENTRIFUGE).block()), ForestryRecipeType.CENTRIFUGE);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.FABRICATOR).block()), ForestryRecipeType.FABRICATOR);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.FERMENTER).block()), ForestryRecipeType.FERMENTER);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.MOISTENER).block()), ForestryRecipeType.MOISTENER);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.RAINTANK).block()), ForestryRecipeType.RAINMAKER);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.SQUEEZER).block()), ForestryRecipeType.SQUEEZER);
-		}
-
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.STILL).block()), ForestryRecipeType.STILL);
-		}
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.BOTTLER).block()), ForestryRecipeType.BOTTLER);
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.CARPENTER).block()), ForestryRecipeType.CARPENTER);
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.CENTRIFUGE).block()), ForestryRecipeType.CENTRIFUGE);
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.FABRICATOR).block()), ForestryRecipeType.FABRICATOR);
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.FERMENTER).block()), ForestryRecipeType.FERMENTER);
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.MOISTENER).block()), ForestryRecipeType.MOISTENER);
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.RAINTANK).block()), ForestryRecipeType.RAINMAKER);
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.SQUEEZER).block()), ForestryRecipeType.SQUEEZER);
+		registry.addRecipeCatalyst(new ItemStack(FactoryBlocks.TESR.get(BlockTypeFactoryTesr.STILL).block()), ForestryRecipeType.STILL);
 	}
 
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registry) {
 		registry.addGenericGuiContainerHandler(GuiForestry.class, new ForestryAdvancedGuiHandler());
 
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeClickArea(GuiBottler.class, 107, 33, 26, 22, ForestryRecipeType.BOTTLER);
-			registry.addRecipeClickArea(GuiBottler.class, 45, 33, 26, 22, ForestryRecipeType.BOTTLER);
-		}
+		registry.addRecipeClickArea(GuiBottler.class, 107, 33, 26, 22, ForestryRecipeType.BOTTLER);
+		registry.addRecipeClickArea(GuiBottler.class, 45, 33, 26, 22, ForestryRecipeType.BOTTLER);
 
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeClickArea(GuiCarpenter.class, 98, 48, 21, 26, ForestryRecipeType.CARPENTER);
-		}
+		registry.addRecipeClickArea(GuiCarpenter.class, 98, 48, 21, 26, ForestryRecipeType.CARPENTER);
 
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeClickArea(GuiCentrifuge.class, 38, 22, 38, 14, ForestryRecipeType.CENTRIFUGE);
-			registry.addRecipeClickArea(GuiCentrifuge.class, 38, 54, 38, 14, ForestryRecipeType.CENTRIFUGE);
-		}
+		registry.addRecipeClickArea(GuiCentrifuge.class, 38, 22, 38, 14, ForestryRecipeType.CENTRIFUGE);
+		registry.addRecipeClickArea(GuiCentrifuge.class, 38, 54, 38, 14, ForestryRecipeType.CENTRIFUGE);
 
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeClickArea(GuiFabricator.class, 121, 53, 18, 18, ForestryRecipeType.FABRICATOR);
-		}
+		registry.addRecipeClickArea(GuiFabricator.class, 121, 53, 18, 18, ForestryRecipeType.FABRICATOR);
 
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeClickArea(GuiFermenter.class, 72, 40, 32, 18, ForestryRecipeType.FERMENTER);
-		}
+		registry.addRecipeClickArea(GuiFermenter.class, 72, 40, 32, 18, ForestryRecipeType.FERMENTER);
 
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeClickArea(GuiMoistener.class, 123, 35, 19, 21, ForestryRecipeType.MOISTENER);
-		}
+		registry.addRecipeClickArea(GuiMoistener.class, 123, 35, 19, 21, ForestryRecipeType.MOISTENER);
 
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeClickArea(GuiSqueezer.class, 76, 41, 43, 16, ForestryRecipeType.SQUEEZER);
-		}
+		registry.addRecipeClickArea(GuiSqueezer.class, 76, 41, 43, 16, ForestryRecipeType.SQUEEZER);
 
-		if (ModuleFactory.machineEnabled()) {
-			registry.addRecipeClickArea(GuiStill.class, 73, 17, 33, 57, ForestryRecipeType.STILL);
-		}
+		registry.addRecipeClickArea(GuiStill.class, 73, 17, 33, 57, ForestryRecipeType.STILL);
 	}
 
 	@Override
@@ -280,7 +186,7 @@ public class FactoryJeiPlugin implements IModPlugin {
 		IIngredientSubtypeInterpreter<ItemStack> subtypeInterpreter = (itemStack, context) -> {
 			LazyOptional<IFluidHandlerItem> fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
 			return fluidHandler.map(handler -> handler.getFluidInTank(0))
-					.map(fluid -> RegistryNameFinder.getRegistryName(fluid.getFluid()))
+					.map(fluid -> ModUtil.getRegistryName(fluid.getFluid()))
 					.map(ResourceLocation::toString)
 					.orElse(IIngredientSubtypeInterpreter.NONE);
 		};

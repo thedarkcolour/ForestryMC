@@ -6,17 +6,11 @@
   "products": [
     {
       "chance": 1.0,
-      "item": {
-        "Count": 1,
-        "id": "forestry:beeswax"
-      }
+      "item": "forestry:beeswax"
     },
     {
       "chance": 0.9,
-      "item": {
-        "Count": 1,
-        "id": "forestry:honey_drop_honey"
-      }
+      "item": "forestry:honey_drop_honey"
     }
   ],
   "time": 20

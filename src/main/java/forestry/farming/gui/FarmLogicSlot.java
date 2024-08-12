@@ -11,8 +11,8 @@
 package forestry.farming.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -20,23 +20,18 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.core.tooltips.ToolTip;
-import forestry.api.farming.FarmDirection;
 import forestry.api.farming.IFarmLogic;
-import forestry.api.farming.IFarmProperties;
-import forestry.core.config.Config;
+import forestry.api.farming.IFarmType;
 import forestry.core.gui.GuiUtil;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
-import forestry.core.render.RenderHelper;
-import forestry.core.utils.RenderUtil;
 import forestry.farming.multiblock.IFarmControllerInternal;
 
 public class FarmLogicSlot extends Widget {
-
 	private final IFarmControllerInternal farmController;
-	private final FarmDirection farmDirection;
+	private final Direction farmDirection;
 
-	public FarmLogicSlot(IFarmControllerInternal farmController, WidgetManager manager, int xPos, int yPos, FarmDirection farmDirection) {
+	public FarmLogicSlot(IFarmControllerInternal farmController, WidgetManager manager, int xPos, int yPos, Direction farmDirection) {
 		super(manager, xPos, yPos);
 		this.farmController = farmController;
 		this.farmDirection = farmDirection;
@@ -46,8 +41,8 @@ public class FarmLogicSlot extends Widget {
 		return farmController.getFarmLogic(farmDirection);
 	}
 
-	private IFarmProperties getProperties() {
-		return getLogic().getProperties();
+	private IFarmType getProperties() {
+		return getLogic().getType();
 	}
 
 	private ItemStack getStackIndex() {
@@ -55,11 +50,11 @@ public class FarmLogicSlot extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		if (!getStackIndex().isEmpty()) {
 			Minecraft minecraft = Minecraft.getInstance();
 			RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-			GuiUtil.drawItemStack(transform, Minecraft.getInstance().font, getStackIndex(), startX + xPos, startY + yPos);
+			GuiUtil.drawItemStack(transform, minecraft.font, getStackIndex(), startX + xPos, startY + yPos);
 		}
 	}
 
@@ -77,7 +72,7 @@ public class FarmLogicSlot extends Widget {
 		public void refresh() {
 			toolTip.clear();
 			toolTip.add(getProperties().getDisplayName(getLogic().isManual()));
-			toolTip.add(Component.translatable("for.gui.farm.fertilizer", Math.round(getProperties().getFertilizerConsumption(farmController) * Config.fertilizerModifier)));
+			toolTip.add(Component.translatable("for.gui.farm.fertilizer", getProperties().getFertilizerConsumption(farmController)));
 			toolTip.add(Component.translatable("for.gui.farm.water", getProperties().getWaterConsumption(farmController, farmController.getFarmLedgerDelegate().getHydrationModifier())));
 		}
 	};

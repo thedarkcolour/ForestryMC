@@ -13,15 +13,15 @@ package forestry.apiculture.inventory;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.Tuple;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.IBeekeepingMode;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.hives.IHiveFrame;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.apiculture.InventoryBeeHousing;
 import forestry.core.utils.SlotUtil;
 
@@ -34,12 +34,12 @@ public class InventoryApiary extends InventoryBeeHousing implements IApiaryInven
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (SlotUtil.isSlotInRange(slotIndex, SLOT_FRAMES_1, SLOT_FRAMES_COUNT)) {
-			return itemStack.getItem() instanceof IHiveFrame && getItem(slotIndex).isEmpty();
+			return stack.getItem() instanceof IHiveFrame && getItem(slotIndex).isEmpty();
 		}
 
-		return super.canSlotAccept(slotIndex, itemStack);
+		return super.canSlotAccept(slotIndex, stack);
 	}
 
 	// override for pipe automation
@@ -65,18 +65,18 @@ public class InventoryApiary extends InventoryBeeHousing implements IApiaryInven
 
 	@Override
 	public void wearOutFrames(IBeeHousing beeHousing, int amount) {
-		IBeekeepingMode beekeepingMode = BeeManager.beeRoot.getBeekeepingMode(beeHousing.getWorldObj());
-		int wear = Math.round(amount * beekeepingMode.getWearModifier());
+		//IBeekeepingMode beekeepingMode = SpeciesUtil.BEE_TYPE.get().getBeekeepingMode(beeHousing.getWorldObj());
+		int wear = amount; /* Math.round(amount * beekeepingMode.getWearModifier())*/
 
 		for (int i = SLOT_FRAMES_1; i < SLOT_FRAMES_1 + SLOT_FRAMES_COUNT; i++) {
 			ItemStack hiveFrameStack = getItem(i);
 			Item hiveFrameItem = hiveFrameStack.getItem();
-			if ((hiveFrameItem instanceof IHiveFrame hiveFrame)) {
 
-				IBee queen = BeeManager.beeRoot.create(getQueen());
+			if (hiveFrameItem instanceof IHiveFrame hiveFrame) {
+				IIndividual queen = IIndividualHandlerItem.getIndividual(getQueen());
+
 				if (queen != null) {
-					ItemStack usedFrame = hiveFrame.frameUsed(beeHousing, hiveFrameStack, queen, wear);
-
+					ItemStack usedFrame = hiveFrame.frameUsed(beeHousing, hiveFrameStack, (IBee) queen, wear);
 					setItem(i, usedFrame);
 				}
 			}

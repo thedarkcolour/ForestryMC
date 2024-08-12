@@ -26,7 +26,7 @@ import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 import forestry.core.models.ClientManager;
 import forestry.core.utils.ResourceUtil;
 
@@ -38,7 +38,7 @@ import forestry.core.utils.ResourceUtil;
 @OnlyIn(Dist.CLIENT)
 public final class ModelBaker {
 
-	private static final ResourceLocation FACE_LOCATION = new ResourceLocation(Constants.MOD_ID, "baker_face");
+	private static final ResourceLocation FACE_LOCATION = ForestryConstants.forestry("baker_face");
 	private static final float[] UVS = new float[]{0.0F, 0.0F, 16.0F, 16.0F, 0.0F, 0.0F, 16.0F, 16.0F};
 	private static final FaceBakery FACE_BAKERY = new FaceBakery();
 	private static final Vector3f POS_FROM = new Vector3f(0.0F, 0.0F, 0.0F);

@@ -11,16 +11,16 @@ import net.minecraft.world.phys.Vec3;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.apiculture.genetics.IBeeRoot;
+import forestry.api.apiculture.genetics.IBeeSpeciesType;
+import forestry.api.climate.IBiomeProvider;
 import forestry.api.climate.IClimateProvider;
 import forestry.api.core.IErrorLogicSource;
-import forestry.api.core.ILocatable;
-import forestry.api.genetics.IHousing;
+import forestry.api.core.ILocationProvider;
 
-public interface IBeeHousing extends IHousing, IErrorLogicSource, IClimateProvider, ILocatable {
+public interface IBeeHousing extends IErrorLogicSource, IClimateProvider, IBiomeProvider, ILocationProvider {
 
 	/**
-	 * Used by {@link IBeeRoot#createBeeHousingModifier(IBeeHousing)}
+	 * Used by {@link IBeeSpeciesType#createBeeHousingModifier(IBeeHousing)}
 	 * to combine bee modifiers from several sources that can change over time.
 	 *
 	 * @return IBeeModifiers from the housing, frames, etc.
@@ -28,7 +28,7 @@ public interface IBeeHousing extends IHousing, IErrorLogicSource, IClimateProvid
 	Iterable<IBeeModifier> getBeeModifiers();
 
 	/**
-	 * Used by {@link IBeeRoot#createBeeHousingListener(IBeeHousing)}
+	 * Used by {@link IBeeSpeciesType#createBeeHousingListener(IBeeHousing)}
 	 * to combine bee listeners from several sources that can change over time.
 	 *
 	 * @return IBeeListeners from the housing, multiblock parts, etc.

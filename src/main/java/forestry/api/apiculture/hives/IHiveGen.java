@@ -7,12 +7,12 @@ package forestry.api.apiculture.hives;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 
 public interface IHiveGen {
-
 	/**
 	 * return a position that the hive should try to generate at.
 	 * returns null if the hive can't be placed anywhere.
@@ -31,4 +31,7 @@ public interface IHiveGen {
 	 */
 	boolean canReplace(BlockState blockState, WorldGenLevel world, BlockPos pos);
 
+	static boolean isTreeBlock(BlockState state) {
+		return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS);
+	}
 }

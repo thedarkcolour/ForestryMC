@@ -17,12 +17,16 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.VersionRange;
 
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
+
+import net.minecraftforge.registries.ForgeRegistries;
 
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-
-import forestry.core.config.Constants;
 
 
 public abstract class ModUtil {
@@ -52,7 +56,19 @@ public abstract class ModUtil {
 		return true;
 	}
 
-	public static ResourceLocation modLoc(String path) {
-		return new ResourceLocation(Constants.MOD_ID, path);
+	public static ResourceLocation getRegistryName(Fluid o) {
+		return ForgeRegistries.FLUIDS.getKey(o);
+	}
+
+	public static ResourceLocation getRegistryName(Block o) {
+		return ForgeRegistries.BLOCKS.getKey(o);
+	}
+
+	public static ResourceLocation getRegistryName(Item o) {
+		return ForgeRegistries.ITEMS.getKey(o);
+	}
+
+	public static ResourceLocation getRegistryName(ParticleType<?> o) {
+		return ForgeRegistries.PARTICLE_TYPES.getKey(o);
 	}
 }

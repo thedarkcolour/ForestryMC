@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.farming.logic.crops;
 
+import java.util.List;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +36,7 @@ public class CropBasicAgriCraft extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level world, BlockPos pos) {
+	protected List<ItemStack> harvestBlock(Level world, BlockPos pos) {
 		Block block = blockState.getBlock();
 		NonNullList<ItemStack> harvest = NonNullList.create();
 		//		block.getDrops(harvest, world, pos, blockState, 0);

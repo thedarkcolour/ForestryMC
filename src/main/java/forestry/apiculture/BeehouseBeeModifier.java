@@ -12,33 +12,35 @@ package forestry.apiculture;
 
 import javax.annotation.Nullable;
 
-import genetics.api.individual.IGenome;
+import forestry.api.apiculture.IBeeModifier;
+import forestry.api.apiculture.genetics.IBeeSpecies;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 
-import forestry.api.apiculture.DefaultBeeModifier;
-
-public class BeehouseBeeModifier extends DefaultBeeModifier {
+// no mutations/ignoble decay, 300% aging and flowering, 25% production
+public class BeehouseBeeModifier implements IBeeModifier {
 	@Override
-	public float getProductionModifier(IGenome genome, float currentModifier) {
-		return 0.25f;
+	public float modifyProductionSpeed(IGenome genome, float currentSpeed) {
+		return 0.25f * currentSpeed;
 	}
 
 	@Override
-	public float getMutationModifier(IGenome genome, IGenome mate, float currentModifier) {
+	public float modifyMutationChance(IGenome genome, IGenome mate, IMutation<IBeeSpecies> mutation, float currentChance) {
 		return 0.0f;
 	}
 
 	@Override
-	public float getLifespanModifier(IGenome genome, @Nullable IGenome mate, float currentModifier) {
-		return 3.0f;
+	public float modifyAging(IGenome genome, @Nullable IGenome mate, float currentAging) {
+		return 3.0f * currentAging;
 	}
 
 	@Override
-	public float getFloweringModifier(IGenome genome, float currentModifier) {
-		return 3.0f;
+	public float modifyPollination(IGenome genome, float currentPollination) {
+		return 3.0f * currentPollination;
 	}
 
 	@Override
-	public float getGeneticDecay(IGenome genome, float currentModifier) {
+	public float modifyGeneticDecay(IGenome genome, float currentDecay) {
 		return 0.0f;
 	}
 }

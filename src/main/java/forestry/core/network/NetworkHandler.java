@@ -1,13 +1,5 @@
 package forestry.core.network;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -23,32 +15,42 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import forestry.Forestry;
-import forestry.api.modules.IForestryModule;
-import forestry.core.config.Constants;
-import forestry.modules.ModuleManager;
+import forestry.api.ForestryConstants;
+import forestry.api.IForestryApi;
+import forestry.api.modules.IForestryPacket;
+import forestry.api.modules.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketServer;
+import forestry.api.modules.IPacketRegistry;
 
 public class NetworkHandler {
-	public static final ResourceLocation CHANNEL_ID = new ResourceLocation(Constants.MOD_ID, "channel");
+	public static final ResourceLocation CHANNEL_ID = ForestryConstants.forestry("channel");
 	// todo correspond to mod version
 	public static final String VERSION = "1.0.0";
 	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(CHANNEL_ID, () -> VERSION, VERSION::equals, VERSION::equals);
 
 	public static void register() {
-		IPacketRegistry registry = new NetworkHandler.PacketRegistry(new AtomicInteger());
+		IPacketRegistry registry = new NetworkHandler.PacketRegistry(CHANNEL);
 
-		// packets must be registered in a deterministic order (until 1.20.4)
-		ModuleManager.getSortedModules().forEach(module -> module.registerPackets(registry));
+		// packets must be registered in the same order across runs (until 1.20.4)
+		IForestryApi.INSTANCE.getModuleManager().getLoadedModules().forEach(module -> module.registerPackets(registry));
 	}
 
-	private record PacketRegistry(AtomicInteger packetId) implements IPacketRegistry {
+	private static final class PacketRegistry implements IPacketRegistry {
+		private final SimpleChannel channel;
+		private int packetId;
+
+		private PacketRegistry(SimpleChannel channel) {
+			this.channel = channel;
+		}
+
 		@Override
 		public <P extends IForestryPacketServer> void serverbound(ResourceLocation id, Class<P> packetClass, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> packetHandler) {
-			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleServerbound(msg, ctxSupplier, packetHandler));
+			this.channel.registerMessage(this.packetId++, packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleServerbound(msg, ctxSupplier, packetHandler));
 		}
 
 		@Override
 		public <P extends IForestryPacketClient> void clientbound(ResourceLocation id, Class<P> packetClass, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, Player> packetHandler) {
-			CHANNEL.registerMessage(packetId.getAndIncrement(), packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleClientbound(msg, ctxSupplier, packetHandler));
+			this.channel.registerMessage(this.packetId++, packetClass, IForestryPacket::write, decoder, (msg, ctxSupplier) -> handleClientbound(msg, ctxSupplier, packetHandler));
 		}
 	}
 

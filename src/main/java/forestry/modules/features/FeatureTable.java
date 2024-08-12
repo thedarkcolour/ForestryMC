@@ -82,14 +82,6 @@ public abstract class FeatureTable<B extends FeatureTable.Builder<R, C, ? extend
 		return ((IItemProvider) featureBlock).stack(amount);
 	}
 
-	public ItemStack stack(R rowType, C columnType, StackOption... options) {
-		F featureBlock = featureByTypes.get(rowType, columnType);
-		if (!(featureBlock instanceof IItemProvider)) {
-			throw new IllegalStateException("This feature group has no item registered for the given sub type to create a stack for.");
-		}
-		return ((IItemProvider) featureBlock).stack(options);
-	}
-
 	public static abstract class Builder<R extends IFeatureSubtype, C extends IFeatureSubtype, G> {
 		protected final IFeatureRegistry registry;
 		protected final Set<R> rowTypes = new HashSet<>();

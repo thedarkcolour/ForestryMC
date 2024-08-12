@@ -4,6 +4,7 @@
       "base": "forestry:block/habitat_former/base",
       "sides": "forestry:block/habitat_former/base_sides"
 	},
+	"render_type": "minecraft:cutout_mipped",
 	"elements": [ 	 
 		{
 			"from": [ 0, 0, 0 ],

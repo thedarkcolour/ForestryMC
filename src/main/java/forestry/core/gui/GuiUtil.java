@@ -11,6 +11,7 @@
 package forestry.core.gui;
 
 import javax.annotation.Nullable;
+import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -85,5 +86,14 @@ public class GuiUtil {
 				drawToolTips(transform, gui, provider, tips, mouseX, mouseY);
 			}
 		}
+	}
+
+	public static String formatEnergyValue(int energy) {
+		NumberFormat format = NumberFormat.getIntegerInstance(Minecraft.getInstance().getLocale());
+		return format.format(energy) + " RF";
+	}
+
+	public static String formatRate(int rate) {
+		return formatEnergyValue(rate) + "/t";
 	}
 }

@@ -14,12 +14,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;

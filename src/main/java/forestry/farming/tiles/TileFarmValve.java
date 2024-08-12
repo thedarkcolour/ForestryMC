@@ -36,13 +36,9 @@ public class TileFarmValve extends TileFarm implements ILiquidTankTile {
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-		LazyOptional<T> superCap = super.getCapability(capability, facing);
-		if (superCap.isPresent()) {
-			return superCap;
-		}
 		if (capability == ForgeCapabilities.FLUID_HANDLER) {
 			return LazyOptional.of(this::getTankManager).cast();
 		}
-		return LazyOptional.empty();
+		return super.getCapability(capability, facing);
 	}
 }

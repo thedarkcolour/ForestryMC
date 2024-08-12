@@ -10,10 +10,10 @@
  ******************************************************************************/
 package forestry.farming.logic;
 
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 
 public class FarmLogicReeds extends FarmLogicSoil {
-	public FarmLogicReeds(IFarmProperties properties, boolean isManual) {
+	public FarmLogicReeds(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 

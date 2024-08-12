@@ -16,6 +16,7 @@ import forestry.apiculture.network.packets.PacketHabitatBiomePointer;
 import forestry.core.utils.NetworkUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -28,8 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class HabitatLocatorLogic {
-
-	private Set<Biome> targetBiomes = new HashSet<>();
+	private Set<Holder<Biome>> targetBiomes = new HashSet<>();
 	private boolean biomeFound = false;
 	@Nullable
 	private BlockPos searchCenter;
@@ -38,12 +38,12 @@ public class HabitatLocatorLogic {
 		return biomeFound;
 	}
 
-	public Set<Biome> getTargetBiomes() {
+	public Set<Holder<Biome>> getTargetBiomes() {
 		return targetBiomes;
 	}
 
 	public void startBiomeSearch(IBee bee, Player player) {
-		this.targetBiomes = new HashSet<>(bee.getSuitableBiomes());
+		this.targetBiomes = new HashSet<>(bee.getSuitableBiomes(player.getLevel().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY)));
 		this.biomeFound = false;
 		this.searchCenter = player.blockPosition();
 
@@ -59,7 +59,7 @@ public class HabitatLocatorLogic {
 		}
 
 		// once we've found the biome, slow down
-		if (biomeFound && world.getGameTime() % 50 != 0) {
+		if (this.biomeFound && world.getGameTime() % 50 != 0) {
 			return;
 		}
 
@@ -68,7 +68,7 @@ public class HabitatLocatorLogic {
 		// send an update if we find the biome
 		if (pair != null) {
 			NetworkUtil.sendToPlayer(new PacketHabitatBiomePointer(pair.getFirst()), serverPlayer);
-			biomeFound = true;
+			this.biomeFound = true;
 		}
 	}
 }

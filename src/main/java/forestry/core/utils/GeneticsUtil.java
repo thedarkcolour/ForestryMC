@@ -11,86 +11,80 @@
 package forestry.core.utils;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.common.util.LazyOptional;
 
-import forestry.api.apiculture.genetics.IAlleleBeeSpecies;
-import forestry.api.arboriculture.ArboricultureCapabilities;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
+import forestry.api.ForestryCapabilities;
+import forestry.api.apiculture.genetics.IBeeSpecies;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.IArmorNaturalist;
 import forestry.api.genetics.ICheckPollinatable;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.IMutation;
+import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.IPollinatable;
-import forestry.api.genetics.ISpeciesRootPollinatable;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.IPollinatableSpeciesType;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.lepidopterology.IButterflyNursery;
-import forestry.api.lepidopterology.genetics.IAlleleButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterfly;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.arboriculture.capabilities.ArmorNaturalist;
 import forestry.core.genetics.ItemGE;
 import forestry.core.tiles.TileUtil;
 
-import genetics.api.GeneticHelper;
-import genetics.api.GeneticsAPI;
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IChromosomeType;
-import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
-import genetics.api.mutation.IMutationContainer;
-import genetics.api.organism.IOrganismType;
-import genetics.api.root.IIndividualRoot;
-import genetics.api.root.IRootDefinition;
-import genetics.api.root.components.ComponentKeys;
-import genetics.utils.AlleleUtils;
-import genetics.utils.RootUtils;
-
 public class GeneticsUtil {
-	private static String getKeyPrefix(IAllele allele) {
-		if (allele instanceof IAlleleBeeSpecies) {
+	private static String getKeyPrefix(ISpecies<?> allele) {
+		if (allele instanceof IBeeSpecies) {
 			return "for.bees";
-		} else if (allele instanceof IAlleleTreeSpecies) {
+		} else if (allele instanceof ITreeSpecies) {
 			return "for.trees";
-		} else if (allele instanceof IAlleleButterflySpecies) {
+		} else if (allele instanceof IButterflySpecies) {
 			return "for.butterflies";
 		}
 		throw new IllegalStateException();
 	}
 
-	public static Component getAlyzerName(IOrganismType type, IAlleleForestrySpecies allele) {
+	public static Component getAlyzerName(ILifeStage type, ISpecies<?> allele) {
 		String customKey = getKeyPrefix(allele) +
 				".custom.alyzer." +
-				type.getName() +
+				type.getSerializedName() +
 				'.' +
-				allele.getSpeciesIdentifier();
+				allele.getTranslationKey();
 		return Translator.tryTranslate(customKey, allele::getDisplayName);
 	}
 
-	public static Component getItemName(IOrganismType type, IAlleleForestrySpecies allele) {
-		String prefix = getKeyPrefix(allele);
+	public static Component getItemName(ILifeStage type, ISpecies<?> species) {
+		String prefix = getKeyPrefix(species);
 		String customKey = prefix +
 				".custom." +
-				type.getName() +
+				type.getSerializedName() +
 				'.' +
-				allele.getSpeciesIdentifier();
+				species.getTranslationKey();
 		return Translator.tryTranslate(customKey, () -> {
-			Component speciesName = allele.getDisplayName();
-			Component typeName = Component.translatable(prefix + ".grammar." + type.getName() + ".type");
-			return Component.translatable(prefix + ".grammar." + type.getName(), speciesName, typeName);
+			Component speciesName = species.getDisplayName();
+			Component typeName = Component.translatable(prefix + ".grammar." + type.getSerializedName() + ".type");
+			return Component.translatable(prefix + ".grammar." + type.getSerializedName(), speciesName, typeName);
 		});
 	}
 
@@ -101,7 +95,7 @@ public class GeneticsUtil {
 		}
 
 		final IArmorNaturalist armorNaturalist;
-		LazyOptional<IArmorNaturalist> armorCap = armorItemStack.getCapability(ArboricultureCapabilities.ARMOR_NATURALIST);
+		LazyOptional<IArmorNaturalist> armorCap = armorItemStack.getCapability(ForestryCapabilities.ARMOR_NATURALIST);
 		if (armorCap.isPresent()) {
 			armorNaturalist = armorCap.orElse(ArmorNaturalist.INSTANCE);
 		} else {
@@ -129,8 +123,8 @@ public class GeneticsUtil {
 
 		IIndividual pollen = GeneticsUtil.getPollen(world, pos);
 		if (pollen != null) {
-			IIndividualRoot<?> root = pollen.getRoot();
-			if (root instanceof ISpeciesRootPollinatable<?> speciesRoot) {
+			ISpeciesType<?, ?> type = pollen.getType();
+			if (type instanceof IPollinatableSpeciesType speciesRoot) {
 				return speciesRoot.createPollinatable(pollen);
 			}
 		}
@@ -147,8 +141,8 @@ public class GeneticsUtil {
 		if (pollinatable == null && convertVanilla) {
 			IIndividual pollen = GeneticsUtil.getPollen(world, pos);
 			if (pollen != null) {
-				IIndividualRoot<?> root = pollen.getRoot();
-				if (root instanceof ISpeciesRootPollinatable<?> speciesRoot) {
+				ISpeciesType<?, ?> root = pollen.getType();
+				if (root instanceof IPollinatableSpeciesType speciesRoot) {
 					pollinatable = speciesRoot.tryConvertToPollinatable(owner, world, pos, pollen);
 				}
 			}
@@ -161,11 +155,10 @@ public class GeneticsUtil {
 		IButterflyNursery nursery = getNursery(world, pos);
 		if (nursery == null && convertVanilla) {
 			IIndividual pollen = GeneticsUtil.getPollen(world, pos);
-			if (pollen != null) {
-				if (pollen instanceof ITree treeLeave) {
-					if (treeLeave.setLeaves(world, gameProfile, pos, world.getRandom())) {
-						nursery = getNursery(world, pos);
-					}
+
+			if (pollen instanceof ITree tree) {
+				if (tree.getSpecies().setLeaves(pollen.getGenome(), world, gameProfile, pos, world.getRandom())) {
+					nursery = getNursery(world, pos);
 				}
 			}
 		}
@@ -183,98 +176,118 @@ public class GeneticsUtil {
 	}
 
 	/**
-	 * Gets pollen from a location. Does not affect the pollen source.
+	 * Gets pollen from a location. Does not convert the pollen source to Forestry leaves.
 	 */
 	@Nullable
-	public static IIndividual getPollen(LevelAccessor world, final BlockPos pos) {
-		if (!world.hasChunkAt(pos)) {
+	public static IIndividual getPollen(LevelAccessor level, final BlockPos pos) {
+		if (!level.hasChunkAt(pos)) {
 			return null;
 		}
 
-		ICheckPollinatable checkPollinatable = TileUtil.getTile(world, pos, ICheckPollinatable.class);
+		ICheckPollinatable checkPollinatable = TileUtil.getTile(level, pos, ICheckPollinatable.class);
 		if (checkPollinatable != null) {
 			return checkPollinatable.getPollen();
 		}
 
-		BlockState blockState = world.getBlockState(pos);
+		BlockState state = level.getBlockState(pos);
 
-		for (IRootDefinition<?> definition : GeneticsAPI.apiInstance.getRoots().values()) {
-			IIndividualRoot<IIndividual> root = definition.cast();
-			IIndividual individual = root.translateMember(blockState);
-			if (individual != null) {
-				return individual;
-			}
-		}
-
-		return null;
+		return SpeciesUtil.TREE_TYPE.get().getVanillaIndividual(state);
 	}
 
-	@Nullable
-	public static <I extends IIndividual> I getGeneticEquivalent(ItemStack stack) {
-		Item item = stack.getItem();
-		if (item instanceof ItemGE) {
-			return GeneticHelper.getIndividual(stack);
-		}
-
-		for (IRootDefinition<?> definition : GeneticsAPI.apiInstance.getRoots().values()) {
-			if (!definition.isPresent()) {
-				continue;
-			}
-			IIndividualRoot<I> root = definition.cast();
-			I individual = root.translateMember(stack);
-			if (individual != null) {
-				return individual;
-			}
-		}
-
-		return null;
-	}
-
-	//unfortunately quite a few unchecked casts
 	public static ItemStack convertToGeneticEquivalent(ItemStack foreign) {
-		if (!RootUtils.hasRoot(foreign)) {
-			IIndividual individual = getGeneticEquivalent(foreign);
-
-			if (individual != null) {
-				IIndividualRoot<? super IIndividual> root = individual.getRoot().cast();
-				IOrganismType type = root.getType(foreign);
-				if (type != null) {
-					ItemStack equivalent = root.createStack(individual, type);
-					equivalent.setCount(foreign.getCount());
-					return equivalent;
-				}
-				return ItemStack.EMPTY;
-			} else {
-				return foreign;
-			}
+		IIndividualHandlerItem individual = IIndividualHandlerItem.get(foreign);
+		if (individual != null && !individual.isGeneticForm()) {
+			ItemStack equivalent = individual.getIndividual().getSpecies().createStack(individual.getStage());
+			equivalent.setCount(foreign.getCount());
+			return equivalent;
 		}
 		return foreign;
 	}
 
-	public static int getResearchComplexity(IAlleleSpecies species, IChromosomeType speciesChromosome) {
-		return 1 + getGeneticAdvancement(species, new HashSet<>(), speciesChromosome);
+	public static int getResearchComplexity(ISpecies<?> species) {
+		return 1 + getGeneticAdvancement(species, new HashSet<>());
 	}
 
-	private static int getGeneticAdvancement(IAlleleSpecies species, Set<IAlleleSpecies> exclude, IChromosomeType speciesChromosome) {
+	@SuppressWarnings("unchecked")
+	private static int getGeneticAdvancement(ISpecies<?> species, Set<ISpecies<?>> exclude) {
 		int highest = 0;
 		exclude.add(species);
 
-		IIndividualRoot<IIndividual> root = species.getRoot().cast();
-		IMutationContainer<IIndividual, ? extends IMutation> container = root.getComponent(ComponentKeys.MUTATIONS);
-		for (IMutation mutation : container.getPaths(species, speciesChromosome)) {
-			highest = getHighestAdvancement(mutation.getFirstParent(), highest, exclude, speciesChromosome);
-			highest = getHighestAdvancement(mutation.getSecondParent(), highest, exclude, speciesChromosome);
+		ISpeciesType<?, ?> type = species.getType();
+		for (IMutation<?> mutation : ((IMutationManager<ISpecies<?>>) type.getMutations()).getMutationsInto(species)) {
+			highest = getHighestAdvancement(mutation.getFirstParent(), highest, exclude);
+			highest = getHighestAdvancement(mutation.getSecondParent(), highest, exclude);
 		}
 
 		return 1 + highest;
 	}
 
-	private static int getHighestAdvancement(IAlleleSpecies mutationSpecies, int highest, Set<IAlleleSpecies> exclude, IChromosomeType speciesChromosome) {
-		if (exclude.contains(mutationSpecies) || AlleleUtils.isBlacklisted(mutationSpecies.getRegistryName().toString())) {
+	private static int getHighestAdvancement(ISpecies<?> mutationSpecies, int highest, Set<ISpecies<?>> exclude) {
+		if (exclude.contains(mutationSpecies)) {
 			return highest;
 		}
 
-		int otherAdvance = getGeneticAdvancement(mutationSpecies, exclude, speciesChromosome);
+		int otherAdvance = getGeneticAdvancement(mutationSpecies, exclude);
 		return Math.max(otherAdvance, highest);
+	}
+
+	/**
+	 * Creates a translation key for an OBJECT of a TYPE (ex. a SPECIES of a SPECIES TYPE, or an ALLELE of a CHROMOSOME)
+	 * The format is as follows:
+	 * <ul>
+	 *     <li>If {@code typeId} and {@code objectId} share the same namespace, the format is: <br> {@code TYPE.NAMESPACE.TYPEPATH.OBJECTPATH}</li>
+	 *     <li>If {@code typeId} and {@code objectId} have different namespaces, the format is: <br> {@code TYPE.TYPENAMESPACE.TYPEPATH.OBJECTNAMESPACE.OBJECTPATH}</li>
+	 * </ul>
+	 * For example, the Austere bee species from Forestry has the translation key: <br> {@code species.forestry.bee.austere} <br>
+	 * and the Creeper bee species from Binnie's Extra Bees has the translation key: <br> {@code species.forestry.bee.extrabees.creeper}
+	 *
+	 * @param type     The first part of the translation key that describes the type of object this is. Can be empty.
+	 * @param typeId   The ID of the type. An example would be the ID of the species type.
+	 * @param objectId The ID of the object. An example would be the ID of the species.
+	 * @return The translation key.
+	 */
+	public static String createTranslationKey(String type, ResourceLocation typeId, ResourceLocation objectId) {
+		String typeNamespace = typeId.getNamespace();
+		StringBuilder translationKey = new StringBuilder(type);
+		if (!type.isEmpty()) {
+			translationKey.append('.');
+		}
+		translationKey.append(typeNamespace);
+		translationKey.append('.');
+		translationKey.append(typeId.getPath());
+		translationKey.append('.');
+
+		String speciesNamespace = objectId.getNamespace();
+		if (speciesNamespace.equals(typeNamespace)) {
+			// for species from the same mod as species type, use the following format:
+			// species.forestry.bee.austere
+			translationKey.append(objectId.getPath());
+		} else {
+			// if species type is from another mod, use this format instead:
+			// species.forestry.bee.extrabees.creeper
+			translationKey.append(speciesNamespace);
+			translationKey.append('.');
+			translationKey.append(objectId.getPath());
+		}
+
+		return translationKey.toString();
+	}
+
+	public static IdentityHashMap<ISpecies<?>, ItemStack> getIconStacks(ILifeStage stage, ISpeciesType<?, ?> type) {
+		IdentityHashMap<ISpecies<?>, ItemStack> map = new IdentityHashMap<>();
+		getIconStacks(map, stage, type);
+		return map;
+	}
+
+	public static void getIconStacks(Map<ISpecies<?>, ItemStack> map, ILifeStage stage, ISpeciesType<?, ?> type) {
+		ArrayList<ItemStack> itemList = new ArrayList<>(type.getAllSpecies().size());
+		ItemGE.addCreativeItems(stage, itemList, false, type);
+
+		for (ItemStack stack : itemList) {
+			IIndividualHandlerItem.ifPresent(stack, individual -> {
+				ISpecies<?> species = individual.getSpecies();
+				map.put(species, stack);
+			});
+		}
 	}
 }

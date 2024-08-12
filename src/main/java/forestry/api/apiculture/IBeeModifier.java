@@ -7,68 +7,113 @@ package forestry.api.apiculture;
 
 import javax.annotation.Nullable;
 
-import genetics.api.individual.IGenome;
+import net.minecraft.core.Vec3i;
 
+import forestry.api.apiculture.genetics.IBeeSpecies;
+import forestry.api.core.TemperatureType;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
+import forestry.api.genetics.alleles.BeeChromosomes;
+
+/**
+ * A bee modifier allows modifying certain conditions in a bee hive.
+ */
 public interface IBeeModifier {
 	/**
+	 * Used to modify the territory of a bee, which is the area in which bees can find flowers,
+	 * affect mobs with their IBeeEffect, and pollinate tree leaves.
+	 *
 	 * @param genome          Genome of the bee this modifier is called for.
-	 * @param currentModifier Current modifier.
+	 * @param currentModifier Current modifier. Starts out as the value of the allele
 	 * @return Float used to modify the base territory.
 	 */
-	float getTerritoryModifier(IGenome genome, float currentModifier);
+	default Vec3i modifyTerritory(IGenome genome, Vec3i currentModifier) {
+		return currentModifier;
+	}
 
 	/**
-	 * @param genome          Genome of the bee this modifier is called for.
-	 * @param mate            Genome of the bee mate this modifier is called for.
-	 * @param currentModifier Current modifier.
+	 * Used to modify the chance for mutations to happen.
+	 *
+	 * @param genome        Genome of the bee this modifier is called for.
+	 * @param mate          Genome of the bee mate this modifier is called for.
+	 * @param mutation      The mutation that might occur.
+	 * @param currentChance The current mutation chance. Starts at the base chance of the mutation but
+	 *                      may have already been modified by other IBeeModifiers.
 	 * @return Float used to modify the base mutation chance.
 	 */
-	float getMutationModifier(IGenome genome, IGenome mate, float currentModifier);
+	default float modifyMutationChance(IGenome genome, IGenome mate, IMutation<IBeeSpecies> mutation, float currentChance) {
+		return currentChance;
+	}
 
 	/**
-	 * @param genome          Genome of the bee this modifier is called for.
-	 * @param currentModifier Current modifier.
-	 * @return Float used to modify the life span of queens.
+	 * Used to speed up or slow down the aging of a queen.
+	 *
+	 * @param genome       Genome of the bee this modifier is called for.
+	 * @param mate         Genome of the mate, {@code null} if there this bee is not mated.
+	 * @param currentAging Current amount to age the bee by. Starts at {@code 1} but may have already been
+	 *                     modified by other IBeeModifiers.
+	 * @return The number of age steps to age. This number will be rounded if it is not whole. Default is 1.
 	 */
-	float getLifespanModifier(IGenome genome, @Nullable IGenome mate, float currentModifier);
+	default float modifyAging(IGenome genome, @Nullable IGenome mate, float currentAging) {
+		return currentAging;
+	}
 
 	/**
-	 * @param genome          Genome of the bee this modifier is called for.
-	 * @param currentModifier Current modifier.
+	 * Used to increase or decrease the chances of producing products and specialties.
+	 *
+	 * @param genome       Genome of the bee this modifier is called for.
+	 * @param currentSpeed Current production speed. Starts at the value of the bee's active
+	 *                     {@link BeeChromosomes#SPEED} allele.
 	 * @return Float modifying the production speed of queens.
 	 */
-	float getProductionModifier(IGenome genome, float currentModifier);
+	default float modifyProductionSpeed(IGenome genome, float currentSpeed) {
+		return currentSpeed;
+	}
 
 	/**
-	 * @param genome Genome of the bee this modifier is called for.
+	 * @param genome             Genome of the bee this modifier is called for.
+	 * @param currentPollination Current pollination. Starts out at the value of the bee's active
+	 *                           {@link BeeChromosomes#POLLINATION} allele.
 	 * @return Float modifying the flowering of queens.
 	 */
-	float getFloweringModifier(IGenome genome, float currentModifier);
+	default float modifyPollination(IGenome genome, float currentPollination) {
+		return currentPollination;
+	}
 
 	/**
 	 * @param genome Genome of the bee this modifier is called for.
+	 * @param currentDecay Current decay. Starts out at {@code 1f} but may already have been modified by other modifiers.
 	 * @return Float modifying the chance for a swarmer queen to die off.
 	 */
-	float getGeneticDecay(IGenome genome, float currentModifier);
+	default float modifyGeneticDecay(IGenome genome, float currentDecay) {
+		return currentDecay;
+	}
 
 	/**
-	 * @return Boolean indicating if housing can ignore rain
+	 * @return Whether bees in this housing can fly in the rain without {@link BeeChromosomes#TOLERATES_RAIN}.
 	 */
-	boolean isSealed();
+	default boolean isSealed() {
+		return false;
+	}
 
 	/**
-	 * @return Boolean indicating if housing can ignore darkness/night
+	 * @return Whether bees in the hive can work during the night without {@link BeeChromosomes#NEVER_SLEEPS} or {@link IBeeSpecies#isNocturnal()}.
 	 */
-	boolean isSelfLighted();
+	default boolean isSelfLighted() {
+		return false;
+	}
 
 	/**
-	 * @return Boolean indicating if housing can ignore not seeing the sky
+	 * @return Whether bees in the hive can work when the sky is obstructed without {@link BeeChromosomes#CAVE_DWELLING}.
 	 */
-	boolean isSunlightSimulated();
+	default boolean isSunlightSimulated() {
+		return false;
+	}
 
 	/**
-	 * @return Boolean indicating whether this housing simulates the nether
+	 * @return Whether this hive simulates a {@link TemperatureType#HELLISH hellish} climate even if not in the Nether.
 	 */
-	boolean isHellish();
-
+	default boolean isHellish() {
+		return false;
+	}
 }

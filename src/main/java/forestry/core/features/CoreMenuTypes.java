@@ -1,5 +1,6 @@
 package forestry.core.features;
 
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.ModuleCore;
 import forestry.core.circuits.ContainerSolderingIron;
 import forestry.core.gui.ContainerAlyzer;
@@ -13,7 +14,7 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class CoreMenuTypes {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCore.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.CORE);
 
 	public static final FeatureMenuType<ContainerAlyzer> ALYZER = REGISTRY.menuType(ContainerAlyzer::fromNetwork, "alyzer");
 	public static final FeatureMenuType<ContainerAnalyzer> ANALYZER = REGISTRY.menuType(ContainerAnalyzer::fromNetwork, "analyzer");

@@ -14,40 +14,39 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-
 import forestry.api.climate.IClimateProvider;
-import forestry.api.core.EnumHumidity;
+import forestry.api.genetics.ClimateHelper;
+import forestry.api.genetics.IMutation;
+import forestry.api.genetics.IGenome;
+
+import forestry.api.core.HumidityType;
 import forestry.api.genetics.IMutationCondition;
-import forestry.api.genetics.alleles.AlleleManager;
-import forestry.core.utils.Translator;
 
 public class MutationConditionHumidity implements IMutationCondition {
-	private final EnumHumidity minHumidity;
-	private final EnumHumidity maxHumidity;
+	private final HumidityType minHumidity;
+	private final HumidityType maxHumidity;
 
-	public MutationConditionHumidity(EnumHumidity minHumidity, EnumHumidity maxHumidity) {
+	public MutationConditionHumidity(HumidityType minHumidity, HumidityType maxHumidity) {
 		this.minHumidity = minHumidity;
 		this.maxHumidity = maxHumidity;
 	}
 
 	@Override
-	public float getChance(Level world, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
-		EnumHumidity biomeHumidity = climate.getHumidity();
+	public float modifyChance(Level level, BlockPos pos, IMutation<?> mutation, IGenome genome0, IGenome genome1, IClimateProvider climate, float currentChance) {
+		HumidityType biomeHumidity = climate.humidity();
 
 		if (biomeHumidity.ordinal() < minHumidity.ordinal() || biomeHumidity.ordinal() > maxHumidity.ordinal()) {
-			return 0;
+			return 0f;
 		}
-		return 1;
+		return currentChance;
 	}
 
 	@Override
 	public Component getDescription() {
-		Component minHumidityString = AlleleManager.climateHelper.toDisplay(minHumidity);
+		Component minHumidityString = ClimateHelper.toDisplay(minHumidity);
 
 		if (minHumidity != maxHumidity) {
-			Component maxHumidityString = AlleleManager.climateHelper.toDisplay(maxHumidity);
+			Component maxHumidityString = ClimateHelper.toDisplay(maxHumidity);
 			return Component.translatable("for.mutation.condition.humidity.range", minHumidityString, maxHumidityString);
 		} else {
 			return Component.translatable("for.mutation.condition.humidity.single", minHumidityString);

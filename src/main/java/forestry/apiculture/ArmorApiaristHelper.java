@@ -10,28 +10,30 @@
  ******************************************************************************/
 package forestry.apiculture;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.apiculture.ApicultureCapabilities;
+import forestry.api.ForestryCapabilities;
 import forestry.api.apiculture.IArmorApiaristHelper;
+import forestry.api.apiculture.genetics.IBeeEffect;
 
 public class ArmorApiaristHelper implements IArmorApiaristHelper {
-
 	@Override
-	public boolean isArmorApiarist(ItemStack stack, LivingEntity entity, ResourceLocation cause, boolean doProtect) {
+	public boolean isArmorApiarist(ItemStack stack, LivingEntity entity, IBeeEffect cause, boolean doProtect) {
 		if (stack.isEmpty()) {
 			return false;
 		}
 
-		return stack.getCapability(ApicultureCapabilities.ARMOR_APIARIST)
+		return stack.getCapability(ForestryCapabilities.ARMOR_APIARIST)
 				.map(armorApiarist -> armorApiarist.protectEntity(entity, stack, cause, doProtect))
 				.orElse(false);
 	}
 
 	@Override
-	public int wearsItems(LivingEntity entity, ResourceLocation cause, boolean doProtect) {
+	public int wearsItems(LivingEntity entity, @Nullable IBeeEffect cause, boolean doProtect) {
 		int count = 0;
 
 		for (ItemStack armorItem : entity.getAllSlots()) {

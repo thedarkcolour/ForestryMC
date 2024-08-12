@@ -23,30 +23,27 @@ import net.minecraft.util.FormattedCharSequence;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.core.config.Config;
+import forestry.api.ForestryConstants;
+import forestry.api.client.ForestrySprites;
+import forestry.api.client.IForestryClientApi;
 import forestry.core.config.Constants;
 import forestry.core.config.SessionVars;
 import forestry.core.gui.GuiForestry;
-import forestry.core.render.ForestryResource;
-import forestry.core.render.TextureManagerForestry;
 
 /**
  * Side ledger for guis
  */
-@OnlyIn(Dist.CLIENT)
 public abstract class Ledger {
-
+	// Gui tabs (Ledger)
+	public static final int guiTabSpeed = 8;
 	protected static final int minWidth = 24;
 	public static final int minHeight = 24;
 	protected final int maxWidth;
 	protected final int maxTextWidth;
 	protected int maxHeight = 24;
 
-	private static final ResourceLocation ledgerTextureRight = new ForestryResource(Constants.TEXTURE_PATH_GUI + "/ledger.png");
-	private static final ResourceLocation ledgerTextureLeft = new ForestryResource(Constants.TEXTURE_PATH_GUI + "/ledger_left.png");
+	private static final ResourceLocation ledgerTextureRight = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/ledger.png");
+	private static final ResourceLocation ledgerTextureLeft = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/ledger_left.png");
 
 	protected final LedgerManager manager;
 
@@ -107,7 +104,7 @@ public abstract class Ledger {
 			updateTime = System.currentTimeMillis();
 		}
 
-		float moveAmount = Config.guiTabSpeed * (updateTime - lastUpdateTime) / msPerUpdate;
+		float moveAmount = guiTabSpeed * (updateTime - lastUpdateTime) / msPerUpdate;
 
 		lastUpdateTime = updateTime;
 
@@ -151,12 +148,10 @@ public abstract class Ledger {
 		this.y = y;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public final void draw(PoseStack transform) {
 		draw(transform, y, x);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public abstract void draw(PoseStack transform, int y, int x);
 
 	public abstract Component getTooltip();
@@ -221,8 +216,12 @@ public abstract class Ledger {
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0F);
 	}
 
+	protected void drawSprite(PoseStack transform, ResourceLocation path, int x, int y) {
+		drawSprite(transform, IForestryClientApi.INSTANCE.getTextureManager().getSprite(path), x, y);
+	}
+
 	protected void drawSprite(PoseStack transform, TextureAtlasSprite sprite, int x, int y) {
-		drawSprite(transform, sprite, x, y, TextureManagerForestry.INSTANCE.getGuiTextureMap());
+		drawSprite(transform, sprite, x, y, ForestrySprites.TEXTURE_ATLAS);
 	}
 
 	protected void drawSprite(PoseStack transform, TextureAtlasSprite sprite, int x, int y, ResourceLocation textureMap) {

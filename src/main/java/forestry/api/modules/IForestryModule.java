@@ -5,90 +5,70 @@
  ******************************************************************************/
 package forestry.api.modules;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.core.network.IPacketRegistry;
+import forestry.api.client.IClientModuleHandler;
 
 /**
- * Defines a Forestry module.
- * Any class implementing this interface and annotated by {@link ForestryModule} to be loaded by
- * the module manager of Forestry.
+ * IF YOU WANT TO ADD BEE SPECIES, FORESTRY COMPATIBILITY, ETC. USE A {@link forestry.api.plugin.IForestryPlugin}.
+ * <p>
+ * The entry point for a Forestry module. Your mod probably doesn't need this, but it's here if you want to use it.
+ * Must be annotated by {@link ForestryModule} to be loaded and must have an empty constructor.
  */
 public interface IForestryModule {
-	default boolean isAvailable() {
-		return true;
+	/**
+	 * @return The unique identifier for this module. The namespace should be the modid of the mod adding this module.
+	 */
+	ResourceLocation getId();
+
+	/**
+	 * @return A list of identifiers of the modules this module requires in order to load (Apiculture, Mail, etc.)
+	 */
+	default List<ResourceLocation> getModuleDependencies() {
+		return List.of();
 	}
 
 	/**
-	 * The ForestryModule.moduleID()s of any other modules this module depends on.
+	 * @return A list of identifiers of the mods this module requires in order to load (IC2, BuildCraft, etc.)
 	 */
-	default Set<ResourceLocation> getDependencyUids() {
-		return Collections.emptySet();
+	default List<String> getModDependencies() {
+		return List.of();
 	}
 
 	/**
-	 * Can be used to setup the api.
-	 * Will only be called if the module is active if not {@link #disabledSetupAPI()} will be called.
-	 * <p>
-	 * Must be called by the mod that registers the container.
+	 * Called during mod construction, allowing modules to subscribe to mod bus events using their mod's event bus.
+	 * For client-only events, use {@link IForestryModule#registerClientHandler} and {@link IClientModuleHandler#registerEvents}.
+	 *
+	 * @param modBus The mod-specific event bus for the mod found from the namespace of {@link #getId()}.
 	 */
-	default void setupAPI() {
+	default void registerEvents(IEventBus modBus) {
 	}
 
 	/**
-	 * Called to setup the api if this module is disabled in the config or has missing dependencies.
-	 * <p>
-	 * Must be called by the mod that registers the container.
+	 * Runs at mod construction on the logical client, after {@link #registerEvents}.
 	 */
-	default void disabledSetupAPI() {
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	default void registerGuiFactories() {
-
+	default void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
 	}
 
 	/**
-	 * Must be called by the mod that registers the container.
+	 * Note: this is generally not recommended to use.
+	 * Called during Forestry's common phase. Initialize any static API.
 	 */
-	default void preInit() {
-	}
-
-	default void registerCapabilities(Consumer<Class<?>> consumer) {
-	}
-
-	default void registerObjects() {
+	default void setupApi() {
 	}
 
 	default void registerPackets(IPacketRegistry registry) {
 	}
 
-	default void doInit() {
-	}
-
 	/**
-	 * Can be used to register recipes. Called after {@link #doInit()}.
+	 * @return If this module is a "core" module, a dependency of all other modules added by this mod. Loads before other modules.
 	 */
-	default void registerRecipes() {
+	default boolean isCore() {
+		return false;
 	}
-
-	default void postInit() {
-	}
-
-	@Nullable
-	default LiteralArgumentBuilder<CommandSourceStack> register() {
-		return null;
-	}
-
 }

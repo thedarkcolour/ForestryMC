@@ -10,22 +10,17 @@
  ******************************************************************************/
 package forestry.core.genetics.mutations;
 
-import java.util.Calendar;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-
 import forestry.api.climate.IClimateProvider;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationCondition;
 import forestry.core.utils.DayMonth;
-import forestry.core.utils.Translator;
 
 public class MutationConditionTimeLimited implements IMutationCondition {
-
 	private final DayMonth start;
 	private final DayMonth end;
 
@@ -35,25 +30,13 @@ public class MutationConditionTimeLimited implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level world, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
-		DayMonth now = new DayMonth();
+	public float modifyChance(Level level, BlockPos pos, IMutation<?> mutation, IGenome genome0, IGenome genome1, IClimateProvider climate, float currentChance) {
+		DayMonth now = DayMonth.now();
 
-		// If we are equal to start day, return 1.
-		if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) == start.day && Calendar.getInstance().get(Calendar.MONTH) + 1 == start.month) {
-			return 1;
-		}
-
-		// Equal to end date, return 1
-		if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) == end.day && Calendar.getInstance().get(Calendar.MONTH) + 1 == end.month) {
-			return 1;
-		}
-
-		// Still a chance we are in between
 		if (now.between(start, end)) {
-			return 1;
+			return currentChance;
 		}
 
-		// Now we finally failed.
 		return 0;
 	}
 

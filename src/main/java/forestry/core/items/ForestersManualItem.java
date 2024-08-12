@@ -11,14 +11,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.Level;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 
 import vazkii.patchouli.api.PatchouliAPI;
 
 public class ForestersManualItem extends Item {
 
 	public ForestersManualItem() {
-		super(new ItemProperties().tab(ItemGroupForestry.tabForestry));
+		super(new ItemProperties().tab(ItemGroups.tabForestry));
 	}
 
 	@Override

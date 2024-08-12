@@ -5,7 +5,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import net.minecraftforge.fml.common.Mod;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 
 /**
  * This is a generic multiblock tick handler. If you are using this code on your own,
@@ -16,7 +16,7 @@ import forestry.core.config.Constants;
  * SERVER and WORLD ticks only run on the server.
  * WORLDLOAD ticks run only on the server, and only when worlds are loaded.
  */
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID)
+@Mod.EventBusSubscriber(modid = ForestryConstants.MOD_ID)
 public class MultiblockServerTickHandler {
 
 	@SubscribeEvent

@@ -13,15 +13,17 @@ package forestry.factory.recipes;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
@@ -29,8 +31,7 @@ import com.mojang.serialization.JsonOps;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RecipeSerializers {
-
-	static <E> void write(FriendlyByteBuf buffer, NonNullList<E> list, BiConsumer<FriendlyByteBuf, E> consumer) {
+	static <E> void write(FriendlyByteBuf buffer, List<E> list, BiConsumer<FriendlyByteBuf, E> consumer) {
 		buffer.writeVarInt(list.size());
 
 		for (E e : list) {
@@ -38,10 +39,10 @@ public class RecipeSerializers {
 		}
 	}
 
-	static <E> NonNullList<E> read(FriendlyByteBuf buffer, Function<FriendlyByteBuf, E> reader) {
-		NonNullList<E> list = NonNullList.create();
+	static <E> List<E> read(FriendlyByteBuf buffer, Function<FriendlyByteBuf, E> reader) {
 		int size = buffer.readVarInt();
 
+		ArrayList<E> list = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
 			list.add(reader.apply(buffer));
 		}

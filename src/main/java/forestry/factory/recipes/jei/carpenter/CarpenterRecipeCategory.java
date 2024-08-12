@@ -1,6 +1,8 @@
 package forestry.factory.recipes.jei.carpenter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.recipes.ICarpenterRecipe;
 import forestry.core.config.Constants;
 import forestry.core.recipes.jei.ForestryRecipeCategory;
@@ -29,7 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.List;
 
 public class CarpenterRecipeCategory extends ForestryRecipeCategory<ICarpenterRecipe> {
-	private final static ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/carpenter.png");
+	private final static ResourceLocation guiTexture = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/carpenter.png");
 	private final ICraftingGridHelper craftingGridHelper;
 	private final IDrawableAnimated arrow;
 	private final IDrawable tankOverlay;
@@ -78,7 +80,7 @@ public class CarpenterRecipeCategory extends ForestryRecipeCategory<ICarpenterRe
 				.setFluidRenderer(10000, false, 16, 58)
 				.setOverlay(tankOverlay, 0, 0);
 
-		FluidStack fluidResource = recipe.getFluidResource();
+		FluidStack fluidResource = recipe.getInputFluid();
 		if (!fluidResource.isEmpty()) {
 			tankSlot.addIngredient(ForgeTypes.FLUID_STACK, fluidResource);
 		}

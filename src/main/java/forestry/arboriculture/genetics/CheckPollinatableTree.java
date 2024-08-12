@@ -10,13 +10,9 @@
  ******************************************************************************/
 package forestry.arboriculture.genetics;
 
-import net.minecraftforge.common.PlantType;
-
-import genetics.api.individual.IIndividual;
-
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
 import forestry.api.genetics.ICheckPollinatable;
+import forestry.api.genetics.IIndividual;
 import forestry.apiculture.ModuleApiculture;
 
 public class CheckPollinatableTree implements ICheckPollinatable {
@@ -27,11 +23,6 @@ public class CheckPollinatableTree implements ICheckPollinatable {
 	}
 
 	@Override
-	public PlantType getPlantType() {
-		return tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES).getPlantType();
-	}
-
-	@Override
 	public ITree getPollen() {
 		return tree;
 	}
@@ -39,8 +30,8 @@ public class CheckPollinatableTree implements ICheckPollinatable {
 	@Override
 	public boolean canMateWith(IIndividual pollen) {
 		return pollen instanceof ITree &&
-			!isPollinated() &&
-			(ModuleApiculture.doSelfPollination || !tree.isGeneticEqual(pollen));
+				!isPollinated() &&
+				(ModuleApiculture.doSelfPollination || !tree.getGenome().isSameAlleles(pollen.getGenome()));
 	}
 
 	@Override

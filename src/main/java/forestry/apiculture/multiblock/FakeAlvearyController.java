@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -25,10 +26,8 @@ import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.climate.IClimateListener;
 import forestry.apiculture.FakeBeekeepingLogic;
 import forestry.apiculture.tiles.FakeBeeHousingInventory;
-import forestry.core.climate.FakeClimateListener;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.FakeMultiblockController;
@@ -88,18 +87,13 @@ public enum FakeAlvearyController implements FakeMultiblockController, IAlvearyC
 	}
 
 	@Override
-	public Biome getBiome() {
-		return BuiltinRegistries.BIOME.getOrThrow(Biomes.PLAINS);
+	public Holder<Biome> getBiome() {
+		return BuiltinRegistries.BIOME.getHolderOrThrow(Biomes.PLAINS);
 	}
 
 	@Override
 	public IInventoryAdapter getInternalInventory() {
 		return FakeInventoryAdapter.instance();
-	}
-
-	@Override
-	public IClimateListener getClimateListener() {
-		return FakeClimateListener.INSTANCE;
 	}
 
 	@Override

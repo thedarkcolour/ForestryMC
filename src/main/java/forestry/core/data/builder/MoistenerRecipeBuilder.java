@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.recipes.IMoistenerRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class MoistenerRecipeBuilder {
@@ -66,7 +67,7 @@ public class MoistenerRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return IMoistenerRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.MOISTENER.serializer();
 		}
 
 		@Nullable

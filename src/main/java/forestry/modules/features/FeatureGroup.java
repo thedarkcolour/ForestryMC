@@ -18,7 +18,6 @@ import forestry.api.core.IFeatureSubtype;
 import forestry.api.core.IItemProvider;
 
 public abstract class FeatureGroup<B extends FeatureGroup.Builder<S, ? extends FeatureGroup<B, F, S>>, F extends IModFeature, S extends IFeatureSubtype> {
-
 	protected final ImmutableMap<S, F> featureByType;
 
 	protected FeatureGroup(B builder) {
@@ -82,18 +81,10 @@ public abstract class FeatureGroup<B extends FeatureGroup.Builder<S, ? extends F
 
 	public ItemStack stack(S subType, int amount) {
 		F featureBlock = featureByType.get(subType);
-		if (!(featureBlock instanceof IItemProvider)) {
-			throw new IllegalStateException("This feature group has no item registered for the given sub type to create a stack for.");
+		if (featureBlock instanceof IItemProvider<?> item) {
+			return item.stack(amount);
 		}
-		return ((IItemProvider) featureBlock).stack(amount);
-	}
-
-	public ItemStack stack(S subType, StackOption... options) {
-		F featureBlock = featureByType.get(subType);
-		if (!(featureBlock instanceof IItemProvider)) {
-			throw new IllegalStateException("This feature group has no item registered for the given sub type to create a stack for.");
-		}
-		return ((IItemProvider) featureBlock).stack(options);
+		throw new IllegalStateException("This feature group has no item registered for the given sub type to create a stack for.");
 	}
 
 	public static abstract class Builder<S extends IFeatureSubtype, G> {

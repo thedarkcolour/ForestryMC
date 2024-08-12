@@ -12,48 +12,48 @@ package forestry.core.network;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.core.utils.ModUtil;
+import forestry.api.ForestryConstants;
 
 /**
  * Packets sent to the client from the server
  */
 public class PacketIdClient {
+	// Core
+	public static final ResourceLocation RECIPE_CACHE = ForestryConstants.forestry("recipe_cache");
 	// Core Gui
-	public static final ResourceLocation ERROR_UPDATE = ModUtil.modLoc("error_update");
-	public static final ResourceLocation GUI_UPDATE = ModUtil.modLoc("gui_update");
-	public static final ResourceLocation GUI_FILTER_UPDATE = ModUtil.modLoc("gui_filter_update");
-	public static final ResourceLocation GUI_LAYOUT_SELECT = ModUtil.modLoc("gui_layout_select");
-	public static final ResourceLocation GUI_ENERGY = ModUtil.modLoc("gui_energy");
-	public static final ResourceLocation SOCKET_UPDATE = ModUtil.modLoc("socket_update");
+	public static final ResourceLocation ERROR_UPDATE = ForestryConstants.forestry("error_update");
+	public static final ResourceLocation GUI_UPDATE = ForestryConstants.forestry("gui_update");
+	public static final ResourceLocation GUI_LAYOUT_SELECT = ForestryConstants.forestry("gui_layout_select");
+	public static final ResourceLocation GUI_ENERGY = ForestryConstants.forestry("gui_energy");
+	public static final ResourceLocation SOCKET_UPDATE = ForestryConstants.forestry("socket_update");
 	// Core Tile Entities
-	public static final ResourceLocation TILE_FORESTRY_UPDATE = ModUtil.modLoc("tile_forestry_update");
-	public static final ResourceLocation ITEMSTACK_DISPLAY = ModUtil.modLoc("itemstack_display");
-	public static final ResourceLocation FX_SIGNAL = ModUtil.modLoc("fx_signal");
-	public static final ResourceLocation TANK_LEVEL_UPDATE = ModUtil.modLoc("tank_level_update");
+	public static final ResourceLocation TILE_FORESTRY_UPDATE = ForestryConstants.forestry("tile_forestry_update");
+	public static final ResourceLocation ITEMSTACK_DISPLAY = ForestryConstants.forestry("itemstack_display");
+	public static final ResourceLocation FX_SIGNAL = ForestryConstants.forestry("fx_signal");
+	public static final ResourceLocation TANK_LEVEL_UPDATE = ForestryConstants.forestry("tank_level_update");
 	// Core Genome
-	public static final ResourceLocation GENOME_TRACKER_UPDATE = ModUtil.modLoc("genome_tracker_update");
+	public static final ResourceLocation GENOME_TRACKER_UPDATE = ForestryConstants.forestry("genome_tracker_update");
 	// Factory
-	public static final ResourceLocation WORKTABLE_MEMORY_UPDATE = ModUtil.modLoc("worktable_memory_update");
-	public static final ResourceLocation WORKTABLE_CRAFTING_UPDATE = ModUtil.modLoc("worktable_crafting_update");
+	public static final ResourceLocation WORKTABLE_MEMORY_UPDATE = ForestryConstants.forestry("worktable_memory_update");
+	public static final ResourceLocation WORKTABLE_CRAFTING_UPDATE = ForestryConstants.forestry("worktable_crafting_update");
 	// Apiculture
-	public static final ResourceLocation TILE_FORESTRY_ACTIVE = ModUtil.modLoc("tile_forestry_active");
-	public static final ResourceLocation BEE_LOGIC_ACTIVE = ModUtil.modLoc("bee_logic_active");
-	public static final ResourceLocation HABITAT_BIOME_POINTER = ModUtil.modLoc("habitat_biome_pointer");
-	public static final ResourceLocation IMPRINT_SELECTION_RESPONSE = ModUtil.modLoc("imprint_selection_response");
-	public static final ResourceLocation ALVERAY_CONTROLLER_CHANGE = ModUtil.modLoc("alveray_controller_change");
+	public static final ResourceLocation TILE_FORESTRY_ACTIVE = ForestryConstants.forestry("tile_forestry_active");
+	public static final ResourceLocation BEE_LOGIC_ACTIVE = ForestryConstants.forestry("bee_logic_active");
+	public static final ResourceLocation HABITAT_BIOME_POINTER = ForestryConstants.forestry("habitat_biome_pointer");
+	public static final ResourceLocation ALVERAY_CONTROLLER_CHANGE = ForestryConstants.forestry("alveray_controller_change");
 	// Arboriculture
-	public static final ResourceLocation RIPENING_UPDATE = ModUtil.modLoc("ripening_update");
+	public static final ResourceLocation RIPENING_UPDATE = ForestryConstants.forestry("ripening_update");
 	// Mail
-	public static final ResourceLocation TRADING_ADDRESS_RESPONSE = ModUtil.modLoc("trading_address_response");
-	public static final ResourceLocation LETTER_INFO_RESPONSE_PLAYER = ModUtil.modLoc("letter_info_response_player");
-	public static final ResourceLocation LETTER_INFO_RESPONSE_TRADER = ModUtil.modLoc("letter_info_response_trader");
-	public static final ResourceLocation POBOX_INFO_RESPONSE = ModUtil.modLoc("pobox_info_response");
+	public static final ResourceLocation TRADING_ADDRESS_RESPONSE = ForestryConstants.forestry("trading_address_response");
+	public static final ResourceLocation LETTER_INFO_RESPONSE_PLAYER = ForestryConstants.forestry("letter_info_response_player");
+	public static final ResourceLocation LETTER_INFO_RESPONSE_TRADER = ForestryConstants.forestry("letter_info_response_trader");
+	public static final ResourceLocation POBOX_INFO_RESPONSE = ForestryConstants.forestry("pobox_info_response");
 	// Climate
-	public static final ResourceLocation UPDATE_CLIMATE = ModUtil.modLoc("update_climate");
-	public static final ResourceLocation CLIMATE_LISTENER_UPDATE = ModUtil.modLoc("climate_listener_update");
-	public static final ResourceLocation CLIMATE_PLAYER = ModUtil.modLoc("climate_player");
+	public static final ResourceLocation UPDATE_CLIMATE = ForestryConstants.forestry("update_climate");
+	public static final ResourceLocation CLIMATE_LISTENER_UPDATE = ForestryConstants.forestry("climate_listener_update");
+	public static final ResourceLocation CLIMATE_PLAYER = ForestryConstants.forestry("climate_player");
 	// Sorting
-	public static final ResourceLocation GUI_UPDATE_FILTER = ModUtil.modLoc("gui_update_filter");
+	public static final ResourceLocation GUI_UPDATE_FILTER = ForestryConstants.forestry("gui_update_filter");
 	// JEI
-	public static final ResourceLocation RECIPE_TRANSFER_UPDATE = ModUtil.modLoc("recipe_transfer_update");
+	public static final ResourceLocation RECIPE_TRANSFER_UPDATE = ForestryConstants.forestry("recipe_transfer_update");
 }

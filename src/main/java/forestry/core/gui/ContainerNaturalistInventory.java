@@ -17,14 +17,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerListener;
 
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.features.CoreMenuTypes;
 import forestry.core.gui.slots.SlotFilteredInventory;
 import forestry.core.tiles.IFilterSlotDelegate;
 import forestry.core.tiles.TileNaturalistChest;
 import forestry.core.tiles.TileUtil;
-
-import genetics.api.individual.IIndividual;
 
 public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistChest> implements IGuiSelectable, INaturalistMenu {
 	public static final int MAX_PAGE = 5;
@@ -63,8 +61,8 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 	}
 
 	@Override
-	public IForestrySpeciesRoot<IIndividual> getSpeciesRoot() {
-		return tile.getSpeciesRoot();
+	public ISpeciesType<?, ?> getSpeciesType() {
+		return tile.getSpeciesType();
 	}
 
 	@Override

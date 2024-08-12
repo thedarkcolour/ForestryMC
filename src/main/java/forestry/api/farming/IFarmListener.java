@@ -6,20 +6,22 @@
 package forestry.api.farming;
 
 import java.util.Collection;
+import java.util.List;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 
 public interface IFarmListener {
-
 	/**
 	 * Called before a crop is harvested.
 	 *
 	 * @param crop ICrop about to be harvested.
 	 * @return true to cancel further processing of this crop.
 	 */
-	boolean beforeCropHarvest(ICrop crop);
+	default boolean beforeCropHarvest(ICrop crop) {
+		return false;
+	}
 
 	/**
 	 * Called after a crop has been harvested, but before harvested items are stowed in the farms inventory.
@@ -27,29 +29,35 @@ public interface IFarmListener {
 	 * @param harvested Collection of harvested stacks. May be manipulated. Ensure removal of stacks with 0 or less items!
 	 * @param crop      Harvested {@link ICrop}
 	 */
-	void afterCropHarvest(NonNullList<ItemStack> harvested, ICrop crop);
+	default void afterCropHarvest(List<ItemStack> harvested, ICrop crop) {
+	}
 
 	/**
 	 * Called after the stack of collected items has been returned by the farm logic, but before it is added to the farm's pending queue.
 	 *
 	 * @param collected Collection of collected stacks. May be manipulated. Ensure removal of stacks with 0 or less items!
 	 */
-	void hasCollected(NonNullList<ItemStack> collected, IFarmLogic logic);
+	default void hasCollected(List<ItemStack> collected, IFarmLogic logic) {
+	}
 
 	/**
 	 * Called after farmland has successfully been cultivated by a farm logic.
 	 */
-	void hasCultivated(IFarmLogic logic, BlockPos pos, FarmDirection direction, int extent);
+	default void hasCultivated(IFarmLogic logic, BlockPos pos, Direction direction, int extent) {
+	}
 
 	/**
 	 * Called after the stack of harvested crops has been returned by the farm logic, but before it is added to the farm's pending queue.
 	 */
-	void hasScheduledHarvest(Collection<ICrop> harvested, IFarmLogic logic, BlockPos pos, FarmDirection direction, int extent);
+	default void hasScheduledHarvest(Collection<ICrop> harvested, IFarmLogic logic, BlockPos pos, Direction direction, int extent) {
+	}
 
 	/**
 	 * Can be used to cancel farm task on a per side/{@link IFarmLogic} basis.
 	 *
 	 * @return true to skip any work action on the given logic and direction for this work cycle.
 	 */
-	boolean cancelTask(IFarmLogic logic, FarmDirection direction);
+	default boolean cancelTask(IFarmLogic logic, Direction direction) {
+		return false;
+	}
 }

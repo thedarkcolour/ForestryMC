@@ -11,10 +11,15 @@ public interface IJubilanceFactory {
 	/**
 	 * The default Jubilance Provider is satisfied when the humidity and temperature are ideal for the bee.
 	 */
-	IJubilanceProvider getDefault();
+	IBeeJubilance getDefault();
+
+	/**
+	 * The jubilance provider for bees who prefer not to live near other creatures (other bees are fine).
+	 */
+	IBeeJubilance getHermit();
 
 	/**
 	 * The Requires Resource Jubilance Provider is satisfied when a specific block is under the hive.
 	 */
-	IJubilanceProvider getRequiresResource(BlockState... acceptedBlockStates);
+	IBeeJubilance getRequiresResource(BlockState... acceptedBlockStates);
 }

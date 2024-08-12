@@ -13,33 +13,33 @@ package forestry.farming.logic;
 import java.util.Collection;
 import java.util.Stack;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.core.features.CoreBlocks;
 import forestry.farming.logic.crops.CropPeat;
 
 public class FarmLogicPeat extends FarmLogicWatered {
-	public FarmLogicPeat(IFarmProperties properties, boolean isManual) {
+	public FarmLogicPeat(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing housing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level level, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
 		Stack<ICrop> crops = new Stack<>();
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos, direction, i);
-			if (!world.hasChunkAt(position)) {
+			if (!level.hasChunkAt(position)) {
 				return crops;
 			}
-			BlockState blockState = world.getBlockState(position);
+			BlockState blockState = level.getBlockState(position);
 			if (CoreBlocks.PEAT.blockEqual(blockState)) {
-				crops.push(new CropPeat(world, position));
+				crops.push(new CropPeat(level, position));
 			}
 		}
 		return crops;

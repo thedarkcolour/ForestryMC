@@ -14,40 +14,39 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-
 import forestry.api.climate.IClimateProvider;
-import forestry.api.core.EnumTemperature;
+import forestry.api.genetics.ClimateHelper;
+import forestry.api.genetics.IMutation;
+import forestry.api.genetics.IGenome;
+
+import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IMutationCondition;
-import forestry.api.genetics.alleles.AlleleManager;
 
 public class MutationConditionTemperature implements IMutationCondition {
+	private final TemperatureType minTemperature;
+	private final TemperatureType maxTemperature;
 
-	private final EnumTemperature minTemperature;
-	private final EnumTemperature maxTemperature;
-
-	public MutationConditionTemperature(EnumTemperature minTemperature, EnumTemperature maxTemperature) {
+	public MutationConditionTemperature(TemperatureType minTemperature, TemperatureType maxTemperature) {
 		this.minTemperature = minTemperature;
 		this.maxTemperature = maxTemperature;
 	}
 
 	@Override
-	public float getChance(Level world, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
-		EnumTemperature biomeTemperature = climate.getTemperature();
+	public float modifyChance(Level level, BlockPos pos, IMutation<?> mutation, IGenome genome0, IGenome genome1, IClimateProvider climate, float currentChance) {
+		TemperatureType biomeTemperature = climate.temperature();
 
 		if (biomeTemperature.ordinal() < minTemperature.ordinal() || biomeTemperature.ordinal() > maxTemperature.ordinal()) {
-			return 0;
+			return 0f;
 		}
-		return 1;
+		return currentChance;
 	}
 
 	@Override
 	public Component getDescription() {
-		Component minString = AlleleManager.climateHelper.toDisplay(minTemperature);
+		Component minString = ClimateHelper.toDisplay(minTemperature);
 
 		if (minTemperature != maxTemperature) {
-			Component maxString = AlleleManager.climateHelper.toDisplay(maxTemperature);
+			Component maxString = ClimateHelper.toDisplay(maxTemperature);
 			return Component.translatable("for.mutation.condition.temperature.range", minString, maxString);
 		} else {
 			return Component.translatable("for.mutation.condition.temperature.single", minString);

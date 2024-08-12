@@ -2,87 +2,61 @@ package forestry.apiculture;
 
 import java.util.Locale;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.EnumBeeType;
-import forestry.api.genetics.alleles.AlleleManager;
-import forestry.api.genetics.filter.IFilterData;
-import forestry.api.genetics.filter.IFilterRule;
+import forestry.api.apiculture.genetics.BeeLifeStage;
+import forestry.api.client.ForestrySprites;
+import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.genetics.filter.FilterData;
 import forestry.api.genetics.filter.IFilterRuleType;
-import forestry.core.render.TextureManagerForestry;
 
 public enum ApicultureFilterRuleType implements IFilterRuleType {
-	BEE {
+	BEE(ForestrySprites.ANALYZER_BEE) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent();
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return true;
 		}
 	},
-	DRONE {
+	DRONE(ForestrySprites.ANALYZER_DRONE) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.getType() == EnumBeeType.DRONE;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == BeeLifeStage.DRONE;
 		}
 	},
-	PRINCESS {
+	PRINCESS(ForestrySprites.ANALYZER_PRINCESS) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.getType() == EnumBeeType.PRINCESS;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == BeeLifeStage.PRINCESS;
 		}
 	},
-	QUEEN {
+	QUEEN(ForestrySprites.ANALYZER_QUEEN) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.getType() == EnumBeeType.QUEEN;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == BeeLifeStage.QUEEN;
 		}
 	};
 
-	private final String uid;
+	private final String id;
+	private final ResourceLocation sprite;
 
-	ApicultureFilterRuleType() {
-		this.uid = "forestry.apiculture." + name().toLowerCase(Locale.ENGLISH);
-	}
-
-	public static void init() {
-		for (ApicultureFilterRuleType rule : values()) {
-			AlleleManager.filterRegistry.registerFilter(rule);
-		}
+	ApicultureFilterRuleType(ResourceLocation sprite) {
+		this.id = "forestry.apiculture." + name().toLowerCase(Locale.ENGLISH);
+		this.sprite = sprite;
 	}
 
 	@Override
-	public void addLogic(IFilterRule logic) {
+	public ResourceLocation getSprite() {
+		return this.sprite;
 	}
 
 	@Override
-	public boolean isContainer() {
-		return false;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public TextureAtlasSprite getSprite() {
-		return TextureManagerForestry.INSTANCE.getDefault("analyzer/" + name().toLowerCase(Locale.ENGLISH));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public ResourceLocation getTextureMap() {
-		return TextureManagerForestry.LOCATION_FORESTRY_TEXTURE;
+	public ResourceLocation getSpeciesTypeId() {
+		return ForestrySpeciesTypes.BEE;
 	}
 
 	@Override
-	public String getRootUID() {
-		return BeeManager.beeRoot.getUID();
-	}
-
-	@Override
-	public String getUID() {
-		return uid;
+	public String getId() {
+		return this.id;
 	}
 }

@@ -12,11 +12,10 @@ package forestry.apiculture.multiblock;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -24,56 +23,43 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.climate.IClimateControlled;
 import forestry.api.multiblock.IAlvearyComponent;
+import forestry.apiculture.blocks.BlockAlveary;
 import forestry.apiculture.blocks.BlockAlvearyType;
-import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
-import forestry.core.utils.NetworkUtil;
 import forestry.energy.EnergyHelper;
-import forestry.energy.ForestryEnergyStorage;
 import forestry.energy.EnergyTransferMode;
+import forestry.energy.ForestryEnergyStorage;
 
+// Used by Heater and Fan, which increase and decrease Temperature, respectively
 public abstract class TileAlvearyClimatiser extends TileAlveary implements IActivatable, IAlvearyComponent.Climatiser {
-
-	private static final int WORK_CYCLES = 1;
-	private static final int ENERGY_PER_OPERATION = 50;
-
-	protected interface IClimitiserDefinition {
-		float getChangePerTransfer();
-
-		float getBoundaryUp();
-
-		float getBoundaryDown();
-	}
+	private static final int TICKS_PER_CYCLE = 1;
+	private static final int FE_PER_OPERATION = 50;
 
 	private final ForestryEnergyStorage energyStorage;
 	private final LazyOptional<ForestryEnergyStorage> energyCap;
-
-	private final IClimitiserDefinition definition;
+	private final byte temperatureSteps;
 
 	private int workingTime = 0;
 
-	// CLIENT
-	private boolean active;
-
-	protected TileAlvearyClimatiser(BlockAlvearyType alvearyType, BlockPos pos, BlockState state, IClimitiserDefinition definition) {
+	protected TileAlvearyClimatiser(BlockAlvearyType alvearyType, BlockPos pos, BlockState state, byte temperatureSteps) {
 		super(alvearyType, pos, state);
-		this.definition = definition;
+		this.temperatureSteps = temperatureSteps;
 
 		this.energyStorage = new ForestryEnergyStorage(1000, 2000, EnergyTransferMode.RECEIVE);
-		this.energyCap = LazyOptional.of(() -> energyStorage);
+		this.energyCap = LazyOptional.of(() -> this.energyStorage);
 	}
 
 	/* UPDATING */
 	@Override
 	public void changeClimate(int tick, IClimateControlled climateControlled) {
-		if (workingTime < 20 && EnergyHelper.consumeEnergyToDoWork(energyStorage, WORK_CYCLES, ENERGY_PER_OPERATION)) {
+		if (workingTime < 20 && EnergyHelper.consumeEnergyToDoWork(energyStorage, TICKS_PER_CYCLE, FE_PER_OPERATION)) {
 			// one tick of work for every 10 RF
-			workingTime += ENERGY_PER_OPERATION / 10;
+			workingTime += FE_PER_OPERATION / 10;
 		}
 
 		if (workingTime > 0) {
 			workingTime--;
-			climateControlled.addTemperatureChange(definition.getChangePerTransfer(), definition.getBoundaryDown(), definition.getBoundaryUp());
+			climateControlled.addTemperatureChange(this.temperatureSteps);
 		}
 
 		setActive(workingTime > 0);
@@ -85,7 +71,6 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 		super.load(compoundNBT);
 		energyStorage.read(compoundNBT);
 		workingTime = compoundNBT.getInt("Heating");
-		setActive(workingTime > 0);
 	}
 
 	@Override
@@ -99,38 +84,23 @@ public abstract class TileAlvearyClimatiser extends TileAlveary implements IActi
 	@Override
 	protected void encodeDescriptionPacket(CompoundTag packetData) {
 		super.encodeDescriptionPacket(packetData);
-		packetData.putBoolean("Active", active);
 	}
 
 	@Override
 	protected void decodeDescriptionPacket(CompoundTag packetData) {
 		super.decodeDescriptionPacket(packetData);
-		setActive(packetData.getBoolean("Active"));
 	}
 
 	/* IActivatable */
 	@Override
 	public boolean isActive() {
-		return active;
+		return getBlockState().getValue(BlockAlveary.STATE) == BlockAlveary.State.ON;
 	}
 
 	@Override
 	public void setActive(boolean active) {
-		if (this.active == active) {
-			return;
-		}
-
-		this.active = active;
-
-		if (level != null) {
-			if (level.isClientSide) {
-				//TODO
-				BlockPos pos = getBlockPos();
-				Minecraft.getInstance().levelRenderer.setSectionDirty(pos.getX(), pos.getY(), pos.getZ());
-				//				world.markForRerender(getPos());
-			} else {
-				NetworkUtil.sendNetworkPacket(new PacketActiveUpdate(this), worldPosition, level);
-			}
+		if (isActive() != active) {
+			this.level.setBlockAndUpdate(this.worldPosition, getBlockState().setValue(BlockAlveary.STATE, active ? BlockAlveary.State.ON : BlockAlveary.State.OFF));
 		}
 	}
 

@@ -10,128 +10,79 @@
  ******************************************************************************/
 package forestry.lepidopterology;
 
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.function.Consumer;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.api.distmarker.Dist;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.lepidopterology.ButterflyManager;
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.modules.ForestryModule;
-import forestry.core.ClientsideCode;
-import forestry.core.ModuleCore;
-import forestry.core.config.Constants;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.lepidopterology.commands.CommandButterfly;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyEntities;
 import forestry.lepidopterology.features.LepidopterologyFeatures;
-import forestry.lepidopterology.genetics.ButterflyDefinition;
-import forestry.lepidopterology.genetics.ButterflyFactory;
-import forestry.lepidopterology.genetics.ButterflyMutationFactory;
-import forestry.lepidopterology.genetics.MothDefinition;
-import forestry.lepidopterology.genetics.alleles.ButterflyAlleles;
-import forestry.lepidopterology.proxy.ProxyLepidopterology;
+import forestry.lepidopterology.proxy.LepidopterologyClientHandler;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
-import forestry.modules.ISidedModuleHandler;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.LEPIDOPTEROLOGY, name = "Lepidopterology", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.lepidopterology.description")
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+
+@ForestryModule
 public class ModuleLepidopterology extends BlankForestryModule {
-
-	public static final ProxyLepidopterology PROXY = FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.newProxyLepidopterology() : new ProxyLepidopterology();
-	private static final String CONFIG_CATEGORY = "lepidopterology";
 	public static int maxDistance = 64;
 	private static boolean allowPollination = true;
-	public static final Map<String, Float> spawnRaritys = Maps.newHashMap();
-	private static boolean spawnButterflysFromLeaves = true;
+	public static final Object2FloatOpenHashMap<String> spawnRarities = new Object2FloatOpenHashMap<>();
+	public static boolean spawnButterflysFromLeaves = true;
 	private static boolean generateCocoons = false;
 	private static float generateCocoonsAmount = 1.0f;
 	private static float serumChance = 0.55f;
 	private static float secondSerumChance = 0;
 
-	public ModuleLepidopterology() {
-		MinecraftForge.EVENT_BUS.addListener(ForgeEvents::onEntityTravelToDimension);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onAttributeCreate);
+	@Override
+	public void registerEvents(IEventBus modBus) {
+		MinecraftForge.EVENT_BUS.addListener(ModuleLepidopterology::onEntityTravelToDimension);
+		modBus.addListener(ModuleLepidopterology::onAttributeCreate);
+	}
 
-		if (generateCocoons) {
-			if (generateCocoonsAmount > 0.0) {
-				IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-				LepidopterologyFeatures.FEATURES.register(modEventBus);
-				LepidopterologyFeatures.CONFIGURED_FEATURES.register(modEventBus);
-				LepidopterologyFeatures.PLACED_FEATURES.register(modEventBus);
-			}
+	public static void onEntityTravelToDimension(EntityTravelToDimensionEvent event) {
+		if (event.getEntity() instanceof EntityButterfly) {
+			event.setCanceled(true);
 		}
 	}
 
-	@Override
-	public void setupAPI() {
-		ButterflyManager.butterflyFactory = new ButterflyFactory();
-		ButterflyManager.butterflyMutationFactory = new ButterflyMutationFactory();
+	public static void onAttributeCreate(EntityAttributeCreationEvent event) {
+		event.put(LepidopterologyEntities.BUTTERFLY.entityType(), LepidopterologyEntities.BUTTERFLY.createAttributes().build());
+	}
+
+	public static void onCommonSetup(FMLCommonSetupEvent event) {
+
 	}
 
 	@Override
-	public void preInit() {
-		ButterflyDefinition.preInit();
-		MothDefinition.preInit();
-
-		PROXY.preInitializeRendering();
-
-		LepidopterologyFilterRule.init();
-		LepidopterologyFilterRuleType.init();
+	public ResourceLocation getId() {
+		return ForestryModuleIds.LEPIDOPTEROLOGY;
 	}
 
 	@Override
-	public Set<ResourceLocation> getDependencyUids() {
-		Set<ResourceLocation> dependencyUids = new HashSet<>();
-		dependencyUids.add(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.CORE));
-		dependencyUids.add(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.ARBORICULTURE));
-		return dependencyUids;
+	public List<ResourceLocation> getModuleDependencies() {
+		return List.of(ForestryModuleIds.CORE, ForestryModuleIds.ARBORICULTURE);
 	}
 
 	@Override
-	public void doInit() {
-		ModuleCore.rootCommand.then(CommandButterfly.register());
-
-		MothDefinition.initMoths();
-		ButterflyDefinition.initButterflies();
-		ButterflyAlleles.createLoot();
-
-		if (spawnButterflysFromLeaves) {
-			TreeManager.treeRoot.registerLeafTickHandler(new ButterflySpawner());
-		}
-
-		//TODO recipes
-		//		RecipeSorter.register("forestry:lepidopterologymating", MatingRecipe.class, RecipeSorter.Category.SHAPELESS,
-		//				"before:minecraft:shapeless");
+	public void addToRootCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
+		command.then(CommandButterfly.register());
 	}
-
-	@Override
-	public void postInit() {
-	}
-
-	@Override
-	public void registerRecipes() {
-		//		ForgeRegistries.RECIPES.register(new MatingRecipe());    //TODO - JSON this?
-	}
-	//
-	//	@Override
-	//	public void getHiddenItems(List<ItemStack> hiddenItems) {
-	//		// cocoon itemBlock is different from the normal item
-	//		hiddenItems.add(new ItemStack(blocks.cocoon));
-	//		hiddenItems.add(new ItemStack(blocks.solidCocoon));
-	//	}
 
 	public static boolean isPollinationAllowed() {
 		return allowPollination;
@@ -158,19 +109,7 @@ public class ModuleLepidopterology extends BlankForestryModule {
 	}
 
 	@Override
-	public ISidedModuleHandler getModuleHandler() {
-		return PROXY;
-	}
-
-	private static class ForgeEvents {
-		public static void onEntityTravelToDimension(EntityTravelToDimensionEvent event) {
-			if (event.getEntity() instanceof EntityButterfly) {
-				event.setCanceled(true);
-			}
-		}
-
-		public static void onAttributeCreate(EntityAttributeCreationEvent event) {
-			event.put(LepidopterologyEntities.BUTTERFLY.entityType(), LepidopterologyEntities.BUTTERFLY.createAttributes().build());
-		}
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new LepidopterologyClientHandler());
 	}
 }

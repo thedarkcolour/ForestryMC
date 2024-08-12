@@ -3,18 +3,19 @@ package forestry.farming.logic.farmables;
 import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
-import forestry.api.farming.IFarmableInfo;
 import forestry.core.utils.BlockUtil;
 import forestry.farming.logic.crops.CropDestroy;
 
@@ -30,33 +31,33 @@ public class FarmableAgingCrop implements IFarmable {
 	protected final Integer replantAge;
 	protected final ItemStack[] products;
 
-	public FarmableAgingCrop(ItemStack germling, Block cropBlock, Property<Integer> ageProperty, int minHarvestAge) {
+	public FarmableAgingCrop(Item germling, Block cropBlock, Property<Integer> ageProperty, int minHarvestAge) {
 		this(germling, cropBlock, new ItemStack[0], ageProperty, minHarvestAge, null);
 	}
 
-	public FarmableAgingCrop(ItemStack germling, Block cropBlock, Property<Integer> ageProperty, int minHarvestAge, @Nullable Integer replantAge) {
+	public FarmableAgingCrop(Item germling, Block cropBlock, Property<Integer> ageProperty, int minHarvestAge, @Nullable Integer replantAge) {
 		this(germling, cropBlock, new ItemStack[0], ageProperty, minHarvestAge, replantAge);
 	}
 
-	public FarmableAgingCrop(ItemStack germling, Block cropBlock, ItemStack product, Property<Integer> ageProperty, int minHarvestAge) {
+	public FarmableAgingCrop(Item germling, Block cropBlock, ItemStack product, Property<Integer> ageProperty, int minHarvestAge) {
 		this(germling, cropBlock, new ItemStack[]{product}, ageProperty, minHarvestAge, null);
 	}
 
-	public FarmableAgingCrop(ItemStack germling, Block cropBlock, ItemStack product, Property<Integer> ageProperty, int minHarvestAge, @Nullable Integer replantAge) {
+	public FarmableAgingCrop(Item germling, Block cropBlock, ItemStack product, Property<Integer> ageProperty, int minHarvestAge, @Nullable Integer replantAge) {
 		this(germling, cropBlock, new ItemStack[]{product}, ageProperty, minHarvestAge, replantAge);
 	}
 
-	public FarmableAgingCrop(ItemStack germling, Block cropBlock, ItemStack[] products, Property<Integer> ageProperty, int minHarvestAge) {
+	public FarmableAgingCrop(Item germling, Block cropBlock, ItemStack[] products, Property<Integer> ageProperty, int minHarvestAge) {
 		this(germling, cropBlock, products, ageProperty, minHarvestAge, null);
 	}
 
-	public FarmableAgingCrop(ItemStack germling, Block cropBlock, ItemStack[] products, Property<Integer> ageProperty, int minHarvestAge, @Nullable Integer replantAge) {
+	public FarmableAgingCrop(Item germling, Block cropBlock, ItemStack[] products, Property<Integer> ageProperty, int minHarvestAge, @Nullable Integer replantAge) {
 		Preconditions.checkNotNull(germling);
 		Preconditions.checkNotNull(cropBlock);
 		Preconditions.checkNotNull(ageProperty);
 		Preconditions.checkNotNull(products);
 
-		this.germling = germling;
+		this.germling = new ItemStack(germling);
 		this.cropBlock = cropBlock;
 		this.ageProperty = ageProperty;
 		this.minHarvestAge = minHarvestAge;
@@ -98,9 +99,15 @@ public class FarmableAgingCrop implements IFarmable {
 	}
 
 	@Override
-	public void addInformation(IFarmableInfo info) {
-		info.addProducts(products);
-		info.addSeedlings(germling);
+	public void addGermlings(Consumer<ItemStack> accumulator) {
+		accumulator.accept(this.germling);
+	}
+
+	@Override
+	public void addProducts(Consumer<ItemStack> accumulator) {
+		for (ItemStack product : products) {
+			accumulator.accept(product);
+		}
 	}
 
 	@Override

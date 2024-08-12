@@ -1,5 +1,5 @@
 {
-  "type": "forestry:fermenter",
+  "type": "forestry:carpenter",
   "fermentationValue": 250,
   "fluidResource": {
     "Amount": 1000,

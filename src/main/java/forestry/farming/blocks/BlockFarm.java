@@ -36,10 +36,10 @@ import forestry.farming.tiles.TileFarmPlain;
 import forestry.farming.tiles.TileFarmValve;
 
 public class BlockFarm extends BlockStructure implements EntityBlock {
-
 	private final EnumFarmBlockType type;
 	private final EnumFarmMaterial farmMaterial;
 
+	// todo replace with boolean "is_band"
 	public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
 	public enum State implements StringRepresentable {
@@ -63,11 +63,6 @@ public class BlockFarm extends BlockStructure implements EntityBlock {
 		super(Block.Properties.of(Material.STONE).strength(1.0f));
 		this.type = type;
 		this.farmMaterial = farmMaterial;
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list) {
-		super.fillItemCategory(tab, list);
 	}
 
 	public EnumFarmBlockType getType() {

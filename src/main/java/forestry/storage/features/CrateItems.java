@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
+import forestry.api.modules.ForestryModuleIds;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.items.EnumHoneyComb;
 import forestry.apiculture.items.EnumPollenCluster;
@@ -18,14 +19,12 @@ import forestry.modules.features.FeatureItemGroup;
 import forestry.modules.features.FeatureProvider;
 import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
-import forestry.storage.ModuleCrates;
 import forestry.storage.items.ItemCrated;
 
 @FeatureProvider
 public class CrateItems {
-
 	private static final List<FeatureItem<ItemCrated>> CRATES = new ArrayList<>();
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCrates.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.STORAGE);
 
 	// TODO map of item to crate or similar?
 	public static final FeatureItem<ItemCrated> CRATE = REGISTRY.item(() -> new ItemCrated(() -> ItemStack.EMPTY), "crate");
@@ -103,7 +102,6 @@ public class CrateItems {
 	public static final FeatureItem<ItemCrated> CRATED_PROPOLIS = register(ApicultureItems.PROPOLIS.get(EnumPropolis.NORMAL), "crated_propolis");
 	public static final FeatureItem<ItemCrated> CRATED_HONEYDEW = register(ApicultureItems.HONEYDEW, "crated_honeydew");
 	public static final FeatureItem<ItemCrated> CRATED_ROYAL_JELLY = register(ApicultureItems.ROYAL_JELLY, "crated_royal_jelly");
-	// todo might be able to replace lambda with method reference
 	public static final FeatureItemGroup<ItemCrated, EnumHoneyComb> CRATED_BEE_COMBS = REGISTRY.itemGroup(comb -> new ItemCrated(() -> ApicultureItems.BEE_COMBS.get(comb).stack()), "crated_bee_comb", EnumHoneyComb.VALUES);
 
 	// TODO: Arboriculture crates (requires tags)
@@ -118,9 +116,6 @@ public class CrateItems {
 
 	static {
 		CRATES.addAll(CRATED_BEE_COMBS.getFeatures());
-	}
-
-	private CrateItems() {
 	}
 
 	private static FeatureItem<ItemCrated> register(ItemLike contained, String identifier) {

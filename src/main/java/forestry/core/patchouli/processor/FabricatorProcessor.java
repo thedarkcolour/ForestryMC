@@ -3,15 +3,15 @@ package forestry.core.patchouli.processor;
 import java.util.Arrays;
 
 import com.google.common.base.Preconditions;
-import deleteme.RegistryNameFinder;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import forestry.api.recipes.IFabricatorRecipe;
-import forestry.api.recipes.RecipeManagers;
+import forestry.core.utils.ModUtil;
+import forestry.core.utils.RecipeUtils;
+import forestry.factory.features.FactoryRecipeTypes;
 
 import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariable;
@@ -26,15 +26,9 @@ public class FabricatorProcessor implements IComponentProcessor {
 
 	@Override
 	public void setup(IVariableProvider variables) {
-		ItemStack itemStack = variables.get("item").as(ItemStack.class, ItemStack.EMPTY);
+		ItemStack stack = variables.get("item").as(ItemStack.class, ItemStack.EMPTY);
 
-		this.recipe = RecipeManagers.fabricatorManager.getRecipes(null)
-				.filter(recipe -> {
-					ItemStack result = recipe.getCraftingGridRecipe().getResultItem();
-					return itemStack.sameItem(result);
-				})
-				.findFirst()
-				.orElseThrow();
+		this.recipe = RecipeUtils.getRecipeByOutput(FactoryRecipeTypes.FABRICATOR, stack);
 	}
 
 	@Override
@@ -43,9 +37,9 @@ public class FabricatorProcessor implements IComponentProcessor {
 		if (key.equals("output")) {
 			return IVariable.from(this.recipe.getCraftingGridRecipe().getResultItem());
 		} else if (key.equals("fluid")) {
-			return IVariable.wrap(RegistryNameFinder.getRegistryName(this.recipe.getLiquid().getFluid()).toString());
+			return IVariable.wrap(ModUtil.getRegistryName(this.recipe.getResultFluid().getFluid()).toString());
 		} else if (key.equals("fluidAmount")) {
-			return IVariable.wrap(this.recipe.getLiquid().getAmount());
+			return IVariable.wrap(this.recipe.getResultFluid().getAmount());
 		} else if (key.startsWith("ingredient")) {
 			int index = Integer.parseInt(key.substring("ingredient".length()));
             if (index < 1 || index > 9) {
@@ -62,15 +56,13 @@ public class FabricatorProcessor implements IComponentProcessor {
 		} else if (key.equals("plan")) {
 			return IVariable.from(this.recipe.getPlan());
 		} else if (key.equals("metal")) {
-			if (RegistryNameFinder.getRegistryName(this.recipe.getLiquid().getFluid()).getPath().contains("glass")) {
-				return IVariable.from(new ItemStack(ForgeRegistries.ITEMS.getValue(
-						new ResourceLocation("minecraft:sand")
-				)));
+			if (ModUtil.getRegistryName(this.recipe.getResultFluid().getFluid()).getPath().contains("glass")) {
+				return IVariable.from(new ItemStack(Items.SAND));
 			}
 
-			return RecipeManagers.fabricatorSmeltingManager.getRecipes(null)
-					.filter(r -> r.getProduct().isFluidEqual(this.recipe.getLiquid()))
-					.flatMap(r -> Arrays.stream(r.getResource().getItems()))
+			return RecipeUtils.getRecipes(RecipeUtils.getRecipeManager(), FactoryRecipeTypes.FABRICATOR_SMELTING)
+					.filter(recipe -> recipe.getResultFluid().isFluidEqual(this.recipe.getResultFluid()))
+					.flatMap(r -> Arrays.stream(r.getInput().getItems()))
 					.findFirst()
 					.map(IVariable::from)
 					.orElseGet(IVariable::empty);

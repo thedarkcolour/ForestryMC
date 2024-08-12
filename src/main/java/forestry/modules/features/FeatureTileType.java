@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -14,11 +15,9 @@ import net.minecraftforge.registries.RegistryObject;
 public class FeatureTileType<T extends BlockEntity> extends ModFeature implements ITileTypeFeature<T> {
 	private final RegistryObject<BlockEntityType<T>> blockEntityObject;
 
-	public FeatureTileType(IFeatureRegistry registry, String moduleID, String identifier, BlockEntityType.BlockEntitySupplier<T> constructorTileEntity, Supplier<Collection<? extends Block>> validBlocks) {
-		super(moduleID, registry.getModId(), identifier);
-		this.blockEntityObject = registry.getRegistry(Registry.BLOCK_ENTITY_TYPE_REGISTRY).register(identifier, () -> {
-			return BlockEntityType.Builder.of(constructorTileEntity, validBlocks.get().toArray(Block[]::new)).build(null);
-		});
+	public FeatureTileType(IFeatureRegistry registry, ResourceLocation moduleId, String name, BlockEntityType.BlockEntitySupplier<T> constructorTileEntity, Supplier<Collection<? extends Block>> validBlocks) {
+		super(moduleId, name);
+		this.blockEntityObject = registry.getRegistry(Registry.BLOCK_ENTITY_TYPE_REGISTRY).register(name, () -> BlockEntityType.Builder.of(constructorTileEntity, validBlocks.get().toArray(Block[]::new)).build(null));
 	}
 
 	@Override

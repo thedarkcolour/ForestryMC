@@ -39,9 +39,7 @@ public class ItemHoneyComb extends ItemForestry implements IColoredItem {
 		List<EnumHoneyComb> validCombs = new ArrayList<>(EnumHoneyComb.VALUES.length);
 		for (int i = 0; i < EnumHoneyComb.VALUES.length; i++) {
 			EnumHoneyComb honeyComb = EnumHoneyComb.get(i);
-			if (!honeyComb.isSecret() || includeSecret) {
-				validCombs.add(honeyComb);
-			}
+			validCombs.add(honeyComb);
 		}
 
 		if (validCombs.isEmpty()) {

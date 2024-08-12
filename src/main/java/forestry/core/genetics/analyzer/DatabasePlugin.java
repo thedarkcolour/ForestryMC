@@ -1,11 +1,10 @@
 package forestry.core.genetics.analyzer;
 
+import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.genetics.gatgets.IDatabaseTab;
 
-import genetics.api.individual.IIndividual;
-
-public abstract class DatabasePlugin<I extends IIndividual> implements IDatabasePlugin<I> {
+public abstract class DatabasePlugin<I extends IIndividual> implements IDatabasePlugin {
 	private final IDatabaseTab<I> activeTab;
 	private final IDatabaseTab<I> inactiveTab;
 	private final IDatabaseTab<?> productsTab;

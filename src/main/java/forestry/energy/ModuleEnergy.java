@@ -1,52 +1,38 @@
 package forestry.energy;
 
-import net.minecraft.client.gui.screens.MenuScreens;
+import java.util.function.Consumer;
+
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.fuels.EngineBronzeFuel;
 import forestry.api.fuels.EngineCopperFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.api.modules.ForestryModule;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.utils.datastructures.FluidMap;
 import forestry.core.utils.datastructures.ItemStackMap;
-import forestry.energy.features.EnergyMenus;
-import forestry.energy.screen.BiogasEngineScreen;
-import forestry.energy.screen.PeatEngineScreen;
+import forestry.energy.client.EnergyClientHandler;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.ENERGY, name = "Energy", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.energy.description")
+@ForestryModule
 public class ModuleEnergy extends BlankForestryModule {
-
 	@Override
-	public void registerGuiFactories() {
-		MenuScreens.register(EnergyMenus.ENGINE_BIOGAS.menuType(), BiogasEngineScreen::new);
-		MenuScreens.register(EnergyMenus.ENGINE_PEAT.menuType(), PeatEngineScreen::new);
+	public ResourceLocation getId() {
+		return ForestryModuleIds.ENERGY;
 	}
 
 	@Override
-	public void disabledSetupAPI() {
-		setupFuelManager();
-	}
-
-	@Override
-	public void setupAPI() {
-		setupFuelManager();
-	}
-
-	private static void setupFuelManager() {
+	public void setupApi() {
 		FuelManager.biogasEngineFuel = new FluidMap<>();
-
 		FuelManager.peatEngineFuel = new ItemStackMap<>();
-	}
 
-	@Override
-	public void preInit() {
 		// Biogas Engine
 		Fluid biomass = ForestryFluids.BIOMASS.getFluid();
 		FuelManager.biogasEngineFuel.put(biomass, new EngineBronzeFuel(biomass,
@@ -77,5 +63,10 @@ public class ModuleEnergy extends BlankForestryModule {
 
 		ItemStack bituminousPeat = CoreItems.BITUMINOUS_PEAT.stack();
 		FuelManager.peatEngineFuel.put(bituminousPeat, new EngineCopperFuel(bituminousPeat, Constants.ENGINE_COPPER_FUEL_VALUE_BITUMINOUS_PEAT, Constants.ENGINE_COPPER_CYCLE_DURATION_BITUMINOUS_PEAT));
+	}
+
+	@Override
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new EnergyClientHandler());
 	}
 }

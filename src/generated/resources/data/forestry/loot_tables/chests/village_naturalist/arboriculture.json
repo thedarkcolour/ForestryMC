@@ -13,7 +13,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:tree_lime"
+              "species_id": "forestry:tree_lime",
+              "type_id": "forestry:tree_species"
             },
             {
               "add": false,
@@ -32,7 +33,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:tree_cherry"
+              "species_id": "forestry:tree_cherry",
+              "type_id": "forestry:tree_species"
             },
             {
               "add": false,
@@ -51,7 +53,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:tree_larch"
+              "species_id": "forestry:tree_larch",
+              "type_id": "forestry:tree_species"
             },
             {
               "add": false,
@@ -70,7 +73,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:tree_teak"
+              "species_id": "forestry:tree_teak",
+              "type_id": "forestry:tree_species"
             }
           ],
           "name": "forestry:sapling"
@@ -80,7 +84,8 @@
           "functions": [
             {
               "function": "forestry:set_species_nbt",
-              "speciesUid": "forestry:tree_padauk"
+              "species_id": "forestry:tree_padauk",
+              "type_id": "forestry:tree_species"
             }
           ],
           "name": "forestry:sapling"

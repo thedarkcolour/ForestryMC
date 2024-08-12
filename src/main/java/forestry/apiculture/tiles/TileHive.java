@@ -17,10 +17,10 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySelector;
@@ -32,7 +32,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -40,29 +39,26 @@ import net.minecraft.world.phys.Vec3;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.BeeManager;
+import forestry.api.apiculture.ForestryBeeSpecies;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.apiculture.hives.IHiveRegistry;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.hives.IHiveTile;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-import forestry.api.core.ForestryAPI;
+import forestry.api.core.HumidityType;
 import forestry.api.core.IErrorLogic;
+import forestry.api.core.TemperatureType;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.apiculture.ModuleApiculture;
 import forestry.apiculture.WorldgenBeekeepingLogic;
 import forestry.apiculture.blocks.BlockBeeHive;
 import forestry.apiculture.features.ApicultureTiles;
-import forestry.apiculture.genetics.BeeDefinition;
-import forestry.apiculture.genetics.alleles.AlleleEffect;
-import forestry.core.config.Config;
+import forestry.apiculture.genetics.effects.ThrottledBeeEffect;
 import forestry.core.inventory.InventoryAdapter;
 import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
@@ -70,10 +66,8 @@ import forestry.core.utils.DamageSourceForestry;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.TickHelper;
-
-import genetics.api.GeneticHelper;
-import genetics.api.individual.IGenome;
 
 public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IBeeHousing {
 	private static final DamageSource damageSourceBeeHive = new DamageSourceForestry("bee.hive");
@@ -83,7 +77,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 	private final WorldgenBeekeepingLogic beeLogic;
 	private final IErrorLogic errorLogic;
 	private final Predicate<LivingEntity> beeTargetPredicate;
-	private final TickHelper tickHelper = new TickHelper();
+	private final TickHelper tickHelper = new TickHelper(0);
 
 	@Nullable
 	private IBee containedBee = null;
@@ -93,14 +87,15 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 
 	public TileHive(BlockPos pos, BlockState state) {
 		super(ApicultureTiles.HIVE.tileType(), pos, state);
-		inventory = new HiveBeeHousingInventory(this);
-		beeLogic = new WorldgenBeekeepingLogic(this);
-		errorLogic = ForestryAPI.errorStateRegistry.createErrorLogic();
-		beeTargetPredicate = new BeeTargetPredicate(this);
+
+		this.inventory = new HiveBeeHousingInventory(this);
+		this.beeLogic = new WorldgenBeekeepingLogic(this);
+		this.errorLogic = IForestryApi.INSTANCE.getErrorManager().createErrorLogic();
+		this.beeTargetPredicate = new BeeTargetPredicate(this);
 	}
 
 	public void tick() {
-		if (Config.generateBeehivesDebug) {
+		if (false) {
 			return;
 		}
 		tickHelper.onTick();
@@ -118,7 +113,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 				if (calmTime == 0) {
 					if (canWork) {
 						if (angry && ModuleApiculture.hiveDamageOnAttack && (level.getLevelData().getDifficulty() != Difficulty.PEACEFUL || ModuleApiculture.hivesDamageOnPeaceful)) {
-							AABB boundingBox = AlleleEffect.getBounding(getContainedBee().getGenome(), this);
+							AABB boundingBox = ThrottledBeeEffect.getBounding(this, getContainedBee().getGenome());
 							List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, boundingBox, beeTargetPredicate);
 							if (!entities.isEmpty()) {
 								Collections.shuffle(entities);
@@ -141,37 +136,20 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 
 	public IBee getContainedBee() {
 		if (this.containedBee == null) {
-			IGenome beeGenome = null;
 			ItemStack containedBee = contained.getItem(0);
 			if (!containedBee.isEmpty()) {
-				IBee bee = BeeManager.beeRoot.create(containedBee);
-				if (bee != null) {
-					beeGenome = bee.getGenome();
+				if (IIndividualHandlerItem.getIndividual(containedBee) instanceof IBee bee) {
+					return this.containedBee = bee;
 				}
 			}
-			if (beeGenome == null) {
-				beeGenome = getGenomeFromBlock();
+			IBeeSpecies primarySpecies = SpeciesUtil.BEE_TYPE.get().getSpeciesSafe(((BlockBeeHive) getBlockState().getBlock()).getSpeciesId());
+			if (primarySpecies != null) {
+				return this.containedBee = primarySpecies.createIndividual();
 			}
-			if (beeGenome == null) {
-				beeGenome = BeeDefinition.FOREST.getGenome();
-			}
-			this.containedBee = BeeManager.beeRoot.create(beeGenome);
+			return this.containedBee = SpeciesUtil.getBeeSpecies(ForestryBeeSpecies.FOREST).createIndividual();
+		} else {
+			return this.containedBee;
 		}
-		return this.containedBee;
-	}
-
-	@Nullable
-	private IGenome getGenomeFromBlock() {
-		if (level.hasChunkAt(worldPosition)) {
-			BlockState blockState = level.getBlockState(worldPosition);
-			Block block = blockState.getBlock();
-			if (block instanceof BlockBeeHive) {
-				IHiveRegistry.HiveType hiveType = ((BlockBeeHive) block).getType();
-				String speciesUid = hiveType.getSpeciesUid();
-				return GeneticHelper.genomeFromTemplate(speciesUid, BeeManager.beeRoot.getDefinition());
-			}
-		}
-		return null;
 	}
 
 	public void setContained(List<ItemStack> bees) {
@@ -234,7 +212,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 		int damage = (int) (attackAmount * maxDamage);
 		if (damage > 0) {
 			// Entities are not attacked if they wear a full set of apiarist's armor.
-			int count = BeeManager.armorApiaristHelper.wearsItems(entity, new ResourceLocation(damageSourceBeeHive.msgId), true);
+			int count = BeeManager.armorApiaristHelper.wearsItems(entity, null, true);
 			if (entity.level.random.nextInt(4) >= count) {
 				entity.hurt(damageSourceBeeHive, damage);
 			}
@@ -243,7 +221,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 
 	@Override
 	public boolean isActive() {
-		return active;
+		return this.active;
 	}
 
 	@Override
@@ -253,35 +231,33 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 		}
 		this.active = active;
 
-		if (!level.isClientSide) {
-			NetworkUtil.sendNetworkPacket(new PacketActiveUpdate(this), worldPosition, level);
+		if (!this.level.isClientSide) {
+			NetworkUtil.sendNetworkPacket(new PacketActiveUpdate(this), this.worldPosition, this.level);
 		}
 	}
 
-	@Nullable
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
-
 	@Override
 	public CompoundTag getUpdateTag() {
 		CompoundTag nbt = super.getUpdateTag();
 		nbt.putBoolean("active", calmTime == 0);
-		beeLogic.write(nbt);
+		this.beeLogic.write(nbt);
 		return nbt;
 	}
 
+	// todo wtf are these two methods (loading from NBT several times per packet)
 	@Override
 	public void handleUpdateTag(CompoundTag tag) {
 		super.handleUpdateTag(tag);
 		setActive(tag.getBoolean("active"));
-		beeLogic.read(tag);
+		this.beeLogic.read(tag);
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		super.onDataPacket(net, pkt);
 		CompoundTag nbt = pkt.getTag();
@@ -290,40 +266,37 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 
 	@Override
 	public Iterable<IBeeModifier> getBeeModifiers() {
-		return Collections.emptyList();
+		return List.of();
 	}
 
 	@Override
 	public Iterable<IBeeListener> getBeeListeners() {
-		return Collections.emptyList();
+		return List.of();
 	}
-
 
 	@Override
 	public IBeeHousingInventory getBeeInventory() {
-		return inventory;
+		return this.inventory;
 	}
 
 	@Override
 	public IBeekeepingLogic getBeekeepingLogic() {
-		return beeLogic;
+		return this.beeLogic;
 	}
 
 	@Override
-	public EnumTemperature getTemperature() {
-		return EnumTemperature.getFromBiome(getBiome(), getBlockPos());
+	public TemperatureType temperature() {
+		return IForestryApi.INSTANCE.getClimateManager().getTemperature(getBiome());
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		float humidity = getBiome().getDownfall();
-		return EnumHumidity.getFromValue(humidity);
+	public HumidityType humidity() {
+		return IForestryApi.INSTANCE.getClimateManager().getHumidity(getBiome());
 	}
-
 
 	@Override
 	public int getBlockLightValue() {
-		return getLevel().isDay() ? 15 : 0; // hives may have the sky obstructed but should still be active
+		return this.level.isDay() ? 15 : 0; // hives may have the sky obstructed but should still be active
 	}
 
 	@Override
@@ -333,17 +306,17 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 
 	@Override
 	public boolean isRaining() {
-		return level.isRainingAt(getBlockPos().above());
+		return this.level.isRainingAt(this.worldPosition.above());
 	}
 
 	@Override
 	public @Nullable Level getWorldObj() {
-		return level;
+		return this.level;
 	}
 
 	@Override
-	public Biome getBiome() {
-		return getLevel().getBiome(getBlockPos()).value();
+	public Holder<Biome> getBiome() {
+		return this.level.getBiome(this.worldPosition);
 	}
 
 	@Override
@@ -354,7 +327,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 
 	@Override
 	public Vec3 getBeeFXCoordinates() {
-		BlockPos pos = getBlockPos();
+		BlockPos pos = this.worldPosition;
 		return new Vec3(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.5);
 	}
 
@@ -365,17 +338,10 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 
 	@Override
 	public BlockPos getCoordinates() {
-		return getBlockPos();
+		return this.worldPosition;
 	}
 
-	private static class BeeTargetPredicate implements Predicate<LivingEntity> {
-
-		private final IHiveTile hive;
-
-		public BeeTargetPredicate(IHiveTile hive) {
-			this.hive = hive;
-		}
-
+	private record BeeTargetPredicate(IHiveTile hive) implements Predicate<LivingEntity> {
 		@Override
 		public boolean apply(@Nullable LivingEntity input) {
 			if (input != null && input.isAlive() && !input.isInvisible()) {
@@ -391,5 +357,4 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 			return false;
 		}
 	}
-
 }

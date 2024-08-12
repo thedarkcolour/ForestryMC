@@ -10,12 +10,12 @@
  ******************************************************************************/
 package forestry.lepidopterology.worldgen;
 
-import java.util.ArrayList;
-import java.util.Set;
+import javax.annotation.Nullable;
 
-import deleteme.BiomeCategory;
-import deleteme.Shuffler;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -25,18 +25,18 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.material.Material;
 
-import forestry.Forestry;
-import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.core.config.Config;
+import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.lepidopterology.tiles.TileCocoon;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 	public CocoonDecorator() {
@@ -44,51 +44,37 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 	}
 
 	public static boolean genCocoon(WorldGenLevel world, RandomSource rand, BlockPos pos, IButterfly butterfly) {
-		if (butterfly.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES).getRarity() * ModuleLepidopterology
+		if (butterfly.getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getRarity() * ModuleLepidopterology
 				.getGenerateCocoonsAmount() < rand.nextFloat() * 100.0f) {
 			return false;
 		}
 
-		Biome biome = world.getBiome(new BlockPos(pos.getX(), 0, pos.getZ())).value();
+		TagKey<Biome> spawnBiomes = butterfly.getGenome().getActiveValue(ButterflyChromosomes.SPECIES).getSpawnBiomes();
 
-		Set<BiomeCategory> speciesCategories = butterfly.getGenome().getActiveAllele(ButterflyChromosomes.SPECIES)
-				.getSpawnBiomes();
+		if (world.getBiome(pos).is(spawnBiomes)) {
+			for (int tries = 0; tries < 4; tries++) {
+				int x = pos.getX() + rand.nextInt(16);
+				int z = pos.getZ() + rand.nextInt(16);
 
-		boolean biomeTypesGood = false;
-		for (BiomeCategory category : speciesCategories) {
-			if (category.is(biome)) {
-				biomeTypesGood = true;
-				break;
-			}
-		}
-
-		if (!biomeTypesGood) {
-			return false;
-		}
-
-		for (int tries = 0; tries < 4; tries++) {
-			int x = pos.getX() + rand.nextInt(16);
-			int z = pos.getZ() + rand.nextInt(16);
-
-			if (tryGenCocoon(world, x, z, butterfly)) {
-				return true;
+				if (tryGenCocoon(world, x, z, butterfly)) {
+					return true;
+				}
 			}
 		}
 
 		return false;
 	}
 
-	private static boolean tryGenCocoon(WorldGenLevel world, int x, int z, IButterfly butterfly) {
-		int y = getYForCocoon(world, x, z);
-		if (y < 0) {
-			return false;
+	private static boolean tryGenCocoon(WorldGenLevel level, int x, int z, IButterfly butterfly) {
+		BlockPos pos = getPosForCocoon(level, x, z);
+
+		if (pos != null) {
+			if (isValidLocation(level, pos)) {
+				return setCocoon(level, pos, butterfly);
+			}
 		}
 
-		if (!isValidLocation(world, new BlockPos(x, y, z))) {
-			return false;
-		}
-
-		return setCocoon(world, new BlockPos(x, y, z), butterfly);
+		return false;
 	}
 
 	private static boolean setCocoon(WorldGenLevel world, BlockPos pos, IButterfly butterfly) {
@@ -113,34 +99,29 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 		cocoonBlock.onPlace(state, world.getLevel(), pos, cocoonBlock.defaultBlockState(), false);
 		world.getLevel().setBlocksDirty(pos, state, cocoonBlock.defaultBlockState());
 
-		if (Config.logCocoonPlacement) {
-			Forestry.LOGGER.info("Placed {} at {}", cocoonBlock, pos);
-		}
-
 		return true;
 	}
 
-	private static int getYForCocoon(WorldGenLevel world, int x, int z) {
-		int y = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, new BlockPos(x, 0, z)).getY() - 1;
-		BlockPos pos = new BlockPos(x, y, z);
-		BlockState blockState = world.getBlockState(pos);
-		if (blockState.getMaterial() != Material.LEAVES) {
-			return -1;
+	@Nullable
+	private static BlockPos getPosForCocoon(WorldGenLevel world, int x, int z) {
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, world.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1, z);
+		BlockState state = world.getBlockState(pos);
+		if (!state.is(BlockTags.LEAVES)) {
+			return null;
 		}
 
 		do {
-			pos = pos.below();
-			blockState = world.getBlockState(pos);
-		} while (blockState.getMaterial() == Material.LEAVES);
+			pos.move(0, -1, 0);
+			state = world.getBlockState(pos);
+		} while (state.is(BlockTags.LEAVES));
 
-		return y;
+		return pos;
 	}
 
 	public static boolean isValidLocation(WorldGenLevel world, BlockPos pos) {
-		BlockPos posAbove = pos.above();
-		BlockState blockStateAbove = world.getBlockState(posAbove);
-		Block blockAbove = blockStateAbove.getBlock();
-		if (blockStateAbove.getMaterial() != Material.LEAVES) {
+		BlockPos abovePos = pos.above();
+		BlockState aboveState = world.getBlockState(abovePos);
+		if (!aboveState.is(BlockTags.LEAVES)) {
 			return false;
 		}
 
@@ -151,13 +132,12 @@ public class CocoonDecorator extends Feature<NoneFeatureConfiguration> {
 
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-		ArrayList<IButterfly> butterflys = new ArrayList<>(ButterflyManager.butterflyRoot
-				.getIndividualTemplates());
+		ObjectArrayList<IButterflySpecies> butterflies = new ObjectArrayList<>(SpeciesUtil.BUTTERFLY_TYPE.get().getAllSpecies());
 
-		Shuffler.shuffle(butterflys, context.random());
+		Util.shuffle(butterflies, context.random());
 
-		for (IButterfly butterfly : butterflys) {
-			if (genCocoon(context.level(), context.random(), context.origin(), butterfly)) {
+		for (IButterflySpecies butterfly : butterflies) {
+			if (genCocoon(context.level(), context.random(), context.origin(), butterfly.createIndividual())) {
 				return true;
 			}
 		}

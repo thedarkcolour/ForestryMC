@@ -12,17 +12,18 @@ package forestry.apiculture.multiblock;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.biome.Biome;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,12 +38,10 @@ import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.IBeekeepingLogic;
-import forestry.api.climate.ClimateCapabilities;
-import forestry.api.climate.IClimateListener;
-import forestry.api.climate.IClimatised;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.climate.IClimateProvider;
+import forestry.api.core.HumidityType;
 import forestry.api.core.IErrorLogic;
+import forestry.api.core.TemperatureType;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.api.multiblock.IMultiblockController;
 import forestry.apiculture.blocks.BlockAlveary;
@@ -55,9 +54,8 @@ import forestry.core.network.IStreamableGui;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.tiles.ITitled;
-import forestry.core.utils.RenderUtil;
 
-public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlveary> implements IBeeHousing, IAlvearyComponent, IOwnedTile, IStreamableGui, ITitled, IClimatised {
+public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlveary> implements IBeeHousing, IAlvearyComponent, IOwnedTile, IStreamableGui, ITitled, IClimateProvider {
 	private final String unlocalizedTitle;
 
 	public TileAlveary(BlockAlvearyType type, BlockPos pos, BlockState state) {
@@ -68,54 +66,36 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 	@Override
 	public void onMachineAssembled(IMultiblockController multiblockController, BlockPos minCoord, BlockPos maxCoord) {
 		Block block = getBlockState().getBlock();
-		if (block instanceof BlockAlveary) {
-			level.setBlockAndUpdate(getBlockPos(), ((BlockAlveary) block).getNewState(this));
+		if (block instanceof BlockAlveary alveary) {
+			this.level.setBlockAndUpdate(getBlockPos(), alveary.getNewState(this));
 		}
-		level.updateNeighborsAt(getBlockPos(), block);
 	}
 
 	@Override
 	public void onMachineBroken() {
 		Block block = getBlockState().getBlock();
-		if (block instanceof BlockAlveary) {
-			level.setBlockAndUpdate(getBlockPos(), ((BlockAlveary) block).getNewState(this));
-		}
-		level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
-		// Re-render this block on the client
-		if (level.isClientSide) {
-			//TODO
-			BlockPos pos = getBlockPos();
-			RenderUtil.markForUpdate(pos);
+		if (block instanceof BlockAlveary alveary) {
+			this.level.setBlockAndUpdate(getBlockPos(), alveary.getNewState(this));
 		}
 		setChanged();
 	}
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-		LazyOptional<T> superCap = super.getCapability(capability, facing);
-		if (superCap.isPresent()) {
-			return superCap;
-		}
-
 		if (capability == ForgeCapabilities.ITEM_HANDLER) {
 			if (facing != null) {
-				SidedInvWrapper sidedInvWrapper = new SidedInvWrapper(getInternalInventory(), facing);
-				return LazyOptional.of(() -> sidedInvWrapper).cast();    //TODO - still not sure if I am doing this right
+				// TODO why is sided inventory used here? the side is actually ignored, see in InventoryAdapter
+				return LazyOptional.of(() -> new SidedInvWrapper(getInternalInventory(), facing)).cast();
 			} else {
-				InvWrapper invWrapper = new InvWrapper(getInternalInventory());
-				return LazyOptional.of(() -> invWrapper).cast();
+				return LazyOptional.of(() -> new InvWrapper(getInternalInventory())).cast();
 			}
 		}
-		if (capability == ClimateCapabilities.CLIMATE_LISTENER) {
-			IClimateListener listener = getMultiblockLogic().getController().getClimateListener();
-			return LazyOptional.of(() -> listener).cast();
-		}
-		return LazyOptional.empty();
+		return super.getCapability(capability, facing);
 	}
 
 	/* IHousing */
 	@Override
-	public Biome getBiome() {
+	public Holder<Biome> getBiome() {
 		return getMultiblockLogic().getController().getBiome();
 	}
 
@@ -147,13 +127,13 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 
 	/* IClimatised */
 	@Override
-	public EnumTemperature getTemperature() {
-		return getMultiblockLogic().getController().getTemperature();
+	public TemperatureType temperature() {
+		return getMultiblockLogic().getController().temperature();
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return getMultiblockLogic().getController().getHumidity();
+	public HumidityType humidity() {
+		return getMultiblockLogic().getController().humidity();
 	}
 
 	@Override
@@ -189,17 +169,6 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 	@Override
 	public String getUnlocalizedTitle() {
 		return unlocalizedTitle;
-	}
-
-	/* IClimatised */
-	@Override
-	public float getExactTemperature() {
-		return getMultiblockLogic().getController().getExactTemperature();
-	}
-
-	@Override
-	public float getExactHumidity() {
-		return getMultiblockLogic().getController().getExactHumidity();
 	}
 
 	/* IStreamableGui */

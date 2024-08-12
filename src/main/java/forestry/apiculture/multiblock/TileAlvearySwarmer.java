@@ -11,41 +11,39 @@
 package forestry.apiculture.multiblock;
 
 import javax.annotation.Nullable;
-import java.util.Map.Entry;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.IForestryApi;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.multiblock.IAlvearyComponent;
+import forestry.apiculture.blocks.BlockAlveary;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.gui.ContainerAlvearySwarmer;
+import forestry.apiculture.hives.Hive;
+import forestry.apiculture.hives.HiveDecorator;
+import forestry.apiculture.hives.HiveDefinitionSwarmer;
 import forestry.apiculture.inventory.InventorySwarmer;
-import forestry.apiculture.worldgen.Hive;
-import forestry.apiculture.worldgen.HiveDecorator;
-import forestry.apiculture.worldgen.HiveDescriptionSwarmer;
 import forestry.core.inventory.IInventoryAdapter;
-import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
-import forestry.core.utils.ItemStackUtil;
-import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer, IActivatable, IAlvearyComponent.Active {
-
 	private final InventorySwarmer inventory;
-	private final Stack<ItemStack> pendingSpawns = new Stack<>();
-	private boolean active;
+	private final ArrayDeque<ItemStack> pendingSpawns = new ArrayDeque<>();
 
 	public TileAlvearySwarmer(BlockPos pos, BlockState state) {
 		super(BlockAlvearyType.SWARMER, pos, state);
@@ -83,85 +81,72 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 			return;
 		}
 
-		int chance = consumeInducerAndGetChance();
+		float chance = consumeInducerAndGetChance();
 		if (chance == 0) {
 			return;
 		}
 
 		// Try to spawn princess
-		if (level.random.nextInt(1000) >= chance) {
-			return;
+		if (level.random.nextFloat() < chance) {
+			// Queue swarm spawn
+			IIndividualHandlerItem.ifPresent(princessStack, individual -> {
+				if (individual instanceof IBee princess) {
+					// setting pristine for the new copy is a pain in the ass so do this instead
+					princess.setPristine(false);
+					this.pendingSpawns.push(princess.copyWithStage(BeeLifeStage.PRINCESS));
+					princess.setPristine(true);
+				}
+			});
 		}
-
-		// Queue swarm spawn
-		IBee princess = BeeManager.beeRoot.create(princessStack);
-		princess.setIsNatural(false);
-		pendingSpawns.push(BeeManager.beeRoot.getTypes().createStack(princess, EnumBeeType.PRINCESS));
 	}
 
 	@Override
 	public void updateClient(int tickCount) {
-
 	}
 
 	@Nullable
 	private ItemStack getPrincessStack() {
 		ItemStack princessStack = getMultiblockLogic().getController().getBeeInventory().getQueen();
 
-		if (BeeManager.beeRoot.isMated(princessStack)) {
+		if (SpeciesUtil.BEE_TYPE.get().isMated(princessStack)) {
 			return princessStack;
 		}
 
 		return null;
 	}
 
-	private int consumeInducerAndGetChance() {
+	private float consumeInducerAndGetChance() {
 		for (int slotIndex = 0; slotIndex < getContainerSize(); slotIndex++) {
 			ItemStack stack = getItem(slotIndex);
-			for (Entry<ItemStack, Integer> entry : BeeManager.inducers.entrySet()) {
-				if (ItemStackUtil.isIdenticalItem(entry.getKey(), stack)) {
-					removeItem(slotIndex, 1);
-					return entry.getValue();
-				}
+			float chance = IForestryApi.INSTANCE.getHiveManager().getSwarmingMaterialChance(stack.getItem());
+			if (chance != 0.0f) {
+				removeItem(slotIndex, 1);
+				return chance;
 			}
 		}
 
-		return 0;
+		return 0f;
 	}
 
 	private void trySpawnSwarm() {
-
 		ItemStack toSpawn = pendingSpawns.peek();
-		HiveDescriptionSwarmer hiveDescription = new HiveDescriptionSwarmer(toSpawn);
-		Hive hive = new Hive(hiveDescription);
+		HiveDefinitionSwarmer hiveDescription = new HiveDefinitionSwarmer(toSpawn);
+		Hive hive = new Hive(hiveDescription, List.of());
+
+		ServerLevel level = (ServerLevel) this.level;
 
 		int x = getBlockPos().getX() + level.random.nextInt(40 * 2) - 40;
 		int z = getBlockPos().getZ() + level.random.nextInt(40 * 2) - 40;
 
-		if (HiveDecorator.tryGenHive((ServerLevel) level, level.random, x, z, hive)) {
+		if (HiveDecorator.tryGenHive(level, level.random, x, z, hive)) {
 			pendingSpawns.pop();
 		}
-	}
-
-	/* NETWORK */
-
-	@Override
-	protected void encodeDescriptionPacket(CompoundTag packetData) {
-		super.encodeDescriptionPacket(packetData);
-		packetData.putBoolean("Active", active);
-	}
-
-	@Override
-	protected void decodeDescriptionPacket(CompoundTag packetData) {
-		super.decodeDescriptionPacket(packetData);
-		setActive(packetData.getBoolean("Active"));
 	}
 
 	/* SAVING & LOADING */
 	@Override
 	public void load(CompoundTag compoundNBT) {
 		super.load(compoundNBT);
-		setActive(compoundNBT.getBoolean("Active"));
 
 		ListTag nbttaglist = compoundNBT.getList("PendingSpawns", 10);
 		for (int i = 0; i < nbttaglist.size(); i++) {
@@ -170,11 +155,9 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 		}
 	}
 
-
 	@Override
 	public void saveAdditional(CompoundTag compoundNBT) {
 		super.saveAdditional(compoundNBT);
-		compoundNBT.putBoolean("Active", active);
 
 		ListTag nbttaglist = new ListTag();
 		ItemStack[] offspring = pendingSpawns.toArray(new ItemStack[0]);
@@ -191,19 +174,13 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 
 	@Override
 	public boolean isActive() {
-		return active;
+		return getBlockState().getValue(BlockAlveary.STATE) == BlockAlveary.State.ON;
 	}
 
 	@Override
 	public void setActive(boolean active) {
-		if (this.active == active) {
-			return;
-		}
-
-		this.active = active;
-
-		if (level != null && !level.isClientSide) {
-			NetworkUtil.sendNetworkPacket(new PacketActiveUpdate(this), worldPosition, level);
+		if (isActive() != active) {
+			this.level.setBlockAndUpdate(this.worldPosition, this.getBlockState().setValue(BlockAlveary.STATE, active ? BlockAlveary.State.ON : BlockAlveary.State.OFF));
 		}
 	}
 

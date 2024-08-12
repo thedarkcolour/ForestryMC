@@ -1,6 +1,8 @@
 package forestry.factory.recipes.jei.fermenter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.fuels.FermenterFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.api.recipes.IFermenterRecipe;
@@ -31,7 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class FermenterRecipeCategory extends ForestryRecipeCategory<IFermenterRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/fermenter.png");
+	private static final ResourceLocation guiTexture = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/fermenter.png");
 
 	private final IDrawableAnimated progressBar0;
 	private final IDrawableAnimated progressBar1;
@@ -63,14 +65,14 @@ public class FermenterRecipeCategory extends ForestryRecipeCategory<IFermenterRe
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, IFermenterRecipe recipe, IFocusGroup focuses) {
 		IRecipeSlotBuilder ingredientInputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 51, 5)
-			.addIngredients(recipe.getResource());
+			.addIngredients(recipe.getInputItem());
 
 		Collection<FermenterFuel> fuels = FuelManager.fermenterFuel.values();
 		List<ItemStack> fuelInputs = fuels.stream().map(FermenterFuel::item).toList();
 		builder.addSlot(RecipeIngredientRole.INPUT, 41, 39)
 				.addItemStacks(fuelInputs);
 
-		FluidStack fluidInput = recipe.getFluidResource().copy();
+		FluidStack fluidInput = recipe.getInputFluid().copy();
 		fluidInput.setAmount(recipe.getFermentationValue());
 		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
 				.setFluidRenderer(3000, false, 16, 58)
@@ -79,7 +81,7 @@ public class FermenterRecipeCategory extends ForestryRecipeCategory<IFermenterRe
 
 		final int baseAmount = Math.round(recipe.getFermentationValue() * recipe.getModifier());
 		List<FluidStack> outputs =
-			Arrays.stream(recipe.getResource().getItems())
+			Arrays.stream(recipe.getInputItem().getItems())
 				.map(fermentable -> {
 					int amount = baseAmount;
 					if (fermentable.getItem() instanceof IVariableFermentable variableFermentable) {

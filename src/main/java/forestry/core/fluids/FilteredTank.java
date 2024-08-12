@@ -12,13 +12,11 @@ package forestry.core.fluids;
 
 import com.google.common.base.Suppliers;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -31,16 +29,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import forestry.api.core.tooltips.ToolTip;
+import forestry.core.utils.ModUtil;
 
-/**
- * @author CovertJaguar <http://www.railcraft.info>
- */
 public class FilteredTank extends StandardTank {
-
 	private Supplier<Set<ResourceLocation>> filters = Suppliers.ofInstance(new HashSet<>()); // FluidNames
 
 	public FilteredTank(int capacity) {
@@ -52,26 +46,22 @@ public class FilteredTank extends StandardTank {
 		super(capacity, canFill, canDrain);
 	}
 
-	public FilteredTank setFilters(Supplier<Set<ResourceLocation>> filters) {
+	public FilteredTank setFilter(FluidRecipeFilter filters) {
 		this.filters = filters;
 		return this;
-	}
-
-	public FilteredTank setFilters(Fluid... filters) {
-		return setFilters(Arrays.asList(filters));
 	}
 
 	public FilteredTank setFilters(Collection<Fluid> filters) {
 		Set<ResourceLocation> set = new HashSet<>();
 		this.filters = () -> set;
 		for (Fluid fluid : filters) {
-			set.add(RegistryNameFinder.getRegistryName(fluid));
+			set.add(ModUtil.getRegistryName(fluid));
 		}
 		return this;
 	}
 
 	private boolean fluidMatchesFilter(FluidStack resource) {
-		return resource.getFluid() != Fluids.EMPTY && filters.get().contains(RegistryNameFinder.getRegistryName(resource.getFluid()));
+		return resource.getFluid() != Fluids.EMPTY && filters.get().contains(ModUtil.getRegistryName(resource.getFluid()));
 	}
 
 	@Override
@@ -98,7 +88,6 @@ public class FilteredTank extends StandardTank {
 				toolTip.add(filterFluidStack.getDisplayName(), rarity.color);
 			}
 		} else {
-			//TODO can this be simplified
 			Component tmiComponent = Component.literal("<")
 					.append(Component.translatable("for.gui.tooltip.tmi"))
 					.append(Component.literal(">"));
@@ -106,5 +95,4 @@ public class FilteredTank extends StandardTank {
 		}
 		toolTip.add(Component.translatable("for.gui.tooltip.liquid.amount", getFluidAmount(), getCapacity()));
 	}
-
 }

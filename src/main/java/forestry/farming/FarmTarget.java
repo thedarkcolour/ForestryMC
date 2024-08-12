@@ -13,21 +13,21 @@ package forestry.farming;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmHousing;
 
 public class FarmTarget {
-
 	private final BlockPos start;
-	private final FarmDirection direction;
+	private final Direction direction;
 	private final int limit;
 
 	private int yOffset;
 	private int extent;
 
-	public FarmTarget(BlockPos start, FarmDirection direction, int limit) {
+	public FarmTarget(BlockPos start, Direction direction, int limit) {
 		this.start = start;
 		this.direction = direction;
 		this.limit = limit;
@@ -45,11 +45,11 @@ public class FarmTarget {
 		return extent;
 	}
 
-	public FarmDirection getDirection() {
+	public Direction getDirection() {
 		return direction;
 	}
 
-	public void setExtentAndYOffset(Level world, @Nullable BlockPos platformPosition, IFarmHousing housing) {
+	public void setExtentAndYOffset(Level level, @Nullable BlockPos platformPosition, IFarmHousing housing) {
 		if (platformPosition == null) {
 			extent = 0;
 			return;
@@ -58,13 +58,13 @@ public class FarmTarget {
 		BlockPos.MutableBlockPos position = new BlockPos.MutableBlockPos();
 		position.set(platformPosition);
 		for (extent = 0; extent < limit; extent++) {
-			if (!world.hasChunkAt(position)) {
+			if (!level.hasChunkAt(position)) {
 				break;
 			}
-			if (!housing.isValidPlatform(world, position)) {
+			if (!housing.isValidPlatform(level, position)) {
 				break;
 			}
-			position.move(getDirection().getFacing());
+			position.move(this.direction);
 		}
 
 		yOffset = platformPosition.getY() + 1 - getStart().getY();

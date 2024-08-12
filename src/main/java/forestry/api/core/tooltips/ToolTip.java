@@ -10,9 +10,6 @@
  ******************************************************************************/
 package forestry.api.core.tooltips;
 
-/**
- * @author CovertJaguar <http://www.railcraft.info/>
- */
 public class ToolTip extends TextCollection {
 	private final long delay;
 	private long mouseOverStart;
@@ -30,16 +27,16 @@ public class ToolTip extends TextCollection {
 			return;
 		}
 		if (mouseOver) {
-			if (mouseOverStart == 0) {
-				mouseOverStart = System.currentTimeMillis();
+			if (this.mouseOverStart == 0) {
+				this.mouseOverStart = System.currentTimeMillis();
 			}
 		} else {
-			mouseOverStart = 0;
+			this.mouseOverStart = 0;
 		}
 	}
 
 	public boolean isReady() {
-		return delay == 0 || mouseOverStart != 0 && System.currentTimeMillis() - mouseOverStart >= delay;
+		return this.delay == 0 || this.mouseOverStart != 0 && System.currentTimeMillis() - this.mouseOverStart >= this.delay;
 	}
 
 	public void refresh() {

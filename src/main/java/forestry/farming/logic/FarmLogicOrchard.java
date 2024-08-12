@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.farming.logic;
 
-import com.google.common.collect.ImmutableList;
-
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,51 +19,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.farming.FarmDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.api.genetics.IFruitBearer;
 import forestry.core.tiles.TileUtil;
 import forestry.farming.logic.crops.CropFruit;
 
 public class FarmLogicOrchard extends FarmLogic {
-
-	private final ImmutableList<Block> traversalBlocks;
-
-	public FarmLogicOrchard(IFarmProperties properties, boolean isManual) {
+	public FarmLogicOrchard(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
-
-		ImmutableList.Builder<Block> traversalBlocksBuilder = ImmutableList.builder();
-		//		if (ForestryAPI.enabledModules.contains(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.AGRICRAFT) || ForestryAPI.enabledModules.contains(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.INDUSTRIALCRAFT)) {
-		//			traversalBlocksBuilder.add(Blocks.FARMLAND);
-		//		}
-		//		if (ForestryAPI.enabledModules.contains(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.INDUSTRIALCRAFT)) {
-		//			traversalBlocksBuilder.add(Blocks.DIRT);
-		//		}
-		//		if (ForestryAPI.enabledModules.contains(new ResourceLocation(Constants.MOD_ID, ForestryModuleUids.PLANTMEGAPACK)) {
-		//			traversalBlocksBuilder.add(Blocks.WATER);
-		//		}
-		//
-		//		{
-		//			Block grapeVine = GameRegistry.findBlock("Growthcraft|Grapes", "grc.grapeVine1");
-		//			if (grapeVine != null) {
-		//				traversalBlocksBuilder.add(grapeVine);
-		//			}
-		//		}
-		this.traversalBlocks = traversalBlocksBuilder.build();
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing housing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level level, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
 		BlockPos position = housing.getValidPosition(direction, pos, extent, pos.above());
-		Collection<ICrop> crops = getHarvestBlocks(world, position);
+		Collection<ICrop> crops = getHarvestBlocks(level, position);
 		housing.increaseExtent(direction, pos, extent);
 
 		return crops;
@@ -80,10 +56,8 @@ public class FarmLogicOrchard extends FarmLogic {
 		}
 
 		// Determine what type we want to harvest.
-		BlockState blockState = world.getBlockState(position);
-		Block block = blockState.getBlock();
-		//TODO tags
-		if (false) {//!block.isWood(world, position) && !isBlockTraversable(blockState, traversalBlocks) && !isFruitBearer(world, position, blockState)) {
+		BlockState state = world.getBlockState(position);
+		if (!state.is(BlockTags.LOGS) && !isFruitBearer(world, position, state)) {
 			return crops;
 		}
 
@@ -104,6 +78,7 @@ public class FarmLogicOrchard extends FarmLogic {
 	private List<BlockPos> processHarvestBlock(Level world, Stack<ICrop> crops, Set<BlockPos> seen, BlockPos start, BlockPos position) {
 		List<BlockPos> candidates = new ArrayList<>();
 
+		// todo use MutableBlockPos
 		// Get additional candidates to return
 		for (int i = -2; i < 3; i++) {
 			for (int j = 0; j < 2; j++) {
@@ -124,13 +99,12 @@ public class FarmLogicOrchard extends FarmLogic {
 						continue;
 					}
 
-					BlockState blockState = world.getBlockState(candidate);
-					Block block = blockState.getBlock();
-					if (false) {//block.isWood(world, candidate) || isBlockTraversable(blockState, traversalBlocks)) {
+					BlockState state = world.getBlockState(candidate);
+					if (state.is(BlockTags.LOGS)) {
 						candidates.add(candidate);
 						seen.add(candidate);
 					}
-					if (isFruitBearer(world, candidate, blockState)) {
+					if (isFruitBearer(world, candidate, state)) {
 						candidates.add(candidate);
 						seen.add(candidate);
 
@@ -146,28 +120,18 @@ public class FarmLogicOrchard extends FarmLogic {
 		return candidates;
 	}
 
-	private boolean isFruitBearer(Level world, BlockPos position, BlockState blockState) {
-		IFruitBearer tile = TileUtil.getTile(world, position, IFruitBearer.class);
+	private boolean isFruitBearer(Level world, BlockPos pos, BlockState state) {
+		IFruitBearer tile = TileUtil.getTile(world, pos, IFruitBearer.class);
 		if (tile != null) {
 			return true;
 		}
 
 		for (IFarmable farmable : getFarmables()) {
-			if (farmable.isSaplingAt(world, position, blockState)) {
+			if (farmable.isSaplingAt(world, pos, state)) {
 				return true;
 			}
 		}
 
-		return false;
-	}
-
-	private static boolean isBlockTraversable(BlockState blockState, ImmutableList<Block> traversalBlocks) {
-		Block candidate = blockState.getBlock();
-		for (Block block : traversalBlocks) {
-			if (block == candidate) {
-				return true;
-			}
-		}
 		return false;
 	}
 
@@ -184,5 +148,4 @@ public class FarmLogicOrchard extends FarmLogic {
 		}
 		return null;
 	}
-
 }

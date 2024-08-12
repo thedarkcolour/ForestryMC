@@ -1,15 +1,29 @@
 package forestry.farming.compat;
 
+import java.awt.Color;
+import java.util.List;
+
+import org.apache.commons.lang3.mutable.MutableInt;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.circuits.ICircuit;
-import forestry.api.farming.IFarmProperties;
-import forestry.api.farming.IFarmableInfo;
+import forestry.api.farming.IFarmType;
+import forestry.api.farming.IFarmable;
 import forestry.api.farming.Soil;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 import forestry.core.recipes.jei.ForestryRecipeCategory;
 import forestry.core.utils.JeiUtil;
+
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -19,18 +33,9 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-
-import java.awt.*;
-import java.util.Collection;
-import java.util.List;
 
 public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInfoRecipe> {
-	public static final RecipeType<FarmingInfoRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "farming", FarmingInfoRecipe.class);
+	public static final RecipeType<FarmingInfoRecipe> TYPE = RecipeType.create(ForestryConstants.MOD_ID, "farming", FarmingInfoRecipe.class);
 	private final IDrawable slotDrawable;
 	private final IDrawable addition;
 	private final IDrawable arrow;
@@ -39,7 +44,7 @@ public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInf
 	public FarmingInfoRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper.createBlankDrawable(144, 90), "for.jei.farming");
 		this.slotDrawable = guiHelper.getSlotDrawable();
-		ResourceLocation resourceLocation = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/jei/recipes.png");
+		ResourceLocation resourceLocation = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/jei/recipes.png");
 		addition = guiHelper.createDrawable(resourceLocation, 44, 0, 15, 15);
 		arrow = guiHelper.createDrawable(resourceLocation, 59, 0, 15, 15);
 		ItemStack intricateCircuitboard = new ItemStack(CoreItems.CIRCUITBOARDS.get(EnumCircuitBoardType.INTRICATE));
@@ -59,43 +64,38 @@ public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInf
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, FarmingInfoRecipe recipe, IFocusGroup focuses) {
 		builder.addSlot(RecipeIngredientRole.INPUT, 64, 19)
-				.setBackground(slotDrawable, -1, -1)
+				.setBackground(this.slotDrawable, -1, -1)
 				.addItemStack(recipe.tube());
 
-		IFarmProperties properties = recipe.properties();
-		Collection<IFarmableInfo> farmableInfo = properties.getFarmableInfo();
+		IFarmType properties = recipe.properties();
 
-		{
-			List<ItemStack> soils = properties.getSoils().stream()
-					.map(Soil::getResource)
-					.toList();
+		// 2x2 of slots
+		List<IRecipeSlotBuilder> soilSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 1, 55, 18);
+		List<IRecipeSlotBuilder> germlingSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 55, 55, 18);
+		List<IRecipeSlotBuilder> productSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.OUTPUT, 2, 2, 109, 55, 18);
+		int soilSlotsSize = soilSlots.size();
+		int germlingSlotsSize = germlingSlots.size();
+		int productSlotsSize = productSlots.size();
 
-			List<IRecipeSlotBuilder> soilSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 1, 55, 18);
-			soilSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
-			distributeItems(soilSlots, soils);
+		// Set backgrounds
+		soilSlots.forEach(slot -> slot.setBackground(this.slotDrawable, -1, -1));
+		germlingSlots.forEach(slot -> slot.setBackground(this.slotDrawable, -1, -1));
+		productSlots.forEach(slot -> slot.setBackground(this.slotDrawable, -1, -1));
+
+		MutableInt germlingSlotIndex = new MutableInt();
+		MutableInt productSlotIndex = new MutableInt();
+		int soilSlotIndex = 0;
+
+		// item stacks are distributed to ezach slot using round robin
+		for (IFarmable farmable : properties.getFarmables()) {
+			farmable.addGermlings(germling -> germlingSlots.get(germlingSlotIndex.getAndIncrement() % germlingSlotsSize)
+					.addItemStack(germling));
+			farmable.addProducts(product -> productSlots.get(productSlotIndex.getAndIncrement() % productSlotsSize)
+					.addItemStack(product));
 		}
-
-
-		{
-			List<ItemStack> germlings = farmableInfo.stream()
-					.map(IFarmableInfo::getSeedlings)
-					.flatMap(Collection::stream)
-					.toList();
-
-			List<IRecipeSlotBuilder> germlingSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 2, 2, 55, 55, 18);
-			germlingSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
-			distributeItems(germlingSlots, germlings);
-		}
-
-		{
-			List<ItemStack> products = farmableInfo.stream()
-					.map(IFarmableInfo::getProducts)
-					.flatMap(Collection::stream)
-					.toList();
-
-			List<IRecipeSlotBuilder> productSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.OUTPUT, 2, 2, 109, 55, 18);
-			productSlots.forEach(slot -> slot.setBackground(slotDrawable, -1, -1));
-			distributeItems(productSlots, products);
+		for (Soil soil : properties.getSoils()) {
+			soilSlots.get(soilSlotIndex++ % soilSlotsSize)
+					.addItemStack(soil.resource());
 		}
 	}
 
@@ -118,13 +118,5 @@ public class FarmingInfoRecipeCategory extends ForestryRecipeCategory<FarmingInf
 		//TODO: draw
 		Component productsName = Component.translatable("for.jei.farming.products");
 		fontRenderer.draw(stack, productsName, 126 - (float) (fontRenderer.width(productsName.getString())) / 2, 45, Color.darkGray.getRGB());
-	}
-
-	private static void distributeItems(List<IRecipeSlotBuilder> recipeSlots, List<ItemStack> items) {
-		for (int i = 0; i < items.size(); i++) {
-			ItemStack itemStack = items.get(i);
-			IRecipeSlotBuilder recipeSlot = recipeSlots.get(i % recipeSlots.size());
-			recipeSlot.addItemStack(itemStack);
-		}
 	}
 }

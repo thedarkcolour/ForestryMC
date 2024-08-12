@@ -1,11 +1,11 @@
 package forestry.core.features;
 
+import forestry.api.core.ItemGroups;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.items.*;
 import forestry.core.items.definitions.ToolTier;
 import net.minecraft.world.item.Item;
 
-import forestry.core.ItemGroupForestry;
-import forestry.core.ModuleCore;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.circuits.ItemCircuitBoard;
 import forestry.core.genetics.ItemResearchNote;
@@ -21,7 +21,7 @@ import net.minecraft.world.item.ShovelItem;
 
 @FeatureProvider
 public class CoreItems {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleCore.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.CORE);
 
 	/* Foresters' Manual */
 	public static final FeatureItem<ForestersManualItem> FORESTERS_MANUAL = REGISTRY.item(ForestersManualItem::new, "foresters_manual");
@@ -52,8 +52,8 @@ public class CoreItems {
 	public static final FeatureItem<ItemForestry> CARTON = REGISTRY.item(ItemForestry::new, "carton");
 	public static final FeatureItem<ItemForestry> BROKEN_BRONZE_PICKAXE = REGISTRY.item(ItemForestry::new, "broken_bronze_pickaxe");
 	public static final FeatureItem<ItemForestry> BROKEN_BRONZE_SHOVEL = REGISTRY.item(ItemForestry::new, "broken_bronze_shovel");
-	public static final FeatureItem<PickaxeItem> BRONZE_PICKAXE = REGISTRY.item(() -> new HasRemnants.Pickaxe(ToolTier.SURVIVALIST, 1, -2.8f, new Item.Properties().tab(ItemGroupForestry.tabForestry), BROKEN_BRONZE_PICKAXE::stack), "bronze_pickaxe");
-	public static final FeatureItem<ShovelItem> BRONZE_SHOVEL = REGISTRY.item(() -> new HasRemnants.Shovel(ToolTier.SURVIVALIST, 1.5f, -3.0f, new Item.Properties().tab(ItemGroupForestry.tabForestry), BROKEN_BRONZE_SHOVEL::stack), "bronze_shovel");
+	public static final FeatureItem<PickaxeItem> BRONZE_PICKAXE = REGISTRY.item(() -> new HasRemnants.Pickaxe(ToolTier.SURVIVALIST, 1, -2.8f, new Item.Properties().tab(ItemGroups.tabForestry), BROKEN_BRONZE_PICKAXE::stack), "bronze_pickaxe");
+	public static final FeatureItem<ShovelItem> BRONZE_SHOVEL = REGISTRY.item(() -> new HasRemnants.Shovel(ToolTier.SURVIVALIST, 1.5f, -3.0f, new Item.Properties().tab(ItemGroups.tabForestry), BROKEN_BRONZE_SHOVEL::stack), "bronze_shovel");
 	public static final FeatureItem<ItemAssemblyKit> KIT_SHOVEL = REGISTRY.item(() -> new ItemAssemblyKit(BRONZE_SHOVEL::stack), "kit_shovel");
 	public static final FeatureItem<ItemAssemblyKit> KIT_PICKAXE = REGISTRY.item(() -> new ItemAssemblyKit(BRONZE_PICKAXE::stack), "kit_pickaxe");
 
@@ -69,10 +69,10 @@ public class CoreItems {
 	/* Soldering */
 	public static final FeatureItem<ItemSolderingIron> SOLDERING_IRON = REGISTRY.item(ItemSolderingIron::new, "soldering_iron");
 	public static final FeatureItemGroup<ItemCircuitBoard, EnumCircuitBoardType> CIRCUITBOARDS = REGISTRY.itemGroup(ItemCircuitBoard::new, "circuit_board", EnumCircuitBoardType.values());
-	public static final FeatureItemGroup<ItemElectronTube, EnumElectronTube> ELECTRON_TUBES = REGISTRY.itemGroup(ItemElectronTube::new, "electron_tube", EnumElectronTube.VALUES);
+	public static final FeatureItemGroup<ItemElectronTube, EnumElectronTube> ELECTRON_TUBES = REGISTRY.itemGroup(ItemElectronTube::new, "electron_tube", EnumElectronTube.values());
 
 	/* Armor */
-	public static final FeatureItem<ItemArmorNaturalist> SPECTACLES = REGISTRY.item(ItemArmorNaturalist::new, "naturalist_helmet");
+	public static final FeatureItem<ItemSpectacles> SPECTACLES = REGISTRY.item(ItemSpectacles::new, "naturalist_helmet");
 
 	/* Peat */
 	public static final FeatureItem<ItemForestry> PEAT = REGISTRY.item(() -> new ItemForestry(new ItemProperties().burnTime(2000)), "peat");
@@ -95,7 +95,4 @@ public class CoreItems {
 	public static final FeatureItem<ItemForestry> BEESWAX = REGISTRY.item(ItemForestry::new, "beeswax");
 	public static final FeatureItem<ItemForestry> REFRACTORY_WAX = REGISTRY.item(ItemForestry::new, "refractory_wax");
 	public static final FeatureItemGroup<ItemFruit, ItemFruit.EnumFruit> FRUITS = REGISTRY.itemGroup(ItemFruit::new, "fruit", ItemFruit.EnumFruit.values());
-
-	private CoreItems() {
-	}
 }

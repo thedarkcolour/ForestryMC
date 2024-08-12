@@ -13,20 +13,20 @@ package forestry.core.inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.tiles.TileNaturalistChest;
 
 public class InventoryNaturalistChest extends InventoryAdapterTile<TileNaturalistChest> {
-	private final IForestrySpeciesRoot speciesRoot;
+	private final ISpeciesType speciesRoot;
 
-	public InventoryNaturalistChest(TileNaturalistChest tile, IForestrySpeciesRoot speciesRoot) {
+	public InventoryNaturalistChest(TileNaturalistChest tile, ISpeciesType speciesRoot) {
 		super(tile, 125, "Items");
 		this.speciesRoot = speciesRoot;
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemstack) {
-		return speciesRoot.isMember(itemstack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return speciesRoot.isMember(stack);
 	}
 
 	@Override

@@ -11,6 +11,7 @@
 package forestry.storage.items;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,28 +20,27 @@ import net.minecraft.world.item.ItemStack;
 
 import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
-import forestry.core.config.Constants;
 import forestry.storage.gui.ContainerNaturalistBackpack;
 import forestry.storage.inventory.ItemInventoryBackpackPaged;
 
 public class ItemBackpackNaturalist extends ItemBackpack {
-	public final String rootUid;
+	public final ResourceLocation typeId;
 
-	public ItemBackpackNaturalist(String rootUid, IBackpackDefinition definition, CreativeModeTab tab) {
+	public ItemBackpackNaturalist(ResourceLocation typeId, IBackpackDefinition definition, CreativeModeTab tab) {
 		super(definition, EnumBackpackType.NATURALIST, tab);
-		this.rootUid = rootUid;
+		this.typeId = typeId;
 	}
 
 	@Override
 	protected void writeContainerData(ServerPlayer player, ItemStack stack, FriendlyByteBuf buffer) {
 		buffer.writeItem(stack);
 		buffer.writeByte(0);
-		buffer.writeUtf(rootUid);
+		buffer.writeResourceLocation(typeId);
 	}
 
 	@Override
 	public AbstractContainerMenu getContainer(int windowId, Player player, ItemStack heldItem) {
-		ItemInventoryBackpackPaged inventory = new ItemInventoryBackpackPaged(player, Constants.SLOTS_BACKPACK_APIARIST, heldItem, this);
-		return new ContainerNaturalistBackpack(windowId, player.getInventory(), inventory, 0, rootUid);
+		ItemInventoryBackpackPaged inventory = new ItemInventoryBackpackPaged(player, ItemBackpack.SLOTS_BACKPACK_APIARIST, heldItem, this);
+		return new ContainerNaturalistBackpack(windowId, player.getInventory(), inventory, 0, typeId);
 	}
 }

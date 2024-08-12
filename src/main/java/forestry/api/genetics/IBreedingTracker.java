@@ -8,15 +8,11 @@ package forestry.api.genetics;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
-
-import forestry.api.apiculture.IBeekeepingMode;
+import forestry.api.genetics.alleles.IAllele;
 
 /**
  * Keeps track of who bred, discovered, and researched which species in a world.
@@ -24,41 +20,30 @@ import forestry.api.apiculture.IBeekeepingMode;
  * @author SirSengir
  */
 public interface IBreedingTracker {
-
-	/**
-	 * @return Name of the current {@link IBeekeepingMode}.
-	 */
-	String getModeName();
-
-	/**
-	 * Set the current {@link IBeekeepingMode}.
-	 */
-	void setModeName(String name);
-
 	/**
 	 * @return Amount of species discovered.
 	 */
 	int getSpeciesBred();
 
 	/**
-	 * Register the birth of an individual. Will mark it as discovered.
+	 * Register the birth of a species. Will mark it as discovered.
 	 */
-	void registerBirth(IIndividual individual);
+	void registerBirth(ISpecies<?> species);
 
 	/**
-	 * Register the pickup of an individual.
+	 * Register the pickup of a species.
 	 */
-	void registerPickup(IIndividual individual);
+	void registerPickup(ISpecies<?> species);
 
 	/**
 	 * Marks a species as discovered. Should only be called from registerIndividual normally.
 	 */
-	void registerSpecies(IAlleleSpecies species);
+	void registerSpecies(ISpecies<?> species);
 
 	/**
 	 * Register a successful mutation. Will mark it as discovered.
 	 */
-	void registerMutation(IMutation mutation);
+	void registerMutation(IMutation<?> mutation);
 
 	/**
 	 * Queries the tracker for discovered species.
@@ -66,7 +51,7 @@ public interface IBreedingTracker {
 	 * @param mutation Mutation to query for.
 	 * @return true if the mutation has been discovered.
 	 */
-	boolean isDiscovered(IMutation mutation);
+	boolean isDiscovered(IMutation<?> mutation);
 
 	/**
 	 * Queries the tracker for discovered species.
@@ -74,14 +59,12 @@ public interface IBreedingTracker {
 	 * @param species Species to check.
 	 * @return true if the species has been bred.
 	 */
-	boolean isDiscovered(IAlleleSpecies species);
+	boolean isDiscovered(ISpecies<?> species);
 
 	/**
-	 * @return A collection that contains the {@link IAllele#getRegistryName()}s of all discovered species.
+	 * @return A collection that contains the {@link IAllele#alleleId()}s of all discovered species.
 	 */
-	default Collection<String> getDiscoveredSpecies() {
-		return Collections.emptyList();
-	}
+	Collection<ResourceLocation> getDiscoveredSpecies();
 
 	/**
 	 * Register a successfully researched mutation.
@@ -89,12 +72,12 @@ public interface IBreedingTracker {
 	 * Researched mutations may have bonuses such as occurring at a higher rate.
 	 * Researched mutations count as discovered.
 	 */
-	void researchMutation(IMutation mutation);
+	void researchMutation(IMutation<?> mutation);
 
 	/**
 	 * @return true if the mutation has been researched.
 	 */
-	boolean isResearched(IMutation mutation);
+	boolean isResearched(IMutation<?> mutation);
 
 	/**
 	 * Synchronizes the tracker to the client side.

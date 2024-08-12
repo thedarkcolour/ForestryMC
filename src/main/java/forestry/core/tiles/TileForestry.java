@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +39,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.core.errors.ErrorLogic;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
@@ -46,17 +47,19 @@ import forestry.core.network.IStreamable;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.TickHelper;
 
-public abstract class TileForestry extends BlockEntity implements IStreamable, IErrorLogicSource, WorldlyContainer, IFilterSlotDelegate, ITitled, ILocatable, MenuProvider {
+public abstract class TileForestry extends BlockEntity implements IStreamable, IErrorLogicSource, WorldlyContainer, IFilterSlotDelegate, ITitled, ILocationProvider, MenuProvider {
 	private final ErrorLogic errorHandler = new ErrorLogic();
 	private final AdjacentTileCache tileCache = new AdjacentTileCache(this);
 
 	private IInventoryAdapter inventory = FakeInventoryAdapter.instance();
 
 	// package private for ForestryTicker
-	final TickHelper tickHelper = new TickHelper();
+	final TickHelper tickHelper;
 
 	public TileForestry(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
 		super(tileEntityTypeIn, pos, state);
+
+		this.tickHelper = new TickHelper(pos.hashCode());
 	}
 
 	protected AdjacentTileCache getTileCache() {
@@ -130,20 +133,20 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	/* IStreamable */
 	@Override
 	public void writeData(FriendlyByteBuf data) {
-
 	}
 
 	@Override
 	public void readData(FriendlyByteBuf data) {
-
 	}
 
-	public void onRemoval() {
+	// serverside only, called when the block is destroyed and its inventory is spilled into the world
+	public void onDropContents(ServerLevel level) {
 	}
 
+	@Nullable
 	@Override
-	public @Nullable Level getWorldObj() {
-		return level;
+	public Level getWorldObj() {
+		return this.level;
 	}
 
 	// / REDSTONE INFO
@@ -228,19 +231,14 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 		return getInternalInventory().stillValid(player);
 	}
 
-	//	@Override
-	//	public boolean hasCustomName() {
-	//		return getInternalInventory().hasCustomName();
-	//	}
-
 	@Override
 	public final boolean canPlaceItem(int slotIndex, ItemStack itemStack) {
 		return getInternalInventory().canPlaceItem(slotIndex, itemStack);
 	}
 
 	@Override
-	public final boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return getInternalInventory().canSlotAccept(slotIndex, itemStack);
+	public final boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return getInternalInventory().canSlotAccept(slotIndex, stack);
 	}
 
 	@Override
@@ -280,7 +278,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 			} else {
 				return LazyOptional.of(() -> new InvWrapper(getInternalInventory())).cast();
 			}
-
 		}
 		return super.getCapability(capability, facing);
 	}

@@ -4,13 +4,15 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-import deleteme.RegistryNameFinder;
+import forestry.api.ForestryConstants;
+import forestry.api.ForestryTags;
+import forestry.apiculture.blocks.NaturalistChestBlockType;
 import forestry.apiculture.items.*;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -21,7 +23,6 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,17 +30,22 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import forestry.api.arboriculture.EnumForestryWoodType;
+import forestry.arboriculture.ForestryWoodType;
 import forestry.api.arboriculture.IWoodAccess;
 import forestry.api.arboriculture.IWoodType;
-import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
 import forestry.api.circuits.ICircuit;
 import forestry.apiculture.blocks.BlockAlveary;
@@ -47,16 +53,14 @@ import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.blocks.BlockTypeApiculture;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.apiculture.features.ApicultureItems;
+import forestry.arboriculture.WoodAccess;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.arboriculture.features.CharcoalBlocks;
-import forestry.climatology.features.ClimatologyBlocks;
-import forestry.climatology.features.ClimatologyItems;
 import forestry.core.blocks.BlockTypeCoreTesr;
 import forestry.core.blocks.EnumResourceType;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.circuits.ItemCircuitBoard;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
 import forestry.core.features.FluidsItems;
@@ -65,6 +69,7 @@ import forestry.core.items.ItemFruit;
 import forestry.core.items.definitions.EnumContainerType;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
+import forestry.core.utils.ModUtil;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
 import forestry.cultivation.features.CultivationBlocks;
@@ -75,7 +80,6 @@ import forestry.factory.features.FactoryBlocks;
 import forestry.farming.blocks.EnumFarmBlockType;
 import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
-import forestry.food.features.FoodItems;
 import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.lepidopterology.features.LepidopterologyItems;
 import forestry.mail.blocks.BlockTypeMail;
@@ -89,10 +93,25 @@ import forestry.sorting.features.SortingBlocks;
 import forestry.storage.features.BackpackItems;
 import forestry.worktable.features.WorktableBlocks;
 
+import static forestry.core.data.models.ForestryBlockStateProvider.path;
+
 public class ForestryRecipeProvider extends RecipeProvider {
 
 	public ForestryRecipeProvider(DataGenerator generator) {
 		super(generator);
+	}
+
+	public static ItemStack getContainer(EnumContainerType type, ForestryFluids fluid) {
+		return getContainer(type, fluid.getFluid());
+	}
+
+	public static ItemStack getContainer(EnumContainerType type, Fluid fluid) {
+		ItemStack container = FluidsItems.CONTAINERS.stack(type);
+		LazyOptional<IFluidHandlerItem> fluidHandlerCap = FluidUtil.getFluidHandler(container);
+		return fluidHandlerCap.map(handler -> {
+			handler.fill(new FluidStack(fluid, Integer.MAX_VALUE), IFluidHandler.FluidAction.EXECUTE);
+			return container;
+		}).orElse(ItemStack.EMPTY);
 	}
 
 	@Override
@@ -114,6 +133,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		registerMailRecipes(consumer);
 		registerSortingRecipes(consumer);
 		registerWorktableRecipes(consumer);
+		registerSolderingRecipes(consumer);
 	}
 
 	private void registerApicultureRecipes(Consumer<FinishedRecipe> helper) {
@@ -207,7 +227,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_casing", has(ForestryTags.Items.BEE_COMBS)).save(helper);
 		//TODO minecarts and candles once they are flattened
 
-		ShapedRecipeBuilder.shaped(ApicultureBlocks.BEE_CHEST.block())
+		ShapedRecipeBuilder.shaped(CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.APIARIST_CHEST))
 				.define('G', Tags.Items.GLASS)
 				.define('X', ForestryTags.Items.BEE_COMBS)
 				.define('Y', Tags.Items.CHESTS_WOODEN)
@@ -253,7 +273,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('X', ApicultureItems.POLLEN_CLUSTER.get(EnumPollenCluster.NORMAL))
 				.pattern("#X#").pattern("#X#").pattern("#X#")
 				.unlockedBy("has_propolis", has(propolis))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "slime_from_propolis"));
+				.save(helper, ForestryConstants.forestry("slime_from_propolis"));
 		ShapedRecipeBuilder.shaped(ApicultureItems.SMOKER)
 				.define('#', ForestryTags.Items.INGOTS_TIN)
 				.define('S', Tags.Items.RODS_WOODEN)
@@ -267,7 +287,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('Y', Items.MELON_SLICE)
 				.pattern("#X#").pattern("#Y#").pattern("#X#")
 				.unlockedBy("has_melon", has(Items.MELON_SLICE))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "glistering_melon_slice"));
+				.save(helper, ForestryConstants.forestry("glistering_melon_slice"));
 
 		ItemLike beesWax = CoreItems.BEESWAX;
 		ShapedRecipeBuilder.shaped(Items.TORCH, 3)
@@ -275,7 +295,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('Y', Tags.Items.RODS_WOODEN)
 				.pattern(" # ").pattern(" # ").pattern(" Y ")
 				.unlockedBy("has_wax", has(beesWax))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "torch_from_wax"));
+				.save(helper, ForestryConstants.forestry("torch_from_wax"));
 		ShapedRecipeBuilder.shaped(ApicultureItems.WAX_CAST)
 				.define('#', beesWax)
 				.pattern("###").pattern("# #").pattern("###")
@@ -304,7 +324,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('#', Tags.Items.RODS_WOODEN)
 				.pattern("  B").pattern(" # ").pattern("#  ")
 				.unlockedBy("has_bronze", has(ForestryTags.Items.INGOTS_BRONZE)).save(helper);
-		ShapedRecipeBuilder.shaped(ArboricultureBlocks.TREE_CHEST.block())
+		ShapedRecipeBuilder.shaped(CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.ARBORIST_CHEST))
 				.define('#', Tags.Items.GLASS)
 				.define('X', ItemTags.SAPLINGS)
 				.define('Y', Tags.Items.CHESTS_WOODEN)
@@ -313,7 +333,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerWoodRecipes(Consumer<FinishedRecipe> helper) {
-		IWoodAccess woodAccess = TreeManager.woodAccess;
+		IWoodAccess woodAccess = WoodAccess.INSTANCE;
 		List<IWoodType> woodTypes = woodAccess.getRegisteredWoodTypes();
 
 		for (IWoodType woodType : woodTypes) {
@@ -331,7 +351,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 			Block stairs = woodAccess.getBlock(woodType, WoodBlockKind.STAIRS, false).getBlock();
 			Block fireproofStairs = woodAccess.getBlock(woodType, WoodBlockKind.STAIRS, true).getBlock();
 
-			if (woodType instanceof EnumForestryWoodType) {
+			if (woodType instanceof ForestryWoodType) {
 				ShapelessRecipeBuilder.shapeless(planks, 4).requires(log).unlockedBy("has_log", has(log)).group("planks").save(helper);
 				ShapedRecipeBuilder.shaped(fence, 3).define('#', Tags.Items.RODS_WOODEN).define('W', planks).pattern("W#W").pattern("W#W").unlockedBy("has_planks", has(planks)).group("wooden_fence").save(helper);
 				ShapedRecipeBuilder.shaped(fencegate).define('#', Tags.Items.RODS_WOODEN).define('W', planks).pattern("#W#").pattern("#W#").unlockedBy("has_planks", has(planks)).group("wooden_fence_gate").save(helper);
@@ -353,18 +373,18 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		ItemLike waxCapsule = FluidsItems.CONTAINERS.get(EnumContainerType.CAPSULE);
 		ItemLike honeyDrop = ApicultureItems.HONEY_DROPS.get(EnumHoneyDrop.HONEY);
 
-		ShapedRecipeBuilder.shaped(FoodItems.AMBROSIA)
+		ShapedRecipeBuilder.shaped(ApicultureItems.AMBROSIA)
 				.define('#', ApicultureItems.HONEYDEW)
 				.define('X', ApicultureItems.ROYAL_JELLY)
 				.define('Y', waxCapsule)
 				.pattern("#Y#").pattern("XXX").pattern("###")
 				.unlockedBy("has royal_jelly", has(ApicultureItems.ROYAL_JELLY)).save(helper);
-		ShapedRecipeBuilder.shaped(FoodItems.HONEY_POT)
+		ShapedRecipeBuilder.shaped(ApicultureItems.HONEY_POT)
 				.define('#', honeyDrop)
 				.define('X', waxCapsule)
 				.pattern("# #").pattern(" X ").pattern("# #")
 				.unlockedBy("has_drop", has(honeyDrop)).save(helper);
-		ShapedRecipeBuilder.shaped(FoodItems.HONEYED_SLICE)
+		ShapedRecipeBuilder.shaped(ApicultureItems.HONEYED_SLICE)
 				.define('#', honeyDrop)
 				.define('X', Items.BREAD)
 				.pattern("###").pattern("#X#").pattern("###")
@@ -381,7 +401,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern("X#X").pattern("VYV").pattern("X#X")
 				.unlockedBy("has_bone", has(Tags.Items.BONES)).save(helper);
 
-		Block beeChest = ArboricultureBlocks.TREE_CHEST.block();
+		ItemLike beeChest = CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.ARBORIST_CHEST);
 		ShapedRecipeBuilder.shaped(BackpackItems.APIARIST_BACKPACK)
 				.define('#', ItemTags.WOOL)
 				.define('V', Tags.Items.RODS_WOODEN)
@@ -418,7 +438,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern("X#X").pattern("VYV").pattern("X#X")
 				.unlockedBy("has_feather", has(Tags.Items.FEATHERS)).save(helper);
 
-		Block butterflyChest = LepidopterologyBlocks.BUTTERFLY_CHEST.block();
+		ItemLike butterflyChest = CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.LEPIDOPTERIST_CHEST);
 		ShapedRecipeBuilder.shaped(BackpackItems.LEPIDOPTERIST_BACKPACK)
 				.define('#', ItemTags.WOOL)
 				.define('V', butterflyChest)
@@ -444,7 +464,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		ShapelessRecipeBuilder.shapeless(Items.CHARCOAL, 9)
 				.requires(ForestryTags.Items.CHARCOAL_BLOCK)
 				.unlockedBy("has_charcoal_block", has(ForestryTags.Items.CHARCOAL_BLOCK))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "charcoal_from_block"));
+				.save(helper, ForestryConstants.forestry("charcoal_from_block"));
 		ShapedRecipeBuilder.shaped(CharcoalBlocks.WOOD_PILE.block())
 				.define('L', ItemTags.LOGS)
 				.pattern("LL").pattern("LL")
@@ -455,11 +475,11 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		ShapelessRecipeBuilder.shapeless(CharcoalBlocks.WOOD_PILE.block())
 				.requires(CharcoalBlocks.WOOD_PILE_DECORATIVE.block())
 				.unlockedBy("has_decorative", has(CharcoalBlocks.WOOD_PILE_DECORATIVE.block()))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "wood_pile_from_decorative"));
+				.save(helper, ForestryConstants.forestry("wood_pile_from_decorative"));
 	}
 
 	private void registerClimatologyRecipes(Consumer<FinishedRecipe> helper) {
-
+/*
 		ShapedRecipeBuilder.shaped(ClimatologyBlocks.HABITATFORMER.block())
 				.define('S', CoreItems.STURDY_CASING)
 				.define('G', Tags.Items.GLASS)
@@ -476,7 +496,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('I', ForestryTags.Items.INGOTS_BRONZE)
 				.define('D', Tags.Items.GEMS_DIAMOND)
 				.pattern("IPI").pattern("IPI").pattern("DGD")
-				.unlockedBy("has_diamond", has(Tags.Items.GEMS_DIAMOND)).save(helper);
+				.unlockedBy("has_diamond", has(Tags.Items.GEMS_DIAMOND)).save(helper);*/
 	}
 
 	private void registerCoreRecipes(Consumer<FinishedRecipe> helper) {
@@ -486,61 +506,61 @@ public class ForestryRecipeProvider extends RecipeProvider {
 						0.5F,
 						200)
 				.unlockedBy("has_apatite_ore", has(ForestryTags.Items.ORES_APATITE))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "apatite_from_smelting_apatite_ore"));
+				.save(helper, ForestryConstants.forestry("apatite_from_smelting_apatite_ore"));
 		SimpleCookingRecipeBuilder.blasting(
 						Ingredient.of(ForestryTags.Items.ORES_APATITE),
 						CoreItems.APATITE,
 						0.5F,
 						100)
 				.unlockedBy("has_apatite_ore", has(ForestryTags.Items.ORES_APATITE))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "apatite_from_blasting_apatite_ore"));
+				.save(helper, ForestryConstants.forestry("apatite_from_blasting_apatite_ore"));
 		SimpleCookingRecipeBuilder.smelting(
 						Ingredient.of(ForestryTags.Items.ORES_TIN),
 						CoreItems.INGOT_TIN,
 						0.5F,
 						200)
 				.unlockedBy("has_tin_ore", has(ForestryTags.Items.ORES_TIN))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "tin_ingot_from_smelting_tin_ore"));
+				.save(helper, ForestryConstants.forestry("tin_ingot_from_smelting_tin_ore"));
 		SimpleCookingRecipeBuilder.blasting(
 						Ingredient.of(ForestryTags.Items.ORES_TIN),
 						CoreItems.INGOT_TIN,
 						0.5F,
 						100)
 				.unlockedBy("has_tin_ore", has(ForestryTags.Items.ORES_TIN))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "tin_ingot_from_blasting_tin_ore"));
+				.save(helper, ForestryConstants.forestry("tin_ingot_from_blasting_tin_ore"));
 		SimpleCookingRecipeBuilder.smelting(
 						Ingredient.of(ForestryTags.Items.RAW_MATERIALS_TIN),
 						CoreItems.INGOT_TIN,
 						0.5F,
 						200)
 				.unlockedBy("has_raw_tin", has(ForestryTags.Items.RAW_MATERIALS_TIN))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "tin_ingot_from_smelting_raw_tin"));
+				.save(helper, ForestryConstants.forestry("tin_ingot_from_smelting_raw_tin"));
 		SimpleCookingRecipeBuilder.blasting(
 						Ingredient.of(ForestryTags.Items.RAW_MATERIALS_TIN),
 						CoreItems.INGOT_TIN,
 						0.5F,
 						100)
 				.unlockedBy("has_raw_tin", has(ForestryTags.Items.RAW_MATERIALS_TIN))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "tin_ingot_from_blasting_raw_tin"));
+				.save(helper, ForestryConstants.forestry("tin_ingot_from_blasting_raw_tin"));
 		SimpleCookingRecipeBuilder.smelting(
 						Ingredient.of(CoreItems.PEAT),
 						CoreItems.ASH,
 						0.0F,
 						200)
 				.unlockedBy("has_peat", has(CoreItems.PEAT))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "ash_from_peat_blasting"));
+				.save(helper, ForestryConstants.forestry("ash_from_peat_blasting"));
 		{
 			ShapelessRecipeBuilder.shapeless(CoreItems.RAW_TIN, 9)
 					.requires(CoreBlocks.RAW_TIN_BLOCK)
 					.unlockedBy(getHasName(CoreBlocks.RAW_TIN_BLOCK), has(CoreBlocks.RAW_TIN_BLOCK))
-					.save(helper, new ResourceLocation(Constants.MOD_ID, "raw_tin"));
+					.save(helper, ForestryConstants.forestry("raw_tin"));
 			ShapedRecipeBuilder.shaped(CoreBlocks.RAW_TIN_BLOCK)
 					.define('#', CoreItems.RAW_TIN)
 					.pattern("###")
 					.pattern("###")
 					.pattern("###")
 					.unlockedBy(getHasName(CoreItems.RAW_TIN), has(CoreItems.RAW_TIN))
-					.save(helper, new ResourceLocation(Constants.MOD_ID, "raw_tin_block"));
+					.save(helper, ForestryConstants.forestry("raw_tin_block"));
 		}
 
 		//don't need conditions here generally since core is always enabled
@@ -589,7 +609,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 						.define('X', Items.COPPER_INGOT)
 						.pattern(" # ").pattern("#X#").pattern(" # ")
 						.unlockedBy("has_bronze", has(ForestryTags.Items.INGOTS_BRONZE))::save)
-				.build(helper, new ResourceLocation(Constants.MOD_ID, "gear_bronze"));
+				.build(helper, ForestryConstants.forestry("gear_bronze"));
 		ConditionalRecipe.builder()
 				.addCondition(new NotCondition(new TagEmptyCondition("forge", "gears/stone")))
 				.addRecipe(
@@ -604,7 +624,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 						.define('X', Items.COPPER_INGOT)
 						.pattern(" # ").pattern("#X#").pattern(" # ")
 						.unlockedBy("has_copper", has(Items.COPPER_INGOT))::save)
-				.build(helper, new ResourceLocation(Constants.MOD_ID, "gear_copper"));
+				.build(helper, ForestryConstants.forestry("gear_copper"));
 		ConditionalRecipe.builder()
 				.addCondition(new NotCondition(new TagEmptyCondition("forge", "gears/stone")))
 				.addRecipe(
@@ -619,7 +639,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 						.define('X', Items.COPPER_INGOT)
 						.pattern(" # ").pattern("#X#").pattern(" # ")
 						.unlockedBy("has_tin", has(ForestryTags.Items.INGOTS_TIN))::save)
-				.build(helper, new ResourceLocation(Constants.MOD_ID, "gear_tin"));
+				.build(helper, ForestryConstants.forestry("gear_tin"));
 
 		ShapelessRecipeBuilder.shapeless(CoreItems.INGOT_BRONZE)
 				.requires(ForestryTags.Items.INGOTS_TIN)
@@ -627,7 +647,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.requires(Items.COPPER_INGOT)
 				.requires(Items.COPPER_INGOT)
 				.unlockedBy("has_tin", has(ForestryTags.Items.INGOTS_TIN))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "ingot_bronze_alloying"));
+				.save(helper, ForestryConstants.forestry("ingot_bronze_alloying"));
 
 		ShapelessRecipeBuilder.shapeless(CoreItems.APATITE, 9)
 				.requires(ForestryTags.Items.STORAGE_BLOCKS_APATITE)
@@ -667,7 +687,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('#', CoreItems.CRAFTING_MATERIALS.get(EnumCraftingMaterial.SILK_WISP))
 				.pattern(" # ").pattern(" # ").pattern(" # ")
 				.unlockedBy("has_wisp", has(CoreItems.CRAFTING_MATERIALS.get(EnumCraftingMaterial.SILK_WISP)))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "string_from_wisp"));
+				.save(helper, ForestryConstants.forestry("string_from_wisp"));
 		ShapedRecipeBuilder.shaped(CoreItems.STURDY_CASING)
 				.define('#', ForestryTags.Items.INGOTS_BRONZE)
 				.pattern("###").pattern("# #").pattern("###")
@@ -676,7 +696,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('#', CoreItems.CRAFTING_MATERIALS.get(EnumCraftingMaterial.SILK_WISP))
 				.pattern("# #").pattern(" # ").pattern("# #")
 				.unlockedBy("has_wisp", has(CoreItems.CRAFTING_MATERIALS.get(EnumCraftingMaterial.SILK_WISP)))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "cobweb_from_wisp"));
+				.save(helper, ForestryConstants.forestry("cobweb_from_wisp"));
 		ShapedRecipeBuilder.shaped(CoreItems.WRENCH)
 				.define('#', ForestryTags.Items.INGOTS_BRONZE)
 				.pattern("# #").pattern(" # ").pattern(" # ")
@@ -688,28 +708,28 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('X', Tags.Items.CROPS_WHEAT)
 				.pattern(" X ").pattern("X#X").pattern(" X ")
 				.unlockedBy("has_wheat", has(Tags.Items.CROPS_WHEAT))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "compost_wheat"));
+				.save(helper, ForestryConstants.forestry("compost_wheat"));
 
 		ShapedRecipeBuilder.shaped(CoreItems.COMPOST, 1)
 				.define('#', Blocks.DIRT)
 				.define('X', ForestryTags.Items.DUSTS_ASH)
 				.pattern(" X ").pattern("X#X").pattern(" X ")
 				.unlockedBy("has_ash", has(ForestryTags.Items.DUSTS_ASH))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "compost_ash"));
+				.save(helper, ForestryConstants.forestry("compost_ash"));
 
 		ShapedRecipeBuilder.shaped(CoreItems.FERTILIZER_COMPOUND, 8)
 				.define('#', ItemTags.SAND)
 				.define('X', ForestryTags.Items.GEMS_APATITE)
 				.pattern(" # ").pattern(" X ").pattern(" # ")
 				.unlockedBy("has_apatite", has(ForestryTags.Items.GEMS_APATITE))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "fertilizer_apatite"));
+				.save(helper, ForestryConstants.forestry("fertilizer_apatite"));
 
 		ShapedRecipeBuilder.shaped(CoreItems.FERTILIZER_COMPOUND, 16)
 				.define('#', ForestryTags.Items.DUSTS_ASH)
 				.define('X', ForestryTags.Items.GEMS_APATITE)
 				.pattern("###").pattern("#X#").pattern("###")
 				.unlockedBy("has_apatite", has(ForestryTags.Items.GEMS_APATITE))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "fertilizer_ash"));
+				.save(helper, ForestryConstants.forestry("fertilizer_ash"));
 
 		// Humus
 		ShapedRecipeBuilder.shaped(CoreBlocks.HUMUS, 8)
@@ -717,14 +737,14 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('X', CoreItems.COMPOST)
 				.pattern("###").pattern("#X#").pattern("###")
 				.unlockedBy("has_compost", has(CoreItems.COMPOST))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "humus_compost"));
+				.save(helper, ForestryConstants.forestry("humus_compost"));
 
 		ShapedRecipeBuilder.shaped(CoreBlocks.HUMUS, 8)
 				.define('#', Blocks.DIRT)
 				.define('X', CoreItems.FERTILIZER_COMPOUND)
 				.pattern("###").pattern("#X#").pattern("###")
 				.unlockedBy("has_fertilizer", has(CoreItems.FERTILIZER_COMPOUND))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "humus_fertilizer"));
+				.save(helper, ForestryConstants.forestry("humus_fertilizer"));
 
 		TriConsumer<Integer, ItemStack, String> bogRecipe = (amount, container, name) -> ShapedRecipeBuilder.shaped(CoreBlocks.BOG_EARTH, amount)
 				.define('#', Blocks.DIRT)
@@ -732,14 +752,14 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('Y', ItemTags.SAND)
 				.pattern("#Y#").pattern("YXY").pattern("#Y#")
 				.unlockedBy("has_sand", has(ItemTags.SAND))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "bog_earth_" + name));
+				.save(helper, ForestryConstants.forestry("bog_earth_" + name));
 
 		// Bog earth
 		bogRecipe.accept(6, new ItemStack(Items.WATER_BUCKET), "bucket");
 
-		ItemStack canWater = FluidsItems.getContainer(EnumContainerType.CAN, Fluids.WATER);
-		ItemStack waxCapsuleWater = FluidsItems.getContainer(EnumContainerType.CAPSULE, Fluids.WATER);
-		ItemStack refractoryWater = FluidsItems.getContainer(EnumContainerType.REFRACTORY, Fluids.WATER);
+		ItemStack canWater = getContainer(EnumContainerType.CAN, Fluids.WATER);
+		ItemStack waxCapsuleWater = getContainer(EnumContainerType.CAPSULE, Fluids.WATER);
+		ItemStack refractoryWater = getContainer(EnumContainerType.REFRACTORY, Fluids.WATER);
 		bogRecipe.accept(8, canWater, "can");
 		bogRecipe.accept(8, waxCapsuleWater, "wax_capsule");
 		bogRecipe.accept(8, refractoryWater, "refractory");
@@ -750,19 +770,19 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern(" # ")
 				.pattern("# #")
 				.unlockedBy("has_tin", has(ForestryTags.Items.INGOTS_TIN))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "can"));
+				.save(helper, ForestryConstants.forestry("can"));
 		ShapedRecipeBuilder.shaped(FluidsItems.CONTAINERS.get(EnumContainerType.CAPSULE), 4)
 				.define('#', CoreItems.BEESWAX)
 				.pattern(" # ")
 				.pattern("# #")
 				.unlockedBy("has_beeswax", has(CoreItems.BEESWAX))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "capsule"));
+				.save(helper, ForestryConstants.forestry("capsule"));
 		ShapedRecipeBuilder.shaped(FluidsItems.CONTAINERS.get(EnumContainerType.REFRACTORY), 4)
 				.define('#', CoreItems.REFRACTORY_WAX)
 				.pattern(" # ")
 				.pattern("# #")
 				.unlockedBy("has_refractory_wax", has(CoreItems.REFRACTORY_WAX))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "refractory_capsule"));
+				.save(helper, ForestryConstants.forestry("refractory_capsule"));
 	}
 
 	private void registerBookRecipes(Consumer<FinishedRecipe> helper) {
@@ -770,17 +790,17 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.requires(Items.BOOK)
 				.requires(ApicultureItems.HONEY_DROPS.get(EnumHoneyDrop.HONEY))
 				.unlockedBy("has_book", has(Items.BOOK))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "foresters_manual_honeydrop"));
+				.save(helper, ForestryConstants.forestry("foresters_manual_honeydrop"));
 		ShapelessRecipeBuilder.shapeless(CoreItems.FORESTERS_MANUAL)
 				.requires(Items.BOOK)
 				.requires(ItemTags.SAPLINGS)
 				.unlockedBy("has_book", has(Items.BOOK))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "foresters_manual_sapling"));
+				.save(helper, ForestryConstants.forestry("foresters_manual_sapling"));
 		ShapelessRecipeBuilder.shapeless(CoreItems.FORESTERS_MANUAL)
 				.requires(Items.BOOK)
 				.requires(LepidopterologyItems.BUTTERFLY_GE)
 				.unlockedBy("has_book", has(Items.BOOK))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "foresters_manual_butterfly"));
+				.save(helper, ForestryConstants.forestry("foresters_manual_butterfly"));
 	}
 
 	private EnumElectronTube getElectronTube(BlockTypePlanter planter) {
@@ -815,32 +835,33 @@ public class ForestryRecipeProvider extends RecipeProvider {
 			ShapelessRecipeBuilder.shapeless(managed)
 					.requires(manual)
 					.unlockedBy("has_manual", has(manual))
-					.save(helper, new ResourceLocation(Constants.MOD_ID, RegistryNameFinder.getRegistryName(managed).getPath() + "_from_manual"));
+					.save(helper, ForestryConstants.forestry(ModUtil.getRegistryName(managed).getPath() + "_from_manual"));
 		}
 	}
 
 	private void registerDatabaseRecipes(Consumer<FinishedRecipe> helper) {
 		//TODO create FallbackIngredient implementation
-		List<FeatureBlock<?, ?>> features = Lists.newArrayList(ApicultureBlocks.BEE_CHEST, ArboricultureBlocks.TREE_CHEST, LepidopterologyBlocks.BUTTERFLY_CHEST);
+		Collection<? extends Block> features = CoreBlocks.NATURALIST_CHEST.getBlocks();
 		List<Ingredient> possibleSpecials = Lists.newArrayList(Ingredient.of(ApicultureItems.ROYAL_JELLY.item()), Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.PLUM).item()), Ingredient.of(Tags.Items.CHESTS_WOODEN));
 		Ingredient possibleSpecial = Ingredient.merge(possibleSpecials);
-		for (FeatureBlock<?, ?> featureBlock1 : features) {
-			for (FeatureBlock<?, ?> featureBlock2 : features) {
-				if (featureBlock1.equals(featureBlock2)) {
+
+		for (Block featureBlock1 : features) {
+			for (Block featureBlock2 : features) {
+				if (featureBlock1 == featureBlock2) {
 					continue;
 				}
 
 				ShapedRecipeBuilder.shaped(DatabaseBlocks.DATABASE.block())
 						.define('#', CoreItems.PORTABLE_ALYZER)
 						.define('C', possibleSpecial)
-						.define('S', featureBlock1.block())
-						.define('F', featureBlock2.block())
+						.define('S', featureBlock1)
+						.define('F', featureBlock2)
 						.define('W', ItemTags.PLANKS)
 						.define('I', ForestryTags.Items.INGOTS_BRONZE)
 						.define('Y', CoreItems.STURDY_CASING)
 						.pattern("I#I").pattern("FYS").pattern("WCW")
 						.unlockedBy("has_casing", has(CoreItems.STURDY_CASING))
-						.save(helper, new ResourceLocation(Constants.MOD_ID, "database_" + featureBlock1.getIdentifier() + "_" + featureBlock2.getIdentifier()));
+						.save(helper, ForestryConstants.forestry("database_" + path(featureBlock1) + "_" + path(featureBlock2)));
 			}
 		}
 	}
@@ -951,7 +972,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 			/*if (menuType == EnumContainerType.JAR || menuType == EnumContainerType.GLASS) {
 				continue;
 			}*/
-			ItemStack filled = FluidsItems.getContainer(containerType, milk);
+			ItemStack filled = getContainer(containerType, milk);
 			ShapedRecipeBuilder.shaped(Items.CAKE)
 					.define('A', StrictNBTIngredient.of(filled))
 					.define('B', Items.SUGAR)
@@ -959,14 +980,14 @@ public class ForestryRecipeProvider extends RecipeProvider {
 					.define('E', Items.EGG)
 					.pattern("AAA").pattern("BEB").pattern("CCC")
 					.unlockedBy("has_wheat", has(Items.WHEAT))
-					.save(helper, new ResourceLocation(Constants.MOD_ID, "cake_" + containerType.getSerializedName()));
+					.save(helper, ForestryConstants.forestry("cake_" + containerType.getSerializedName()));
 		}
 	}
 
 	private void registerLepidopterologyRecipes(Consumer<FinishedRecipe> helper) {
 		//TODO tag?
 		//TODO tag?
-		ShapedRecipeBuilder.shaped(LepidopterologyBlocks.BUTTERFLY_CHEST.block())
+		ShapedRecipeBuilder.shaped(CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.LEPIDOPTERIST_CHEST))
 				.define('#', Tags.Items.GLASS)
 				.define('X', LepidopterologyItems.BUTTERFLY_GE)    //TODO tag?
 				.define('Y', Tags.Items.CHESTS_WOODEN)
@@ -997,7 +1018,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('#', Ingredient.of(emptiedLetter))
 				.pattern(" # ").pattern(" # ").pattern(" # ")
 				.unlockedBy("has_paper", has(Items.PAPER))
-				.save(helper, new ResourceLocation(Constants.MOD_ID, "paper_from_letters"));
+				.save(helper, ForestryConstants.forestry("paper_from_letters"));
 		ShapedRecipeBuilder.shaped(MailBlocks.BASE.get(BlockTypeMail.TRADE_STATION).block())
 				.define('#', CoreItems.ELECTRON_TUBES.get(EnumElectronTube.BRONZE))
 				.define('X', Tags.Items.CHESTS_WOODEN)
@@ -1042,6 +1063,10 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern("C")
 				.unlockedBy("has_book", has(Items.BOOK))
 				.save(output);
+	}
+
+	private void registerSolderingRecipes(Consumer<FinishedRecipe> output) {
+
 	}
 
 	@Override

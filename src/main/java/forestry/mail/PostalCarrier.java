@@ -12,14 +12,17 @@ package forestry.mail;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.ForestryConstants;
+import forestry.api.client.IForestryClientApi;
 import forestry.api.mail.EnumAddressee;
 import forestry.api.mail.IMailAddress;
 import forestry.api.mail.IPostOffice;
@@ -27,18 +30,16 @@ import forestry.api.mail.IPostalCarrier;
 import forestry.api.mail.IPostalState;
 import forestry.api.mail.ITradeStation;
 import forestry.api.mail.PostManager;
-import forestry.core.render.TextureManagerForestry;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.PlayerUtil;
 import forestry.mail.network.packets.PacketPOBoxInfoResponse;
 
 public class PostalCarrier implements IPostalCarrier {
-
-	private final String iconID;
+	private final ResourceLocation iconID;
 	private final EnumAddressee type;
 
 	public PostalCarrier(EnumAddressee type) {
-		iconID = "mail/carrier." + type;
+		this.iconID = ForestryConstants.forestry("mail/carrier." + type);
 		this.type = type;
 	}
 
@@ -56,7 +57,7 @@ public class PostalCarrier implements IPostalCarrier {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public TextureAtlasSprite getSprite() {
-		return TextureManagerForestry.INSTANCE.getDefault(iconID);
+		return IForestryClientApi.INSTANCE.getTextureManager().getSprite(iconID);
 	}
 
 	@Override

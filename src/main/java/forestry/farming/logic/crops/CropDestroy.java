@@ -25,8 +25,8 @@ import net.minecraft.server.level.ServerLevel;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.ItemStackUtil;
 
+// todo ensure this works correctly
 public class CropDestroy extends Crop {
-
 	protected final BlockState blockState;
 	@Nullable
 	protected final BlockState replantState;
@@ -50,12 +50,8 @@ public class CropDestroy extends Crop {
 	}
 
 	@Override
-	protected NonNullList<ItemStack> harvestBlock(Level level, BlockPos pos) {
-		Block block = blockState.getBlock();
-		List<ItemStack> harvested = Block.getDrops(blockState, (ServerLevel) level, pos, level.getBlockEntity(pos));    //TODO - method safety
-		NonNullList<ItemStack> nnHarvested = NonNullList.of(ItemStack.EMPTY, harvested.toArray(new ItemStack[0]));    //TODO very messy
-		//float chance = ForgeEventFactory.fireBlockHarvesting(nnHarvested, level, pos, blockState, 0, 1.0F, false, null);
-		//TODO: Fix dropping
+	protected List<ItemStack> harvestBlock(Level level, BlockPos pos) {
+		List<ItemStack> harvested = Block.getDrops(blockState, (ServerLevel) level, pos, level.getBlockEntity(pos));
 		float chance = 1.0F;
 		boolean removedSeed = germling.isEmpty();
 		Iterator<ItemStack> dropIterator = harvested.iterator();
@@ -84,7 +80,7 @@ public class CropDestroy extends Crop {
 		if (!(harvested instanceof NonNullList)) {
 			return NonNullList.of(ItemStack.EMPTY, harvested.toArray(new ItemStack[0]));
 		} else {
-			return (NonNullList<ItemStack>) harvested;
+			return harvested;
 		}
 	}
 

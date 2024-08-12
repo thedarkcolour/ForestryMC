@@ -14,8 +14,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
+import forestry.api.ForestryConstants;
 import forestry.api.core.IBlockSubtype;
-import forestry.core.config.Constants;
 import forestry.core.utils.ResourceUtil;
 
 public enum EnumFarmBlockType implements IBlockSubtype {
@@ -42,28 +42,29 @@ public enum EnumFarmBlockType implements IBlockSubtype {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void gatherSprites(TextureStitchEvent.Pre event) {
-		event.addSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/plain"));
-		event.addSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/reverse"));
-		event.addSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/top"));
-		event.addSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/band"));
-		event.addSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/gears"));
-		event.addSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/hatch"));
-		event.addSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/valve"));
-		event.addSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/control"));
+		// todo make sure these sprites aren't being stitched into all atlases
+		event.addSprite(ForestryConstants.forestry("block/farm/plain"));
+		event.addSprite(ForestryConstants.forestry("block/farm/reverse"));
+		event.addSprite(ForestryConstants.forestry("block/farm/top"));
+		event.addSprite(ForestryConstants.forestry("block/farm/band"));
+		event.addSprite(ForestryConstants.forestry("block/farm/gears"));
+		event.addSprite(ForestryConstants.forestry("block/farm/hatch"));
+		event.addSprite(ForestryConstants.forestry("block/farm/valve"));
+		event.addSprite(ForestryConstants.forestry("block/farm/control"));
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static void fillSprites(TextureStitchEvent.Post event) {
 		TextureAtlas map = event.getAtlas();
 		sprites = ImmutableList.of(
-			map.getSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/plain")),
-			map.getSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/reverse")),
-			map.getSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/top")),
-			map.getSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/band")),
-			map.getSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/gears")),
-			map.getSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/hatch")),
-			map.getSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/valve")),
-			map.getSprite(new ResourceLocation(Constants.MOD_ID, "block/farm/control"))
+			map.getSprite(ForestryConstants.forestry("block/farm/plain")),
+			map.getSprite(ForestryConstants.forestry("block/farm/reverse")),
+			map.getSprite(ForestryConstants.forestry("block/farm/top")),
+			map.getSprite(ForestryConstants.forestry("block/farm/band")),
+			map.getSprite(ForestryConstants.forestry("block/farm/gears")),
+			map.getSprite(ForestryConstants.forestry("block/farm/hatch")),
+			map.getSprite(ForestryConstants.forestry("block/farm/valve")),
+			map.getSprite(ForestryConstants.forestry("block/farm/control"))
 		);
 	}
 

@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.api.core.IBlockSubtype;
 
 public class FeatureBlockGroup<B extends Block, S extends IBlockSubtype> extends FeatureGroup<FeatureBlockGroup.Builder<B, S>, FeatureBlock<B, BlockItem>, S> {
-
 	private FeatureBlockGroup(Builder<B, S> builder) {
 		super(builder);
 	}
@@ -42,7 +41,7 @@ public class FeatureBlockGroup<B extends Block, S extends IBlockSubtype> extends
 
 	@Nullable
 	public BlockState findState(String typeName) {
-		Optional<FeatureBlock> block = featureByType.entrySet().stream()
+		Optional<FeatureBlock<?, ?>> block = featureByType.entrySet().stream()
 				.filter(e -> e.getKey().getSerializedName().equals(typeName))
 				.findFirst()
 				.flatMap(e -> Optional.of(e.getValue()));

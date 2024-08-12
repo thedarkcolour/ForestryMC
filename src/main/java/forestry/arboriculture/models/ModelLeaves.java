@@ -10,33 +10,34 @@
  ******************************************************************************/
 package forestry.arboriculture.models;
 
-import forestry.arboriculture.blocks.BlockAbstractLeaves;
-import forestry.arboriculture.blocks.BlockForestryLeaves;
-import forestry.arboriculture.features.ArboricultureBlocks;
-import forestry.arboriculture.genetics.TreeHelper;
-import forestry.arboriculture.tiles.TileLeaves;
-import forestry.core.models.ModelBlockCached;
-import forestry.core.models.baker.ModelBaker;
-import forestry.core.proxy.Proxies;
-import forestry.core.utils.ResourceUtil;
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
+import com.mojang.math.Vector3f;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
-
-import com.mojang.math.Vector3f;
+import forestry.api.arboriculture.ITreeSpecies;
+import forestry.api.client.IForestryClientApi;
+import forestry.arboriculture.blocks.BlockAbstractLeaves;
+import forestry.arboriculture.blocks.BlockForestryLeaves;
+import forestry.arboriculture.features.ArboricultureBlocks;
+import forestry.arboriculture.tiles.TileLeaves;
+import forestry.core.models.ModelBlockCached;
+import forestry.core.models.baker.ModelBaker;
+import forestry.core.utils.ResourceUtil;
+import forestry.core.utils.SpeciesUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelLeaves extends ModelBlockCached<BlockForestryLeaves, ModelLeaves.Key> {
@@ -82,12 +83,12 @@ public class ModelLeaves extends ModelBlockCached<BlockForestryLeaves, ModelLeav
 	}
 
 	@Override
-	protected Key getInventoryKey(ItemStack itemStack) {
+	protected Key getInventoryKey(ItemStack stack) {
 		TileLeaves leaves = new TileLeaves(BlockPos.ZERO, ArboricultureBlocks.LEAVES.defaultState());
-		if (itemStack.getTag() != null) {
-			leaves.load(itemStack.getTag());
+		if (stack.getTag() != null) {
+			leaves.load(stack.getTag());
 		} else {
-			leaves.setTree(TreeHelper.getRoot().getIndividualTemplates().get(0));
+			leaves.setTree(SpeciesUtil.TREE_TYPE.get().getDefaultSpecies().createIndividual());
 		}
 		return getKey(leaves.getModelData());
 	}
@@ -98,14 +99,18 @@ public class ModelLeaves extends ModelBlockCached<BlockForestryLeaves, ModelLeav
 	}
 
 	private Key getKey(ModelData extraData) {
-		boolean fancy = Proxies.render.fancyGraphicsEnabled();
+		boolean fancy = Minecraft.useFancyGraphics();
 
-		ResourceLocation leafLocation = TileLeaves.getLeaveSprite(extraData, fancy);
-		ResourceLocation fruitLocation = TileLeaves.getFruitSprite(extraData);
+		ITreeSpecies species = extraData.get(TileLeaves.PROPERTY_SPECIES);
+		if (species == null) {
+			species = SpeciesUtil.TREE_TYPE.get().getDefaultSpecies();
+		}
+		ResourceLocation leafLocation = IForestryClientApi.INSTANCE.getTreeManager()
+				.getLeafSprite(species)
+				.get(Boolean.TRUE.equals(extraData.get(TileLeaves.PROPERTY_POLLINATED)), fancy);
+		ResourceLocation fruitLocation = extraData.get(TileLeaves.PROPERTY_FRUIT_TEXTURE);
 
-		return new Key(ResourceUtil.getBlockSprite(leafLocation),
-			fruitLocation != null ? ResourceUtil.getBlockSprite(fruitLocation) : null,
-			fancy);
+		return new Key(ResourceUtil.getBlockSprite(leafLocation), fruitLocation != null ? ResourceUtil.getBlockSprite(fruitLocation) : null, fancy);
 	}
 
 	@Override

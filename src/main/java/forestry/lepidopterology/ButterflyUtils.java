@@ -5,13 +5,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 import forestry.Forestry;
-import forestry.api.lepidopterology.ButterflyManager;
 import forestry.api.lepidopterology.genetics.IButterfly;
+import forestry.core.utils.SpeciesUtil;
 
 public class ButterflyUtils {
 
 	static boolean attemptButterflySpawn(Level world, IButterfly butterfly, BlockPos pos) {
-		Mob entityLiving = ButterflyManager.butterflyRoot.spawnButterflyInWorld(world, butterfly.copy(), pos.getX(), pos.getY() + 0.1f, pos.getZ());
+		Mob entityLiving = SpeciesUtil.BUTTERFLY_TYPE.get().spawnButterflyInWorld(world, butterfly.copy(), pos.getX(), pos.getY() + 0.1f, pos.getZ());
 		Forestry.LOGGER.trace("Spawned a butterfly '{}' at {}/{}/{}.", butterfly.getDisplayName(), pos.getX(), pos.getY(), pos.getZ());
 		return entityLiving != null;
 	}

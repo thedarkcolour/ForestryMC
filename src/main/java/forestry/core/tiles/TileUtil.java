@@ -134,19 +134,17 @@ public abstract class TileUtil {
 			return null;
 		}
 
-
 		LazyOptional<IItemHandler> itemCap = tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
 		if (itemCap.isPresent()) {
 			return itemCap.orElse(null);
 		}
 
-
-		if (tile instanceof WorldlyContainer) {
-			return new SidedInvWrapper((WorldlyContainer) tile, side);
+		if (tile instanceof WorldlyContainer worldly) {
+			return new SidedInvWrapper(worldly, side);
 		}
 
-		if (tile instanceof Container) {
-			return new InvWrapper((Container) tile);
+		if (tile instanceof Container container) {
+			return new InvWrapper(container);
 		}
 
 		return null;

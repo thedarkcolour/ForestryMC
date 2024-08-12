@@ -36,11 +36,11 @@ public class InventoryBottler extends InventoryAdapterTile<TileBottler> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_INPUT_EMPTY_CONTAINER) {
-			return FluidHelper.isFillableContainerWithRoom(itemStack);
+			return FluidHelper.isFillableContainerWithRoom(stack);
 		} else if (slotIndex == SLOT_INPUT_FULL_CONTAINER) {
-			Optional<FluidStack> fluidStack = FluidUtil.getFluidContained(itemStack);
+			Optional<FluidStack> fluidStack = FluidUtil.getFluidContained(stack);
 			return fluidStack.map(f -> ForgeRegistries.FLUIDS.containsValue(f.getFluid())).orElse(false);
 		}
 		return false;

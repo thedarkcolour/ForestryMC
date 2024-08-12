@@ -15,8 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import forestry.api.farming.DefaultFarmListener;
-import forestry.api.farming.FarmDirection;
 import forestry.api.farming.IFarmListener;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.multiblock.IFarmComponent;
@@ -24,7 +22,6 @@ import forestry.farming.blocks.BlockFarm;
 import forestry.farming.features.FarmingTiles;
 
 public class TileFarmControl extends TileFarm implements IFarmComponent.Listener {
-
 	private final IFarmListener farmListener;
 
 	public TileFarmControl(BlockPos pos, BlockState state) {
@@ -37,7 +34,7 @@ public class TileFarmControl extends TileFarm implements IFarmComponent.Listener
 		return farmListener;
 	}
 
-	private static class ControlFarmListener extends DefaultFarmListener {
+	private static class ControlFarmListener implements IFarmListener {
 		private final TileFarmControl tile;
 
 		public ControlFarmListener(TileFarmControl tile) {
@@ -45,8 +42,8 @@ public class TileFarmControl extends TileFarm implements IFarmComponent.Listener
 		}
 
 		@Override
-		public boolean cancelTask(IFarmLogic logic, FarmDirection direction) {
-			for (Direction facing : new Direction[]{Direction.UP, Direction.DOWN, direction.getFacing()}) {
+		public boolean cancelTask(IFarmLogic logic, Direction direction) {
+			for (Direction facing : new Direction[]{Direction.UP, Direction.DOWN, direction}) {
 				BlockPos pos = tile.getBlockPos();
 				Level world = tile.getWorldObj();
 				BlockState blockState = world.getBlockState(pos.relative(facing));

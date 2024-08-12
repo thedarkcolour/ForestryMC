@@ -32,7 +32,7 @@ public class InventoryDatabaseAnalyzer extends InventoryAdapterTile<TileDatabase
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return isAlyzingFuel(itemStack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return isAlyzingFuel(stack);
 	}
 }

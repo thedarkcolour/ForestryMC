@@ -1,6 +1,8 @@
 package forestry.factory.recipes.jei.still;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.recipes.IStillRecipe;
 import forestry.core.config.Constants;
 import forestry.core.recipes.jei.ForestryRecipeCategory;
@@ -22,7 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class StillRecipeCategory extends ForestryRecipeCategory<IStillRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/still.png");
+	private static final ResourceLocation guiTexture = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/still.png");
 
 	private final IDrawable tankOverlay;
 	private final IDrawable icon;

@@ -8,7 +8,6 @@ import java.util.Set;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -17,83 +16,84 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import forestry.api.arboriculture.EnumForestryWoodType;
+import forestry.api.ForestryConstants;
+import forestry.api.ForestryTags;
 import forestry.apiculture.features.ApicultureBlocks;
+import forestry.arboriculture.ForestryWoodType;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.CharcoalBlocks;
-import forestry.climatology.features.ClimatologyBlocks;
 import forestry.core.blocks.EnumResourceType;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
 import forestry.database.features.DatabaseBlocks;
 import forestry.factory.features.FactoryBlocks;
 import forestry.farming.blocks.BlockFarm;
 import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
-import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.mail.features.MailBlocks;
 import forestry.modules.features.FeatureBlockGroup;
 
 public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 	public ForestryBlockTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
-		super(generator, Constants.MOD_ID, existingFileHelper);
+		super(generator, ForestryConstants.MOD_ID, existingFileHelper);
 	}
 
 	@Override
 	protected void addTags() {
-		tag(ForestryTags.Blocks.MINEABLE_SCOOP);
-		tag(ForestryTags.Blocks.MINEABLE_GRAFTER);
+		// todo figure out what belongs in these tags?
+		tag(ForestryTags.Blocks.MINEABLE_SCOOP).add(ApicultureBlocks.BEEHIVE.blockArray());
+		tag(ForestryTags.Blocks.MINEABLE_GRAFTER).addTag(BlockTags.LEAVES);
 
 		for (EnumFarmMaterial material : EnumFarmMaterial.values()) {
 			tag(ForestryTags.Blocks.VALID_FARM_BASE).add(material.getBase());
 		}
 		tag(ForestryTags.Blocks.VALID_FARM_BASE).add(Blocks.SMOOTH_STONE);
 
-		{
-			tag(BlockTags.MINEABLE_WITH_AXE).add(ApicultureBlocks.BEE_CHEST.block());
-			tag(BlockTags.MINEABLE_WITH_AXE).add(LepidopterologyBlocks.BUTTERFLY_CHEST.block());
 
-			tag(BlockTags.MINEABLE_WITH_AXE).add(ArboricultureBlocks.TREE_CHEST.block());
-			tag(BlockTags.MINEABLE_WITH_AXE).add(CharcoalBlocks.WOOD_PILE.block());
-			tag(BlockTags.MINEABLE_WITH_AXE).add(ClimatologyBlocks.HABITATFORMER.block());
+		tag(BlockTags.MINEABLE_WITH_AXE)
+				.add(CoreBlocks.NATURALIST_CHEST.blockArray())
+				.add(CharcoalBlocks.WOOD_PILE.block());
 
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.APATITE_ORE.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.DEEPSLATE_APATITE_ORE.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.TIN_ORE.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.DEEPSLATE_TIN_ORE.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CoreBlocks.RAW_TIN_BLOCK.block());
+		tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.add(CoreBlocks.APATITE_ORE.block())
+				.add(CoreBlocks.DEEPSLATE_APATITE_ORE.block())
+				.add(CoreBlocks.TIN_ORE.block())
+				.add(CoreBlocks.DEEPSLATE_TIN_ORE.block())
+				.add(CoreBlocks.RAW_TIN_BLOCK.block())
+				.add(CharcoalBlocks.CHARCOAL.block())
+				.add(DatabaseBlocks.DATABASE.block());
 
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CharcoalBlocks.CHARCOAL.block());
-			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(DatabaseBlocks.DATABASE.block());
-
-			for (BlockFarm block : FarmingBlocks.FARM.getBlocks()) {
-				tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
-			}
-
-			for (Block block : union(CoreBlocks.RESOURCE_STORAGE, FactoryBlocks.PLAIN, FactoryBlocks.TESR, MailBlocks.BASE)) {
-				tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
-			}
-
-			tag(BlockTags.MINEABLE_WITH_SHOVEL).add(CoreBlocks.HUMUS.block());
-			tag(BlockTags.MINEABLE_WITH_SHOVEL).add(CoreBlocks.BOG_EARTH.block());
-			tag(BlockTags.MINEABLE_WITH_SHOVEL).add(CoreBlocks.PEAT.block());
-
-			for (Block block : union(
-					CoreBlocks.BASE,
-					ApicultureBlocks.ALVEARY, ApicultureBlocks.BASE,
-					ArboricultureBlocks.DOORS,
-					ArboricultureBlocks.PLANKS, ArboricultureBlocks.PLANKS_FIREPROOF, ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF,
-					ArboricultureBlocks.LOGS, ArboricultureBlocks.LOGS_FIREPROOF, ArboricultureBlocks.LOGS_VANILLA_FIREPROOF,
-					ArboricultureBlocks.FENCES, ArboricultureBlocks.FENCES_FIREPROOF, ArboricultureBlocks.FENCES_VANILLA_FIREPROOF)) {
-				tag(BlockTags.MINEABLE_WITH_AXE).add(block);
-			}
+		for (BlockFarm block : FarmingBlocks.FARM.getBlocks()) {
+			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
 		}
 
-		tag(BlockTags.MINEABLE_WITH_PICKAXE).addTag(ForestryTags.Blocks.ORES_TIN).addTag(ForestryTags.Blocks.ORES_APATITE).addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
+		for (Block block : union(CoreBlocks.RESOURCE_STORAGE, FactoryBlocks.PLAIN, FactoryBlocks.TESR, MailBlocks.BASE)) {
+			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
+		}
+
+		tag(BlockTags.MINEABLE_WITH_SHOVEL)
+				.add(CoreBlocks.HUMUS.block())
+				.add(CoreBlocks.BOG_EARTH.block())
+				.add(CoreBlocks.PEAT.block());
+
+		for (Block block : union(
+				CoreBlocks.BASE,
+				ApicultureBlocks.ALVEARY, ApicultureBlocks.BASE,
+				ArboricultureBlocks.DOORS,
+				ArboricultureBlocks.PLANKS, ArboricultureBlocks.PLANKS_FIREPROOF, ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF,
+				ArboricultureBlocks.LOGS, ArboricultureBlocks.LOGS_FIREPROOF, ArboricultureBlocks.LOGS_VANILLA_FIREPROOF,
+				ArboricultureBlocks.FENCES, ArboricultureBlocks.FENCES_FIREPROOF, ArboricultureBlocks.FENCES_VANILLA_FIREPROOF)) {
+			tag(BlockTags.MINEABLE_WITH_AXE).add(block);
+		}
+
+
+		tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.addTag(ForestryTags.Blocks.ORES_TIN)
+				.addTag(ForestryTags.Blocks.ORES_APATITE)
+				.addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
 		tag(BlockTags.NEEDS_STONE_TOOL).addTag(ForestryTags.Blocks.ORES_TIN).addTag(ForestryTags.Blocks.ORES_APATITE).addTag(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN);
 
 		tag(ForestryTags.Blocks.CHARCOAL_BLOCK).add(CharcoalBlocks.CHARCOAL.block());
-		tag(Tags.Blocks.CHESTS).add(ApicultureBlocks.BEE_CHEST.block());
+		tag(Tags.Blocks.CHESTS).add(CoreBlocks.NATURALIST_CHEST.getBlocks().toArray(Block[]::new));
 		tag(BlockTags.PLANKS).add(ArboricultureBlocks.PLANKS.blockArray());
 		tag(BlockTags.LOGS).add(ArboricultureBlocks.LOGS.blockArray());
 		tag(BlockTags.LOGS_THAT_BURN).add(ArboricultureBlocks.LOGS.blockArray());
@@ -135,9 +135,6 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 		tag(BlockTags.SAPLINGS).add(ArboricultureBlocks.SAPLING_GE.block());
 		tag(BlockTags.LEAVES).add(ArboricultureBlocks.LEAVES.block()).add(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.blockArray()).add(ArboricultureBlocks.LEAVES_DEFAULT.blockArray()).add(ArboricultureBlocks.LEAVES_DECORATIVE.blockArray());
-		tag(Tags.Blocks.CHESTS).add(ArboricultureBlocks.TREE_CHEST.block());
-
-		tag(Tags.Blocks.CHESTS).add(LepidopterologyBlocks.BUTTERFLY_CHEST.block());
 
 		addToTag(Tags.Blocks.ORES, ForestryTags.Blocks.ORES_TIN, ForestryTags.Blocks.ORES_APATITE);
 		tag(ForestryTags.Blocks.ORES_TIN).add(CoreBlocks.TIN_ORE.block(), CoreBlocks.DEEPSLATE_TIN_ORE.block());
@@ -149,10 +146,21 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 		tag(ForestryTags.Blocks.STORAGE_BLOCKS_TIN).add(CoreBlocks.RESOURCE_STORAGE.get(EnumResourceType.TIN).block());
 		tag(ForestryTags.Blocks.STORAGE_BLOCKS_BRONZE).add(CoreBlocks.RESOURCE_STORAGE.get(EnumResourceType.BRONZE).block());
 
-		tag(ForestryTags.Blocks.PALM_LOGS).add(ArboricultureBlocks.LOGS.get(EnumForestryWoodType.PALM).block());
-		tag(ForestryTags.Blocks.PAPAYA_LOGS).add(ArboricultureBlocks.LOGS.get(EnumForestryWoodType.PAPAYA).block());
+		tag(ForestryTags.Blocks.PALM_LOGS).add(ArboricultureBlocks.LOGS.get(ForestryWoodType.PALM).block());
+		tag(ForestryTags.Blocks.PAPAYA_LOGS).add(ArboricultureBlocks.LOGS.get(ForestryWoodType.PAPAYA).block());
 
 		tag(BlockTags.DIRT).add(CoreBlocks.HUMUS.block());
+
+		tag(ForestryTags.Blocks.VANILLA_FLOWERS).addTag(BlockTags.FLOWERS);
+		tag(ForestryTags.Blocks.NETHER_FLOWERS).add(Blocks.NETHER_WART, Blocks.WARPED_FUNGUS, Blocks.POTTED_WARPED_FUNGUS, Blocks.CRIMSON_FUNGUS, Blocks.POTTED_CRIMSON_FUNGUS, Blocks.CRIMSON_ROOTS, Blocks.POTTED_CRIMSON_ROOTS, Blocks.WARPED_ROOTS, Blocks.POTTED_WARPED_ROOTS);
+		tag(ForestryTags.Blocks.CACTI_FLOWERS).add(Blocks.CACTUS);
+		// todo is there a mushroom tag in later versions? should i add the nether fungi to this tag?
+		tag(ForestryTags.Blocks.MUSHROOMS_FLOWERS).add(Blocks.RED_MUSHROOM, Blocks.POTTED_RED_MUSHROOM, Blocks.BROWN_MUSHROOM, Blocks.POTTED_BROWN_MUSHROOM);
+		tag(ForestryTags.Blocks.END_FLOWERS).add(Blocks.DRAGON_EGG, Blocks.CHORUS_PLANT, Blocks.CHORUS_FLOWER);
+		tag(ForestryTags.Blocks.JUNGLE_FLOWERS).add(Blocks.VINE, Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT);
+		tag(ForestryTags.Blocks.SNOW_FLOWERS).addTag(BlockTags.FLOWERS);
+		tag(ForestryTags.Blocks.WHEAT_FLOWERS).add(Blocks.WHEAT);
+		tag(ForestryTags.Blocks.GOURD_FLOWERS).add(Blocks.MELON_STEM, Blocks.ATTACHED_MELON_STEM, Blocks.PUMPKIN_STEM, Blocks.ATTACHED_PUMPKIN_STEM);
 	}
 
 	@SafeVarargs

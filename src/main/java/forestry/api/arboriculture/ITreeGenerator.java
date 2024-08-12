@@ -16,7 +16,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 import com.mojang.authlib.GameProfile;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 /**
  * Implements the tree generation for a tree species.
@@ -24,7 +24,7 @@ import genetics.api.individual.IGenome;
 public interface ITreeGenerator {
 	Feature<NoneFeatureConfiguration> getTreeFeature(ITreeGenData tree);
 
-	boolean setLogBlock(IGenome genome, LevelAccessor world, BlockPos pos, Direction facing);
+	boolean setLogBlock(IGenome genome, LevelAccessor level, BlockPos pos, Direction facing);
 
-	boolean setLeaves(IGenome genome, LevelAccessor world, @Nullable GameProfile owner, BlockPos pos, RandomSource rand);
+	boolean setLeaves(IGenome genome, LevelAccessor level, @Nullable GameProfile owner, BlockPos pos, RandomSource rand);
 }

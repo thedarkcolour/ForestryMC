@@ -5,8 +5,9 @@
  ******************************************************************************/
 package forestry.api.genetics;
 
+import java.util.List;
+
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 
 /**
  * Can be implemented by tile entities which can bear fruit.
@@ -14,16 +15,10 @@ import net.minecraft.core.NonNullList;
  * @author SirSengir
  */
 public interface IFruitBearer {
-
 	/**
 	 * @return true if the actual tile can bear fruits.
 	 */
 	boolean hasFruit();
-
-	/**
-	 * @return Family of the potential fruits on this tile.
-	 */
-	IFruitFamily getFruitFamily();
 
 	/**
 	 * Picks the fruits of this tile, resetting it to unripe fruits.
@@ -31,7 +26,7 @@ public interface IFruitBearer {
 	 * @param tool Tool used in picking the fruits. May be empty.
 	 * @return Picked fruits.
 	 */
-	NonNullList<ItemStack> pickFruit(ItemStack tool);
+	List<ItemStack> pickFruit(ItemStack tool);
 
 	/**
 	 * @return float indicating the ripeness of the fruit with >= 1.0f indicating full ripeness.

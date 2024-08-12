@@ -29,9 +29,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import forestry.api.core.IErrorLogic;
-import forestry.core.blocks.BlockBase;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.network.IStreamableGui;
 import forestry.core.network.packets.PacketActiveUpdate;
 import forestry.core.tiles.IActivatable;
@@ -122,10 +121,10 @@ public abstract class EngineBlockEntity extends TileBase implements IActivatable
 		}
 
 		IErrorLogic errorLogic = getErrorLogic();
-		errorLogic.setCondition(forceCooldown, EnumErrorCode.FORCED_COOLDOWN);
+		errorLogic.setCondition(forceCooldown, ForestryError.FORCED_COOLDOWN);
 
 		boolean enabledRedstone = isRedstoneActivated();
-		errorLogic.setCondition(!enabledRedstone, EnumErrorCode.NO_REDSTONE);
+		errorLogic.setCondition(!enabledRedstone, ForestryError.NO_REDSTONE);
 
 		// Determine targeted tile
 		BlockState blockState = getBlockState();

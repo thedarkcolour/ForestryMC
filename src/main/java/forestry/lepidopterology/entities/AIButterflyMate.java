@@ -13,8 +13,8 @@ package forestry.lepidopterology.entities;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.IButterflyNursery;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
 import forestry.core.utils.GeneticsUtil;
 
 public class AIButterflyMate extends AIButterflyInteract {
@@ -51,15 +51,15 @@ public class AIButterflyMate extends AIButterflyInteract {
 		if (canContinueToUse()) {
 			if (entity.getButterfly().getMate() == null && targetMate != null) {
 				if (entity.cooldownMate <= 0 && entity.distanceTo(targetMate) < 9.0D) {
-					entity.getButterfly().mate(targetMate.getButterfly().getGenome());
-					targetMate.getButterfly().mate(entity.getButterfly().getGenome());
+					entity.getButterfly().setMate(targetMate.getButterfly().getGenome());
+					targetMate.getButterfly().setMate(entity.getButterfly().getGenome());
 					entity.cooldownMate = EntityButterfly.COOLDOWNS;
 				}
 			} else if (rest != null) {
 				IButterflyNursery nursery = GeneticsUtil.getOrCreateNursery(null, entity.level, rest, false);
 				if (nursery != null) {
 					if (nursery.canNurse(entity.getButterfly())) {
-						nursery.setCaterpillar(entity.getButterfly().spawnCaterpillar(entity.level, nursery));
+						nursery.setCaterpillar(entity.getButterfly().spawnCaterpillar(nursery));
 						//Log.finest("A butterfly '%s' laid an egg at %s/%s/%s.", entity.getButterfly().getIdent(), rest.posX, rest.posY, rest.posZ);
 						if (entity.getRandom().nextFloat() < 1.0f / entity.getButterfly().getGenome().getActiveValue(ButterflyChromosomes.FERTILITY)) {
 							entity.setHealth(0);

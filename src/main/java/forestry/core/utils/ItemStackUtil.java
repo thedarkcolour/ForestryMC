@@ -11,27 +11,27 @@
 
 package forestry.core.utils;
 
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntFunction;
 
-import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+
+import forestry.api.core.IProduct;
+import forestry.api.core.Product;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.Container;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-
 public abstract class ItemStackUtil {
-
 	private static final int[] EMPTY_CONSUME = new int[0];
 
 	/**
@@ -53,8 +53,8 @@ public abstract class ItemStackUtil {
 		receptor.grow(canTransfer);
 	}
 
-	public static NonNullList<ItemStack> condenseStacks(NonNullList<ItemStack> stacks) {
-		Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
+	public static List<ItemStack> condenseStacks(List<ItemStack> stacks) {
+		Object2IntOpenHashMap<ItemStack> map = new Object2IntOpenHashMap<>();
 
 		for (ItemStack stack : stacks) {
 			ItemStack copy = stack.copy();
@@ -63,7 +63,7 @@ public abstract class ItemStackUtil {
 			map.put(copy, map.getInt(copy) + stack.getCount());
 		}
 
-		NonNullList<ItemStack> condensed = NonNullList.create();
+		ArrayList<ItemStack> condensed = new ArrayList<>(map.size());
 
 		for (Object2IntMap.Entry<ItemStack> entry : map.object2IntEntrySet()) {
 			ItemStack stack = entry.getKey();
@@ -91,11 +91,11 @@ public abstract class ItemStackUtil {
 		return false;
 	}
 
-	public static int[] createConsume(NonNullList<Ingredient> set, Container inventory, boolean craftingTools) {
+	public static int[] createConsume(List<Ingredient> set, Container inventory, boolean craftingTools) {
 		return createConsume(set, inventory.getContainerSize(), inventory::getItem, craftingTools);
 	}
 
-	public static int[] createConsume(NonNullList<Ingredient> set, int stockCount, Function<Integer, ItemStack> stock, boolean craftingTools) {
+	public static int[] createConsume(List<Ingredient> set, int stockCount, IntFunction<ItemStack> stock, boolean craftingTools) {
 		//A array that contains the amount of items that is needed from this stack
 		int[] reqAmounts = new int[stockCount];
 		int found = 0;
@@ -104,17 +104,12 @@ public abstract class ItemStackUtil {
 				found++;
 				continue;
 			}
-			for (ItemStack stack : ing.getItems()) {
-				int curFound = found;
-				for (int i = 0; i < reqAmounts.length; i++) {
-					ItemStack offer = stock.apply(i);
-					if (offer.getCount() > reqAmounts[i] && isCraftingEquivalent(stack, offer, craftingTools)) {
-						reqAmounts[i] = reqAmounts[i] + 1;
-						found++;
-						break;
-					}
-				}
-				if (found > curFound) {
+			for (int i = 0; i < reqAmounts.length; i++) {
+				ItemStack offer = stock.apply(i);
+
+				if (offer.getCount() > reqAmounts[i] && ing.test(offer)) {
+					reqAmounts[i] = reqAmounts[i] + 1;
+					found++;
 					break;
 				}
 			}
@@ -129,18 +124,18 @@ public abstract class ItemStackUtil {
 	/**
 	 * Counts how many full sets are contained in the passed stock
 	 */
-	public static int containsSets(NonNullList<ItemStack> set, NonNullList<ItemStack> stock) {
+	public static int containsSets(List<ItemStack> set, List<ItemStack> stock) {
 		return containsSets(set, stock, false);
 	}
 
 	/**
 	 * Counts how many full sets are contained in the passed stock
 	 */
-	public static int containsSets(NonNullList<ItemStack> set, NonNullList<ItemStack> stock, boolean craftingTools) {
+	public static int containsSets(List<ItemStack> set, List<ItemStack> stock, boolean craftingTools) {
 		int totalSets = 0;
 
-		NonNullList<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(set);
-		NonNullList<ItemStack> condensedOffered = ItemStackUtil.condenseStacks(stock);
+		List<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(set);
+		List<ItemStack> condensedOffered = ItemStackUtil.condenseStacks(stock);
 
 		for (ItemStack req : condensedRequired) {
 			int reqCount = 0;
@@ -259,27 +254,11 @@ public abstract class ItemStackUtil {
 		world.addFreshEntity(entityitem);
 	}
 
-
-	public static ItemStack copyWithRandomSize(ItemStack template, int max, RandomSource rand) {
+	public static ItemStack copyWithRandomSize(IProduct template, int max, RandomSource rand) {
 		int size = max <= 0 ? 1 : rand.nextInt(max);
-		ItemStack copy = template.copy();
-		copy.setCount(Math.min(size, template.getMaxStackSize()));
+		ItemStack copy = template.createRandomStack(rand);
+		copy.setCount(Math.min(size, copy.getMaxStackSize()));
 		return copy;
-	}
-
-	@Nullable
-	public static Block getBlock(ItemStack stack) {
-		Item item = stack.getItem();
-
-		if (item instanceof BlockItem) {
-			return ((BlockItem) item).getBlock();
-		} else {
-			return null;
-		}
-	}
-
-	public static boolean equals(Block block, ItemStack stack) {
-		return block == getBlock(stack);
 	}
 
 	/**

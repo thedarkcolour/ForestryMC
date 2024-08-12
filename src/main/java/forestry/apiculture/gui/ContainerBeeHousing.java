@@ -11,17 +11,12 @@
 package forestry.apiculture.gui;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 
-import net.minecraftforge.common.util.LazyOptional;
-
-import forestry.api.climate.IClimateListener;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.apiculture.features.ApicultureMenuTypes;
 import forestry.apiculture.tiles.TileBeeHousingBase;
-import forestry.core.climate.ClimateRoot;
 import forestry.core.gui.ContainerAnalyzerProvider;
-import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.packets.PacketGuiStream;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;
@@ -39,17 +34,13 @@ public class ContainerBeeHousing extends ContainerAnalyzerProvider<TileBeeHousin
 	}
 
 	//TODO hack icon in GUI by checking title. Then it isn't needed here.
-	public ContainerBeeHousing(int windowId, Inventory player, TileBeeHousingBase tile, boolean hasFrames, GuiBeeHousing.Icon icon) {
-		super(windowId, ApicultureMenuTypes.BEE_HOUSING.menuType(), player, tile, 8, 108);
+	public ContainerBeeHousing(int windowId, Inventory playerInv, TileBeeHousingBase tile, boolean hasFrames, GuiBeeHousing.Icon icon) {
+		super(windowId, ApicultureMenuTypes.BEE_HOUSING.menuType(), playerInv, tile, 8, 108);
 		ContainerBeeHelper.addSlots(this, tile, hasFrames);
 
 		tile.getBeekeepingLogic().clearCachedValues();
-		LazyOptional<IClimateListener> listener = ClimateRoot.getInstance().getListener(tile.getLevel(), tile.getBlockPos());
-		if (player.player instanceof ServerPlayer) {
-			listener.ifPresent(l -> l.syncToClient((ServerPlayer) player.player));
-		}
 
-		delegate = tile;
+		this.delegate = tile;
 		this.icon = icon;
 	}
 
@@ -69,11 +60,11 @@ public class ContainerBeeHousing extends ContainerAnalyzerProvider<TileBeeHousin
 
 	@Override
 	public IGuiBeeHousingDelegate getDelegate() {
-		return delegate;
+		return this.delegate;
 	}
 
 	@Override
 	public GuiBeeHousing.Icon getIcon() {
-		return icon;
+		return this.icon;
 	}
 }

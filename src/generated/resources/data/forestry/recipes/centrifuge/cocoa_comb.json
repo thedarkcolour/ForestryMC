@@ -6,17 +6,11 @@
   "products": [
     {
       "chance": 1.0,
-      "item": {
-        "Count": 1,
-        "id": "forestry:beeswax"
-      }
+      "item": "forestry:beeswax"
     },
     {
       "chance": 0.5,
-      "item": {
-        "Count": 1,
-        "id": "minecraft:cocoa_beans"
-      }
+      "item": "minecraft:cocoa_beans"
     }
   ],
   "time": 20

@@ -15,13 +15,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import forestry.api.climate.IClimateProvider;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationCondition;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class MutationConditionDaytime implements IMutationCondition {
-
 	private final boolean daytime;
 
 	public MutationConditionDaytime(boolean daytime) {
@@ -29,16 +28,16 @@ public class MutationConditionDaytime implements IMutationCondition {
 	}
 
 	@Override
-	public float getChance(Level world, BlockPos pos, IAllele allele0, IAllele allele1, IGenome genome0, IGenome genome1, IClimateProvider climate) {
-		if (world.isDay() == daytime) {
-			return 1;
+	public float modifyChance(Level level, BlockPos pos, IMutation<?> mutation, IGenome genome0, IGenome genome1, IClimateProvider climate, float currentChance) {
+		if (level.isDay() == this.daytime) {
+			return currentChance;
 		}
-		return 0;
+		return 0f;
 	}
 
 	@Override
 	public Component getDescription() {
-		if (daytime) {
+		if (this.daytime) {
 			return Component.translatable("for.mutation.condition.daytime.day");
 		} else {
 			return Component.translatable("for.mutation.condition.daytime.night");

@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -14,29 +13,27 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import deleteme.Shuffler;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.NonNullList;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 
 import net.minecraftforge.fluids.FluidStack;
 
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
-import forestry.api.farming.FarmDirection;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IExtentCache;
 import forestry.api.farming.IFarmListener;
 import forestry.api.farming.IFarmLogic;
-import forestry.core.config.Config;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
@@ -47,9 +44,11 @@ import forestry.farming.FarmHelper.Stage;
 import forestry.farming.multiblock.FarmFertilizerManager;
 import forestry.farming.multiblock.FarmHydrationManager;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IExtentCache {
-	private final Map<FarmDirection, List<FarmTarget>> targets = new EnumMap<>(FarmDirection.class);
-	private final Table<FarmDirection, BlockPos, Integer> lastExtents = HashBasedTable.create();
+	private final Map<Direction, List<FarmTarget>> targets = new EnumMap<>(Direction.class);
+	private final Table<Direction, BlockPos, Integer> lastExtents = HashBasedTable.create();
 	private final IFarmHousingInternal housing;
 	@Nullable
 	private IFarmLogic harvestProvider; // The farm logic which supplied the pending crops.
@@ -70,7 +69,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 
 	public FarmManager(IFarmHousingInternal housing) {
 		this.housing = housing;
-		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(Fluids.WATER);
+		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(List.of(Fluids.WATER));
 
 		this.tankManager = new TankManager(housing, resourceTank);
 
@@ -112,12 +111,12 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 
 		if (!pendingProduce.isEmpty()) {
 			boolean added = housing.getFarmInventory().tryAddPendingProduce(pendingProduce);
-			errorLogic.setCondition(!added, EnumErrorCode.NO_SPACE_INVENTORY);
+			errorLogic.setCondition(!added, ForestryError.NO_SPACE_INVENTORY);
 			return added;
 		}
 
 		boolean hasFertilizer = fertilizerManager.maintainFertilizer();
-		if (errorLogic.setCondition(!hasFertilizer, EnumErrorCode.NO_FERTILIZER)) {
+		if (errorLogic.setCondition(!hasFertilizer, ForestryError.NO_FERTILIZER)) {
 			return false;
 		}
 
@@ -135,10 +134,10 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 		// Cultivation and collection
 		FarmWorkStatus farmWorkStatus = new FarmWorkStatus();
 
-		Level world = housing.getWorldObj();
-		List<FarmDirection> farmDirections = Arrays.asList(FarmDirection.values());
-		Shuffler.shuffle(farmDirections, world.random);
-		for (FarmDirection farmSide : farmDirections) {
+		Level level = housing.getWorldObj();
+		ObjectArrayList<Direction> farmDirections = new ObjectArrayList<>(HorizontalDirection.VALUES);
+		Util.shuffle(farmDirections, level.random);
+		for (Direction farmSide : farmDirections) {
 			IFarmLogic logic = housing.getFarmLogic(farmSide);
 			List<FarmTarget> farmTargets = targets.get(farmSide);
 
@@ -161,7 +160,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 			}
 
 			if (stage == Stage.HARVEST) {
-				Collection<ICrop> harvested = FarmHelper.harvestTargets(world, housing, farmTargets, logic, farmListeners);
+				Collection<ICrop> harvested = FarmHelper.harvestTargets(level, housing, farmTargets, logic, farmListeners);
 				farmWorkStatus.didWork = !harvested.isEmpty();
 				if (!harvested.isEmpty()) {
 					pendingCrops.addAll(harvested);
@@ -178,9 +177,9 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 		}
 
 		if (stage == Stage.CULTIVATE) {
-			errorLogic.setCondition(!farmWorkStatus.hasFarmland, EnumErrorCode.NO_FARMLAND);
-			errorLogic.setCondition(!farmWorkStatus.hasFertilizer, EnumErrorCode.NO_FERTILIZER);
-			errorLogic.setCondition(!farmWorkStatus.hasLiquid, EnumErrorCode.NO_LIQUID_FARM);
+			errorLogic.setCondition(!farmWorkStatus.hasFarmland, ForestryError.NO_FARMLAND);
+			errorLogic.setCondition(!farmWorkStatus.hasFertilizer, ForestryError.NO_FERTILIZER);
+			errorLogic.setCondition(!farmWorkStatus.hasLiquid, ForestryError.NO_LIQUID_FARM);
 		}
 
 		// alternate between cultivation and harvest.
@@ -189,13 +188,13 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 		return farmWorkStatus.didWork;
 	}
 
+	private void cultivateTargets(FarmWorkStatus farmWorkStatus, List<FarmTarget> farmTargets, IFarmLogic logic, Direction farmSide) {
+		Level level = housing.getWorldObj();
 
-	private void cultivateTargets(FarmWorkStatus farmWorkStatus, List<FarmTarget> farmTargets, IFarmLogic logic, FarmDirection farmSide) {
-		Level world = housing.getWorldObj();
 		if (farmWorkStatus.hasFarmland && !FarmHelper.isCycleCanceledByListeners(logic, farmSide, farmListeners)) {
 			final float hydrationModifier = hydrationManager.getHydrationModifier();
-			final int fertilizerConsumption = Math.round(logic.getProperties().getFertilizerConsumption(housing) * Config.fertilizerModifier);
-			final int liquidConsumption = logic.getProperties().getWaterConsumption(housing, hydrationModifier);
+			final int fertilizerConsumption = Math.round(logic.getType().getFertilizerConsumption(housing));
+			final int liquidConsumption = logic.getType().getWaterConsumption(housing, hydrationModifier);
 			final FluidStack liquid = new FluidStack(Fluids.WATER, liquidConsumption);
 
 			for (FarmTarget target : farmTargets) {
@@ -210,7 +209,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 					continue;
 				}
 
-				if (FarmHelper.cultivateTarget(world, housing, target, logic, farmListeners)) {
+				if (FarmHelper.cultivateTarget(level, housing, target, logic, farmListeners)) {
 					// Remove fertilizer and water
 					fertilizerManager.removeFertilizer(fertilizerConsumption);
 					housing.removeLiquid(liquid);
@@ -222,7 +221,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	}
 
 	private boolean collectWindfall(IFarmLogic logic) {
-		NonNullList<ItemStack> collected = logic.collect(housing.getWorldObj(), housing);
+		List<ItemStack> collected = logic.collect(housing.getWorldObj(), housing);
 		if (collected.isEmpty()) {
 			return false;
 		}
@@ -238,7 +237,6 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	}
 
 	private boolean cullCrop(ICrop crop, IFarmLogic provider) {
-
 		// Let event handlers handle the harvest first.
 		for (IFarmListener listener : farmListeners) {
 			if (listener.beforeCropHarvest(crop)) {
@@ -246,27 +244,27 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 			}
 		}
 
-		final int fertilizerConsumption = Math.round(provider.getProperties().getFertilizerConsumption(housing) * Config.fertilizerModifier);
+		int fertilizerConsumption = provider.getType().getFertilizerConsumption(housing);
 
 		IErrorLogic errorLogic = housing.getErrorLogic();
 
 		// Check fertilizer
 		boolean hasFertilizer = fertilizerManager.hasFertilizer(fertilizerConsumption);
-		if (errorLogic.setCondition(!hasFertilizer, EnumErrorCode.NO_FERTILIZER)) {
+		if (errorLogic.setCondition(!hasFertilizer, ForestryError.NO_FERTILIZER)) {
 			return false;
 		}
 
 		// Check water
 		float hydrationModifier = hydrationManager.getHydrationModifier();
-		int waterConsumption = provider.getProperties().getWaterConsumption(housing, hydrationModifier);
+		int waterConsumption = provider.getType().getWaterConsumption(housing, hydrationModifier);
 		FluidStack requiredLiquid = new FluidStack(Fluids.WATER, waterConsumption);
 		boolean hasLiquid = requiredLiquid.getAmount() == 0 || housing.hasLiquid(requiredLiquid);
 
-		if (errorLogic.setCondition(!hasLiquid, EnumErrorCode.NO_LIQUID_FARM)) {
+		if (errorLogic.setCondition(!hasLiquid, ForestryError.NO_LIQUID_FARM)) {
 			return false;
 		}
 
-		NonNullList<ItemStack> harvested = crop.harvest();
+		List<ItemStack> harvested = crop.harvest();
 		if (harvested != null) {
 			// Remove fertilizer and water
 			fertilizerManager.removeFertilizer(fertilizerConsumption);
@@ -319,17 +317,17 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 		this.pendingProduce.add(stack);
 	}
 
-	public BlockPos getFarmCorner(FarmDirection direction) {
+	public BlockPos getFarmCorner(Direction direction) {
 		List<FarmTarget> targetList = this.targets.get(direction);
 		if (targetList.isEmpty()) {
 			return housing.getCoords();
 		}
 		FarmTarget target = targetList.get(0);
-		return target.getStart().relative(direction.getFacing().getOpposite());
+		return target.getStart().relative(direction.getOpposite());
 	}
 
 	@Override
-	public int getExtents(FarmDirection direction, BlockPos pos) {
+	public int getExtents(Direction direction, BlockPos pos) {
 		if (!lastExtents.contains(direction, pos)) {
 			lastExtents.put(direction, pos, 0);
 			return 0;
@@ -339,12 +337,12 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	}
 
 	@Override
-	public void setExtents(FarmDirection direction, BlockPos pos, int extend) {
+	public void setExtents(Direction direction, BlockPos pos, int extend) {
 		lastExtents.put(direction, pos, extend);
 	}
 
 	@Override
-	public void cleanExtents(FarmDirection direction) {
+	public void cleanExtents(Direction direction) {
 		lastExtents.row(direction).clear();
 	}
 }

@@ -10,19 +10,17 @@
  ******************************************************************************/
 package forestry.apiculture;
 
-import java.util.Optional;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousingInventory;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.core.inventory.InventoryAdapterRestricted;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.SlotUtil;
 
-import genetics.api.organism.IOrganismType;
+import forestry.api.genetics.ILifeStage;
+import forestry.core.utils.SpeciesUtil;
 
 public class InventoryBeeHousing extends InventoryAdapterRestricted implements IBeeHousingInventory {
 	public static final int SLOT_QUEEN = 0;
@@ -35,13 +33,13 @@ public class InventoryBeeHousing extends InventoryAdapterRestricted implements I
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		IOrganismType beeType = BeeManager.beeRoot.getType(itemStack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		ILifeStage beeType = SpeciesUtil.BEE_TYPE.get().getLifeStage(stack);
 
 		if (slotIndex == SLOT_QUEEN) {
-			return beeType == EnumBeeType.QUEEN || beeType == EnumBeeType.PRINCESS;
+			return beeType == BeeLifeStage.QUEEN || beeType == BeeLifeStage.PRINCESS;
 		} else if (slotIndex == SLOT_DRONE) {
-			return beeType == EnumBeeType.DRONE;
+			return beeType == BeeLifeStage.DRONE;
 		}
 		return false;
 	}
@@ -65,13 +63,13 @@ public class InventoryBeeHousing extends InventoryAdapterRestricted implements I
 	}
 
 	@Override
-	public final void setQueen(ItemStack itemstack) {
-		setItem(SLOT_QUEEN, itemstack);
+	public final void setQueen(ItemStack stack) {
+		setItem(SLOT_QUEEN, stack);
 	}
 
 	@Override
-	public final void setDrone(ItemStack itemstack) {
-		setItem(SLOT_DRONE, itemstack);
+	public final void setDrone(ItemStack stack) {
+		setItem(SLOT_DRONE, stack);
 	}
 
 	@Override

@@ -12,6 +12,8 @@ package forestry.mail;
 
 import javax.annotation.Nullable;
 
+import java.util.List;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -152,7 +154,7 @@ public class TradeStation extends SavedData implements ITradeStation, IInventory
 
 	@Override
 	public TradeStationInfo getTradeInfo() {
-		NonNullList<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(InventoryUtil.getStacks(inventory, SLOT_EXCHANGE_1, SLOT_EXCHANGE_COUNT));
+		List<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(InventoryUtil.getStacks(inventory, SLOT_EXCHANGE_1, SLOT_EXCHANGE_COUNT));
 
 		// Set current state
 		EnumTradeStationState state = EnumTradeStationState.OK;
@@ -536,7 +538,7 @@ public class TradeStation extends SavedData implements ITradeStation, IInventory
 		// Remove stuff until we are only left with the remnants
 		for (int i = 0; i < filled; i++) {
 			NonNullList<ItemStack> required = InventoryUtil.getStacks(inventory, SLOT_EXCHANGE_1, SLOT_EXCHANGE_COUNT);
-			NonNullList<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(required);
+			List<ItemStack> condensedRequired = ItemStackUtil.condenseStacks(required);
 			for (ItemStack req : condensedRequired) {
 				for (int j = 0; j < pool.size(); j++) {
 					ItemStack pol = pool.get(j);
@@ -656,8 +658,8 @@ public class TradeStation extends SavedData implements ITradeStation, IInventory
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
-		return inventory.canSlotAccept(slotIndex, itemStack);
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
+		return inventory.canSlotAccept(slotIndex, stack);
 	}
 
 	@Override

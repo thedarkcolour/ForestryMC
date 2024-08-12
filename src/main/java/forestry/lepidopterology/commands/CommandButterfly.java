@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.lepidopterology.commands;
 
-
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -21,22 +20,21 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import forestry.core.commands.CommandHelpers;
+import forestry.core.commands.GiveSpeciesCommand;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.features.LepidopterologyEntities;
 
-import genetics.commands.PermLevel;
-
-/**
- * @author CovertJaguar <http://www.railcraft.info/>
- */
 public class CommandButterfly {
 	public static ArgumentBuilder<CommandSourceStack, ?> register() {
 		return Commands.literal("butterfly")
-				.then(CommandButterflyKill.register());
+				.then(CommandButterflyKill.register())
+				.then(GiveSpeciesCommand.register(SpeciesUtil.BUTTERFLY_TYPE.get()));
 	}
 
 	public static class CommandButterflyKill {
         public static ArgumentBuilder<CommandSourceStack, ?> register() {
-            return Commands.literal("kill").requires(PermLevel.ADMIN).executes(CommandButterflyKill::execute);
+            return Commands.literal("kill").requires(CommandHelpers.ADMIN).executes(CommandButterflyKill::execute);
         }
 
 		public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

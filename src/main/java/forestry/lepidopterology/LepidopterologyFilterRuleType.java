@@ -2,93 +2,67 @@ package forestry.lepidopterology;
 
 import java.util.Locale;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.api.genetics.alleles.AlleleManager;
-import forestry.api.genetics.filter.IFilterData;
-import forestry.api.genetics.filter.IFilterRule;
+import forestry.api.client.ForestrySprites;
+import forestry.api.genetics.ForestrySpeciesTypes;
+import forestry.api.genetics.filter.FilterData;
 import forestry.api.genetics.filter.IFilterRuleType;
-import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
-import forestry.core.render.TextureManagerForestry;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 
 public enum LepidopterologyFilterRuleType implements IFilterRuleType {
-	FLUTTER {
+	FLUTTER(ForestrySprites.ANALYZER_FLUTTER) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent();
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return true;
 		}
 	},
-	BUTTERFLY {
+	BUTTERFLY(ForestrySprites.ANALYZER_BUTTERFLY) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.getType() == EnumFlutterType.BUTTERFLY;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == ButterflyLifeStage.BUTTERFLY;
 		}
 	},
-	SERUM {
+	SERUM(ForestrySprites.ANALYZER_SERUM) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.getType() == EnumFlutterType.SERUM;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == ButterflyLifeStage.SERUM;
 		}
 	},
-	CATERPILLAR {
+	CATERPILLAR(ForestrySprites.ANALYZER_CATERPILLAR) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.getType() == EnumFlutterType.CATERPILLAR;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == ButterflyLifeStage.CATERPILLAR;
 		}
 	},
-	COCOON {
+	COCOON(ForestrySprites.ANALYZER_COCOON) {
 		@Override
-		public boolean isValid(ItemStack itemStack, IFilterData data) {
-			return data.isPresent() && data.getType() == EnumFlutterType.COCOON;
+		public boolean isValid(ItemStack stack, FilterData data) {
+			return data.stage() == ButterflyLifeStage.COCOON;
 		}
 	};
 
-	private final String uid;
+	private final String id;
+	private final ResourceLocation sprite;
 
-	LepidopterologyFilterRuleType() {
-		this.uid = "forestry.lepidopterology." + name().toLowerCase(Locale.ENGLISH);
-	}
-
-	public static void init() {
-		for (LepidopterologyFilterRuleType rule : values()) {
-			AlleleManager.filterRegistry.registerFilter(rule);
-		}
+	LepidopterologyFilterRuleType(ResourceLocation sprite) {
+		this.sprite = sprite;
+		this.id = "forestry.lepidopterology." + name().toLowerCase(Locale.ENGLISH);
 	}
 
 	@Override
-	public void addLogic(IFilterRule logic) {
+	public ResourceLocation getSprite() {
+		return this.sprite;
 	}
 
 	@Override
-	public boolean isContainer() {
-		return false;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public TextureAtlasSprite getSprite() {
-		return TextureManagerForestry.INSTANCE.getDefault("analyzer/" + name().toLowerCase(Locale.ENGLISH));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public ResourceLocation getTextureMap() {
-		return TextureManagerForestry.LOCATION_FORESTRY_TEXTURE;
+	public ResourceLocation getSpeciesTypeId() {
+		return ForestrySpeciesTypes.BUTTERFLY;
 	}
 
 	@Override
-	public String getRootUID() {
-		return ButterflyManager.butterflyRoot.getUID();
-	}
-
-	@Override
-	public String getUID() {
-		return uid;
+	public String getId() {
+		return this.id;
 	}
 }

@@ -25,11 +25,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.ItemGroupForestry;
+import forestry.api.core.ItemGroups;
 import forestry.core.utils.ItemTooltipUtil;
 
 public class ItemBlockForestry<B extends Block> extends BlockItem {
-
 	private final int burnTime;
 
 	public ItemBlockForestry(B block, Item.Properties builder) {
@@ -43,7 +42,7 @@ public class ItemBlockForestry<B extends Block> extends BlockItem {
 	}
 
 	public ItemBlockForestry(B block) {
-		this(block, new Item.Properties().tab(ItemGroupForestry.tabForestry));
+		this(block, new Item.Properties().tab(ItemGroups.tabForestry));
 	}
 
 	@Override

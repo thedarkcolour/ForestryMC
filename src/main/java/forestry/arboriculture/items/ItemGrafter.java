@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.arboriculture.IToolGrafter;
 import forestry.api.core.ItemGroups;
-import forestry.core.data.ForestryTags;
+import forestry.api.ForestryTags;
 import forestry.core.items.ItemForestry;
 
 public class ItemGrafter extends ItemForestry implements IToolGrafter {

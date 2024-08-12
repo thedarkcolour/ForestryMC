@@ -13,8 +13,6 @@ package forestry.core.fluids;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import deleteme.RegistryNameFinder;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
@@ -29,6 +27,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.network.IStreamable;
+import forestry.core.utils.ModUtil;
 
 /**
  * @author CovertJaguar <http://www.railcraft.info>
@@ -156,7 +155,7 @@ public class StandardTank extends FluidTank implements IStreamable {
 
 	@Override
 	public String toString() {
-		return String.format("Tank: %s, %d/%d", !fluid.isEmpty() ? RegistryNameFinder.getRegistryName(fluid.getFluid()) : "Empty", getFluidAmount(), getCapacity());
+		return String.format("Tank: %s, %d/%d", !fluid.isEmpty() ? ModUtil.getRegistryName(fluid.getFluid()) : "Empty", getFluidAmount(), getCapacity());
 	}
 
 	protected boolean hasFluid() {

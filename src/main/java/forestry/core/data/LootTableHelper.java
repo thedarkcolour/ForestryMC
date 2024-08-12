@@ -18,15 +18,17 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
-import forestry.api.apiculture.genetics.EnumBeeType;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.ForestryConstants;
+import forestry.api.ForestryTags;
+import forestry.api.apiculture.ForestryBeeSpecies;
+import forestry.api.apiculture.genetics.BeeLifeStage;
+import forestry.api.arboriculture.ForestryTreeSpecies;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.apiculture.features.ApicultureItems;
-import forestry.apiculture.genetics.BeeDefinition;
 import forestry.arboriculture.features.ArboricultureItems;
-import forestry.arboriculture.genetics.TreeDefinition;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 import forestry.core.loot.OrganismFunction;
+import forestry.core.utils.SpeciesUtil;
 import forestry.storage.features.BackpackItems;
 
 /**
@@ -53,7 +55,7 @@ public class LootTableHelper {
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
 						.add(EmptyLootItem.emptyItem().setWeight(9))
 				));
 		add(BuiltInLootTables.ABANDONED_MINESHAFT, "factory",
@@ -76,8 +78,8 @@ public class LootTableHelper {
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
-						.add(beeLoot(BeeDefinition.STEADFAST).setWeight(3)
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST).setWeight(3)
 								.apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))))
 						.add(EmptyLootItem.emptyItem().setWeight(6))
 				));
@@ -85,7 +87,7 @@ public class LootTableHelper {
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_arboriculture_items")
 						.setRolls(ConstantValue.exactly(1))
-						.add(saplingLoot(TreeDefinition.Acacia))
+						.add(saplingLoot(ForestryTreeSpecies.ACACIA_VANILLA))
 						.add(EmptyLootItem.emptyItem().setWeight(3))
 				));
 		add(BuiltInLootTables.DESERT_PYRAMID, "factory",
@@ -105,11 +107,11 @@ public class LootTableHelper {
 						.add(EmptyLootEntry.emptyItem().setWeight(3))
 				)*/.withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees").setRolls(ConstantValue.exactly(2))
-						.add(beeLoot(BeeDefinition.STEADFAST)
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST)
 								.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
 								.setWeight(20)
 						)
-						.add(beeLoot(BeeDefinition.ENDED)
+						.add(beeLoot(ForestryBeeSpecies.ENDED)
 								.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
 								.setWeight(20)
 						)
@@ -126,38 +128,38 @@ public class LootTableHelper {
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
-						.add(beeLoot(BeeDefinition.WINTRY).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))).setWeight(2))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.WINTRY).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))).setWeight(2))
 						.add(EmptyLootItem.emptyItem().setWeight(7))
 				));
 		add(BuiltInLootTables.JUNGLE_TEMPLE, "apiculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
-						.add(beeLoot(BeeDefinition.TROPICAL).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))).setWeight(3))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.TROPICAL).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))).setWeight(3))
 						.add(EmptyLootItem.emptyItem().setWeight(6))
 				));
 		add(BuiltInLootTables.JUNGLE_TEMPLE, "arboriculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_arboriculture_items")
 						.setRolls(ConstantValue.exactly(1))
-						.add(saplingLoot(TreeDefinition.Sipiri))
+						.add(saplingLoot(ForestryTreeSpecies.SIPIRI))
 						.add(EmptyLootItem.emptyItem().setWeight(9))
 				));
 		add(BuiltInLootTables.NETHER_BRIDGE, "apiculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
-						.add(beeLoot(BeeDefinition.SINISTER))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.SINISTER))
 						.add(EmptyLootItem.emptyItem().setWeight(8))
 				));
 		add(BuiltInLootTables.SIMPLE_DUNGEON, "apiculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
 						.add(EmptyLootItem.emptyItem().setWeight(9))
 				));
 		add(BuiltInLootTables.SPAWN_BONUS_CHEST, "apiculture",
@@ -170,36 +172,36 @@ public class LootTableHelper {
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
 						.add(EmptyLootItem.emptyItem().setWeight(9))
 				));
 		add(BuiltInLootTables.STRONGHOLD_CROSSING, "apiculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
 						.add(EmptyLootItem.emptyItem().setWeight(9))
 				));
 		add(BuiltInLootTables.STRONGHOLD_LIBRARY, "apiculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(1))
-						.add(beeLoot(BeeDefinition.STEADFAST))
-						.add(beeLoot(BeeDefinition.MONASTIC).setWeight(6))
+						.add(beeLoot(ForestryBeeSpecies.STEADFAST))
+						.add(beeLoot(ForestryBeeSpecies.MONASTIC).setWeight(6))
 						.add(EmptyLootItem.emptyItem().setWeight(3))
 				));
-		add(new ResourceLocation(Constants.MOD_ID, "chests/village_naturalist"), "arboriculture",
+		add(ForestryConstants.forestry("chests/village_naturalist"), "arboriculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_arboriculture_items")
 						.setRolls(ConstantValue.exactly(3))
 						.add(LootItem.lootTableItem(ArboricultureItems.GRAFTER.item()))
-						.add(saplingLoot(TreeDefinition.Lime).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
-						.add(saplingLoot(TreeDefinition.Cherry).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
-						.add(saplingLoot(TreeDefinition.Larch).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
-						.add(saplingLoot(TreeDefinition.Teak))
-						.add(saplingLoot(TreeDefinition.Padauk))
+						.add(saplingLoot(ForestryTreeSpecies.LIME).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+						.add(saplingLoot(ForestryTreeSpecies.CHERRY).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+						.add(saplingLoot(ForestryTreeSpecies.LARCH).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+						.add(saplingLoot(ForestryTreeSpecies.TEAK))
+						.add(saplingLoot(ForestryTreeSpecies.PADAUK))
 				));
-		add(new ResourceLocation(Constants.MOD_ID, "chests/village_naturalist"), "apiculture",
+		add(ForestryConstants.forestry("chests/village_naturalist"), "apiculture",
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_items")
 						.setRolls(ConstantValue.exactly(4))
@@ -209,39 +211,39 @@ public class LootTableHelper {
 				).withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees")
 						.setRolls(ConstantValue.exactly(3))
-						.add(beeLoot(BeeDefinition.COMMON).setWeight(6))
-						.add(beeLoot(BeeDefinition.MEADOWS).setWeight(6))
+						.add(beeLoot(ForestryBeeSpecies.COMMON).setWeight(6))
+						.add(beeLoot(ForestryBeeSpecies.MEADOWS).setWeight(6))
 						.add(EmptyLootItem.emptyItem().setWeight(3))
 				)
 		);
 	}
 
-	private LootPoolSingletonContainer.Builder<?> saplingLoot(TreeDefinition definition) {
-		return saplingLoot(EnumGermlingType.SAPLING, definition);
+	private LootPoolSingletonContainer.Builder<?> saplingLoot(ResourceLocation species) {
+		return saplingLoot(TreeLifeStage.SAPLING, species);
 	}
 
-	private LootPoolSingletonContainer.Builder<?> saplingLoot(EnumGermlingType type, TreeDefinition definition) {
+	private LootPoolSingletonContainer.Builder<?> saplingLoot(TreeLifeStage type, ResourceLocation species) {
 		return LootItem.lootTableItem(saplingItem(type))
-				.apply(OrganismFunction.fromDefinition(definition));
+				.apply(OrganismFunction.fromDefinition(SpeciesUtil.TREE_TYPE.get(), SpeciesUtil.getTreeSpecies(species)));
 	}
 
-	private LootPoolSingletonContainer.Builder<?> beeLoot(BeeDefinition definition) {
-		return beeLoot(EnumBeeType.DRONE, definition);
+	private LootPoolSingletonContainer.Builder<?> beeLoot(ResourceLocation species) {
+		return beeLoot(BeeLifeStage.DRONE, species);
 	}
 
-	private LootPoolSingletonContainer.Builder<?> beeLoot(EnumBeeType type, BeeDefinition definition) {
+	private LootPoolSingletonContainer.Builder<?> beeLoot(BeeLifeStage type, ResourceLocation species) {
 		return LootItem.lootTableItem(beeItem(type))
-				.apply(OrganismFunction.fromDefinition(definition));
+				.apply(OrganismFunction.fromDefinition(SpeciesUtil.BEE_TYPE.get(), SpeciesUtil.getBeeSpecies(species)));
 	}
 
-	private Item saplingItem(EnumGermlingType type) {
+	private Item saplingItem(TreeLifeStage type) {
 		return switch (type) {
 			case POLLEN -> ArboricultureItems.POLLEN_FERTILE.item();
 			case SAPLING -> ArboricultureItems.SAPLING.item();
 		};
 	}
 
-	private Item beeItem(EnumBeeType type) {
+	private Item beeItem(BeeLifeStage type) {
 		return switch (type) {
 			case QUEEN -> ApicultureItems.BEE_QUEEN.item();
 			case LARVAE -> ApicultureItems.BEE_LARVAE.item();
@@ -267,7 +269,7 @@ public class LootTableHelper {
 		}
 
 		public ResourceLocation getLocation() {
-			return new ResourceLocation(Constants.MOD_ID, defaultLocation.getPath() + "/" + extension);
+			return ForestryConstants.forestry(defaultLocation.getPath() + "/" + extension);
 		}
 	}
 }

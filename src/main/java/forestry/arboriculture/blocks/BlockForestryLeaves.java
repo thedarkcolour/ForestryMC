@@ -13,25 +13,22 @@ package forestry.arboriculture.blocks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -41,38 +38,23 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.ForestryTags;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.arboriculture.ModuleArboriculture;
 import forestry.arboriculture.tiles.TileLeaves;
-import forestry.core.data.ForestryTags;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.ItemStackUtil;
+import forestry.core.utils.SpeciesUtil;
 
 public class BlockForestryLeaves extends BlockAbstractLeaves implements BonemealableBlock, EntityBlock {
-
-	public BlockForestryLeaves() {
-		super(Block.Properties.of(Material.LEAVES)
-				.strength(0.2f)
-				.sound(SoundType.GRASS)
-				.randomTicks()
-				.isValidSpawn((a, b, c, entityType) -> entityType == EntityType.OCELOT || entityType == EntityType.PARROT)
-				.isSuffocating((a, b, c) -> false)
-				.isViewBlocking((a, b, c) -> false)
-				.noOcclusion());
-	}
-
 	@Override
 	protected ITree getTree(BlockGetter world, BlockPos pos) {
 		TileLeaves leaves = TileUtil.getTile(world, pos, TileLeaves.class);
 		if (leaves != null) {
-			ITree tree = leaves.getTree();
-			return tree;
+			return leaves.getTree();
 		}
 
 		return null;
@@ -118,7 +100,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				drops.add(TreeManager.treeRoot.getTypes().createStack(sapling, EnumGermlingType.SAPLING));
+				drops.add(SpeciesUtil.TREE_TYPE.get().createStack(sapling, TreeLifeStage.SAPLING));
 			}
 		}
 
@@ -144,7 +126,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 					return InteractionResult.SUCCESS;
 				}
 			} else if (heldItem.is(ForestryTags.Items.SCOOPS) && caterpillar != null) {
-				ItemStack butterfly = ButterflyManager.butterflyRoot.getTypes().createStack(caterpillar, EnumFlutterType.CATERPILLAR);
+				ItemStack butterfly = SpeciesUtil.BUTTERFLY_TYPE.get().createStack(caterpillar, ButterflyLifeStage.CATERPILLAR);
 				ItemStackUtil.dropItemStackAsEntity(butterfly, level, pos);
 				leaves.setCaterpillar(null);
 				return InteractionResult.SUCCESS;
@@ -177,18 +159,17 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public int colorMultiplier(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex) {
-		if (worldIn != null && pos != null) {
-			TileLeaves leaves = TileUtil.getTile(worldIn, pos, TileLeaves.class);
+	public int colorMultiplier(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
+		if (level != null && pos != null) {
+			TileLeaves leaves = TileUtil.getTile(level, pos, TileLeaves.class);
 			if (leaves != null) {
 				if (tintIndex == BlockAbstractLeaves.FRUIT_COLOR_INDEX) {
 					return leaves.getFruitColour();
 				} else {
-					Player thePlayer = Minecraft.getInstance().player;
-					return leaves.getFoliageColour(thePlayer);
+					return leaves.getFoliageColour();
 				}
 			}
 		}
-		return ModuleArboriculture.PROXY.getFoliageColorDefault();
+		return FoliageColor.getDefaultColor();
 	}
 }

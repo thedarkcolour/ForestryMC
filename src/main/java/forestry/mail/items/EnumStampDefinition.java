@@ -23,7 +23,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
 import forestry.api.mail.EnumPostage;
-import forestry.core.data.ForestryTags;
+import forestry.api.ForestryTags;
 import forestry.core.items.ItemOverlay;
 
 public enum EnumStampDefinition implements ItemOverlay.IOverlayInfo {
@@ -34,6 +34,7 @@ public enum EnumStampDefinition implements ItemOverlay.IOverlayInfo {
 	P_20("20n", EnumPostage.P_20, Tags.Items.GEMS_DIAMOND, new Color(0xff9031), new Color(0xfff7dd)),
 	P_50("50n", EnumPostage.P_50, Tags.Items.GEMS_EMERALD, new Color(0x6431d7), new Color(0xfff7dd)),
 	P_100("100n", EnumPostage.P_100, Items.NETHER_STAR, new Color(0xd731ba), new Color(0xfff7dd)),
+	// todo what is this?
 	//	P_200("200n", EnumPostage.P_200, Items.NETHER_STAR, new Color(0xcd9831), new Color(0xfff7dd)),
 	;
 
@@ -89,11 +90,6 @@ public enum EnumStampDefinition implements ItemOverlay.IOverlayInfo {
 	@Override
 	public int getSecondaryColor() {
 		return secondaryColor;
-	}
-
-	@Override
-	public boolean isSecret() {
-		return false;
 	}
 
 	public static EnumStampDefinition getFromPostage(EnumPostage postage) {

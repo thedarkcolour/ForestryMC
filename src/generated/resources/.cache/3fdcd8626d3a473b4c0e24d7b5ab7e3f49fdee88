@@ -1,4 +1,4 @@
-// 1.19.2	2024-07-03T15:13:07.7490526	Forestry Recipes
+// 1.19.2	2024-08-08T23:53:38.413509	Forestry Recipes
 88dc44fcbf9ee8ce847c012e497174c75c3e4551 data/forestry/recipes/acacia_desert_door.json
 de1f849fde24b43a22d467214e5f81924e788f78 data/forestry/recipes/acacia_desert_fence.json
 659dbe7a9f033985cd1ac4020586c34bc9505f50 data/forestry/recipes/acacia_desert_fence_gate.json
@@ -282,9 +282,7 @@ c7b14d77bded9c1576cc43c41d69d78bd17a9c3a data/forestry/recipes/greenheart_firepr
 bde0d1322c57ec96071fd330753a9993a57d1603 data/forestry/recipes/greenheart_planks.json
 4c62e7e8ed9f2f3cfa04188117eb2d5c92205f9b data/forestry/recipes/greenheart_slab.json
 7385fd8a0edc2bf2148a47272598211efe21d641 data/forestry/recipes/greenheart_stairs.json
-8303613f4ac229c2e0645ebeeac999dbea12f6ca data/forestry/recipes/habitat_former.json
 a8bc202c525a9f90802c5f58c02c30a8a8cbbd12 data/forestry/recipes/habitat_locator.json
-212d94459cee26865e66efe356510ee858fa42c0 data/forestry/recipes/habitat_screen.json
 7b37e9736e015551d2c34cf0a0a34d7717dca64b data/forestry/recipes/honeyed_slice.json
 2240458c2161db7f8249f295e54a1bf0493471c4 data/forestry/recipes/honey_pot.json
 5c43fe19c7f58f356d72efd6361e9c722c23e739 data/forestry/recipes/humus_compost.json
@@ -421,7 +419,7 @@ baf3b487e75a86526050f8cc1b3a7109ab4907b2 data/forestry/recipes/papaya_fireproof_
 8472669d17c65bdb935eea2673788a8b4223b982 data/forestry/recipes/papaya_planks.json
 4c3099e7f178a22403ac4feab6dbe9f41c5a5042 data/forestry/recipes/papaya_slab.json
 8da2f866b3de11443aecd2ede667491428af7c28 data/forestry/recipes/papaya_stairs.json
-0daa9333a0ec60cd2b243d85e731052d87e49de0 data/forestry/recipes/paper_from_letters.json
+ed4b85024a0dc3499228a03ba67cc68027d9aca5 data/forestry/recipes/paper_from_letters.json
 d75a09c7f11d5a4ea0576e86c387e70f891ec7bf data/forestry/recipes/peat_bog_managed.json
 0c3f0bd0412c8730ff5f3c19fcdd937b3c1a08fd data/forestry/recipes/peat_bog_managed_from_manual.json
 697422e8685d1cde8f593aec360c076182a8d5f5 data/forestry/recipes/peat_bog_manual.json

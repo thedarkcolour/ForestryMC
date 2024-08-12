@@ -10,10 +10,10 @@
  ******************************************************************************/
 package forestry.apiculture;
 
-import forestry.api.apiculture.DefaultBeeListener;
+import forestry.api.apiculture.IBeeListener;
 import forestry.apiculture.inventory.IApiaryInventory;
 
-public class ApiaryBeeListener extends DefaultBeeListener {
+public class ApiaryBeeListener implements IBeeListener {
 	private final IApiary apiary;
 
 	public ApiaryBeeListener(IApiary apiary) {
@@ -22,7 +22,7 @@ public class ApiaryBeeListener extends DefaultBeeListener {
 
 	@Override
 	public void wearOutEquipment(int amount) {
-		IApiaryInventory apiaryInventory = apiary.getApiaryInventory();
-		apiaryInventory.wearOutFrames(apiary, amount);
+		IApiaryInventory apiaryInventory = this.apiary.getApiaryInventory();
+		apiaryInventory.wearOutFrames(this.apiary, amount);
 	}
 }

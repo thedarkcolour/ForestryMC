@@ -26,22 +26,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.core.config.Config;
+import forestry.api.ForestryConstants;
 import forestry.core.config.Constants;
-import forestry.core.render.ForestryResource;
+import forestry.core.config.ForestryConfig;
 import forestry.core.utils.SoundUtil;
 import forestry.mail.POBoxInfo;
 
 public class GuiMailboxInfo extends GuiComponent {
-
-	public enum XPosition {
-		LEFT, RIGHT
-	}
-
-	public enum YPosition {
-		TOP, BOTTOM
-	}
-
 	public static final GuiMailboxInfo INSTANCE = new GuiMailboxInfo();
 	private static final int WIDTH = 98;
 	private static final int HEIGHT = 17;
@@ -50,14 +41,14 @@ public class GuiMailboxInfo extends GuiComponent {
 	@Nullable
 	private POBoxInfo poInfo;
 	// TODO: this texture is a terrible waste of space in graphics memory, find a better way to do it.
-	private final ResourceLocation textureAlert = new ForestryResource(Constants.TEXTURE_PATH_GUI + "/mailalert.png");
+	private static final ResourceLocation ALERT_TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/mailalert.png");
 
 	private GuiMailboxInfo() {
 		fontRenderer = Minecraft.getInstance().font;
 	}
 
 	public void render(PoseStack transform) {
-		if (poInfo == null || !Config.mailAlertEnabled || !poInfo.hasMail()) {
+		if (poInfo == null || !(boolean) ForestryConfig.SERVER.mailAlertsEnabled.get() || !poInfo.hasMail()) {
 			return;
 		}
 
@@ -66,16 +57,16 @@ public class GuiMailboxInfo extends GuiComponent {
 
 		Minecraft minecraft = Minecraft.getInstance();
 		Window win = minecraft.getWindow();
-		if (Config.mailAlertXPosition == XPosition.RIGHT) {
+		if (ForestryConfig.SERVER.mailAlertsOnRight.get()) {
 			x = win.getGuiScaledWidth() - WIDTH;
 		}
-		if (Config.mailAlertYPosition == YPosition.BOTTOM) {
+		if (ForestryConfig.SERVER.mailAlertsOnBottom.get()) {
 			y = win.getGuiScaledHeight() - HEIGHT;
 		}
 
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		// RenderSystem.disableLighting();
-		RenderSystem.setShaderTexture(0, textureAlert);
+		RenderSystem.setShaderTexture(0, ALERT_TEXTURE);
 
 		this.blit(transform, x, y, 0, 0, WIDTH, HEIGHT);
 

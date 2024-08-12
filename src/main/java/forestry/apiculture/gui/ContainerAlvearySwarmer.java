@@ -20,10 +20,9 @@ import forestry.core.gui.slots.SlotFiltered;
 import forestry.core.tiles.TileUtil;
 
 public class ContainerAlvearySwarmer extends ContainerTile<TileAlvearySwarmer> {
-
 	public static ContainerAlvearySwarmer fromNetwork(int windowId, Inventory inv, FriendlyByteBuf data) {
 		TileAlvearySwarmer tile = TileUtil.getTile(inv.player.level, data.readBlockPos(), TileAlvearySwarmer.class);
-		return new ContainerAlvearySwarmer(windowId, inv, tile);    //TODO nullability.
+		return new ContainerAlvearySwarmer(windowId, inv, tile);
 	}
 
 	public ContainerAlvearySwarmer(int windowId, Inventory player, TileAlvearySwarmer tile) {

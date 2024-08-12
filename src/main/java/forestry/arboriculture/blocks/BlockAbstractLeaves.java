@@ -5,31 +5,36 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
+import forestry.api.arboriculture.ForestryTreeSpecies;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
-import forestry.arboriculture.genetics.TreeDefinition;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.core.blocks.IColoredBlock;
+import forestry.core.utils.BlockUtil;
+import forestry.core.utils.SpeciesUtil;
 
 /**
  * Parent class for shared behavior between {@link BlockDefaultLeaves} and {@link BlockForestryLeaves}
@@ -39,8 +44,15 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 	public static final int FOLIAGE_COLOR_INDEX = 0;
 	public static final int FRUIT_COLOR_INDEX = 2;
 
-	public BlockAbstractLeaves(Properties properties) {
-		super(properties);
+	public BlockAbstractLeaves() {
+		super(Block.Properties.of(Material.LEAVES)
+				.strength(0.2f)
+				.sound(SoundType.GRASS)
+				.randomTicks()
+				.noOcclusion()
+				.isValidSpawn(BlockUtil.IS_PARROT_OR_OCELOT)
+				.isSuffocating(BlockUtil.NEVER)
+				.isViewBlocking(BlockUtil.NEVER));
 	}
 
 	@Nullable
@@ -63,7 +75,7 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		if (tree == null) {
 			return ItemStack.EMPTY;
 		}
-		IAlleleTreeSpecies species = tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES);
+		ITreeSpecies species = tree.getSpecies();
 		return species.getDecorativeLeaves();
 	}
 
@@ -71,10 +83,12 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 	@Override
 	public List<ItemStack> onSheared(@Nullable Player player, @Nonnull ItemStack item, Level world, BlockPos pos, int fortune) {
 		ITree tree = getTree(world, pos);
+		ITreeSpecies species;
 		if (tree == null) {
-			tree = TreeDefinition.Oak.createIndividual();
+			species = SpeciesUtil.getTreeSpecies(ForestryTreeSpecies.OAK);
+		} else {
+			species = tree.getGenome().getActiveValue(TreeChromosomes.SPECIES);
 		}
-		IAlleleTreeSpecies species = tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES);
 		ItemStack decorativeLeaves = species.getDecorativeLeaves();
 		if (decorativeLeaves.isEmpty()) {
 			return Collections.emptyList();
@@ -86,7 +100,7 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		ITree tree = getTree(worldIn, pos);
-		if (tree != null && TreeDefinition.Willow.getUID().equals(tree.getIdentifier())) {
+		if (tree != null && tree.getSpecies().id().equals(ForestryTreeSpecies.WILLOW)) {
 			return Shapes.empty();
 		}
 		return super.getCollisionShape(state, worldIn, pos, context);
@@ -101,20 +115,6 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		Vec3 motion = entityIn.getDeltaMovement();
 		entityIn.setDeltaMovement(motion.x() * 0.4D, motion.y(), motion.z() * 0.4D);
 	}
-
-	/* RENDERING */
-	//	@Override	//TODO is final method in block now
-	//	public boolean isOpaqueCube(BlockState state) {
-	//		return !Proxies.render.fancyGraphicsEnabled();
-	//	}
-
-	//TODO more hitbox stuff
-	//	@OnlyIn(Dist.CLIENT)
-	//	@Override
-	//	public final boolean shouldSideBeRendered(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-	//		return (Proxies.render.fancyGraphicsEnabled() || blockAccess.getBlockState(pos.offset(side)).getBlock() != this) &&
-	//				BlockUtil.shouldSideBeRendered(blockState, blockAccess, pos, side);
-	//	}
 
 	/* PROPERTIES */
 	@Override
@@ -136,40 +136,6 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		} else {
 			return 5;
 		}
-	}
-
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-		return super.getDrops(state, builder);
-		/*List<ItemStack> ret = super.getDrops(state, builder);
-		Entity entity = builder.getOptionalParameter(LootParameters.THIS_ENTITY);
-		PlayerEntity player = null;
-		GameProfile profile = null;
-		if (entity instanceof PlayerEntity) {
-			player = (PlayerEntity) entity;
-			profile = player.getGameProfile();
-		}
-		World world = builder.getLevel();
-		BlockPos pos = new BlockPos(builder.getParameter(LootParameters.ORIGIN));
-		ItemStack tool = builder.getParameter(LootParameters.TOOL);
-		int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool);
-		float saplingModifier = 1.0f;
-		Item toolItem = tool.getItem();
-		if (toolItem instanceof IToolGrafter && player != null) {
-			IToolGrafter grafter = (IToolGrafter) toolItem;
-			saplingModifier = grafter.getSaplingModifier(tool, world, player, pos);
-			//tool.damageItem(1, player, p -> {});
-			//tool.
-			if (tool.isEmpty()) {
-				//ForgeEventFactory.onPlayerDestroyItem(player, tool, Hand.MAIN_HAND);
-			}
-		}
-		NonNullList<ItemStack> drops = NonNullList.create();
-		// leaves not harvested, get drops normally
-		getLeafDrop(drops, world, profile, pos, saplingModifier, fortune, builder);
-		ret.addAll(drops);
-		return ret;*/
 	}
 
 	protected abstract void getLeafDrop(NonNullList<ItemStack> drops, Level world, @Nullable GameProfile playerProfile, BlockPos pos, float saplingModifier, int fortune, LootContext.Builder builder);

@@ -10,7 +10,5 @@
  ******************************************************************************/
 package forestry.cultivation.proxy;
 
-import forestry.modules.ISidedModuleHandler;
-
-public class ProxyCultivation implements ISidedModuleHandler {
+public class ProxyCultivation {
 }

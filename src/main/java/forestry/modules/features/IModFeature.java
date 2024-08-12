@@ -2,26 +2,31 @@ package forestry.modules.features;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraft.resources.ResourceLocation;
 
 /**
- * A feature can be used to provide an game object like a block, an item or an fluid. There are different implementations
- * of this class for every game objects.
- * <p>
- * Features are automatically loaded by the modules if you annotate the class that contains the public static final fields.
- *
- * @see IBlockFeature
- * @see IItemFeature
- * @see IFluidFeature
+ * Fancy wrapper around a registry object.
  */
 public interface IModFeature {
-	String getIdentifier();
+	/**
+	 * @return The registry name of this object without the mod namespace.
+	 */
+	String getName();
 
-	String getModId();
+	/**
+	 * @return The ID of the module responsible for adding this feature.
+	 */
+	ResourceLocation getModuleId();
 
-	String getModuleId();
+	/**
+	 * @return The ID of the mod which this feature is added by.
+	 */
+	default String getModId() {
+		return this.getModuleId().getNamespace();
+	}
 
+	/**
+	 * @return The primary registry in which this feature resides.
+	 */
 	ResourceKey<? extends Registry<?>> getRegistry();
 }

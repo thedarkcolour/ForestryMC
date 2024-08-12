@@ -9,12 +9,14 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
+
+import forestry.api.ForestryCapabilities;
+import forestry.api.apiculture.genetics.IBeeEffect;
 
 /**
  * When implemented as a capability by armor items, protects the wearer from negative bee effects.
  *
- * @see ApicultureCapabilities#ARMOR_APIARIST
+ * @see ForestryCapabilities#ARMOR_APIARIST
  */
 public interface IArmorApiarist {
 	/**
@@ -26,5 +28,5 @@ public interface IArmorApiarist {
 	 * @param doProtect Whether or not to actually do the side effects of protection
 	 * @return Whether or not the armor should protect the player from that attack
 	 */
-	boolean protectEntity(LivingEntity entity, ItemStack armor, @Nullable ResourceLocation cause, boolean doProtect);
+	boolean protectEntity(LivingEntity entity, ItemStack armor, @Nullable IBeeEffect cause, boolean doProtect);
 }

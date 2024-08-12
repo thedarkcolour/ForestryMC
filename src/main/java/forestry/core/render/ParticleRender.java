@@ -3,20 +3,20 @@ package forestry.core.render;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.ParticleStatus;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.Level;
 
 import com.mojang.math.Vector3f;
 
@@ -24,28 +24,29 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.BeeChromosomes;
 import forestry.api.apiculture.hives.IHiveTile;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-import forestry.apiculture.particles.ParticleSnow;
-import forestry.apiculture.genetics.alleles.AlleleEffect;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.BeeChromosomes;
+import forestry.apiculture.genetics.Bee;
+import forestry.apiculture.genetics.effects.ThrottledBeeEffect;
 import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.particles.BeeParticleData;
 import forestry.apiculture.particles.BeeTargetParticleData;
-import forestry.core.config.Config;
+import forestry.apiculture.particles.ParticleSnow;
+import forestry.core.config.ForestryConfig;
 import forestry.core.entities.ParticleIgnition;
 import forestry.core.entities.ParticleSmoke;
-import forestry.core.utils.VectUtil;
-
-import genetics.api.individual.IGenome;
+import forestry.core.utils.SpeciesUtil;
+import forestry.core.utils.VecUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class ParticleRender {
 	private static final DustParticleOptions HONEY_DUST = new DustParticleOptions(new Vector3f(0.9F, 0.75F, 0.0F), 1.0F);
 
 	public static boolean shouldSpawnParticle(Level world) {
-		if (!Config.enableParticleFX) {
+		if (!ForestryConfig.CLIENT.showParticles.get()) {
 			return false;
 		}
 
@@ -81,13 +82,13 @@ public class ParticleRender {
 			return;
 		}
 
-		int color = genome.getActiveAllele(BeeChromosomes.SPECIES).getSpriteColour(0);
+		int color = genome.getActiveValue(BeeChromosomes.SPECIES).getOutline();
 
 		int randomInt = world.random.nextInt(100);
 
 		if (housing instanceof IHiveTile) {
 			if (((IHiveTile) housing).isAngry() || randomInt >= 85) {
-				List<LivingEntity> entitiesInRange = AlleleEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
+				List<LivingEntity> entitiesInRange = ThrottledBeeEffect.getEntitiesInRange(genome, housing, LivingEntity.class);
 				if (!entitiesInRange.isEmpty()) {
 					LivingEntity entity = entitiesInRange.get(world.random.nextInt(entitiesInRange.size()));
 					//Particle particle = new ParticleBeeTargetEntity(world, particleStart, entity, color);
@@ -104,9 +105,9 @@ public class ParticleRender {
 			//effectRenderer.add(particle);
 			world.addParticle(new BeeParticleData(ApicultureParticles.BEE_ROUND_TRIP_PARTICLE.get(), destination, color), particleStart.x, particleStart.y, particleStart.z, 0, 0, 0);
 		} else {
-			Vec3i area = AlleleEffect.getModifiedArea(genome, housing);
+			Vec3i area = getModifiedArea(genome, housing);
 			Vec3i offset = housing.getCoordinates().offset(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
-			BlockPos destination = VectUtil.getRandomPositionInArea(world.random, area).offset(offset);
+			BlockPos destination = VecUtil.getRandomPositionInArea(world.random, area).offset(offset);
 			world.addParticle(new BeeParticleData(ApicultureParticles.BEE_EXPLORER_PARTICLE.get(), destination, color), particleStart.x, particleStart.y, particleStart.z, 0, 0, 0);
 			//Particle particle = new ParticleBeeExplore(world, particleStart, destination, color);
 			//effectRenderer.add(particle);
@@ -122,7 +123,7 @@ public class ParticleRender {
 		//		effectRenderer.addEffect(new ParticleHoneydust(world, x, y, z, 0, 0, 0));
 	}
 
-	public static void addClimateParticles(Level worldIn, BlockPos pos, RandomSource rand, EnumTemperature temperature, EnumHumidity humidity) {
+	public static void addClimateParticles(Level worldIn, BlockPos pos, RandomSource rand, TemperatureType temperature, HumidityType humidity) {
 		if (!shouldSpawnParticle(worldIn)) {
 			return;
 		}
@@ -269,5 +270,24 @@ public class ParticleRender {
 		if (particle != null) {
 			effectRenderer.add(particle);
 		}
+	}
+
+	public static Vec3i getModifiedArea(IGenome genome, IBeeHousing housing) {
+		Vec3i area = Bee.getAdjustedTerritory(genome, SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing));
+		int x = area.getX();
+		int y = area.getY();
+		int z = area.getZ();
+
+		if (x < 1) {
+			x = 1;
+		}
+		if (y < 1) {
+			y = 1;
+		}
+		if (z < 1) {
+			z = 1;
+		}
+
+		return new Vec3i(x, y, z);
 	}
 }

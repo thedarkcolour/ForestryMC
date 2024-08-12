@@ -18,7 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import forestry.core.network.IForestryPacketServer;
+import forestry.api.modules.IForestryPacketServer;
 import forestry.core.network.PacketIdServer;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.NetworkUtil;

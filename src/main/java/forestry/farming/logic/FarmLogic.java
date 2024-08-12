@@ -13,53 +13,53 @@ package forestry.farming.logic;
 import com.google.common.base.Predicate;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
-import forestry.api.farming.FarmDirection;
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmLogic;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
 import forestry.api.farming.Soil;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 
 public abstract class FarmLogic implements IFarmLogic {
 	private final EntitySelectorFarm entitySelectorFarm;
-	protected final IFarmProperties properties;
+	protected final IFarmType type;
 	protected final boolean isManual;
 
-	public FarmLogic(IFarmProperties properties, boolean isManual) {
-		this.properties = properties;
+	public FarmLogic(IFarmType type, boolean isManual) {
+		this.type = type;
 		this.isManual = isManual;
-		this.entitySelectorFarm = new EntitySelectorFarm(properties);
+		this.entitySelectorFarm = new EntitySelectorFarm(type);
 	}
 
 	protected Collection<IFarmable> getFarmables() {
-		return properties.getFarmables();
+		return this.type.getFarmables();
 	}
 
 	protected Collection<Soil> getSoils() {
-		return properties.getSoils();
+		return this.type.getSoils();
 	}
 
 	@Override
-	public IFarmProperties getProperties() {
-		return properties;
+	public IFarmType getType() {
+		return this.type;
 	}
 
 	@Override
@@ -68,11 +68,11 @@ public abstract class FarmLogic implements IFarmLogic {
 	}
 
 	@Override
-	public Collection<ICrop> harvest(Level world, IFarmHousing housing, FarmDirection direction, int extent, BlockPos pos) {
+	public Collection<ICrop> harvest(Level level, IFarmHousing housing, Direction direction, int extent, BlockPos pos) {
 		Stack<ICrop> crops = new Stack<>();
 		for (int i = 0; i < extent; i++) {
 			BlockPos position = translateWithOffset(pos.above(), direction, i);
-			ICrop crop = getCrop(world, position);
+			ICrop crop = getCrop(level, position);
 			if (crop != null) {
 				crops.push(crop);
 			}
@@ -95,11 +95,6 @@ public abstract class FarmLogic implements IFarmLogic {
 		return null;
 	}
 
-	@Deprecated
-	public boolean isAcceptedWindfall(ItemStack stack) {
-		return false;
-	}
-
 	protected final boolean isWaterSourceBlock(Level world, BlockPos position) {
 		if (!world.hasChunkAt(position)) {
 			return false;
@@ -118,8 +113,8 @@ public abstract class FarmLogic implements IFarmLogic {
 		return block == Blocks.ICE;
 	}
 
-	protected final BlockPos translateWithOffset(BlockPos pos, FarmDirection farmDirection, int step) {
-		return VectUtil.scale(farmDirection.getFacing().getNormal(), step).offset(pos);
+	protected final BlockPos translateWithOffset(BlockPos pos, Direction farmDirection, int step) {
+		return VecUtil.scale(farmDirection.getNormal(), step).offset(pos);
 	}
 
 	private static AABB getHarvestBox(Level world, IFarmHousing farmHousing, boolean toWorldHeight) {
@@ -138,11 +133,11 @@ public abstract class FarmLogic implements IFarmLogic {
 		return new AABB(min.getX(), min.getY(), min.getZ(), max.getX(), maxY, max.getZ());
 	}
 
-	protected NonNullList<ItemStack> collectEntityItems(Level world, IFarmHousing farmHousing, boolean toWorldHeight) {
+	protected List<ItemStack> collectEntityItems(Level world, IFarmHousing farmHousing, boolean toWorldHeight) {
 		AABB harvestBox = getHarvestBox(world, farmHousing, toWorldHeight);
 
 		List<ItemEntity> entityItems = world.getEntitiesOfClass(ItemEntity.class, harvestBox, entitySelectorFarm);
-		NonNullList<ItemStack> stacks = NonNullList.create();
+		ArrayList<ItemStack> stacks = new ArrayList<>();
 		for (ItemEntity entity : entityItems) {
 			ItemStack contained = entity.getItem();
 			stacks.add(contained.copy());
@@ -154,13 +149,16 @@ public abstract class FarmLogic implements IFarmLogic {
 	// for debugging
 	@Override
 	public String toString() {
-		return properties.getTranslationKey();
+		return type.getTranslationKey();
 	}
 
 	private static class EntitySelectorFarm implements Predicate<ItemEntity> {
-		private final IFarmProperties properties;
+		// From immersiveengineering.api.Lib.MAGNET_PREVENT_NBT
+		private static final String MAGNET_PREVENT_NBT = "PreventRemoteMovement";
 
-		public EntitySelectorFarm(IFarmProperties properties) {
+		private final IFarmType properties;
+
+		public EntitySelectorFarm(IFarmType properties) {
 			this.properties = properties;
 		}
 
@@ -170,13 +168,13 @@ public abstract class FarmLogic implements IFarmLogic {
 				return false;
 			}
 
-			//TODO not sure if this key still exists
-			if (entity.getPersistentData().getBoolean("PreventRemoteMovement")) {
+			// Fixes grabbing items from Immersive Engineering belts.
+			if (entity.getPersistentData().getBoolean(MAGNET_PREVENT_NBT)) {
 				return false;
 			}
 
 			ItemStack contained = entity.getItem();
-			return properties.isAcceptedSeedling(contained) || properties.isAcceptedWindfall(contained);
+			return this.properties.isAcceptedSeedling(contained) || this.properties.isAcceptedWindfall(contained);
 		}
 	}
 }

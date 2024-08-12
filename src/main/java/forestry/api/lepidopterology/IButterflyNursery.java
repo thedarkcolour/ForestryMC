@@ -7,25 +7,25 @@ package forestry.api.lepidopterology;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.Level;
-
-import genetics.api.individual.IIndividual;
-
 import forestry.api.climate.IClimateProvider;
-import forestry.api.genetics.IHousing;
+import forestry.api.core.ILocationProvider;
+import forestry.api.genetics.IIndividual;
 import forestry.api.lepidopterology.genetics.IButterfly;
 
-public interface IButterflyNursery extends IHousing, IClimateProvider {
+/**
+ * A butterfly nursery is a place, usually a leaf block, where caterpillars laid by mated butterflies mature into cocoons.
+ */
+public interface IButterflyNursery extends ILocationProvider, IClimateProvider {
 	@Nullable
 	IButterfly getCaterpillar();
 
+	/**
+	 * @return The butterfly who created this nursery.
+	 */
 	@Nullable
 	IIndividual getNanny();
 
 	void setCaterpillar(@Nullable IButterfly caterpillar);
 
 	boolean canNurse(IButterfly caterpillar);
-
-	Level getWorldObj();
-
 }

@@ -14,10 +14,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import forestry.api.circuits.ChipsetManager;
+import forestry.api.IForestryApi;
 import forestry.api.circuits.ICircuitLayout;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.circuits.ContainerSolderingIron;
-import forestry.core.network.IForestryPacketClient;
 import forestry.core.network.PacketIdClient;
 
 public record PacketGuiLayoutSelect(String layoutUid) implements IForestryPacketClient {
@@ -37,7 +37,7 @@ public record PacketGuiLayoutSelect(String layoutUid) implements IForestryPacket
 
 	public static void handle(PacketGuiLayoutSelect msg, Player player) {
 		if (player.containerMenu instanceof ContainerSolderingIron solderingIron) {
-			ICircuitLayout layout = ChipsetManager.circuitRegistry.getLayout(msg.layoutUid);
+			ICircuitLayout layout = IForestryApi.INSTANCE.getCircuitManager().getLayout(msg.layoutUid);
 
 			if (layout != null) {
 				solderingIron.setLayout(layout);

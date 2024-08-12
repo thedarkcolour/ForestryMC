@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.recipes.IStillRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class StillRecipeBuilder {
@@ -66,7 +67,7 @@ public class StillRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return IStillRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.STILL.serializer();
 		}
 
 		@Nullable

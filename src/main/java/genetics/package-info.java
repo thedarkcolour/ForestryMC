@@ -1,8 +1,0 @@
-@ParametersAreNonnullByDefault
-@FieldsAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-package genetics;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import net.minecraft.MethodsReturnNonnullByDefault;

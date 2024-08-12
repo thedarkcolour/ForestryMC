@@ -13,7 +13,6 @@ package forestry.core.data;
 import java.util.List;
 import java.util.function.Consumer;
 
-import deleteme.RegistryNameFinder;
 import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.DataGenerator;
@@ -33,8 +32,9 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.arboriculture.EnumForestryWoodType;
-import forestry.api.arboriculture.EnumVanillaWoodType;
+import forestry.api.ForestryTags;
+import forestry.arboriculture.ForestryWoodType;
+import forestry.arboriculture.VanillaWoodType;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
@@ -44,7 +44,6 @@ import forestry.apiculture.items.EnumHoneyComb;
 import forestry.apiculture.items.EnumHoneyDrop;
 import forestry.apiculture.items.EnumPollenCluster;
 import forestry.apiculture.items.EnumPropolis;
-import forestry.climatology.features.ClimatologyItems;
 import forestry.core.blocks.BlockTypeCoreTesr;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.circuits.ItemCircuitBoard;
@@ -68,6 +67,7 @@ import forestry.core.items.ItemFruit;
 import forestry.core.items.definitions.EnumContainerType;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
+import forestry.core.utils.ModUtil;
 import forestry.mail.features.MailItems;
 import forestry.mail.items.ItemLetter;
 import forestry.modules.features.FeatureItem;
@@ -76,6 +76,10 @@ import forestry.storage.features.CrateItems;
 import forestry.storage.items.ItemCrated;
 
 public class ForestryMachineRecipeProvider extends RecipeProvider {
+
+	public static final int STILL_DESTILLATION_DURATION = 100;
+	public static final int STILL_DESTILLATION_INPUT = 10;
+	public static final int STILL_DESTILLATION_OUTPUT = 3;
 
 	public ForestryMachineRecipeProvider(DataGenerator generatorIn) {
 		super(generatorIn);
@@ -350,7 +354,7 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('R', Tags.Items.DUSTS_REDSTONE))
 				.build(consumer, id("carpenter", "circuits", "intricate"));
 
-		new CarpenterRecipeBuilder()
+		/*new CarpenterRecipeBuilder()
 				.setPackagingTime(100)
 				.setLiquid(new FluidStack(Fluids.WATER, 2000))
 				.setBox(Ingredient.EMPTY)
@@ -362,7 +366,7 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('P', Tags.Items.GLASS_PANES)
 						.define('I', CoreItems.INGOT_BRONZE)
 						.define('D', Tags.Items.GEMS_DIAMOND))
-				.build(consumer, id("carpenter", "habitat_screen"));
+				.build(consumer, id("carpenter", "habitat_screen"));*/
 		// / Crates
 		new CarpenterRecipeBuilder()
 				.setPackagingTime(20)
@@ -486,7 +490,7 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 
 	private void crate(Consumer<FinishedRecipe> consumer, ItemCrated crated, Ingredient ingredient) {
 		ItemStack contained = crated.getContained();
-		ResourceLocation name = RegistryNameFinder.getRegistryName(contained.getItem());
+		ResourceLocation name = ModUtil.getRegistryName(contained.getItem());
 
 		if (name == null) {
 			return;
@@ -513,7 +517,7 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 		new CentrifugeRecipeBuilder()
 				.setProcessingTime(5)
 				.setInput(Ingredient.of(Items.STRING))
-				.product(0.15F, CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.SILK_WISP, 1))
+				.product(0.15F, CoreItems.CRAFTING_MATERIALS.stack(EnumCraftingMaterial.SILK_WISP))
 				.build(consumer, id("centrifuge", "string"));
 
 		ItemStack honeyDrop = ApicultureItems.HONEY_DROPS.stack(EnumHoneyDrop.HONEY, 1);
@@ -758,11 +762,11 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 						.define('E', Tags.Items.GEMS_EMERALD))
 				.build(consumer, id("fabricator", "electron_tubes", "flexible_casing"));
 
-		for (EnumForestryWoodType type : EnumForestryWoodType.values()) {
+		for (ForestryWoodType type : ForestryWoodType.values()) {
 			addFireproofRecipes(consumer, type);
 		}
 
-		for (EnumVanillaWoodType type : EnumVanillaWoodType.values()) {
+		for (VanillaWoodType type : VanillaWoodType.values()) {
 			addFireproofRecipes(consumer, type);
 		}
 	}
@@ -1098,11 +1102,11 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerStill(Consumer<FinishedRecipe> consumer) {
-		FluidStack biomass = ForestryFluids.BIOMASS.getFluid(Constants.STILL_DESTILLATION_INPUT);
-		FluidStack ethanol = ForestryFluids.BIO_ETHANOL.getFluid(Constants.STILL_DESTILLATION_OUTPUT);
+		FluidStack biomass = ForestryFluids.BIOMASS.getFluid(STILL_DESTILLATION_INPUT);
+		FluidStack ethanol = ForestryFluids.BIO_ETHANOL.getFluid(STILL_DESTILLATION_OUTPUT);
 
 		new StillRecipeBuilder()
-				.setTimePerUnit(Constants.STILL_DESTILLATION_DURATION)
+				.setTimePerUnit(STILL_DESTILLATION_DURATION)
 				.setInput(biomass)
 				.setOutput(ethanol)
 				.build(consumer, id("still", "ethanol"));

@@ -12,21 +12,20 @@ package forestry.core.commands;
 
 import java.util.Collection;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.ISpecies;
 
 public interface IStatsSaveHelper {
+	String getTranslationKey();
 
-	String getUnlocalizedSaveStatsString();
+	void addExtraInfo(Collection<Component> statistics, IBreedingTracker breedingTracker);
 
-	//TODO: Use TextComponents
-	void addExtraInfo(Collection<String> statistics, IBreedingTracker breedingTracker);
-
-	Collection<? extends IAlleleForestrySpecies> getSpecies();
+	Collection<? extends ISpecies<?>> getSpecies();
 
 	String getFileSuffix();
 

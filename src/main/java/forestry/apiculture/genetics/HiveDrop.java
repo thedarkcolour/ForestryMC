@@ -10,57 +10,67 @@
  ******************************************************************************/
 package forestry.apiculture.genetics;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 
 import forestry.api.apiculture.genetics.IBee;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.hives.IHiveDrop;
+import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IChromosome;
+import forestry.core.utils.SpeciesUtil;
+
+import org.jetbrains.annotations.Nullable;
 
 public class HiveDrop implements IHiveDrop {
-
-	private final IBeeDefinition beeTemplate;
-	private final NonNullList<ItemStack> additional = NonNullList.create();
+	private final ResourceLocation speciesId;
 	private final double chance;
-	private double ignobleShare = 0.0;
+	private final List<ItemStack> bonus;
+	private final double ignobleChance;
+	private final Map<IChromosome<?>, IAllele> alleles;
 
-	public HiveDrop(double chance, IBeeDefinition beeTemplate, ItemStack... bonus) {
-		this.beeTemplate = beeTemplate;
+	@Nullable
+	private IBeeSpecies species;
+
+	public HiveDrop(double chance, ResourceLocation speciesId, List<ItemStack> bonus, float ignobleChance, Map<IChromosome<?>, IAllele> alleles) {
+		this.speciesId = speciesId;
 		this.chance = chance;
-
-		Collections.addAll(this.additional, bonus);
-	}
-
-	public HiveDrop setIgnobleShare(double share) {
-		this.ignobleShare = share;
-		return this;
+		this.bonus = bonus;
+		this.ignobleChance = ignobleChance;
+		this.alleles = alleles;
 	}
 
 	@Override
-	public IBee getBeeType(BlockGetter world, BlockPos pos) {
-		return beeTemplate.createIndividual();
+	public IBee createIndividual(BlockGetter level, BlockPos pos) {
+		if (this.species == null) {
+			this.species = SpeciesUtil.getBeeSpecies(speciesId);
+		}
+		return this.species.createIndividual(this.alleles);
 	}
 
 	@Override
-	public NonNullList<ItemStack> getExtraItems(BlockGetter world, BlockPos pos, int fortune) {
-		NonNullList<ItemStack> ret = NonNullList.create();
-		for (ItemStack stack : additional) {
-			ret.add(stack.copy());
+	public List<ItemStack> getExtraItems(BlockGetter level, BlockPos pos, int fortune) {
+		ArrayList<ItemStack> result = new ArrayList<>();
+		for (ItemStack stack : this.bonus) {
+			result.add(stack.copy());
 		}
 
-		return ret;
+		return result;
 	}
 
 	@Override
-	public double getChance(BlockGetter world, BlockPos pos, int fortune) {
-		return chance;
+	public double getChance(BlockGetter level, BlockPos pos, int fortune) {
+		return this.chance;
 	}
 
 	@Override
-	public double getIgnobleChance(BlockGetter world, BlockPos pos, int fortune) {
-		return ignobleShare;
+	public double getIgnobleChance(BlockGetter level, BlockPos pos, int fortune) {
+		return this.ignobleChance;
 	}
 }

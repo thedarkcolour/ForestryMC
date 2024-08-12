@@ -12,13 +12,10 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IIndividual;
-import genetics.api.individual.ISpeciesDefinition;
-import genetics.api.organism.IOrganismType;
-import genetics.api.root.IIndividualRoot;
-import genetics.api.root.IRootDefinition;
-import genetics.utils.RootUtils;
+import forestry.api.IForestryApi;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 
 /**
  * Loot function to add genetic information, an organism, to the item stack.
@@ -26,35 +23,31 @@ import genetics.utils.RootUtils;
 public class OrganismFunction extends LootItemConditionalFunction {
 	public static LootItemFunctionType type;
 
-	private final ResourceLocation speciesUid;
+	private final ResourceLocation typeId;
+	private final ResourceLocation speciesId;
 
-	private OrganismFunction(LootItemCondition[] conditions, ResourceLocation speciesUid) {
+	private OrganismFunction(LootItemCondition[] conditions, ResourceLocation typeId, ResourceLocation speciesId) {
 		super(conditions);
-		this.speciesUid = speciesUid;
+		this.typeId = typeId;
+		this.speciesId = speciesId;
 	}
 
-	public static LootItemConditionalFunction.Builder<?> fromDefinition(ISpeciesDefinition<?> definition) {
-		return fromUID(definition.getSpecies().getRegistryName());
+	public static LootItemConditionalFunction.Builder<?> fromDefinition(ISpeciesType<?, ?> type, ISpecies<?> species) {
+		return fromId(type.id(), species.id());
 	}
 
-	public static LootItemConditionalFunction.Builder<?> fromUID(ResourceLocation speciesUid) {
-		return simpleBuilder((conditions) -> new OrganismFunction(conditions, speciesUid));
+	public static LootItemConditionalFunction.Builder<?> fromId(ResourceLocation typeId, ResourceLocation speciesId) {
+		return simpleBuilder(conditions -> new OrganismFunction(conditions, typeId, speciesId));
 	}
 
 	@Override
 	protected ItemStack run(ItemStack stack, LootContext lootContext) {
-		IRootDefinition<IIndividualRoot<IIndividual>> definition = RootUtils.getRoot(stack);
-		if (definition.isPresent()) {
-			IIndividualRoot<IIndividual> root = definition.get();
-			IOrganismType type = root.getType(stack);
+		ISpeciesType<?, ?> speciesType = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(this.typeId);
+		ILifeStage stage = speciesType.getLifeStage(stack);
 
-			if (type != null) {
-				IAllele[] template = root.getTemplate(speciesUid.toString());
-				if (template.length > 0) {
-					IIndividual individual = root.templateAsIndividual(template);
-					return root.createStack(individual, type);
-				}
-			}
+		if (stage != null) {
+			ISpecies<?> species = speciesType.getSpecies(this.speciesId);
+			return species.createStack(stage);
 		}
 
 		return stack;
@@ -69,13 +62,15 @@ public class OrganismFunction extends LootItemConditionalFunction {
 		@Override
 		public void serialize(JsonObject object, OrganismFunction function, JsonSerializationContext context) {
 			super.serialize(object, function, context);
-			object.addProperty("speciesUid", function.speciesUid.toString());
+			object.addProperty("type_id", function.typeId.toString());
+			object.addProperty("species_id", function.speciesId.toString());
 		}
 
 		@Override
 		public OrganismFunction deserialize(JsonObject object, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] conditions) {
-			String speciesUid = GsonHelper.getAsString(object, "speciesUid");
-			return new OrganismFunction(conditions, new ResourceLocation(speciesUid));
+			String typeId = GsonHelper.getAsString(object, "type_id");
+			String speciesId = GsonHelper.getAsString(object, "species_id");
+			return new OrganismFunction(conditions, new ResourceLocation(typeId), new ResourceLocation(speciesId));
 		}
 	}
 }

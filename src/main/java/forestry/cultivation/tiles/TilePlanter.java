@@ -7,22 +7,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -30,14 +29,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import forestry.api.climate.IClimatised;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-import forestry.api.farming.FarmDirection;
+import forestry.api.IForestryApi;
+import forestry.api.climate.IClimateProvider;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.farming.IFarmLogic;
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 import forestry.api.farming.IFarmable;
-import forestry.core.config.Config;
+import forestry.core.config.ForestryConfig;
 import forestry.core.fluids.ITankManager;
 import forestry.core.network.IStreamableGui;
 import forestry.core.owner.IOwnedTile;
@@ -46,7 +45,6 @@ import forestry.core.owner.OwnerHandler;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TilePowered;
 import forestry.core.utils.PlayerUtil;
-import forestry.core.utils.VectUtil;
 import forestry.cultivation.IFarmHousingInternal;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
@@ -54,18 +52,17 @@ import forestry.cultivation.gui.ContainerPlanter;
 import forestry.cultivation.inventory.InventoryPlanter;
 import forestry.farming.FarmHelper;
 import forestry.farming.FarmManager;
-import forestry.farming.FarmRegistry;
 import forestry.farming.FarmTarget;
 import forestry.farming.gui.IFarmLedgerDelegate;
 import forestry.farming.multiblock.IFarmInventoryInternal;
 
-public abstract class TilePlanter extends TilePowered implements IFarmHousingInternal, IClimatised, ILiquidTankTile, IOwnedTile, IStreamableGui {
+public abstract class TilePlanter extends TilePowered implements IFarmHousingInternal, IClimateProvider, ILiquidTankTile, IOwnedTile, IStreamableGui {
 	private final InventoryPlanter inventory;
 	private final OwnerHandler ownerHandler = new OwnerHandler();
 	private final FarmManager manager;
 
 	private BlockPlanter.Mode mode;
-	private final IFarmProperties properties;
+	private final IFarmType properties;
 	@Nullable
 	private IFarmLogic logic;
 	@Nullable
@@ -73,19 +70,21 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	@Nullable
 	private Vec3i area;
 
-	public void setManual(BlockPlanter.Mode mode) {
-		this.mode = mode;
-		logic = properties.getLogic(this.mode == BlockPlanter.Mode.MANUAL);
-	}
-
-	protected TilePlanter(BlockEntityType type, BlockPos pos, BlockState state, String identifier) {
+	protected TilePlanter(BlockEntityType type, BlockPos pos, BlockState state, ResourceLocation farmTypeId) {
 		super(type, pos, state, 150, 1500);
-		this.properties = Preconditions.checkNotNull(FarmRegistry.INSTANCE.getProperties(identifier));
-		mode = BlockPlanter.Mode.MANAGED;
-		setInternalInventory(inventory = new InventoryPlanter(this));
+
+		this.properties = Preconditions.checkNotNull(IForestryApi.INSTANCE.getFarmingManager().getFarmType(farmTypeId));
+		this.mode = BlockPlanter.Mode.MANAGED;
+		this.inventory = new InventoryPlanter(this);
+		setInternalInventory(inventory);
 		this.manager = new FarmManager(this);
 		setEnergyPerWorkCycle(10);
 		setTicksPerWorkCycle(2);
+	}
+
+	public void setManual(BlockPlanter.Mode mode) {
+		this.mode = mode;
+		this.logic = this.properties.getLogic(this.mode == BlockPlanter.Mode.MANUAL);
 	}
 
 	@Override
@@ -145,15 +144,15 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public void setUpFarmlandTargets(Map<FarmDirection, List<FarmTarget>> targets) {
+	public void setUpFarmlandTargets(Map<Direction, List<FarmTarget>> targets) {
 		BlockPos targetStart = getCoords();
 		BlockPos minPos = worldPosition;
 		BlockPos maxPos = worldPosition;
 		int size = 1;
-		int extend = Config.planterExtend;
+		int extend = ForestryConfig.SERVER.legacyFarmsPlanterRings.get();
 
-		if (Config.ringFarms) {
-			int ringSize = Config.ringSize;
+		if (ForestryConfig.SERVER.legacyFarmsUseRings.get()) {
+			int ringSize = ForestryConfig.SERVER.legacyFarmsRingSize.get();
 			minPos = worldPosition.offset(-ringSize, 0, -ringSize);
 			maxPos = worldPosition.offset(ringSize, 0, ringSize);
 			size = 1 + ringSize * 2;
@@ -178,10 +177,10 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	public Vec3i getArea() {
 		if (area == null) {
 			int basisArea = 5;
-			if (Config.ringFarms) {
-				basisArea = basisArea + 1 + Config.ringSize * 2;
+			if (ForestryConfig.SERVER.legacyFarmsUseRings.get()) {
+				basisArea = basisArea + 1 + ForestryConfig.SERVER.legacyFarmsRingSize.get() * 2;
 			}
-			area = new Vec3i(basisArea + Config.planterExtend, 13, basisArea + Config.planterExtend);
+			area = new Vec3i(basisArea + ForestryConfig.SERVER.legacyFarmsPlanterRings.get(), 13, basisArea + ForestryConfig.SERVER.legacyFarmsPlanterRings.get());
 		}
 		return area;
 	}
@@ -217,7 +216,7 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, FarmDirection direction) {
+	public boolean plantGermling(IFarmable farmable, Level world, BlockPos pos, Direction direction) {
 		Player player = PlayerUtil.getFakePlayer(world, getOwnerHandler().getOwner());
 		return player != null && inventory.plantGermling(farmable, player, pos, direction);
 	}
@@ -248,15 +247,15 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public void setFarmLogic(FarmDirection direction, IFarmLogic logic) {
+	public void setFarmLogic(Direction direction, IFarmLogic logic) {
 	}
 
 	@Override
-	public void resetFarmLogic(FarmDirection direction) {
+	public void resetFarmLogic(Direction direction) {
 	}
 
 	@Override
-	public IFarmLogic getFarmLogic(FarmDirection direction) {
+	public IFarmLogic getFarmLogic(Direction direction) {
 		return getFarmLogic();
 	}
 
@@ -287,10 +286,6 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 		return data;
 	}
 
-	protected final BlockPos translateWithOffset(BlockPos pos, FarmDirection farmDirection, int step) {
-		return VectUtil.scale(farmDirection.getFacing().getNormal(), step).offset(pos);
-	}
-
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inv, Player player) {
 		return new ContainerPlanter(windowId, inv, this);
@@ -301,26 +296,13 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 	}
 
 	@Override
-	public EnumTemperature getTemperature() {
-		return EnumTemperature.getFromValue(getExactTemperature());
+	public TemperatureType temperature() {
+		return IForestryApi.INSTANCE.getClimateManager().getTemperature(this.level.getBiome(this.worldPosition));
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return EnumHumidity.getFromValue(getExactHumidity());
-	}
-
-	@Override
-	public float getExactTemperature() {
-		BlockPos coords = getCoordinates();
-		return 0; // level.getBiome(coords).getTemperature(coords);
-	}
-
-	@Override
-	public float getExactHumidity() {
-		BlockPos coords = getCoordinates();
-		Level level = Objects.requireNonNull(this.level);
-		return level.getBiome(coords).value().getDownfall();
+	public HumidityType humidity() {
+		return IForestryApi.INSTANCE.getClimateManager().getHumidity(this.level.getBiome(this.worldPosition));
 	}
 
 	@Override
@@ -336,33 +318,29 @@ public abstract class TilePlanter extends TilePowered implements IFarmHousingInt
 		return super.getCapability(capability, facing);
 	}
 
-	protected NonNullList<ItemStack> createList(ItemStack... stacks) {
-		return NonNullList.of(ItemStack.EMPTY, stacks);
-	}
+	public abstract List<ItemStack> createGermlingStacks();
 
-	public abstract NonNullList<ItemStack> createGermlingStacks();
+	public abstract List<ItemStack> createResourceStacks();
 
-	public abstract NonNullList<ItemStack> createResourceStacks();
-
-	public abstract NonNullList<ItemStack> createProductionStacks();
+	public abstract List<ItemStack> createProductionStacks();
 
 	@Override
-	public BlockPos getFarmCorner(FarmDirection direction) {
+	public BlockPos getFarmCorner(Direction direction) {
 		return worldPosition.below(2);
 	}
 
 	@Override
-	public int getExtents(FarmDirection direction, BlockPos pos) {
+	public int getExtents(Direction direction, BlockPos pos) {
 		return manager.getExtents(direction, pos);
 	}
 
 	@Override
-	public void setExtents(FarmDirection direction, BlockPos pos, int extend) {
+	public void setExtents(Direction direction, BlockPos pos, int extend) {
 		manager.setExtents(direction, pos, extend);
 	}
 
 	@Override
-	public void cleanExtents(FarmDirection direction) {
+	public void cleanExtents(Direction direction) {
 		manager.cleanExtents(direction);
 	}
 }

@@ -5,32 +5,22 @@
  ******************************************************************************/
 package forestry.api.recipes;
 
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ObjectHolder;
 
-public interface IFermenterRecipe extends IForestryRecipe, Comparable<IFermenterRecipe> {
-
-	RecipeType<IFermenterRecipe> TYPE = RecipeManagers.create("forestry:fermenter");
-
-	class Companion {
-		@ObjectHolder(registryName = "recipe_serializer", value = "forestry:fermenter")
-		public static final RecipeSerializer<IFermenterRecipe> SERIALIZER = null;
-	}
-
+public interface IFermenterRecipe extends IForestryRecipe {
 	/**
 	 * @return ItemStack representing the input resource.
 	 */
-	Ingredient getResource();
+	Ingredient getInputItem();
 
 	/**
 	 * @return FluidStack representing the input fluid resource.
 	 */
-	FluidStack getFluidResource();
+	FluidStack getInputFluid();
 
 	/**
 	 * @return Value of the given resource, i.e. how much needs to be fermented for the output to be deposited into the product tank.
@@ -48,13 +38,5 @@ public interface IFermenterRecipe extends IForestryRecipe, Comparable<IFermenter
 	 */
 	Fluid getOutput();
 
-	@Override
-	default RecipeType<?> getType() {
-		return TYPE;
-	}
-
-	@Override
-	default RecipeSerializer<?> getSerializer() {
-		return Companion.SERIALIZER;
-	}
+	boolean matches(ItemStack inputItem, FluidStack inputFluid);
 }

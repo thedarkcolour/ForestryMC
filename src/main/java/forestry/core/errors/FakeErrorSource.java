@@ -10,20 +10,16 @@
  ******************************************************************************/
 package forestry.core.errors;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
+import forestry.api.core.IError;
 import forestry.api.core.IErrorSource;
-import forestry.api.core.IErrorState;
 
-public class FakeErrorSource implements IErrorSource {
-	public static final FakeErrorSource instance = new FakeErrorSource();
-
-	private FakeErrorSource() {
-
-	}
+public enum FakeErrorSource implements IErrorSource {
+	INSTANCE;
 
 	@Override
-	public ImmutableSet<IErrorState> getErrorStates() {
-		return ImmutableSet.of();
+	public Set<IError> getErrors() {
+		return Set.of();
 	}
 }

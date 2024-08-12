@@ -11,7 +11,6 @@
 package forestry.core;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.world.entity.player.Player;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,11 +20,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import net.minecraftforge.fml.common.Mod;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 import forestry.core.utils.GeneticsUtil;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = ForestryConstants.MOD_ID, value = Dist.CLIENT)
 public class TickHandlerCoreClient {
 	private static boolean hasNaturalistEye;
 

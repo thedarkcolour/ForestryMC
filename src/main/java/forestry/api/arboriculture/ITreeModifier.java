@@ -5,10 +5,10 @@
  ******************************************************************************/
 package forestry.api.arboriculture;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
+// used to be used by TreekeepingMode
 public interface ITreeModifier {
-
 	/**
 	 * @return Float used to modify the height.
 	 */
@@ -33,5 +33,4 @@ public interface ITreeModifier {
 	 * @return Float used to modify the base mutation chance.
 	 */
 	float getMutationModifier(IGenome genome0, IGenome genome1, float currentModifier);
-
 }

@@ -10,14 +10,15 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.LevelAccessor;
 
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.tiles.TileSapling;
 import forestry.core.tiles.TileUtil;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public class TreeGrowthHelper {
 	@Nullable
-	public static BlockPos canGrow(LevelAccessor world, IGenome genome, BlockPos pos, int expectedGirth, int expectedHeight) {
+	public static BlockPos getGrowthPos(LevelAccessor world, IGenome genome, BlockPos pos, int expectedGirth, int expectedHeight) {
 		BlockPos growthPos = hasSufficientSaplingsAroundSapling(genome, world, pos, expectedGirth);
 		if (growthPos == null) {
 			return null;
@@ -104,6 +105,6 @@ public class TreeGrowthHelper {
 		}
 
 		ITree tree = sapling.getTree();
-		return tree != null && tree.getGenome().getPrimary().getRegistryName().equals(genome.getPrimary().getRegistryName());
+		return tree != null && tree.getGenome().getActiveAllele(TreeChromosomes.SPECIES) == genome.getActiveAllele(TreeChromosomes.SPECIES);
 	}
 }

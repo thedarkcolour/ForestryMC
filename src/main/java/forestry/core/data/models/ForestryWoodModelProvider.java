@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import forestry.api.arboriculture.EnumForestryWoodType;
-import forestry.api.arboriculture.EnumVanillaWoodType;
+import forestry.arboriculture.ForestryWoodType;
+import forestry.arboriculture.VanillaWoodType;
 import forestry.arboriculture.blocks.BlockForestryDoor;
 import forestry.arboriculture.blocks.BlockForestryFence;
 import forestry.arboriculture.blocks.BlockForestryFenceGate;
@@ -28,7 +28,7 @@ public class ForestryWoodModelProvider extends ForestryBlockStateProvider {
 	@Override
 	protected void registerStatesAndModels() {
 		// Vanilla fireproof wood types
-		for (EnumVanillaWoodType woodType : EnumVanillaWoodType.VALUES) {
+		for (VanillaWoodType woodType : VanillaWoodType.VALUES) {
 			// planks
 			Block planks = ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF.get(woodType).block();
 			String woodTypeName = woodType.getSerializedName();
@@ -95,7 +95,7 @@ public class ForestryWoodModelProvider extends ForestryBlockStateProvider {
 		}
 
 		// Forestry wood types
-		for (EnumForestryWoodType woodType : EnumForestryWoodType.VALUES) {
+		for (ForestryWoodType woodType : ForestryWoodType.VALUES) {
 			// Planks
 			Block planks = ArboricultureBlocks.PLANKS.get(woodType).block();
 			Block fireproofPlanks = ArboricultureBlocks.PLANKS_FIREPROOF.get(woodType).block();
@@ -167,7 +167,7 @@ public class ForestryWoodModelProvider extends ForestryBlockStateProvider {
 		}
 	}
 
-	private void logLike(EnumForestryWoodType woodType, FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> logs, FeatureBlockGroup<BlockForestryLog, EnumForestryWoodType> fireproofLogs, ResourceLocation sideTexture, ResourceLocation topTexture) {
+	private void logLike(ForestryWoodType woodType, FeatureBlockGroup<BlockForestryLog, ForestryWoodType> logs, FeatureBlockGroup<BlockForestryLog, ForestryWoodType> fireproofLogs, ResourceLocation sideTexture, ResourceLocation topTexture) {
 		BlockForestryLog wood = logs.get(woodType).block();
 		BlockForestryLog fireproofWood = fireproofLogs.get(woodType).block();
 		ModelFile woodModel = models().cubeColumn(path(wood), sideTexture, topTexture);

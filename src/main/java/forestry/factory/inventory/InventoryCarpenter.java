@@ -12,14 +12,14 @@ package forestry.factory.inventory;
 
 import java.util.Optional;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-import forestry.api.recipes.RecipeManagers;
 import forestry.core.inventory.InventoryAdapterTile;
+import forestry.core.utils.RecipeUtils;
 import forestry.core.utils.SlotUtil;
 import forestry.factory.tiles.TileCarpenter;
 
@@ -36,13 +36,13 @@ public class InventoryCarpenter extends InventoryAdapterTile<TileCarpenter> {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_CAN_INPUT) {
-			Optional<FluidStack> fluid = FluidUtil.getFluidContained(itemStack);
+			Optional<FluidStack> fluid = FluidUtil.getFluidContained(stack);
 			return fluid.map(f -> tile.getTankManager().canFillFluidType(f)).orElse(false);
 		} else if (slotIndex == SLOT_BOX) {
-			return RecipeManagers.carpenterManager.isBox(tile.getLevel().getRecipeManager(), itemStack);
-		} else if (canSlotAccept(SLOT_CAN_INPUT, itemStack) || canSlotAccept(SLOT_BOX, itemStack)) {
+			return RecipeUtils.isCarpenterBox(tile.getLevel().getRecipeManager(), stack);
+		} else if (canSlotAccept(SLOT_CAN_INPUT, stack) || canSlotAccept(SLOT_BOX, stack)) {
 			return false;
 		}
 

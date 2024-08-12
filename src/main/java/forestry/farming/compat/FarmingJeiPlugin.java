@@ -1,15 +1,17 @@
 package forestry.farming.compat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import forestry.core.ClientsideCode;
+import forestry.api.IForestryApi;
+import forestry.api.circuits.CircuitHolder;
+import forestry.api.farming.IFarmCircuit;
+import forestry.api.farming.IFarmLogic;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.core.circuits.EnumCircuitBoardType;
-import forestry.core.config.Constants;
 import forestry.core.features.CoreItems;
 
 import mezz.jei.api.IModPlugin;
@@ -18,27 +20,12 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.registration.ISubtypeRegistration;
-
-import java.util.List;
 
 @JeiPlugin
-@OnlyIn(Dist.CLIENT)
 public class FarmingJeiPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(Constants.MOD_ID, "farming");
-	}
-
-	@Override
-	public void registerItemSubtypes(ISubtypeRegistration registration) {
-		//        BlockRegistryFarming blocks = ModuleFarming.getBlocks();
-		//        Item farmBlock = Item.getItemFromBlock(blocks.farm);
-		//        registration.registerSubtypeInterpreter(farmBlock, itemStack -> {
-		//            CompoundNBT nbt = itemStack.getTag();
-		//            EnumFarmBlockTexture texture = EnumFarmBlockTexture.getFromCompound(nbt);
-		//            return itemStack.getItemDamage() + "." + texture.getUid();
-		//        });
+		return ForestryModuleIds.FARMING;
 	}
 
 	@Override
@@ -49,10 +36,21 @@ public class FarmingJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		RecipeManager recipeManager = ClientsideCode.getRecipeManager();
+		registration.addRecipes(FarmingInfoRecipeCategory.TYPE, getRecipes());
+	}
 
-		List<FarmingInfoRecipe> recipes = FarmingInfoRecipeMaker.getRecipes(recipeManager);
-		registration.addRecipes(FarmingInfoRecipeCategory.TYPE, recipes);
+	public static List<FarmingInfoRecipe> getRecipes() {
+		ArrayList<FarmingInfoRecipe> info = new ArrayList<>();
+
+		for (CircuitHolder holder : IForestryApi.INSTANCE.getCircuitManager().getCircuitHolders()) {
+			if (holder.circuit() instanceof IFarmCircuit circuit) {
+				if (circuit.isManual()) {
+					info.add(new FarmingInfoRecipe(holder.stack(), circuit.getProperties(), circuit));
+				}
+			}
+		}
+
+		return info;
 	}
 
 	@Override

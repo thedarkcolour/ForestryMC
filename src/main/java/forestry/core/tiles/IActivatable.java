@@ -16,7 +16,6 @@ import net.minecraft.core.BlockPos;
  * Networked tile entities that have a client side "active" flag
  */
 public interface IActivatable {
-
 	/**
 	 * Position of the tile entity.
 	 *

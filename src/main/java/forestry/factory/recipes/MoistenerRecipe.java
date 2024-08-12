@@ -13,17 +13,18 @@ package forestry.factory.recipes;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import forestry.api.recipes.IMoistenerRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 
 public class MoistenerRecipe implements IMoistenerRecipe {
-
 	private final ResourceLocation id;
 	private final int timePerItem;
 	private final Ingredient resource;
@@ -46,7 +47,7 @@ public class MoistenerRecipe implements IMoistenerRecipe {
 	}
 
 	@Override
-	public Ingredient getResource() {
+	public Ingredient getInput() {
 		return resource;
 	}
 
@@ -56,12 +57,26 @@ public class MoistenerRecipe implements IMoistenerRecipe {
 	}
 
 	@Override
+	public ItemStack getResultItem() {
+		return this.product;
+	}
+
+	@Override
 	public ResourceLocation getId() {
 		return id;
 	}
 
-	public static class Serializer implements RecipeSerializer<MoistenerRecipe> {
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return FactoryRecipeTypes.MOISTENER.serializer();
+	}
 
+	@Override
+	public RecipeType<?> getType() {
+		return FactoryRecipeTypes.MOISTENER.type();
+	}
+
+	public static class Serializer implements RecipeSerializer<MoistenerRecipe> {
 		@Override
 		public MoistenerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			int timePerItem = GsonHelper.getAsInt(json, "time");

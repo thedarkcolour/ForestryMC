@@ -10,150 +10,116 @@
  ******************************************************************************/
 package forestry.core.render;
 
-import com.mojang.math.Vector3f;
-
-import forestry.core.tiles.TileMill;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.Mth;
 
-public class RenderMill implements IForestryRenderer<TileMill> {
-	public static final ModelLayerLocation MODEL_LAYER = IForestryRenderer.register("mill");
-	
-	private enum Textures {PEDESTAL, EXTENSION, BLADE_1, BLADE_2, CHARGE}
-	
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+
+import forestry.api.ForestryConstants;
+import forestry.core.tiles.TileMill;
+import forestry.core.utils.RenderUtil;
+
+// This is called Mill because it used to be for the Forester and Treetap blocks in older versions of Forestry
+public class RenderMill implements BlockEntityRenderer<TileMill> {
+	private enum Textures {PEDESTAL, EXTENSION, BLADE, CHARGE}
+
 	private final ResourceLocation[] textures;
-
 	private final ModelPart pedestal;
 	private final ModelPart column;
 	private final ModelPart extension;
-	private final ModelPart blade1;
-	private final ModelPart blade2;
+	private final ModelPart blade;
 
-	public RenderMill(ModelPart root, String baseTexture) {
+	public RenderMill(BlockEntityRendererProvider.Context ctx, String baseTexture) {
+		ModelPart root = ctx.bakeLayer(ForestryModelLayers.MILL_LAYER);
+
 		this.pedestal = root.getChild(Textures.PEDESTAL.name());
 		this.column = root.getChild(Textures.CHARGE.name());
 		this.extension = root.getChild(Textures.EXTENSION.name());
-		this.blade1 = root.getChild(Textures.BLADE_1.name());
-		this.blade2 = root.getChild(Textures.BLADE_2.name());
-		
-		textures = new ResourceLocation[12];
+		this.blade = root.getChild(Textures.BLADE.name());
 
-		textures[Textures.PEDESTAL.ordinal()] = new ForestryResource(baseTexture + "pedestal.png");
-		textures[Textures.EXTENSION.ordinal()] = new ForestryResource(baseTexture + "extension.png");
-		textures[Textures.BLADE_1.ordinal()] = new ForestryResource(baseTexture + "blade1.png");
-		textures[Textures.BLADE_2.ordinal()] = new ForestryResource(baseTexture + "blade2.png");
+		this.textures = new ResourceLocation[11];
+
+		this.textures[Textures.PEDESTAL.ordinal()] = ForestryConstants.forestry(baseTexture + "pedestal.png");
+		this.textures[Textures.EXTENSION.ordinal()] = ForestryConstants.forestry(baseTexture + "extension.png");
+		this.textures[Textures.BLADE.ordinal()] = ForestryConstants.forestry(baseTexture + "blade.png");
 
 		for (int i = 0; i < 8; i++) {
-			textures[Textures.CHARGE.ordinal() + i] = new ForestryResource(baseTexture + "column_" + i + ".png");
+			this.textures[Textures.CHARGE.ordinal() + i] = ForestryConstants.forestry(baseTexture + "column_" + i + ".png");
 		}
 	}
-	
+
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-        
-        partdefinition.addOrReplaceChild(Textures.PEDESTAL.name(), CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-8F, -8F, -8F, 16, 1, 16), PartPose.offset(8, 8, 8));
-        partdefinition.addOrReplaceChild(Textures.CHARGE.name(), CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-2, -7F, -2, 4, 15, 4), PartPose.offset(8, 8, 8));
-        partdefinition.addOrReplaceChild(Textures.EXTENSION.name(), CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(1F, 8F, 7F, 14, 2, 2), PartPose.offset(0, 0, 0));
-        partdefinition.addOrReplaceChild(Textures.BLADE_1.name(), CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-4F, -5F, -3F, 8, 12, 1), PartPose.offset(8, 8, 8));
-        partdefinition.addOrReplaceChild(Textures.BLADE_2.name(), CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(-4F, -5F, 2F, 8, 12, 1), PartPose.offset(8, 8, 8));
-        
+		PartDefinition partdefinition = meshdefinition.getRoot();
+
+		partdefinition.addOrReplaceChild(Textures.PEDESTAL.name(), CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0f, 0f, 0f, 16, 1, 16), PartPose.offset(0, 0, 0));
+		partdefinition.addOrReplaceChild(Textures.CHARGE.name(), CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0f, 0f, 0f, 4, 15, 4), PartPose.offset(6, 1, 6));
+		partdefinition.addOrReplaceChild(Textures.EXTENSION.name(), CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0f, 0f, 0f, 14, 2, 2), PartPose.offset(1, 8, 7));
+		partdefinition.addOrReplaceChild(Textures.BLADE.name(), CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0f, 0f, 0f,  1, 12, 8), PartPose.offset(10, 3, 4));
+
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
 	@Override
-	public void renderTile(TileMill tile, RenderHelper helper) {
-		float progress = tile.progress;
-		if (tile.stage != 0) {
-			float smoothing = tile.speed * helper.partialTicks;
-			progress = (progress + smoothing);
-		}
-		render(progress, tile.charge, Direction.WEST, helper);
+	public void render(TileMill mill, float partialTick, PoseStack stack, MultiBufferSource buffers, int light, int overlay) {
+		stack.pushPose();
+
+		// todo implement and add rotated voxel shape
+		Direction orientation = Direction.SOUTH;//mill.getBlockState().getValue(BlockBase.FACING);
+		RenderUtil.rotateByHorizontalDirection(stack, orientation);
+
+		this.pedestal.render(stack, buffers.getBuffer(RenderType.entityCutout(textures[Textures.PEDESTAL.ordinal()])), light, overlay);
+		this.column.render(stack, buffers.getBuffer(RenderType.entityCutout(textures[Textures.CHARGE.ordinal() + mill.charge])), light, overlay);
+		this.extension.render(stack, buffers.getBuffer(RenderType.entityCutout(textures[Textures.EXTENSION.ordinal()])), light, overlay);
+
+		float step = getBladeStep(mill, partialTick) / 16f;
+		VertexConsumer buffer = buffers.getBuffer(RenderType.entityCutout(textures[Textures.BLADE.ordinal()]));
+		stack.pushPose();
+		stack.translate(step, 0, 0);
+		this.blade.render(stack, buffer, light, overlay);
+		stack.popPose();
+		stack.translate(1, 0, 1);
+		stack.mulPose(Vector3f.YP.rotation(Mth.PI));
+		stack.translate(step, 0, 0);
+		this.blade.render(stack, buffer, light, overlay);
+
+		stack.popPose();
 	}
 
-	@Override
-	public void renderItem(ItemStack stack, RenderHelper helper) {
-		render(0.0f, 0, Direction.WEST, helper);
-	}
+	private static float getBladeStep(TileMill mill, float partialTick) {
+		float progress;
 
-	private void render(float progress, int charge, Direction orientation, RenderHelper helper) {
-
-		helper.push();
-
-		float step;
-
-		if (progress > 0.5) {
-			step = 3.99F - (progress - 0.5F) * 2F * 3.99F;
+		if (mill.hasLevel()) {
+			progress = mill.progress;
+			if (mill.stage != 0) {
+				float smoothing = mill.speed * partialTick;
+				progress = (progress + smoothing);
+			}
 		} else {
-			step = progress * 2F * 3.99F;
+			progress = 0.0f;
 		}
 
-		Vector3f rotation = new Vector3f(0, 0, 0);
-		float[] translate = {0, 0, 0};
-		float tfactor = step / 16;
-
-		switch (orientation) {
-			case EAST -> {
-				// angle [2] = (float) Math.PI / 2;
-				rotation.setZ((float) Math.PI);
-				rotation.setY((float) -Math.PI / 2);
-				translate[0] = 1;
-			}
-			case WEST -> {
-				// 2, -PI/2
-				rotation.setY((float) Math.PI / 2);
-				translate[0] = -1;
-			}
-			case UP -> translate[1] = 1;
-			case DOWN -> {
-				rotation.setY((float) Math.PI);
-				translate[1] = -1;
-			}
-			case SOUTH -> {
-				rotation.setX((float) Math.PI / 2);
-				rotation.setY((float) Math.PI / 2);
-				translate[2] = 1;
-			}
-			case NORTH -> {
-				rotation.setX((float) -Math.PI / 2);
-				rotation.setY((float) Math.PI / 2);
-				translate[2] = -1;
-			}
+		if (progress > 0.5f) {
+			return 3.99f - (progress - 0.5f) * 2f * 3.99f;
+		} else {
+			return progress * 2f * 3.99f;
 		}
-
-		helper.setRotation(rotation);
-		
-		helper.renderModel(textures[Textures.PEDESTAL.ordinal()], pedestal);
-
-		helper.renderModel(textures[Textures.CHARGE.ordinal() + charge], column);
-
-		Vector3f invertedRotation = rotation.copy();
-		invertedRotation.mul(-1);
-		helper.renderModel(textures[Textures.EXTENSION.ordinal()], invertedRotation, extension);
-
-		helper.translate(translate[0] * tfactor, translate[1] * tfactor, translate[2] * tfactor);
-		helper.renderModel(textures[Textures.BLADE_1.ordinal()], blade1);
-
-		// Reset
-		helper.translate(-translate[0] * tfactor, -translate[1] * tfactor, -translate[2] * tfactor);
-
-		helper.translate(-translate[0] * tfactor, translate[1] * tfactor, -translate[2] * tfactor);
-		helper.renderModel(textures[Textures.BLADE_2.ordinal()], blade2);
-
-		helper.pop();
-
 	}
 }

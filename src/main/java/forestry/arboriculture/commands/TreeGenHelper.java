@@ -12,37 +12,31 @@ package forestry.arboriculture.commands;
 
 import java.util.Optional;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.server.level.ServerChunkCache;
-import net.minecraft.server.level.ServerLevel;
 
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.IAlleleTreeSpecies;
+import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
-import forestry.api.arboriculture.genetics.TreeChromosomes;
+import forestry.api.genetics.IGenome;
 import forestry.core.utils.BlockUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.core.worldgen.FeatureBase;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-import genetics.commands.SpeciesNotFoundException;
-import genetics.utils.AlleleUtils;
-
-public final class TreeGenHelper {
-
-	public static Feature<NoneFeatureConfiguration> getWorldGen(ResourceLocation treeName, Player player, BlockPos pos) throws SpeciesNotFoundException {
+public class TreeGenHelper {
+	public static Feature<NoneFeatureConfiguration> getWorldGen(ResourceLocation treeName, Player player, BlockPos pos) {
 		IGenome treeGenome = getTreeGenome(treeName);
-		ITree tree = TreeManager.treeRoot.getTree(player.level, treeGenome);
+		ITree tree = SpeciesUtil.TREE_TYPE.get().getTree(treeGenome);
 		return tree.getTreeGenerator((ServerLevel) player.level, pos, true);
 	}
 
@@ -67,8 +61,8 @@ public final class TreeGenHelper {
 		return false;
 	}
 
-	public static boolean generateTree(ITree tree, WorldGenLevel world, BlockPos pos) {
-		Feature<NoneFeatureConfiguration> gen = tree.getTreeGenerator(world, pos, true);
+	public static boolean generateTree(ITreeSpecies tree, WorldGenLevel world, BlockPos pos) {
+		Feature<NoneFeatureConfiguration> gen = tree.getGenerator().getTreeFeature(tree);
 
 		BlockState blockState = world.getBlockState(pos);
 		if (BlockUtil.canPlaceTree(blockState, world, pos)) {
@@ -81,40 +75,7 @@ public final class TreeGenHelper {
 		return false;
 	}
 
-	private static IGenome getTreeGenome(ResourceLocation speciesName) throws SpeciesNotFoundException {
-		IAlleleTreeSpecies species = null;
-
-		for (ResourceLocation uid : AlleleUtils.getRegisteredNames()) {
-			if (!uid.equals(speciesName)) {
-				continue;
-			}
-
-			IAllele allele = AlleleUtils.getAllele(uid);
-			if (allele == null) {
-				continue;
-			}
-			if (allele instanceof IAlleleTreeSpecies) {
-				species = (IAlleleTreeSpecies) allele;
-				break;
-			}
-		}
-
-		if (species == null) {
-			species = AlleleUtils.filteredStream(TreeChromosomes.SPECIES)
-				.filter(allele -> {
-					String displayName = allele.getDisplayName().getString().replaceAll("\\s", "");
-					return displayName.equals(speciesName.toString());
-				})
-				.findFirst()
-				.orElse(null);
-		}
-
-		if (species == null) {
-			throw new SpeciesNotFoundException(speciesName);
-		}
-
-		IAllele[] template = TreeManager.treeRoot.getTemplates().getTemplate(species.getRegistryName().toString());
-
-		return TreeManager.treeRoot.getKaryotype().templateAsGenome(template);
+	private static IGenome getTreeGenome(ResourceLocation speciesName) {
+		return SpeciesUtil.getTreeSpecies(speciesName).getDefaultGenome();
 	}
 }

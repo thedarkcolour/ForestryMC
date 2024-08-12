@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.recipes.ISqueezerRecipe;
+import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
 
 public class SqueezerRecipeBuilder {
@@ -95,7 +96,7 @@ public class SqueezerRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return ISqueezerRecipe.Companion.SERIALIZER;
+			return FactoryRecipeTypes.SQUEEZER.serializer();
 		}
 
 		@Nullable

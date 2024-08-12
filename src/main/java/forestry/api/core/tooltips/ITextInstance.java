@@ -3,6 +3,7 @@ package forestry.api.core.tooltips;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
@@ -29,6 +30,11 @@ public interface ITextInstance<I extends ITextInstance<?, ?, ?>, S, R> {
 	}
 
 	default I style(Style style) {
+		applyFormatting(component -> component.withStyle(style));
+		return cast();
+	}
+
+	default I style(UnaryOperator<Style> style) {
 		applyFormatting(component -> component.withStyle(style));
 		return cast();
 	}

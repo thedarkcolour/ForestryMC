@@ -10,80 +10,43 @@
  ******************************************************************************/
 package forestry.core.errors;
 
-import com.google.common.collect.ImmutableSet;
-
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.network.FriendlyByteBuf;
-
-import forestry.api.core.ForestryAPI;
 import forestry.api.core.IErrorLogic;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
 
 public class ErrorLogic implements IErrorLogic {
-	private final Set<IErrorState> errorStates = new HashSet<>();
-
-	public ErrorLogic(FriendlyByteBuf buffer) {
-		readData(buffer);
-	}
-
-	public ErrorLogic() {
-	}
+	private final Set<IError> errors = new HashSet<>();
 
 	@Override
-	public final boolean setCondition(boolean condition, IErrorState errorState) {
+	public boolean setCondition(boolean condition, IError error) {
 		if (condition) {
-			errorStates.add(errorState);
+			this.errors.add(error);
 		} else {
-			errorStates.remove(errorState);
+			this.errors.remove(error);
 		}
 		return condition;
 	}
 
 	@Override
-	public final boolean contains(IErrorState state) {
-		return errorStates.contains(state);
+	public boolean contains(IError error) {
+		return this.errors.contains(error);
 	}
 
 	@Override
-	public final boolean hasErrors() {
-		return !errorStates.isEmpty();
+	public boolean hasErrors() {
+		return !this.errors.isEmpty();
 	}
 
 	@Override
-	public final ImmutableSet<IErrorState> getErrorStates() {
-		return ImmutableSet.copyOf(errorStates);
+	public Set<IError> getErrors() {
+		return Collections.unmodifiableSet(this.errors);
 	}
 
 	@Override
 	public void clearErrors() {
-		errorStates.clear();
-	}
-
-	@Override
-	public void writeData(FriendlyByteBuf data) {
-		data.writeShort(errorStates.size());
-		for (IErrorState errorState : errorStates) {
-			data.writeShort(errorState.getID());
-		}
-	}
-
-	@Override
-	public void readData(FriendlyByteBuf data) {
-		clearErrors();
-
-		short errorStateCount = data.readShort();
-		for (int i = 0; i < errorStateCount; i++) {
-			short errorStateId = data.readShort();
-			IErrorState errorState = ForestryAPI.errorStateRegistry.getErrorState(errorStateId);
-			errorStates.add(errorState);
-		}
-	}
-
-	@Override
-	public void copy(IErrorLogic errorLogic) {
-		this.errorStates.clear();
-		this.errorStates.addAll(errorLogic.getErrorStates());
+		this.errors.clear();
 	}
 }

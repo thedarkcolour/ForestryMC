@@ -8,12 +8,12 @@ import net.minecraft.tags.FluidTags;
 
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-import forestry.core.config.Constants;
+import forestry.api.ForestryConstants;
 import forestry.core.fluids.ForestryFluids;
 
 public class ForestryFluidTagsProvider extends FluidTagsProvider {
 	public ForestryFluidTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper fileHelper) {
-		super(generator, Constants.MOD_ID, fileHelper);
+		super(generator, ForestryConstants.MOD_ID, fileHelper);
 	}
 
 	@Override

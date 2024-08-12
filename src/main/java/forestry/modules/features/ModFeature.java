@@ -1,28 +1,23 @@
 package forestry.modules.features;
 
+import net.minecraft.resources.ResourceLocation;
+
 public abstract class ModFeature implements IModFeature {
-    protected final String moduleId;
-    protected final String modId;
-    protected final String identifier;
+    protected final ResourceLocation moduleId;
+    protected final String name;
 
-    protected ModFeature(String moduleId, String modId, String identifier) {
+    protected ModFeature(ResourceLocation moduleId, String name) {
         this.moduleId = moduleId;
-        this.modId = modId;
-        this.identifier = identifier;
+        this.name = name;
     }
 
     @Override
-    public String getIdentifier() {
-        return this.identifier;
+    public String getName() {
+        return this.name;
     }
 
     @Override
-    public String getModId() {
-        return this.modId;
-    }
-
-    @Override
-    public String getModuleId() {
+    public ResourceLocation getModuleId() {
         return this.moduleId;
     }
 }

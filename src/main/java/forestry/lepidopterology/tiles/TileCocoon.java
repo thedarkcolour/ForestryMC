@@ -10,12 +10,11 @@
  ******************************************************************************/
 package forestry.lepidopterology.tiles;
 
-import com.google.common.base.Preconditions;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,30 +22,21 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.Forestry;
-import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.IButterflyCocoon;
-import forestry.api.lepidopterology.genetics.ButterflyChromosomes;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.core.network.IStreamable;
-import forestry.core.network.packets.PacketTileStream;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
 import forestry.core.utils.ItemStackUtil;
-import forestry.core.utils.NetworkUtil;
+import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.blocks.BlockCocoon;
 import forestry.lepidopterology.features.LepidopterologyTiles;
-import forestry.lepidopterology.genetics.Butterfly;
-import forestry.lepidopterology.genetics.ButterflyDefinition;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IGenome;
-
-public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, IButterflyCocoon {
+public class TileCocoon extends BlockEntity implements IOwnedTile {
 	private final OwnerHandler ownerHandler = new OwnerHandler();
 	private int maturationTime;
-	private IButterfly caterpillar = ButterflyDefinition.CabbageWhite.createIndividual();
+	private IButterfly caterpillar = SpeciesUtil.BUTTERFLY_TYPE.get().getDefaultSpecies().createIndividual();
 	private boolean isSolid;
 
 	public TileCocoon(BlockPos pos, BlockState state, boolean isSolid) {
@@ -60,45 +50,26 @@ public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, 
 		super.load(compoundNBT);
 
 		if (compoundNBT.contains("Caterpillar")) {
-			caterpillar = new Butterfly(compoundNBT.getCompound("Caterpillar"));
+			caterpillar = SpeciesUtil.deserializeIndividual(SpeciesUtil.BUTTERFLY_TYPE.get(), compoundNBT.getCompound("Caterpillar"));
 		}
-		ownerHandler.read(compoundNBT);
-		maturationTime = compoundNBT.getInt("CATMAT");
-		isSolid = compoundNBT.getBoolean("isSolid");
+		this.ownerHandler.read(compoundNBT);
+		this.maturationTime = compoundNBT.getInt("CATMAT");
+		this.isSolid = compoundNBT.getBoolean("isSolid");
 	}
 
 	@Override
 	public void saveAdditional(CompoundTag compoundNBT) {
 		super.saveAdditional(compoundNBT);
 
-		CompoundTag subcompound = new CompoundTag();
-		caterpillar.write(subcompound);
-		compoundNBT.put("Caterpillar", subcompound);
+		Tag tag = SpeciesUtil.serializeIndividual(this.caterpillar);
+		if (tag != null) {
+			compoundNBT.put("Caterpillar", tag);
+		}
 
-		ownerHandler.write(compoundNBT);
+		this.ownerHandler.write(compoundNBT);
 
-		compoundNBT.putInt("CATMAT", maturationTime);
-		compoundNBT.putBoolean("isSolid", isSolid);
-	}
-
-	@Override
-	public void writeData(FriendlyByteBuf data) {
-		IButterfly caterpillar = getCaterpillar();
-		String speciesUID = caterpillar.getIdentifier();
-		data.writeUtf(speciesUID);
-	}
-
-	@Override
-	public void readData(FriendlyByteBuf data) {
-		String speciesUID = data.readUtf();
-		IButterfly caterpillar = getButterfly(speciesUID);
-		setCaterpillar(caterpillar);
-	}
-
-	private static IButterfly getButterfly(String speciesUID) {
-		IAllele[] butterflyTemplate = ButterflyManager.butterflyRoot.getTemplates().getTemplate(speciesUID);
-		Preconditions.checkNotNull(butterflyTemplate, "Could not find butterfly template for species: %s", speciesUID);
-		return ButterflyManager.butterflyRoot.templateAsIndividual(butterflyTemplate);
+		compoundNBT.putInt("CATMAT", this.maturationTime);
+		compoundNBT.putBoolean("isSolid", this.isSolid);
 	}
 
 	@Override
@@ -109,7 +80,7 @@ public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, 
 	public void onBlockTick() {
 		maturationTime++;
 
-		IGenome caterpillarGenome = caterpillar.getGenome();
+		IGenome caterpillarGenome = this.caterpillar.getGenome();
 		int caterpillarMatureTime = Math
 				.round((float) caterpillarGenome.getActiveValue(ButterflyChromosomes.LIFESPAN) / (caterpillarGenome.getActiveValue(ButterflyChromosomes.FERTILITY) * 2));
 
@@ -117,67 +88,33 @@ public class TileCocoon extends BlockEntity implements IStreamable, IOwnedTile, 
 			int age = getBlockState().getValue(BlockCocoon.AGE);
 			if (age < 2) {
 				maturationTime = 0;
-				BlockState blockState = getBlockState().setValue(BlockCocoon.AGE, age);
+				BlockState blockState = getBlockState().setValue(BlockCocoon.AGE, age + 1);
 				level.setBlock(worldPosition, blockState, Block.UPDATE_NEIGHBORS | Block.UPDATE_CLIENTS);
-			} else if (caterpillar.canTakeFlight(level, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ())) {
-				NonNullList<ItemStack> cocoonDrops = caterpillar.getCocoonDrop(this);
+			} else if (this.caterpillar.canTakeFlight(level, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ())) {
+				List<ItemStack> cocoonDrops = this.caterpillar.getCocoonDrop(this.isSolid, this.caterpillar.getGenome().getActiveValue(ButterflyChromosomes.COCOON));
 				for (ItemStack drop : cocoonDrops) {
 					ItemStackUtil.dropItemStackAsEntity(drop, level, worldPosition);
 				}
 				level.setBlockAndUpdate(getBlockPos(), Blocks.AIR.defaultBlockState());
-				attemptButterflySpawn(level, caterpillar, getBlockPos());
+				attemptButterflySpawn(level, this.caterpillar, getBlockPos());
 			}
 		}
-	}
-
-	private boolean isListEmpty(NonNullList<ItemStack> cocoonDrops) {
-		if (cocoonDrops.isEmpty()) {
-			return true;
-		}
-		for (ItemStack stack : cocoonDrops) {
-			if (!stack.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private static void attemptButterflySpawn(Level world, IButterfly butterfly, BlockPos pos) {
-		ButterflyManager.butterflyRoot.spawnButterflyInWorld(world, butterfly.copy(),
-				pos.getX(), pos.getY() + 0.1f, pos.getZ());
-		Forestry.LOGGER.trace("A caterpillar '{}' hatched at {}/{}/{}.", butterfly.getDisplayName(), pos.getX(), pos.getY(),
-				pos.getZ());
+		SpeciesUtil.BUTTERFLY_TYPE.get().spawnButterflyInWorld(world, butterfly.copy(), pos.getX(), pos.getY() + 0.1f, pos.getZ());
+		//Forestry.LOGGER.trace("A caterpillar '{}' hatched at {}/{}/{}.", butterfly.getDisplayName(), pos.getX(), pos.getY(), pos.getZ());
 	}
 
-	@Override
-	public BlockPos getCoordinates() {
-		return getBlockPos();
-	}
-
-	@Override
 	public IButterfly getCaterpillar() {
-		return caterpillar;
+		return this.caterpillar;
 	}
 
-	@Override
-	public void setCaterpillar(IButterfly butterfly) {
-		this.caterpillar = butterfly;
-		sendNetworkUpdate();
+	public void setCaterpillar(IButterfly caterpillar) {
+		this.caterpillar = caterpillar;
 	}
 
-	private void sendNetworkUpdate() {
-		if (level != null && !level.isClientSide) {
-			NetworkUtil.sendNetworkPacket(new PacketTileStream(this), worldPosition, level);
-		}
+	public List<ItemStack> getCocoonDrops() {
+		return this.caterpillar.getCocoonDrop(this.isSolid, this.caterpillar.getGenome().getActiveValue(ButterflyChromosomes.COCOON));
 	}
-
-	public NonNullList<ItemStack> getCocoonDrops() {
-		return caterpillar.getCocoonDrop(this);
-	}
-
-	@Override
-	public boolean isSolid() {
-		return isSolid;
-	}
-
 }

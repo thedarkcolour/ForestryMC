@@ -36,11 +36,10 @@ import forestry.api.arboriculture.ITreeGenData;
 import forestry.arboriculture.blocks.BlockSapling;
 import forestry.arboriculture.tiles.TileTreeContainer;
 import forestry.core.tiles.TileUtil;
-import forestry.core.utils.VectUtil;
+import forestry.core.utils.VecUtil;
 import forestry.core.worldgen.FeatureBase;
 
 public abstract class FeatureArboriculture extends FeatureBase {
-
 	protected static final int minPodHeight = 3;
 
 	protected final ITreeGenData tree;
@@ -67,7 +66,7 @@ public abstract class FeatureArboriculture extends FeatureBase {
 		if (genPos != null) {
 			clearSaplings(world, genPos);
 			List<BlockPos> branchEnds = new ArrayList<>(generateTrunk(world, rand, wood, genPos));
-			branchEnds.sort(VectUtil.TOP_DOWN_COMPARATOR);
+			branchEnds.sort(VecUtil.TOP_DOWN_COMPARATOR);
 			TreeContour.Impl contour = new TreeContour.Impl(branchEnds);
 			generateLeaves(world, rand, leaf, contour, genPos);
 			generateExtras(world, rand, genPos);
@@ -181,7 +180,7 @@ public abstract class FeatureArboriculture extends FeatureBase {
 	public abstract BlockPos getValidGrowthPos(LevelAccessor world, BlockPos pos);
 
 	public void clearSaplings(LevelAccessor world, BlockPos genPos) {
-		int treeGirth = tree.getGirth();
+		int treeGirth = tree.getGirth(tree.getDefaultGenome());
 		for (int x = 0; x < treeGirth; x++) {
 			for (int z = 0; z < treeGirth; z++) {
 				BlockPos saplingPos = genPos.offset(x, 0, z);
@@ -193,7 +192,7 @@ public abstract class FeatureArboriculture extends FeatureBase {
 	}
 
 	public boolean hasPods() {
-		return tree.allowsFruitBlocks();
+		return tree.allowsFruitBlocks(tree.getDefaultGenome());
 	}
 
 }

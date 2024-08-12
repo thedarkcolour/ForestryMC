@@ -20,16 +20,16 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
 import forestry.api.core.IErrorLogic;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.errors.FakeErrorLogic;
 import forestry.core.owner.FakeOwnerHandler;
 import forestry.core.owner.IOwnerHandler;
 
-public interface FakeMultiblockController extends IMultiblockControllerInternal, ILocatable {
+public interface FakeMultiblockController extends IMultiblockControllerInternal, ILocationProvider {
 	@Override
 	default void attachBlock(IMultiblockComponent part) {
 	}
@@ -76,7 +76,6 @@ public interface FakeMultiblockController extends IMultiblockControllerInternal,
 	}
 
 	@Override
-	@Nullable
 	default Level getWorldObj() {
 		return null;
 	}
@@ -150,23 +149,13 @@ public interface FakeMultiblockController extends IMultiblockControllerInternal,
 	}
 
 	@Override
-	default EnumTemperature getTemperature() {
-		return EnumTemperature.NORMAL;
+	default TemperatureType temperature() {
+		return TemperatureType.NORMAL;
 	}
 
 	@Override
-	default EnumHumidity getHumidity() {
-		return EnumHumidity.NORMAL;
-	}
-
-	@Override
-	default float getExactTemperature() {
-		return 0.5f;
-	}
-
-	@Override
-	default float getExactHumidity() {
-		return 0.5f;
+	default HumidityType humidity() {
+		return HumidityType.NORMAL;
 	}
 
 	@Override

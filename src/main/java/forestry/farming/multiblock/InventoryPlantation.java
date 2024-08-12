@@ -1,5 +1,6 @@
 package forestry.farming.multiblock;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -7,14 +8,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 
+import forestry.api.IForestryApi;
 import forestry.core.config.Preference;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-import forestry.api.core.ForestryAPI;
 import forestry.api.farming.IFarmHousing;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
@@ -81,15 +81,15 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (SlotUtil.isSlotInRange(slotIndex, config.fertilizerStart, config.fertilizerCount)) {
-			return acceptsAsFertilizer(itemStack);
+			return acceptsAsFertilizer(stack);
 		} else if (SlotUtil.isSlotInRange(slotIndex, config.germlingsStart, config.germlingsCount)) {
-			return acceptsAsSeedling(itemStack);
+			return acceptsAsSeedling(stack);
 		} else if (SlotUtil.isSlotInRange(slotIndex, config.resourcesStart, config.productionCount)) {
-			return acceptsAsResource(itemStack);
+			return acceptsAsResource(stack);
 		} else if (SlotUtil.isSlotInRange(slotIndex, config.canStart, config.canCount)) {
-			Optional<FluidStack> fluid = FluidUtil.getFluidContained(itemStack);
+			Optional<FluidStack> fluid = FluidUtil.getFluidContained(stack);
 			return fluid.map(f -> housing.getTankManager().canFillFluidType(f)).orElse(false);
 		}
 		return false;
@@ -101,12 +101,12 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 	}
 
 	@Override
-	public boolean hasResources(NonNullList<ItemStack> resources) {
+	public boolean hasResources(List<ItemStack> resources) {
 		return InventoryUtil.contains(resourcesInventory, resources);
 	}
 
 	@Override
-	public void removeResources(NonNullList<ItemStack> resources) {
+	public void removeResources(List<ItemStack> resources) {
 		InventoryUtil.removeSets(resourcesInventory, 1, resources, null, false, false, true);
 	}
 
@@ -117,7 +117,7 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 		}
 
 		for (IFarmLogic logic : housing.getFarmLogics()) {
-			if (logic.getProperties().isAcceptedSeedling(stack)) {
+			if (logic.getType().isAcceptedSeedling(stack)) {
 				return true;
 			}
 		}
@@ -132,7 +132,7 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 		}
 
 		for (IFarmLogic logic : housing.getFarmLogics()) {
-			if (logic.getProperties().isAcceptedResource(stack)) {
+			if (logic.getType().isAcceptedResource(stack)) {
 				return true;
 			}
 		}
@@ -146,7 +146,7 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 			return false;
 		}
 
-		return ForestryAPI.farmRegistry.getFertilizeValue(stack) > 0;
+		return IForestryApi.INSTANCE.getFarmingManager().getFertilizeValue(stack) > 0;
 	}
 
 	@Override
@@ -212,7 +212,7 @@ public abstract class InventoryPlantation<H extends ILiquidTankTile & IFarmHousi
 			return 0;
 		}
 
-		int fertilizerValue = ForestryAPI.farmRegistry.getFertilizeValue(fertilizerStack);
+		int fertilizerValue = IForestryApi.INSTANCE.getFarmingManager().getFertilizeValue(fertilizerStack);
 		if (fertilizerValue > 0) {
 			return fertilizerValue * FERTILIZER_MODIFIER;
 		}

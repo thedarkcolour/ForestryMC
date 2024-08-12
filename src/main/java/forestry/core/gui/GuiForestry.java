@@ -11,15 +11,18 @@
 package forestry.core.gui;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.LinkedListMultimap;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -33,10 +36,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
-import forestry.api.climate.IClimatised;
+import forestry.Forestry;
+import forestry.api.ForestryConstants;
+import forestry.api.client.ForestrySprites;
+import forestry.api.client.IForestryClientApi;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.core.IErrorLogicSource;
 import forestry.api.core.IErrorSource;
-import forestry.core.config.Config;
+import forestry.core.config.ForestryConfig;
 import forestry.core.gui.elements.WindowGui;
 import forestry.core.gui.ledgers.ClimateLedger;
 import forestry.core.gui.ledgers.HintLedger;
@@ -49,10 +56,12 @@ import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.render.ColourProperties;
-import forestry.core.render.ForestryResource;
 import forestry.energy.ForestryEnergyStorage;
 
 public abstract class GuiForestry<C extends AbstractContainerMenu> extends AbstractContainerScreen<C> implements IGuiSizable {
+	// Used to display "Did you know?" ledgers in GUI
+	public static final LinkedListMultimap<String, String> HINTS = readDefaultHints();
+
 	public final ResourceLocation textureFile;
 	protected final WidgetManager widgetManager;
 	protected final LedgerManager ledgerManager;
@@ -60,7 +69,7 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 	protected final WindowGui<?> window;
 
 	protected GuiForestry(String texture, C menu, Inventory inv, Component title) {
-		this(new ForestryResource(texture), menu, inv, title);
+		this(ForestryConstants.forestry(texture), menu, inv, title);
 	}
 
 	protected GuiForestry(ResourceLocation texture, C menu, Inventory inv, Component title) {
@@ -120,25 +129,23 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 		ledgerManager.add(errorSource.getErrorLogic());
 	}
 
-	protected final void addClimateLedger(IClimatised climatised) {
+	protected final void addClimateLedger(IClimateProvider climatised) {
 		ledgerManager.add(new ClimateLedger(ledgerManager, climatised));
 	}
 
 	protected final void addPowerLedger(ForestryEnergyStorage energyStorage) {
-		if (Config.enableEnergyStat) {
-			ledgerManager.add(new PowerLedger(ledgerManager, energyStorage));
-		}
+		ledgerManager.add(new PowerLedger(ledgerManager, energyStorage));
 	}
 
 	protected final void addHintLedger(String hintsKey) {
-		if (Config.enableHints) {
-			List<String> hints = Config.hints.get(hintsKey);
+		if (ForestryConfig.CLIENT.enableHints.get()) {
+			List<String> hints = HINTS.get(hintsKey);
 			addHintLedger(hints);
 		}
 	}
 
 	protected final void addHintLedger(List<String> hints) {
-		if (Config.enableHints) {
+		if (ForestryConfig.CLIENT.enableHints.get()) {
 			if (!hints.isEmpty()) {
 				ledgerManager.add(new HintLedger(ledgerManager, hints));
 			}
@@ -198,11 +205,6 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 
 	@Override
 	public boolean keyPressed(int key, int scanCode, int modifiers) {
-		/*InputMappings.Input mouseKey = InputMappings.getKey(key, scanCode);
-		if (key == GLFW.GLFW_KEY_ESCAPE || this.minecraft.options.keyInventory.isActiveAndMatches(mouseKey)) {
-			this.minecraft.player.closeContainer();
-			return true;
-		}*/
 		if (window.onKeyPressed(key, scanCode, modifiers)) {
 			return true;
 		}
@@ -278,15 +280,13 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 			if (stack.isEmpty() && slot.isActive()) {
 				ResourceLocation location = textured.getBackgroundTexture();
 				if (location != null) {
-					TextureAtlasSprite sprite = textured.getBackgroundAtlas().apply(location);
-					RenderSystem.setShaderTexture(0, sprite.atlas().location());
-					blit(transform, slot.x, slot.y, this.getBlitOffset(), 16, 16, sprite);
+					RenderSystem.setShaderTexture(0, ForestrySprites.TEXTURE_ATLAS);
+					blit(transform, slot.x, slot.y, this.getBlitOffset(), 16, 16, IForestryClientApi.INSTANCE.getTextureManager().getSprite(location));
 				}
 			}
 		}
 		super.renderSlot(transform, slot);
 	}
-
 
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY) {
@@ -351,16 +351,6 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 	}
 
 	@Override
-	public int getGuiLeft() {
-		return leftPos;
-	}
-
-	@Override
-	public int getGuiTop() {
-		return topPos;
-	}
-
-	@Override
 	public Minecraft getGameInstance() {
 		return Preconditions.checkNotNull(minecraft);
 	}
@@ -371,5 +361,29 @@ public abstract class GuiForestry<C extends AbstractContainerMenu> extends Abstr
 
 	public TextLayoutHelper getTextLayout() {
 		return textLayout;
+	}
+
+	private static LinkedListMultimap<String, String> readDefaultHints() {
+		LinkedListMultimap<String, String> map = LinkedListMultimap.create();
+		Properties prop = new Properties();
+
+		try {
+			InputStream hintStream = GuiForestry.class.getResourceAsStream("/config/forestry/hints.properties");
+			prop.load(hintStream);
+		} catch (IOException | NullPointerException e) {
+			Forestry.LOGGER.error("Failed to load hints file.", e);
+		}
+
+		for (String key : prop.stringPropertyNames()) {
+			String list = prop.getProperty(key);
+
+			if (!list.isEmpty()) {
+				for (String parsedHint : list.split(";+")) {
+					map.put(key, parsedHint);
+				}
+			}
+		}
+
+		return map;
 	}
 }

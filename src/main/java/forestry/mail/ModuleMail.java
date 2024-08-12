@@ -10,30 +10,28 @@
  ******************************************************************************/
 package forestry.mail;
 
-import net.minecraft.client.gui.screens.MenuScreens;
+import java.util.function.Consumer;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 
+import forestry.api.client.IClientModuleHandler;
 import forestry.api.mail.EnumAddressee;
 import forestry.api.mail.PostManager;
 import forestry.api.modules.ForestryModule;
-import forestry.core.ISaveEventHandler;
-import forestry.core.ModuleCore;
-import forestry.core.config.Config;
-import forestry.core.config.Constants;
-import forestry.core.network.IPacketRegistry;
+import forestry.api.modules.ForestryModuleIds;
+import forestry.api.modules.IPacketRegistry;
+import forestry.core.config.ForestryConfig;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
+import forestry.mail.client.MailClientHandler;
 import forestry.mail.commands.CommandMail;
-import forestry.mail.features.MailMenuTypes;
-import forestry.mail.gui.GuiCatalogue;
-import forestry.mail.gui.GuiLetter;
-import forestry.mail.gui.GuiMailbox;
-import forestry.mail.gui.GuiStampCollector;
-import forestry.mail.gui.GuiTradeName;
-import forestry.mail.gui.GuiTrader;
 import forestry.mail.network.packets.PacketLetterInfoRequest;
 import forestry.mail.network.packets.PacketLetterInfoResponsePlayer;
 import forestry.mail.network.packets.PacketLetterInfoResponseTrader;
@@ -42,36 +40,37 @@ import forestry.mail.network.packets.PacketPOBoxInfoResponse;
 import forestry.mail.network.packets.PacketTraderAddressRequest;
 import forestry.mail.network.packets.PacketTraderAddressResponse;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.MAIL, name = "Mail", author = "SirSengir", url = Constants.URL, unlocalizedDescription = "for.module.mail.description")
+@ForestryModule
 public class ModuleMail extends BlankForestryModule {
+	@Override
+	public ResourceLocation getId() {
+		return ForestryModuleIds.MAIL;
+	}
 
 	@Override
-	public void setupAPI() {
+	public void registerEvents(IEventBus modBus) {
+		MinecraftForge.EVENT_BUS.addListener(ModuleMail::onWorldLoad);
+
+		MinecraftForge.EVENT_BUS.register(new EventHandlerMailAlert());
+	}
+
+	private static void onWorldLoad(LevelEvent.Load event) {
+		PostRegistry.cachedPostOffice = null;
+		PostRegistry.cachedPOBoxes.clear();
+		PostRegistry.cachedTradeStations.clear();
+	}
+
+	@Override
+	public void setupApi() {
 		PostManager.postRegistry = new PostRegistry();
 		PostManager.postRegistry.registerCarrier(new PostalCarrier(EnumAddressee.PLAYER));
 		PostManager.postRegistry.registerCarrier(new PostalCarrier(EnumAddressee.TRADER));
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerGuiFactories() {
-		MenuScreens.register(MailMenuTypes.CATALOGUE.menuType(), GuiCatalogue::new);
-		MenuScreens.register(MailMenuTypes.LETTER.menuType(), GuiLetter::new);
-		MenuScreens.register(MailMenuTypes.MAILBOX.menuType(), GuiMailbox::new);
-		MenuScreens.register(MailMenuTypes.STAMP_COLLECTOR.menuType(), GuiStampCollector::new);
-		MenuScreens.register(MailMenuTypes.TRADE_NAME.menuType(), GuiTradeName::new);
-		MenuScreens.register(MailMenuTypes.TRADER.menuType(), GuiTrader::new);
-	}
-
-	@Override
-	public void preInit() {
-		ModuleCore.rootCommand.then(CommandMail.register());
-
-		if (Config.mailAlertEnabled) {
-			MinecraftForge.EVENT_BUS.register(new EventHandlerMailAlert());
-		}
+	public void addToRootCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
+		command.then(CommandMail.register());
 	}
 
 	@Override
@@ -87,7 +86,7 @@ public class ModuleMail extends BlankForestryModule {
 	}
 
 	@Override
-	public ISaveEventHandler getSaveEventHandler() {
-		return new SaveEventHandlerMail();
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new MailClientHandler());
 	}
 }

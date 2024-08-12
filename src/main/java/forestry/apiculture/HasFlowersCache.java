@@ -16,38 +16,38 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.apiculture.FlowerManager;
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.genetics.BeeChromosomes;
+import forestry.api.apiculture.IFlowerType;
 import forestry.api.apiculture.genetics.IBee;
-import forestry.api.core.IBlockPosPredicate;
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
-import forestry.api.genetics.flowers.IFlowerProvider;
+import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.core.utils.TickHelper;
 
-import genetics.api.individual.IGenome;
-
+// Cache used to determine if a beehive has a suitable flower nearby.
+// This passively checks one block a tick in a spiraling pattern centered on the hive,
+// but the entire area is checked at once when a player opens the hive GUI.
 public class HasFlowersCache implements INbtWritable, INbtReadable {
 	private static final String NBT_KEY = "hasFlowerCache";
 	private static final String NBT_KEY_FLOWERS = "flowers";
-	private int flowerCheckInterval;
+	private final int flowerCheckInterval;
 
-	private final TickHelper tickHelper = new TickHelper();
+	private final TickHelper tickHelper = new TickHelper(0);
 
 	public HasFlowersCache() {
 		this.flowerCheckInterval = 200;
 	}
 
 	public HasFlowersCache(int checkInterval) {
-		flowerCheckInterval = checkInterval;
+		this.flowerCheckInterval = checkInterval;
 	}
 
 	@Nullable
@@ -58,21 +58,18 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 	private boolean needsSync = false;
 
 	private static class FlowerData {
-		public final String flowerType;
+		public final IFlowerType flowerType;
 		public final Vec3i territory;
-		public final IBlockPosPredicate flowerPredicate;
 		public Iterator<BlockPos.MutableBlockPos> areaIterator;
 
-		public FlowerData(IBee queen, IBeeHousing beeHousing) {
-			IFlowerProvider flowerProvider = queen.getGenome().getActiveAllele(BeeChromosomes.FLOWER_PROVIDER).getProvider();
-			this.flowerType = flowerProvider.getFlowerType();
+		public FlowerData(IBee queen, IBeeHousing housing) {
+			this.flowerType = queen.getGenome().getActiveValue(BeeChromosomes.FLOWER_TYPE);
 			this.territory = queen.getGenome().getActiveValue(BeeChromosomes.TERRITORY);
-			this.flowerPredicate = FlowerManager.flowerRegistry.createAcceptedFlowerPredicate(flowerType);
-			this.areaIterator = FlowerManager.flowerRegistry.getAreaIterator(beeHousing, queen);
+			this.areaIterator = queen.getAreaIterator(housing);
 		}
 
 		public void resetIterator(IBee queen, IBeeHousing beeHousing) {
-			this.areaIterator = FlowerManager.flowerRegistry.getAreaIterator(beeHousing, queen);
+			this.areaIterator = queen.getAreaIterator(beeHousing);
 		}
 	}
 
@@ -82,14 +79,14 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 			this.flowerCoords.clear();
 			this.flowers.clear();
 		}
-		Level world = beeHousing.getWorldObj();
+		Level level = beeHousing.getWorldObj();
 		tickHelper.onTick();
 
 		if (!flowerCoords.isEmpty() && tickHelper.updateOnInterval(flowerCheckInterval)) {
 			Iterator<BlockPos> iterator = flowerCoords.iterator();
 			while (iterator.hasNext()) {
 				BlockPos flowerPos = iterator.next();
-				if (!flowerData.flowerPredicate.test(world, flowerPos) && world.hasChunkAt(flowerPos)) {
+				if (level.hasChunkAt(flowerPos) && !flowerData.flowerType.isAcceptableFlower(level, flowerPos)) {
 					iterator.remove();
 					flowers.clear();
 					needsSync = true;
@@ -103,7 +100,7 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 		if (tickHelper.updateOnInterval(ticksPerCheck)) {
 			if (flowerData.areaIterator.hasNext()) {
 				BlockPos.MutableBlockPos blockPos = flowerData.areaIterator.next();
-				if (flowerData.flowerPredicate.test(world, blockPos)) {
+				if (flowerData.flowerType.isAcceptableFlower(level, blockPos)) {
 					addFlowerPos(blockPos.immutable());
 				}
 			} else {
@@ -125,9 +122,8 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 	public void onNewQueen(IBee queen, IBeeHousing housing) {
 		if (this.flowerData != null) {
 			IGenome genome = queen.getGenome();
-			String flowerType = genome.getActiveAllele(BeeChromosomes.FLOWER_PROVIDER).getProvider().getFlowerType();
-			if (!this.flowerData.flowerType.equals(flowerType)
-				|| !this.flowerData.territory.equals(genome.getActiveValue(BeeChromosomes.TERRITORY))) {
+			IFlowerType flowerType = genome.getActiveValue(BeeChromosomes.FLOWER_TYPE);
+			if (this.flowerData.flowerType != flowerType || !this.flowerData.territory.equals(genome.getActiveValue(BeeChromosomes.TERRITORY))) {
 				flowerData = new FlowerData(queen, housing);
 				flowerCoords.clear();
 				flowers.clear();
@@ -139,10 +135,10 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 		return Collections.unmodifiableList(flowerCoords);
 	}
 
-	public List<BlockState> getFlowers(Level world) {
+	public List<BlockState> getFlowers(Level level) {
 		if (flowers.isEmpty() && !flowerCoords.isEmpty()) {
 			for (BlockPos flowerCoord : flowerCoords) {
-				BlockState blockState = world.getBlockState(flowerCoord);
+				BlockState blockState = level.getBlockState(flowerCoord);
 				flowers.add(blockState);
 			}
 		}
@@ -160,10 +156,10 @@ public class HasFlowersCache implements INbtWritable, INbtReadable {
 			flowerCoords.clear();
 			flowers.clear();
 			flowerData.resetIterator(queen, housing);
-			Level world = housing.getWorldObj();
+			Level level = housing.getWorldObj();
 			while (flowerData.areaIterator.hasNext()) {
 				BlockPos.MutableBlockPos blockPos = flowerData.areaIterator.next();
-				if (flowerData.flowerPredicate.test(world, blockPos)) {
+				if (flowerData.flowerType.isAcceptableFlower(level, blockPos)) {
 					addFlowerPos(blockPos.immutable());
 				}
 			}

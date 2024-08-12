@@ -15,19 +15,17 @@ import net.minecraft.commands.Commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
-import forestry.core.commands.CommandMode;
 import forestry.core.commands.CommandSaveStats;
-import forestry.core.commands.ICommandModeHelper;
 import forestry.core.commands.IStatsSaveHelper;
+import forestry.core.commands.GiveSpeciesCommand;
+import forestry.core.utils.SpeciesUtil;
 
 public class CommandBee {
 	public static ArgumentBuilder<CommandSourceStack, ?> register() {
 		IStatsSaveHelper saveHelper = new BeeStatsSaveHelper();
-		ICommandModeHelper modeHelper = new BeeModeHelper();
 
 		return Commands.literal("bee")
-				.then(CommandMode.register(modeHelper))
-				.then(CommandSaveStats.register(saveHelper, modeHelper))
-				.then(CommandBeeGive.register());
+				.then(CommandSaveStats.register(saveHelper))
+				.then(GiveSpeciesCommand.register(SpeciesUtil.BEE_TYPE.get()));
 	}
 }

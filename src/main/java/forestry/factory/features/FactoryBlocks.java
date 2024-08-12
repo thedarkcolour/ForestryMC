@@ -1,8 +1,8 @@
 package forestry.factory.features;
 
-import forestry.core.items.ItemBlockBase;
+import forestry.api.modules.ForestryModuleIds;
+import forestry.core.items.ItemBlockTesr;
 import forestry.core.items.ItemBlockForestry;
-import forestry.factory.ModuleFactory;
 import forestry.factory.blocks.BlockFactoryPlain;
 import forestry.factory.blocks.BlockFactoryTESR;
 import forestry.factory.blocks.BlockTypeFactoryPlain;
@@ -14,11 +14,8 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class FactoryBlocks {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleFactory.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.FACTORY);
 
-	public static final FeatureBlockGroup<BlockFactoryTESR, BlockTypeFactoryTesr> TESR = REGISTRY.blockGroup(BlockFactoryTESR::new, BlockTypeFactoryTesr.VALUES).itemWithType(ItemBlockBase::new).create();
-	public static final FeatureBlockGroup<BlockFactoryPlain, BlockTypeFactoryPlain> PLAIN = REGISTRY.blockGroup(BlockFactoryPlain::new, BlockTypeFactoryPlain.VALUES).item(ItemBlockForestry::new).create();
-
-	private FactoryBlocks() {
-	}
+	public static final FeatureBlockGroup<BlockFactoryTESR, BlockTypeFactoryTesr> TESR = REGISTRY.blockGroup(BlockFactoryTESR::new, BlockTypeFactoryTesr.values()).item(ItemBlockTesr::new).create();
+	public static final FeatureBlockGroup<BlockFactoryPlain, BlockTypeFactoryPlain> PLAIN = REGISTRY.blockGroup(BlockFactoryPlain::new, BlockTypeFactoryPlain.values()).item(ItemBlockForestry::new).create();
 }

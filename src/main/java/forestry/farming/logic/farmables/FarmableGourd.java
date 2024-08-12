@@ -10,21 +10,21 @@
  ******************************************************************************/
 package forestry.farming.logic.farmables;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import java.util.function.Consumer;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.farming.ICrop;
 import forestry.api.farming.IFarmable;
-import forestry.api.farming.IFarmableInfo;
 import forestry.core.utils.BlockUtil;
 import forestry.farming.logic.crops.CropDestroy;
 
 public class FarmableGourd implements IFarmable {
-
 	private final ItemStack seed;
 	private final Block stem;
 	private final Block fruit;
@@ -55,9 +55,13 @@ public class FarmableGourd implements IFarmable {
 	}
 
 	@Override
-	public void addInformation(IFarmableInfo info) {
-		info.addSeedlings(seed);
-		info.addProducts(new ItemStack(fruit));
+	public void addGermlings(Consumer<ItemStack> accumulator) {
+		accumulator.accept(this.seed);
+	}
+
+	@Override
+	public void addProducts(Consumer<ItemStack> accumulator) {
+		accumulator.accept(new ItemStack(this.fruit));
 	}
 
 	@Override
@@ -69,5 +73,4 @@ public class FarmableGourd implements IFarmable {
 	public boolean plantSaplingAt(Player player, ItemStack germling, Level level, BlockPos pos) {
 		return BlockUtil.setBlockWithPlaceSound(level, pos, stem.defaultBlockState());
 	}
-
 }

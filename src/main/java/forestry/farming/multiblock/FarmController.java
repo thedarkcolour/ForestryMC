@@ -20,36 +20,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import forestry.api.circuits.ChipsetManager;
-import forestry.api.circuits.CircuitSocketType;
+import forestry.api.ForestryTags;
+import forestry.api.IForestryApi;
+import forestry.api.circuits.ForestryCircuitSocketTypes;
 import forestry.api.circuits.ICircuitBoard;
-import forestry.api.circuits.ICircuitSocketType;
-import forestry.api.core.EnumHumidity;
-import forestry.api.core.EnumTemperature;
-import forestry.api.farming.FarmDirection;
+import forestry.api.core.ForestryError;
+import forestry.api.core.HumidityType;
+import forestry.api.core.TemperatureType;
+import forestry.api.farming.ForestryFarmTypes;
+import forestry.api.farming.HorizontalDirection;
 import forestry.api.farming.IFarmLogic;
 import forestry.api.farming.IFarmable;
 import forestry.api.multiblock.IFarmComponent;
 import forestry.api.multiblock.IMultiblockComponent;
-import forestry.core.config.Config;
-import forestry.core.data.ForestryTags;
-import forestry.core.errors.EnumErrorCode;
+import forestry.core.config.ForestryConfig;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
@@ -59,7 +62,6 @@ import forestry.core.multiblock.MultiblockValidationException;
 import forestry.core.multiblock.RectangularMultiblockControllerBase;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.utils.PlayerUtil;
-import forestry.farming.FarmDefinition;
 import forestry.farming.FarmHelper;
 import forestry.farming.FarmManager;
 import forestry.farming.FarmTarget;
@@ -73,7 +75,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	// active components are stored with a tick offset so they do not all tick together
 	private final Map<IFarmComponent.Active, Integer> farmActiveComponents = new HashMap<>();
 
-	private final Map<FarmDirection, IFarmLogic> farmLogics = new EnumMap<>(FarmDirection.class);
+	private final Map<Direction, IFarmLogic> farmLogics = new EnumMap<>(Direction.class);
 
 	private final InventoryAdapter sockets;
 	private final InventoryFarm inventory;
@@ -128,7 +130,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		}
 
 		if (newPart instanceof IFarmComponent.Active) {
-			farmActiveComponents.put((IFarmComponent.Active) newPart, world.random.nextInt(256));
+			farmActiveComponents.put((IFarmComponent.Active) newPart, level.random.nextInt(256));
 		}
 	}
 
@@ -191,7 +193,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	protected boolean updateServer(int tickCount) {
+	protected boolean serverTick(int tickCount) {
 		manager.getHydrationManager().updateServer();
 
 		if (updateOnInterval(20)) {
@@ -211,12 +213,12 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 		if (hasPower) {
 			noPowerTime = 0;
-			getErrorLogic().setCondition(false, EnumErrorCode.NO_POWER);
+			getErrorLogic().setCondition(false, ForestryError.NO_POWER);
 		} else {
 			if (noPowerTime <= 4) {
 				noPowerTime++;
 			} else {
-				getErrorLogic().setCondition(true, EnumErrorCode.NO_POWER);
+				getErrorLogic().setCondition(true, ForestryError.NO_POWER);
 			}
 		}
 
@@ -225,7 +227,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	protected void updateClient(int tickCount) {
+	protected void clientTick(int tickCount) {
 		for (Map.Entry<IFarmComponent.Active, Integer> entry : farmActiveComponents.entrySet()) {
 			IFarmComponent.Active farmComponent = entry.getKey();
 			int tickOffset = entry.getValue();
@@ -291,14 +293,14 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	private void refreshFarmLogics() {
-		for (FarmDirection direction : FarmDirection.values()) {
+		for (Direction direction : HorizontalDirection.VALUES) {
 			resetFarmLogic(direction);
 		}
 
 		// See whether we have socketed stuff.
 		ItemStack chip = sockets.getItem(0);
 		if (!chip.isEmpty()) {
-			ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(chip);
+			ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(chip);
 			if (chipset != null) {
 				chipset.onLoad(this);
 			}
@@ -306,33 +308,21 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public EnumTemperature getTemperature() {
-		BlockPos coords = getReferenceCoord();
-		return EnumTemperature.getFromBiome(getBiome(), coords);
+	public TemperatureType temperature() {
+		return IForestryApi.INSTANCE.getClimateManager().getTemperature(getBiome());
 	}
 
 	@Override
-	public EnumHumidity getHumidity() {
-		return EnumHumidity.getFromValue(getExactHumidity());
+	public HumidityType humidity() {
+		return IForestryApi.INSTANCE.getClimateManager().getHumidity(getBiome());
 	}
 
-	@Override
-	public float getExactTemperature() {
-		BlockPos coords = getReferenceCoord();
-		return 0; // getBiome().getTemperature(coords);
-	}
-
-	@Override
-	public float getExactHumidity() {
-		return getBiome().getDownfall();
-	}
-
-	protected Biome getBiome() {
+	protected Holder<Biome> getBiome() {
 		BlockPos coords = getReferenceCoord();
 		if (coords == null) {
-			return ForgeRegistries.BIOMES.getDelegateOrThrow(Biomes.PLAINS).value();
+			return ForgeRegistries.BIOMES.getDelegateOrThrow(Biomes.PLAINS);
 		}
-		return world.getBiome(coords).value();
+		return level.getBiome(coords);
 	}
 
 	@Override
@@ -368,7 +358,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void setUpFarmlandTargets(Map<FarmDirection, List<FarmTarget>> targets) {
+	public void setUpFarmlandTargets(Map<Direction, List<FarmTarget>> targets) {
 		BlockPos targetStart = getCoords();
 
 		BlockPos max = getMaximumCoord();
@@ -378,10 +368,10 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		int sizeEastWest = Math.abs(max.getX() - min.getX()) + 1;
 
 		// Set the maximum allowed extent.
-		allowedExtent = Math.max(sizeNorthSouth, sizeEastWest) * Config.farmSize + 1;
+		allowedExtent = Math.max(sizeNorthSouth, sizeEastWest) * ForestryConfig.SERVER.multiFarmSize.get() + 1;
 
-		FarmHelper.createTargets(world, this, targets, targetStart, allowedExtent, sizeNorthSouth, sizeEastWest, min, max);
-		FarmHelper.setExtents(world, this, targets);
+		FarmHelper.createTargets(level, this, targets, targetStart, allowedExtent, sizeNorthSouth, sizeEastWest, min, max);
+		FarmHelper.setExtents(level, this, targets);
 	}
 
 	@Override
@@ -390,7 +380,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public BlockPos getFarmCorner(FarmDirection direction) {
+	public BlockPos getFarmCorner(Direction direction) {
 		return manager.getFarmCorner(direction);
 	}
 
@@ -406,7 +396,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public boolean plantGermling(IFarmable germling, Level world, BlockPos pos, FarmDirection direction) {
+	public boolean plantGermling(IFarmable germling, Level world, BlockPos pos, Direction direction) {
 		Player player = PlayerUtil.getFakePlayer(world, getOwnerHandler().getOwner());
 		return player != null && inventory.plantGermling(germling, player, pos);
 	}
@@ -422,7 +412,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void setFarmLogic(FarmDirection direction, IFarmLogic logic) {
+	public void setFarmLogic(Direction direction, IFarmLogic logic) {
 		Preconditions.checkNotNull(direction);
 		Preconditions.checkNotNull(logic, "logic must not be null");
 		farmLogics.put(direction, logic);
@@ -430,12 +420,12 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public void resetFarmLogic(FarmDirection direction) {
-		setFarmLogic(direction, FarmDefinition.ARBOREAL.getProperties().getLogic(false));
+	public void resetFarmLogic(Direction direction) {
+		setFarmLogic(direction, IForestryApi.INSTANCE.getFarmingManager().getFarmType(ForestryFarmTypes.ARBOREAL).getLogic(false));
 	}
 
 	@Override
-	public IFarmLogic getFarmLogic(FarmDirection direction) {
+	public IFarmLogic getFarmLogic(Direction direction) {
 		return farmLogics.get(direction);
 	}
 
@@ -456,11 +446,11 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 	@Override
 	public void setSocket(int slot, ItemStack stack) {
-		if (ChipsetManager.circuitRegistry.isChipset(stack) || stack.isEmpty()) {
+		if (IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(stack) || stack.isEmpty()) {
 			// Dispose old chipsets correctly
 			if (!sockets.getItem(slot).isEmpty()) {
-				if (ChipsetManager.circuitRegistry.isChipset(sockets.getItem(slot))) {
-					ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(sockets.getItem(slot));
+				if (IForestryApi.INSTANCE.getCircuitManager().isCircuitBoard(sockets.getItem(slot))) {
+					ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(sockets.getItem(slot));
 					if (chipset != null) {
 						chipset.onRemoval(this);
 					}
@@ -471,7 +461,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 			refreshFarmLogics();
 
 			if (!stack.isEmpty()) {
-				ICircuitBoard chipset = ChipsetManager.circuitRegistry.getCircuitBoard(stack);
+				ICircuitBoard chipset = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(stack);
 				if (chipset != null) {
 					chipset.onInsertion(this);
 				}
@@ -480,8 +470,8 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	}
 
 	@Override
-	public ICircuitSocketType getSocketType() {
-		return CircuitSocketType.FARM;
+	public ResourceLocation getSocketType() {
+		return ForestryCircuitSocketTypes.FARM;
 	}
 
 	@Override
@@ -497,21 +487,21 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 
 	@Override
 	public boolean isSquare() {
-		return Config.squareFarms;
+		return ForestryConfig.SERVER.squareMultiFarms.get();
 	}
 
 	@Override
-	public int getExtents(FarmDirection direction, BlockPos pos) {
+	public int getExtents(Direction direction, BlockPos pos) {
 		return manager.getExtents(direction, pos);
 	}
 
 	@Override
-	public void setExtents(FarmDirection direction, BlockPos pos, int extend) {
+	public void setExtents(Direction direction, BlockPos pos, int extend) {
 		manager.setExtents(direction, pos, extend);
 	}
 
 	@Override
-	public void cleanExtents(FarmDirection direction) {
+	public void cleanExtents(Direction direction) {
 		manager.cleanExtents(direction);
 	}
 

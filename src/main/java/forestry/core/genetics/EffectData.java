@@ -15,7 +15,6 @@ import net.minecraft.nbt.CompoundTag;
 import forestry.api.genetics.IEffectData;
 
 public class EffectData implements IEffectData {
-
 	private final int[] intData;
 	private final boolean[] boolData;
 

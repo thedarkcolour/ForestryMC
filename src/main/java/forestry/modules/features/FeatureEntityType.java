@@ -5,6 +5,7 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
@@ -18,12 +19,12 @@ public class FeatureEntityType<T extends Entity> extends ModFeature implements I
 	protected final MobCategory classification;
 	private final RegistryObject<EntityType<T>> entityTypeObject;
 
-	public FeatureEntityType(IFeatureRegistry registry, String moduleID, String identifier, UnaryOperator<EntityType.Builder<T>> consumer, EntityType.EntityFactory<T> factory, MobCategory classification, Supplier<AttributeSupplier.Builder> attributes) {
-		super(moduleID, registry.getModId(), identifier);
+	public FeatureEntityType(IFeatureRegistry registry, ResourceLocation moduleId, String name, UnaryOperator<EntityType.Builder<T>> consumer, EntityType.EntityFactory<T> factory, MobCategory classification, Supplier<AttributeSupplier.Builder> attributes) {
+		super(moduleId, name);
 		this.factory = factory;
 		this.attributes = attributes;
 		this.classification = classification;
-		this.entityTypeObject = registry.getRegistry(Registry.ENTITY_TYPE_REGISTRY).register(identifier, () -> consumer.apply(EntityType.Builder.of(factory, classification)).build(this.modId + ":" + identifier));
+		this.entityTypeObject = registry.getRegistry(Registry.ENTITY_TYPE_REGISTRY).register(name, () -> consumer.apply(EntityType.Builder.of(factory, classification)).build(getModuleId().getNamespace() + ":" + name));
 	}
 
 	@Override

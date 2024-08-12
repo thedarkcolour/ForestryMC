@@ -7,9 +7,9 @@ package forestry.api.apiculture;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
 
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 
 public interface IBeeModelProvider {
 
-	ModelResourceLocation getModel(EnumBeeType type);
+	ModelResourceLocation getModel(BeeLifeStage type);
 }

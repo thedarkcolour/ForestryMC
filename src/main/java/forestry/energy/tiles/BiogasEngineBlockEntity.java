@@ -11,6 +11,7 @@
 package forestry.energy.tiles;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,11 +34,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.fuels.EngineBronzeFuel;
 import forestry.api.fuels.FuelManager;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
 import forestry.core.fluids.StandardTank;
@@ -50,6 +51,8 @@ import forestry.energy.menu.BiogasEngineMenu;
 import static net.minecraftforge.fluids.FluidType.BUCKET_VOLUME;
 
 public class BiogasEngineBlockEntity extends EngineBlockEntity implements WorldlyContainer, ILiquidTankTile {
+	public static final int ENGINE_BRONZE_HEAT_MAX = 10000;
+	public static final int ENGINE_BRONZE_HEAT_GENERATION_ENERGY = 1;
 	private final FilteredTank fuelTank;
 	private final FilteredTank heatingTank;
 	private final StandardTank burnTank;
@@ -60,12 +63,12 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 	private final LazyOptional<IFluidHandler> fluidCap;
 
 	public BiogasEngineBlockEntity(BlockPos pos, BlockState state) {
-		super(EnergyTiles.BIOGAS_ENGINE.tileType(), pos, state, "engine.bronze", Constants.ENGINE_BRONZE_HEAT_MAX, 300000);
+		super(EnergyTiles.BIOGAS_ENGINE.tileType(), pos, state, "engine.bronze", ENGINE_BRONZE_HEAT_MAX, 300000);
 
 		setInternalInventory(new InventoryEngineBiogas(this));
 
 		this.fuelTank = new FilteredTank(Constants.ENGINE_TANK_CAPACITY).setFilters(FuelManager.biogasEngineFuel.keySet());
-		this.heatingTank = new FilteredTank(Constants.ENGINE_TANK_CAPACITY, true, false).setFilters(Fluids.LAVA);
+		this.heatingTank = new FilteredTank(Constants.ENGINE_TANK_CAPACITY, true, false).setFilters(List.of(Fluids.LAVA));
 		this.burnTank = new StandardTank(BUCKET_VOLUME, false, false);
 
 		this.tankManager = new TankManager(this, fuelTank, heatingTank, burnTank);
@@ -95,10 +98,10 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 		IErrorLogic errorLogic = getErrorLogic();
 
 		boolean hasHeat = getHeatLevel() > 0.2 || heatingTank.getFluidAmount() > 0;
-		errorLogic.setCondition(!hasHeat, EnumErrorCode.NO_HEAT);
+		errorLogic.setCondition(!hasHeat, ForestryError.NO_HEAT);
 
 		boolean hasFuel = burnTank.getFluidAmount() > 0 || fuelTank.getFluidAmount() > 0;
-		errorLogic.setCondition(!hasFuel, EnumErrorCode.NO_FUEL);
+		errorLogic.setCondition(!hasFuel, ForestryError.NO_FUEL);
 	}
 
 	/**
@@ -188,11 +191,11 @@ public class BiogasEngineBlockEntity extends EngineBlockEntity implements Worldl
 		if (isRedstoneActivated() && burnTank.getFluidAmount() > 0) {
 			double heatStage = getHeatLevel();
 			if (heatStage >= 0.75) {
-				generate += Constants.ENGINE_BRONZE_HEAT_GENERATION_ENERGY * 3;
+				generate += ENGINE_BRONZE_HEAT_GENERATION_ENERGY * 3;
 			} else if (heatStage > 0.24) {
-				generate += Constants.ENGINE_BRONZE_HEAT_GENERATION_ENERGY * 2;
+				generate += ENGINE_BRONZE_HEAT_GENERATION_ENERGY * 2;
 			} else if (heatStage > 0.2) {
-				generate += Constants.ENGINE_BRONZE_HEAT_GENERATION_ENERGY;
+				generate += ENGINE_BRONZE_HEAT_GENERATION_ENERGY;
 			}
 		}
 

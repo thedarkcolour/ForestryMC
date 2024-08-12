@@ -14,9 +14,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.entity.player.Player;
 
 import forestry.api.arboriculture.genetics.ITree;
-import genetics.commands.SpeciesNotFoundException;
 
 @FunctionalInterface
 public interface ITreeSpawner {
-	int spawn(CommandSourceStack source, ITree treeName, Player player) throws SpeciesNotFoundException;
+	int spawn(CommandSourceStack source, ITree treeName, Player player);
 }

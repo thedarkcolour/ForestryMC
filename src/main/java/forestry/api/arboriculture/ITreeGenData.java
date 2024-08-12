@@ -7,35 +7,33 @@ package forestry.api.arboriculture;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
 import com.mojang.authlib.GameProfile;
 
-import genetics.api.individual.IGenome;
+import forestry.api.genetics.IGenome;
 
 public interface ITreeGenData {
+	int getGirth(IGenome genome);
 
-	int getGirth();
-
-	float getHeightModifier();
+	float getHeightModifier(IGenome genome);
 
 	/**
-	 * @return Position that this tree can grow. May be different from pos if there are multiple saplings.
-	 * Returns null if a sapling at the given position can not grow into a tree.
+	 * @return Position that this tree can grow, or {@code null} if it cannot grow. May be different from pos if there are multiple saplings.
 	 */
 	@Nullable
-	BlockPos canGrow(LevelAccessor world, BlockPos pos, int expectedGirth, int expectedHeight);
+	BlockPos getGrowthPos(IGenome genome, LevelAccessor level, BlockPos pos, int expectedGirth, int expectedHeight);
 
-	boolean setLeaves(LevelAccessor world, @Nullable GameProfile owner, BlockPos pos, RandomSource random);
+	boolean setLeaves(IGenome genome, LevelAccessor level, @Nullable GameProfile owner, BlockPos pos, RandomSource random);
 
-	boolean setLogBlock(LevelAccessor world, BlockPos pos, Direction facing);
+	boolean setLogBlock(IGenome genome, LevelAccessor level, BlockPos pos, Direction facing);
 
-	boolean allowsFruitBlocks();
+	boolean allowsFruitBlocks(IGenome genome);
 
-	boolean trySpawnFruitBlock(LevelAccessor world, RandomSource rand, BlockPos pos);
+	boolean trySpawnFruitBlock(LevelAccessor level, RandomSource rand, BlockPos pos);
 
-	IGenome getGenome();
+	IGenome getDefaultGenome();
 }

@@ -12,25 +12,23 @@ package forestry.core.tiles;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
+import forestry.api.IForestryApi;
+import forestry.api.client.ForestrySprites;
 import forestry.api.core.INbtWritable;
-import forestry.api.genetics.IForestrySpeciesRoot;
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ISpecies;
+import forestry.api.genetics.ISpeciesType;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.ColourUtil;
 import forestry.core.utils.NetworkUtil;
 
-import genetics.api.alleles.IAllele;
-import genetics.api.individual.IIndividual;
-import genetics.api.root.IIndividualRoot;
-import genetics.utils.AlleleUtils;
-
 public class EscritoireGameToken implements INbtWritable, IStreamable {
-
 	private enum State {
 		UNREVEALED,// face down
 		PROBED,    // shown by escritoire probe action
@@ -40,10 +38,8 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		public static final State[] VALUES = values();
 	}
 
-	private static final String[] OVERLAY_NONE = new String[0];
-	private static final String[] OVERLAY_FAILED = new String[]{"errors/errored"};
-	private static final String[] OVERLAY_SELECTED = new String[]{"errors/unknown"};
-
+	@Nullable
+	private ISpeciesType<? extends ISpecies<?>, ?> tokenType;
 	@Nullable
 	private IIndividual tokenIndividual;
 	private ItemStack tokenStack = ItemStack.EMPTY;
@@ -54,31 +50,27 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		readData(data);
 	}
 
-	public EscritoireGameToken(String speciesUid) {
-		setTokenSpecies(speciesUid);
+	public EscritoireGameToken(ISpecies<?> species) {
+		setTokenSpecies(species);
 	}
 
-	public EscritoireGameToken(CompoundTag CompoundNBT) {
-		if (CompoundNBT.contains("state")) {
-			int stateOrdinal = CompoundNBT.getInt("state");
-			state = State.values()[stateOrdinal];
-		}
+	public EscritoireGameToken(CompoundTag nbt) {
+		read(nbt);
+	}
 
-		if (CompoundNBT.contains("tokenSpecies")) {
-			String speciesUid = CompoundNBT.getString("tokenSpecies");
-			setTokenSpecies(speciesUid);
+	private void setTokenSpecies(ResourceLocation typeId, ResourceLocation speciesId) {
+		if (this.tokenType != null && typeId == this.tokenType.id()) {
+			setTokenSpecies(this.tokenType.getSpecies(speciesId));
+		} else {
+			ISpeciesType<?, ?> type = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(typeId);
+			setTokenSpecies(type.getSpecies(speciesId));
 		}
 	}
 
-	private void setTokenSpecies(String speciesUid) {
-		IAllele allele = AlleleUtils.getAllele(speciesUid);
-
-		if (allele instanceof IAlleleForestrySpecies species) {
-			IIndividualRoot<IIndividual> root = (IIndividualRoot<IIndividual>) species.getRoot();
-			IAllele[] template = root.getTemplates().getTemplate(species.getRegistryName().toString());
-			this.tokenIndividual = root.templateAsIndividual(template);
-			this.tokenStack = root.getTypes().createStack(this.tokenIndividual, ((IForestrySpeciesRoot<IIndividual>) root).getIconType());
-		}
+	private void setTokenSpecies(ISpecies<?> species) {
+		this.tokenIndividual = species.createIndividual();
+		this.tokenType = species.getType();
+		this.tokenStack = species.createStack(species.getType().getDefaultStage());
 	}
 
 	public ItemStack getTokenStack() {
@@ -126,7 +118,7 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 			return 0xffffff;
 		}
 
-		int iconColor = tokenIndividual.getGenome().getPrimary(IAlleleForestrySpecies.class).getSpriteColour(0);
+		int iconColor = tokenIndividual.getSpecies().getEscritoireColor();
 
 		if (state == State.MATCHED) {
 			return ColourUtil.multiplyRGBComponents(iconColor, 0.7f);
@@ -140,11 +132,12 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 		return !tokenStack.isEmpty() ? tokenStack.getHoverName() : Component.translatable("for.gui.unknown");
 	}
 
-	public String[] getOverlayIcons() {
+	@Nullable
+	public ResourceLocation getOverlayToken() {
 		return switch (state) {
-			case FAILED -> OVERLAY_FAILED;
-			case SELECTED -> OVERLAY_SELECTED;
-			default -> OVERLAY_NONE;
+			case FAILED -> ForestrySprites.ERROR_ERRORED;
+			case SELECTED -> ForestrySprites.ERROR_UNKNOWN;
+			default -> null;
 		};
 	}
 
@@ -153,22 +146,36 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 	}
 
 	@Override
-	public CompoundTag write(CompoundTag CompoundNBT) {
-		CompoundNBT.putInt("state", state.ordinal());
+	public CompoundTag write(CompoundTag nbt) {
+		nbt.putInt("state", this.state.ordinal());
 
-		if (tokenIndividual != null) {
-			CompoundNBT.putString("tokenSpecies", tokenIndividual.getGenome().getPrimary().getRegistryName().toString());
+		if (this.tokenIndividual != null) {
+			nbt.putString("tokenSpecies", this.tokenIndividual.getSpecies().id().toString());
 		}
-		return CompoundNBT;
+		return nbt;
 	}
 
-	/* IStreamable */
+	private void read(CompoundTag nbt) {
+		if (nbt.contains("state")) {
+			int stateOrdinal = nbt.getInt("state");
+			this.state = State.VALUES[stateOrdinal];
+		}
+
+		String tokenSpecies = nbt.getString("tokenSpecies");
+		String tokenType = nbt.getString("tokenSpeciesType");
+
+		if (!tokenSpecies.isEmpty() && !tokenType.isEmpty()) {
+			setTokenSpecies(new ResourceLocation(tokenType), new ResourceLocation(tokenSpecies));
+		}
+	}
+
 	@Override
 	public void writeData(FriendlyByteBuf data) {
 		NetworkUtil.writeEnum(data, state);
-		if (tokenIndividual != null) {
+		if (tokenIndividual != null && this.tokenType != null) {
 			data.writeBoolean(true);
-			data.writeUtf(tokenIndividual.getGenome().getPrimary().getRegistryName().toString());
+			data.writeResourceLocation(tokenIndividual.getSpecies().id());
+			data.writeResourceLocation(tokenType.id());
 		} else {
 			data.writeBoolean(false);
 		}
@@ -178,8 +185,9 @@ public class EscritoireGameToken implements INbtWritable, IStreamable {
 	public void readData(FriendlyByteBuf data) {
 		state = NetworkUtil.readEnum(data, State.VALUES);
 		if (data.readBoolean()) {
-			String speciesUid = data.readUtf();
-			setTokenSpecies(speciesUid);
+			ResourceLocation speciesId = data.readResourceLocation();
+			ResourceLocation typeId = data.readResourceLocation();
+			setTokenSpecies(typeId, speciesId);
 		}
 	}
 }

@@ -11,53 +11,49 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ILifeStage;
+import forestry.api.genetics.IMutation;
+import forestry.api.genetics.ISpecies;
 import forestry.core.gui.GuiConstants;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.DatabaseElement;
 import forestry.core.gui.elements.GuiElementFactory;
 import forestry.core.gui.elements.layouts.LayoutHelper;
-import forestry.core.utils.Translator;
 
-import genetics.api.alleles.IAlleleSpecies;
-import genetics.api.individual.IGenome;
-import genetics.api.individual.IIndividual;
-import genetics.api.mutation.IMutation;
-import genetics.api.mutation.IMutationContainer;
-import genetics.api.root.components.ComponentKeys;
-
-public class MutationsTab extends DatabaseTab {
+public class MutationsTab<I extends IIndividual> extends DatabaseTab<I> {
 	public MutationsTab(Supplier<ItemStack> stackSupplier) {
 		super("mutations", stackSupplier);
 	}
 
 	@Override
-	public void createElements(DatabaseElement container, IIndividual individual, ItemStack itemStack) {
-		IGenome genome = individual.getGenome();
-		IForestrySpeciesRoot<IIndividual> speciesRoot = (IForestrySpeciesRoot<IIndividual>) individual.getRoot();
-		IAlleleSpecies species = genome.getPrimary();
-		IMutationContainer<IIndividual, IMutation> mutationContainer = speciesRoot.getComponent(ComponentKeys.MUTATIONS);
+	public void createElements(DatabaseElement container, IIndividual individual, ILifeStage stage, ItemStack stack) {
+		ISpecies<?> species = individual.getSpecies();
+		var speciesType = species.getType();
+		var mutationContainer = speciesType.getMutations();
 
 		Player player = Minecraft.getInstance().player;
-		IBreedingTracker breedingTracker = speciesRoot.getBreedingTracker(player.level, player.getGameProfile());
+		IBreedingTracker breedingTracker = speciesType.getBreedingTracker(player.level, player.getGameProfile());
 
 		LayoutHelper groupHelper = container.layoutHelper((x, y) -> GuiElementFactory.horizontal(16, 0, new Insets(0, 1, 0, 0)), 100, 16);
-		Collection<? extends IMutation> mutations = getValidMutations(mutationContainer.getCombinations(species));
+		Collection<? extends IMutation<?>> mutations = getValidMutations(mutationContainer.getMutationsFrom(species.cast()));
+
 		if (!mutations.isEmpty()) {
 			container.label(Component.translatable("for.gui.database.mutations.further"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
 			mutations.forEach(mutation -> groupHelper.add(GuiElementFactory.INSTANCE.createMutation(0, 0, 50, 16, mutation, species, breedingTracker)));
 			groupHelper.finish(true);
 		}
-		mutations = getValidMutations(mutationContainer.getResultantMutations(species));
-		if (mutations.isEmpty()) {
+
+		Collection<? extends IMutation<?>> mutationsInto = getValidMutations(mutationContainer.getMutationsInto(species.cast()));
+		if (mutationsInto.isEmpty()) {
 			return;
 		}
 		container.label(Component.translatable("for.gui.database.mutations.resultant"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
-		mutations.forEach(mutation -> groupHelper.add(GuiElementFactory.INSTANCE.createMutationResultant(0, 0, 50, 16, mutation, breedingTracker)));
+		mutationsInto.forEach(mutation -> groupHelper.add(GuiElementFactory.INSTANCE.createMutationResultant(0, 0, 50, 16, mutation, breedingTracker)));
 		groupHelper.finish(true);
 	}
 
-	private Collection<? extends IMutation> getValidMutations(List<? extends IMutation> mutations) {
+	private <M extends IMutation<?>> Collection<M> getValidMutations(List<M> mutations) {
 		mutations.removeIf(IMutation::isSecret);
 		return mutations;
 	}

@@ -1,25 +1,26 @@
 package forestry.worktable;
 
-import net.minecraft.client.gui.screens.MenuScreens;
+import java.util.function.Consumer;
+
+import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.modules.ForestryModule;
-import forestry.core.config.Constants;
-import forestry.core.network.IPacketRegistry;
+import forestry.api.modules.ForestryModuleIds;
+import forestry.api.modules.IPacketRegistry;
 import forestry.core.network.PacketIdClient;
 import forestry.core.network.PacketIdServer;
 import forestry.modules.BlankForestryModule;
-import forestry.modules.ForestryModuleUids;
-import forestry.worktable.features.WorktableMenus;
+import forestry.api.client.IClientModuleHandler;
+import forestry.worktable.client.WorktableClientHandler;
 import forestry.worktable.network.packets.PacketWorktableMemoryUpdate;
 import forestry.worktable.network.packets.PacketWorktableRecipeRequest;
 import forestry.worktable.network.packets.PacketWorktableRecipeUpdate;
-import forestry.worktable.screens.WorktableScreen;
 
-@ForestryModule(modId = Constants.MOD_ID, moduleID = ForestryModuleUids.WORKTABLE, name = "Worktable", author = "thedarkcolour", url = Constants.URL, unlocalizedDescription = "for.module.worktable.description")
+@ForestryModule
 public class ModuleWorktable extends BlankForestryModule {
 	@Override
-	public void registerGuiFactories() {
-		MenuScreens.register(WorktableMenus.WORKTABLE.menuType(), WorktableScreen::new);
+	public ResourceLocation getId() {
+		return ForestryModuleIds.WORKTABLE;
 	}
 
 	@Override
@@ -28,5 +29,10 @@ public class ModuleWorktable extends BlankForestryModule {
 
 		registry.clientbound(PacketIdClient.WORKTABLE_MEMORY_UPDATE, PacketWorktableMemoryUpdate.class, PacketWorktableMemoryUpdate::decode, PacketWorktableMemoryUpdate::handle);
 		registry.clientbound(PacketIdClient.WORKTABLE_CRAFTING_UPDATE, PacketWorktableRecipeUpdate.class, PacketWorktableRecipeUpdate::decode, PacketWorktableRecipeUpdate::handle);
+	}
+
+	@Override
+	public void registerClientHandler(Consumer<IClientModuleHandler> registrar) {
+		registrar.accept(new WorktableClientHandler());
 	}
 }

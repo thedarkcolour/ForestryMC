@@ -4,9 +4,8 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.IBeeHousingInventory;
-import forestry.api.apiculture.genetics.EnumBeeType;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 
 class HiveBeeHousingInventory implements IBeeHousingInventory {
@@ -23,30 +22,30 @@ class HiveBeeHousingInventory implements IBeeHousingInventory {
 
 	@Override
 	public ItemStack getQueen() {
-		if (queen == null) {
-			IBee bee = hive.getContainedBee();
-			queen = BeeManager.beeRoot.getTypes().createStack(bee, EnumBeeType.QUEEN);
+		if (this.queen == null) {
+			IBee bee = this.hive.getContainedBee();
+			this.queen = bee.copyWithStage(BeeLifeStage.QUEEN);
 		}
-		return queen;
+		return this.queen;
 	}
 
 	@Override
 	public ItemStack getDrone() {
-		if (drone == null) {
-			IBee bee = hive.getContainedBee();
-			drone = BeeManager.beeRoot.getTypes().createStack(bee, EnumBeeType.DRONE);
+		if (this.drone == null) {
+			IBee bee = this.hive.getContainedBee();
+			this.drone = bee.copyWithStage(BeeLifeStage.DRONE);
 		}
-		return drone;
+		return this.drone;
 	}
 
 	@Override
-	public void setQueen(ItemStack itemstack) {
-		this.queen = itemstack;
+	public void setQueen(ItemStack stack) {
+		this.queen = stack;
 	}
 
 	@Override
-	public void setDrone(ItemStack itemstack) {
-		this.drone = itemstack;
+	public void setDrone(ItemStack stack) {
+		this.drone = stack;
 	}
 
 	@Override

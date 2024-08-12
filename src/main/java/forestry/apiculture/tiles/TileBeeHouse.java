@@ -10,19 +10,18 @@
  ******************************************************************************/
 package forestry.apiculture.tiles;
 
-import java.util.Collections;
+import java.util.List;
 
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.network.NetworkHooks;
 
-import forestry.api.apiculture.DefaultBeeListener;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
 import forestry.api.apiculture.IBeeModifier;
@@ -36,12 +35,10 @@ import forestry.core.utils.NetworkUtil;
 public class TileBeeHouse extends TileBeeHousingBase {
 	private static final IBeeModifier beeModifier = new BeehouseBeeModifier();
 
-	private final IBeeListener beeListener;
 	private final InventoryBeeHousing beeInventory;
 
 	public TileBeeHouse(BlockPos pos, BlockState state) {
 		super(ApicultureTiles.BEE_HOUSE.tileType(), pos, state, "bee.house");
-		this.beeListener = new DefaultBeeListener();
 
 		beeInventory = new InventoryBeeHousing(12);
 		beeInventory.disableAutomation();
@@ -55,12 +52,12 @@ public class TileBeeHouse extends TileBeeHousingBase {
 
 	@Override
 	public Iterable<IBeeModifier> getBeeModifiers() {
-		return Collections.singleton(beeModifier);
+		return List.of(beeModifier);
 	}
 
 	@Override
 	public Iterable<IBeeListener> getBeeListeners() {
-		return Collections.singleton(beeListener);
+		return List.of();
 	}
 
 	@Override

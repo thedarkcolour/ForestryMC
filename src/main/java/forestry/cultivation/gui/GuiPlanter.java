@@ -1,9 +1,10 @@
 package forestry.cultivation.gui;
 
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -25,9 +26,9 @@ public class GuiPlanter extends GuiForestryTitled<ContainerPlanter> {
 		this.imageWidth = 202;
 		this.imageHeight = 192;
 
-		NonNullList<ItemStack> resourceStacks = tile.createResourceStacks();
-		NonNullList<ItemStack> germlingStacks = tile.createGermlingStacks();
-		NonNullList<ItemStack> productionStacks = tile.createProductionStacks();
+		List<ItemStack> resourceStacks = tile.createResourceStacks();
+		List<ItemStack> germlingStacks = tile.createGermlingStacks();
+		List<ItemStack> productionStacks = tile.createProductionStacks();
 
 		widgetManager.add(new TankWidget(widgetManager, 178, 44, 0).setOverlayOrigin(imageWidth, 18));
 

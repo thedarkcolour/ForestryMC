@@ -12,6 +12,8 @@ package forestry.core.tiles;
 
 import javax.annotation.Nullable;
 
+import java.util.List;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,10 +36,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import forestry.api.arboriculture.TreeManager;
-import forestry.core.config.Config;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.config.Constants;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.features.CoreTiles;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
@@ -50,15 +52,13 @@ import forestry.core.network.packets.PacketItemStackDisplay;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.NetworkUtil;
-
-import deleteme.Todos;
-import genetics.api.GeneticHelper;
-import genetics.api.individual.IIndividual;
-import genetics.utils.RootUtils;
+import forestry.core.utils.SpeciesUtil;
 
 public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiquidTankTile, IItemStackDisplay {
 	private static final int TIME_TO_ANALYZE = 125;
 	private static final int HONEY_REQUIRED = 100;
+	// Genetics
+	public static int analyzerEnergyPerWork = 20320;
 
 	private final FilteredTank resourceTank;
 	private final TankManager tankManager;
@@ -73,7 +73,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	public TileAnalyzer(BlockPos pos, BlockState state) {
 		super(CoreTiles.ANALYZER.tileType(), pos, state, 800, Constants.MACHINE_MAX_ENERGY);
 		setInternalInventory(new InventoryAnalyzer(this));
-		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(ForestryFluids.HONEY.getFluid());
+		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(List.of(ForestryFluids.HONEY.getFluid()));
 		tankManager = new TankManager(this, resourceTank);
 		invInput = new InventoryMapper(getInternalInventory(), InventoryAnalyzer.SLOT_INPUT_1, InventoryAnalyzer.SLOT_INPUT_COUNT);
 		invOutput = new InventoryMapper(getInternalInventory(), InventoryAnalyzer.SLOT_OUTPUT_1, InventoryAnalyzer.SLOT_OUTPUT_COUNT);
@@ -94,7 +94,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 		ItemStack stackToAnalyze = getItem(InventoryAnalyzer.SLOT_ANALYZE);
 		if (!stackToAnalyze.isEmpty()) {
-			specimenToAnalyze = RootUtils.getIndividual(stackToAnalyze);
+			specimenToAnalyze = IIndividualHandlerItem.getIndividual(stackToAnalyze);
 		}
 	}
 
@@ -125,7 +125,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 
 			specimenToAnalyze.analyze();
 
-			GeneticHelper.setIndividual(stackToAnalyze, specimenToAnalyze);
+			specimenToAnalyze.saveToStack(stackToAnalyze);
 		}
 
 		boolean added = InventoryUtil.tryAddStack(invOutput, stackToAnalyze, true);
@@ -143,8 +143,8 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	@Nullable
 	private Integer getInputSlotIndex() {
 		for (int slotIndex = 0; slotIndex < invInput.getContainerSize(); slotIndex++) {
-			ItemStack inputStack = invInput.getItem(slotIndex);
-			if (RootUtils.isIndividual(inputStack)) {
+			ItemStack stack = invInput.getItem(slotIndex);
+			if (IIndividualHandlerItem.isIndividual(stack)) {
 				return slotIndex;
 			}
 		}
@@ -199,9 +199,9 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			}
 		}
 
-		getErrorLogic().setCondition(!hasSpecimen, EnumErrorCode.NO_SPECIMEN);
-		getErrorLogic().setCondition(!hasResource, EnumErrorCode.NO_RESOURCE_LIQUID);
-		getErrorLogic().setCondition(!hasSpace, EnumErrorCode.NO_SPACE_INVENTORY);
+		getErrorLogic().setCondition(!hasSpecimen, ForestryError.NO_SPECIMEN);
+		getErrorLogic().setCondition(!hasResource, ForestryError.NO_RESOURCE_LIQUID);
+		getErrorLogic().setCondition(!hasSpace, ForestryError.NO_SPACE_INVENTORY);
 
 		return hasSpecimen && hasResource && hasSpace;
 	}
@@ -221,11 +221,11 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			return;
 		}
 
-		if (Todos.isArboricultureEnabled() && !TreeManager.treeRoot.isMember(inputStack)) {
+		if (!SpeciesUtil.TREE_TYPE.get().isMember(inputStack)) {
 			inputStack = GeneticsUtil.convertToGeneticEquivalent(inputStack);
 		}
 
-		specimenToAnalyze = RootUtils.getIndividual(inputStack);
+		specimenToAnalyze = IIndividualHandlerItem.getIndividual(inputStack);
 		if (specimenToAnalyze == null) {
 			return;
 		}
@@ -238,7 +238,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 			setEnergyPerWorkCycle(0);
 		} else {
 			setTicksPerWorkCycle(TIME_TO_ANALYZE);
-			setEnergyPerWorkCycle(Config.analyzerEnergyPerWork);
+			setEnergyPerWorkCycle(analyzerEnergyPerWork);
 		}
 
 		PacketItemStackDisplay packet = new PacketItemStackDisplay(this, getIndividualOnDisplay());
@@ -246,8 +246,9 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	}
 
 	public ItemStack getIndividualOnDisplay() {
-		if (level.isClientSide) {
-			return individualOnDisplayClient;
+		// null in BEWLR
+		if (this.level == null || this.level.isClientSide) {
+			return this.individualOnDisplayClient;
 		}
 		return getItem(InventoryAnalyzer.SLOT_ANALYZE);
 	}

@@ -118,7 +118,7 @@ public class InventoryAdapter implements IInventoryAdapter, IStreamable {
 	}
 
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		return true;
 	}
 

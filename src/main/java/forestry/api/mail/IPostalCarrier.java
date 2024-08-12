@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.core.ITextureManager;
+import forestry.api.client.ITextureManager;
 
 /**
  * Postal Carriers are systems which can be hooked into Forestry's mail system to handle mail delivery.

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.farming.logic.farmables;
 
+import java.util.function.Consumer;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +20,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 import forestry.api.farming.ICrop;
-import forestry.api.farming.IFarmableInfo;
 import forestry.core.utils.BlockUtil;
 import forestry.farming.logic.crops.CropDestroy;
 
@@ -48,7 +49,7 @@ public class FarmableVanillaMushroom extends FarmableBase {
 	}
 
 	@Override
-	public void addInformation(IFarmableInfo info) {
-		info.addProducts(germling);
+	public void addProducts(Consumer<ItemStack> accumulator) {
+		accumulator.accept(this.germling);
 	}
 }

@@ -1,0 +1,27 @@
+{
+  "type": "forestry:fabricator",
+  "molten": {
+    "Amount": 500,
+    "FluidName": "forestry:glass"
+  },
+  "plan": [],
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "#": {
+        "item": "forestry:refractory_wax"
+      },
+      "X": {
+        "item": "minecraft:stripped_dark_oak_wood"
+      }
+    },
+    "pattern": [
+      " # ",
+      "#X#",
+      " # "
+    ],
+    "result": {
+      "item": "forestry:dark_oak_fireproof_stripped_wood"
+    }
+  }
+}

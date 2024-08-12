@@ -12,26 +12,27 @@ package forestry.apiculture.inventory;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Optional;
 import java.util.Set;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.core.IErrorSource;
-import forestry.api.core.IErrorState;
+import forestry.api.core.IError;
+import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.items.HabitatLocatorLogic;
 import forestry.apiculture.items.ItemHabitatLocator;
-import forestry.core.errors.EnumErrorCode;
+import forestry.api.core.ForestryError;
 import forestry.core.inventory.ItemInventory;
+import forestry.core.utils.SpeciesUtil;
+
 import net.minecraft.world.level.biome.Biome;
 
 public class ItemInventoryHabitatLocator extends ItemInventory implements IErrorSource {
-
 	private static final short SLOT_ENERGY = 2;
 	private static final short SLOT_SPECIMEN = 0;
 	private static final short SLOT_ANALYZED = 1;
@@ -68,32 +69,32 @@ public class ItemInventoryHabitatLocator extends ItemInventory implements IError
 		}
 
 		ItemStack analyzed = getItem(SLOT_ANALYZED);
-		IBee bee = BeeManager.beeRoot.create(analyzed);
-		if (bee != null) {
+		IIndividual individual = IIndividualHandlerItem.getIndividual(analyzed);
+		if (individual instanceof IBee bee) {
 			locatorLogic.startBiomeSearch(bee, player);
 		}
 	}
 
-	public Set<Biome> getBiomesToSearch() {
-		return locatorLogic.getTargetBiomes();
+	public Set<Holder<Biome>> getBiomesToSearch() {
+		return this.locatorLogic.getTargetBiomes();
 	}
 
 	/* IErrorSource */
 	@Override
-	public ImmutableSet<IErrorState> getErrorStates() {
+	public ImmutableSet<IError> getErrors() {
 		if (!getItem(SLOT_ANALYZED).isEmpty()) {
 			return ImmutableSet.of();
 		}
 
-		ImmutableSet.Builder<IErrorState> errorStates = ImmutableSet.builder();
+		ImmutableSet.Builder<IError> errorStates = ImmutableSet.builder();
 
 		ItemStack specimen = getItem(SLOT_SPECIMEN);
-		if (!BeeManager.beeRoot.isMember(specimen)) {
-			errorStates.add(EnumErrorCode.NO_SPECIMEN);
+		if (!SpeciesUtil.BEE_TYPE.get().isMember(specimen)) {
+			errorStates.add(ForestryError.NO_SPECIMEN);
 		}
 
 		if (!isEnergy(getItem(SLOT_ENERGY))) {
-			errorStates.add(EnumErrorCode.NO_HONEY);
+			errorStates.add(ForestryError.NO_HONEY);
 		}
 
 		return errorStates.build();
@@ -101,11 +102,11 @@ public class ItemInventoryHabitatLocator extends ItemInventory implements IError
 
 	/* IFilterSlotDelegate */
 	@Override
-	public boolean canSlotAccept(int slotIndex, ItemStack itemStack) {
+	public boolean canSlotAccept(int slotIndex, ItemStack stack) {
 		if (slotIndex == SLOT_ENERGY) {
-			return isEnergy(itemStack);
+			return isEnergy(stack);
 		} else if (slotIndex == SLOT_SPECIMEN) {
-			return BeeManager.beeRoot.isMember(itemStack);
+			return SpeciesUtil.BEE_TYPE.get().isMember(stack);
 		}
 		return false;
 	}

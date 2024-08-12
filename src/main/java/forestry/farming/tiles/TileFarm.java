@@ -11,6 +11,7 @@
 package forestry.farming.tiles;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.circuits.ICircuitSocketType;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
 import forestry.api.multiblock.IFarmComponent;
@@ -39,7 +39,6 @@ import forestry.farming.gui.ContainerFarm;
 import forestry.farming.multiblock.MultiblockLogicFarm;
 
 public abstract class TileFarm extends MultiblockTileEntityForestry<MultiblockLogicFarm> implements IFarmComponent, ISocketable, IStreamableGui, IErrorLogicSource, IOwnedTile, ITitled {
-
 	protected TileFarm(BlockEntityType<?> tileEntityType, BlockPos pos, BlockState state) {
 		super(tileEntityType, pos, state, new MultiblockLogicFarm());
 	}
@@ -78,7 +77,7 @@ public abstract class TileFarm extends MultiblockTileEntityForestry<MultiblockLo
 	}
 
 	@Override
-	public ICircuitSocketType getSocketType() {
+	public ResourceLocation getSocketType() {
 		return getMultiblockLogic().getController().getSocketType();
 	}
 

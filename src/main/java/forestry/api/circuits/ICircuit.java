@@ -10,7 +10,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 
 public interface ICircuit {
-	String getUID();
+	String getId();
 
 	String getTranslationKey();
 

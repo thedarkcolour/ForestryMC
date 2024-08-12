@@ -12,6 +12,8 @@ package forestry.lepidopterology.blocks;
 
 import javax.annotation.Nullable;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -50,7 +52,7 @@ public class BlockSolidCocoon extends Block implements EntityBlock {
 	@Override
 	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
 		if (canHarvestBlock(state, level, pos, player) && blockEntity instanceof TileCocoon cocoon) {
-			NonNullList<ItemStack> drops = cocoon.getCocoonDrops();
+			List<ItemStack> drops = cocoon.getCocoonDrops();
 
 			for (ItemStack stack : drops) {
 				ItemStackUtil.dropItemStackAsEntity(stack, level, pos);

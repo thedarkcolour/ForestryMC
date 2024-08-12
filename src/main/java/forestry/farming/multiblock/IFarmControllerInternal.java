@@ -10,7 +10,7 @@
  ******************************************************************************/
 package forestry.farming.multiblock;
 
-import forestry.api.climate.IClimatised;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.multiblock.IFarmController;
 import forestry.core.circuits.ISocketable;
 import forestry.core.fluids.ITankManager;
@@ -21,7 +21,7 @@ import forestry.core.owner.IOwnedTile;
 import forestry.cultivation.IFarmHousingInternal;
 import forestry.farming.gui.IFarmLedgerDelegate;
 
-public interface IFarmControllerInternal extends IFarmController, IMultiblockControllerInternal, ISocketable, IClimatised, IOwnedTile, IStreamableGui, IFarmHousingInternal {
+public interface IFarmControllerInternal extends IFarmController, IMultiblockControllerInternal, ISocketable, IClimateProvider, IOwnedTile, IStreamableGui, IFarmHousingInternal {
 	IFarmLedgerDelegate getFarmLedgerDelegate();
 
 	IInventoryAdapter getInternalInventory();

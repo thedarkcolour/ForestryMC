@@ -13,8 +13,6 @@ package forestry.core.multiblock;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
@@ -24,10 +22,10 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
 
-import forestry.api.core.ForestryAPI;
+import forestry.api.IForestryApi;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
-import forestry.api.core.ILocatable;
+import forestry.api.core.ILocationProvider;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
@@ -35,7 +33,7 @@ import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
 
-public abstract class MultiblockControllerForestry extends MultiblockControllerBase implements WorldlyContainer, IOwnedTile, IErrorLogicSource, ILocatable {
+public abstract class MultiblockControllerForestry extends MultiblockControllerBase implements WorldlyContainer, IOwnedTile, IErrorLogicSource, ILocationProvider {
 	private final OwnerHandler ownerHandler;
 	private final IErrorLogic errorLogic;
 
@@ -43,7 +41,7 @@ public abstract class MultiblockControllerForestry extends MultiblockControllerB
 		super(world);
 
 		this.ownerHandler = new OwnerHandler();
-		this.errorLogic = ForestryAPI.errorStateRegistry.createErrorLogic();
+		this.errorLogic = IForestryApi.INSTANCE.getErrorManager().createErrorLogic();
 	}
 
 	@Override
@@ -57,15 +55,15 @@ public abstract class MultiblockControllerForestry extends MultiblockControllerB
 	}
 
 	@Override
-	public @Nullable Level getWorldObj() {
-		return world;
+	public Level getWorldObj() {
+		return level;
 	}
 
 	@Override
 	protected void onMachineAssembled() {
 		super.onMachineAssembled();
 
-		if (world.isClientSide) {
+		if (level.isClientSide) {
 			return;
 		}
 

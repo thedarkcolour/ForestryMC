@@ -10,80 +10,57 @@
  ******************************************************************************/
 package forestry.core;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
-import net.minecraftforge.registries.ForgeRegistries;
-
-import forestry.api.apiculture.BeeManager;
-import forestry.api.apiculture.genetics.EnumBeeType;
-import forestry.api.arboriculture.TreeManager;
-import forestry.api.arboriculture.genetics.EnumGermlingType;
+import forestry.api.ForestryConstants;
+import forestry.api.apiculture.ForestryBeeSpecies;
+import forestry.api.apiculture.genetics.BeeLifeStage;
+import forestry.api.arboriculture.ForestryTreeSpecies;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.core.ItemGroups;
-import forestry.api.lepidopterology.ButterflyManager;
-import forestry.api.lepidopterology.genetics.EnumFlutterType;
-import forestry.apiculture.genetics.Bee;
-import forestry.apiculture.genetics.BeeDefinition;
-import forestry.arboriculture.genetics.Tree;
-import forestry.arboriculture.genetics.TreeDefinition;
-import forestry.core.config.Constants;
+import forestry.api.lepidopterology.ForestryButterflySpecies;
+import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
 import forestry.core.features.CoreItems;
-import forestry.lepidopterology.genetics.Butterfly;
-import forestry.lepidopterology.genetics.ButterflyDefinition;
-import forestry.modules.features.FeatureProvider;
+import forestry.core.utils.SpeciesUtil;
+import forestry.storage.features.BackpackItems;
 
-public class ItemGroupForestry extends CreativeModeTab {
-
-	static {
-		ItemGroups.tabStorage = new ItemGroupForestry(1, "storage");
-
-		ItemGroups.tabApiculture = new ItemGroupForestry(2, "apiculture");
-
-		ItemGroups.tabArboriculture = new ItemGroupForestry(3, "arboriculture");
-
-		ItemGroups.tabLepidopterology = new ItemGroupForestry(4, "lepidopterology");
+public abstract class ItemGroupForestry extends CreativeModeTab {
+	// todo remove in 1.20 when the creative tabs registry is added
+	static void initTabs() {
+		ItemGroups.tabForestry = new ItemGroupForestry(ForestryConstants.MOD_ID) {
+			@Override
+			public ItemStack makeIcon() {
+				return CoreItems.FERTILIZER_COMPOUND.stack();
+			}
+		};
+		ItemGroups.tabStorage = new ItemGroupForestry("storage") {
+			@Override
+			public ItemStack makeIcon() {
+				return BackpackItems.MINER_BACKPACK.stack();
+			}
+		};
+		ItemGroups.tabApiculture = new ItemGroupForestry("apiculture") {
+			@Override
+			public ItemStack makeIcon() {
+				return SpeciesUtil.BEE_TYPE.get().createStack(ForestryBeeSpecies.FOREST, BeeLifeStage.DRONE);
+			}
+		};
+		ItemGroups.tabArboriculture = new ItemGroupForestry("arboriculture") {
+			@Override
+			public ItemStack makeIcon() {
+				return SpeciesUtil.TREE_TYPE.get().createStack(ForestryTreeSpecies.OAK, TreeLifeStage.SAPLING);
+			}
+		};
+		ItemGroups.tabLepidopterology = new ItemGroupForestry("lepidopterology") {
+			@Override
+			public ItemStack makeIcon() {
+				return SpeciesUtil.BUTTERFLY_TYPE.get().createStack(ForestryButterflySpecies.BRIMSTONE, ButterflyLifeStage.BUTTERFLY);
+			}
+		};
 	}
 
-	public static final CreativeModeTab tabForestry = new ItemGroupForestry(0, Constants.MOD_ID);
-
-	public static void create() {
-		//Needed to load the groups before the feature creation
-	}
-
-	private final int icon;
-
-	private ItemGroupForestry(int icon, String label) {
+	private ItemGroupForestry(String label) {
 		super(label);
-		this.icon = icon;
-	}
-
-	@Override
-	public ItemStack getIconItem() {
-		Item iconItem;
-		switch (icon) {
-			case 1:
-				iconItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(Constants.MOD_ID, "miner_bag"));
-				break;
-			case 2:
-				return BeeManager.beeRoot.getTypes().createStack(new Bee(BeeDefinition.FOREST.getGenome()), EnumBeeType.DRONE);
-			case 3:
-				return TreeManager.treeRoot.getTypes().createStack(new Tree(TreeDefinition.Oak.getGenome()), EnumGermlingType.SAPLING);
-			case 4:
-				return ButterflyManager.butterflyRoot.getTypes().createStack(new Butterfly(ButterflyDefinition.Brimstone.getGenome()), EnumFlutterType.BUTTERFLY);
-			default:
-				iconItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(Constants.MOD_ID, "fertilizer_compound"));
-				break;
-		}
-		if (iconItem == null) {
-			iconItem = CoreItems.WRENCH.item();
-		}
-		return new ItemStack(iconItem);
-	}
-
-	@Override
-	public ItemStack makeIcon() {
-		return getIconItem();
 	}
 }

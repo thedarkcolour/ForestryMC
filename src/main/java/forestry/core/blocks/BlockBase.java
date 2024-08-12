@@ -14,14 +14,13 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -40,34 +39,27 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.mojang.authlib.GameProfile;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fluids.FluidUtil;
 
-import forestry.api.core.ISpriteRegister;
-import forestry.api.core.ISpriteRegistry;
+import forestry.api.farming.HorizontalDirection;
 import forestry.core.circuits.ISocketable;
-import forestry.core.owner.IOwnedTile;
-import forestry.core.owner.IOwnerHandler;
 import forestry.core.tiles.TileBase;
 import forestry.core.tiles.TileForestry;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.InventoryUtil;
 
-public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry implements ISpriteRegister, EntityBlock {
+public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry implements EntityBlock {
 	/**
 	 * use this instead of {@link net.minecraft.world.level.block.HorizontalDirectionalBlock#FACING} so the blocks rotate in a circle instead of NSWE order.
 	 */
-	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
+	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class, HorizontalDirection.VALUES);
 
-	private final boolean hasTESR;
 	public final P blockType;
 
 	private static Block.Properties createProperties(IBlockType type, Block.Properties properties) {
-		if (type instanceof IBlockTypeTesr || type instanceof IBlockTypeCustom) {
+		if (type instanceof IBlockTypeCustom) {
 			properties = properties.noOcclusion();
 		}
 		return properties.strength(2.0f);
@@ -81,7 +73,6 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 		}
 
 		this.blockType = blockType;
-		this.hasTESR = blockType instanceof IBlockTypeTesr;
 
 		blockType.getMachineProperties().setBlock(this);
 	}
@@ -103,15 +94,6 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	@OnlyIn(Dist.CLIENT)
 	public float getShadeBrightness(BlockState p_220080_1_, BlockGetter p_220080_2_, BlockPos p_220080_3_) {
 		return 0.2F;
-	}
-
-	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		if (hasTESR) {
-			return RenderShape.ENTITYBLOCK_ANIMATED;
-		} else {
-			return RenderShape.MODEL;
-		}
 	}
 
 	@Override
@@ -170,67 +152,27 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	}
 
 	@Override
-	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-		super.playerWillDestroy(world, pos, state, player);
-		if (world.isClientSide) {
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		super.playerWillDestroy(level, pos, state, player);
+		if (level.isClientSide) {
 			return;
 		}
 
-		BlockEntity tile = TileUtil.getTile(world, pos);
+		BlockEntity tile = TileUtil.getTile(level, pos);
 		if (tile instanceof Container inventory) {
-			Containers.dropContents(world, pos, inventory);
+			Containers.dropContents(level, pos, inventory);
 		}
-		if (tile instanceof TileForestry) {
-			((TileForestry) tile).onRemoval();
+		if (tile instanceof TileForestry forestry) {
+			forestry.onDropContents((ServerLevel) level);
 		}
-		if (tile instanceof ISocketable) {
-			InventoryUtil.dropSockets((ISocketable) tile, tile.getLevel(), tile.getBlockPos());
+		if (tile instanceof ISocketable socketable) {
+			InventoryUtil.dropSockets(socketable, level, pos);
 		}
-	}
-
-	@Override
-	public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (world.isClientSide) {
-			return;
-		}
-
-		if (placer instanceof Player) {
-			TileUtil.actOnTile(world, pos, IOwnedTile.class, tile -> {
-				IOwnerHandler ownerHandler = tile.getOwnerHandler();
-				Player player = (Player) placer;
-				GameProfile gameProfile = player.getGameProfile();
-				ownerHandler.setOwner(gameProfile);
-			});
-		}
-	}
-
-	public void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		blockType.getMachineProperties().clientSetupRenderers(event);
 	}
 
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot) {
 		Direction facing = state.getValue(FACING);
 		return state.setValue(FACING, rot.rotate(facing));
-	}
-
-	/* Particles - Client Only */
-	/*@Override
-	public boolean addHitEffects(BlockState state, World world, RayTraceResult target, ParticleManager effectRenderer) {
-		if (blockType.getMachineProperties() instanceof IMachinePropertiesTesr) {
-			if (target.getType() == RayTraceResult.Type.BLOCK) {
-				BlockRayTraceResult result = (BlockRayTraceResult) target;
-				return ParticleHelper.addBlockHitEffects(world, result.getBlockPos(), result.getDirection(), effectRenderer, particleCallback);
-			}
-		}
-		return false;
-	}*/
-
-	@Override
-	public void registerSprites(ISpriteRegistry registry) {
-		IMachineProperties<?> machineProperties = blockType.getMachineProperties();
-		if (machineProperties instanceof IMachinePropertiesTesr) {
-			registry.addSprite(((IMachinePropertiesTesr) machineProperties).getParticleTexture());
-		}
 	}
 }

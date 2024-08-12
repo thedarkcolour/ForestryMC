@@ -11,7 +11,6 @@
 package forestry.lepidopterology.render;
 
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -23,17 +22,14 @@ import net.minecraft.util.Mth;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import forestry.core.utils.ModUtil;
 import forestry.lepidopterology.entities.EntityButterfly;
 
 public class ButterflyModel extends EntityModel<EntityButterfly> {
-	public static final ModelLayerLocation LAYER = new ModelLayerLocation(ModUtil.modLoc("butterfly"), "main");
-
-	private float scale;
-
 	private final ModelPart root;
 	private final ModelPart leftWing;
 	private final ModelPart rightWing;
+
+	private float scale;
 
 	public ButterflyModel(ModelPart root) {
 		this.root = root;

@@ -16,28 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.apiculture.blocks.BlockAlvearyType;
 
 public class TileAlvearyFan extends TileAlvearyClimatiser {
-
-	private static final FanDefinition definition = new FanDefinition();
-
 	public TileAlvearyFan(BlockPos pos, BlockState state) {
-		super(BlockAlvearyType.FAN, pos, state, definition);
-	}
-
-	private static class FanDefinition implements IClimitiserDefinition {
-
-		@Override
-		public float getChangePerTransfer() {
-			return -0.01f;
-		}
-
-		@Override
-		public float getBoundaryUp() {
-			return 2.5f;
-		}
-
-		@Override
-		public float getBoundaryDown() {
-			return 0.05f;
-		}
+		super(BlockAlvearyType.FAN, pos, state, (byte) -1);
 	}
 }

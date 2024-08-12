@@ -10,10 +10,10 @@
  ******************************************************************************/
 package forestry.farming.logic;
 
-import forestry.api.farming.IFarmProperties;
+import forestry.api.farming.IFarmType;
 
 public class FarmLogicSucculent extends FarmLogicSoil {
-	public FarmLogicSucculent(IFarmProperties properties, boolean isManual) {
+	public FarmLogicSucculent(IFarmType properties, boolean isManual) {
 		super(properties, isManual);
 	}
 

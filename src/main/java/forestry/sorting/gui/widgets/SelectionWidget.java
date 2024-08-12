@@ -8,17 +8,17 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import forestry.api.ForestryConstants;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.core.config.Constants;
 import forestry.core.gui.widgets.Widget;
 import forestry.core.gui.widgets.WidgetManager;
 import forestry.core.gui.widgets.WidgetScrollBar;
-import forestry.core.utils.Translator;
 import forestry.sorting.gui.GuiGeneticFilter;
 import forestry.sorting.gui.ISelectableProvider;
 
 public class SelectionWidget extends Widget {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/filter_selection.png");
+	public static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/filter_selection.png");
 	final WidgetScrollBar scrollBar;
 	@Nullable
 	private SelectionLogic logic;
@@ -50,7 +50,7 @@ public class SelectionWidget extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		if (logic == null) {
 			return;
 		}

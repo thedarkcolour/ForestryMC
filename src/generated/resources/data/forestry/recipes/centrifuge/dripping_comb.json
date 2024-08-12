@@ -6,17 +6,11 @@
   "products": [
     {
       "chance": 1.0,
-      "item": {
-        "Count": 1,
-        "id": "forestry:honeydew"
-      }
+      "item": "forestry:honeydew"
     },
     {
       "chance": 0.4,
-      "item": {
-        "Count": 1,
-        "id": "forestry:honey_drop_honey"
-      }
+      "item": "forestry:honey_drop_honey"
     }
   ],
   "time": 20

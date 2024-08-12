@@ -33,7 +33,7 @@ import forestry.core.tiles.TileUtil;
  */
 public abstract class MultiblockControllerBase implements IMultiblockControllerInternal {
 	// Multiblock stuff - do not mess with
-	protected final Level world;
+	protected final Level level;
 
 	// Ticks
 	private static final Random rand = new Random();
@@ -41,7 +41,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 
 	// Disassembled -> Assembled; Assembled -> Disassembled OR Paused; Paused -> Assembled
 	protected enum AssemblyState {
-		Disassembled, Assembled, Paused
+		DISASSEMBLED, ASSEMBLED, PAUSED
 	}
 
 	protected AssemblyState assemblyState;
@@ -83,12 +83,12 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	@Nullable
 	private MultiblockValidationException lastValidationException;
 
-	protected MultiblockControllerBase(Level world) {
-		this.world = world;
+	protected MultiblockControllerBase(Level level) {
+		this.level = level;
 		this.connectedParts = new HashSet<>();
 
 		this.referenceCoord = null;
-		this.assemblyState = AssemblyState.Disassembled;
+		this.assemblyState = AssemblyState.DISASSEMBLED;
 
 		this.minimumCoord = null;
 		this.maximumCoord = null;
@@ -118,7 +118,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		if (!connectedParts.add(part)) {
 			Forestry.LOGGER.warn("[{}] Controller {} is double-adding part {} @ {}. This is unusual. " +
 							"If you encounter odd behavior, please tear down the machine and rebuild it.",
-					world.isClientSide() ? "CLIENT" : "SERVER", hashCode(), part.hashCode(), coord);
+					level.isClientSide() ? "CLIENT" : "SERVER", hashCode(), part.hashCode(), coord);
 		}
 
 		MultiblockLogic logic = (MultiblockLogic) part.getMultiblockLogic();
@@ -136,7 +136,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			referenceCoord = coord;
 			logic.becomeMultiblockSaveDelegate();
 		} else if (coord.compareTo(referenceCoord) < 0) {
-			TileUtil.actOnTile(world, referenceCoord, IMultiblockComponent.class, tile -> {
+			TileUtil.actOnTile(level, referenceCoord, IMultiblockComponent.class, tile -> {
 				MultiblockLogic teLogic = (MultiblockLogic) tile.getMultiblockLogic();
 				teLogic.forfeitMultiblockSaveDelegate();
 			});
@@ -171,7 +171,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			}
 		}
 
-		MultiblockRegistry.addDirtyController(world, this);
+		MultiblockRegistry.addDirtyController(level, this);
 	}
 
 	/**
@@ -242,8 +242,8 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 
 	@Override
 	public void detachBlock(IMultiblockComponent part, boolean chunkUnloading) {
-		if (chunkUnloading && this.assemblyState == AssemblyState.Assembled) {
-			this.assemblyState = AssemblyState.Paused;
+		if (chunkUnloading && this.assemblyState == AssemblyState.ASSEMBLED) {
+			this.assemblyState = AssemblyState.PAUSED;
 			this.onMachinePaused();
 		}
 
@@ -253,16 +253,16 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			BlockPos partCoords = part.getCoordinates();
 			Forestry.LOGGER.warn("[{}] Double-removing part ({}) @ {}, {}, {}, this is unexpected and may cause problems. " +
 							"If you encounter anomalies, please tear down the reactor and rebuild it.",
-					world.isClientSide() ? "CLIENT" : "SERVER", part.hashCode(), partCoords.getX(), partCoords.getY(), partCoords.getZ());
+					level.isClientSide() ? "CLIENT" : "SERVER", part.hashCode(), partCoords.getX(), partCoords.getY(), partCoords.getZ());
 		}
 
 		if (connectedParts.isEmpty()) {
 			// Destroy/unregister
-			MultiblockRegistry.addDeadController(this.world, this);
+			MultiblockRegistry.addDeadController(this.level, this);
 			return;
 		}
 
-		MultiblockRegistry.addDirtyController(this.world, this);
+		MultiblockRegistry.addDirtyController(this.level, this);
 
 		// Find new save delegate if we need to.
 		if (referenceCoord == null) {
@@ -288,7 +288,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 
 	@Override
 	public void reassemble() {
-		MultiblockRegistry.addDirtyController(world, this);
+		MultiblockRegistry.addDirtyController(level, this);
 	}
 
 	/**
@@ -312,7 +312,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		if (isWhole) {
 			// This will alter assembly state
 			assembleMachine(oldState);
-		} else if (oldState == AssemblyState.Assembled) {
+		} else if (oldState == AssemblyState.ASSEMBLED) {
 			// This will alter assembly state
 			disassembleMachine();
 		}
@@ -325,13 +325,13 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	 * Calls onMachineAssembled on all attached parts.
 	 */
 	private void assembleMachine(AssemblyState oldState) {
-		this.assemblyState = AssemblyState.Assembled;
+		this.assemblyState = AssemblyState.ASSEMBLED;
 
 		for (IMultiblockComponent part : connectedParts) {
 			part.onMachineAssembled(this, getMinimumCoord(), getMaximumCoord());
 		}
 
-		if (oldState == AssemblyState.Paused) {
+		if (oldState == AssemblyState.PAUSED) {
 			onMachineRestored();
 		} else {
 			onMachineAssembled();
@@ -345,7 +345,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	 * Calls onMachineBroken on all attached parts.
 	 */
 	private void disassembleMachine() {
-		this.assemblyState = AssemblyState.Disassembled;
+		this.assemblyState = AssemblyState.DISASSEMBLED;
 
 		for (IMultiblockComponent part : connectedParts) {
 			part.onMachineBroken();
@@ -392,8 +392,8 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	@Override
 	public void _onAssimilated(IMultiblockControllerInternal otherController) {
 		if (referenceCoord != null) {
-			if (world.getChunkSource().hasChunk(referenceCoord.getX() >> 4, referenceCoord.getZ() >> 4)) {
-				TileUtil.actOnTile(world, referenceCoord, IMultiblockComponent.class, part -> {
+			if (level.getChunkSource().hasChunk(referenceCoord.getX() >> 4, referenceCoord.getZ() >> 4)) {
+				TileUtil.actOnTile(level, referenceCoord, IMultiblockComponent.class, part -> {
 					MultiblockLogic logic = (MultiblockLogic) part.getMultiblockLogic();
 					logic.forfeitMultiblockSaveDelegate();
 				});
@@ -419,22 +419,22 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 
 		if (connectedParts.isEmpty()) {
 			// This shouldn't happen, but just in case...
-			MultiblockRegistry.addDeadController(this.world, this);
+			MultiblockRegistry.addDeadController(this.level, this);
 			return;
 		}
 
-		if (this.assemblyState != AssemblyState.Assembled) {
+		if (this.assemblyState != AssemblyState.ASSEMBLED) {
 			// Not assembled - don't run game logic
 			return;
 		}
 
-		if (world.isClientSide()) {
-			updateClient(tickCount);
-		} else if (updateServer(tickCount)) {
+		if (level.isClientSide) {
+			clientTick(tickCount);
+		} else if (serverTick(tickCount)) {
 			// If this returns true, the server has changed its internal data.
 			// If our chunks are loaded (they should be), we must mark our chunks as dirty.
 			if (minimumCoord != null && maximumCoord != null &&
-					world.hasChunksAt(minimumCoord, maximumCoord)) {
+					level.hasChunksAt(minimumCoord, maximumCoord)) {
 				int minChunkX = minimumCoord.getX() >> 4;
 				int minChunkZ = minimumCoord.getZ() >> 4;
 				int maxChunkX = maximumCoord.getX() >> 4;
@@ -443,7 +443,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 				for (int x = minChunkX; x <= maxChunkX; x++) {
 					for (int z = minChunkZ; z <= maxChunkZ; z++) {
 						// Ensure that we save our data, even if the our save delegate is in has no TEs.
-						LevelChunk chunkToSave = this.world.getChunkSource().getChunkNow(x, z);
+						LevelChunk chunkToSave = this.level.getChunkSource().getChunkNow(x, z);
 						// unloaded chunks do not need to be saved again, NBT delegate is in loaded chunks
 						if (chunkToSave != null) {
 							chunkToSave.setUnsaved(true);
@@ -463,7 +463,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	 *
 	 * @return True if the multiblock should save data, i.e. its internal game state has changed. False otherwise.
 	 */
-	protected abstract boolean updateServer(int tickCount);
+	protected abstract boolean serverTick(int tickCount);
 
 	protected int getTickCount() {
 		return tickCount;
@@ -474,7 +474,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	 * to do some interpolation or something, do it here.
 	 */
 	@OnlyIn(Dist.CLIENT)
-	protected abstract void updateClient(int tickCount);
+	protected abstract void clientTick(int tickCount);
 
 	protected final boolean updateOnInterval(int tickInterval) {
 		return tickCount % tickInterval == 0;
@@ -628,7 +628,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			return false;
 		} else {
 			// Strip dead parts from both and retry
-			Forestry.LOGGER.warn("[{}] Encountered two controllers with the same reference coordinate. Auditing connected parts and retrying.", world.isClientSide ? "CLIENT" : "SERVER");
+			Forestry.LOGGER.warn("[{}] Encountered two controllers with the same reference coordinate. Auditing connected parts and retrying.", level.isClientSide ? "CLIENT" : "SERVER");
 			auditParts();
 			otherController.auditParts();
 
@@ -640,7 +640,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			} else {
 				Forestry.LOGGER.error("My Controller ({}): size ({}), parts: {}", hashCode(), connectedParts.size(), getPartsListString());
 				Forestry.LOGGER.error("Other Controller ({}): size ({}), coords: {}", otherController.hashCode(), otherController.getComponents().size(), otherController.getPartsListString());
-				throw new IllegalArgumentException("[" + (world.isClientSide ? "CLIENT" : "SERVER") + "] " +
+				throw new IllegalArgumentException("[" + (level.isClientSide ? "CLIENT" : "SERVER") + "] " +
 						"Two controllers with the same reference coord that somehow both have valid parts - this should never happen!");
 			}
 
@@ -680,14 +680,14 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		HashSet<IMultiblockComponent> deadParts = new HashSet<>();
 		for (IMultiblockComponent part : connectedParts) {
 			BlockPos partCoord = part.getCoordinates();
-			if (isInvalid(part) || TileUtil.getTile(world, partCoord) != part) {
+			if (isInvalid(part) || TileUtil.getTile(level, partCoord) != part) {
 				onDetachBlock(part);
 				deadParts.add(part);
 			}
 		}
 
 		connectedParts.removeAll(deadParts);
-		Forestry.LOGGER.warn("[{}] Controller found {} dead parts during an audit, {} parts remain attached", world.isClientSide ? "CLIENT" : "SERVER", deadParts.size(), connectedParts.size());
+		Forestry.LOGGER.warn("[{}] Controller found {} dead parts during an audit, {} parts remain attached", level.isClientSide ? "CLIENT" : "SERVER", deadParts.size(), connectedParts.size());
 	}
 
 	@Override
@@ -698,11 +698,11 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		}
 
 		if (this.isEmpty()) {
-			MultiblockRegistry.addDeadController(world, this);
+			MultiblockRegistry.addDeadController(level, this);
 			return Collections.emptySet();
 		}
 
-		ChunkSource chunkProvider = world.getChunkSource();
+		ChunkSource chunkProvider = level.getChunkSource();
 
 		// Invalidate our reference coord, we'll recalculate it shortly
 		referenceCoord = null;
@@ -723,7 +723,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 				continue;
 			}
 
-			if (TileUtil.getTile(world, partCoord) != part) {
+			if (TileUtil.getTile(level, partCoord) != part) {
 				deadParts.add(part);
 				onDetachBlock(part);
 				continue;
@@ -750,7 +750,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		if (referencePart == null || isEmpty()) {
 			// There are no valid parts remaining. The entire multiblock was unloaded during a chunk unload. Halt.
 			shouldCheckForDisconnections = false;
-			MultiblockRegistry.addDeadController(world, this);
+			MultiblockRegistry.addDeadController(level, this);
 			return Collections.emptySet();
 		} else {
 			MultiblockLogic logic = (MultiblockLogic) referencePart.getMultiblockLogic();
@@ -768,7 +768,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			MultiblockLogic partLogic = (MultiblockLogic) part.getMultiblockLogic();
 			partLogic.setVisited();
 
-			List<IMultiblockComponent> nearbyParts = MultiblockUtil.getNeighboringParts(world, part); // Chunk-safe on server, but not on client
+			List<IMultiblockComponent> nearbyParts = MultiblockUtil.getNeighboringParts(level, part); // Chunk-safe on server, but not on client
 			for (IMultiblockComponent nearbyPart : nearbyParts) {
 				// Ignore different machines
 				MultiblockLogic nearbyPartLogic = (MultiblockLogic) nearbyPart.getMultiblockLogic();
@@ -814,7 +814,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	@Override
 
 	public Set<IMultiblockComponent> detachAllBlocks() {
-		ChunkSource chunkProvider = world.getChunkSource();
+		ChunkSource chunkProvider = level.getChunkSource();
 		for (IMultiblockComponent part : connectedParts) {
 			BlockPos partCoord = part.getCoordinates();
 			if (chunkProvider.getChunkNow(partCoord.getX() >> 4, partCoord.getZ() >> 4) != null) {
@@ -832,12 +832,12 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	 */
 	@Override
 	public boolean isAssembled() {
-		return this.assemblyState == AssemblyState.Assembled;
+		return this.assemblyState == AssemblyState.ASSEMBLED;
 	}
 
 	@Nullable
 	private BlockPos selectNewReferenceCoord() {
-		ChunkSource chunkProvider = world.getChunkSource();
+		ChunkSource chunkProvider = level.getChunkSource();
 		IMultiblockComponent theChosenOne = null;
 		referenceCoord = null;
 
@@ -855,7 +855,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		}
 
 		if (theChosenOne != null) {
-			MultiblockLogic logic = (MultiblockLogic) theChosenOne.getMultiblockLogic();
+			MultiblockLogic<?> logic = (MultiblockLogic<?>) theChosenOne.getMultiblockLogic();
 			logic.becomeMultiblockSaveDelegate();
 		}
 

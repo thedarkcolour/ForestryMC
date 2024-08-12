@@ -8,19 +8,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IForestrySpeciesRoot;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.features.CoreItems;
 import forestry.core.gui.slots.SlotAnalyzer;
 import forestry.core.gui.slots.SlotLockable;
 import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.utils.GeneticsUtil;
 import forestry.database.inventory.InventoryDatabaseAnalyzer;
-
-import deleteme.Todos;
-import genetics.api.GeneticHelper;
-import genetics.api.individual.IIndividual;
-import genetics.api.root.IRootDefinition;
-import genetics.utils.RootUtils;
 
 public class ContainerAnalyzerProviderHelper {
 	/* Attributes - Final*/
@@ -76,45 +70,33 @@ public class ContainerAnalyzerProviderHelper {
 			return;
 		}
 
+		// TODO... how do I convert to a genetic specimen?
 		ItemStack convertedSpecimen = GeneticsUtil.convertToGeneticEquivalent(specimen);
 		if (!ItemStack.matches(specimen, convertedSpecimen)) {
 			specimenSlot.set(convertedSpecimen);
 			specimen = convertedSpecimen;
 		}
 
-		IRootDefinition<IForestrySpeciesRoot<IIndividual>> definition = RootUtils.getRoot(specimen);
-		// No individual, abort
-		if (!definition.isPresent()) {
-			return;
-		}
-		IForestrySpeciesRoot<IIndividual> speciesRoot = definition.get();
-
-		IIndividual individual = speciesRoot.create(specimen);
-
-		// Analyze if necessary
-		if (individual != null) {
+		final ItemStack finalSpecimen = specimen;
+		IIndividualHandlerItem.ifPresent(specimen, individual -> {
 			if (!individual.isAnalyzed()) {
-				final boolean requiresEnergy = Todos.isApicultureEnabled();
 				ItemStack energyStack = alyzerInventory.getItem(InventoryDatabaseAnalyzer.SLOT_ENERGY);
-				if (requiresEnergy && !ItemInventoryAlyzer.isAlyzingFuel(energyStack)) {
+				if (!ItemInventoryAlyzer.isAlyzingFuel(energyStack)) {
 					return;
 				}
 
 				if (individual.analyze()) {
-					IBreedingTracker breedingTracker = speciesRoot.getBreedingTracker(player.level, player.getGameProfile());
-					breedingTracker.registerSpecies(individual.getGenome().getPrimary());
-					breedingTracker.registerSpecies(individual.getGenome().getSecondary());
+					IBreedingTracker breedingTracker = individual.getType().getBreedingTracker(player.level, player.getGameProfile());
+					breedingTracker.registerSpecies(individual.getSpecies());
+					// todo should inactive species count?
+					//breedingTracker.registerSpecies(individual.getGenome().getSecondarySpecies());
 
-					specimen = specimen.copy();
-					GeneticHelper.setIndividual(specimen, individual);
+					individual.saveToStack(finalSpecimen);
 
-					if (requiresEnergy) {
-						// Decrease energy
-						alyzerInventory.removeItem(InventoryDatabaseAnalyzer.SLOT_ENERGY, 1);
-					}
+					// Decrease energy
+					alyzerInventory.removeItem(InventoryDatabaseAnalyzer.SLOT_ENERGY, 1);
 				}
-				specimenSlot.set(specimen);
 			}
-		}
+		});
 	}
 }

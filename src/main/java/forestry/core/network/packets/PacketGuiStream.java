@@ -15,8 +15,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import forestry.api.core.ILocatable;
-import forestry.core.network.IForestryPacketClient;
+import forestry.api.core.ILocationProvider;
+import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.IStreamableGui;
 import forestry.core.network.PacketIdClient;
 import forestry.core.tiles.TileUtil;
@@ -31,7 +31,7 @@ public record PacketGuiStream(
 		// null on server side
 		FriendlyByteBuf payload
 ) implements IForestryPacketClient {
-	public <T extends IStreamableGui & ILocatable> PacketGuiStream(T guiStreamable) {
+	public <T extends IStreamableGui & ILocationProvider> PacketGuiStream(T guiStreamable) {
 		this(guiStreamable.getCoordinates(), guiStreamable, null);
 	}
 

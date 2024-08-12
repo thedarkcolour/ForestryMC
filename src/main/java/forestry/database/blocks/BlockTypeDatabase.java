@@ -10,12 +10,11 @@ import forestry.database.features.DatabaseTiles;
 import forestry.modules.features.FeatureTileType;
 
 public enum BlockTypeDatabase implements IBlockTypeCustom {
-	DATABASE(() -> DatabaseTiles.DATABASE, "database");
-	public static final BlockTypeDatabase[] VALUES = values();
+	DATABASE(DatabaseTiles.DATABASE, "database");
 
 	private final IMachineProperties machineProperties;
 
-	<T extends TileForestry> BlockTypeDatabase(Supplier<FeatureTileType<? extends T>> teClass, String name) {
+	<T extends TileForestry> BlockTypeDatabase(FeatureTileType<T> teClass, String name) {
 		this.machineProperties = new MachineProperties.Builder<>(teClass, name).create();
 	}
 

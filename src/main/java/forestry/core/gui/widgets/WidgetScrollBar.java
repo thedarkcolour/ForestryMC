@@ -96,7 +96,7 @@ public class WidgetScrollBar extends Widget {
 	}
 
 	@Override
-	public void draw(PoseStack transform, int startY, int startX) {
+	public void draw(PoseStack transform, int startX, int startY) {
 		if (!isVisible()) {
 			return;
 		}
@@ -104,7 +104,7 @@ public class WidgetScrollBar extends Widget {
 		if (background != null) {
 			background.draw(transform, startY + yPos, startX + xPos);
 		}
-		slider.draw(transform, startY, startX);
+		slider.draw(transform, startX, startY);
 	}
 
 	@Override

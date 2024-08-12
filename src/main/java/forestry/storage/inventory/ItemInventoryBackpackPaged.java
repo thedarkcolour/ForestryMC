@@ -32,7 +32,7 @@ public class ItemInventoryBackpackPaged extends ItemInventoryBackpack implements
 		NetworkHooks.openScreen(player, backpackNaturalist.getMenuProvider(getParent()), buffer -> {
 			buffer.writeItem(getParent());
 			buffer.writeByte(page);
-			buffer.writeUtf(backpackNaturalist.rootUid);
+			buffer.writeResourceLocation(backpackNaturalist.typeId);
 		});
 	}
 }

@@ -7,12 +7,10 @@ package forestry.api.genetics;
 
 import net.minecraft.world.level.Level;
 
-import genetics.api.individual.IHasSecrets;
-import genetics.api.individual.IIndividual;
-
-import forestry.api.genetics.alleles.IAlleleForestrySpecies;
-
-public interface IIndividualLiving extends IIndividual, IHasSecrets {
+/**
+ * An individual with health and a lifespan.
+ */
+public interface IIndividualLiving extends IIndividual {
 	/**
 	 * @return Current health of the individual.
 	 */
@@ -31,19 +29,13 @@ public interface IIndividualLiving extends IIndividual, IHasSecrets {
 	/**
 	 * Age the individual.
 	 */
-	void age(Level world, float ageModifier);
+	void age(Level level, float ageModifier);
 
 	/**
 	 * @return true if the individual is among the living.
 	 */
 	boolean isAlive();
 
-	default boolean hasEffect() {
-		return getGenome().getPrimary(IAlleleForestrySpecies.class).hasEffect();
-	}
-
 	@Override
-	default boolean isSecret() {
-		return getGenome().getPrimary(IAlleleForestrySpecies.class).isSecret();
-	}
+	IIndividualLiving copy();
 }

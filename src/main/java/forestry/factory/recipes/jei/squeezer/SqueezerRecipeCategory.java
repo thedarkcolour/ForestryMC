@@ -1,6 +1,8 @@
 package forestry.factory.recipes.jei.squeezer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import forestry.api.ForestryConstants;
 import forestry.api.recipes.ISqueezerRecipe;
 import forestry.core.config.Constants;
 import forestry.core.recipes.jei.ChanceTooltipCallback;
@@ -28,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public class SqueezerRecipeCategory extends ForestryRecipeCategory<ISqueezerRecipe> {
-	private static final ResourceLocation guiTexture = new ResourceLocation(Constants.MOD_ID, Constants.TEXTURE_PATH_GUI + "/squeezersocket.png");
+	private static final ResourceLocation guiTexture = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/squeezersocket.png");
 
 	private final IDrawableAnimated arrow;
 	private final IDrawable tankOverlay;
@@ -59,7 +61,7 @@ public class SqueezerRecipeCategory extends ForestryRecipeCategory<ISqueezerReci
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, ISqueezerRecipe recipe, IFocusGroup focuses) {
 		List<IRecipeSlotBuilder> craftingSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 3, 3, 8, 5, 18);
-		JeiUtil.setCraftingItems(craftingSlots, recipe.getResources(), 3, 3, craftingGridHelper);
+		JeiUtil.setCraftingItems(craftingSlots, recipe.getInputs(), 3, 3, craftingGridHelper);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 44)
 				.addTooltipCallback(new ChanceTooltipCallback(recipe.getRemnantsChance()))

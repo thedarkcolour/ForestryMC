@@ -1,6 +1,6 @@
 package forestry.energy.features;
 
-import forestry.energy.ModuleEnergy;
+import forestry.api.modules.ForestryModuleIds;
 import forestry.energy.blocks.EngineBlockType;
 import forestry.energy.tiles.BiogasEngineBlockEntity;
 import forestry.energy.tiles.ClockworkEngineBlockEntity;
@@ -12,9 +12,9 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public class EnergyTiles {
-	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ModuleEnergy.class);
+	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.ENERGY);
 
-	public static final FeatureTileType<BiogasEngineBlockEntity> BIOGAS_ENGINE = REGISTRY.tile(BiogasEngineBlockEntity::new, "biogas_engine", EnergyBlocks.ENGINES.get(EngineBlockType.BIOGAS)::collect);
-	public static final FeatureTileType<ClockworkEngineBlockEntity> CLOCKWORK_ENGINE = REGISTRY.tile(ClockworkEngineBlockEntity::new, "clockwork_engine", EnergyBlocks.ENGINES.get(EngineBlockType.CLOCKWORK)::collect);
-	public static final FeatureTileType<PeatEngineBlockEntity> PEAT_ENGINE = REGISTRY.tile(PeatEngineBlockEntity::new, "peat_engine", EnergyBlocks.ENGINES.get(EngineBlockType.PEAT)::collect);
+	public static final FeatureTileType<BiogasEngineBlockEntity> BIOGAS_ENGINE = REGISTRY.tile(BiogasEngineBlockEntity::new, "biogas_engine", () -> EnergyBlocks.ENGINES.get(EngineBlockType.BIOGAS).collect());
+	public static final FeatureTileType<ClockworkEngineBlockEntity> CLOCKWORK_ENGINE = REGISTRY.tile(ClockworkEngineBlockEntity::new, "clockwork_engine", () -> EnergyBlocks.ENGINES.get(EngineBlockType.CLOCKWORK).collect());
+	public static final FeatureTileType<PeatEngineBlockEntity> PEAT_ENGINE = REGISTRY.tile(PeatEngineBlockEntity::new, "peat_engine", () -> EnergyBlocks.ENGINES.get(EngineBlockType.PEAT).collect());
 }

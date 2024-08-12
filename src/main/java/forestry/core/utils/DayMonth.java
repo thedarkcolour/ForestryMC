@@ -10,25 +10,15 @@
  ******************************************************************************/
 package forestry.core.utils;
 
-import java.text.DateFormatSymbols;
 import java.util.Calendar;
 
 /**
  * Fed up with Date and Calendar and their shenanigans
  */
-public class DayMonth {
-
-	public final int day;
-	public final int month;
-
-	public DayMonth() {
-		this.day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-		this.month = Calendar.getInstance().get(Calendar.MONTH) + 1;
-	}
-
-	public DayMonth(int day, int month) {
-		this.day = day;
-		this.month = month;
+public record DayMonth(int day, int month) {
+	public static DayMonth now() {
+		Calendar calendar = Calendar.getInstance();
+		return new DayMonth(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
 	}
 
 	public boolean between(DayMonth start, DayMonth end) {
@@ -42,7 +32,6 @@ public class DayMonth {
 	}
 
 	public boolean before(DayMonth other) {
-
 		if (other.month > this.month) {
 			return true;
 		}
@@ -55,7 +44,6 @@ public class DayMonth {
 	}
 
 	public boolean after(DayMonth other) {
-
 		if (other.month < this.month) {
 			return true;
 		}
@@ -66,34 +54,4 @@ public class DayMonth {
 
 		return this.day > other.day;
 	}
-
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 89 * hash + this.day;
-		hash = 89 * hash + this.month;
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final DayMonth other = (DayMonth) obj;
-		if (this.day != other.day) {
-			return false;
-		}
-		return this.month == other.month;
-	}
-
-	@Override
-	public String toString() {
-		String monthName = new DateFormatSymbols().getMonths()[month - 1];
-		return monthName + ' ' + day;
-	}
-
 }

@@ -5,9 +5,11 @@
  ******************************************************************************/
 package forestry.api.circuits;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,6 +39,6 @@ public interface ICircuitBoard extends INbtWritable {
 	/**
 	 * Specifies where a circuit can be used.
 	 */
-	ICircuitSocketType getSocketType();
-
+	@Nullable
+	ResourceLocation getSocketType();
 }
