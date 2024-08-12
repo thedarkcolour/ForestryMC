@@ -11,7 +11,7 @@ public interface IErrorSource {
 	IErrorSource EMPTY = Set::of;
 
 	/**
-	 * @return The current errors, or an empty set if there are no errors.
+	 * @return The current errors in this error source, or an empty set if there are no errors.
 	 */
 	Set<IError> getErrors();
 }

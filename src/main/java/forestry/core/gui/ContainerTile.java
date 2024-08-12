@@ -73,7 +73,7 @@ public abstract class ContainerTile<T extends BlockEntity> extends ContainerFore
 				sendPacketToListeners(packet);
 			}
 
-			previousErrorStates = errorStates;
+			previousErrorStates = Set.copyOf(errorStates);
 		}
 
 		if (tile instanceof IPowerHandler) {
