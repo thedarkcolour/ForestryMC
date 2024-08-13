@@ -70,6 +70,5 @@ public class ApicultureItems {
 
 	// TOOLS
 	public static final FeatureItem<ItemScoop> SCOOP = REGISTRY.item(ItemScoop::new, "scoop");
-	//TODO - harvest stuff
 	public static final FeatureItem<ItemSmoker> SMOKER = REGISTRY.item(ItemSmoker::new, "smoker");
 }

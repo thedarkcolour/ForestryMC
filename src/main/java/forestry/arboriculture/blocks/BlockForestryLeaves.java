@@ -127,7 +127,7 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 				}
 			} else if (heldItem.is(ForestryTags.Items.SCOOPS) && caterpillar != null) {
 				ItemStack butterfly = SpeciesUtil.BUTTERFLY_TYPE.get().createStack(caterpillar, ButterflyLifeStage.CATERPILLAR);
-				ItemStackUtil.dropItemStackAsEntity(butterfly, level, pos);
+				ItemStackUtil.dropItemStackAsEntity(butterfly, level, pos.below());
 				leaves.setCaterpillar(null);
 				return InteractionResult.SUCCESS;
 			}

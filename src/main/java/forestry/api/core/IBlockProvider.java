@@ -9,7 +9,6 @@ import java.util.Collection;
 public interface IBlockProvider<B extends Block, I extends Item> extends IItemProvider<I> {
 	B block();
 
-	// todo: why?
 	Collection<B> collect();
 
 	default boolean blockEqual(BlockState state) {

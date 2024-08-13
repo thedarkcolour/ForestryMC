@@ -61,9 +61,8 @@ public class BeeStatsSaveHelper implements IStatsSaveHelper {
 	}
 
 	@Override
-	public IBreedingTracker getBreedingTracker(Level world, GameProfile gameProfile) {
-		//TODO world cast
-		return SpeciesUtil.BEE_TYPE.get().getBreedingTracker(world, gameProfile);
+	public IBreedingTracker getBreedingTracker(Level level, GameProfile gameProfile) {
+		return SpeciesUtil.BEE_TYPE.get().getBreedingTracker(level, gameProfile);
 	}
 
 }

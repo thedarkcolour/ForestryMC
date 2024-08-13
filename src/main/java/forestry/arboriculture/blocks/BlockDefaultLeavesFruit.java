@@ -50,11 +50,14 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 		ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
 		ItemStack offHand = player.getItemInHand(InteractionHand.OFF_HAND);
 		if (mainHand.isEmpty() && offHand.isEmpty()) {
-			BlockUtil.sendDestroyEffects(level, pos, state);
 			ITree tree = getTree(level, pos);
 			if (tree == null) {
 				return InteractionResult.FAIL;
 			}
+			if (level.isClientSide) {
+				return InteractionResult.SUCCESS;
+			}
+			BlockUtil.sendDestroyEffects(level, pos, state);
 			IFruit fruitProvider = tree.getGenome().getActiveValue(TreeChromosomes.FRUIT);
 			List<ItemStack> products = tree.produceStacks(level, pos, fruitProvider.getRipeningPeriod());
 			level.setBlock(pos, ArboricultureBlocks.LEAVES_DEFAULT.get(type).defaultState()
@@ -63,7 +66,7 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 			for (ItemStack fruit : products) {
 				ItemHandlerHelper.giveItemToPlayer(player, fruit);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResult.CONSUME;
 		}
 
 		return InteractionResult.PASS;

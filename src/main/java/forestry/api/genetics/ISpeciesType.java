@@ -175,7 +175,8 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	 * @param level       The world.
 	 * @param researcher  The profile of the player who completed this research.
 	 * @param individual  The specimen that was researched.
-	 * @param bountyLevel TODO Idk what this is
+	 * @param bountyLevel The bounty level starts at 16 and goes down by 1 for every probe (usage of the microscope button).
+	 *                    The lowest level is 1. Rewards players for memorizing the tiles and using good research material.
 	 * @return A list of reward items granted upon researching a specimen in the Escritoire. Might be empty.
 	 */
 	List<ItemStack> getResearchBounty(S species, Level level, GameProfile researcher, I individual, int bountyLevel);

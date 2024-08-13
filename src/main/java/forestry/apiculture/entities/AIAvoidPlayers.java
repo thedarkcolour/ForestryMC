@@ -68,7 +68,7 @@ public class AIAvoidPlayers extends Goal {
 			return false;
 		}
 
-		path = pathNavigator.createPath(randomTarget.x, randomTarget.y, randomTarget.z, 0);    //TODO what does the 4th param mean?
+		path = pathNavigator.createPath(randomTarget.x, randomTarget.y, randomTarget.z, 0);
 		return path != null;
 	}
 

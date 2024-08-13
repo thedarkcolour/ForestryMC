@@ -238,7 +238,7 @@ public class ForestryAlleles {
 
 	public static final List<IFloatAllele> DEFAULT_YIELDS = List.of(YIELD_LOWEST, YIELD_LOWER, YIELD_LOW, YIELD_AVERAGE, YIELD_HIGH, YIELD_HIGHER, YIELD_HIGHEST);
 
-	// Height todo rename to shortest/tallest
+	// Height
 	public static final IFloatAllele HEIGHT_SMALLEST = REGISTRY.floatAllele(0.25f);
 	public static final IFloatAllele HEIGHT_SMALLER = REGISTRY.floatAllele(0.5f);
 	public static final IFloatAllele HEIGHT_SMALL = REGISTRY.floatAllele(0.75f);
