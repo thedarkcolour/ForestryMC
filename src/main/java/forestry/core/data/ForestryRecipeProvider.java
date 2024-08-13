@@ -8,15 +8,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-import forestry.api.ForestryConstants;
-import forestry.api.ForestryTags;
-import forestry.apiculture.blocks.NaturalistChestBlockType;
-import forestry.apiculture.items.*;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.apache.logging.log4j.util.TriConsumer;
 
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -28,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
@@ -35,6 +30,7 @@ import net.minecraft.world.level.material.Fluids;
 
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 import net.minecraftforge.common.util.LazyOptional;
@@ -43,7 +39,8 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import forestry.arboriculture.ForestryWoodType;
+import forestry.api.ForestryConstants;
+import forestry.api.ForestryTags;
 import forestry.api.arboriculture.IWoodAccess;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.WoodBlockKind;
@@ -51,10 +48,15 @@ import forestry.api.circuits.ICircuit;
 import forestry.apiculture.blocks.BlockAlveary;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.blocks.BlockTypeApiculture;
+import forestry.apiculture.blocks.NaturalistChestBlockType;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.apiculture.features.ApicultureItems;
+import forestry.apiculture.items.EnumHoneyComb;
+import forestry.apiculture.items.EnumHoneyDrop;
+import forestry.apiculture.items.EnumPollenCluster;
+import forestry.apiculture.items.EnumPropolis;
+import forestry.arboriculture.ForestryWoodType;
 import forestry.arboriculture.WoodAccess;
-import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.arboriculture.features.CharcoalBlocks;
 import forestry.core.blocks.BlockTypeCoreTesr;
@@ -74,20 +76,20 @@ import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
 import forestry.cultivation.features.CultivationBlocks;
 import forestry.database.features.DatabaseBlocks;
+import forestry.energy.blocks.EngineBlockType;
+import forestry.energy.features.EnergyBlocks;
 import forestry.factory.blocks.BlockTypeFactoryPlain;
 import forestry.factory.blocks.BlockTypeFactoryTesr;
 import forestry.factory.features.FactoryBlocks;
 import forestry.farming.blocks.EnumFarmBlockType;
 import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
-import forestry.lepidopterology.features.LepidopterologyBlocks;
 import forestry.lepidopterology.features.LepidopterologyItems;
 import forestry.mail.blocks.BlockTypeMail;
 import forestry.mail.features.MailBlocks;
 import forestry.mail.features.MailItems;
 import forestry.mail.items.EnumStampDefinition;
 import forestry.mail.items.ItemLetter;
-import forestry.modules.features.FeatureBlock;
 import forestry.modules.features.FeatureItem;
 import forestry.sorting.features.SortingBlocks;
 import forestry.storage.features.BackpackItems;
@@ -133,7 +135,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		registerMailRecipes(consumer);
 		registerSortingRecipes(consumer);
 		registerWorktableRecipes(consumer);
-		registerSolderingRecipes(consumer);
+		registerEnergyRecipes(consumer);
 	}
 
 	private void registerApicultureRecipes(Consumer<FinishedRecipe> helper) {
@@ -1065,7 +1067,40 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.save(output);
 	}
 
-	private void registerSolderingRecipes(Consumer<FinishedRecipe> output) {
+	private void registerEnergyRecipes(Consumer<FinishedRecipe> output) {
+		ShapedRecipeBuilder.shaped(EnergyBlocks.ENGINES.get(EngineBlockType.CLOCKWORK))
+				.define('P', ItemTags.PLANKS)
+				.define('I', Tags.Items.GLASS)
+				.define('Q', ForestryTags.Items.GEARS_COPPER)
+				.define('D', Items.PISTON)
+				.define('C', Items.CLOCK)
+				.pattern("PPP")
+				.pattern(" I ")
+				.pattern("QDC")
+				.unlockedBy("has_piston", has(Items.PISTON))
+				.save(output);
+
+		ShapedRecipeBuilder.shaped(EnergyBlocks.ENGINES.get(EngineBlockType.BIOGAS))
+				.define('P', ForestryTags.Items.INGOTS_BRONZE)
+				.define('I', Tags.Items.GLASS)
+				.define('Q', ForestryTags.Items.GEARS_BRONZE)
+				.define('D', Items.PISTON)
+				.pattern("PPP")
+				.pattern(" I ")
+				.pattern("QDQ")
+				.unlockedBy("has_piston", has(Items.PISTON))
+				.save(output);
+
+		ShapedRecipeBuilder.shaped(EnergyBlocks.ENGINES.get(EngineBlockType.PEAT))
+				.define('P', Tags.Items.INGOTS_COPPER)
+				.define('I', Tags.Items.GLASS)
+				.define('Q', ForestryTags.Items.GEARS_COPPER)
+				.define('D', Items.PISTON)
+				.pattern("PPP")
+				.pattern(" I ")
+				.pattern("QDQ")
+				.unlockedBy("has_piston", has(Items.PISTON))
+				.save(output);
 
 	}
 

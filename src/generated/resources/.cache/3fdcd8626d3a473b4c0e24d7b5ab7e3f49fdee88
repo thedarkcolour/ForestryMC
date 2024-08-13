@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-12T12:53:50.8589011	Forestry Recipes
+// 1.19.2	2024-08-12T22:12:40.770834	Forestry Recipes
 88dc44fcbf9ee8ce847c012e497174c75c3e4551 data/forestry/recipes/acacia_desert_door.json
 de1f849fde24b43a22d467214e5f81924e788f78 data/forestry/recipes/acacia_desert_fence.json
 659dbe7a9f033985cd1ac4020586c34bc9505f50 data/forestry/recipes/acacia_desert_fence_gate.json
@@ -174,6 +174,9 @@ b62991100f104daf70ecef33f151e4628dd677bc data/forestry/recipes/ebony_fireproof_p
 55e1c3fc7fbf87122016ba7d39d61557ea6799f9 data/forestry/recipes/ebony_planks.json
 ceb15424b671ee4bf9abad1df45e4e4bc86cc4ee data/forestry/recipes/ebony_slab.json
 9c0fd903f0f2087f686c018927f8dd3a135e0f78 data/forestry/recipes/ebony_stairs.json
+cd30817084264f513ccfe8035a79739b31602281 data/forestry/recipes/engine_biogas.json
+f7653ac0602c1639471a5dabe62c6ddd62b3ad18 data/forestry/recipes/engine_clockwork.json
+1ff727042aed34366b0a662f1a852c65b7572ddc data/forestry/recipes/engine_peat.json
 676ade2abfc87f426426aae0a5a6a2160116af95 data/forestry/recipes/fabricator.json
 57070b8189a6afc53511b560ba2a52e8d5199bc7 data/forestry/recipes/farm_control_brick.json
 f5d5994b28dbe69aff24096b19e7ae99cf9636bd data/forestry/recipes/farm_control_brick_chiseled.json

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "minecraft:piston"
+    },
+    "I": {
+      "tag": "forge:glass"
+    },
+    "P": {
+      "tag": "forge:ingots/copper"
+    },
+    "Q": {
+      "tag": "forge:gears/copper"
+    }
+  },
+  "pattern": [
+    "PPP",
+    " I ",
+    "QDQ"
+  ],
+  "result": {
+    "item": "forestry:engine_peat"
+  }
+}
