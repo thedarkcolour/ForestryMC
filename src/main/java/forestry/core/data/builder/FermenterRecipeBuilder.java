@@ -6,14 +6,13 @@ import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.material.Fluid;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import forestry.api.recipes.IFermenterRecipe;
 import forestry.core.utils.ModUtil;
 import forestry.factory.features.FactoryRecipeTypes;
 import forestry.factory.recipes.RecipeSerializers;
@@ -88,7 +87,7 @@ public class FermenterRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return FactoryRecipeTypes.CARPENTER.serializer();
+			return FactoryRecipeTypes.FERMENTER.serializer();
 		}
 
 		@Nullable

@@ -106,12 +106,12 @@ public class FermenterRecipe implements IFermenterRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return FactoryRecipeTypes.CARPENTER.serializer();
+		return FactoryRecipeTypes.FERMENTER.serializer();
 	}
 
 	@Override
 	public RecipeType<?> getType() {
-		return FactoryRecipeTypes.CARPENTER.type();
+		return FactoryRecipeTypes.FERMENTER.type();
 	}
 
 	public static class Serializer implements RecipeSerializer<FermenterRecipe> {

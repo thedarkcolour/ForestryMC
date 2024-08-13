@@ -63,8 +63,8 @@ public class HygroregulatorRecipeBuilder {
 		public void serializeRecipeData(JsonObject json) {
 			json.add("liquid", RecipeSerializers.serializeFluid(liquid));
 			json.addProperty("time", retainTime);
-			json.addProperty("humidChange", humiditySteps);
-			json.addProperty("tempChange", temperatureSteps);
+			json.addProperty("humidity_steps", humiditySteps);
+			json.addProperty("temperature_steps", temperatureSteps);
 		}
 
 		@Override

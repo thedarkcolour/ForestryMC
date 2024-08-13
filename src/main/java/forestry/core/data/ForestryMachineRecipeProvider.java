@@ -29,12 +29,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import forestry.api.ForestryTags;
-import forestry.arboriculture.ForestryWoodType;
-import forestry.arboriculture.VanillaWoodType;
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
@@ -44,6 +42,8 @@ import forestry.apiculture.items.EnumHoneyComb;
 import forestry.apiculture.items.EnumHoneyDrop;
 import forestry.apiculture.items.EnumPollenCluster;
 import forestry.apiculture.items.EnumPropolis;
+import forestry.arboriculture.ForestryWoodType;
+import forestry.arboriculture.VanillaWoodType;
 import forestry.core.blocks.BlockTypeCoreTesr;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.circuits.ItemCircuitBoard;
@@ -911,21 +911,19 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 	private void registerHygroregulator(Consumer<FinishedRecipe> consumer) {
 		new HygroregulatorRecipeBuilder()
 				.setLiquid(new FluidStack(Fluids.WATER, 1))
-				.setTransferTime(1)
-				.setTempChange(-0.005f)
-				.setHumidChange(0.01f)
+				.setTemperatureSteps(-1)
+				.setHumiditySteps(1)
 				.build(consumer, id("hygroregulator", "water"));
 		new HygroregulatorRecipeBuilder()
 				.setLiquid(new FluidStack(Fluids.LAVA, 1))
-				.setTransferTime(10)
-				.setTempChange(0.005f)
-				.setHumidChange(-0.01f)
+				.setTemperatureSteps(1)
+				.setHumiditySteps(-1)
 				.build(consumer, id("hygroregulator", "lava"));
 		new HygroregulatorRecipeBuilder()
 				.setLiquid(ForestryFluids.ICE.getFluid(1))
-				.setTransferTime(10)
-				.setTempChange(-0.01f)
-				.setHumidChange(0.02f)
+				.setRetainTime(10)
+				.setTemperatureSteps(-2)
+				.setHumiditySteps(2)
 				.build(consumer, id("hygroregulator", "ice"));
 	}
 
