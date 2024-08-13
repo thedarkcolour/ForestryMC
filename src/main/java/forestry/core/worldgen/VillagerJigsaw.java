@@ -1,54 +1,41 @@
 package forestry.core.worldgen;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.data.BuiltinRegistries;
 import java.util.List;
 
-import net.minecraft.data.worldgen.DesertVillagePools;
-import net.minecraft.data.worldgen.PlainVillagePools;
-import net.minecraft.data.worldgen.SavannaVillagePools;
-import net.minecraft.data.worldgen.SnowyVillagePools;
-import net.minecraft.data.worldgen.TaigaVillagePools;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.ProcessorLists;
+import net.minecraft.data.worldgen.VillagePools;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+
+import forestry.api.ForestryConstants;
+
 public class VillagerJigsaw {
-	public static void init()
-	{
-		PlainVillagePools.bootstrap();
-		SnowyVillagePools.bootstrap();
-		SavannaVillagePools.bootstrap();
-		DesertVillagePools.bootstrap();
-		TaigaVillagePools.bootstrap();
+	public static void init() {
+		VillagePools.bootstrap();
 
-		addVillagerHouse("apiarist", "plains", 6);
-		addVillagerHouse("apiarist", "snowy", 4);
-		addVillagerHouse("apiarist", "savanna", 6);
-		addVillagerHouse("apiarist", "desert", 5);
-		addVillagerHouse("apiarist", "taiga", 7);
+		addVillagerHouse("plains", 15);
+		addVillagerHouse("snowy", 15);
+		addVillagerHouse("savanna", 15);
+		addVillagerHouse("desert", 15);
+		addVillagerHouse("taiga", 15);
 	}
 
-	private static void addVillagerHouse(String type, String biome, int weight) {
-		addToJigsawPattern(new ResourceLocation("village/" + biome + "/houses"), StructurePoolElement.legacy("forestry" + ":village/" + type + "_house_" + biome + "_1").apply(StructureTemplatePool.Projection.RIGID), weight);
+	private static void addVillagerHouse(String biome, int weight) {
+		addToJigsawPattern(new ResourceLocation("village/" + biome + "/houses"), new ApiaristPoolElement(Either.left(ForestryConstants.forestry("village/apiarist_house_" + biome + "_1")), ProcessorLists.EMPTY), weight);
 	}
 
-	/**
-	 * Adds a new {@link StructurePoolElement} to a pre-existing {@link StructureTemplatePool}.
-	 *
-	 * @param toAdd The {@link ResourceLocation} of the pattern to insert the new piece into.
-	 * @param newPiece The {@link StructurePoolElement} to insert into {@code toAdd}.
-	 * @param weight The probability weight of {@code newPiece}.
-	 *
-	 * @author abigailfails / abnormals
-	 */
-	public static void addToJigsawPattern(ResourceLocation toAdd, StructurePoolElement newPiece, int weight) {
-		StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(toAdd);
+	public static void addToJigsawPattern(ResourceLocation pool, StructurePoolElement newPiece, int weight) {
+		StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(pool);
 		if (oldPool != null) {
 			oldPool.rawTemplates.add(Pair.of(newPiece, weight));
 			List<StructurePoolElement> jigsawPieces = oldPool.templates;
 
-			for(int i = 0; i < weight; ++i) {
+			for (int i = 0; i < weight; ++i) {
 				jigsawPieces.add(newPiece);
 			}
 		}

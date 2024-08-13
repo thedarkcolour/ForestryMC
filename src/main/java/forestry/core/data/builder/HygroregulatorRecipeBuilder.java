@@ -16,55 +16,55 @@ import forestry.factory.recipes.RecipeSerializers;
 
 public class HygroregulatorRecipeBuilder {
 	private FluidStack liquid;
-	private int transferTime;
-	private float humidChange;
-	private float tempChange;
+	private int humiditySteps;
+	private int temperatureSteps;
+	private int retainTime;
 
 	public HygroregulatorRecipeBuilder setLiquid(FluidStack liquid) {
 		this.liquid = liquid;
 		return this;
 	}
 
-	public HygroregulatorRecipeBuilder setTransferTime(int transferTime) {
-		this.transferTime = transferTime;
+	public HygroregulatorRecipeBuilder setHumiditySteps(int humiditySteps) {
+		this.humiditySteps = humiditySteps;
 		return this;
 	}
 
-	public HygroregulatorRecipeBuilder setHumidChange(float humidChange) {
-		this.humidChange = humidChange;
+	public HygroregulatorRecipeBuilder setTemperatureSteps(int temperatureSteps) {
+		this.temperatureSteps = temperatureSteps;
 		return this;
 	}
 
-	public HygroregulatorRecipeBuilder setTempChange(float tempChange) {
-		this.tempChange = tempChange;
+	public HygroregulatorRecipeBuilder setRetainTime(int retainTime) {
+		this.retainTime = retainTime;
 		return this;
 	}
 
 	public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
-		consumer.accept(new Result(id, liquid, transferTime, humidChange, tempChange));
+		consumer.accept(new Result(id, this.liquid, this.retainTime, this.humiditySteps, this.temperatureSteps));
 	}
 
 	private static class Result implements FinishedRecipe {
 		private final ResourceLocation id;
 		private final FluidStack liquid;
-		private final int transferTime;
-		private final float humidChange;
-		private final float tempChange;
+		private final byte humiditySteps;
+		private final byte temperatureSteps;
+		private final int retainTime;
 
-		public Result(ResourceLocation id, FluidStack liquid, int transferTime, float humidChange, float tempChange) {
+		public Result(ResourceLocation id, FluidStack liquid, int retainTime, int humiditySteps, int temperatureSteps) {
 			this.id = id;
 			this.liquid = liquid;
-			this.transferTime = transferTime;
-			this.humidChange = humidChange;
-			this.tempChange = tempChange;
+			this.retainTime = retainTime;
+			this.humiditySteps = (byte) humiditySteps;
+			this.temperatureSteps = (byte) temperatureSteps;
 		}
 
 		@Override
 		public void serializeRecipeData(JsonObject json) {
 			json.add("liquid", RecipeSerializers.serializeFluid(liquid));
-			json.addProperty("time", transferTime);
-			json.addProperty("humidChange", humidChange);
-			json.addProperty("tempChange", tempChange);
+			json.addProperty("time", retainTime);
+			json.addProperty("humidChange", humiditySteps);
+			json.addProperty("tempChange", temperatureSteps);
 		}
 
 		@Override

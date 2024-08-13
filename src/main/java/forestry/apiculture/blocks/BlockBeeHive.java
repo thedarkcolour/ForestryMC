@@ -12,7 +12,6 @@ package forestry.apiculture.blocks;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.Util;

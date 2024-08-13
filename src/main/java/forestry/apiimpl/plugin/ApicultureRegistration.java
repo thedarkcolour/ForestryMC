@@ -89,6 +89,7 @@ public class ApicultureRegistration extends SpeciesRegistration<IBeeSpeciesBuild
 	}
 
 	public HiveManager buildHiveManager() {
+		// todo validate IDs of the village species OR use the species directly
 		return new HiveManager(this.hives.build(HiveBuilder::build), ImmutableList.copyOf(this.commonVillageHives), ImmutableList.copyOf(this.rareVillageHives), new Object2FloatOpenHashMap<>(this.swarmerMaterials));
 	}
 }

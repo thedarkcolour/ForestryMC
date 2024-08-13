@@ -12,7 +12,7 @@ package forestry.core.climate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.IForestryApi;
@@ -25,7 +25,7 @@ import forestry.api.core.TemperatureType;
 public class ClimateProvider implements IClimateProvider, IBiomeProvider {
 	private final Holder<Biome> biome;
 
-	public ClimateProvider(Level level, BlockPos pos) {
+	public ClimateProvider(LevelReader level, BlockPos pos) {
 		this.biome = level.getBiome(pos);
 	}
 

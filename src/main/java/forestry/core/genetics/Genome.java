@@ -72,16 +72,17 @@ public final class Genome implements IGenome {
 
 	@Override
 	public IGenome copyWith(Map<IChromosome<?>, IAllele> alleles) {
-		IGenome genome;
 		if (alleles.isEmpty()) {
-			genome = this;
+			return this;
 		} else {
 			Genome.Builder builder = new Genome.Builder(getKaryotype());
 			// avoid duplicate instances of default genome
-			MutableBoolean isDefault = new MutableBoolean(true);
+			boolean isDefault = true;
 
 			// copy over allele map or default allele
-			this.chromosomes.forEach((chromosome, pair) -> {
+			for (Map.Entry<IChromosome<?>, AllelePair<?>> entry : this.chromosomes.entrySet()) {
+				IChromosome<?> chromosome = entry.getKey();
+				AllelePair<?> pair = entry.getValue();
 				IAllele allele = alleles.get(chromosome);
 
 				if (allele == null || allele.equals(pair.active())) {
@@ -90,18 +91,16 @@ public final class Genome implements IGenome {
 				} else {
 					// mark not default when there are non-default alleles
 					builder.setUnchecked(chromosome, new AllelePair<>(allele, allele));
-					isDefault.setFalse();
+					isDefault = false;
 				}
-			});
+			}
 
-			if (isDefault.isTrue()) {
-				genome = this;
+			if (isDefault) {
+				return this;
 			} else {
-				genome = builder.build();
+				return builder.build();
 			}
 		}
-
-		return genome;
 	}
 
 	@Override

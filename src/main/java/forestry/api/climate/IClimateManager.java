@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.core.HumidityType;
@@ -37,17 +37,17 @@ public interface IClimateManager {
 	HumidityType getHumidity(ResourceKey<Biome> holder);
 
 	/**
-	 * @return The climate state at the given location.
+	 * @return The climate state at the given location with modifications applied. TODO implement IClimateModifier
 	 */
 	ClimateState getState(ServerLevel level, BlockPos pos);
 
 	/**
-	 * @return The climate of the biome at the given position.
+	 * @return The unmodified climate of the biome at the given position.
 	 */
-	ClimateState getBiomeState(Level level, BlockPos pos);
+	ClimateState getBiomeState(LevelReader level, BlockPos pos);
 
 	/**
 	 * @return Create a climate provider.
 	 */
-	IClimateProvider getDefaultClimate(Level level, BlockPos pos);
+	IClimateProvider getDefaultClimate(LevelReader level, BlockPos pos);
 }

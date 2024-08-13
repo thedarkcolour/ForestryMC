@@ -7,7 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 
 import forestry.api.climate.ClimateState;
@@ -45,7 +45,7 @@ public class ForestryClimateManager implements IClimateManager {
 	}
 
 	@Override
-	public IClimateProvider getDefaultClimate(Level world, BlockPos pos) {
+	public IClimateProvider getDefaultClimate(LevelReader world, BlockPos pos) {
 		return new ClimateProvider(world, pos);
 	}
 
@@ -56,7 +56,7 @@ public class ForestryClimateManager implements IClimateManager {
 	}
 
 	@Override
-	public ClimateState getBiomeState(Level level, BlockPos coordinates) {
+	public ClimateState getBiomeState(LevelReader level, BlockPos coordinates) {
 		Holder<Biome> biome = level.getBiome(coordinates);
 		return new ClimateState(getTemperature(biome), getHumidity(biome));
 	}
