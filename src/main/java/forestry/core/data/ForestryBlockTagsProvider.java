@@ -2,7 +2,6 @@ package forestry.core.data;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -33,6 +32,7 @@ import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
 import forestry.mail.features.MailBlocks;
 import forestry.modules.features.FeatureBlockGroup;
+import forestry.worktable.features.WorktableBlocks;
 
 public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 	public ForestryBlockTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
@@ -41,7 +41,6 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 	@Override
 	protected void addTags() {
-		// todo figure out what belongs in these tags?
 		tag(ForestryTags.Blocks.MINEABLE_SCOOP).add(ApicultureBlocks.BEEHIVE.blockArray());
 		tag(ForestryTags.Blocks.MINEABLE_GRAFTER).addTag(BlockTags.LEAVES);
 
@@ -53,7 +52,8 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 		tag(BlockTags.MINEABLE_WITH_AXE)
 				.add(CoreBlocks.NATURALIST_CHEST.blockArray())
-				.add(CharcoalBlocks.WOOD_PILE.block());
+				.add(CharcoalBlocks.WOOD_PILE.block())
+				.add(WorktableBlocks.WORKTABLE.block());
 
 		tag(BlockTags.MINEABLE_WITH_PICKAXE)
 				.add(CoreBlocks.APATITE_ORE.block())
@@ -117,6 +117,15 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 		tag(BlockTags.PLANKS).add(ArboricultureBlocks.PLANKS_FIREPROOF.blockArray());
 		tag(BlockTags.LOGS).add(ArboricultureBlocks.LOGS_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.PLANKS_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.SLABS_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.STAIRS_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.LOGS_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.WOOD_FIREPROOF.blockArray());
+		//tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.STRIPPED_WOOD_FIREPROOF.blockArray());
+		//tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.STRIPPED_LOGS_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.FENCES_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.FENCE_GATES_FIREPROOF.blockArray());
 		tag(BlockTags.STAIRS).add(ArboricultureBlocks.STAIRS_FIREPROOF.blockArray());
 		tag(BlockTags.WOODEN_STAIRS).add(ArboricultureBlocks.STAIRS_FIREPROOF.blockArray());
 		tag(BlockTags.FENCES).add(ArboricultureBlocks.FENCES_FIREPROOF.blockArray());
@@ -129,6 +138,15 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 
 		tag(BlockTags.PLANKS).add(ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF.blockArray());
 		tag(BlockTags.LOGS).add(ArboricultureBlocks.LOGS_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.PLANKS_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.SLABS_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.STAIRS_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.LOGS_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.WOOD_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.STRIPPED_WOOD_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.STRIPPED_LOGS_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.FENCES_VANILLA_FIREPROOF.blockArray());
+		tag(BlockTags.NON_FLAMMABLE_WOOD).add(ArboricultureBlocks.FENCE_GATES_VANILLA_FIREPROOF.blockArray());
 		tag(BlockTags.STAIRS).add(ArboricultureBlocks.STAIRS_VANILLA_FIREPROOF.blockArray());
 		tag(BlockTags.WOODEN_STAIRS).add(ArboricultureBlocks.STAIRS_VANILLA_FIREPROOF.blockArray());
 		tag(BlockTags.FENCES).add(ArboricultureBlocks.FENCES_VANILLA_FIREPROOF.blockArray());

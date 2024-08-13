@@ -1,17 +1,15 @@
 package forestry.core.data;
 
 import javax.annotation.Nullable;
-import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
 import net.minecraftforge.common.Tags;
@@ -25,27 +23,46 @@ import forestry.core.features.CoreItems;
 import forestry.mail.features.MailItems;
 
 public final class ForestryItemTagsProvider extends ItemTagsProvider {
-	@Nullable
-	private Set<ResourceLocation> filter = null;
-
 	public ForestryItemTagsProvider(DataGenerator generator, ForestryBlockTagsProvider blockTagsProvider, @Nullable ExistingFileHelper existingFileHelper) {
 		super(generator, blockTagsProvider, ForestryConstants.MOD_ID, existingFileHelper);
 	}
 
 	@Override
 	protected void addTags() {
-		builders.remove(ItemTags.SAPLINGS.location());
-		//builders.remove()
-		filter = new HashSet<>(this.builders.keySet());
-		filter.remove(ItemTags.LOGS.location());
-		filter.remove(ItemTags.PLANKS.location());
-		filter.remove(ItemTags.WOODEN_DOORS.location());
-		filter.remove(ItemTags.STAIRS.location());
-		filter.remove(ItemTags.SLABS.location());
-		filter.remove(ItemTags.DOORS.location());
-		filter.remove(ItemTags.LOGS_THAT_BURN.location());
-		filter.remove(ItemTags.WOODEN_STAIRS.location());
-		filter.remove(ItemTags.WOODEN_FENCES.location());
+		// Copy block tags
+		copy(ForestryTags.Blocks.CHARCOAL_BLOCK, ForestryTags.Items.CHARCOAL_BLOCK);
+		copy(Tags.Blocks.CHESTS, Tags.Items.CHESTS);
+		copy(BlockTags.PLANKS, ItemTags.PLANKS);
+		copy(BlockTags.LOGS, ItemTags.LOGS);
+		copy(BlockTags.LOGS_THAT_BURN, ItemTags.LOGS_THAT_BURN);
+		copy(BlockTags.NON_FLAMMABLE_WOOD, ItemTags.NON_FLAMMABLE_WOOD);
+		copy(BlockTags.STAIRS, ItemTags.STAIRS);
+		copy(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS);
+		copy(BlockTags.FENCES, ItemTags.FENCES);
+		copy(BlockTags.WOODEN_FENCES, ItemTags.WOODEN_FENCES);
+		copy(Tags.Blocks.FENCES, Tags.Items.FENCES);
+		copy(Tags.Blocks.FENCE_GATES, Tags.Items.FENCE_GATES);
+		copy(Tags.Blocks.FENCE_GATES_WOODEN, Tags.Items.FENCE_GATES_WOODEN);
+		copy(BlockTags.SLABS, ItemTags.SLABS);
+		copy(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS);
+		copy(BlockTags.DOORS, ItemTags.DOORS);
+		copy(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS);
+
+		tag(ItemTags.SAPLINGS).add(ArboricultureItems.SAPLING.get());
+		copy(BlockTags.LEAVES, ItemTags.LEAVES);
+		copy(Tags.Blocks.ORES, Tags.Items.ORES);
+		copy(ForestryTags.Blocks.ORES_TIN, ForestryTags.Items.ORES_TIN);
+		copy(ForestryTags.Blocks.ORES_APATITE, ForestryTags.Items.ORES_APATITE);
+		copy(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN, ForestryTags.Items.STORAGE_BLOCKS_RAW_TIN);
+
+		copy(Tags.Blocks.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS);
+		copy(ForestryTags.Blocks.STORAGE_BLOCKS_APATITE, ForestryTags.Items.STORAGE_BLOCKS_APATITE);
+		copy(ForestryTags.Blocks.STORAGE_BLOCKS_TIN, ForestryTags.Items.STORAGE_BLOCKS_TIN);
+		copy(ForestryTags.Blocks.STORAGE_BLOCKS_BRONZE, ForestryTags.Items.STORAGE_BLOCKS_BRONZE);
+
+		copy(BlockTags.DIRT, ItemTags.DIRT);
+
+		// Add item-specific tags
 		addToTag(ForestryTags.Items.GEARS, ForestryTags.Items.GEARS_BRONZE, ForestryTags.Items.GEARS_COPPER, ForestryTags.Items.GEARS_TIN);
 		tag(ForestryTags.Items.GEARS_BRONZE).add(CoreItems.GEAR_BRONZE.item());
 		tag(ForestryTags.Items.GEARS_TIN).add(CoreItems.GEAR_TIN.item());
@@ -61,36 +78,21 @@ public final class ForestryItemTagsProvider extends ItemTagsProvider {
 		tag(ForestryTags.Items.RAW_MATERIALS_TIN).add(CoreItems.RAW_TIN.item());
 
 		addToTag(Tags.Items.STORAGE_BLOCKS, ForestryTags.Items.STORAGE_BLOCKS_APATITE, ForestryTags.Items.STORAGE_BLOCKS_BRONZE, ForestryTags.Items.STORAGE_BLOCKS_TIN);
-		copy(ForestryTags.Blocks.STORAGE_BLOCKS_APATITE, ForestryTags.Items.STORAGE_BLOCKS_APATITE);
-		copy(ForestryTags.Blocks.STORAGE_BLOCKS_TIN, ForestryTags.Items.STORAGE_BLOCKS_TIN);
-		copy(ForestryTags.Blocks.STORAGE_BLOCKS_BRONZE, ForestryTags.Items.STORAGE_BLOCKS_BRONZE);
 
 		tag(Tags.Items.RAW_MATERIALS).addTag(ForestryTags.Items.RAW_MATERIALS_TIN);
 
-		copy(ForestryTags.Blocks.STORAGE_BLOCKS_RAW_TIN, ForestryTags.Items.STORAGE_BLOCKS_RAW_TIN);
-
-		copy(ForestryTags.Blocks.CHARCOAL_BLOCK, ForestryTags.Items.CHARCOAL_BLOCK);
-
-		//copy(BlockTags., ForestryTags.Items.STORAGE_BLOCKS_APATITE);
 		tag(ItemTags.SAPLINGS).add(ArboricultureItems.SAPLING.item());
 		tag(ForestryTags.Items.BEE_COMBS).add(ApicultureItems.BEE_COMBS.itemArray());
 		tag(ForestryTags.Items.PROPOLIS).add(ApicultureItems.PROPOLIS.itemArray());
 		tag(ForestryTags.Items.DROP_HONEY).add(ApicultureItems.HONEY_DROPS.itemArray());
 
 		addToTag(Tags.Items.ORES, ForestryTags.Items.ORES_TIN, ForestryTags.Items.ORES_APATITE);
-		copy(ForestryTags.Blocks.ORES_TIN, ForestryTags.Items.ORES_TIN);
-		copy(ForestryTags.Blocks.ORES_APATITE, ForestryTags.Items.ORES_APATITE);
 
 		tag(ForestryTags.Items.STAMPS).add(MailItems.STAMPS.itemArray());
 
 		tag(ForestryTags.Items.FRUITS).add(CoreItems.FRUITS.itemArray());
 		tag(ForestryTags.Items.DUSTS_ASH).add(CoreItems.ASH.item());
 		tag(ForestryTags.Items.SAWDUST).add(CoreItems.WOOD_PULP.item());
-
-		copy(Tags.Blocks.FENCES, Tags.Items.FENCES);
-		copy(Tags.Blocks.FENCE_GATES, Tags.Items.FENCE_GATES);
-		copy(Tags.Blocks.FENCE_GATES_WOODEN, Tags.Items.FENCE_GATES_WOODEN);
-		copy(Tags.Blocks.CHESTS, Tags.Items.CHESTS);
 
 		tag(ForestryTags.Items.CRAFTING_TABLES)
 				.addOptionalTag(new ResourceLocation("c", "player_workstations/crafting_tables"))
@@ -107,12 +109,6 @@ public final class ForestryItemTagsProvider extends ItemTagsProvider {
 		for (TagKey<Item> provider : providers) {
 			builder.addTag(provider);
 		}
-	}
-
-	@Override
-	@Nullable
-	protected Path getPath(ResourceLocation id) {
-		return filter != null && filter.contains(id) ? null : super.getPath(id); //We don't want to save vanilla tags.
 	}
 
 	@Override

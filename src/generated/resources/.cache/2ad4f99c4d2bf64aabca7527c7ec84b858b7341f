@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-12T12:48:48.8886285	Forestry Item Tags
+// 1.19.2	2024-08-12T23:31:08.5902167	Forestry Item Tags
 79ce8ad03638cd1d93ee2752b4cd0f9665ed396f data/forestry/tags/items/combs.json
 9f5d66e4017fbcabe22c6702e93310cf271fe042 data/forestry/tags/items/crafting_tables.json
 ce1f7b72ce898ae6a000ae70dc79151602ad453c data/forestry/tags/items/drop_honey.json
@@ -20,16 +20,30 @@ febeaaa35d40f231aef3c816a93030bec346cd15 data/forge/tags/items/gears/tin.json
 8b565f4d3966eef268a9a0bf81be893e0cb2c1f5 data/forge/tags/items/ingots.json
 23b9c8d2d2eba3c044b161396f97568f82616835 data/forge/tags/items/ingots/bronze.json
 5966795424891c260c40d5175e82af76164340ea data/forge/tags/items/ingots/tin.json
-bb21d3539a79b0026a6f6669c4d05d2cf714868b data/forge/tags/items/ores.json
+8748aabd65b940d68f569a4918e21a98d69f63fa data/forge/tags/items/ores.json
 8bc630a1df34e3623f9a5554a01ae2dfc2362023 data/forge/tags/items/ores/apatite.json
 6b5b215353862ea81225290f3c38054df67a245f data/forge/tags/items/ores/tin.json
 7a5b77c21783e5fcfc69215d7ac0599936320d47 data/forge/tags/items/raw_materials.json
 8db3ceef4b7d718ce68f0c0d874f3b9144cf6658 data/forge/tags/items/raw_materials/tin.json
 e9507194391ca0e0eeef0dc3db67b1e3fde1ccb1 data/forge/tags/items/sawdust.json
-4a4bbf81047fffc4ff542b2befa22223566d4907 data/forge/tags/items/storage_blocks.json
+57e2140f675f4ef8c0e698a40f06d80f699b079d data/forge/tags/items/storage_blocks.json
 fd9e00b1f00fab97ef5a20ca100e33e709036606 data/forge/tags/items/storage_blocks/apatite.json
 a50813a6215611330b9e7a32904eb8f174d3741a data/forge/tags/items/storage_blocks/bronze.json
 c74d64c654da6d15a76cd4167268fc9965ef23ca data/forge/tags/items/storage_blocks/charcoal.json
 8b3a8ecaabc2db91e27ad34b051647d52a0ad47e data/forge/tags/items/storage_blocks/raw_tin.json
 ed974f25f4057a6e2a627a4ee061decd56b7d274 data/forge/tags/items/storage_blocks/tin.json
-1c1a358899140f40b2639589d2f7f286e58ccd7f data/minecraft/tags/items/saplings.json
+fd7f5b8d14cefaa9260c3a25ed12037ccad07bac data/minecraft/tags/items/dirt.json
+1c73627824305ef04df56af5a2c80fdc257c3e52 data/minecraft/tags/items/doors.json
+b3b37726f52692c7053e546168191082359f6c77 data/minecraft/tags/items/fences.json
+bbe1430a0619185d0d2b50c983367107b995ff90 data/minecraft/tags/items/leaves.json
+95b94a7e6c2e79d85952f7a84a004438ddc9c2a0 data/minecraft/tags/items/logs.json
+2407a8e7c8d88e86aa22c91d50c112fa61fa9259 data/minecraft/tags/items/logs_that_burn.json
+4318338018f638bfa4efc857f5f31fa57a8a8aea data/minecraft/tags/items/non_flammable_wood.json
+87a0632a7087374d0960d4bdfbe60cdeffefab9e data/minecraft/tags/items/planks.json
+08e1c8fddff888b2e2b86f112d281dcdcd9c970e data/minecraft/tags/items/saplings.json
+bab5ad5e39671a96e1fd38e0ba27dc770eb25980 data/minecraft/tags/items/slabs.json
+521f83a142f080598bb9e30522fe953b094e67a0 data/minecraft/tags/items/stairs.json
+1c73627824305ef04df56af5a2c80fdc257c3e52 data/minecraft/tags/items/wooden_doors.json
+b3b37726f52692c7053e546168191082359f6c77 data/minecraft/tags/items/wooden_fences.json
+bab5ad5e39671a96e1fd38e0ba27dc770eb25980 data/minecraft/tags/items/wooden_slabs.json
+521f83a142f080598bb9e30522fe953b094e67a0 data/minecraft/tags/items/wooden_stairs.json

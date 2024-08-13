@@ -100,14 +100,19 @@ minecraft {
 	}
 }
 
-processResources {
-	exclude ".cache"
+def replaceProperties = [
+		"version": project.version,
+		"forge_version_range": forge_version_range,
+		"jei_version_range": jei_version_range,
+		"patchouli_version_range": patchouli_version_range
+]
 
-	filesMatching("META-INF/mods.toml") {
-		expand "version": project.version,
-				"forge_version_range": forge_version_range,
-				"jei_version_range": jei_version_range,
-				"patchouli_version_range": patchouli_version_range
+processResources {
+	inputs.properties replaceProperties
+	replaceProperties.put 'project', project
+
+	filesMatching(['META-INF/mods.toml']) {
+		expand replaceProperties
 	}
 }
 

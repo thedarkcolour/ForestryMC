@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-12T13:17:10.5286137	Forestry Block Tags
+// 1.19.2	2024-08-12T23:31:08.5722156	Forestry Block Tags
 40fc28555ba86485c2fdf3bc327bb05602bd7cb5 data/forestry/tags/blocks/flowers/cacti.json
 9ec5b3c6e6cf1ca04b004d599f0e1477525d6eaa data/forestry/tags/blocks/flowers/end.json
 3d2b45c6d09b6ad2f7d9e988cae1be42464c3d4f data/forestry/tags/blocks/flowers/gourd.json
@@ -32,10 +32,11 @@ b3b37726f52692c7053e546168191082359f6c77 data/minecraft/tags/blocks/fences.json
 bbe1430a0619185d0d2b50c983367107b995ff90 data/minecraft/tags/blocks/leaves.json
 95b94a7e6c2e79d85952f7a84a004438ddc9c2a0 data/minecraft/tags/blocks/logs.json
 2407a8e7c8d88e86aa22c91d50c112fa61fa9259 data/minecraft/tags/blocks/logs_that_burn.json
-fdf46ec3f8d8cfc7bac4bea10c00f4c2e50c72be data/minecraft/tags/blocks/mineable/axe.json
+fc7c0f96848993df75ee1dfee19f23fd0f57454e data/minecraft/tags/blocks/mineable/axe.json
 b65ceaa97e80623afa4b8d7a7436c528d822c493 data/minecraft/tags/blocks/mineable/pickaxe.json
 a74d324eaacf17486a9612367d49a24299a17723 data/minecraft/tags/blocks/mineable/shovel.json
 4f0f5d3a71d5e122fb2e1f8e6ba54801b535d904 data/minecraft/tags/blocks/needs_stone_tool.json
+4318338018f638bfa4efc857f5f31fa57a8a8aea data/minecraft/tags/blocks/non_flammable_wood.json
 87a0632a7087374d0960d4bdfbe60cdeffefab9e data/minecraft/tags/blocks/planks.json
 aa3ef881a072a72a240e6e382073be189586b71b data/minecraft/tags/blocks/saplings.json
 bab5ad5e39671a96e1fd38e0ba27dc770eb25980 data/minecraft/tags/blocks/slabs.json
