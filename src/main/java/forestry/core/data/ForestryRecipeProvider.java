@@ -17,6 +17,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -85,6 +86,7 @@ import forestry.farming.blocks.EnumFarmBlockType;
 import forestry.farming.blocks.EnumFarmMaterial;
 import forestry.farming.features.FarmingBlocks;
 import forestry.lepidopterology.features.LepidopterologyItems;
+import forestry.lepidopterology.features.LepidopterologyRecipes;
 import forestry.mail.blocks.BlockTypeMail;
 import forestry.mail.features.MailBlocks;
 import forestry.mail.features.MailItems;
@@ -986,15 +988,14 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private void registerLepidopterologyRecipes(Consumer<FinishedRecipe> helper) {
-		//TODO tag?
-		//TODO tag?
+	private void registerLepidopterologyRecipes(Consumer<FinishedRecipe> output) {
 		ShapedRecipeBuilder.shaped(CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.LEPIDOPTERIST_CHEST))
 				.define('#', Tags.Items.GLASS)
-				.define('X', LepidopterologyItems.BUTTERFLY_GE)    //TODO tag?
+				.define('X', LepidopterologyItems.BUTTERFLY_GE)
 				.define('Y', Tags.Items.CHESTS_WOODEN)
 				.pattern(" # ").pattern("XYX").pattern("XXX")
-				.unlockedBy("has_butterfly", has(LepidopterologyItems.BUTTERFLY_GE)).save(helper);
+				.unlockedBy("has_butterfly", has(LepidopterologyItems.BUTTERFLY_GE)).save(output);
+		SpecialRecipeBuilder.special(LepidopterologyRecipes.MATING_SERIALIZER.get()).save(output, "butterfly_mating");
 	}
 
 	private void registerMailRecipes(Consumer<FinishedRecipe> helper) {

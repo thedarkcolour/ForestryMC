@@ -10,17 +10,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
-import forestry.api.ForestryConstants;
 import forestry.api.core.HumidityType;
 import forestry.api.core.IProduct;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.tooltips.ToolTip;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IGenome;
-import forestry.api.core.Product;
-import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
-import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
@@ -75,10 +71,9 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 		IGenome genome = butterfly.getGenome();
 
 		// You analyzed it? Juicy tooltip coming up!
-		AllelePair<IValueAllele<IButterflySpecies>> speciesPair = genome.getAllelePair(ButterflyChromosomes.SPECIES);
-		IButterflySpecies primary = speciesPair.active().value();
-		IButterflySpecies secondary = speciesPair.inactive().value();
-		if (!speciesPair.isSameAlleles()) {
+		IButterflySpecies primary = butterfly.getSpecies();
+		IButterflySpecies secondary = butterfly.getInactiveSpecies();
+		if (primary != secondary) {
 			toolTip.translated("for.butterflies.hybrid", primary.getDisplayName(), secondary.getDisplayName()).style(ChatFormatting.BLUE);
 		}
 

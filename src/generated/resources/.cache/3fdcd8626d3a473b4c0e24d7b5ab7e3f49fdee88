@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-12T22:12:40.770834	Forestry Recipes
+// 1.19.2	2024-08-13T16:19:05.8035425	Forestry Recipes
 88dc44fcbf9ee8ce847c012e497174c75c3e4551 data/forestry/recipes/acacia_desert_door.json
 de1f849fde24b43a22d467214e5f81924e788f78 data/forestry/recipes/acacia_desert_fence.json
 659dbe7a9f033985cd1ac4020586c34bc9505f50 data/forestry/recipes/acacia_desert_fence_gate.json
@@ -570,6 +570,7 @@ e45d5a168315c6baa40a6a652f749244ed1bd375 data/forestry/recipes/zebrawood_firepro
 afdcb20af1d2d2ab935890100c1eccfdd3d8acd2 data/forestry/recipes/zebrawood_stairs.json
 a182bf4cd9a8dda9bf2cfe0ac1fb93b578ae8716 data/minecraft/recipes/acacia_door.json
 42f2ee55a82cb3f95598c6d0c5767761d94f554f data/minecraft/recipes/birch_door.json
+bb88626615d035f5c5a6278bd3ed01991c523029 data/minecraft/recipes/butterfly_mating.json
 4fe2ddb29f8d6fe2672ab00959936c16d7e9e377 data/minecraft/recipes/dark_oak_door.json
 82bf245aa1ff4d5a2b5435342eb0ac824c8d3956 data/minecraft/recipes/jungle_door.json
 f0a607b65c64170e39b4c87bc346bf67a799d211 data/minecraft/recipes/oak_door.json
