@@ -7,8 +7,8 @@ plugins {
 	id "org.parchmentmc.librarian.forgegradle" version "1.+"
 }
 
-group = "net.sengir.forestry"
-version = System.getenv("FORESTRY_VERSION") ?: "0.0.0.0"
+group = "com.thedarkcolour.forestry"
+version = System.getenv("FORESTRY_VERSION") ?: "1.0.0"
 archivesBaseName = "forestry-$minecraft_version"
 
 repositories {
