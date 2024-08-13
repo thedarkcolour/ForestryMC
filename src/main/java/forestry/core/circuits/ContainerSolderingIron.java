@@ -79,7 +79,6 @@ public class ContainerSolderingIron extends ContainerItemInventory<ItemInventory
 
 	@Override
 	public void handleSelectionRequest(ServerPlayer player, int primary, int secondary) {
-
 		if (secondary == 0) {
 			if (primary == 0) {
 				inventory.advanceLayout();

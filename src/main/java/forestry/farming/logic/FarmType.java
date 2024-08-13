@@ -89,7 +89,7 @@ public final class FarmType implements IFarmType {
 
 	@Override
 	public Component getDisplayName(boolean manual) {
-		String type = manual ? "for.farm.grammar.manual" : "for.farm.grammar.managed";
+		String type = manual ? "farm.forestry.grammar.manual" : "farm.forestry.grammar.managed";
 		return Component.translatable(type, Component.translatable(this.translationKey));
 	}
 

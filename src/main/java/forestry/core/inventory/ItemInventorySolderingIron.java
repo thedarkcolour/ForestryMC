@@ -54,7 +54,7 @@ public class ItemInventorySolderingIron extends ItemInventory implements IErrorS
 	}
 
 	public void setLayout(ICircuitLayout layout) {
-		this.layoutIndex = Math.min(0, this.layouts.indexOf(layout));
+		this.layoutIndex = Math.max(0, this.layouts.indexOf(layout));
 	}
 
 	public void advanceLayout() {
