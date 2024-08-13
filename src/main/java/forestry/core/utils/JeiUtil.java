@@ -3,6 +3,7 @@ package forestry.core.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.minecraft.core.NonNullList;
@@ -31,6 +32,7 @@ import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -103,31 +105,27 @@ public class JeiUtil {
 		setCraftingItems(craftingSlots, craftingGridRecipe.getIngredients(), width, height, craftingGridHelper);
 	}
 
-	public static void setCraftingItems(
-			List<IRecipeSlotBuilder> craftingSlots,
-			List<Ingredient> ingredients,
-			int width,
-			int height,
-			ICraftingGridHelper craftingGridHelper
-	) {
+	public static void setCraftingItems(List<IRecipeSlotBuilder> craftingSlots, List<Ingredient> ingredients, int width, int height, ICraftingGridHelper craftingGridHelper) {
 		List<List<ItemStack>> itemStacks = ingredients.stream()
-				.map(ingredient -> Arrays.asList(ingredient.getItems()))
+				.map(ingredient -> List.of(ingredient.getItems()))
 				.toList();
 		craftingGridHelper.setInputs(craftingSlots, VanillaTypes.ITEM_STACK, itemStacks, width, height);
 	}
 
 	public static NonNullList<ItemStack> getFirstItemStacks(IRecipeSlotsView recipeSlots) {
 		List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
-		return slotViews.stream()
-				.map(JeiUtil::getFirstItemStack)
-				.collect(Collectors.toCollection(NonNullList::create));
-	}
+		NonNullList<ItemStack> result = NonNullList.create();
 
-	private static ItemStack getFirstItemStack(IRecipeSlotView slotView) {
-		return slotView.getDisplayedIngredient(VanillaTypes.ITEM_STACK)
-				.or(() -> slotView.getIngredients(VanillaTypes.ITEM_STACK).findFirst())
-				.map(ItemStack::copy)
-				.orElse(ItemStack.EMPTY);
+		for (IRecipeSlotView slot : slotViews) {
+			if (slot.isEmpty()) {
+				result.add(ItemStack.EMPTY);
+			} else {
+				slot.getDisplayedIngredient()
+						.filter(ingredient -> ingredient.getType() == VanillaTypes.ITEM_STACK)
+						.ifPresent(ingredient -> result.add(((ITypedIngredient<ItemStack>) ingredient).getIngredient().copy()));
+			}
+		}
+		return result;
 	}
 
 	public static <S extends ISpecies<?>> void registerItemSubtypes(ISubtypeRegistration registry, IRegistryChromosome<S> species, ISpeciesType<S, ?> type) {

@@ -9,9 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.api.recipes.ICarpenterRecipe;
 import forestry.core.recipes.jei.ForestryRecipeType;
 import forestry.core.utils.JeiUtil;
@@ -25,13 +22,11 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 
-@OnlyIn(Dist.CLIENT)
 public class CarpenterRecipeTransferHandler implements IRecipeTransferHandler<ContainerCarpenter, ICarpenterRecipe> {
 	@Override
 	public Class<ContainerCarpenter> getContainerClass() {
 		return ContainerCarpenter.class;
 	}
-
 
 	@Override
 	public Optional<MenuType<ContainerCarpenter>> getMenuType() {
@@ -49,8 +44,9 @@ public class CarpenterRecipeTransferHandler implements IRecipeTransferHandler<Co
 		if (doTransfer) {
 			Container craftingInventory = container.getCarpenter().getCraftingInventory();
 			NonNullList<ItemStack> items = JeiUtil.getFirstItemStacks(recipeSlots);
-			for (int i = 1; i < items.size(); i++) {
-				craftingInventory.setItem(i - 1, items.get(i));
+			int size = Math.min(9, items.size());
+			for (int i = 0; i < size; i++) {
+				craftingInventory.setItem(i, items.get(i));
 			}
 			NetworkUtil.sendToServer(new PacketRecipeTransferRequest(container.getCarpenter().getBlockPos(), items));
 		}

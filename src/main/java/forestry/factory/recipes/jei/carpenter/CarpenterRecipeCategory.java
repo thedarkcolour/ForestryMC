@@ -60,9 +60,6 @@ public class CarpenterRecipeCategory extends ForestryRecipeCategory<ICarpenterRe
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, ICarpenterRecipe recipe, IFocusGroup focuses) {
-		builder.addSlot(RecipeIngredientRole.INPUT, 74, 4)
-			.addIngredients(recipe.getBox());
-
 		CraftingRecipe craftingGridRecipe = recipe.getCraftingGridRecipe();
 
 		ItemStack processingIngredient = craftingGridRecipe.getResultItem().copy();
@@ -75,6 +72,10 @@ public class CarpenterRecipeCategory extends ForestryRecipeCategory<ICarpenterRe
 
 		List<IRecipeSlotBuilder> craftingSlots = JeiUtil.layoutSlotGrid(builder, RecipeIngredientRole.INPUT, 3, 3, 1, 4, 18);
 		JeiUtil.setCraftingItems(craftingSlots, craftingGridRecipe, craftingGridHelper);
+
+		// crate comes last to match the internal inventory layout of the carpenter
+		builder.addSlot(RecipeIngredientRole.INPUT, 74, 4)
+				.addIngredients(recipe.getBox());
 
 		IRecipeSlotBuilder tankSlot = builder.addSlot(RecipeIngredientRole.INPUT, 141, 1)
 				.setFluidRenderer(10000, false, 16, 58)

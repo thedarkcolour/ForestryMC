@@ -1,34 +1,28 @@
 package forestry.factory.recipes.jei.fabricator;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
-import forestry.core.recipes.jei.ForestryRecipeType;
-import forestry.core.utils.JeiUtil;
-import forestry.factory.features.FactoryMenuTypes;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.api.recipes.IFabricatorRecipe;
+import forestry.core.recipes.jei.ForestryRecipeType;
+import forestry.core.utils.JeiUtil;
 import forestry.core.utils.NetworkUtil;
+import forestry.factory.features.FactoryMenuTypes;
 import forestry.factory.gui.ContainerFabricator;
 import forestry.factory.network.packets.PacketRecipeTransferRequest;
 
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 
-import java.util.Optional;
-
-@OnlyIn(Dist.CLIENT)
 public class FabricatorRecipeTransferHandler implements IRecipeTransferHandler<ContainerFabricator, IFabricatorRecipe> {
-
 	@Override
 	public Class<ContainerFabricator> getContainerClass() {
 		return ContainerFabricator.class;
@@ -59,5 +53,4 @@ public class FabricatorRecipeTransferHandler implements IRecipeTransferHandler<C
 
 		return null;
 	}
-
 }
