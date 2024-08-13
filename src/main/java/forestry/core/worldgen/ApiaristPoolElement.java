@@ -151,7 +151,7 @@ public class ApiaristPoolElement extends SinglePoolElement {
 		IBee bee = species.createIndividual(extraAlleles);
 		// purebred
 		bee.setMate(bee.getGenome());
-		return bee.copyWithStage(BeeLifeStage.QUEEN);
+		return bee.createStack(BeeLifeStage.QUEEN);
 	}
 
 	@Override

@@ -24,7 +24,7 @@ class HiveBeeHousingInventory implements IBeeHousingInventory {
 	public ItemStack getQueen() {
 		if (this.queen == null) {
 			IBee bee = this.hive.getContainedBee();
-			this.queen = bee.copyWithStage(BeeLifeStage.QUEEN);
+			this.queen = bee.createStack(BeeLifeStage.QUEEN);
 		}
 		return this.queen;
 	}
@@ -33,7 +33,7 @@ class HiveBeeHousingInventory implements IBeeHousingInventory {
 	public ItemStack getDrone() {
 		if (this.drone == null) {
 			IBee bee = this.hive.getContainedBee();
-			this.drone = bee.copyWithStage(BeeLifeStage.DRONE);
+			this.drone = bee.createStack(BeeLifeStage.DRONE);
 		}
 		return this.drone;
 	}

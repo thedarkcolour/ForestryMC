@@ -234,7 +234,7 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 	@Override
 	public List<ItemStack> getResearchBounty(IButterflySpecies species, Level level, GameProfile researcher, IButterfly individual, int bountyLevel) {
 		List<ItemStack> bounty = super.getResearchBounty(species, level, researcher, individual, bountyLevel);
-		bounty.add(individual.copyWithStage(ButterflyLifeStage.SERUM));
+		bounty.add(individual.createStack(ButterflyLifeStage.SERUM));
 		return bounty;
 	}
 

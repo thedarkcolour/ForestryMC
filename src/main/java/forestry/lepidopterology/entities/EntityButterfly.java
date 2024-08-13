@@ -453,7 +453,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 			if (!level.isClientSide) {
 				IButterflySpeciesType type = SpeciesUtil.BUTTERFLY_TYPE.get();
 				ILepidopteristTracker tracker = (ILepidopteristTracker) type.getBreedingTracker(level, player.getGameProfile());
-				ItemStack itemStack = contained.copyWithStage(ButterflyLifeStage.BUTTERFLY);
+				ItemStack itemStack = contained.createStack(ButterflyLifeStage.BUTTERFLY);
 
 				tracker.registerCatch(contained);
 				ItemStackUtil.dropItemStackAsEntity(itemStack, level, getX(), getY(), getZ());
@@ -478,7 +478,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		IIndividual pollen = getPollen();
 
 		if (pollen != null) {
-			ItemStack pollenStack = pollen.copyWithStage(TreeLifeStage.POLLEN);
+			ItemStack pollenStack = pollen.createStack(TreeLifeStage.POLLEN);
 			ItemStackUtil.dropItemStackAsEntity(pollenStack, level, getX(), getY(), getZ());
 		}
 	}

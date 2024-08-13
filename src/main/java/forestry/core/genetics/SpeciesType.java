@@ -207,9 +207,7 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 		if (!this.stages.containsValue(type)) {
 			throw new IllegalArgumentException("Invalid life stage for species type " + this.id + ": " + type);
 		}
-		ItemStack stack = new ItemStack(type.getItemForm());
-		individual.saveToStack(stack);
-		return stack;
+		return individual.createStack(type);
 	}
 
 	@Override

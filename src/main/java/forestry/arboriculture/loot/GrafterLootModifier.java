@@ -93,7 +93,7 @@ public class GrafterLootModifier extends LootModifier {
 		List<ITree> saplings = tree.getSaplings(world, player.getGameProfile(), pos, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				generatedLoot.add(sapling.copyWithStage(TreeLifeStage.SAPLING));
+				generatedLoot.add(sapling.createStack(TreeLifeStage.SAPLING));
 			}
 		}
 		if (tileEntity instanceof IFruitBearer bearer) {

@@ -67,7 +67,7 @@ public interface IIndividual {
 	 */
 	boolean analyze();
 
-	ItemStack copyWithStage(ILifeStage stage);
+	ItemStack createStack(ILifeStage stage);
 
 	/**
 	 * Writes the state of this individual, including genome, to an item.

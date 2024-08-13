@@ -123,7 +123,7 @@ public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T
 	}
 
 	@Override
-	public ItemStack copyWithStage(ILifeStage stage) {
+	public ItemStack createStack(ILifeStage stage) {
 		ItemStack stack = new ItemStack(stage.getItemForm());
 		saveToStack(stack);
 		return stack;

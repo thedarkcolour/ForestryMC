@@ -362,7 +362,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		IBee drone = (IBee) IIndividualHandlerItem.getIndividual(droneStack);
 		princess.setMate(drone.getGenome());
 
-		queenStack = princess.copyWithStage(BeeLifeStage.QUEEN);
+		queenStack = princess.createStack(BeeLifeStage.QUEEN);
 		beeInventory.setQueen(queenStack);
 
 		// Register the new queen with the breeding tracker
@@ -392,7 +392,7 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		} else {
 			Forestry.LOGGER.warn("Tried to spawn offspring off an unmated queen. Devolving her to a princess.");
 
-			spawn = Collections.singleton(queen.copyWithStage(BeeLifeStage.PRINCESS));
+			spawn = Collections.singleton(queen.createStack(BeeLifeStage.PRINCESS));
 		}
 		beeInventory.setQueen(ItemStack.EMPTY);
 

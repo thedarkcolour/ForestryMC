@@ -129,7 +129,7 @@ public class BlockBeeHive extends Block implements EntityBlock {
 						bee.setPristine(false);
 					}
 
-					ItemStack princess = bee.copyWithStage(BeeLifeStage.PRINCESS);
+					ItemStack princess = bee.createStack(BeeLifeStage.PRINCESS);
 					drops.add(princess);
 					hasPrincess = true;
 					break;
@@ -141,7 +141,7 @@ public class BlockBeeHive extends Block implements EntityBlock {
 		for (IHiveDrop drop : hiveDrops) {
 			if (random.nextDouble() < drop.getChance(level, pos, fortune)) {
 				IBee bee = drop.createIndividual(level, pos);
-				ItemStack drone = bee.copyWithStage(BeeLifeStage.DRONE);
+				ItemStack drone = bee.createStack(BeeLifeStage.DRONE);
 				drops.add(drone);
 				break;
 			}

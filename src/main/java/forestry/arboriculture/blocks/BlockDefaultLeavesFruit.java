@@ -83,7 +83,7 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 		List<ITree> saplings = tree.getSaplings(world, playerProfile, pos, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
-				drops.add(sapling.copyWithStage(TreeLifeStage.SAPLING));
+				drops.add(sapling.createStack(TreeLifeStage.SAPLING));
 			}
 		}
 

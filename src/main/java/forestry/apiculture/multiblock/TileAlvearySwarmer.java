@@ -93,7 +93,7 @@ public class TileAlvearySwarmer extends TileAlveary implements WorldlyContainer,
 				if (individual instanceof IBee princess) {
 					// setting pristine for the new copy is a pain in the ass so do this instead
 					princess.setPristine(false);
-					this.pendingSpawns.push(princess.copyWithStage(BeeLifeStage.PRINCESS));
+					this.pendingSpawns.push(princess.createStack(BeeLifeStage.PRINCESS));
 					princess.setPristine(true);
 				}
 			});

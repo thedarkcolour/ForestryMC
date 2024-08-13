@@ -69,7 +69,7 @@ public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.B
 				return false;
 			}
 
-			ItemStack pollenStack = pollen.copyWithStage(TreeLifeStage.POLLEN);
+			ItemStack pollenStack = pollen.createStack(TreeLifeStage.POLLEN);
 			if (!pollenStack.isEmpty()) {
 				this.inventory.storePollenStack(pollenStack);
 				return true;
