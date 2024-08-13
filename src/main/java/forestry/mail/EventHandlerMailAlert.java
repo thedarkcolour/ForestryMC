@@ -36,7 +36,7 @@ public class EventHandlerMailAlert {
 	@OnlyIn(Dist.CLIENT)
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
 		if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().level != null && GuiMailboxInfo.INSTANCE.hasPOBoxInfo()) {
-			if (ForestryConfig.SERVER.mailAlertsEnabled.get()) {
+			if (ForestryConfig.CLIENT.mailAlertsEnabled.get()) {
 				//TODO: Test / Find a valid matrix stack
 				GuiMailboxInfo.INSTANCE.render(new PoseStack());
 			}

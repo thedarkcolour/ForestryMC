@@ -48,7 +48,7 @@ public class GuiMailboxInfo extends GuiComponent {
 	}
 
 	public void render(PoseStack transform) {
-		if (poInfo == null || !(boolean) ForestryConfig.SERVER.mailAlertsEnabled.get() || !poInfo.hasMail()) {
+		if (poInfo == null || !(boolean) ForestryConfig.CLIENT.mailAlertsEnabled.get() || !poInfo.hasMail()) {
 			return;
 		}
 
@@ -57,10 +57,10 @@ public class GuiMailboxInfo extends GuiComponent {
 
 		Minecraft minecraft = Minecraft.getInstance();
 		Window win = minecraft.getWindow();
-		if (ForestryConfig.SERVER.mailAlertsOnRight.get()) {
+		if (ForestryConfig.CLIENT.mailAlertsOnRight.get()) {
 			x = win.getGuiScaledWidth() - WIDTH;
 		}
-		if (ForestryConfig.SERVER.mailAlertsOnBottom.get()) {
+		if (ForestryConfig.CLIENT.mailAlertsOnBottom.get()) {
 			y = win.getGuiScaledHeight() - HEIGHT;
 		}
 

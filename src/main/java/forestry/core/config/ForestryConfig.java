@@ -24,6 +24,9 @@ public class ForestryConfig {
 	public static class Client {
 		public final ForgeConfigSpec.BooleanValue showParticles;
 		public final ForgeConfigSpec.BooleanValue enableHints;
+		public final ForgeConfigSpec.BooleanValue mailAlertsEnabled;
+		public final ForgeConfigSpec.BooleanValue mailAlertsOnRight;
+		public final ForgeConfigSpec.BooleanValue mailAlertsOnBottom;
 
 		public Client(ForgeConfigSpec.Builder builder) {
 			this.showParticles = builder
@@ -32,6 +35,18 @@ public class ForestryConfig {
 			this.enableHints = builder
 					.comment("Whether the \"Did you know?\" ledgers are shown in Forestry menus.")
 					.define("enable_hints", true);
+
+			builder.push("mail");
+			this.mailAlertsEnabled = builder
+					.comment("Whether alerts are enabled for Forestry's mail system.")
+					.define("mail_alerts_enable", true);
+			this.mailAlertsOnRight = builder
+					.comment("Whether mail alerts are shown on the right of the screen instead of the left.")
+					.define("mail_alerts_on_right", false);
+			this.mailAlertsOnBottom = builder
+					.comment("Whether mail alerts are shown on the bottom of the screen instead of the top.")
+					.define("mail_alerts_on_bottom", false);
+			builder.pop();
 		}
 	}
 
@@ -43,9 +58,6 @@ public class ForestryConfig {
 		public final ForgeConfigSpec.IntValue butterflyClusterLimit;
 		public final ForgeConfigSpec.IntValue butterflyClusterWidth;
 		public final ForgeConfigSpec.IntValue butterflyClusterHeight;
-		public final ForgeConfigSpec.BooleanValue mailAlertsEnabled;
-		public final ForgeConfigSpec.BooleanValue mailAlertsOnRight;
-		public final ForgeConfigSpec.BooleanValue mailAlertsOnBottom;
 		public final ForgeConfigSpec.IntValue multiFarmSize;
 		public final ForgeConfigSpec.BooleanValue squareMultiFarms;
 		public final ForgeConfigSpec.IntValue legacyFarmsPlanterRings;
@@ -93,18 +105,6 @@ public class ForestryConfig {
 			this.butterflyClusterHeight = builder
 					.comment("The height of the cluster area used when checking if the \"butterfly_cluster_limit\" has been reached.")
 					.defineInRange("butterfly_cluster_height", 64, 0, 2000);
-			builder.pop();
-
-			builder.push("mail");
-			this.mailAlertsEnabled = builder
-					.comment("Whether alerts are enabled for Forestry's mail system.")
-					.define("mail_alerts_enable", true);
-			this.mailAlertsOnRight = builder
-					.comment("Whether mail alerts are shown on the right of the screen instead of the left.")
-					.define("mail_alerts_on_right", false);
-			this.mailAlertsOnBottom = builder
-					.comment("Whether mail alerts are shown on the bottom of the screen instead of the top.")
-					.define("mail_alerts_on_bottom", false);
 			builder.pop();
 
 			this.enableBackpackResupply = builder
