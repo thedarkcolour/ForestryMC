@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "thedarkcolour.forestry"
-version = System.getenv("FORESTRY_VERSION") ?: "1.0.0"
+version = System.getenv("FORESTRY_VERSION") ?: "1.0.1"
 archivesBaseName = "forestry-$minecraft_version"
 
 repositories {
