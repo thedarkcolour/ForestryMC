@@ -1,5 +1,6 @@
 package forestry.api.core;
 
-public interface IFeatureSubtype {
-	String getSerializedName();
+import net.minecraft.util.StringRepresentable;
+
+public interface IFeatureSubtype extends StringRepresentable {
 }
