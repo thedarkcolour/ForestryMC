@@ -32,9 +32,7 @@ public class BackpackInterface implements IBackpackInterface {
 		Preconditions.checkNotNull(type, "type must not be null");
 		Preconditions.checkArgument(type != EnumBackpackType.NATURALIST, "type must not be NATURALIST. Use createNaturalistBackpack instead.");
 
-		ItemBackpack backpack = new ItemBackpack(definition, type);
-		//Proxies.common.registerItem(backpack);
-		return backpack;
+		return new ItemBackpack(definition, type);
 	}
 
 	@Override
@@ -42,9 +40,7 @@ public class BackpackInterface implements IBackpackInterface {
 		Preconditions.checkNotNull(definition, "definition must not be null");
 		Preconditions.checkNotNull(speciesTypeId, "rootUid must not be null");
 
-		ItemBackpack backpack = new ItemBackpackNaturalist(speciesTypeId, definition, tab);
-		//Proxies.common.registerItem(backpack);
-		return backpack;
+		return new ItemBackpackNaturalist(speciesTypeId, definition, tab);
 	}
 
 	@Override

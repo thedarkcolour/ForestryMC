@@ -1,9 +1,10 @@
-// 1.19.2	2024-04-06T18:00:58.483992	Item Models: forestry
+// 1.19.2	2024-08-14T13:33:56.2972227	Item Models: forestry
 3c1431dcb893b5f5648a30b08115a67d8f3227b9 assets/forestry/models/item/adventurer_bag.json
 994d21141a5584825744129df0166a56876860ad assets/forestry/models/item/adventurer_bag_woven.json
 3c1431dcb893b5f5648a30b08115a67d8f3227b9 assets/forestry/models/item/apiarist_bag.json
 b58ed81496fd3f1c01d06ae7c4b3cb1edcfc877d assets/forestry/models/item/arboretum_managed.json
 b58ed81496fd3f1c01d06ae7c4b3cb1edcfc877d assets/forestry/models/item/arboretum_manual.json
+3c1431dcb893b5f5648a30b08115a67d8f3227b9 assets/forestry/models/item/arborist_bag.json
 327ba5dd15f54c895af33c627024c1e38cd72081 assets/forestry/models/item/bucket_biomass.json
 de7994ae9b08486b6ee10cdc983d820f4af8a2ba assets/forestry/models/item/bucket_bio_ethanol.json
 fba777fb364ea95cd9c78e27354b312dc2a60c3c assets/forestry/models/item/bucket_glass.json

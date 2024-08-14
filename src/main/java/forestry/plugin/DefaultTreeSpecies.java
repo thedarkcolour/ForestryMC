@@ -311,7 +311,7 @@ public class DefaultTreeSpecies {
 				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.JUNGLE).block().getStateDefinition().getPossibleStates())
 				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.JUNGLE).block().getStateDefinition().getPossibleStates())
 				.addVanillaStates(Blocks.JUNGLE_LEAVES.getStateDefinition().getPossibleStates())
-				.addVanillaSapling(Items.SPRUCE_SAPLING)
+				.addVanillaSapling(Items.JUNGLE_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_COCOA);
 					genome.set(TreeChromosomes.HEIGHT, ForestryAlleles.HEIGHT_LARGER);

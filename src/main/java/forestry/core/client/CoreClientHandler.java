@@ -202,6 +202,7 @@ public class CoreClientHandler implements IClientModuleHandler {
 		// Backpacks
 		event.register(ClientManager.FORESTRY_ITEM_COLOR,
 				BackpackItems.APIARIST_BACKPACK.item(),
+				BackpackItems.ARBORIST_BACKPACK.item(),
 				BackpackItems.LEPIDOPTERIST_BACKPACK.item(),
 				BackpackItems.MINER_BACKPACK.item(),
 				BackpackItems.MINER_BACKPACK_T_2.item(),

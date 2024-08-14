@@ -25,7 +25,6 @@ import forestry.arboriculture.VanillaWoodType;
  * @see VanillaWoodType
  */
 public interface IWoodAccess {
-
 	ItemStack getStack(IWoodType woodType, WoodBlockKind kind, boolean fireproof);
 
 	BlockState getBlock(IWoodType woodType, WoodBlockKind kind, boolean fireproof);

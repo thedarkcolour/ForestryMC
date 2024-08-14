@@ -5,13 +5,13 @@
       "tag": "minecraft:wool"
     },
     "V": {
-      "tag": "forge:rods/wooden"
+      "item": "forestry:tree_chest"
     },
     "X": {
       "tag": "forge:string"
     },
     "Y": {
-      "item": "forestry:bee_chest"
+      "tag": "forge:chests/wooden"
     }
   },
   "pattern": [
@@ -20,6 +20,6 @@
     "X#X"
   ],
   "result": {
-    "item": "forestry:apiarist_bag"
+    "item": "forestry:arborist_bag"
   }
 }

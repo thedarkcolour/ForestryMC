@@ -15,6 +15,7 @@ public class BackpackItems {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.STORAGE);
 
 	public static final FeatureItem<?> APIARIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleStorage.APIARIST, ForestrySpeciesTypes.BEE, ItemGroups.tabApiculture, "apiarist_bag");
+	public static final FeatureItem<?> ARBORIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleStorage.ARBORIST, ForestrySpeciesTypes.TREE, ItemGroups.tabArboriculture, "arborist_bag");
 	public static final FeatureItem<?> LEPIDOPTERIST_BACKPACK = REGISTRY.naturalistBackpack(ModuleStorage.LEPIDOPTERIST, ForestrySpeciesTypes.BUTTERFLY, ItemGroups.tabLepidopterology, "lepidopterist_bag");
 
 	public static final FeatureItem<?> MINER_BACKPACK = REGISTRY.backpack(ModuleStorage.MINER, EnumBackpackType.NORMAL, "miner_bag");

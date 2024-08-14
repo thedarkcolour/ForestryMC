@@ -125,7 +125,6 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		registerFoodRecipes(consumer);
 		registerBackpackRecipes(consumer);
 		registerCharcoalRecipes(consumer);
-		registerClimatologyRecipes(consumer);
 		registerCoreRecipes(consumer);
 		registerBookRecipes(consumer);
 		registerCultivationRecipes(consumer);
@@ -344,6 +343,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 			Block planks = woodAccess.getBlock(woodType, WoodBlockKind.PLANKS, false).getBlock();
 			Block fireproofPlanks = woodAccess.getBlock(woodType, WoodBlockKind.PLANKS, true).getBlock();
 			Block log = woodAccess.getBlock(woodType, WoodBlockKind.LOG, false).getBlock();
+			Block wood = woodAccess.getBlock(woodType, WoodBlockKind.WOOD, false).getBlock();
 			Block fireproofLog = woodAccess.getBlock(woodType, WoodBlockKind.LOG, true).getBlock();
 			Block door = woodAccess.getBlock(woodType, WoodBlockKind.DOOR, false).getBlock();
 			Block fence = woodAccess.getBlock(woodType, WoodBlockKind.FENCE, false).getBlock();
@@ -361,6 +361,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				ShapedRecipeBuilder.shaped(fencegate).define('#', Tags.Items.RODS_WOODEN).define('W', planks).pattern("#W#").pattern("#W#").unlockedBy("has_planks", has(planks)).group("wooden_fence_gate").save(helper);
 				ShapedRecipeBuilder.shaped(slab, 6).define('#', planks).pattern("###").unlockedBy("has_planks", has(planks)).group("wooden_slab").save(helper);
 				ShapedRecipeBuilder.shaped(stairs, 4).define('#', planks).pattern("#  ").pattern("## ").pattern("###").unlockedBy("has_planks", has(planks)).group("wooden_stairs").save(helper);
+				ShapedRecipeBuilder.shaped(wood, 3).define('#', log).pattern("##").pattern("##").unlockedBy("has_log", has(log)).group("bark").save(helper);
 			}
 
 			ShapedRecipeBuilder.shaped(door, 3).define('#', Ingredient.of(planks, fireproofPlanks)).pattern("##").pattern("##").pattern("##").unlockedBy("has_planks", has(planks)).group("wooden_door").save(helper);
@@ -369,7 +370,6 @@ public class ForestryRecipeProvider extends RecipeProvider {
 			ShapedRecipeBuilder.shaped(fireproofFencegate).define('#', Tags.Items.RODS_WOODEN).define('W', fireproofPlanks).pattern("#W#").pattern("#W#").unlockedBy("has_planks", has(fireproofPlanks)).group("wooden_fence_gate").save(helper);
 			ShapedRecipeBuilder.shaped(fireproofSlab, 6).define('#', fireproofPlanks).pattern("###").unlockedBy("has_planks", has(fireproofPlanks)).group("wooden_slab").save(helper);
 			ShapedRecipeBuilder.shaped(fireproofStairs, 4).define('#', fireproofPlanks).pattern("#  ").pattern("## ").pattern("###").unlockedBy("has_planks", has(fireproofPlanks)).group("wooden_stairs").save(helper);
-
 		}
 	}
 
@@ -396,7 +396,6 @@ public class ForestryRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerBackpackRecipes(Consumer<FinishedRecipe> helper) {
-
 		ShapedRecipeBuilder.shaped(BackpackItems.ADVENTURER_BACKPACK)
 				.define('#', ItemTags.WOOL)
 				.define('V', Tags.Items.BONES)
@@ -404,15 +403,6 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('Y', Tags.Items.CHESTS_WOODEN)
 				.pattern("X#X").pattern("VYV").pattern("X#X")
 				.unlockedBy("has_bone", has(Tags.Items.BONES)).save(helper);
-
-		ItemLike beeChest = CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.ARBORIST_CHEST);
-		ShapedRecipeBuilder.shaped(BackpackItems.APIARIST_BACKPACK)
-				.define('#', ItemTags.WOOL)
-				.define('V', Tags.Items.RODS_WOODEN)
-				.define('X', Tags.Items.STRING)
-				.define('Y', beeChest)
-				.pattern("X#X").pattern("VYV").pattern("X#X")
-				.unlockedBy("has_bee_chest", has(beeChest)).save(helper);
 		ShapedRecipeBuilder.shaped(BackpackItems.BUILDER_BACKPACK)
 				.define('#', ItemTags.WOOL)
 				.define('V', Items.CLAY_BALL)
@@ -441,7 +431,23 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('Y', Tags.Items.CHESTS_WOODEN)
 				.pattern("X#X").pattern("VYV").pattern("X#X")
 				.unlockedBy("has_feather", has(Tags.Items.FEATHERS)).save(helper);
+		ShapedRecipeBuilder.shaped(BackpackItems.MINER_BACKPACK)
+				.define('#', ItemTags.WOOL)
+				.define('V', Tags.Items.INGOTS_IRON)
+				.define('X', Tags.Items.STRING)
+				.define('Y', Tags.Items.CHESTS_WOODEN)
+				.pattern("X#X").pattern("VYV").pattern("X#X")
+				.unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON)).save(helper);
 
+		// Naturalist backpacks
+		ItemLike beeChest = CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.APIARIST_CHEST);
+		ShapedRecipeBuilder.shaped(BackpackItems.APIARIST_BACKPACK)
+				.define('#', ItemTags.WOOL)
+				.define('V', Tags.Items.RODS_WOODEN)
+				.define('X', Tags.Items.STRING)
+				.define('Y', beeChest)
+				.pattern("X#X").pattern("VYV").pattern("X#X")
+				.unlockedBy("has_bee_chest", has(beeChest)).save(helper);
 		ItemLike butterflyChest = CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.LEPIDOPTERIST_CHEST);
 		ShapedRecipeBuilder.shaped(BackpackItems.LEPIDOPTERIST_BACKPACK)
 				.define('#', ItemTags.WOOL)
@@ -450,17 +456,17 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.define('Y', Tags.Items.CHESTS_WOODEN)
 				.pattern("X#X").pattern("VYV").pattern("X#X")
 				.unlockedBy("has_butterfly_chest", has(butterflyChest)).save(helper);
-		ShapedRecipeBuilder.shaped(BackpackItems.MINER_BACKPACK)
+		ItemLike treeChest = CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.ARBORIST_CHEST);
+		ShapedRecipeBuilder.shaped(BackpackItems.ARBORIST_BACKPACK)
 				.define('#', ItemTags.WOOL)
-				.define('V', Tags.Items.INGOTS_IRON)
+				.define('V', treeChest)
 				.define('X', Tags.Items.STRING)
 				.define('Y', Tags.Items.CHESTS_WOODEN)
 				.pattern("X#X").pattern("VYV").pattern("X#X")
-				.unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON)).save(helper);
+				.unlockedBy("has_butterfly_chest", has(treeChest)).save(helper);
 	}
 
 	private void registerCharcoalRecipes(Consumer<FinishedRecipe> helper) {
-
 		ShapedRecipeBuilder.shaped(CharcoalBlocks.CHARCOAL.block())
 				.define('#', Items.CHARCOAL)
 				.pattern("###").pattern("###").pattern("###")
@@ -480,27 +486,6 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.requires(CharcoalBlocks.WOOD_PILE_DECORATIVE.block())
 				.unlockedBy("has_decorative", has(CharcoalBlocks.WOOD_PILE_DECORATIVE.block()))
 				.save(helper, ForestryConstants.forestry("wood_pile_from_decorative"));
-	}
-
-	private void registerClimatologyRecipes(Consumer<FinishedRecipe> helper) {
-/*
-		ShapedRecipeBuilder.shaped(ClimatologyBlocks.HABITATFORMER.block())
-				.define('S', CoreItems.STURDY_CASING)
-				.define('G', Tags.Items.GLASS)
-				.define('B', ForestryTags.Items.GEARS_BRONZE)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('C', CoreItems.CIRCUITBOARDS.get(EnumCircuitBoardType.BASIC))
-				.define('T', CoreItems.ELECTRON_TUBES.get(EnumElectronTube.IRON))
-				.pattern("GRG").pattern("TST").pattern("BCB")
-				.unlockedBy("has_casing", has(CoreItems.STURDY_CASING)).save(helper);
-		//TODO if carpenter recipes are in json then can just use that here
-		ShapedRecipeBuilder.shaped(ClimatologyItems.HABITAT_SCREEN)
-				.define('G', ForestryTags.Items.GEARS_BRONZE)
-				.define('P', Tags.Items.GLASS_PANES)
-				.define('I', ForestryTags.Items.INGOTS_BRONZE)
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.pattern("IPI").pattern("IPI").pattern("DGD")
-				.unlockedBy("has_diamond", has(Tags.Items.GEMS_DIAMOND)).save(helper);*/
 	}
 
 	private void registerCoreRecipes(Consumer<FinishedRecipe> helper) {

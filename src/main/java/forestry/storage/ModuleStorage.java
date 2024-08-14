@@ -37,8 +37,8 @@ import forestry.storage.client.StorageClientHandler;
 public class ModuleStorage extends BlankForestryModule {
 	public static final IBackpackInterface BACKPACK_INTERFACE = new BackpackInterface();
 
-	// todo should there be an arborist backpack?
 	public static final BackpackDefinition APIARIST = new BackpackDefinition(new Color(0xc4923d), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(ForestrySpeciesTypes.BEE));
+	public static final BackpackDefinition ARBORIST = new BackpackDefinition(new Color(0x657e3a), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(ForestrySpeciesTypes.TREE));
 	public static final BackpackDefinition LEPIDOPTERIST = new BackpackDefinition(new Color(0x995b31), Color.WHITE, BACKPACK_INTERFACE.createNaturalistBackpackFilter(ForestrySpeciesTypes.BUTTERFLY));
 	public static final BackpackDefinition MINER = new BackpackDefinition(new Color(0x36187d), Color.WHITE, new BackpackFilter(ForestryTags.Items.MINER_ALLOW, ForestryTags.Items.MINER_REJECT));
 	public static final BackpackDefinition DIGGER = new BackpackDefinition(new Color(0x363cc5), Color.WHITE, new BackpackFilter(ForestryTags.Items.DIGGER_ALLOW, ForestryTags.Items.DIGGER_REJECT));
