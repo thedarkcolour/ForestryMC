@@ -31,6 +31,7 @@ public class ItemBlockWood<B extends Block & IWoodTyped> extends ItemBlockForest
 
 	@Override
 	public Component getName(ItemStack itemstack) {
+		// todo use vanilla names and data generation instead of this
 		IWoodTyped wood = getBlock();
 		IWoodType woodType = wood.getWoodType();
 		return WoodHelper.getDisplayName(wood, woodType);

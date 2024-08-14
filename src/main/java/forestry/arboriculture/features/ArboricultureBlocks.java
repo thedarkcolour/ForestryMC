@@ -7,6 +7,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 
+import com.mojang.datafixers.util.Function3;
+
 import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.WoodBlockKind;
 import forestry.api.modules.ForestryModuleIds;
@@ -45,19 +47,21 @@ import forestry.modules.features.ModFeatureRegistry;
 public class ArboricultureBlocks {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.ARBORICULTURE);
 
-	/* WOOD */
+	/* VANILLA LOGS & WOOD */
+	public static final FeatureBlockGroup<BlockForestryLog, VanillaWoodType> LOGS_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, true, VanillaWoodType.VALUES);
+	public static final FeatureBlockGroup<BlockForestryLog, VanillaWoodType> WOOD_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, true, VanillaWoodType.VALUES);
+	public static final FeatureBlockGroup<BlockForestryLog, VanillaWoodType> STRIPPED_LOGS_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.STRIPPED_LOG, true, VanillaWoodType.VALUES);
+	public static final FeatureBlockGroup<BlockForestryLog, VanillaWoodType> STRIPPED_WOOD_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.STRIPPED_WOOD, true, VanillaWoodType.VALUES);
+
+	/* LOGS & WOOD */
 	public static final FeatureBlockGroup<BlockForestryLog, ForestryWoodType> LOGS = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, false, ForestryWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryLog, ForestryWoodType> LOGS_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, true, ForestryWoodType.VALUES);
-	public static final FeatureBlockGroup<BlockForestryLog, VanillaWoodType> LOGS_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.LOG, true, VanillaWoodType.VALUES);
 	// todo stripped logs
 	// todo stripped logs fireproof
-	public static final FeatureBlockGroup<BlockForestryLog, VanillaWoodType> STRIPPED_LOGS_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.STRIPPED_LOG, true, VanillaWoodType.VALUES);
-	// todo stripped wood
-	// todo stripped wood fireproof
-	public static final FeatureBlockGroup<BlockForestryLog, VanillaWoodType> STRIPPED_WOOD_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.STRIPPED_WOOD, true, VanillaWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryLog, ForestryWoodType> WOOD = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, false, ForestryWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryLog, ForestryWoodType> WOOD_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, true, ForestryWoodType.VALUES);
-	public static final FeatureBlockGroup<BlockForestryLog, VanillaWoodType> WOOD_VANILLA_FIREPROOF = woodGroup(BlockForestryLog::new, WoodBlockKind.WOOD, true, VanillaWoodType.VALUES);
+	// todo stripped wood
+	// todo stripped wood fireproof
 
 	public static final FeatureBlockGroup<BlockForestryPlank, ForestryWoodType> PLANKS = woodGroup(BlockForestryPlank::new, WoodBlockKind.PLANKS, false, ForestryWoodType.VALUES);
 	public static final FeatureBlockGroup<BlockForestryPlank, ForestryWoodType> PLANKS_FIREPROOF = woodGroup(BlockForestryPlank::new, WoodBlockKind.PLANKS, true, ForestryWoodType.VALUES);
@@ -88,6 +92,10 @@ public class ArboricultureBlocks {
 	public static final FeatureBlockGroup<BlockDefaultLeavesFruit, ForestryLeafType> LEAVES_DEFAULT_FRUIT = REGISTRY.blockGroup(BlockDefaultLeavesFruit::new, ForestryLeafType.values()).item(ItemBlockLeaves::new).identifier("default_leaves_fruit", FeatureGroup.IdentifierType.AFFIX).create();
 	public static final FeatureBlockGroup<BlockDecorativeLeaves, ForestryLeafType> LEAVES_DECORATIVE = REGISTRY.blockGroup(BlockDecorativeLeaves::new, ForestryLeafType.values()).item(ItemBlockDecorativeLeaves::new).identifier("decorative_leaves", FeatureGroup.IdentifierType.AFFIX).create();
 	public static final FeatureBlockGroup<BlockFruitPod, ForestryPodType> PODS = REGISTRY.blockGroup(BlockFruitPod::new, ForestryPodType.values()).identifier("pods").create();
+
+	private static <B extends Block & IWoodTyped, S extends IWoodType> FeatureBlockGroup<B, S> woodGroup(Function3<WoodBlockKind, Boolean, S, B> constructor, WoodBlockKind kind, boolean fireproof, S[] types) {
+		return woodGroup((fireproof1, type) -> constructor.apply(kind, fireproof1, type), ItemBlockWood::new, kind, fireproof, types);
+	}
 
 	private static <B extends Block & IWoodTyped, S extends IWoodType> FeatureBlockGroup<B, S> woodGroup(BiFunction<Boolean, S, B> constructor, WoodBlockKind kind, boolean fireproof, S[] types) {
 		return woodGroup(constructor, ItemBlockWood::new, kind, fireproof, types);

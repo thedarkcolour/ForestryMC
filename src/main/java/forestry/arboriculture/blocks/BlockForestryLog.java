@@ -10,24 +10,21 @@ import forestry.api.arboriculture.IWoodType;
 import forestry.api.arboriculture.WoodBlockKind;
 import forestry.arboriculture.IWoodTyped;
 
-//eg    public static final Block BIRCH_LOG = register("birch_log", new LogBlock(MaterialColor.SAND, Block.Properties.create(Material.WOOD, MaterialColor.QUARTZ).hardnessAndResistance(2.0F).sound(SoundType.WOOD)));
-//TODO stripped logs    public static final Block STRIPPED_BIRCH_LOG = register("stripped_birch_log", new LogBlock(MaterialColor.SAND, Block.Properties.create(Material.WOOD, MaterialColor.SAND).hardnessAndResistance(2.0F).sound(SoundType.WOOD)));
-//worst part is probably textures
 public class BlockForestryLog extends RotatedPillarBlock implements IWoodTyped {
-
+	private final WoodBlockKind kind;
 	private final boolean fireproof;
 	private final IWoodType woodType;
 
-	public BlockForestryLog(boolean fireproof, IWoodType woodType) {
+	public BlockForestryLog(WoodBlockKind kind, boolean fireproof, IWoodType woodType) {
 		super(BlockForestryPlank.createWoodProperties(woodType));
+		this.kind = kind;
 		this.fireproof = fireproof;
 		this.woodType = woodType;
 	}
 
-
 	@Override
-	public final WoodBlockKind getBlockKind() {
-		return WoodBlockKind.LOG;
+	public WoodBlockKind getBlockKind() {
+		return this.kind;
 	}
 
 	@Override
@@ -40,7 +37,6 @@ public class BlockForestryLog extends RotatedPillarBlock implements IWoodTyped {
 		return woodType;
 	}
 
-	/* PROPERTIES */
 	@Override
 	public final int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
 		if (fireproof) {
