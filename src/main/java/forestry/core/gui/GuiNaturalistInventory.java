@@ -209,34 +209,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 	}
 
 	private void drawMutationIcon(PoseStack transform, IMutation<?> combination, ISpecies<?> species, int x) {
-		GuiUtil.drawItemStack(transform, this, iconStacks.get(combination.getPartner(species).id().toString()), leftPos + x, topPos + textLayout.getLineY());
-
-		int line = 48;
-		int column;
-		EnumMutateChance chance = EnumMutateChance.rateChance(combination.getChance());
-		if (chance == EnumMutateChance.HIGHEST) {
-			line += 16;
-			column = 228;
-		} else if (chance == EnumMutateChance.HIGHER) {
-			line += 16;
-			column = 212;
-		} else if (chance == EnumMutateChance.HIGH) {
-			line += 16;
-			column = 196;
-		} else if (chance == EnumMutateChance.NORMAL) {
-			line += 0;
-			column = 228;
-		} else if (chance == EnumMutateChance.LOW) {
-			line += 0;
-			column = 212;
-		} else {
-			line += 0;
-			column = 196;
-		}
-
-		bindTexture(textureFile);
-		blit(transform, leftPos + x, topPos + textLayout.getLineY(), column, line, 16, 16);
-
+		GuiUtil.drawItemStack(transform, this, this.iconStacks.get(combination.getPartner(species).id()), this.leftPos + x, this.topPos + this.textLayout.getLineY());
 	}
 
 	private void drawUnknownIcon(PoseStack transform, IMutation<?> mutation, int x) {

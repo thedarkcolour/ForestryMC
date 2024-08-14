@@ -21,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import forestry.api.storage.EnumBackpackType;
 import forestry.api.storage.IBackpackDefinition;
 import forestry.storage.gui.ContainerNaturalistBackpack;
-import forestry.storage.inventory.ItemInventoryBackpackPaged;
 
 public class ItemBackpackNaturalist extends ItemBackpack {
 	public final ResourceLocation typeId;
@@ -33,14 +32,12 @@ public class ItemBackpackNaturalist extends ItemBackpack {
 
 	@Override
 	protected void writeContainerData(ServerPlayer player, ItemStack stack, FriendlyByteBuf buffer) {
-		buffer.writeItem(stack);
 		buffer.writeByte(0);
-		buffer.writeResourceLocation(typeId);
+		buffer.writeResourceLocation(this.typeId);
 	}
 
 	@Override
 	public AbstractContainerMenu getContainer(int windowId, Player player, ItemStack heldItem) {
-		ItemInventoryBackpackPaged inventory = new ItemInventoryBackpackPaged(player, ItemBackpack.SLOTS_BACKPACK_APIARIST, heldItem, this);
-		return new ContainerNaturalistBackpack(windowId, player.getInventory(), inventory, 0, typeId);
+		return ContainerNaturalistBackpack.makeContainer(windowId, player, heldItem, 0, this.typeId);
 	}
 }

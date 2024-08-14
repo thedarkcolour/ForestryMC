@@ -10,29 +10,32 @@
  ******************************************************************************/
 package forestry.storage.inventory;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.network.NetworkHooks;
 
 import forestry.core.gui.IPagedInventory;
-import forestry.storage.items.ItemBackpackNaturalist;
+import forestry.storage.gui.ContainerNaturalistBackpack;
 
 public class ItemInventoryBackpackPaged extends ItemInventoryBackpack implements IPagedInventory {
-	private final ItemBackpackNaturalist backpackNaturalist;
+	private final ResourceLocation typeId;
 
-	public ItemInventoryBackpackPaged(Player player, int size, ItemStack itemstack, ItemBackpackNaturalist backpackNaturalist) {
+	public ItemInventoryBackpackPaged(Player player, int size, ItemStack itemstack, ResourceLocation typeId) {
 		super(player, size, itemstack);
-		this.backpackNaturalist = backpackNaturalist;
+		this.typeId = typeId;
 	}
 
 	@Override
 	public void flipPage(ServerPlayer player, short page) {
-		NetworkHooks.openScreen(player, backpackNaturalist.getMenuProvider(getParent()), buffer -> {
-			buffer.writeItem(getParent());
+		ItemStack backpack = getParent();
+		SimpleMenuProvider provider = new SimpleMenuProvider((windowId, playerInv, p) -> ContainerNaturalistBackpack.makeContainer(windowId, p, backpack, page, this.typeId), backpack.getHoverName());
+		NetworkHooks.openScreen(player, provider, buffer -> {
 			buffer.writeByte(page);
-			buffer.writeResourceLocation(backpackNaturalist.typeId);
+			buffer.writeResourceLocation(this.typeId);
 		});
 	}
 }

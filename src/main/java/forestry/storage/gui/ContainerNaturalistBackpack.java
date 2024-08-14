@@ -14,6 +14,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.IForestryApi;
@@ -25,7 +26,6 @@ import forestry.core.gui.INaturalistMenu;
 import forestry.storage.features.BackpackMenuTypes;
 import forestry.storage.inventory.ItemInventoryBackpackPaged;
 import forestry.storage.items.ItemBackpack;
-import forestry.storage.items.ItemBackpackNaturalist;
 
 public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInventoryBackpackPaged> implements IGuiSelectable, INaturalistMenu {
 	private final int currentPage;
@@ -38,6 +38,11 @@ public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInve
 
 		this.currentPage = selectedPage;
 		this.speciesRoot = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(rootUid);
+	}
+
+	public static ContainerNaturalistBackpack makeContainer(int windowId, Player player, ItemStack heldItem, int page, ResourceLocation typeId) {
+		ItemInventoryBackpackPaged inventory = new ItemInventoryBackpackPaged(player, ItemBackpack.SLOTS_BACKPACK_APIARIST, heldItem, typeId);
+		return new ContainerNaturalistBackpack(windowId, player.getInventory(), inventory, page, typeId);
 	}
 
 	@Override
@@ -56,10 +61,10 @@ public class ContainerNaturalistBackpack extends ContainerItemInventory<ItemInve
 	}
 
 	public static ContainerNaturalistBackpack fromNetwork(int windowId, Inventory playerInventory, FriendlyByteBuf buffer) {
-		ItemStack parent = buffer.readItem();
-		ItemBackpackNaturalist backpack = (ItemBackpackNaturalist) parent.getItem();
-		ItemInventoryBackpackPaged paged = new ItemInventoryBackpackPaged(playerInventory.player, ItemBackpack.SLOTS_BACKPACK_APIARIST, parent, backpack);
 		int page = buffer.readByte();
-		return new ContainerNaturalistBackpack(windowId, playerInventory, paged, page, buffer.readResourceLocation());
+		ResourceLocation typeId = buffer.readResourceLocation();
+		ItemStack parent = playerInventory.getSelected();
+
+		return makeContainer(windowId, playerInventory.player, parent, page, typeId);
 	}
 }

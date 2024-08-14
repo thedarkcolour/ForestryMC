@@ -12,6 +12,7 @@ package forestry.core.gui;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -37,14 +38,12 @@ public class ContainerNaturalistInventory extends ContainerTile<TileNaturalistCh
 	}
 
 	public static <T extends Container & IFilterSlotDelegate> void addInventory(ContainerForestry container, T inventory, int selectedPage) {
-		for (int page = 0; page < MAX_PAGE; page++) {
-			for (int x = 0; x < 5; x++) {
-				for (int y = 0; y < 5; y++) {
-					int slot = y + page * 25 + x * 5;
-					if (page == selectedPage) {
-						container.addSlot(new SlotFilteredInventory(inventory, slot, 100 + y * 18, 21 + x * 18));
-					}
-				}
+		int page = Mth.clamp(selectedPage, 0, MAX_PAGE);
+		for (int x = 0; x < 5; x++) {
+			for (int y = 0; y < 5; y++) {
+				int slot = y + page * 25 + x * 5;
+
+				container.addSlot(new SlotFilteredInventory(inventory, slot, 100 + y * 18, 21 + x * 18));
 			}
 		}
 	}

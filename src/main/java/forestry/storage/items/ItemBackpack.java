@@ -99,10 +99,11 @@ public class ItemBackpack extends ItemWithGui implements IColoredItem {
 
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
-		if (getInventoryHit(ctx.getLevel(), ctx.getClickedPos(), ctx.getClickedFace()) != null) {
-			return InteractionResult.SUCCESS;
+		Level level = ctx.getLevel();
+		if (getInventoryHit(level, ctx.getClickedPos(), ctx.getClickedFace()) != null) {
+			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
-		return InteractionResult.FAIL;
+		return InteractionResult.PASS;
 	}
 
 	@Override
