@@ -11,27 +11,27 @@ import net.minecraft.util.RandomSource;
  */
 public interface IMutationManager<S extends ISpecies<?>> {
 	/**
-	 * @return A list of mutations that this species is one of the parents for.
+	 * @return An immutable list of mutations that this species is one of the parents for.
 	 */
 	List<IMutation<S>> getMutationsFrom(S species);
 
 	/**
-	 * @return A list of mutations that this species is the result of.
+	 * @return An immutable list of mutations that this species is the result of.
 	 */
 	List<IMutation<S>> getMutationsInto(S species);
 
 	/**
-	 * @return A list of mutations between these two parents.
+	 * @return An immutable list of mutations between these two parents.
 	 */
 	List<IMutation<S>> getCombinations(S firstParent, S secondParent);
 
 	/**
-	 * @return A shuffled list of all mutations within the species type of this mutation manager.
+	 * @return A mutable, shuffled list of all mutations within the species type of this mutation manager.
 	 */
 	List<? extends IMutation<S>> getCombinationsShuffled(S firstParent, S secondParent, RandomSource rand);
 
 	/**
-	 * @return All mutations within the species type of this mutation manager.
+	 * @return An immutable list of all mutations within the species type of this mutation manager.
 	 */
 	List<IMutation<S>> getAllMutations();
 }

@@ -3,6 +3,8 @@ package forestry.core.genetics.analyzer;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.apiculture.genetics.IBee;
@@ -27,7 +29,7 @@ public class ProductsTab<I extends IIndividual> extends DatabaseTab<I> {
 		LayoutHelper groupHelper = container.layoutHelper((x, y) -> GuiElementFactory.horizontal(18, 2, FlexLayout.LEFT_MARGIN), 90, 0);
 		List<IProduct> products = getProducts(individual);
 		if (!products.isEmpty()) {
-			container.translated("for.gui.beealyzer.produce").setAlign(Alignment.TOP_CENTER);
+			container.translated("for.gui.beealyzer.produce").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)).setAlign(Alignment.TOP_CENTER);
 			products.forEach(product -> groupHelper.add(new ItemElement(0, 0, product.createStack())));
 			groupHelper.finish();
 		}

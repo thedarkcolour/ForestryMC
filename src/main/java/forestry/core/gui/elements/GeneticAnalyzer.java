@@ -131,7 +131,7 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 		}
 		ItemStack stack = provider.getSpecimen(selectedSlot);
 
-		IIndividualHandlerItem.ifPresent(stack, (individual, stage) -> {
+		boolean displayed = IIndividualHandlerItem.filter(stack, (individual, stage) -> {
 			if (individual.isAnalyzed()) {
 				tabs.setPlugin(individual.getType().getDatabasePlugin());
 				IDatabaseTab tab = tabs.getSelected();
@@ -151,10 +151,15 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 					scrollBar.setValue(0);
 					scrollBar.hide();
 				}
-				return;
+				return true;
 			}
 			tabs.setPlugin(null);
+			return false;
 		});
+
+		if (displayed) {
+			return;
+		}
 
 		// Clean the element area
 		scrollableContent.clear();

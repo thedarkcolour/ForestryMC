@@ -1,10 +1,12 @@
 package forestry.core.genetics.analyzer;
 
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +41,7 @@ public class MutationsTab<I extends IIndividual> extends DatabaseTab<I> {
 		Collection<? extends IMutation<?>> mutations = getValidMutations(mutationContainer.getMutationsFrom(species.cast()));
 
 		if (!mutations.isEmpty()) {
-			container.label(Component.translatable("for.gui.database.mutations.further"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
+			container.label(Component.translatable("for.gui.database.mutations.further"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE.withColor(ChatFormatting.WHITE));
 			mutations.forEach(mutation -> groupHelper.add(GuiElementFactory.INSTANCE.createMutation(0, 0, 50, 16, mutation, species, breedingTracker)));
 			groupHelper.finish(true);
 		}
@@ -48,13 +50,21 @@ public class MutationsTab<I extends IIndividual> extends DatabaseTab<I> {
 		if (mutationsInto.isEmpty()) {
 			return;
 		}
-		container.label(Component.translatable("for.gui.database.mutations.resultant"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE);
+		container.label(Component.translatable("for.gui.database.mutations.resultant"), Alignment.TOP_CENTER, GuiConstants.UNDERLINED_STYLE.withColor(ChatFormatting.WHITE));
 		mutationsInto.forEach(mutation -> groupHelper.add(GuiElementFactory.INSTANCE.createMutationResultant(0, 0, 50, 16, mutation, breedingTracker)));
 		groupHelper.finish(true);
 	}
 
+	// filters the list for non-secret mutations
 	private <M extends IMutation<?>> Collection<M> getValidMutations(List<M> mutations) {
-		mutations.removeIf(IMutation::isSecret);
-		return mutations;
+		ArrayList<M> validMutations = new ArrayList<>();
+
+		for (M mutation : mutations) {
+			if (!mutation.isSecret()) {
+				validMutations.add(mutation);
+			}
+		}
+
+		return validMutations;
 	}
 }
