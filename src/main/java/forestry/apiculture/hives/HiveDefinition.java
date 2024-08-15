@@ -40,7 +40,7 @@ import forestry.core.utils.SpeciesUtil;
 
 // todo this should be data driven
 public enum HiveDefinition implements IHiveDefinition {
-	FOREST(ApicultureBlocks.BEEHIVE.get(BlockHiveType.FOREST).defaultState(), 3.0f, ForestryBeeSpecies.FOREST, HiveGenTree.INSTANCE) {
+	FOREST(ApicultureBlocks.BEEHIVE.get(BlockHiveType.FOREST).defaultState(), 6.0f, ForestryBeeSpecies.FOREST, HiveGenTree.INSTANCE) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, flowerStates);

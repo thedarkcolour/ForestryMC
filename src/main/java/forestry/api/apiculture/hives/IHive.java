@@ -14,7 +14,7 @@ import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 
 public interface IHive {
-	IHiveDefinition getHiveDescription();
+	IHiveDefinition getDefinition();
 
 	BlockState getHiveBlockState();
 
@@ -34,8 +34,15 @@ public interface IHive {
 
 	boolean canReplace(WorldGenLevel world, BlockPos pos);
 
+	/**
+	 * @param level The level to generate the hive in.
+	 * @param posX  The X coordinate of the position where the hive should be generated.
+	 * @param posZ  The Z coordinate of the position where the hive should be generated.
+	 * @return The adjusted position, including X, Y, and Z coordinates, where the hive should be generated,
+	 * or {@code null} if no hive should be generated at the given X and Z coordinates.
+	 */
 	@Nullable
-	BlockPos getPosForHive(WorldGenLevel world, int x, int z);
+	BlockPos getPosForHive(WorldGenLevel level, int posX, int posZ);
 
 	@Override
 	String toString();

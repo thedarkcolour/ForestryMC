@@ -43,9 +43,9 @@ public class HiveGenGround implements IHiveGen {
 	}
 
 	@Override
-	public BlockPos getPosForHive(WorldGenLevel world, int x, int z) {
+	public BlockPos getPosForHive(WorldGenLevel level, int posX, int posZ) {
 		// get to the ground
-		final BlockPos topPos = world.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, new BlockPos(x, 0, z));
+		final BlockPos topPos = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, new BlockPos(posX, 0, posZ));
 		if (topPos.getY() == 0) {
 			return null;
 		}
@@ -53,13 +53,13 @@ public class HiveGenGround implements IHiveGen {
 		final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		pos.set(topPos);
 
-		BlockState blockState = world.getBlockState(pos);
-		while (IHiveGen.isTreeBlock(blockState) || canReplace(blockState, world, pos)) {
+		BlockState blockState = level.getBlockState(pos);
+		while (IHiveGen.isTreeBlock(blockState) || canReplace(blockState, level, pos)) {
 			pos.move(Direction.DOWN);
 			if (pos.getY() <= 0) {
 				return null;
 			}
-			blockState = world.getBlockState(pos);
+			blockState = level.getBlockState(pos);
 		}
 
 		return pos.above();

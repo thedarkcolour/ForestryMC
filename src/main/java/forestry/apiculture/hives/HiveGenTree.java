@@ -42,19 +42,18 @@ public enum HiveGenTree implements IHiveGen {
 		return canReplace(blockStateBelow, world, posBelow);
 	}
 
-	// todo this is probably wrong (Nedelosk code)
 	@Override
-	public BlockPos getPosForHive(WorldGenLevel world, int x, int z) {
-		ChunkAccess chunk = world.getChunk(x >> 4, z >> 4);
+	public BlockPos getPosForHive(WorldGenLevel level, int posX, int posZ) {
+		ChunkAccess chunk = level.getChunk(posX >> 4, posZ >> 4);
 
 		// get top leaf block
-		int height = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x & 0xFF, z & 0xFF);
+		int height = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, posX & 0xFF, posZ & 0xFF) - 1;
 
 		if (height <= chunk.getMinBuildHeight()) {
 			return null;
 		}
 
-		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, height, z);
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(posX, height, posZ);
 		BlockState state = chunk.getBlockState(pos);
 
 		if (!IHiveGen.isTreeBlock(state)) {

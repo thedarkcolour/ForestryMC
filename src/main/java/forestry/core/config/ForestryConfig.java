@@ -51,24 +51,28 @@ public class ForestryConfig {
 	}
 
 	public static class Server {
-		public final ForgeConfigSpec.BooleanValue pollinateVanillaLeaves;
+		// Genetics
 		public final ForgeConfigSpec.DoubleValue researchMutationBoostMultiplier;
 		public final ForgeConfigSpec.DoubleValue maxResearchMutationBoostPercent;
-		public final ForgeConfigSpec.BooleanValue enableBackpackResupply;
+		// Bees
+		public final ForgeConfigSpec.BooleanValue pollinateVanillaLeaves;
+		public final ForgeConfigSpec.DoubleValue wildHiveSpawnRate;
+		// Butterflies
 		public final ForgeConfigSpec.IntValue butterflyClusterLimit;
 		public final ForgeConfigSpec.IntValue butterflyClusterWidth;
 		public final ForgeConfigSpec.IntValue butterflyClusterHeight;
+		// Farms
 		public final ForgeConfigSpec.IntValue multiFarmSize;
 		public final ForgeConfigSpec.BooleanValue squareMultiFarms;
 		public final ForgeConfigSpec.IntValue legacyFarmsPlanterRings;
 		public final ForgeConfigSpec.BooleanValue legacyFarmsUseRings;
 		public final ForgeConfigSpec.IntValue legacyFarmsRingSize;
+		// Misc
+		public final ForgeConfigSpec.BooleanValue enableBackpackResupply;
 
 		public Server(ForgeConfigSpec.Builder builder) {
+			// Genetics
 			builder.push("genetics");
-			this.pollinateVanillaLeaves = builder
-					.comment("Whether bees and butterflies can pollinate Vanilla leaves. Might be undesirable for builds that rely on leaves.")
-					.define("pollinate_vanilla_leaves", true);
 			this.researchMutationBoostMultiplier = builder
 					.comment("When a player researches a mutation using the Escritoire, mutation chances for hives owned by that player are multiplied by this factor, with the increase in chance limited to the value set in \"research_mutation_boost_multiplier\".")
 					.defineInRange("research_mutation_boost_multiplier", 1.5, 1.0, 1000.0);
@@ -77,6 +81,17 @@ public class ForestryConfig {
 					.defineInRange("max_research_mutation_boost_percent", 5.0, 0.0, 100.0);
 			builder.pop();
 
+			// Bees
+			builder.push("bees");
+			this.pollinateVanillaLeaves = builder
+					.comment("Whether bees and butterflies can pollinate Vanilla leaves. Might be undesirable for builds that rely on leaves.")
+					.define("pollinate_vanilla_leaves", true);
+			this.wildHiveSpawnRate = builder
+					.comment("The base chance for a wild beehive to spawn naturally.")
+					.defineInRange("wild_hive_spawn_rate", 1.0, 0.0, 1000.0);
+			builder.pop();
+
+			// Farming
 			builder.push("farming");
 			this.multiFarmSize = builder
 					.comment("")
@@ -95,6 +110,7 @@ public class ForestryConfig {
 					.defineInRange("legacy_farms_ring_size", 4, 1, 10);
 			builder.pop();
 
+			// Butterflies
 			builder.push("butterflies");
 			this.butterflyClusterLimit = builder
 					.comment("The maximum number of butterflies that can spawn in the same area or cluster.")
@@ -107,6 +123,7 @@ public class ForestryConfig {
 					.defineInRange("butterfly_cluster_height", 64, 0, 2000);
 			builder.pop();
 
+			// Misc
 			this.enableBackpackResupply = builder
 					.comment("Whether backpacks can have their resupply mode enabled, which stocks a player's inventory using blocks from the backpack's inventory.")
 					.define("enable_backpack_resupply", true);

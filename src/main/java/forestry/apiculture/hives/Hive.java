@@ -36,7 +36,7 @@ public final class Hive implements IHive {
 	}
 
 	@Override
-	public IHiveDefinition getHiveDescription() {
+	public IHiveDefinition getDefinition() {
 		return this.hiveDescription;
 	}
 
@@ -86,14 +86,10 @@ public final class Hive implements IHive {
 		return this.hiveDescription.getHiveGen().canReplace(blockState, world, pos);
 	}
 
-	@Override
 	@Nullable
-	public BlockPos getPosForHive(WorldGenLevel world, int x, int z) {
-		return this.hiveDescription.getHiveGen().getPosForHive(world, x, z);
-	}
-
-	public void addDrops(List<IHiveDrop> drops) {
-		this.drops.addAll(drops);
+	@Override
+	public BlockPos getPosForHive(WorldGenLevel level, int posX, int posZ) {
+		return this.hiveDescription.getHiveGen().getPosForHive(level, posX, posZ);
 	}
 
 	@Override

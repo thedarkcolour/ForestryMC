@@ -32,7 +32,7 @@ public class ForestryBiomeModifier implements BiomeModifier {
 
 			for (IHive hive : IForestryApi.INSTANCE.getHiveManager().getHives()) {
 				if (hive.isGoodBiome(biome) && hive.isGoodTemperature(temperature) && hive.isGoodHumidity(humidity)) {
-					builder.getGenerationSettings().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ApicultureFeatures.PLACED_HIVE_DECORATOR.getHolder().get());
+					builder.getGenerationSettings().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, ApicultureFeatures.PLACED_HIVE_DECORATOR.getHolder().get());
 					return;
 				}
 			}

@@ -7,18 +7,18 @@ package forestry.api.apiculture.hives;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
 
 public interface IHiveGen {
 	/**
-	 * return a position that the hive should try to generate at.
-	 * returns null if the hive can't be placed anywhere.
+	 * @return The position including X, Y, and Z coordinates to place the hive at, or {@code null} if the hive can't
+	 * generate at the given posX and posZ coordinates.
 	 */
 	@Nullable
-	BlockPos getPosForHive(WorldGenLevel world, int x, int z);
+	BlockPos getPosForHive(WorldGenLevel level, int posX, int posZ);
 
 	/**
 	 * returns true if the hive can be generated at this location.

@@ -26,19 +26,17 @@ import forestry.api.IForestryApi;
 import forestry.api.apiculture.hives.IHive;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
+import forestry.core.config.ForestryConfig;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
-	// todo make configurable
-	public static final float generateBeehivesAmount = 1.0f;
-
 	public HiveDecorator() {
 		super(NoneFeatureConfiguration.CODEC);
 	}
 
-	public static boolean tryGenHive(WorldGenLevel world, RandomSource rand, int x, int z, IHive hive) {
-		final BlockPos hivePos = hive.getPosForHive(world, x, z);
+	public static boolean tryGenHive(WorldGenLevel world, RandomSource rand, int posX, int posZ, IHive hive) {
+		final BlockPos hivePos = hive.getPosForHive(world, posX, posZ);
 
 		if (hivePos == null) {
 			return false;
@@ -94,17 +92,18 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 
 		ObjectArrayList<IHive> hives = new ObjectArrayList<>(IForestryApi.INSTANCE.getHiveManager().getHives());
 		int numTries = (int) Math.ceil(hives.size() / 2f);
+		double baseChance = ForestryConfig.SERVER.wildHiveSpawnRate.get() * hives.size() / 8;
 		// todo shouldn't this check temperature too?
 		hives.removeIf(hive -> !hive.isGoodBiome(biome) || !hive.isGoodHumidity(humidity) || !hive.isGoodTemperature(temperature));
 		Util.shuffle(hives, rand);
 
 		for (int tries = 0; tries < numTries; tries++) {
 			for (IHive hive : hives) {
-				if (hive.genChance() * generateBeehivesAmount * hives.size() / 8 >= rand.nextFloat() * 100.0f) {
-					int x = pos.getX() + rand.nextInt(16);
-					int z = pos.getZ() + rand.nextInt(16);
+				if (hive.genChance() * baseChance >= rand.nextFloat() * 100.0f) {
+					int posX = pos.getX() + rand.nextInt(16);
+					int posZ = pos.getZ() + rand.nextInt(16);
 
-					if (tryGenHive(level, rand, x, z, hive)) {
+					if (tryGenHive(level, rand, posX, posZ, hive)) {
 						return true;
 					}
 				}
