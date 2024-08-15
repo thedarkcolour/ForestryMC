@@ -51,7 +51,6 @@ import forestry.core.multiblock.IMultiblockControllerInternal;
 import forestry.core.multiblock.MultiblockValidationException;
 import forestry.core.multiblock.RectangularMultiblockControllerBase;
 import forestry.core.render.ParticleRender;
-import forestry.core.utils.SpeciesUtil;
 
 public class AlvearyController extends RectangularMultiblockControllerBase implements IAlvearyControllerInternal, IClimateControlled {
 	private final InventoryBeeHousing inventory;
@@ -73,7 +72,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	public AlvearyController(Level world) {
 		super(world, AlvearyMultiblockSizeLimits.instance);
 		this.inventory = new InventoryBeeHousing(9);
-		this.beekeepingLogic = SpeciesUtil.BEE_TYPE.get().createBeekeepingLogic(this);
+		this.beekeepingLogic = IForestryApi.INSTANCE.getHiveManager().createBeekeepingLogic(this);
 
 		BlockPos referenceCoord = getReferenceCoord();
 		this.climate = referenceCoord == null ? FakeClimateProvider.INSTANCE : new ClimateProvider(this.level, referenceCoord);
@@ -327,7 +326,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 
 	@Override
 	public TemperatureType temperature() {
-		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(this);
+		IBeeModifier beeModifier = IForestryApi.INSTANCE.getHiveManager().createBeeHousingModifier(this);
 		if (beeModifier.isHellish() || getBiome().is(ForestryTags.Biomes.NETHER_CATEGORY)) {
 			if (this.temperatureSteps >= 0) {
 				return TemperatureType.HELLISH;

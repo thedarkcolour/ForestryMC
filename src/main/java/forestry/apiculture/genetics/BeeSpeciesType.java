@@ -27,10 +27,6 @@ import com.mojang.serialization.Codec;
 
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.IApiaristTracker;
-import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.IBeeListener;
-import forestry.api.apiculture.IBeeModifier;
-import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
 import forestry.api.apiculture.genetics.IBeeSpecies;
@@ -48,9 +44,6 @@ import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.ISpeciesTypeBuilder;
-import forestry.apiculture.BeeHousingListener;
-import forestry.apiculture.BeeHousingModifier;
-import forestry.apiculture.BeekeepingLogic;
 import forestry.apiimpl.ForestryApiImpl;
 import forestry.apiimpl.plugin.ApicultureRegistration;
 import forestry.core.genetics.BreedingTracker;
@@ -116,21 +109,6 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 	@Override
 	public boolean isMember(IIndividual individual) {
 		return individual instanceof IBee;
-	}
-
-	@Override
-	public IBeekeepingLogic createBeekeepingLogic(IBeeHousing housing) {
-		return new BeekeepingLogic(housing);
-	}
-
-	@Override
-	public IBeeModifier createBeeHousingModifier(IBeeHousing housing) {
-		return new BeeHousingModifier(housing);
-	}
-
-	@Override
-	public IBeeListener createBeeHousingListener(IBeeHousing housing) {
-		return new BeeHousingListener(housing);
 	}
 
 	@Override

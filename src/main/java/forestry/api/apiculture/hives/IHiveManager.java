@@ -7,6 +7,10 @@ import java.util.List;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.IBeeListener;
+import forestry.api.apiculture.IBeeModifier;
+import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.apiculture.VillageHive;
 
 public interface IHiveManager {
@@ -37,4 +41,22 @@ public interface IHiveManager {
 	 * @return The chance
 	 */
 	float getSwarmingMaterialChance(Item swarmItem);
+
+	/**
+	 * Creates beekeepingLogic for a housing.
+	 * Should be used when the housing is created, see IBeekeepingLogic
+	 */
+	IBeekeepingLogic createBeekeepingLogic(IBeeHousing housing);
+
+	/**
+	 * Combines multiple modifiers from an IBeeHousing into one.
+	 * Stays up to date with changes to the housing's modifiers.
+	 */
+	IBeeModifier createBeeHousingModifier(IBeeHousing housing);
+
+	/**
+	 * Combines multiple listeners from an IBeeHousing into one.
+	 * Stays up to date with changes to the housing's listeners.
+	 */
+	IBeeListener createBeeHousingListener(IBeeHousing housing);
 }

@@ -32,6 +32,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.Forestry;
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.IApiaristTracker;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeHousingInventory;
@@ -80,8 +81,8 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 	public BeekeepingLogic(IBeeHousing housing) {
 		this.housing = housing;
-		this.beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
-		this.beeListener = SpeciesUtil.BEE_TYPE.get().createBeeHousingListener(housing);
+		this.beeModifier = IForestryApi.INSTANCE.getHiveManager().createBeeHousingModifier(housing);
+		this.beeListener = IForestryApi.INSTANCE.getHiveManager().createBeeHousingListener(housing);
 	}
 
 	// / SAVING & LOADING

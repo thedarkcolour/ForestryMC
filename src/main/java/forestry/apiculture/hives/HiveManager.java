@@ -9,14 +9,20 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
-import java.util.Objects;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.IBeeListener;
+import forestry.api.apiculture.IBeeModifier;
+import forestry.api.apiculture.IBeekeepingLogic;
 import forestry.api.apiculture.hives.IHive;
 import forestry.api.apiculture.hives.IHiveDrop;
 import forestry.api.apiculture.hives.IHiveManager;
+import forestry.apiculture.BeeHousingListener;
+import forestry.apiculture.BeeHousingModifier;
+import forestry.apiculture.BeekeepingLogic;
 import forestry.apiculture.VillageHive;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
@@ -63,5 +69,20 @@ public class HiveManager implements IHiveManager {
 	@Override
 	public float getSwarmingMaterialChance(Item swarmItem) {
 		return swarmerMaterials.getFloat(swarmItem);
+	}
+
+	@Override
+	public IBeekeepingLogic createBeekeepingLogic(IBeeHousing housing) {
+		return new BeekeepingLogic(housing);
+	}
+
+	@Override
+	public IBeeModifier createBeeHousingModifier(IBeeHousing housing) {
+		return new BeeHousingModifier(housing);
+	}
+
+	@Override
+	public IBeeListener createBeeHousingListener(IBeeHousing housing) {
+		return new BeeHousingListener(housing);
 	}
 }

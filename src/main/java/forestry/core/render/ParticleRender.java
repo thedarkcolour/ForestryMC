@@ -23,6 +23,7 @@ import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.api.core.HumidityType;
@@ -273,7 +274,7 @@ public class ParticleRender {
 	}
 
 	public static Vec3i getModifiedArea(IGenome genome, IBeeHousing housing) {
-		Vec3i area = Bee.getAdjustedTerritory(genome, SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing));
+		Vec3i area = Bee.getAdjustedTerritory(genome, IForestryApi.INSTANCE.getHiveManager().createBeeHousingModifier(housing));
 		int x = area.getX();
 		int y = area.getY();
 		int z = area.getZ();

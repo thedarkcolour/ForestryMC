@@ -17,6 +17,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 
+import forestry.api.IForestryApi;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.genetics.IBeeEffect;
@@ -24,7 +25,6 @@ import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
 import forestry.apiculture.genetics.Bee;
 import forestry.core.genetics.EffectData;
-import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
 
 public abstract class ThrottledBeeEffect extends DummyBeeEffect implements IBeeEffect {
@@ -40,7 +40,7 @@ public abstract class ThrottledBeeEffect extends DummyBeeEffect implements IBeeE
 	}
 
 	public static AABB getBounding(IBeeHousing housing, IGenome genome) {
-		IBeeModifier beeModifier = SpeciesUtil.BEE_TYPE.get().createBeeHousingModifier(housing);
+		IBeeModifier beeModifier = IForestryApi.INSTANCE.getHiveManager().createBeeHousingModifier(housing);
 		Vec3i territory = Bee.getAdjustedTerritory(genome, beeModifier);
 
 		Vec3i offset = VecUtil.scale(territory, -1 / 2.0f);
