@@ -138,7 +138,7 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 				// Clean the element area
 				scrollableContent.clear();
 				// Create the new elements
-				scrollableContent.init(tab.getMode(), individual, scrollableContent.getWidth() / 2, 0);
+				scrollableContent.init(tab.getMode(), individual, scrollableContent.getWidth() / 2);
 				tab.createElements(scrollableContent, individual, stage, stack);
 				scrollableContent.forceLayout();
 				// Update the scrollbar
