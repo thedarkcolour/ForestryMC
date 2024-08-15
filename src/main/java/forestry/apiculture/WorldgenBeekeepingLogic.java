@@ -29,7 +29,7 @@ import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.apiculture.tiles.TileHive;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.TickHelper;
+import forestry.api.util.TickHelper;
 
 public class WorldgenBeekeepingLogic implements IBeekeepingLogic {
 	private final TileHive housing;

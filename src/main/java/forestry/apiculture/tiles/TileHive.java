@@ -67,7 +67,7 @@ import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SpeciesUtil;
-import forestry.core.utils.TickHelper;
+import forestry.api.util.TickHelper;
 
 public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IBeeHousing {
 	private static final DamageSource damageSourceBeeHive = new DamageSourceForestry("bee.hive");

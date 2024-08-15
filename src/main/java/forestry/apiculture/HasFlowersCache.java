@@ -30,7 +30,7 @@ import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
-import forestry.core.utils.TickHelper;
+import forestry.api.util.TickHelper;
 
 // Cache used to determine if a beehive has a suitable flower nearby.
 // This passively checks one block a tick in a spiraling pattern centered on the hive,
