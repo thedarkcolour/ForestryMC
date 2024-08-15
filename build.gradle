@@ -7,9 +7,11 @@ plugins {
 	id "org.parchmentmc.librarian.forgegradle" version "1.+"
 }
 
-group = "thedarkcolour.forestry"
-version = System.getenv("FORESTRY_VERSION") ?: "1.0.2"
-archivesBaseName = "forestry-$minecraft_version"
+group = "com.thedarkcolour.forestry"
+version = "1.0.2"
+archivesBaseName = "forestry-$minecraftVersion"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
 	maven {
@@ -17,7 +19,6 @@ repositories {
 		url = "https://dvs1.progwml6.com/files/maven"
 		content { includeGroup "mezz.jei" }
 	}
-
 	maven {
 		name = "Patchouli"
 		url = "https://maven.blamejared.com/"
@@ -31,43 +32,28 @@ repositories {
 }
 
 dependencies {
-	minecraft "net.minecraftforge:forge:$minecraft_version-$forge_version"
+	minecraft "net.minecraftforge:forge:$minecraftVersion-$forgeVersion"
 
-	compileOnly fg.deobf("mezz.jei:jei-$minecraft_version-common-api:$jei_version")
-	compileOnly fg.deobf("mezz.jei:jei-$minecraft_version-forge-api:$jei_version")
-	runtimeOnly fg.deobf("mezz.jei:jei-$minecraft_version-forge:$jei_version")
+	compileOnly fg.deobf("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion")
+	compileOnly fg.deobf("mezz.jei:jei-$minecraftVersion-forge-api:$jeiVersion")
+	runtimeOnly fg.deobf("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion")
 
-	compileOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouli_version:api")
-	runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouli_version")
+	compileOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouliVersion:api")
+	runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouliVersion")
+
 	runtimeOnly fg.deobf("curse.maven:spit-it-out-857141:4888738")
 	runtimeOnly fg.deobf("curse.maven:cyanide-541676:4126944")
 }
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-}
-
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
-}
-
-sourceSets {
-	main {
-		resources {
-			srcDir "src/generated/resources"
-		}
-	}
-}
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 minecraft {
-	mappings channel: 'parchment', version: "$parchment_mappings-$minecraft_version"
+	mappings channel: 'parchment', version: "$mappingsVersion-$minecraftVersion"
 
 	accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
 
 	runs {
-		def commonRunProperties = {
+		configureEach {
 			workingDirectory project.file("run")
 
 			property "forge.logging.console.level", "debug"
@@ -84,17 +70,13 @@ minecraft {
 			}
 		}
 
-		client {
-			with commonRunProperties
-		}
+		client {}
 
 		server {
 			workingDirectory project.file("run/server")
-			with commonRunProperties
 		}
 
 		data {
-			with commonRunProperties
 			args "--mod", "forestry", "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources/")
 		}
 	}
@@ -102,9 +84,10 @@ minecraft {
 
 def replaceProperties = [
 		"version": project.version,
-		"forge_version_range": forge_version_range,
-		"jei_version_range": jei_version_range,
-		"patchouli_version_range": patchouli_version_range
+		"forgeVersionRange": forgeVersionRange,
+		"jeiVersionRange": jeiVersionRange,
+		"patchouliVersionRange": patchouliVersionRange,
+		"fmlVersionRange": fmlVersionRange,
 ]
 
 processResources {
@@ -135,39 +118,35 @@ jar {
 	}
 }
 
-def publicApiIncludePatterns = {
-	include "forestry/api/**"
-	include "genetics/api/**"
-}
-
 javadoc {
 	source = sourceSets.main.allJava
 	classpath = sourceSets.main.compileClasspath + sourceSets.main.output
 
 	options.addStringOption("Xdoclint:none", "-quiet")
 	options.encoding = "UTF-8"
+
+	include "forestry/api/**"
 }
 
-javadoc publicApiIncludePatterns
-
-task javadocJar(type: Jar, dependsOn: javadoc, group: "build") {
+tasks.register('javadocJar', Jar) {
+	dependsOn javadoc
 	archiveClassifier.set("javadoc")
 	from javadoc.destinationDir
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
 	archiveClassifier.set("sources")
 	from sourceSets.main.allJava
 }
 
-task apiJar(type: Jar, group: "build") {
+tasks.register('apiJar', Jar) {
 	archiveClassifier.set("api")
 	// api jar ist just a development aid and serves as both a binary and source jar simultaneously
 	from sourceSets.main.output
 	from sourceSets.main.allJava
-}
 
-apiJar publicApiIncludePatterns
+	include "forestry/api/**"
+}
 
 artifacts {
 	archives javadocJar
@@ -237,7 +216,7 @@ if (System.getenv("CURSEFORGE")) {
 				releaseType = "release"
 			}
 
-			addGameVersion project.minecraft_version
+			addGameVersion project.minecraftVersion
 			addGameVersion "Forge"
 
 			mainArtifact(jar.archiveFile) {
@@ -268,7 +247,7 @@ modrinth {
     }
 
     uploadFile.set(jar)
-    gameVersions.add(minecraft_version)
+    gameVersions.add(minecraftVersion)
 	loaders.add("forge")
 
     dependencies {
@@ -279,6 +258,10 @@ modrinth {
 
 tasks.modrinth.onlyIf {
     System.getenv("MODRINTH")
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = "UTF-8"
 }
 
 idea {

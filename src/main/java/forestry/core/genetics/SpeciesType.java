@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -89,6 +90,7 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 		return this.karyotype;
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	@Override
 	public void onSpeciesRegistered(ImmutableMap<ResourceLocation, S> allSpecies, IMutationManager<S> mutations) {
 		this.speciesCount = 0;

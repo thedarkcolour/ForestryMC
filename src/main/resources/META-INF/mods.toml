@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[34,)"
+loaderVersion="{fmlVersionRange}"
 issueTrackerURL="https://github.com/ForestryMC/ForestryMC/issues"
 
 license="GNU Lesser Public License v3"
@@ -21,20 +21,20 @@ license="GNU Lesser Public License v3"
 [[dependencies.forestry]]
 	modId="forge"
 	mandatory=true
-	versionRange="${forge_version_range}"
+	versionRange="${forgeVersionRange}"
 	ordering="NONE"
 	side="BOTH"
 
 [[dependencies.forestry]]
 	modId="patchouli"
 	mandatory=true
-	versionRange="${patchouli_version_range}"
+	versionRange="${patchouliVersionRange}"
 	ordering="NONE"
 	side="BOTH"
 
 [[dependencies.forestry]]
 	modId="jei"
 	mandatory=false
-	versionRange="${jei_version_range}"
+	versionRange="${jeiVersionRange}"
 	ordering="NONE"
 	side="CLIENT"
