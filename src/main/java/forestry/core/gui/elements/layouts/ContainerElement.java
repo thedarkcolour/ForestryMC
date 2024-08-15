@@ -300,32 +300,9 @@ public class ContainerElement extends GuiElement {
 	}
 
 	@Override
-	public void onMouseMove(double mouseX, double mouseY) {
-		/*callActions(mouseX, mouseY, ActionType.MOVE, (element, x, y)->{
-			element.onMouseMove(x, y);
-			return false;
-		});*/
-	}
-
-	@Override
 	public boolean onMouseDrag(double mouseX, double mouseY) {
 		return callActions(ActionType.DRAG_MOVE, GuiElement::onMouseDrag);
 	}
-
-	/*@Override
-	public boolean onKeyPressed(int keyCode, int scanCode, int modifiers) {
-		return super.onKeyPressed(keyCode, scanCode, modifiers);
-	}
-
-	@Override
-	public boolean onKeyReleased(int keyCode, int scanCode, int modifiers) {
-		return super.onKeyReleased(keyCode, scanCode, modifiers);
-	}
-
-	@Override
-	public boolean onCharTyped(char keyCode, int modifiers) {
-		return super.onCharTyped(keyCode, modifiers);
-	}*/
 
 	/**
 	 * Determines the origin of the action based on the mouse position and the currently top mouse over element.

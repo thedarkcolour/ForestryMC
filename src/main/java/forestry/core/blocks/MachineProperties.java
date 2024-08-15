@@ -3,7 +3,6 @@ package forestry.core.blocks;
 import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -32,7 +31,6 @@ public class MachineProperties<T extends TileForestry> implements IMachineProper
 	@Nullable
 	private Block block;
 
-	// todo make this not a supplier because Feature... is already a registry object
 	public MachineProperties(FeatureTileType<? extends T> teType, String name, IShapeProvider shape, @Nullable IForestryTicker<? extends T> clientTicker, @Nullable IForestryTicker<? extends T> serverTicker) {
 		this.teType = teType;
 		this.name = name;

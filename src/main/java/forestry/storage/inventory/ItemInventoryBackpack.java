@@ -11,7 +11,6 @@ import forestry.core.inventory.ItemInventory;
 import forestry.storage.items.ItemBackpack;
 
 public class ItemInventoryBackpack extends ItemInventory {
-
 	private final IBackpackDefinition backpackDefinition;
 
 	public ItemInventoryBackpack(Player player, int size, ItemStack parent) {

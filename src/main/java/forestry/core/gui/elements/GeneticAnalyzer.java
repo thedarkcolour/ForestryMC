@@ -220,17 +220,8 @@ public class GeneticAnalyzer extends ContainerElement implements IGeneticAnalyze
 		provider.onSelection(selectedSlot, changed);
 	}
 
-	public int getSelectedSlot() {
-		return selectedSlot;
-	}
-
 	@Override
 	public void updateSelected() {
-		/*int index = sorted.indexOf(selected);
-		if(index >= 0) {
-			setSelectedSlot(sorted.indexOf(selected));
-			return;
-		}*/
 		if (provider.onUpdateSelected()) {
 			return;
 		}

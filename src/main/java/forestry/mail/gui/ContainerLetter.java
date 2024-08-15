@@ -227,7 +227,7 @@ public class ContainerLetter extends ContainerItemInventory<ItemInventoryLetter>
 		if (tradeInfo == null) {
 			getLetter().setRecipient(null);
 		} else {
-			getLetter().setRecipient(tradeInfo.getAddress());
+			getLetter().setRecipient(tradeInfo.address());
 		}
 	}
 }

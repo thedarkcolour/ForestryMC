@@ -121,7 +121,6 @@ public class CoreClientHandler implements IClientModuleHandler {
 		event.registerLayerDefinition(ForestryModelLayers.ENGINE_LAYER, RenderEngine::createBodyLayer);
 	}
 
-	// todo switch to using Vanilla renderers directly + ditch render helper object
 	private static void clientSetupRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		// Core
 		event.registerBlockEntityRenderer(CoreTiles.ANALYZER.tileType(), RenderAnalyzer::new);

@@ -176,10 +176,10 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 		Component infoString = null;
 		if (menu.getTradeInfo() == null) {
 			infoString = Component.translatable("for.gui.mail.no.trader");
-		} else if (menu.getTradeInfo().getTradegood().isEmpty()) {
+		} else if (menu.getTradeInfo().tradegood().isEmpty()) {
 			infoString = Component.translatable("for.gui.mail.nothing.to.trade");
-		} else if (!menu.getTradeInfo().getState().isOk()) {
-			infoString = menu.getTradeInfo().getState().getDescription();
+		} else if (!menu.getTradeInfo().state().isOk()) {
+			infoString = menu.getTradeInfo().state().getDescription();
 		}
 
 		if (infoString != null) {
@@ -189,12 +189,12 @@ public class GuiLetter extends GuiForestry<ContainerLetter> {
 
 		minecraft.font.draw(transform, Component.translatable("for.gui.mail.pleasesend"), leftPos + x, topPos + y, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
 
-		addTradeInfoWidget(new ItemStackWidget(widgetManager, x, y + 10, menu.getTradeInfo().getTradegood()));
+		addTradeInfoWidget(new ItemStackWidget(widgetManager, x, y + 10, menu.getTradeInfo().tradegood()));
 
 		minecraft.font.draw(transform, Component.translatable("for.gui.mail.foreveryattached"), leftPos + x, topPos + y + 28, ColourProperties.INSTANCE.get("gui.mail.lettertext"));
 
-		for (int i = 0; i < menu.getTradeInfo().getRequired().size(); i++) {
-			addTradeInfoWidget(new ItemStackWidget(widgetManager, x + i * 18, y + 38, menu.getTradeInfo().getRequired().get(i)));
+		for (int i = 0; i < menu.getTradeInfo().required().size(); i++) {
+			addTradeInfoWidget(new ItemStackWidget(widgetManager, x + i * 18, y + 38, menu.getTradeInfo().required().get(i)));
 		}
 	}
 

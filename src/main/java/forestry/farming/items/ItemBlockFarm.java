@@ -40,9 +40,6 @@ public class ItemBlockFarm extends ItemBlockForestry<BlockFarm> {
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		if (Screen.hasShiftDown()) {
 			tooltip.add(Component.translatable("block.forestry.farm.tooltip").withStyle(ChatFormatting.GRAY));
-			/*BlockFarm block = getBlock();
-			EnumFarmMaterial material = block.getFarmMaterial();
-			tooltip.add(new TranslationTextComponent("block.forestry.farm.material.tooltip").setStyle((new Style()).setItalic(true).setColor(material.getFormatting())).appendText(" " + WordUtils.capitalize(material.getName().replace("_", ""))));*/
 		} else {
 			ItemTooltipUtil.addShiftInformation(stack, world, tooltip, flag);
 		}

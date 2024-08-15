@@ -11,9 +11,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import forestry.core.utils.JeiUtil;
 import forestry.core.utils.RecipeUtils;
 import forestry.worktable.features.WorktableMenus;
@@ -26,7 +23,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 
-@OnlyIn(Dist.CLIENT)
 class WorktableRecipeTransferHandler implements IRecipeTransferHandler<WorktableMenu, CraftingRecipe> {
 	@Override
 	public Class<WorktableMenu> getContainerClass() {

@@ -8,6 +8,5 @@ import net.minecraft.world.level.BlockGetter;
 
 @FunctionalInterface
 public interface IShapeProvider {
-
 	VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context);
 }

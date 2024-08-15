@@ -8,7 +8,6 @@ import forestry.api.arboriculture.WoodBlockKind;
 import forestry.core.utils.Translator;
 
 public class WoodHelper {
-
 	public static Component getDisplayName(IWoodTyped wood, IWoodType woodType) {
 		WoodBlockKind blockKind = wood.getBlockKind();
 

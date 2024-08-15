@@ -64,7 +64,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		this.imageHeight = 238;
 	}
 
-	public final int getColorCoding(boolean dominant) {
+	public static int getColorCoding(boolean dominant) {
 		if (dominant) {
 			return ColourProperties.INSTANCE.get("gui.beealyzer.dominant");
 		} else {
@@ -77,14 +77,6 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 			textLayout.drawLine(transform, text, x, getColorCoding(individual.getGenome().getActiveAllele(chromosome).dominant()));
 		} else {
 			textLayout.drawLine(transform, text, x, getColorCoding(individual.getGenome().getInactiveAllele(chromosome).dominant()));
-		}
-	}
-
-	public final void drawSplitLine(PoseStack transform, String text, int x, int maxWidth, IIndividual individual, IChromosome<?> chromosome, boolean inactive) {
-		if (!inactive) {
-			textLayout.drawSplitLine(transform, text, x, maxWidth, getColorCoding(individual.getGenome().getActiveAllele(chromosome).dominant()));
-		} else {
-			textLayout.drawSplitLine(transform, text, x, maxWidth, getColorCoding(individual.getGenome().getInactiveAllele(chromosome).dominant()));
 		}
 	}
 
@@ -267,8 +259,6 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.startPage(transform, COLUMN_0, COLUMN_1, COLUMN_2);
 		textLayout.drawLine(transform, Component.translatable("for.gui.beealyzer.mutations").append(":"), COLUMN_0);
 		textLayout.newLine();
-
-		//RenderHelper.enableGUIStandardItemLighting(); TODO Gui Light
 
 		ISpeciesType<?, ?> speciesRoot = individual.getType();
 		ISpecies<?> species = individual.getSpecies();

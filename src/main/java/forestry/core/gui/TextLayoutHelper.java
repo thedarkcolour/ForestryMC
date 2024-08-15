@@ -15,15 +15,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Transformation;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.core.render.ColourProperties;
 
-@OnlyIn(Dist.CLIENT)
 public class TextLayoutHelper {
 	private static final int LINE_HEIGHT = 12;
 
@@ -81,10 +75,6 @@ public class TextLayoutHelper {
 
 	public void drawLine(PoseStack transform, Component text, int x) {
 		drawLine(transform, text, x, defaultFontColor);
-	}
-
-	public void drawSplitLine(PoseStack transform, Component text, int x, int maxWidth) {
-		drawSplitLine(transform, text, x, maxWidth, defaultFontColor);
 	}
 
 	public void drawCenteredLine(PoseStack transform, Component text, int x, int color) {

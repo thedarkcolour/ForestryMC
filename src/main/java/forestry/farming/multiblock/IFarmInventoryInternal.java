@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import forestry.api.farming.IFarmInventory;
 
 public interface IFarmInventoryInternal extends IFarmInventory {
-
 	int getFertilizerValue();
 
 	boolean useFertilizer();

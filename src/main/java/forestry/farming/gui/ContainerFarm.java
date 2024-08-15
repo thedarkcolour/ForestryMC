@@ -26,7 +26,6 @@ import forestry.farming.multiblock.InventoryFarm;
 import forestry.farming.tiles.TileFarm;
 
 public class ContainerFarm extends ContainerSocketed<TileFarm> {
-
 	public static ContainerFarm fromNetwork(int windowId, Inventory inv, FriendlyByteBuf data) {
 		TileFarm tile = TileUtil.getTile(inv.player.level, data.readBlockPos(), TileFarm.class);
 		return new ContainerFarm(windowId, inv, tile);
@@ -79,5 +78,4 @@ public class ContainerFarm extends ContainerSocketed<TileFarm> {
 	public IFluidTank getTank(int slot) {
 		return tile.getMultiblockLogic().getController().getTankManager().getTank(slot);
 	}
-
 }

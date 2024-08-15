@@ -143,8 +143,6 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 
 	@Override
 	public float getFermentationModifier(ItemStack stack) {
-		// todo is this even necessary?
-		//itemstack = GeneticsUtil.convertToGeneticEquivalent(itemstack);
 		IIndividual tree = IIndividualHandlerItem.getIndividual(stack);
 		if (tree == null) {
 			return 1.0f;

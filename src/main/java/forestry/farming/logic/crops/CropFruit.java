@@ -22,7 +22,6 @@ import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 
 public class CropFruit extends Crop {
-
 	public CropFruit(Level world, BlockPos position) {
 		super(world, position);
 	}
@@ -43,5 +42,4 @@ public class CropFruit extends Crop {
 		BlockUtil.sendDestroyEffects(level, pos, level.getBlockState(pos));
 		return tile.pickFruit(ItemStack.EMPTY);
 	}
-
 }

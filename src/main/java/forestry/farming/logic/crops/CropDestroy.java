@@ -30,7 +30,6 @@ public class CropDestroy extends Crop {
 	protected final BlockState blockState;
 	@Nullable
 	protected final BlockState replantState;
-
 	protected final ItemStack germling;
 
 	public CropDestroy(Level world, BlockState blockState, BlockPos position, @Nullable BlockState replantState) {
@@ -86,6 +85,6 @@ public class CropDestroy extends Crop {
 
 	@Override
 	public String toString() {
-		return String.format("CropDestroy [ position: [ %s ]; block: %s ]", position.toString(), blockState);
+		return String.format("CropDestroy [ position: [ %s ]; block: %s ]", position, blockState);
 	}
 }

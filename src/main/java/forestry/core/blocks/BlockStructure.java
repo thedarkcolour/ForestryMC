@@ -85,7 +85,7 @@ public abstract class BlockStructure extends BlockForestry {
 		}
 
 		if (!worldIn.isClientSide) {
-			part.openGui((ServerPlayer) playerIn, pos);    //TODO cast is safe because on server?
+			part.openGui((ServerPlayer) playerIn, pos);
 		}
 		return InteractionResult.SUCCESS;
 	}

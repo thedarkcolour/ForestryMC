@@ -7,8 +7,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.mutable.MutableBoolean;
-
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.IAllele;

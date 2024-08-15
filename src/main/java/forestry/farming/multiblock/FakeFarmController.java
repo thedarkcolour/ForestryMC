@@ -149,7 +149,7 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 
 	@Override
 	public IInventoryAdapter getInternalInventory() {
-		return FakeInventoryAdapter.instance();
+		return FakeInventoryAdapter.INSTANCE;
 	}
 
 	@Override
@@ -209,22 +209,22 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 
 		@Override
 		public Container getProductInventory() {
-			return FakeInventoryAdapter.instance();
+			return FakeInventoryAdapter.INSTANCE;
 		}
 
 		@Override
 		public Container getGermlingsInventory() {
-			return FakeInventoryAdapter.instance();
+			return FakeInventoryAdapter.INSTANCE;
 		}
 
 		@Override
 		public Container getResourcesInventory() {
-			return FakeInventoryAdapter.instance();
+			return FakeInventoryAdapter.INSTANCE;
 		}
 
 		@Override
 		public Container getFertilizerInventory() {
-			return FakeInventoryAdapter.instance();
+			return FakeInventoryAdapter.INSTANCE;
 		}
 
 		@Override

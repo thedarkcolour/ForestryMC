@@ -7,8 +7,7 @@ package forestry.api.genetics.alleles;
  */
 public interface IRegistryAllele<V extends IRegistryAlleleValue> extends IValueAllele<V> {
 	/**
-	 * @return The value contained in this registry allele.
-	 * @throws IllegalStateException If the value for this allele has not yet been registered to its registry chromosome.
+	 * @return The value contained in this registry allele, or {@code null} if it has not been registered yet.
 	 */
 	@Override
 	V value();

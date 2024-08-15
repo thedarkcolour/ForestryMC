@@ -417,6 +417,7 @@ public abstract class GuiElement extends GuiComponent {
 	public void onMouseLeave(double mouseX, double mouseY) {
 	}
 
+	// todo this looks like a chain of unused code
 	public boolean onMouseDrag(double mouseX, double mouseY) {
 		return false;
 	}

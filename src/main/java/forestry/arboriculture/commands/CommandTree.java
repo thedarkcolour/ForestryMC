@@ -20,7 +20,6 @@ import forestry.core.commands.GiveSpeciesCommand;
 import forestry.core.commands.IStatsSaveHelper;
 import forestry.core.utils.SpeciesUtil;
 
-
 public class CommandTree {
 	public static ArgumentBuilder<CommandSourceStack, ?> register() {
 		IStatsSaveHelper saveHelper = new TreeStatsSaveHelper();

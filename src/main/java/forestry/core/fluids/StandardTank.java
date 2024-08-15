@@ -29,12 +29,8 @@ import forestry.api.core.tooltips.ToolTip;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.ModUtil;
 
-/**
- * @author CovertJaguar <http://www.railcraft.info>
- */
 public class StandardTank extends FluidTank implements IStreamable {
-
-	private ITankUpdateHandler tankUpdateHandler = FakeTankUpdateHandler.instance;
+	private ITankUpdateHandler tankUpdateHandler = tank -> {};
 	private int tankIndex;
 	private final boolean canFill;
 	private final boolean canDrain;

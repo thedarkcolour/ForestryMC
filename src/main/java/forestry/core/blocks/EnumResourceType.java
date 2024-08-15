@@ -15,11 +15,9 @@ import java.util.Locale;
 import forestry.api.core.IBlockSubtype;
 
 public enum EnumResourceType implements IBlockSubtype {
-	APATITE(),
-	TIN(),
+	APATITE,
+	TIN,
 	BRONZE();
-
-	public static final EnumResourceType[] VALUES = values();
 
 	@Override
 	public String getSerializedName() {

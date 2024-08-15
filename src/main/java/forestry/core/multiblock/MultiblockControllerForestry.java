@@ -107,7 +107,7 @@ public abstract class MultiblockControllerForestry extends MultiblockControllerB
 	/* INVENTORY */
 
 	public IInventoryAdapter getInternalInventory() {
-		return FakeInventoryAdapter.instance();
+		return FakeInventoryAdapter.INSTANCE;
 	}
 
 	@Override

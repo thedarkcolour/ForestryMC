@@ -8,7 +8,6 @@ import net.minecraft.world.level.BlockGetter;
 
 @FunctionalInterface
 public interface ISimpleShapeProvider extends IShapeProvider {
-
 	VoxelShape getShape();
 
 	@Override

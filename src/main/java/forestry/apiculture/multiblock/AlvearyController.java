@@ -94,7 +94,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 		if (isAssembled()) {
 			return inventory;
 		} else {
-			return FakeInventoryAdapter.instance();
+			return FakeInventoryAdapter.INSTANCE;
 		}
 	}
 

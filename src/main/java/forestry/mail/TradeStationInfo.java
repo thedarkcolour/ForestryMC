@@ -21,46 +21,11 @@ import forestry.api.mail.EnumTradeStationState;
 import forestry.api.mail.IMailAddress;
 import forestry.api.mail.ITradeStationInfo;
 
-public class TradeStationInfo implements ITradeStationInfo {
-	private final IMailAddress address;
-	private final GameProfile owner;
-	private final ItemStack tradegood;
-	private final List<ItemStack> required;
-	private final EnumTradeStationState state;
-
-	public TradeStationInfo(IMailAddress address, GameProfile owner, ItemStack tradegood, List<ItemStack> required, EnumTradeStationState state) {
+public record TradeStationInfo(IMailAddress address, GameProfile owner, ItemStack tradegood, List<ItemStack> required,
+							   EnumTradeStationState state) implements ITradeStationInfo {
+	public TradeStationInfo {
 		if (address.getType() != EnumAddressee.TRADER) {
 			throw new IllegalArgumentException("TradeStation address must be a trader");
 		}
-		this.address = address;
-		this.owner = owner;
-		this.tradegood = tradegood;
-		this.required = required;
-		this.state = state;
-	}
-
-	@Override
-	public IMailAddress getAddress() {
-		return address;
-	}
-
-	@Override
-	public GameProfile getOwner() {
-		return owner;
-	}
-
-	@Override
-	public ItemStack getTradegood() {
-		return tradegood;
-	}
-
-	@Override
-	public List<ItemStack> getRequired() {
-		return required;
-	}
-
-	@Override
-	public EnumTradeStationState getState() {
-		return state;
 	}
 }

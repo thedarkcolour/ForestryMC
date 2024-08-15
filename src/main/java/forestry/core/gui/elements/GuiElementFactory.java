@@ -103,14 +103,6 @@ public enum GuiElementFactory implements ResourceManagerReloadListener {
 				.setPreferredBounds(xPos, yPos, width, height);
 	}
 
-	public final int getColorCoding(boolean dominant) {
-		if (dominant) {
-			return ColourProperties.INSTANCE.get("gui.beealyzer.dominant");
-		} else {
-			return ColourProperties.INSTANCE.get("gui.beealyzer.recessive");
-		}
-	}
-
 	public final Style getStateStyle(boolean dominant) {
 		return dominant ? dominantStyle : recessiveStyle;
 	}
@@ -125,13 +117,6 @@ public enum GuiElementFactory implements ResourceManagerReloadListener {
 		ContainerElement layout = horizontal(GuiElement.UNKNOWN_HEIGHT, 2);
 		layout.label(fertilityString, getStateStyle(fertilityAllele.dominant()));
 		layout.drawable(0, -1, new Drawable(TEXTURE, 60, 240 + texOffset, 12, 8));
-		return layout;
-	}
-
-	public GuiElement createToleranceInfo(IChromosome<IValueAllele<ToleranceType>> chromosome, IValueAllele<ToleranceType> toleranceAllele, ISpecies<?> species, Component text) {
-		ContainerElement layout = horizontal(GuiElement.UNKNOWN_HEIGHT, 0);
-		layout.label(text, getStateStyle(species.isDominant()));
-		layout.add(createToleranceInfo(chromosome, toleranceAllele));
 		return layout;
 	}
 

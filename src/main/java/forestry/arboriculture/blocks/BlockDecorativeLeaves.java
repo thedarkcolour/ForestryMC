@@ -62,7 +62,6 @@ public class BlockDecorativeLeaves extends Block implements IColoredBlock, IForg
 
 	@Override
 	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
-		super.entityInside(state, worldIn, pos, entityIn);
 		Vec3 motion = entityIn.getDeltaMovement();
 		entityIn.setDeltaMovement(motion.multiply(0.4D, 1.0D, 0.4D));
 	}

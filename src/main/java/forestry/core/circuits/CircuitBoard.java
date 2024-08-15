@@ -29,7 +29,6 @@ import forestry.api.circuits.ICircuitBoard;
 import forestry.api.circuits.ICircuitLayout;
 
 public class CircuitBoard implements ICircuitBoard {
-
 	private final EnumCircuitBoardType type;
 	@Nullable
 	private final ICircuitLayout layout;

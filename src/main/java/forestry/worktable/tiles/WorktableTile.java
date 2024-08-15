@@ -177,16 +177,6 @@ public class WorktableTile extends TileBase implements ICrafterWorktable {
 		}
 	}
 
-	@Nullable
-	@Override
-	public CraftingRecipe getRecipeUsed() {
-		if (currentRecipe == null) {
-			return null;
-		}
-
-		return currentRecipe.getSelectedRecipe(level);
-	}
-
 	/* Crafting Container methods */
 	public RecipeMemory getMemory() {
 		return memory;

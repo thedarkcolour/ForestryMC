@@ -79,7 +79,7 @@ public abstract class MultiblockTileEntityForestry<T extends IMultiblockLogic> e
 
 	/* INVENTORY */
 	public IInventoryAdapter getInternalInventory() {
-		return FakeInventoryAdapter.instance();
+		return FakeInventoryAdapter.INSTANCE;
 	}
 
 	public boolean allowsAutomation() {

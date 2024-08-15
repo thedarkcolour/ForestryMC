@@ -22,7 +22,6 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class PipetteContents {
-
 	private final FluidStack contents;
 
 	@Nullable

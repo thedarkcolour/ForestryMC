@@ -22,7 +22,6 @@ import net.minecraft.world.level.Level;
 import forestry.core.utils.BlockUtil;
 
 public class CropBasicAgriCraft extends Crop {
-
 	private final BlockState blockState;
 
 	public CropBasicAgriCraft(Level world, BlockState blockState, BlockPos position) {

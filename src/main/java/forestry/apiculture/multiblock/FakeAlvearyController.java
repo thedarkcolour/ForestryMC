@@ -93,7 +93,7 @@ public enum FakeAlvearyController implements FakeMultiblockController, IAlvearyC
 
 	@Override
 	public IInventoryAdapter getInternalInventory() {
-		return FakeInventoryAdapter.instance();
+		return FakeInventoryAdapter.INSTANCE;
 	}
 
 	@Override

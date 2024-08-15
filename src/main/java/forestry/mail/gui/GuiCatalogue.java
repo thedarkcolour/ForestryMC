@@ -91,7 +91,7 @@ public class GuiCatalogue extends GuiForestry<ContainerCatalogue> {
 
 		if (tradeInfo != null) {
 			drawTradePreview(transform, tradeInfo, leftPos + 38, topPos + 30);
-			buttonUse.visible = tradeInfo.getState().isOk();
+			buttonUse.visible = tradeInfo.state().isOk();
 		} else {
 			drawNoTrade(leftPos + 38, topPos + 30);
 			buttonUse.visible = false;
@@ -107,24 +107,24 @@ public class GuiCatalogue extends GuiForestry<ContainerCatalogue> {
 	private void drawTradePreview(PoseStack transform, ITradeStationInfo tradeInfo, int x, int y) {
 
 		Font fontRenderer = Minecraft.getInstance().font;
-		fontRenderer.draw(transform, boldUnderline + tradeInfo.getAddress().getName(), x, y, ColourProperties.INSTANCE.get("gui.book"));
+		fontRenderer.draw(transform, boldUnderline + tradeInfo.address().getName(), x, y, ColourProperties.INSTANCE.get("gui.book"));
 
-		fontRenderer.draw(transform, Component.translatable("for.gui.mail.willtrade", tradeInfo.getOwner().getName()), x, y + 18, ColourProperties.INSTANCE.get("gui.book"));
+		fontRenderer.draw(transform, Component.translatable("for.gui.mail.willtrade", tradeInfo.owner().getName()), x, y + 18, ColourProperties.INSTANCE.get("gui.book"));
 
-		addTradeInfoWidget(new ItemStackWidget(widgetManager, x - leftPos, y - topPos + 28, tradeInfo.getTradegood()));
+		addTradeInfoWidget(new ItemStackWidget(widgetManager, x - leftPos, y - topPos + 28, tradeInfo.tradegood()));
 
 		fontRenderer.draw(transform, Component.translatable("for.gui.mail.tradefor"), x, y + 46, ColourProperties.INSTANCE.get("gui.book"));
 
-		for (int i = 0; i < tradeInfo.getRequired().size(); i++) {
-			ItemStack itemStack = tradeInfo.getRequired().get(i);
+		for (int i = 0; i < tradeInfo.required().size(); i++) {
+			ItemStack itemStack = tradeInfo.required().get(i);
 			addTradeInfoWidget(new ItemStackWidget(widgetManager, x - leftPos + i * 18, y - topPos + 56, itemStack));
 		}
 
 		//TODO: Fix later
-		if (tradeInfo.getState().isOk()) {
-			fontRenderer.drawWordWrap(((MutableComponent) tradeInfo.getState().getDescription()).withStyle(ChatFormatting.DARK_GREEN), x, y + 82, 119, ColourProperties.INSTANCE.get("gui.book"));
+		if (tradeInfo.state().isOk()) {
+			fontRenderer.drawWordWrap(((MutableComponent) tradeInfo.state().getDescription()).withStyle(ChatFormatting.DARK_GREEN), x, y + 82, 119, ColourProperties.INSTANCE.get("gui.book"));
 		} else {
-			fontRenderer.drawWordWrap(((MutableComponent) tradeInfo.getState().getDescription()).withStyle(ChatFormatting.DARK_RED), x, y + 82, 119, ColourProperties.INSTANCE.get("gui.book"));
+			fontRenderer.drawWordWrap(((MutableComponent) tradeInfo.state().getDescription()).withStyle(ChatFormatting.DARK_RED), x, y + 82, 119, ColourProperties.INSTANCE.get("gui.book"));
 		}
 	}
 
@@ -153,7 +153,7 @@ public class GuiCatalogue extends GuiForestry<ContainerCatalogue> {
 			case 5 -> {
 				ITradeStationInfo info = menu.getTradeInfo();
 				if (info != null) {
-					SessionVars.setStringVar("mail.letter.recipient", info.getAddress().getName());
+					SessionVars.setStringVar("mail.letter.recipient", info.address().getName());
 					SessionVars.setStringVar("mail.letter.addressee", EnumAddressee.TRADER.toString());
 				}
 				player.closeContainer();

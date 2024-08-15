@@ -57,21 +57,21 @@ public class CommandMail {
 		}
 
 		private static Component makeTradeListEntry(ITradeStationInfo info) {
-			ChatFormatting formatting = info.getState().isOk() ? ChatFormatting.GREEN : ChatFormatting.RED;
+			ChatFormatting formatting = info.state().isOk() ? ChatFormatting.GREEN : ChatFormatting.RED;
 
 			String tradegood = "[ ? ]";
-			if (!info.getTradegood().isEmpty()) {
-				tradegood = info.getTradegood().getCount() + "x" + info.getTradegood().getHoverName();
+			if (!info.tradegood().isEmpty()) {
+				tradegood = info.tradegood().getCount() + "x" + info.tradegood().getHoverName();
 			}
 			String demand = "[ ? ]";
-			if (!info.getRequired().isEmpty()) {
+			if (!info.required().isEmpty()) {
 				demand = "";
-				for (ItemStack dmd : info.getRequired()) {
+				for (ItemStack dmd : info.required()) {
 					demand = StringUtil.append(", ", demand, dmd.getCount() + "x" + dmd.getHoverName());
 				}
 			}
 
-			return Component.literal(String.format("%s%-12s | %-20s | %s", formatting, info.getAddress().getName(), tradegood, demand));
+			return Component.literal(String.format("%s%-12s | %-20s | %s", formatting, info.address().getName(), tradegood, demand));
 		}
 	}
 

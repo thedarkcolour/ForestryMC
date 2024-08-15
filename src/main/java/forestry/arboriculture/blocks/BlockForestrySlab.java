@@ -12,7 +12,6 @@ import forestry.api.arboriculture.WoodBlockKind;
 import forestry.arboriculture.IWoodTyped;
 
 public class BlockForestrySlab extends SlabBlock implements IWoodTyped {
-
 	private final boolean fireproof;
 	private final IWoodType woodType;
 

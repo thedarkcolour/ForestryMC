@@ -244,7 +244,7 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 			}
 		}
 
-		return EmptyFluidHandler.INSTANCE.fill(resource, action);
+		return 0;
 	}
 
 	public int fill(int tankIndex, FluidStack resource, FluidAction action) {
@@ -283,7 +283,7 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 				return drain(tank.getTankIndex(), maxDrain, action);
 			}
 		}
-		return EmptyFluidHandler.INSTANCE.drain(maxDrain, action);
+		return FluidStack.EMPTY;
 	}
 
 	public FluidStack drain(int tankIndex, int maxDrain, FluidAction action) {

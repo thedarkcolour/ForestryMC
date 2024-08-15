@@ -65,10 +65,6 @@ public class ModuleLepidopterology extends BlankForestryModule {
 		event.put(LepidopterologyEntities.BUTTERFLY.entityType(), LepidopterologyEntities.BUTTERFLY.createAttributes().build());
 	}
 
-	public static void onCommonSetup(FMLCommonSetupEvent event) {
-
-	}
-
 	@Override
 	public ResourceLocation getId() {
 		return ForestryModuleIds.LEPIDOPTEROLOGY;

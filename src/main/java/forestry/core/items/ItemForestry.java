@@ -58,5 +58,4 @@ public class ItemForestry extends Item {
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced) {
 		ItemTooltipUtil.addInformation(stack, world, tooltip, advanced);
 	}
-
 }

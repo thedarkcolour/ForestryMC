@@ -111,7 +111,7 @@ public class ContainerCatalogue extends AbstractContainerMenu implements IGuiSel
 			ITradeStationInfo info = station.getTradeInfo();
 
 			// Filter out any trade stations which do not actually offer anything.
-			if (FILTERS.get(currentFilter).contains(info.getState())) {
+			if (FILTERS.get(currentFilter).contains(info.state())) {
 				stations.add(station);
 			}
 		}

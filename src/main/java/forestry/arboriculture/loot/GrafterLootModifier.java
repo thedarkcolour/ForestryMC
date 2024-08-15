@@ -42,7 +42,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
 public class GrafterLootModifier extends LootModifier {
-
 	public static final Codec<GrafterLootModifier> CODEC = RecordCodecBuilder.create(inst -> codecStart(inst).apply(inst, GrafterLootModifier::new));
 
 	public GrafterLootModifier(LootItemCondition[] conditionsIn) {

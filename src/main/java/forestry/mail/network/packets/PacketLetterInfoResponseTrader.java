@@ -33,16 +33,16 @@ public record PacketLetterInfoResponseTrader(@Nullable ITradeStationInfo info) i
 			buffer.writeBoolean(false);
 		} else {
 			buffer.writeBoolean(true);
-			buffer.writeUtf(info.getAddress().getName());
+			buffer.writeUtf(info.address().getName());
 
-			GameProfile profile = info.getOwner();
+			GameProfile profile = info.owner();
 			buffer.writeUUID(profile.getId());
 			buffer.writeUtf(profile.getName());
 
-			buffer.writeItem(info.getTradegood());
-			NetworkUtil.writeItemStacks(buffer, info.getRequired());
+			buffer.writeItem(info.tradegood());
+			NetworkUtil.writeItemStacks(buffer, info.required());
 
-			buffer.writeEnum(info.getState());
+			buffer.writeEnum(info.state());
 		}
 	}
 

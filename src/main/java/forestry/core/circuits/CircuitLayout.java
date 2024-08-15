@@ -16,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.circuits.ICircuitLayout;
 
-// todo fix translations
 public class CircuitLayout implements ICircuitLayout {
 	private final String uid;
 	private final ResourceLocation socketType;

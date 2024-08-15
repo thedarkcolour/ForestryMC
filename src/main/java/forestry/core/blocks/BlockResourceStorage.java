@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
 
 public class BlockResourceStorage extends Block {
-	private EnumResourceType type;
+	private final EnumResourceType type;
 
 	public BlockResourceStorage(EnumResourceType type) {
 		super(Block.Properties.of(Material.METAL).strength(3f, 5f));

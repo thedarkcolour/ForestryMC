@@ -32,16 +32,6 @@ public class ScrollBarElement extends ContainerElement {
 	private boolean initialised = false;
 	private boolean mouseDown = false;
 
-	public ScrollBarElement(Drawable sliderTexture) {
-		interactionField = add(new ContainerElement());
-		interactionField.setSize(preferredSize.width, preferredSize.height);
-		isScrolling = false;
-		wasClicked = false;
-		visible = true;
-		slider = interactionField.drawable(sliderTexture);
-		addListeners();
-	}
-
 	public ScrollBarElement(Drawable backgroundTexture, boolean hasBorder, Drawable sliderTexture) {
 		setSize(backgroundTexture.uWidth, backgroundTexture.vHeight);
 		int offset = hasBorder ? 1 : 0;
@@ -55,32 +45,12 @@ public class ScrollBarElement extends ContainerElement {
 		drawable(backgroundTexture);
 		slider = interactionField.drawable(sliderTexture);
 		add(interactionField);
-		addListeners();
 	}
 
 	@Override
 	public GuiElement setPreferredBounds(int xPos, int yPos, int width, int height) {
 		interactionField.setSize(width, height);
 		return super.setPreferredBounds(xPos, yPos, width, height);
-	}
-
-	protected void addListeners() {
-		/*addEventHandler(GuiEvent.DownEvent.class, event -> {
-			mouseDown = true;
-		});
-		addEventHandler(GuiEvent.UpEvent.class, event -> {
-			mouseDown = false;
-		});
-		addEventHandler(GuiEvent.WheelEvent.class, event -> {
-			if (listener == null || listener.isFocused((int) event.getX(), (int) event.getY()) || isMouseOver()) {
-				double wheel = event.getDWheel();
-				if (wheel > 0) {
-					setValue(currentValue - step);
-				} else if (wheel < 0) {
-					setValue(currentValue + step);
-				}
-			}
-		});*/
 	}
 
 	@Override
@@ -110,11 +80,6 @@ public class ScrollBarElement extends ContainerElement {
 			}
 		}
 		return false;
-	}
-
-	public ScrollBarElement setVertical() {
-		this.vertical = true;
-		return this;
 	}
 
 	public ScrollBarElement setParameters(IScrollable listener, int minValue, int maxValue, int step) {

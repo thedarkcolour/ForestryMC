@@ -88,60 +88,6 @@ public class BlockGeneticFilter extends BlockForestry implements EntityBlock {
 		return InteractionResult.PASS;
 	}
 
-	//TODO bounding boxes
-	//	@Nullable
-	//	@Override
-	//	public RayTraceResult collisionRayTrace(BlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
-	//		RayTraceResult result = rayTrace(pos, start, end, BOX_CENTER);
-	//		if (result != null) {
-	//			result.subHit = 0;
-	//			return result;
-	//		}
-	//		TileGeneticFilter geneticFilter = TileUtil.getTile(worldIn, pos, TileGeneticFilter.class);
-	//		if (geneticFilter != null) {
-	//			for (Direction facing : Direction.VALUES) {
-	//				if (geneticFilter.isConnected(facing)) {
-	//					result = rayTrace(pos, start, end, BOX_FACES[facing.ordinal()]);
-	//					if (result != null) {
-	//						result.subHit = 1 + facing.ordinal();
-	//						return result;
-	//					}
-	//				}
-	//			}
-	//		}
-	//		return null;
-	//	}
-	//
-	//	@Override
-	//	public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
-	//		addCollisionBoxToList(pos, entityBox, collidingBoxes, BOX_CENTER);
-	//		TileGeneticFilter geneticFilter = TileUtil.getTile(worldIn, pos, TileGeneticFilter.class);
-	//		if (geneticFilter != null) {
-	//			for (Direction facing : Direction.VALUES) {
-	//				if (geneticFilter.isConnected(facing)) {
-	//					addCollisionBoxToList(pos, entityBox, collidingBoxes, BOX_FACES[facing.ordinal()]);
-	//				}
-	//			}
-	//		}
-	//	}
-	//
-	//	@Override
-	//	@OnlyIn(Dist.CLIENT)
-	//	public AxisAlignedBB getSelectedBoundingBox(BlockState state, World worldIn, BlockPos pos) {
-	//		RayTraceResult trace = Minecraft.getInstance().objectMouseOver;
-	//		if (trace == null || trace.subHit < 0 || !pos.equals(trace.getBlockPos())) {
-	//			return FULL_BLOCK_AABB.offset(pos);
-	//		}
-	//		AxisAlignedBB aabb = FULL_BLOCK_AABB;
-	//		int sub = trace.subHit;
-	//		if (sub == 0) {
-	//			aabb = BOX_CENTER;
-	//		} else if (sub < 1 + 6) {
-	//			aabb = BOX_FACES[sub - 1];
-	//		}
-	//		return aabb.offset(pos);
-	//	}
-
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN);

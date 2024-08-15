@@ -24,27 +24,23 @@ public class FakeTankManager extends EmptyFluidHandler implements ITankManager {
 	public static final FakeTankManager instance = new FakeTankManager();
 
 	private FakeTankManager() {
-
 	}
 
 	@Override
 	public void containerAdded(AbstractContainerMenu container, ContainerListener player) {
-
 	}
 
 	@Override
 	public void sendTankUpdate(AbstractContainerMenu container, List<ContainerListener> crafters) {
-
 	}
 
 	@Override
 	public void containerRemoved(AbstractContainerMenu container) {
-
 	}
 
 	@Override
 	public IFluidTank getTank(int tankIndex) {
-		return null;    //TODO return dummy tank instead?
+		return null;
 	}
 
 	@Override
@@ -54,6 +50,5 @@ public class FakeTankManager extends EmptyFluidHandler implements ITankManager {
 
 	@Override
 	public void processTankUpdate(int tankIndex, @Nullable FluidStack contents) {
-
 	}
 }

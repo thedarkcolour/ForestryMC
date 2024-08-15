@@ -38,7 +38,6 @@ import forestry.api.ForestryTags;
 import forestry.core.items.ItemForestry;
 
 public class ItemGrafter extends ItemForestry implements IToolGrafter {
-
 	public ItemGrafter(int maxDamage) {
 		super(new Item.Properties()
 				.durability(maxDamage)

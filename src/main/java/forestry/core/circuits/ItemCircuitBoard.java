@@ -46,7 +46,7 @@ public class ItemCircuitBoard extends ItemForestry implements IColoredItem {
 	@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
 		if (this.allowedIn(tab)) {
-			subItems.add(createCircuitboard(type, null, new ICircuit[]{}));
+			subItems.add(createCircuitboard(type, null, new ICircuit[0]));
 		}
 	}
 
@@ -61,9 +61,7 @@ public class ItemCircuitBoard extends ItemForestry implements IColoredItem {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-		super.appendHoverText(stack, world, list, flag);
 		ICircuitBoard circuitboard = IForestryApi.INSTANCE.getCircuitManager().getCircuitBoard(stack);
 		if (circuitboard != null) {
 			circuitboard.addTooltip(list);

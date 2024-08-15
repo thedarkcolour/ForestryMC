@@ -8,10 +8,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -26,8 +24,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.hives.IHiveTile;
-import forestry.api.core.HumidityType;
-import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.genetics.Bee;
@@ -39,7 +35,6 @@ import forestry.apiculture.particles.ParticleSnow;
 import forestry.core.config.ForestryConfig;
 import forestry.core.entities.ParticleIgnition;
 import forestry.core.entities.ParticleSmoke;
-import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
 
 @OnlyIn(Dist.CLIENT)
@@ -69,8 +64,6 @@ public class ParticleRender {
 		if (!shouldSpawnParticle(world)) {
 			return;
 		}
-
-		ParticleEngine effectRenderer = Minecraft.getInstance().particleEngine;
 
 		Vec3 particleStart = housing.getBeeFXCoordinates();
 
@@ -122,64 +115,6 @@ public class ParticleRender {
 
 		world.addParticle(HONEY_DUST, x, y, z, 0, 0, 0);
 		//		effectRenderer.addEffect(new ParticleHoneydust(world, x, y, z, 0, 0, 0));
-	}
-
-	public static void addClimateParticles(Level worldIn, BlockPos pos, RandomSource rand, TemperatureType temperature, HumidityType humidity) {
-		if (!shouldSpawnParticle(worldIn)) {
-			return;
-		}
-		if (rand.nextFloat() >= 0.75F) {
-			for (int i = 0; i < 3; i++) {
-				Direction facing = Direction.Plane.HORIZONTAL.getRandomDirection(rand);
-				int xOffset = facing.getStepX();
-				int zOffset = facing.getStepZ();
-				double x = pos.getX() + 0.5 + (xOffset * 8 + ((1 - Mth.abs(xOffset)) * (0.5 - rand.nextFloat()) * 8)) / 16.0;
-				double y = pos.getY() + (0.75 + rand.nextFloat() * 14.5) / 16.0;
-				double z = pos.getZ() + 0.5 + (zOffset * 8 + ((1 - Mth.abs(zOffset)) * (0.5 - rand.nextFloat()) * 8)) / 16.0;
-				if (rand.nextBoolean()) {
-					ParticleRender.addEntityClimateParticle(worldIn, x, y, z, temperature.color);
-				} else {
-					ParticleRender.addEntityClimateParticle(worldIn, x, y, z, humidity.color);
-				}
-			}
-		}
-	}
-
-	public static void addEntityClimateParticle(Level world, double x, double y, double z, int color) {
-		if (!shouldSpawnParticle(world)) {
-			return;
-		}
-
-		ParticleEngine effectRenderer = Minecraft.getInstance().particleEngine;
-		//		effectRenderer.addEffect(new ParticleClimate(world, x, y, z, color));
-		//TODO particles
-	}
-
-	public static void addTransformParticles(Level worldIn, BlockPos pos, RandomSource rand) {
-		if (!shouldSpawnParticle(worldIn)) {
-			return;
-		}
-		if (rand.nextFloat() >= 0.65F) {
-			for (int i = 0; i < 3; i++) {
-				Direction facing = Direction.Plane.HORIZONTAL.getRandomDirection(rand);
-				int xOffset = facing.getStepX();
-				int zOffset = facing.getStepZ();
-				double x = pos.getX() + 0.5 + (xOffset * 8 + ((1 - Mth.abs(xOffset)) * (0.5 - rand.nextFloat()) * 8)) / 16.0;
-				double y = pos.getY() + (0.75 + rand.nextFloat() * 14.5) / 16.0;
-				double z = pos.getZ() + 0.5 + (zOffset * 8 + ((1 - Mth.abs(zOffset)) * (0.5 - rand.nextFloat()) * 8)) / 16.0;
-				ParticleRender.addEntityTransformParticle(worldIn, x, y, z);
-			}
-		}
-	}
-
-	public static void addEntityTransformParticle(Level world, double x, double y, double z) {
-		if (!shouldSpawnParticle(world)) {
-			return;
-		}
-
-		ParticleEngine effectRenderer = Minecraft.getInstance().particleEngine;
-		//		effectRenderer.addEffect(new ParticleClimate(world, x, y, z));
-		//TODO particles
 	}
 
 	public static void addEntityExplodeFX(Level world, double x, double y, double z) {
@@ -255,19 +190,6 @@ public class ParticleRender {
 		ParticleEngine effectRenderer = Minecraft.getInstance().particleEngine;
 		//TODO particle data
 		Particle particle = effectRenderer.createParticle(DustParticleOptions.REDSTONE, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed);
-		if (particle != null) {
-			effectRenderer.add(particle);
-		}
-	}
-
-	public static void addEntityBiodustFX(Level world, double x, double y, double z) {
-		if (!shouldSpawnParticle(world)) {
-			return;
-		}
-
-		ParticleEngine effectRenderer = Minecraft.getInstance().particleEngine;
-		//TODO particle data
-		Particle particle = effectRenderer.createParticle(DustParticleOptions.REDSTONE, x, y, z, 0, 0, 0);
 		if (particle != null) {
 			effectRenderer.add(particle);
 		}

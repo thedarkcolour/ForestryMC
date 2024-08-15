@@ -25,7 +25,6 @@ import forestry.core.features.CoreItems;
 import forestry.core.utils.BlockUtil;
 
 public class CropPeat extends Crop {
-
 	public CropPeat(Level world, BlockPos position) {
 		super(world, position);
 	}
@@ -46,5 +45,4 @@ public class CropPeat extends Crop {
 		level.setBlock(pos, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
 		return drops;
 	}
-
 }

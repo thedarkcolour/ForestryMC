@@ -10,8 +10,6 @@
  ******************************************************************************/
 package forestry.core.inventory;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -19,20 +17,8 @@ import net.minecraft.core.Direction;
 
 import forestry.core.config.Constants;
 
-public class FakeInventoryAdapter implements IInventoryAdapter {
-	@Nullable
-	private static FakeInventoryAdapter instance;
-
-	public static FakeInventoryAdapter instance() {
-		if (instance == null) {
-			instance = new FakeInventoryAdapter();
-		}
-		return instance;
-	}
-
-	private FakeInventoryAdapter() {
-
-	}
+public enum FakeInventoryAdapter implements IInventoryAdapter {
+	INSTANCE;
 
 	@Override
 	public boolean isEmpty() {
@@ -86,24 +72,7 @@ public class FakeInventoryAdapter implements IInventoryAdapter {
 
 	@Override
 	public void setItem(int p_70299_1_, ItemStack p_70299_2_) {
-
 	}
-
-	//TODO inventory name
-	//	@Override
-	//	public ITextComponent getDisplayName() {
-	//		return new StringTextComponent(getName());
-	//	}
-	//
-	//	@Override
-	//	public String getName() {
-	//		return "";
-	//	}
-	//
-	//	@Override
-	//	public boolean hasCustomName() {
-	//		return false;
-	//	}
 
 	@Override
 	public int getMaxStackSize() {
@@ -112,7 +81,6 @@ public class FakeInventoryAdapter implements IInventoryAdapter {
 
 	@Override
 	public void setChanged() {
-
 	}
 
 	@Override
@@ -122,12 +90,10 @@ public class FakeInventoryAdapter implements IInventoryAdapter {
 
 	@Override
 	public void startOpen(Player player) {
-
 	}
 
 	@Override
 	public void stopOpen(Player player) {
-
 	}
 
 	@Override
@@ -137,7 +103,6 @@ public class FakeInventoryAdapter implements IInventoryAdapter {
 
 	@Override
 	public void read(CompoundTag CompoundNBT) {
-
 	}
 
 	@Override
@@ -145,23 +110,7 @@ public class FakeInventoryAdapter implements IInventoryAdapter {
 		return CompoundNBT;
 	}
 
-	//TODO inventory fields
-	//	@Override
-	//	public int getField(int id) {
-	//		return 0;
-	//	}
-	//
-	//	@Override
-	//	public void setField(int id, int value) {
-	//	}
-	//
-	//	@Override
-	//	public int getFieldCount() {
-	//		return 0;
-	//	}
-
 	@Override
 	public void clearContent() {
 	}
-
 }

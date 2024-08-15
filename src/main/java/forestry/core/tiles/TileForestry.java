@@ -51,7 +51,7 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	private final ErrorLogic errorHandler = new ErrorLogic();
 	private final AdjacentTileCache tileCache = new AdjacentTileCache(this);
 
-	private IInventoryAdapter inventory = FakeInventoryAdapter.instance();
+	private IInventoryAdapter inventory = FakeInventoryAdapter.INSTANCE;
 
 	// package private for ForestryTicker
 	final TickHelper tickHelper;
@@ -111,7 +111,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
-
 
 	@Override
 	public CompoundTag getUpdateTag() {

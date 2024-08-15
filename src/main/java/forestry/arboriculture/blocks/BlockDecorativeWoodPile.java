@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 
+// todo this doesn't seem to be implemented ?
 public class BlockDecorativeWoodPile extends RotatedPillarBlock {
 	public static final EnumProperty<Direction.Axis> AXIS = EnumProperty.create("axis", Direction.Axis.class);
 
@@ -20,14 +21,7 @@ public class BlockDecorativeWoodPile extends RotatedPillarBlock {
 				.sound(SoundType.WOOD)
 				.strength(1.5f)
 				.noOcclusion());
-		//		setCreativeTab(ModuleCharcoal.getTag());
-		//TODO creative tab
 	}
-
-	/*@Override
-	public boolean isNormalCube(BlockState p_220081_1_, IBlockReader p_220081_2_, BlockPos p_220081_3_) {
-		return false;
-	}*/
 
 	@Override
 	public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
@@ -43,10 +37,4 @@ public class BlockDecorativeWoodPile extends RotatedPillarBlock {
 	public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
 		return 25;
 	}
-
-
-	protected ItemStack getSilkTouchDrop(BlockState state) {
-		return new ItemStack(Item.byBlock(this));
-	}
-
 }

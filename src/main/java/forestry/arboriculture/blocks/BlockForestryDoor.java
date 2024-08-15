@@ -21,7 +21,6 @@ import forestry.api.arboriculture.WoodBlockKind;
 import forestry.arboriculture.IWoodTyped;
 
 public class BlockForestryDoor extends DoorBlock implements IWoodTyped {
-
 	private final ForestryWoodType woodType;
 
 	public BlockForestryDoor(ForestryWoodType woodType) {

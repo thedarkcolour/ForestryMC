@@ -1,7 +1,6 @@
 package forestry.core.genetics;
 
 import javax.annotation.Nullable;
-import java.lang.invoke.VarHandle;
 import java.util.Optional;
 
 import net.minecraft.nbt.CompoundTag;

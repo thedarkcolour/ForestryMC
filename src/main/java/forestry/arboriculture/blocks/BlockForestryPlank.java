@@ -13,7 +13,6 @@ import forestry.api.arboriculture.WoodBlockKind;
 import forestry.arboriculture.IWoodTyped;
 
 public class BlockForestryPlank extends Block implements IWoodTyped {
-
 	public static Properties createWoodProperties(IWoodType woodType) {
 		return Block.Properties.of(Material.WOOD)
 				.strength(woodType.getHardness(), woodType.getHardness() * 1.5F)

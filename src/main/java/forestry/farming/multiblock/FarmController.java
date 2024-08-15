@@ -109,7 +109,7 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 		if (isAssembled()) {
 			return inventory;
 		} else {
-			return FakeInventoryAdapter.instance();
+			return FakeInventoryAdapter.INSTANCE;
 		}
 	}
 

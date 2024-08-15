@@ -3,6 +3,7 @@ package forestry.lepidopterology;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.filter.FilterData;
@@ -67,7 +68,7 @@ public enum LepidopterologyFilterRule implements IFilterRule {
 
 	@Override
 	public ResourceLocation getSpeciesTypeId() {
-		return SpeciesUtil.BUTTERFLY_TYPE.get().id();
+		return ForestrySpeciesTypes.BUTTERFLY;
 	}
 
 }

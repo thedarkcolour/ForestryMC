@@ -24,7 +24,6 @@ import forestry.api.arboriculture.WoodBlockKind;
 import forestry.arboriculture.IWoodTyped;
 
 public class BlockForestryFenceGate extends FenceGateBlock implements IWoodTyped {
-
 	private final boolean fireproof;
 	private final IWoodType woodType;
 
@@ -34,8 +33,6 @@ public class BlockForestryFenceGate extends FenceGateBlock implements IWoodTyped
 				.sound(SoundType.WOOD));
 		this.fireproof = fireproof;
 		this.woodType = woodType;
-
-		//		setCreativeTab(Tabs.tabArboriculture);	TODO creative tab
 	}
 
 	@Override

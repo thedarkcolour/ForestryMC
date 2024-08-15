@@ -81,7 +81,6 @@ public enum ForestryFluids {
 		public DrinkProperties getDrinkProperties() {
 			return new DrinkProperties(1, 0.2f, 32);
 		}
-
 	};
 
 	private static final Map<ResourceLocation, ForestryFluids> tagToFluid = new HashMap<>();
