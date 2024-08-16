@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -44,13 +46,18 @@ import forestry.api.modules.ForestryModule;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.api.modules.IForestryModule;
 import forestry.api.modules.IPacketRegistry;
+import forestry.apiculture.features.ApicultureItems;
+import forestry.apiculture.items.ItemPollenCluster;
 import forestry.apiimpl.plugin.PluginManager;
+import forestry.arboriculture.features.ArboricultureBlocks;
+import forestry.arboriculture.features.ArboricultureItems;
 import forestry.arboriculture.loot.CountBlockFunction;
 import forestry.arboriculture.loot.GrafterLootModifier;
 import forestry.core.blocks.TileStreamUpdateTracker;
 import forestry.core.client.CoreClientHandler;
 import forestry.core.climate.ForestryClimateManager;
 import forestry.core.commands.DiagnosticsCommand;
+import forestry.core.features.CoreItems;
 import forestry.core.loot.ConditionLootModifier;
 import forestry.core.loot.OrganismFunction;
 import forestry.core.network.PacketIdClient;
@@ -74,9 +81,13 @@ import forestry.core.owner.GameProfileDataSerializer;
 import forestry.core.recipes.RecipeManagers;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.worldgen.VillagerJigsaw;
+import forestry.lepidopterology.features.LepidopterologyItems;
 import forestry.modules.BlankForestryModule;
 import forestry.modules.ForestryModuleManager;
 import forestry.modules.ModuleUtil;
+import forestry.modules.features.FeatureItem;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 
 @ForestryModule
 public class ModuleCore extends BlankForestryModule {
@@ -109,7 +120,32 @@ public class ModuleCore extends BlankForestryModule {
 			((ForestryModuleManager) IForestryApi.INSTANCE.getModuleManager()).setupApi();
 			PluginManager.registerCircuits();
 			EntityDataSerializers.registerSerializer(GameProfileDataSerializer.INSTANCE);
+			registerComposts();
 		});
+	}
+
+	private static void registerComposts() {
+		Object2FloatMap<ItemLike> composts = ComposterBlock.COMPOSTABLES;
+
+		for (FeatureItem<?> fruit : CoreItems.FRUITS.getFeatures()) {
+			composts.put(fruit, 0.65f);
+		}
+		composts.put(CoreItems.MOULDY_WHEAT, 0.65f);
+		composts.put(CoreItems.DECAYING_WHEAT, 0.65f);
+		composts.put(CoreItems.MULCH, 0.65f);
+		composts.put(CoreItems.ASH, 0.65f);
+		composts.put(CoreItems.WOOD_PULP, 0.65f);
+		composts.put(CoreItems.PEAT, 0.75f);
+		composts.put(CoreItems.COMPOST, 1f);
+		for (ItemPollenCluster pollen : ApicultureItems.POLLEN_CLUSTER.getItems()) {
+			composts.put(pollen, 0.3f);
+		}
+		composts.put(ArboricultureItems.SAPLING, 0.3f);
+		composts.put(ArboricultureItems.POLLEN_FERTILE, 0.3f);
+		for (BlockItem leaves : ArboricultureBlocks.LEAVES_DECORATIVE.getItems()) {
+			composts.put(leaves, 0.3f);
+		}
+		composts.put(LepidopterologyItems.COCOON_GE, 0.3f);
 	}
 
 	private static void registerGlobalLootModifiers(RegisterEvent event) {

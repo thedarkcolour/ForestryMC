@@ -15,12 +15,14 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -60,6 +62,7 @@ import forestry.core.render.RenderEscritoire;
 import forestry.core.render.RenderMachine;
 import forestry.core.render.RenderMill;
 import forestry.core.render.RenderNaturalistChest;
+import forestry.core.utils.GeneticsUtil;
 import forestry.energy.features.EnergyTiles;
 import forestry.factory.features.FactoryTiles;
 import forestry.lepidopterology.features.LepidopterologyItems;
@@ -81,6 +84,7 @@ public class CoreClientHandler implements IClientModuleHandler {
 		modBus.addListener(CoreClientHandler::registerReloadListeners);
 		modBus.addListener(CoreClientHandler::registerBlockColors);
 		modBus.addListener(CoreClientHandler::registerItemColors);
+		//modBus.addListener(CoreClientHandler::onClientTick);
 	}
 
 	private static void onClientSetup(FMLClientSetupEvent event) {
@@ -227,5 +231,18 @@ public class CoreClientHandler implements IClientModuleHandler {
 
 		// Mail
 		event.register(ClientManager.FORESTRY_ITEM_COLOR, MailItems.STAMPS.itemArray());
+	}
+
+	private static void onClientTick(RenderLevelStageEvent event) {
+		if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+			Minecraft minecraft = Minecraft.getInstance();
+			Player player = minecraft.player;
+
+			if (player != null) {
+				if (GeneticsUtil.hasNaturalistEye(player)) {
+
+				}
+			}
+		}
 	}
 }
