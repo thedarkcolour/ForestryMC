@@ -40,7 +40,6 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 	private final List<BlockState> vanillaLeafStates;
 	private final List<Item> vanillaSaplingItems;
 	private final ItemStack decorativeLeaves;
-	private final int color;
 	private final float rarity;
 
 	public TreeSpecies(ResourceLocation id, ITreeSpeciesType speciesType, IGenome defaultGenome, ITreeSpeciesBuilder builder) {
@@ -53,7 +52,6 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 		this.vanillaLeafStates = builder.getVanillaLeafStates();
 		this.vanillaSaplingItems = builder.getVanillaSaplingItems();
 		this.decorativeLeaves = builder.getDecorativeLeaves();
-		this.color = builder.getColor();
 		this.rarity = builder.getRarity();
 	}
 
@@ -99,7 +97,7 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 
 	@Override
 	public int getEscritoireColor() {
-		return this.color;
+		return this.escritoireColor;
 	}
 
 	@Override

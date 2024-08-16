@@ -2,6 +2,7 @@ package forestry.api.plugin;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -63,6 +64,17 @@ public interface ISpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISpecie
 	B setComplexity(int complexity);
 
 	/**
+	 * Sets the escritoire color of this species. Used for Escritoire game cells.
+	 * If this method is never called, then the default escritoire color is {@code -1}.
+	 * Usually, this method is optional and the color of the game cell is fetched from some other property.
+	 * For example, bees use their outline color, and butterflies use their serum color. However, this property
+	 * must be set manually in the case of tree species.
+	 *
+	 * @param color The color of the Escritoire memory cell when displaying this species.
+	 */
+	B setEscritoireColor(Color color);
+
+	/**
 	 * Specify whether this bee species is a "secret" species whose mutation cannot be discovered in the Escritoire.
 	 * <p>
 	 * Example species include: <ul>
@@ -85,14 +97,32 @@ public interface ISpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISpecie
 	 */
 	B setFactory(ISpeciesFactory<T, S, B> factory);
 
+	/**
+	 * @return The scientific name of the genus this species belongs to. Usually set when the builder is created.
+	 */
 	String getGenus();
 
+	/**
+	 * @return The scientific name of the species without the genus. Usually set when the builder is created.
+	 */
 	String getSpecies();
 
+	/**
+	 * @return Whether alleles of this species are dominant. Set in {@link #setDominant}.
+	 */
 	boolean isDominant();
 
+	/**
+	 * Used to create the default genome object for this species during registration.
+	 *
+	 * @param builder A genome builder with alleles set first by the karyotype, then by the parent taxa of this species.
+	 * @return A completed default genome for this species, with all alleles that have been set in {@link #setGenome}.
+	 */
 	IGenome buildGenome(IGenomeBuilder builder);
 
+	/**
+	 * @return Whether the item form of this species has an enchantment glint. Set in {@link #setGlint}.
+	 */
 	boolean hasGlint();
 
 	TemperatureType getTemperature();
@@ -101,8 +131,19 @@ public interface ISpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISpecie
 
 	int getComplexity();
 
+	/**
+	 * @return The escritoire cell color of this species, or {@code -1} if {@link #setEscritoireColor} was not called.
+	 */
+	int getEscritoireColor();
+
+	/**
+	 * @return Whether this species should be hidden in creative menus or JEI. Set in {@link #setSecret}.
+	 */
 	boolean isSecret();
 
+	/**
+	 * @return The name of who created this species. The default is "SirSengir". Set in {@link #setAuthority}.
+	 */
 	String getAuthority();
 
 	ISpeciesFactory<T, S, B> createSpeciesFactory();

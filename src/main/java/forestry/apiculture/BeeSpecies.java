@@ -16,7 +16,6 @@ import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.api.core.HumidityType;
 import forestry.api.core.IProduct;
-import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IGenome;
@@ -105,7 +104,7 @@ public class BeeSpecies extends Species<IBeeSpeciesType, IBee> implements IBeeSp
 
 	@Override
 	public int getEscritoireColor() {
-		return this.outline;
+		return this.escritoireColor == -1 ? this.outline : this.escritoireColor;
 	}
 
 	@Override

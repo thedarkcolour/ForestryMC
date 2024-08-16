@@ -149,4 +149,9 @@ public class ButterflySpecies extends Species<IButterflySpeciesType, IButterfly>
 	public int getSerumColor() {
 		return this.serumColor;
 	}
+
+	@Override
+	public int getEscritoireColor() {
+		return this.escritoireColor == -1 ? this.serumColor : this.escritoireColor;
+	}
 }

@@ -28,10 +28,10 @@ public class ArboricultureRegistration extends SpeciesRegistration<ITreeSpeciesB
 	}
 
 	@Override
-	public ITreeSpeciesBuilder registerSpecies(ResourceLocation id, String genus, String species, boolean dominant, Color primary, IWoodType woodType) {
+	public ITreeSpeciesBuilder registerSpecies(ResourceLocation id, String genus, String species, boolean dominant, Color escritoireColor, IWoodType woodType) {
 		return register(id, genus, species)
 				.setDominant(dominant)
-				.setEscritoireColor(primary)
+				.setEscritoireColor(escritoireColor)
 				.setWoodType(woodType);
 	}
 

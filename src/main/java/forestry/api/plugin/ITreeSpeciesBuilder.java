@@ -77,10 +77,12 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, I
 	ITreeSpeciesBuilder setRarity(float rarity);
 
 	/**
-	 * Sets the primary color of this tree species. Used for tinting leaves and Escritoire game cells.
+	 * Overrides the escritoire color set in {@link IArboricultureRegistration#registerSpecies}.
 	 *
 	 * @param color The color.
+	 * @see ISpeciesBuilder#setEscritoireColor
 	 */
+	@Override
 	ITreeSpeciesBuilder setEscritoireColor(Color color);
 
 	@Nullable
@@ -93,6 +95,4 @@ public interface ITreeSpeciesBuilder extends ISpeciesBuilder<ITreeSpeciesType, I
 	ItemStack getDecorativeLeaves();
 
 	float getRarity();
-
-	int getColor();
 }

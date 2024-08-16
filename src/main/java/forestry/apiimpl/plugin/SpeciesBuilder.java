@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
+import java.awt.Color;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -35,6 +36,7 @@ public abstract class SpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISp
 	@Nullable
 	protected Consumer<IGenomeBuilder> genome = null;
 	protected ISpeciesFactory<T, S, B> factory;
+	protected int escritoireColor = -1;
 
 	public SpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
 		this.id = id;
@@ -87,6 +89,12 @@ public abstract class SpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISp
 	}
 
 	@Override
+	public B setEscritoireColor(Color color) {
+		this.escritoireColor = color.getRGB();
+		return self();
+	}
+
+	@Override
 	public B setSecret(boolean secret) {
 		this.secret = secret;
 		return self();
@@ -122,6 +130,11 @@ public abstract class SpeciesBuilder<T extends ISpeciesType<S, ?>, S extends ISp
 	@Override
 	public int getComplexity() {
 		return this.complexity;
+	}
+
+	@Override
+	public int getEscritoireColor() {
+		return this.escritoireColor;
 	}
 
 	@Override

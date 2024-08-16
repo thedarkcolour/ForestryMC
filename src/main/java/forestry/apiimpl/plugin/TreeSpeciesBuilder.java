@@ -34,7 +34,6 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	private final HashSet<BlockState> vanillaStates = new HashSet<>();
 	private final HashSet<Item> vanillaItems = new HashSet<>();
 	private ItemStack decorativeLeaves = ItemStack.EMPTY;
-	private int color;
 
 	public TreeSpeciesBuilder(ResourceLocation id, String genus, String species, MutationsRegistration mutations) {
 		super(id, genus, species, mutations);
@@ -84,12 +83,6 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	}
 
 	@Override
-	public ITreeSpeciesBuilder setEscritoireColor(Color color) {
-		this.color = color.getRGB();
-		return this;
-	}
-
-	@Override
 	public ITreeSpeciesBuilder setDecorativeLeaves(ItemStack stack) {
 		this.decorativeLeaves = stack;
 		return this;
@@ -119,10 +112,5 @@ public class TreeSpeciesBuilder extends SpeciesBuilder<ITreeSpeciesType, ITreeSp
 	@Override
 	public float getRarity() {
 		return this.rarity;
-	}
-
-	@Override
-	public int getColor() {
-		return this.color;
 	}
 }

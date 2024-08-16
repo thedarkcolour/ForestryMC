@@ -26,6 +26,7 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 	protected final T speciesType;
 	protected final IGenome defaultGenome;
 	private int complexity;
+	protected final int escritoireColor;
 	protected final boolean secret;
 	protected final boolean glint;
 	protected final boolean dominant;
@@ -41,6 +42,7 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 		this.defaultGenome = defaultGenome;
 
 		this.complexity = builder.getComplexity();
+		this.escritoireColor = builder.getEscritoireColor();
 		this.secret = builder.isSecret();
 		this.glint = builder.hasGlint();
 		this.dominant = builder.isDominant();
@@ -108,6 +110,11 @@ public abstract class Species<T extends ISpeciesType<? extends ISpecies<I>, I>, 
 			this.complexity = GeneticsUtil.getResearchComplexity(this);
 		}
 		return this.complexity;
+	}
+
+	@Override
+	public int getEscritoireColor() {
+		return this.escritoireColor;
 	}
 
 	@Override
