@@ -15,17 +15,21 @@ import net.minecraft.commands.Commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
+import forestry.api.apiculture.genetics.IBeeSpeciesType;
 import forestry.core.commands.CommandSaveStats;
 import forestry.core.commands.IStatsSaveHelper;
 import forestry.core.commands.GiveSpeciesCommand;
+import forestry.core.commands.ModifyGenomeCommand;
 import forestry.core.utils.SpeciesUtil;
 
 public class CommandBee {
 	public static ArgumentBuilder<CommandSourceStack, ?> register() {
 		IStatsSaveHelper saveHelper = new BeeStatsSaveHelper();
+		IBeeSpeciesType type = SpeciesUtil.BEE_TYPE.get();
 
 		return Commands.literal("bee")
 				.then(CommandSaveStats.register(saveHelper))
-				.then(GiveSpeciesCommand.register(SpeciesUtil.BEE_TYPE.get()));
+				.then(GiveSpeciesCommand.register(type))
+				.then(ModifyGenomeCommand.register(type));
 	}
 }

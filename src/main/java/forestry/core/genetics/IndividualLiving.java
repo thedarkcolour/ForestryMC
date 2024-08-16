@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.core.genetics;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.util.Optional;
 
 import net.minecraft.util.Mth;
@@ -94,12 +95,14 @@ public abstract class IndividualLiving<S extends ISpecies<I>, I extends IIndivid
 		}
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	@Override
-	public I copy() {
-		I individual = super.copy();
-		individual.setHealth(this.getHealth());
-		((IndividualLiving<?, ?, ?>) individual).maxHealth = this.maxHealth;
-		return individual;
+	protected void copyPropertiesTo(I other) {
+		super.copyPropertiesTo(other);
+
+		IndividualLiving<?, ?, ?> living = (IndividualLiving<?, ?, ?>) other;
+		living.health = this.health;
+		living.maxHealth = this.maxHealth;
 	}
 
 	private void decreaseHealth() {

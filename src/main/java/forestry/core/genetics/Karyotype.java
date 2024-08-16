@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -98,11 +99,15 @@ public class Karyotype implements IKaryotype {
 
 	@SuppressWarnings({"DataFlowIssue", "unchecked"})
 	@Override
-	public <A extends IAllele> ImmutableSet<A> getAlleles(IChromosome<A> chromosome) {
+	public <A extends IAllele> Collection<A> getAlleles(IChromosome<A> chromosome) {
 		Preconditions.checkArgument(isChromosomeValid(chromosome), "Chromosome not present in karyotype");
 
-		// todo should this return non-empty for registry chromosomes? would use an instanceof
-		return (ImmutableSet<A>) this.chromosomes.get(chromosome);
+		ImmutableSet<? extends IAllele> validAlleles = this.chromosomes.get(chromosome);
+		if (validAlleles.isEmpty()) {
+			return (Collection<A>) ((IRegistryChromosome<?>) chromosome).alleles();
+		} else {
+			return (Collection<A>) validAlleles.asList();
+		}
 	}
 
 	@Override

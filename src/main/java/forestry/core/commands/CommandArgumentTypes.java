@@ -17,5 +17,7 @@ public class CommandArgumentTypes {
 
 		registry.register("species", () -> ArgumentTypeInfos.registerByClass(SpeciesArgument.class, new ISpeciesArgumentType.Serializer<>(SpeciesArgument::new)));
 		registry.register("life_stage", () -> ArgumentTypeInfos.registerByClass(LifeStageArgument.class, new LifeStageArgument.Serializer<>(LifeStageArgument::new)));
+		registry.register("chromosome", () -> ArgumentTypeInfos.registerByClass(ChromosomeArgument.class, new ChromosomeArgument.Serializer<>(ChromosomeArgument::new)));
+		registry.register("allele", () -> ArgumentTypeInfos.registerByClass(AlleleArgument.class, new AlleleArgument.Serializer<>(AlleleArgument::new)));
 	}
 }

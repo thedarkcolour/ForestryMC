@@ -19,7 +19,7 @@ import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpeciesType;
 
 public class LifeStageArgument implements ISpeciesArgumentType<ILifeStage> {
-	private static final DynamicCommandExceptionType INVALID_VALUE = new DynamicCommandExceptionType(found -> Component.translatable("argument.enum.invalid", found));
+	static final DynamicCommandExceptionType INVALID_VALUE = new DynamicCommandExceptionType(found -> Component.translatable("argument.enum.invalid", found));
 
 	private final ImmutableMap<String, ILifeStage> stages;
 	private final ISpeciesType<?, ?> type;
@@ -48,7 +48,7 @@ public class LifeStageArgument implements ISpeciesArgumentType<ILifeStage> {
 	}
 
 	@Override
-	public ISpeciesType<?, ?> getType() {
+	public ISpeciesType<?, ?> type() {
 		return this.type;
 	}
 

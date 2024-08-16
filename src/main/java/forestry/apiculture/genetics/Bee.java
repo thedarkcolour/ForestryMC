@@ -592,10 +592,11 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	}
 
 	@Override
-	public IBee copy() {
-		Bee individual = (Bee) super.copy();
-		individual.pristine = this.pristine;
-		individual.generation = this.generation;
-		return individual;
+	protected void copyPropertiesTo(IBee other) {
+		super.copyPropertiesTo(other);
+
+		Bee bee = (Bee) other;
+		bee.pristine = this.pristine;
+		bee.generation = this.generation;
 	}
 }

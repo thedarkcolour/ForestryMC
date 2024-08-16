@@ -15,7 +15,7 @@ import forestry.api.genetics.ISpeciesType;
 
 // Abstracts away the common serialization code between SpeciesArgument and LifeStageArgument
 public interface ISpeciesArgumentType<A> extends ArgumentType<A> {
-	ISpeciesType<?, ?> getType();
+	ISpeciesType<?, ?> type();
 
 	// Serializes and deserializes using only a ISpeciesType
 	class Serializer<A extends ISpeciesArgumentType<?>> implements ArgumentTypeInfo<A, Serializer<A>.Template> {
@@ -42,7 +42,7 @@ public interface ISpeciesArgumentType<A> extends ArgumentType<A> {
 
 		@Override
 		public Serializer<A>.Template unpack(A argument) {
-			return new Template(argument.getType());
+			return new Template(argument.type());
 		}
 
 		public class Template implements ArgumentTypeInfo.Template<A> {

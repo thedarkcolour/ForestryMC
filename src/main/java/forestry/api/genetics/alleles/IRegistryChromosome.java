@@ -36,12 +36,12 @@ public interface IRegistryChromosome<V extends IRegistryAlleleValue> extends IVa
 	V getSafe(ResourceLocation id);
 
 	/**
-	 * @return A collections of all values in this chromosome.
+	 * @return An immutable collection of all values in this chromosome.
 	 */
 	Collection<V> values();
 
 	/**
-	 * @return A collection of all alleles in this chromosome.
+	 * @return An immutable collection of all alleles in this chromosome.
 	 */
 	Collection<IRegistryAllele<V>> alleles();
 

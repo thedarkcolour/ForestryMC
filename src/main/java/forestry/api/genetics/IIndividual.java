@@ -53,6 +53,7 @@ public interface IIndividual {
 
 	/**
 	 * An optional getter for {@link #getMate}. Used only for Codec purposes, prefer {@link #getMate} when possible.
+	 *
 	 * @return An optional containing this individual's mate genome, or empty if this individual has no mate.
 	 */
 	Optional<IGenome> getMateOptional();
@@ -86,9 +87,20 @@ public interface IIndividual {
 	 * Copies this individual and all of its properties EXCEPT FOR ITS MATE.
 	 * Override this method in subclasses to make sure all information is copied.
 	 *
-	 * @return An exact copy of this individual WITHOUT A MATE.
+	 * @return An exact copy of this individual with NO MATE and NOT ANALYZED.
 	 */
 	IIndividual copy();
+
+	/**
+	 * Copies the individual and all of its properties EXCEPT FOR ITS MATE.
+	 * However, the supplied newGenome is used instead of this individual's genome.
+	 * Override this method in subclasses to make sure all information is copied.
+	 *
+	 * @param newGenome The genome to use for the copied individual.
+	 * @return A copy of this individual with the given genome with NO MATE and NOT ANALYZED.
+	 * @since 1.0.4
+	 */
+	IIndividual copyWithGenome(IGenome newGenome);
 
 	default <I extends IIndividual> I cast() {
 		return (I) this;

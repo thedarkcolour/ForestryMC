@@ -1,8 +1,9 @@
 package forestry.api.genetics.alleles;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+
+import java.util.Collection;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -70,5 +71,13 @@ public interface IKaryotype {
 	 */
 	IGenomeBuilder createGenomeBuilder();
 
-	<A extends IAllele> ImmutableCollection<A> getAlleles(IChromosome<A> chromosome);
+	/**
+	 * Gets the list of valid alleles for the given chromosome.
+	 *
+	 * @param chromosome The chromosome to retrieve valid alleles for.
+	 * @param <A>        The type of allele contained by the chromosome.
+	 * @return An immutable list of valid alleles permitted for the chromosome in this karyotype.
+	 * @throws IllegalArgumentException If the chromosome is not present in this karyotype.
+	 */
+	<A extends IAllele> Collection<A> getAlleles(IChromosome<A> chromosome);
 }

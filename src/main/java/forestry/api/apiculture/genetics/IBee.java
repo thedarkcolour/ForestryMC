@@ -23,9 +23,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
+import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IIndividualLiving;
-import forestry.api.genetics.ISpecies;
 
 /**
  * Other implementations than Forestry's default one are not supported.
@@ -106,6 +106,9 @@ public interface IBee extends IIndividualLiving {
 
 	@Override
 	IBee copy();
+
+	@Override
+	IBee copyWithGenome(IGenome newGenome);
 
 	@Override
 	IBeeSpeciesType getType();

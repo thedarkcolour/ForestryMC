@@ -70,7 +70,7 @@ public class DiagnosticsCommand {
 						continue;
 					}
 
-					Collection<? extends IAllele> alleles = chromosome instanceof IRegistryChromosome<?> registry ? registry.alleles() : karyotype.getAlleles(chromosome);
+					Collection<? extends IAllele> alleles = karyotype.getAlleles(chromosome);
 
 					Forestry.LOGGER.info("Chromosome {} has {} alleles", chromosome.id(), alleles.size());
 

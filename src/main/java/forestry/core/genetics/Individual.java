@@ -1,6 +1,7 @@
 package forestry.core.genetics;
 
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.util.Optional;
 
 import net.minecraft.nbt.CompoundTag;
@@ -105,8 +106,19 @@ public abstract class Individual<S extends ISpecies<I>, I extends IIndividual, T
 
 	@Override
 	public I copy() {
-		// todo should i copy the mate?
-		return this.species.createIndividual(this.genome);
+		return copyWithGenome(this.genome);
+	}
+
+	@Override
+	public I copyWithGenome(IGenome newGenome) {
+		I individual = this.species.createIndividual(newGenome);
+		copyPropertiesTo(individual);
+		return individual;
+	}
+
+	@OverridingMethodsMustInvokeSuper
+	protected void copyPropertiesTo(I other) {
+		// todo should i copy the mate? should i copy analyzed?
 	}
 
 	@Override
