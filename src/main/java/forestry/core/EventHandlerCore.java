@@ -25,7 +25,7 @@ import forestry.api.IForestryApi;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.ISpeciesType;
 import forestry.apiculture.ApiaristAI;
-import forestry.apiculture.villagers.RegisterVillager;
+import forestry.apiculture.villagers.ApicultureVillagers;
 
 @Mod.EventBusSubscriber(modid = ForestryConstants.MOD_ID)
 public class EventHandlerCore {
@@ -52,7 +52,7 @@ public class EventHandlerCore {
 	public static void onEntityJoinWorld(EntityJoinLevelEvent event) {
 		Entity entity = event.getEntity();
 		if (entity instanceof Villager villager) {
-			if (villager.getVillagerData().getProfession().equals(RegisterVillager.PROF_BEEKEEPER.get())) {
+			if (villager.getVillagerData().getProfession().equals(ApicultureVillagers.PROF_BEEKEEPER.get())) {
 				villager.goalSelector.addGoal(6, new ApiaristAI(villager, 0.6));
 			}
 		}

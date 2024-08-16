@@ -5,10 +5,13 @@ import com.google.common.collect.ImmutableSet;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -23,7 +26,6 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
-import forestry.api.ForestryConstants;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.TreeManager;
 import forestry.api.arboriculture.WoodBlockKind;
@@ -44,19 +46,21 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jetbrains.annotations.NotNull;
 
 @FeatureProvider
-public class RegisterVillager {
+public class ArboricultureVillagers {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.ARBORICULTURE);
 
 	private static final DeferredRegister<PoiType> POINTS_OF_INTEREST = REGISTRY.getRegistry(Registry.POINT_OF_INTEREST_TYPE_REGISTRY);
 	private static final DeferredRegister<VillagerProfession> PROFESSIONS = REGISTRY.getRegistry(Registry.VILLAGER_PROFESSION_REGISTRY);
 
-	public static final ResourceLocation ARBORIST = ForestryConstants.forestry("arborist");
-
 	public static final RegistryObject<PoiType> POI_TREE_CHEST = POINTS_OF_INTEREST.register("tree_chest", () -> new PoiType(Set.copyOf(CoreBlocks.NATURALIST_CHEST.get(NaturalistChestBlockType.ARBORIST_CHEST).block().getStateDefinition().getPossibleStates()), 1, 1));
-	public static final RegistryObject<VillagerProfession> PROF_BEEKEEPER = PROFESSIONS.register(ARBORIST.getPath(), () -> new VillagerProfession(ARBORIST.toString(), e -> e.is(POI_TREE_CHEST.getKey()), e -> e.is(POI_TREE_CHEST.getKey()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_FISHERMAN));
+	public static final RegistryObject<VillagerProfession> ARBORIST = PROFESSIONS.register("arborist", () -> {
+		ResourceKey<PoiType> key = Objects.requireNonNull(POI_TREE_CHEST.getKey());
+		Predicate<Holder<PoiType>> jobSitePredicate = poi -> poi.is(key);
+		return new VillagerProfession("arborist", jobSitePredicate, jobSitePredicate, ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_FISHERMAN);
+	});
 
 	public static void villagerTrades(VillagerTradesEvent event) {
-		if (event.getType().equals(PROF_BEEKEEPER.get())) {
+		if (event.getType() == ARBORIST.get()) {
 			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 			trades.get(1).add(new GivePlanksForEmeralds(new VillagerTrade.PriceInterval(1, 4), new VillagerTrade.PriceInterval(10, 32), 8, 2, 0F));
 			trades.get(1).add(new GivePollenForEmeralds(new VillagerTrade.PriceInterval(1, 1), new VillagerTrade.PriceInterval(1, 3), TreeLifeStage.SAPLING, 4, 8, 2, 0F));

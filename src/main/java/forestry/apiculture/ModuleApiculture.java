@@ -42,7 +42,7 @@ import forestry.apiculture.network.packets.PacketAlvearyChange;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.apiculture.network.packets.PacketHabitatBiomePointer;
 import forestry.apiculture.proxy.ApicultureClientHandler;
-import forestry.apiculture.villagers.RegisterVillager;
+import forestry.apiculture.villagers.ApicultureVillagers;
 import forestry.core.network.PacketIdClient;
 import forestry.modules.BlankForestryModule;
 
@@ -66,7 +66,7 @@ public class ModuleApiculture extends BlankForestryModule {
 		modBus.addListener(ModuleApiculture::registerCapabilities);
 		modBus.addListener(ModuleApiculture::onCommonSetup);
 
-		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
+		MinecraftForge.EVENT_BUS.addListener(ApicultureVillagers::villagerTrades);
 	}
 
 	private static void onCommonSetup(FMLCommonSetupEvent event) {

@@ -620,7 +620,7 @@ public class DefaultBeeSpecies {
 				})
 				.setAuthority("MysteriousAges");
 
-		// Monastic
+		// Monastic (Only obtainable from villagers)
 		apiculture.registerSpecies(ForestryBeeSpecies.MONASTIC, GENUS_MONASTIC, SPECIES_MONASTIC, false, new Color(0x42371c))
 				.setJubilance(HermitBeeJubilance.INSTANCE)
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.WHEATEN), 0.30f)

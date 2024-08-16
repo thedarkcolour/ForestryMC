@@ -36,7 +36,7 @@ import forestry.api.modules.IPacketRegistry;
 import forestry.arboriculture.client.ArboricultureClientHandler;
 import forestry.arboriculture.commands.CommandTree;
 import forestry.arboriculture.network.PacketRipeningUpdate;
-import forestry.arboriculture.villagers.RegisterVillager;
+import forestry.arboriculture.villagers.ArboricultureVillagers;
 import forestry.core.genetics.capability.IndividualHandlerItem;
 import forestry.core.network.PacketIdClient;
 import forestry.core.utils.SpeciesUtil;
@@ -51,7 +51,7 @@ public class ModuleArboriculture extends BlankForestryModule {
 
 	@Override
 	public void registerEvents(IEventBus modBus) {
-		MinecraftForge.EVENT_BUS.addListener(RegisterVillager::villagerTrades);
+		MinecraftForge.EVENT_BUS.addListener(ArboricultureVillagers::villagerTrades);
 
 		modBus.addListener(ModuleArboriculture::registerCapabilities);
 		MinecraftForge.EVENT_BUS.addGenericListener(ItemStack.class, ModuleArboriculture::attachCapabilities);

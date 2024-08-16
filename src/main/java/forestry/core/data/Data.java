@@ -29,6 +29,7 @@ public class Data {
 		generator.addProvider(event.includeServer(), new ForestryItemTagsProvider(generator, blockTagsProvider, existingFileHelper));
 		generator.addProvider(event.includeServer(), new ForestryBackpackTagProvider(generator, blockTagsProvider, existingFileHelper));
 		generator.addProvider(event.includeServer(), new ForestryFluidTagsProvider(generator, existingFileHelper));
+		generator.addProvider(event.includeServer(), new ForestryPoiTypeTagProvider(generator, existingFileHelper));
 		generator.addProvider(event.includeServer(), new ForestryLootTableProvider(generator));
 		generator.addProvider(event.includeServer(), new ForestryRecipeProvider(generator));
 		generator.addProvider(event.includeServer(), new ForestryMachineRecipeProvider(generator));

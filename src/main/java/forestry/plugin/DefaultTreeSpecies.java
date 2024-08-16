@@ -301,7 +301,7 @@ public class DefaultTreeSpecies {
 				.setComplexity(10)
 				.addMutations(mutations -> {
 					// From GTNH fork of Forestry. No longer requires a villager trade.
-					mutations.add(ForestryTreeSpecies.SEQUOIA, ForestryTreeSpecies.BAOBAB, 1);
+					mutations.add(ForestryTreeSpecies.SEQUOIA, ForestryTreeSpecies.BAOBAB, 0.01f);
 				});
 
 		// Jungle (Might be based on Teak, not sure)

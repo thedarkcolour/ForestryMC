@@ -3,9 +3,13 @@ package forestry.apiculture.villagers;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -22,7 +26,6 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
-import forestry.api.ForestryConstants;
 import forestry.api.apiculture.ForestryBeeSpecies;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.modules.ForestryModuleIds;
@@ -45,17 +48,18 @@ import forestry.modules.features.ModFeatureRegistry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 @FeatureProvider
-public class RegisterVillager {
+public class ApicultureVillagers {
 	private static final IFeatureRegistry REGISTRY = ModFeatureRegistry.get(ForestryModuleIds.APICULTURE);
 
 	private static final DeferredRegister<PoiType> POINTS_OF_INTEREST = REGISTRY.getRegistry(Registry.POINT_OF_INTEREST_TYPE_REGISTRY);
 	private static final DeferredRegister<VillagerProfession> PROFESSIONS = REGISTRY.getRegistry(Registry.VILLAGER_PROFESSION_REGISTRY);
 
-	public static final ResourceLocation BEEKEEPER = ForestryConstants.forestry("beekeeper");
-
 	public static final RegistryObject<PoiType> POI_APIARY = POINTS_OF_INTEREST.register("apiary", () -> new PoiType(Set.copyOf(ApicultureBlocks.BASE.get(BlockTypeApiculture.APIARY).block().getStateDefinition().getPossibleStates()), 1, 1));
-	@SuppressWarnings("DataFlowIssue")
-	public static final RegistryObject<VillagerProfession> PROF_BEEKEEPER = PROFESSIONS.register(BEEKEEPER.getPath(), () -> new VillagerProfession(BEEKEEPER.toString(), e -> e.is(POI_APIARY.getKey()), e -> e.is(POI_APIARY.getKey()), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_FISHERMAN));
+	public static final RegistryObject<VillagerProfession> PROF_BEEKEEPER = PROFESSIONS.register("beekeeper", () -> {
+		ResourceKey<PoiType> key = Objects.requireNonNull(POI_APIARY.getKey());
+		Predicate<Holder<PoiType>> jobSitePredicate = e -> e.is(key);
+		return new VillagerProfession("beekeeper", jobSitePredicate, jobSitePredicate, ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_FISHERMAN);
+	});
 
 	public static void villagerTrades(VillagerTradesEvent event) {
 		if (event.getType().equals(PROF_BEEKEEPER.get())) {

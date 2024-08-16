@@ -2182,5 +2182,7 @@
   "for.jei.chance": "Chance: %s",
   "for.jei.fortune": "The amount of this item is affected by the fortune enchantment.",
   "advancements.forestry.root.title": "Forestry",
-  "advancements.forestry.root.description": "Trees, bees and more."
+  "advancements.forestry.root.description": "Trees, bees and more.",
+  "entity.minecraft.villager.forestry.beekeeper": "Beekeeper",
+  "entity.minecraft.villager.forestry.arborist": "Arborist"
 }
