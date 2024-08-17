@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.core.fluids;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Suppliers;
 
 import java.util.Collection;
@@ -35,7 +36,7 @@ import forestry.api.core.tooltips.ToolTip;
 import forestry.core.utils.ModUtil;
 
 public class FilteredTank extends StandardTank {
-	private Supplier<Set<ResourceLocation>> filters = Suppliers.ofInstance(new HashSet<>());
+	private Supplier<Set<ResourceLocation>> filters = Suppliers.ofInstance(Set.of());
 
 	public FilteredTank(int capacity) {
 		super(capacity);
@@ -44,10 +45,11 @@ public class FilteredTank extends StandardTank {
 
 	public FilteredTank(int capacity, boolean canFill, boolean canDrain) {
 		super(capacity, canFill, canDrain);
+		setValidator(this::fluidMatchesFilter);
 	}
 
 	public FilteredTank setFilter(Supplier<Set<ResourceLocation>> filters) {
-		this.filters = filters;
+		this.filters = Preconditions.checkNotNull(filters);
 		return this;
 	}
 

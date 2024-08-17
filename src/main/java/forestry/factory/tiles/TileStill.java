@@ -16,32 +16,29 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import forestry.api.core.ForestryError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.recipes.IStillRecipe;
-import forestry.core.fluids.FluidRecipeFilter;
-import forestry.core.recipes.RecipeManagers;
 import forestry.core.config.Constants;
-import forestry.api.core.ForestryError;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
+import forestry.core.fluids.FluidRecipeFilter;
 import forestry.core.fluids.TankManager;
 import forestry.core.render.TankRenderInfo;
 import forestry.core.tiles.ILiquidTankTile;
@@ -59,21 +56,16 @@ public class TileStill extends TilePowered implements WorldlyContainer, ILiquidT
 	private final TankManager tankManager;
 
 	@Nullable
-	private IStillRecipe currentRecipe;
-	private FluidStack bufferedLiquid;
+	private IStillRecipe currentRecipe = null;
+	private FluidStack bufferedLiquid = FluidStack.EMPTY;
 
 	public TileStill(BlockPos pos, BlockState state) {
 		super(FactoryTiles.STILL.tileType(), pos, state, 1100, 8000);
 		setInternalInventory(new InventoryStill(this));
-		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, true, true);
-		resourceTank.setFilter(FluidRecipeFilter.STILL_INPUT);
 
-		productTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, false, true);
-		resourceTank.setFilter(FluidRecipeFilter.STILL_OUTPUT);
-
-		tankManager = new TankManager(this, resourceTank, productTank);
-
-		bufferedLiquid = FluidStack.EMPTY;
+		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, true, true).setFilter(FluidRecipeFilter.STILL_INPUT);
+		this.productTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, false, true).setFilter(FluidRecipeFilter.STILL_OUTPUT);
+		this.tankManager = new TankManager(this, resourceTank, productTank);
 	}
 
 	@Override
@@ -106,7 +98,6 @@ public class TileStill extends TilePowered implements WorldlyContainer, ILiquidT
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void readData(FriendlyByteBuf data) {
 		super.readData(data);
 		tankManager.readData(data);
@@ -143,7 +134,7 @@ public class TileStill extends TilePowered implements WorldlyContainer, ILiquidT
 	private void checkRecipe() {
 		FluidStack recipeLiquid = !bufferedLiquid.isEmpty() ? bufferedLiquid : resourceTank.getFluid();
 
-		if (this.currentRecipe == null || this.currentRecipe.matches(recipeLiquid)) {
+		if (this.currentRecipe == null || !this.currentRecipe.matches(recipeLiquid)) {
 			Level level = Objects.requireNonNull(this.level);
 			this.currentRecipe = RecipeUtils.getStillRecipe(level.getRecipeManager(), recipeLiquid);
 

@@ -44,6 +44,7 @@ import forestry.api.recipes.IMoistenerRecipe;
 import forestry.core.config.Constants;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
+import forestry.core.fluids.FluidTagFilter;
 import forestry.core.fluids.TankManager;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.render.TankRenderInfo;
@@ -75,7 +76,7 @@ public class TileMoistener extends TileBase implements WorldlyContainer, ILiquid
 	public TileMoistener(BlockPos pos, BlockState state) {
 		super(FactoryTiles.MOISTENER.tileType(), pos, state);
 		setInternalInventory(new InventoryMoistener(this));
-		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(List.of(Fluids.WATER));
+		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilter(FluidTagFilter.WATER);
 		tankManager = new TankManager(this, resourceTank);
 	}
 

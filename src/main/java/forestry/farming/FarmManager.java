@@ -35,6 +35,7 @@ import forestry.api.farming.IFarmListener;
 import forestry.api.farming.IFarmLogic;
 import forestry.core.config.Constants;
 import forestry.core.fluids.FilteredTank;
+import forestry.core.fluids.FluidTagFilter;
 import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
 import forestry.core.network.IStreamable;
@@ -67,7 +68,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 
 	public FarmManager(IFarmHousingInternal housing) {
 		this.housing = housing;
-		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(List.of(Fluids.WATER));
+		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilter(FluidTagFilter.WATER);
 
 		this.tankManager = new TankManager(housing, resourceTank);
 

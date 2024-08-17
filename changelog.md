@@ -1,5 +1,7 @@
 ## Forestry 1.0.5
 - Fixed wild beehives not having particle effects
+- Fix biogas engine lava tank accepting any fluid
+- Fix still not working
 
 ## Forestry 1.0.4
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to

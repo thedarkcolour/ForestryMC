@@ -44,6 +44,7 @@ import forestry.core.fluids.ContainerFiller;
 import forestry.core.fluids.DrainOnlyFluidHandlerWrapper;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
+import forestry.core.fluids.FluidTagFilter;
 import forestry.core.fluids.TankManager;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.TileBase;
@@ -70,7 +71,7 @@ public class TileRaintank extends TileBase implements WorldlyContainer, ILiquidT
 		super(FactoryTiles.RAIN_TANK.tileType(), pos, state);
 		setInternalInventory(new InventoryRaintank(this));
 
-		resourceTank = new FilteredTank(Constants.RAINTANK_TANK_CAPACITY).setFilters(List.of(Fluids.WATER));
+		resourceTank = new FilteredTank(Constants.RAINTANK_TANK_CAPACITY).setFilter(FluidTagFilter.WATER);
 
 		tankManager = new TankManager(this, resourceTank);
 
