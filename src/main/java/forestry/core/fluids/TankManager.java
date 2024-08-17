@@ -16,9 +16,6 @@ import com.google.common.collect.Table;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +24,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.level.Level;
 
 import net.minecraftforge.fluids.FluidStack;
@@ -35,18 +31,13 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import forestry.api.core.INbtReadable;
 import forestry.api.core.INbtWritable;
-import forestry.api.modules.IForestryPacketClient;
 import forestry.core.network.IStreamable;
 import forestry.core.network.packets.PacketTankLevelUpdate;
 import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.tiles.IRenderableTile;
 import forestry.core.utils.NetworkUtil;
 
-/**
- * @author CovertJaguar <http://www.railcraft.info>
- */
 public class TankManager implements ITankManager, ITankUpdateHandler, IStreamable, INbtWritable, INbtReadable {
-
 	private final List<StandardTank> tanks = new ArrayList<>();
 
 	// for container updates, keeps track of the fluids known to each client (container)
@@ -62,24 +53,17 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 
 	public TankManager(ILiquidTankTile tile, StandardTank... tanks) {
 		this.tile = tile;
-		addAll(Arrays.asList(tanks));
-	}
 
-	public final boolean addAll(Collection<? extends StandardTank> collection) {
-		boolean addedAll = true;
-		for (StandardTank tank : collection) {
-			addedAll &= add(tank);
+		for (StandardTank tank : tanks) {
+			add(tank);
 		}
-		return addedAll;
 	}
 
-	public boolean add(StandardTank tank) {
-		//TODO added is always true, and things are always appended to the end of the list?
-		boolean added = tanks.add(tank);
-		int index = tanks.indexOf(tank);
+	public void add(StandardTank tank) {
+		this.tanks.add(tank);
+		int index = this.tanks.indexOf(tank);
 		tank.setTankUpdateHandler(this);
 		tank.setTankIndex(index);
-		return added;
 	}
 
 	@Override
@@ -126,33 +110,27 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 	}
 
 	@Override
-	public void containerAdded(AbstractContainerMenu container, ContainerListener player) {
-		if (!(player instanceof ServerPlayer)) {
-			return;
-		}
-
-		List<ContainerListener> crafters = Collections.singletonList(player);
-
+	public void sendAllTanks(AbstractContainerMenu container, ServerPlayer player) {
 		for (StandardTank tank : tanks) {
-			sendTankUpdate(container, crafters, tank);
+			sendTankUpdate(container, player, tank);
 		}
 	}
 
 	@Override
-	public void containerRemoved(AbstractContainerMenu container) {
+	public void onClosed(AbstractContainerMenu container) {
 		for (StandardTank tank : tanks) {
 			prevFluidStacks.remove(container, tank.getTankIndex());
 		}
 	}
 
 	@Override
-	public void sendTankUpdate(AbstractContainerMenu container, List<ContainerListener> crafters) {
+	public void broadcastChanges(AbstractContainerMenu container, ServerPlayer players) {
 		for (StandardTank tank : tanks) {
-			sendTankUpdate(container, crafters, tank.getTankIndex());
+			sendTankUpdate(container, players, tank.getTankIndex());
 		}
 	}
 
-	private void sendTankUpdate(AbstractContainerMenu container, List<ContainerListener> crafters, int tankIndex) {
+	private void sendTankUpdate(AbstractContainerMenu container, ServerPlayer player, int tankIndex) {
 		StandardTank tank = tanks.get(tankIndex);
 		if (tank == null) {
 			return;
@@ -167,19 +145,14 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 			return;
 		}
 
-		sendTankUpdate(container, crafters, tank);
+		sendTankUpdate(container, player, tank);
 	}
 
-	private void sendTankUpdate(AbstractContainerMenu container, Iterable<ContainerListener> crafters, StandardTank tank) {
+	private void sendTankUpdate(AbstractContainerMenu container, ServerPlayer player, StandardTank tank) {
 		if (tile != null) {
 			int tankIndex = tank.getTankIndex();
 			FluidStack fluid = tank.getFluid();
-			IForestryPacketClient packet = new PacketTankLevelUpdate(tile, tankIndex, fluid);
-			for (ContainerListener crafter : crafters) {
-				if (crafter instanceof ServerPlayer) {
-					NetworkUtil.sendToPlayer(packet, (ServerPlayer) crafter);
-				}
-			}
+			NetworkUtil.sendToPlayer(new PacketTankLevelUpdate(tile, tankIndex, fluid), player);
 
 			if (fluid.isEmpty()) {
 				prevFluidStacks.remove(container, tankIndex);
@@ -198,6 +171,7 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 		tank.setFluid(contents);
 	}
 
+	@Nullable
 	@Override
 	public IFluidTank getTank(int tankIndex) {
 		return tanks.get(tankIndex);
@@ -208,7 +182,6 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 		return tanks.size();
 	}
 
-	@Nonnull
 	@Override
 	public FluidStack getFluidInTank(int tankIndex) {
 		IFluidTank tank = getTank(tankIndex);
@@ -265,7 +238,6 @@ public class TankManager implements ITankManager, ITankUpdateHandler, IStreamabl
 		if (!(tile instanceof IRenderableTile)) {
 			return;
 		}
-
 
 		Level world = tile.getWorldObj();
 		if (world == null || world.isClientSide)

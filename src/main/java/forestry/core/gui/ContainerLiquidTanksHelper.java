@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.core.gui;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -21,7 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -35,7 +36,6 @@ import forestry.core.tiles.ILiquidTankTile;
 import forestry.core.utils.NetworkUtil;
 
 public class ContainerLiquidTanksHelper<T extends BlockEntity & ILiquidTankTile> implements IContainerLiquidTanks {
-
 	private final T tile;
 
 	public ContainerLiquidTanksHelper(T tile) {
@@ -92,6 +92,7 @@ public class ContainerLiquidTanksHelper<T extends BlockEntity & ILiquidTankTile>
 		});
 	}
 
+	@Nullable
 	@Override
 	public IFluidTank getTank(int slot) {
 		return tile.getTankManager().getTank(slot);

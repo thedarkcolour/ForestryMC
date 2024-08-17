@@ -23,10 +23,9 @@ import forestry.core.tiles.TileAnalyzer;
 import forestry.core.tiles.TileUtil;
 
 public class ContainerAnalyzer extends ContainerLiquidTanks<TileAnalyzer> {
-
 	public static ContainerAnalyzer fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
 		TileAnalyzer analyzer = TileUtil.getTile(playerInv.player.level, extraData.readBlockPos(), TileAnalyzer.class);
-		return new ContainerAnalyzer(windowId, playerInv, analyzer);    //TODO what to do if analyzer null
+		return new ContainerAnalyzer(windowId, playerInv, analyzer);
 	}
 
 	public ContainerAnalyzer(int windowId, Inventory player, TileAnalyzer tile) {

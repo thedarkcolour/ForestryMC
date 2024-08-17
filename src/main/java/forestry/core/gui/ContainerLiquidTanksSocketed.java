@@ -10,11 +10,12 @@
  ******************************************************************************/
 package forestry.core.gui;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
+import javax.annotation.Nullable;
+
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -26,7 +27,6 @@ import forestry.core.circuits.ISocketable;
 import forestry.core.tiles.ILiquidTankTile;
 
 public abstract class ContainerLiquidTanksSocketed<T extends BlockEntity & ILiquidTankTile & ISocketable> extends ContainerTile<T> implements IContainerSocketed, IContainerLiquidTanks {
-
 	private final ContainerSocketedHelper<T> socketedHelper;
 	private final ContainerLiquidTanksHelper<T> tanksHelper;
 
@@ -34,6 +34,9 @@ public abstract class ContainerLiquidTanksSocketed<T extends BlockEntity & ILiqu
 		super(windowId, type, playerInventory, tile, xInv, yInv);
 		this.socketedHelper = new ContainerSocketedHelper<>(this.tile);
 		this.tanksHelper = new ContainerLiquidTanksHelper<>(this.tile);
+		if (this.player != null) {
+			this.tile.getTankManager().sendAllTanks(this, this.player);
+		}
 	}
 
 	/* IContainerLiquidTanks */
@@ -51,21 +54,19 @@ public abstract class ContainerLiquidTanksSocketed<T extends BlockEntity & ILiqu
 	@Override
 	public void broadcastChanges() {
 		super.broadcastChanges();
-		tile.getTankManager().sendTankUpdate(this, containerListeners);
-	}
 
-	@Override
-	public void addSlotListener(ContainerListener crafting) {
-		super.addSlotListener(crafting);
-		tile.getTankManager().containerAdded(this, crafting);
+		if (this.player != null) {
+			tile.getTankManager().broadcastChanges(this, this.player);
+		}
 	}
 
 	@Override
 	public void removed(Player PlayerEntity) {
 		super.removed(PlayerEntity);
-		tile.getTankManager().containerRemoved(this);
+		tile.getTankManager().onClosed(this);
 	}
 
+	@Nullable
 	@Override
 	public IFluidTank getTank(int slot) {
 		return tile.getTankManager().getTank(slot);

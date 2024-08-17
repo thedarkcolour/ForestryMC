@@ -11,10 +11,9 @@
 package forestry.core.fluids;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerListener;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,12 +22,16 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public interface ITankManager extends IFluidHandler {
-	void containerAdded(AbstractContainerMenu container, ContainerListener crafter);
+	// Used to send all tanks to the player upon first opening the screen
+	void sendAllTanks(AbstractContainerMenu container, ServerPlayer player);
 
-	void sendTankUpdate(AbstractContainerMenu container, List<ContainerListener> crafters);
+	// Used to send incremental changes in tanks to players who already have the initial state of the tanks
+	void broadcastChanges(AbstractContainerMenu container, ServerPlayer players);
 
-	void containerRemoved(AbstractContainerMenu container);
+	// Used to clean up cached item stacks when a player closes the screen
+	void onClosed(AbstractContainerMenu container);
 
+	@Nullable
 	IFluidTank getTank(int tankIndex);
 
 	boolean canFillFluidType(FluidStack fluidStack);

@@ -34,7 +34,7 @@ public abstract class ContainerForestry extends AbstractContainerMenu {
 	private int transferCount = 0;
 	// null on client side
 	@Nullable
-	private final ServerPlayer player;
+	protected final ServerPlayer player;
 
 	protected ContainerForestry(int containerId, MenuType<?> type, @Nullable Player player) {
 		super(type, containerId);

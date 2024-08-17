@@ -10,6 +10,8 @@
  ******************************************************************************/
 package forestry.core.gui;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -23,5 +25,6 @@ public interface IContainerLiquidTanks {
 
 	void handlePipetteClick(int slot, ServerPlayer player);
 
+	@Nullable
 	IFluidTank getTank(int slot);
 }
