@@ -231,11 +231,6 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 	}
 
 	@Override
-	public IBreedingTracker createBreedingTracker(CompoundTag tag) {
-		return new ArboristTracker(tag);
-	}
-
-	@Override
 	public void initializeBreedingTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
 		if (tracker instanceof ArboristTracker arboristTracker) {
 			arboristTracker.setLevel(world);

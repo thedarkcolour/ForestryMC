@@ -38,7 +38,6 @@ import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.core.config.Constants;
-import forestry.core.genetics.mutations.EnumMutateChance;
 import forestry.core.gui.buttons.GuiBetterButton;
 import forestry.core.gui.buttons.StandardButtonTextureSets;
 import forestry.core.network.packets.PacketGuiSelectRequest;
@@ -63,7 +62,7 @@ public class GuiNaturalistInventory<C extends AbstractContainerMenu & INaturalis
 		imageWidth = 196;
 		imageHeight = 202;
 
-		// todo investigate how often this map is populated
+		// todo have one place where icon stacks are stored
 		for (ISpecies species : speciesType.getAllSpecies()) {
 			iconStacks.put(species.id(), species.createStack(species.createIndividual(), speciesType.getDefaultStage()));
 		}

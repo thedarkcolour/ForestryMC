@@ -10,40 +10,15 @@
  ******************************************************************************/
 package forestry.lepidopterology.genetics;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-
 import forestry.api.genetics.ForestrySpeciesTypes;
-import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.ISpecies;
 import forestry.api.lepidopterology.ILepidopteristTracker;
 import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.core.genetics.BreedingTracker;
-import forestry.core.utils.SpeciesUtil;
 
 public class LepidopteristTracker extends BreedingTracker implements ILepidopteristTracker {
-
-	/**
-	 * Required for creation from map storage
-	 */
 	public LepidopteristTracker() {
-		super();
-	}
-
-	public LepidopteristTracker(CompoundTag tag) {
-		super(tag);
-	}
-
-	@Override
-	protected IBreedingTracker getBreedingTracker(Player player) {
-		//TODO world cast
-		return SpeciesUtil.BUTTERFLY_TYPE.get().getBreedingTracker(player.level, player.getGameProfile());
-	}
-
-	@Override
-	protected ResourceLocation getTypeId() {
-		return ForestrySpeciesTypes.BUTTERFLY;
+		super(ForestrySpeciesTypes.BUTTERFLY);
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public record PacketGenomeTrackerSync(@Nullable CompoundTag nbt) implements IFor
 
 			if (root != null) {
 				IBreedingTracker tracker = root.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());
-				tracker.decodeFromNBT(msg.nbt);
+				tracker.readFromNbt(msg.nbt);
 				MinecraftForge.EVENT_BUS.post(new ForestryEvent.SyncedBreedingTracker(tracker, player));
 			}
 		}

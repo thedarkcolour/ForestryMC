@@ -115,7 +115,7 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	 */
 	IBreedingTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile);
 
-	/**
+	/** todo is this necessary API?
 	 * The type of the species that will be used at the given position of the mutation recipe in the gui.
 	 *
 	 * @param position 0 = first parent, 1 = second parent, 2 = result
@@ -192,9 +192,9 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	IBreedingTracker createBreedingTracker();
 
 	/**
-	 * @return A new breeding tracker with data loaded from a previous save file.
+	 * @return A breeding tracker with data loaded from a previous save file.
 	 */
-	IBreedingTracker createBreedingTracker(CompoundTag tag);
+	IBreedingTracker createBreedingTracker(CompoundTag nbt);
 
 	/**
 	 * @return A new individual of a random species using the default genome of the chosen species.

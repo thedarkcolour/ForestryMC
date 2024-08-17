@@ -94,11 +94,6 @@ public class BeeSpeciesType extends SpeciesType<IBeeSpecies, IBee> implements IB
 	}
 
 	@Override
-	public IBreedingTracker createBreedingTracker(CompoundTag tag) {
-		return new ApiaristTracker(tag);
-	}
-
-	@Override
 	public void initializeBreedingTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
 		if (tracker instanceof BreedingTracker apiaristTracker) {
 			apiaristTracker.setLevel(world);

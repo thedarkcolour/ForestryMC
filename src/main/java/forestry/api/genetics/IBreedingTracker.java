@@ -6,7 +6,6 @@
 package forestry.api.genetics;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -16,8 +15,6 @@ import forestry.api.genetics.alleles.IAllele;
 
 /**
  * Keeps track of who bred, discovered, and researched which species in a world.
- *
- * @author SirSengir
  */
 public interface IBreedingTracker {
 	/**
@@ -80,15 +77,13 @@ public interface IBreedingTracker {
 	boolean isResearched(IMutation<?> mutation);
 
 	/**
-	 * Synchronizes the tracker to the client side.
-	 * Before Forestry 4.2.1: Should be called before opening any gui needing that information.
-	 * Since Forestry 4.2.1: Breeding tracker should be automatically synced, only Forestry should need to call this.
+	 * Synchronizes the ENTIRE breeding tracker to the client side.
 	 */
-	void synchToPlayer(Player player);
+	void syncToPlayer(Player player);
 
-	/* LOADING & SAVING */
-	void decodeFromNBT(CompoundTag compound);
+	// todo replace these with "save" and "load" in 1.21
+	void readFromNbt(CompoundTag nbt);
 
-	void encodeToNBT(CompoundTag compound);
+	void writeToNbt(CompoundTag nbt);
 
 }

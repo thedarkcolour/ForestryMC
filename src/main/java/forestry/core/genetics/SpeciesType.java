@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
@@ -222,6 +223,13 @@ public abstract class SpeciesType<S extends ISpecies<I>, I extends IIndividual> 
 	public I createRandomIndividual(RandomSource rand) {
 		List<S> allSpecies = getAllSpecies();
 		return allSpecies.get(rand.nextInt(allSpecies.size())).createIndividual();
+	}
+
+	@Override
+	public IBreedingTracker createBreedingTracker(CompoundTag nbt) {
+		IBreedingTracker tracker = createBreedingTracker();
+		tracker.readFromNbt(nbt);
+		return tracker;
 	}
 
 	@Override

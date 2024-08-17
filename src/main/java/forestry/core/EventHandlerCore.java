@@ -44,7 +44,7 @@ public class EventHandlerCore {
 	private static void syncBreedingTrackers(Player player) {
 		for (ISpeciesType<?, ?> type : IForestryApi.INSTANCE.getGeneticManager().getSpeciesTypes()) {
 			IBreedingTracker breedingTracker = type.getBreedingTracker(player.getCommandSenderWorld(), player.getGameProfile());
-			breedingTracker.synchToPlayer(player);
+			breedingTracker.syncToPlayer(player);
 		}
 	}
 

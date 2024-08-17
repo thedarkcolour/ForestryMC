@@ -10,37 +10,17 @@
  ******************************************************************************/
 package forestry.arboriculture.genetics;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-
 import forestry.api.arboriculture.IArboristTracker;
 import forestry.api.genetics.ForestrySpeciesTypes;
-import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.ISpecies;
 import forestry.core.genetics.BreedingTracker;
-import forestry.core.utils.SpeciesUtil;
 
 public class ArboristTracker extends BreedingTracker implements IArboristTracker {
 	public ArboristTracker() {
-		super();
-	}
-
-	public ArboristTracker(CompoundTag tag) {
-		super(tag);
+		super(ForestrySpeciesTypes.TREE);
 	}
 
 	@Override
-	protected IBreedingTracker getBreedingTracker(Player player) {
-		return SpeciesUtil.TREE_TYPE.get().getBreedingTracker(player.level, player.getGameProfile());
-	}
-
-	@Override
-	protected ResourceLocation getTypeId() {
-		return ForestrySpeciesTypes.TREE;
-	}
-
-	@Override
-	public void registerPickup(ISpecies<?> individual) {
+	public void registerPickup(ISpecies<?> species) {
 	}
 }

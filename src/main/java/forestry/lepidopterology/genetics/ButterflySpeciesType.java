@@ -194,11 +194,6 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 	}
 
 	@Override
-	public IBreedingTracker createBreedingTracker(CompoundTag tag) {
-		return new LepidopteristTracker(tag);
-	}
-
-	@Override
 	public void initializeBreedingTracker(IBreedingTracker tracker, @Nullable Level world, @Nullable GameProfile profile) {
 		if (tracker instanceof LepidopteristTracker butterflyTracker) {
 			butterflyTracker.setLevel(world);

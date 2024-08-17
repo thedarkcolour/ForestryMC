@@ -11,8 +11,6 @@ import forestry.api.genetics.ISpeciesType;
 
 /**
  * Can be used to garner information on bee breeding. See {@link ISpeciesType} for retrieval functions.
- *
- * @author SirSengir
  */
 public interface IApiaristTracker extends IBreedingTracker {
 	/**

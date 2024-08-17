@@ -1,7 +1,8 @@
 ## Forestry 1.0.4
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to
   modify the genome of the player's currently held genetic item (bees, saplings, butterflies)
--
+- Fixed loading of Chinese (simplified) language file (#44)
+- Fixed Apiarist chest menu not displaying queens/princesses/drones in menu (#40)
 
 ## Forestry 1.0.3
 - Fixed saplings not dropping themselves (#36)
