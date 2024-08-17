@@ -70,9 +70,7 @@ public class BlockBeeHive extends Block implements EntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> actualType) {
-		return level.isClientSide() || actualType != ApicultureTiles.HIVE.tileType() ? null : (level1, pos, state1, t) -> {
-			((TileHive) t).tick();
-		};
+		return actualType != ApicultureTiles.HIVE.tileType() ? null : (level1, pos, state1, t) -> ((TileHive) t).tick(level1);
 	}
 
 	@Override

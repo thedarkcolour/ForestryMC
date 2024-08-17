@@ -94,7 +94,7 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 		this.beeTargetPredicate = new BeeTargetPredicate(this);
 	}
 
-	public void tick() {
+	public void tick(Level level) {
 		tickHelper.onTick();
 
 		if (level.isClientSide) {
