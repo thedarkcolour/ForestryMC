@@ -15,12 +15,6 @@
     },
     {
       "type": "crafting",
-      "title": "for.gui.book.patchouli.entry.core.resources3",
-      "recipe": "forestry:resource_storage_copper",
-      "recipe2": "forestry:ingot_copper"
-    },
-    {
-      "type": "crafting",
       "title": "for.gui.book.patchouli.entry.core.resources4",
       "recipe": "forestry:resource_storage_tin",
       "recipe2": "forestry:ingot_tin"
