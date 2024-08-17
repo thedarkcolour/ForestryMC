@@ -2,10 +2,13 @@
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to
   modify the genome of the player's currently held genetic item (bees, saplings, butterflies)
 - Fixed loading of Chinese (simplified) language file (#44)
+- Fixed many translation keys in Chinese (simplified) language file (#45)
 - Fixed Apiarist chest menu not displaying queens/princesses/drones in menu (#40)
 - Unused honeycombs are no longer obtainable in survival, from village houses or trades (#42)
-- Fix fluid attributes and use honey/milk tags where possible
-- Fix liquid container menu desync (#29, #41)
+- Fixed fluid attributes and use honey/milk tags where possible
+- Fixed liquid container menu desync (#29, #41)
+- Fixed wild beehives dropping bees without a scoop
+- Fixed legacy farms not planting from slots correctly (#43)
 
 ## Forestry 1.0.3
 - Fixed saplings not dropping themselves (#36)
