@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
+import forestry.api.ForestryTags;
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.apiculture.genetics.IBee;
@@ -101,8 +102,12 @@ public class BlockBeeHive extends Block implements EntityBlock {
 	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
 		BlockPos pos = new BlockPos(builder.getParameter(LootContextParams.ORIGIN));
 		ItemStack tool = builder.getParameter(LootContextParams.TOOL);
-		int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool);
-		return getDrops(builder.getLevel(), pos, fortune);
+
+		if (tool.is(ForestryTags.Items.SCOOPS)) {
+			int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool);
+			return getDrops(builder.getLevel(), pos, fortune);
+		}
+		return List.of();
 	}
 
 	private List<ItemStack> getDrops(ServerLevel level, BlockPos pos, int fortune) {
