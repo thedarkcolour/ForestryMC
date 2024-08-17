@@ -31,6 +31,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.common.MinecraftForge;
 
 import forestry.api.IForestryApi;
 import forestry.api.arboriculture.ForestryTreeSpecies;
@@ -40,6 +41,7 @@ import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.climate.IBiomeProvider;
+import forestry.api.core.ForestryEvent;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
@@ -279,14 +281,18 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	}
 
 	@Override
-	public void mateWith(IIndividual individual) {
-		if (individual instanceof ITree) {
+	public void mateWith(IIndividual individual, @Nullable Object pollinator) {
+		if (individual instanceof ITree mate) {
 			ITree tree = getTree();
 			if (tree == null || level == null) {
 				return;
 			}
 
-			tree.setMate(individual.getGenome());
+			ForestryEvent.PollinateIndividual event = new ForestryEvent.PollinateIndividual(this.level, this.worldPosition, tree, mate, pollinator);
+			if (MinecraftForge.EVENT_BUS.post(event)) {
+				return;
+			}
+			tree.setMate(event.getPollenGenome());
 			if (!level.isClientSide) {
 				sendNetworkUpdate();
 			}
