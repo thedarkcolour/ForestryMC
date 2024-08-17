@@ -3,6 +3,8 @@ package forestry.apiculture.items;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import net.minecraftforge.data.loading.DatagenModLoader;
+
 import forestry.api.core.ItemGroups;
 import forestry.apiculture.blocks.BlockHoneyComb;
 import forestry.core.items.ItemBlockForestry;
@@ -10,7 +12,7 @@ import forestry.core.items.definitions.IColoredItem;
 
 public class ItemBlockHoneyComb extends ItemBlockForestry<BlockHoneyComb> implements IColoredItem {
 	public ItemBlockHoneyComb(BlockHoneyComb block) {
-		super(block, new Item.Properties().tab(block.type.isUnused() ? null : ItemGroups.tabApiculture));
+		super(block, new Item.Properties().tab((block.type.isUnused() && !DatagenModLoader.isRunningDataGen()) ? null : ItemGroups.tabApiculture));
 	}
 
 	@Override

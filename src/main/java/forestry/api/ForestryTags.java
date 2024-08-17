@@ -3,11 +3,13 @@ package forestry.api;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 public class ForestryTags {
 	public static class Blocks {
@@ -159,6 +161,14 @@ public class ForestryTags {
 
 		private static TagKey<Biome> tag(String path) {
 			return TagKey.create(Registry.BIOME_REGISTRY, ForestryConstants.forestry(path));
+		}
+	}
+
+	public static class Fluids {
+		public static final TagKey<Fluid> HONEY = forgeTag("honey");
+
+		private static TagKey<Fluid> forgeTag(String name) {
+			return FluidTags.create(new ResourceLocation("forge", name));
 		}
 	}
 }

@@ -35,7 +35,7 @@ import forestry.api.core.tooltips.ToolTip;
 import forestry.core.utils.ModUtil;
 
 public class FilteredTank extends StandardTank {
-	private Supplier<Set<ResourceLocation>> filters = Suppliers.ofInstance(new HashSet<>()); // FluidNames
+	private Supplier<Set<ResourceLocation>> filters = Suppliers.ofInstance(new HashSet<>());
 
 	public FilteredTank(int capacity) {
 		super(capacity);
@@ -46,7 +46,7 @@ public class FilteredTank extends StandardTank {
 		super(capacity, canFill, canDrain);
 	}
 
-	public FilteredTank setFilter(FluidRecipeFilter filters) {
+	public FilteredTank setFilter(Supplier<Set<ResourceLocation>> filters) {
 		this.filters = filters;
 		return this;
 	}

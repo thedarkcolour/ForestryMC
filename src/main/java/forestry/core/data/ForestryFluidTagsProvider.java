@@ -4,11 +4,12 @@ import javax.annotation.Nullable;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
-import net.minecraft.tags.FluidTags;
 
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import forestry.api.ForestryConstants;
+import forestry.api.ForestryTags;
 import forestry.core.fluids.ForestryFluids;
 
 public class ForestryFluidTagsProvider extends FluidTagsProvider {
@@ -18,9 +19,8 @@ public class ForestryFluidTagsProvider extends FluidTagsProvider {
 
 	@Override
 	protected void addTags() {
-		for (ForestryFluids fluid : ForestryFluids.values()) {
-			tag(FluidTags.WATER).add(fluid.getFluid()).add(fluid.getFlowing());
-		}
+		tag(Tags.Fluids.MILK).add(ForestryFluids.MILK.getFluid(), ForestryFluids.MILK.getFlowing());
+		tag(ForestryTags.Fluids.HONEY).add(ForestryFluids.HONEY.getFluid(), ForestryFluids.HONEY.getFlowing());
 	}
 
 

@@ -15,6 +15,8 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.mutable.MutableObject;
+
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -54,16 +56,16 @@ public class CarpenterRecipeBuilder {
 	}
 
 	public CarpenterRecipeBuilder recipe(ShapedRecipeBuilder recipe) {
-		Holder<FinishedRecipe> holder = new Holder<>();
-		recipe.unlockedBy("impossible", new ImpossibleTrigger.TriggerInstance()).save(holder::set);
-		this.recipe = holder.get();
+		MutableObject<FinishedRecipe> holder = new MutableObject<>();
+		recipe.unlockedBy("impossible", new ImpossibleTrigger.TriggerInstance()).save(holder::setValue);
+		this.recipe = holder.getValue();
 		return this;
 	}
 
 	public CarpenterRecipeBuilder recipe(ShapelessRecipeBuilder recipe) {
-		Holder<FinishedRecipe> holder = new Holder<>();
-		recipe.unlockedBy("impossible", new ImpossibleTrigger.TriggerInstance()).save(holder::set);
-		this.recipe = holder.get();
+		MutableObject<FinishedRecipe> holder = new MutableObject<>();
+		recipe.unlockedBy("impossible", new ImpossibleTrigger.TriggerInstance()).save(holder::setValue);
+		this.recipe = holder.getValue();
 		return this;
 	}
 

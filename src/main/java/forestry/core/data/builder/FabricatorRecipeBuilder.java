@@ -14,6 +14,8 @@ import com.google.gson.JsonObject;
 
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.mutable.MutableObject;
+
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -42,9 +44,9 @@ public class FabricatorRecipeBuilder {
 	}
 
 	public FabricatorRecipeBuilder recipe(ShapedRecipeBuilder recipe) {
-		Holder<FinishedRecipe> holder = new Holder<>();
-		recipe.unlockedBy("impossible", new ImpossibleTrigger.TriggerInstance()).save(holder::set);
-		this.recipe = (ShapedRecipeBuilder.Result) holder.get();
+		MutableObject<FinishedRecipe> holder = new MutableObject<>();
+		recipe.unlockedBy("impossible", new ImpossibleTrigger.TriggerInstance()).save(holder::setValue);
+		this.recipe = (ShapedRecipeBuilder.Result) holder.getValue();
 		return this;
 	}
 

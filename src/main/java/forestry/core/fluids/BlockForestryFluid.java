@@ -11,93 +11,63 @@
 package forestry.core.fluids;
 
 import java.awt.Color;
-import java.util.Random;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 
 import forestry.modules.features.FeatureFluid;
 import forestry.modules.features.FluidProperties;
 
 public class BlockForestryFluid extends LiquidBlock {
-	private final boolean flammable;
+	private final boolean spreadsFire;
 	private final int flammability;
 	private final Color color;
+	private final boolean freezing;
+	private final boolean burning;
+	private final float explosionPower;
+	private final boolean explodes;
 
 	public BlockForestryFluid(FeatureFluid feature) {
-		super(feature::fluid, Block.Properties.of(feature.properties().temperature > 505 ? Material.LAVA : Material.WATER).noCollission().strength(100.0F).noLootTable());
+		super(feature::fluid, Block.Properties.of(feature.properties().temperature > 505 ? Material.LAVA : Material.WATER).noCollission().noLootTable());
 		FluidProperties properties = feature.properties();
 		this.flammability = properties.flammability;
-		this.flammable = properties.flammable;
-
+		this.spreadsFire = properties.spreadsFire;
 		this.color = properties.particleColor;
+		this.freezing = properties.temperature < 270;
+		this.burning = properties.temperature > 505;
+		// Explosion size is determined by flammability, up to size 4.
+		this.explosionPower = 4F * this.flammability / 300F;
+		this.explodes = this.explosionPower > 1.0f;
 	}
 
 	@Override
-	public void randomTick(BlockState blockState, ServerLevel world, BlockPos pos, RandomSource rand) {
-		double x = pos.getX();
-		double y = pos.getY();
-		double z = pos.getZ();
-
-		if (this.material == Material.WATER) {
-			int i = blockState.getValue(LEVEL);
-
-			if (i > 0 && i < 8) {
-				if (getFluid().getFluidType().getViscosity(blockState.getFluidState(), world, pos) < 5000 && rand.nextInt(64) == 0) {
-					world.playLocalSound(x + 0.5D, y + 0.5D, z + 0.5D, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, rand.nextFloat() * 0.25F + 0.75F, rand.nextFloat() + 0.5F, false);
-				}
-			} else if (rand.nextInt(10) == 0) {
-				world.addParticle(ParticleTypes.UNDERWATER, x + rand.nextFloat(), y + rand.nextFloat(), z + rand.nextFloat(), 0.0D, 0.0D, 0.0D);
-			}
-		}
-
-		if (this.material == Material.LAVA && world.getBlockState(pos.above()).getMaterial() == Material.AIR && !world.getBlockState(pos.above()).isSolidRender(world, pos.above())) {
-			if (rand.nextInt(100) == 0) {
-				double d8 = x + rand.nextFloat();
-				double d4 = y + 1;
-				double d6 = z + rand.nextFloat();
-				world.addParticle(ParticleTypes.LAVA, d8, d4, d6, 0.0D, 0.0D, 0.0D);
-				world.playLocalSound(d8, d4, d6, SoundEvents.LAVA_POP, SoundSource.BLOCKS, 0.2F + rand.nextFloat() * 0.2F, 0.9F + rand.nextFloat() * 0.15F, false);
-			}
-
-			if (rand.nextInt(200) == 0) {
-				world.playLocalSound(x, y, z, SoundEvents.LAVA_AMBIENT, SoundSource.BLOCKS, 0.2F + rand.nextFloat() * 0.2F, 0.9F + rand.nextFloat() * 0.15F, false);
-			}
-		}
-
-		if (rand.nextInt(10) == 0 && Block.canSupportCenter(world, pos.below(), Direction.DOWN)) {
-			Material material = world.getBlockState(pos.below(2)).getMaterial();
-
-			if (!material.blocksMotion() && !material.isLiquid()) {
-				double px = x + rand.nextFloat();
-				double py = y - 1.05D;
-				double pz = z + rand.nextFloat();
-
-				/*Particle fx = new ParticleColoredDripParticle(world, px, py, pz, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
-				Minecraft.getInstance().particles.addEffect(fx);*/
-			}
+	public void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity entity) {
+		if (this.freezing) {
+			entity.setIsInPowderSnow(true);
+		} else if (this.burning) {
+			entity.setSecondsOnFire(5);
+			entity.hurt(DamageSource.LAVA, 1);
 		}
 	}
 
 	@Override
 	public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-		return flammable ? 30 : 0;
+		return this.spreadsFire ? 30 : 0;
 	}
 
 	@Override
@@ -107,18 +77,17 @@ public class BlockForestryFluid extends LiquidBlock {
 
 	@Override
 	public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-		return flammable;
+		return this.spreadsFire;
 	}
 
 	private static boolean isFlammable(BlockGetter world, BlockPos pos) {
 		BlockState blockState = world.getBlockState(pos);
-		Block block = blockState.getBlock();
 		return blockState.isFlammable(world, pos, Direction.UP);
 	}
 
 	@Override
 	public boolean isFireSource(BlockState state, LevelReader world, BlockPos pos, Direction side) {
-		return flammable && flammability == 0;
+		return this.spreadsFire && this.flammability == 0;
 	}
 
 	public Color getColor() {
@@ -126,15 +95,18 @@ public class BlockForestryFluid extends LiquidBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
-		super.tick(state, world, pos, rand);
+	public boolean isRandomlyTicking(BlockState pState) {
+		return this.burning || this.explodes;
+	}
 
+	@Override
+	public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
 
 		// Start fires if the fluid is lava-like
-		if (material == Material.LAVA) {
+		if (this.burning) {
 			int rangeUp = rand.nextInt(3);
 
 			for (int i = 0; i < rangeUp; ++i) {
@@ -169,24 +141,21 @@ public class BlockForestryFluid extends LiquidBlock {
 		}
 
 		// explode if very flammable and near fire
-		int flammability = getFlammability(state, world, pos, null);
-		if (flammability > 0) {
-			// Explosion size is determined by flammability, up to size 4.
-			float explosionSize = 4F * flammability / 300F;
-			if (explosionSize > 1.0 && isNearFire(world, pos.getX(), pos.getY(), pos.getZ())) {
+		if (this.explosionPower > 1f) {
+			if (isNearFire(world, pos.getX(), pos.getY(), pos.getZ())) {
 				world.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
-				world.explode(null, pos.getX(), pos.getY(), pos.getZ(), explosionSize, true, Explosion.BlockInteraction.DESTROY);
+				world.explode(null, pos.getX(), pos.getY(), pos.getZ(), this.explosionPower, true, Explosion.BlockInteraction.DESTROY);
 			}
 		}
 	}
 
 	private static boolean isNeighborFlammable(Level world, int x, int y, int z) {
 		return isFlammable(world, new BlockPos(x - 1, y, z)) ||
-			isFlammable(world, new BlockPos(x + 1, y, z)) ||
-			isFlammable(world, new BlockPos(x, y, z - 1)) ||
-			isFlammable(world, new BlockPos(x, y, z + 1)) ||
-			isFlammable(world, new BlockPos(x, y - 1, z)) ||
-			isFlammable(world, new BlockPos(x, y + 1, z));
+				isFlammable(world, new BlockPos(x + 1, y, z)) ||
+				isFlammable(world, new BlockPos(x, y, z - 1)) ||
+				isFlammable(world, new BlockPos(x, y, z + 1)) ||
+				isFlammable(world, new BlockPos(x, y - 1, z)) ||
+				isFlammable(world, new BlockPos(x, y + 1, z));
 	}
 
 	private static boolean isNearFire(Level world, int x, int y, int z) {

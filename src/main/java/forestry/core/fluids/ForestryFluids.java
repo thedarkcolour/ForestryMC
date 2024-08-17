@@ -17,15 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import net.minecraftforge.fluids.FluidStack;
 
@@ -41,47 +42,64 @@ import forestry.modules.features.ModFeatureRegistry;
 
 @FeatureProvider
 public enum ForestryFluids {
-	BIO_ETHANOL(new Color(255, 111, 0), 790, 1000, 300),
-	BIOMASS(new Color(100, 132, 41), 400, 6560, 100),
-	GLASS(new Color(164, 164, 164), 2400, 10000, 0),
-	HONEY(new Color(255, 196, 35), 1420, 75600) {
-		@Override
-		public DrinkProperties getDrinkProperties() {
-			return new DrinkProperties(2, 0.2f, 64);
-		}
-	},
-	ICE(new Color(175, 242, 255), 520, 1000) {
-		@Override
-		public int getTemperature() {
-			return 265;
-		}
-	},
-	JUICE(new Color(168, 201, 114)) {
-		@Override
-		public DrinkProperties getDrinkProperties() {
-			return new DrinkProperties(2, 0.2f, 32);
-		}
-	},
-	MILK(new Color(255, 255, 255), 1030, 3000) {
-		@Override
-		public List<ItemStack> getOtherContainers() {
-			return Collections.singletonList(
-					new ItemStack(Items.MILK_BUCKET)
-			);
-		}
-
+	BIO_ETHANOL(properties -> properties
+			.particleColor(new Color(255, 111, 0))
+			.density(790)
+			.viscosity(1000)
+			.flammability(300)
+			.spreadsFire()),
+	BIOMASS(properties -> properties
+			.particleColor(new Color(100, 132, 41))
+			.density(400)
+			.viscosity(6560)
+			.flammability(100)),
+	GLASS(properties -> properties
+			.particleColor(new Color(164, 164, 164))
+			.density(2400)
+			.viscosity(10000)
+			.flammability(0)
+			.spreadsFire()
+			.temperature(1400)),
+	HONEY(properties -> properties
+			.particleColor(new Color(255, 196, 35))
+			.density(1420)
+			.viscosity(75600)
+			.drinkProperties(2, 0.2f, 64)
+	),
+	ICE(properties -> properties
+			.particleColor(new Color(175, 242, 255))
+			.density(520)
+			.viscosity(1000)
+			.temperature(265)),
+	JUICE(properties -> properties
+			.particleColor(new Color(168, 201, 114))
+			.drinkProperties(2, 0.2f, 32)
+	),
+	// TODO remove in 1.20
+	MILK(properties -> properties
+			.particleColor(new Color(255, 255, 255))
+			.density(1030)
+			.viscosity(3000)
+	) {
 		@Override
 		protected boolean hasBucket() {
 			return false;
 		}
 	},
-	SEED_OIL(new Color(255, 255, 168), 885, 5000, 2),
-	SHORT_MEAD(new Color(239, 154, 56), 1000, 1200, 4) {
-		@Override
-		public DrinkProperties getDrinkProperties() {
-			return new DrinkProperties(1, 0.2f, 32);
-		}
-	};
+	SEED_OIL(properties -> properties
+			.particleColor(new Color(255, 255, 168))
+			.density(885)
+			.viscosity(5000)
+			.spreadsFire()
+			.flammability(2)),
+	SHORT_MEAD(properties -> properties
+			.particleColor(new Color(239, 154, 56))
+			.density(1000)
+			.viscosity(1200)
+			.spreadsFire()
+			.flammability(4)
+			.drinkProperties(1, 0.2f, 32)
+	);
 
 	private static final Map<ResourceLocation, ForestryFluids> tagToFluid = new HashMap<>();
 
@@ -89,6 +107,9 @@ public enum ForestryFluids {
 		for (ForestryFluids fluidDefinition : ForestryFluids.values()) {
 			tagToFluid.put(ForestryConstants.forestry(fluidDefinition.feature.getName()), fluidDefinition);
 		}
+
+		// todo Milk fluid in 1.20
+		//ForgeMod.enableMilkFluid();
 	}
 
 	private final ResourceLocation tag;
@@ -96,23 +117,10 @@ public enum ForestryFluids {
 	@Nullable
 	private final FeatureItem<BucketItem> bucket;
 
-	ForestryFluids(Color particleColor) {
-		this(particleColor, 1000, 1000);
-	}
-
-	ForestryFluids(Color particleColor, int density, int viscosity) {
-		this(particleColor, density, viscosity, -1);
-	}
-
-	ForestryFluids(Color particleColor, int density, int viscosity, int flammability) {
+	ForestryFluids(UnaryOperator<FeatureFluid.Builder> properties) {
 		IFeatureRegistry registry = ModFeatureRegistry.get(ForestryModuleIds.FLUIDS);
-		this.feature = registry
-				.fluid(name().toLowerCase(Locale.ENGLISH))
-				.flammability(flammability)
-				.viscosity(viscosity)
-				.density(density)
-				.temperature(getTemperature())
-				.particleColor(particleColor)
+		this.feature = properties.apply(registry
+						.fluid(name().toLowerCase(Locale.ENGLISH)))
 				.bucket(this::getBucket)
 				.create();
 		if (hasBucket()) {

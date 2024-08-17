@@ -22,7 +22,7 @@ public class FluidProperties {
 	public final int temperature;
 	public final Color particleColor;
 	public final int flammability;
-	public final boolean flammable;
+	public final boolean spreadsFire;
 	@Nullable
 	public final DrinkProperties properties;
 	public final ResourceLocation[] resources = new ResourceLocation[2];
@@ -34,7 +34,7 @@ public class FluidProperties {
 		this.temperature = builder.temperature;
 		this.particleColor = builder.particleColor;
 		this.flammability = builder.flammability;
-		this.flammable = builder.flammable;
+		this.spreadsFire = builder.spreadsFire;
 		this.properties = builder.properties;
 		this.resources[0] = ForestryConstants.forestry("block/liquid/" + builder.identifier + "_still");
 		this.resources[1] = ForestryConstants.forestry("block/liquid/" + builder.identifier + "_flow");

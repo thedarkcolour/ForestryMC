@@ -76,7 +76,6 @@ import forestry.storage.features.CrateItems;
 import forestry.storage.items.ItemCrated;
 
 public class ForestryMachineRecipeProvider extends RecipeProvider {
-
 	public static final int STILL_DESTILLATION_DURATION = 100;
 	public static final int STILL_DESTILLATION_INPUT = 10;
 	public static final int STILL_DESTILLATION_OUTPUT = 3;
@@ -225,6 +224,7 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.recipe(ShapelessRecipeBuilder.shapeless(CoreItems.INGOT_BRONZE, 1)
 						.requires(CoreItems.BROKEN_BRONZE_SHOVEL))
 				.build(consumer, id("carpenter", "reclaim_bronze_shovel"));
+		// todo conditional recipe for Create honey fluid 1.20
 		new CarpenterRecipeBuilder()
 				.setPackagingTime(50)
 				.setLiquid(ForestryFluids.HONEY.getFluid(500))

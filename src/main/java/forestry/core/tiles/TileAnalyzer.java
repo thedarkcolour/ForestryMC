@@ -43,6 +43,7 @@ import forestry.api.core.ForestryError;
 import forestry.core.features.CoreTiles;
 import forestry.core.fluids.FilteredTank;
 import forestry.core.fluids.FluidHelper;
+import forestry.core.fluids.FluidTagFilter;
 import forestry.core.fluids.ForestryFluids;
 import forestry.core.fluids.TankManager;
 import forestry.core.gui.ContainerAnalyzer;
@@ -73,7 +74,7 @@ public class TileAnalyzer extends TilePowered implements WorldlyContainer, ILiqu
 	public TileAnalyzer(BlockPos pos, BlockState state) {
 		super(CoreTiles.ANALYZER.tileType(), pos, state, 800, Constants.MACHINE_MAX_ENERGY);
 		setInternalInventory(new InventoryAnalyzer(this));
-		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilters(List.of(ForestryFluids.HONEY.getFluid()));
+		resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY).setFilter(FluidTagFilter.HONEY);
 		tankManager = new TankManager(this, resourceTank);
 		invInput = new InventoryMapper(getInternalInventory(), InventoryAnalyzer.SLOT_INPUT_1, InventoryAnalyzer.SLOT_INPUT_COUNT);
 		invOutput = new InventoryMapper(getInternalInventory(), InventoryAnalyzer.SLOT_OUTPUT_1, InventoryAnalyzer.SLOT_OUTPUT_COUNT);

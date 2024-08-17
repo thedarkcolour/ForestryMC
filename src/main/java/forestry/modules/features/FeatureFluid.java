@@ -82,7 +82,7 @@ public class FeatureFluid extends ModFeature implements IFluidFeature {
 		int temperature = 295;
 		Color particleColor = Color.WHITE;
 		int flammability = 0;
-		boolean flammable = false;
+		boolean spreadsFire = false;
 		@Nullable
 		DrinkProperties properties = null;
 		Supplier<Item> bucket = () -> Items.AIR;
@@ -93,8 +93,8 @@ public class FeatureFluid extends ModFeature implements IFluidFeature {
 			this.identifier = identifier;
 		}
 
-		public Builder flammable() {
-			this.flammable = true;
+		public Builder spreadsFire() {
+			this.spreadsFire = true;
 			return this;
 		}
 
@@ -113,6 +113,7 @@ public class FeatureFluid extends ModFeature implements IFluidFeature {
 			return this;
 		}
 
+		// Temperatures are in Kelvin
 		public Builder temperature(int temperature) {
 			this.temperature = temperature;
 			return this;
