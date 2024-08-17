@@ -2,6 +2,14 @@
 - Fixed wild beehives not having particle effects
 - Fix biogas engine lava tank accepting any fluid
 - Fix still not working
+- Added `forestry_fruits` tag to `forge:fruits` item tag + fruit tags for each fruit added by Forestry:
+  - `forge:fruits/cherry` for Cherry
+  - `forge:fruits/walnut` for Walnut
+  - `forge:fruits/chestnut` for Chestnut
+  - `forge:fruits/lemon` for Lemon, the same tag used by Fruits Delight
+  - `forge:fruits/plum` for Plum
+  - `forge:fruits/date` for Date
+  - `forge:fruits/papaya` for Papaya
 
 ## Forestry 1.0.4
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to

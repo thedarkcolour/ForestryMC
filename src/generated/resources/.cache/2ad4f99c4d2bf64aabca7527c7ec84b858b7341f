@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-16T20:31:51.9090547	Forestry Item Tags
+// 1.19.2	2024-08-17T14:27:56.9289376	Forestry Item Tags
 79ce8ad03638cd1d93ee2752b4cd0f9665ed396f data/forestry/tags/items/combs.json
 9f5d66e4017fbcabe22c6702e93310cf271fe042 data/forestry/tags/items/crafting_tables.json
 ce1f7b72ce898ae6a000ae70dc79151602ad453c data/forestry/tags/items/drop_honey.json
@@ -7,11 +7,15 @@ c6ef65383ced49aaf1b8ea0350192aed4c882ee5 data/forestry/tags/items/forestry_fruit
 cf0c5a0245a3eeb822d88e53776905fa468d455c data/forestry/tags/items/scoops.json
 c0020e6f377758179d2d7f23812e757851ba1ff2 data/forestry/tags/items/stamps.json
 4df7f5327690dcc4e34d2be77033f4d106836b89 data/forestry/tags/items/village_combs.json
+364116e996f1a0fd286e6ea38477fb15cccf46bb data/forge/tags/items/cherry.json
+3c22c5eb89477aab32b100953d3e3684a5c1e20a data/forge/tags/items/chestnut.json
 e736c96d74e1d9b8799f108ba1e8b1e2173926fb data/forge/tags/items/chests.json
+d37015d55b56a5f825a07ea8b4c377acb452a7fa data/forge/tags/items/date.json
 997ede0ad811c9479aabe6bd63d0a5b90a75c3e6 data/forge/tags/items/dusts/ash.json
 b3b37726f52692c7053e546168191082359f6c77 data/forge/tags/items/fences.json
 37bfc4c26e38ed60d0e9af3a8e15ae7dc9d70e3c data/forge/tags/items/fence_gates.json
 37bfc4c26e38ed60d0e9af3a8e15ae7dc9d70e3c data/forge/tags/items/fence_gates/wooden.json
+7f5a98d8fa19572ce1d617975f4c7d0449b04380 data/forge/tags/items/fruits.json
 b65391d6ad052635e6a05e52a948999fbe4275cc data/forge/tags/items/gears.json
 a8c9d50fad9f4f5fadfdb5b0073b599dda9a140f data/forge/tags/items/gears/bronze.json
 246c3d963343027d30575bca49bede0d04d245b6 data/forge/tags/items/gears/copper.json
@@ -21,9 +25,12 @@ febeaaa35d40f231aef3c816a93030bec346cd15 data/forge/tags/items/gears/tin.json
 8b565f4d3966eef268a9a0bf81be893e0cb2c1f5 data/forge/tags/items/ingots.json
 23b9c8d2d2eba3c044b161396f97568f82616835 data/forge/tags/items/ingots/bronze.json
 5966795424891c260c40d5175e82af76164340ea data/forge/tags/items/ingots/tin.json
+ab4113cda3bfb3a656ec70b56b48a7ef12f3b439 data/forge/tags/items/lemon.json
 8748aabd65b940d68f569a4918e21a98d69f63fa data/forge/tags/items/ores.json
 8bc630a1df34e3623f9a5554a01ae2dfc2362023 data/forge/tags/items/ores/apatite.json
 6b5b215353862ea81225290f3c38054df67a245f data/forge/tags/items/ores/tin.json
+43e7a7c5b5ba30819ab989687b98918b95259b76 data/forge/tags/items/papaya.json
+83bb9afbc48fe29d2ba5f7e26971934607d899ce data/forge/tags/items/plum.json
 7a5b77c21783e5fcfc69215d7ac0599936320d47 data/forge/tags/items/raw_materials.json
 8db3ceef4b7d718ce68f0c0d874f3b9144cf6658 data/forge/tags/items/raw_materials/tin.json
 e9507194391ca0e0eeef0dc3db67b1e3fde1ccb1 data/forge/tags/items/sawdust.json
@@ -33,6 +40,7 @@ a50813a6215611330b9e7a32904eb8f174d3741a data/forge/tags/items/storage_blocks/br
 c74d64c654da6d15a76cd4167268fc9965ef23ca data/forge/tags/items/storage_blocks/charcoal.json
 8b3a8ecaabc2db91e27ad34b051647d52a0ad47e data/forge/tags/items/storage_blocks/raw_tin.json
 ed974f25f4057a6e2a627a4ee061decd56b7d274 data/forge/tags/items/storage_blocks/tin.json
+0a4f9416fe27c320cc3003fa7b6b90a9d840b4d7 data/forge/tags/items/walnut.json
 fd7f5b8d14cefaa9260c3a25ed12037ccad07bac data/minecraft/tags/items/dirt.json
 1c73627824305ef04df56af5a2c80fdc257c3e52 data/minecraft/tags/items/doors.json
 b3b37726f52692c7053e546168191082359f6c77 data/minecraft/tags/items/fences.json

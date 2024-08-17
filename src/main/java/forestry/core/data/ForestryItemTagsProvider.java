@@ -20,6 +20,7 @@ import forestry.api.ForestryTags;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.arboriculture.features.ArboricultureItems;
 import forestry.core.features.CoreItems;
+import forestry.core.items.ItemFruit;
 import forestry.mail.features.MailItems;
 
 public final class ForestryItemTagsProvider extends ItemTagsProvider {
@@ -91,7 +92,16 @@ public final class ForestryItemTagsProvider extends ItemTagsProvider {
 
 		tag(ForestryTags.Items.STAMPS).add(MailItems.STAMPS.itemArray());
 
-		tag(ForestryTags.Items.FRUITS).add(CoreItems.FRUITS.itemArray());
+		tag(ForestryTags.Items.FORESTRY_FRUITS).add(CoreItems.FRUITS.itemArray());
+		tag(ForestryTags.Items.FRUITS).addTag(ForestryTags.Items.FORESTRY_FRUITS);
+		tag(ForestryTags.Items.CHERRY).add(CoreItems.FRUITS.item(ItemFruit.EnumFruit.CHERRY));
+		tag(ForestryTags.Items.WALNUT).add(CoreItems.FRUITS.item(ItemFruit.EnumFruit.WALNUT));
+		tag(ForestryTags.Items.CHESTNUT).add(CoreItems.FRUITS.item(ItemFruit.EnumFruit.CHESTNUT));
+		tag(ForestryTags.Items.LEMON).add(CoreItems.FRUITS.item(ItemFruit.EnumFruit.LEMON));
+		tag(ForestryTags.Items.PLUM).add(CoreItems.FRUITS.item(ItemFruit.EnumFruit.PLUM));
+		tag(ForestryTags.Items.DATE).add(CoreItems.FRUITS.item(ItemFruit.EnumFruit.DATES));
+		tag(ForestryTags.Items.PAPAYA).add(CoreItems.FRUITS.item(ItemFruit.EnumFruit.PAPAYA));
+
 		tag(ForestryTags.Items.DUSTS_ASH).add(CoreItems.ASH.item());
 		tag(ForestryTags.Items.SAWDUST).add(CoreItems.WOOD_PULP.item());
 

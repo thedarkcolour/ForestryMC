@@ -92,7 +92,15 @@ public class ForestryTags {
 
 		public static final TagKey<Item> SCOOPS = tag("scoops");
 
-		public static final TagKey<Item> FRUITS = tag("forestry_fruits");
+		public static final TagKey<Item> FORESTRY_FRUITS = tag("forestry_fruits");
+		public static final TagKey<Item> FRUITS = forgeTag("fruits");
+		public static final TagKey<Item> CHERRY = forgeTag("fruits/cherry");
+		public static final TagKey<Item> WALNUT = forgeTag("fruits/walnut");
+		public static final TagKey<Item> CHESTNUT = forgeTag("fruits/chestnut");
+		public static final TagKey<Item> LEMON = forgeTag("fruits/lemon");
+		public static final TagKey<Item> PLUM = forgeTag("fruits/plum");
+		public static final TagKey<Item> DATE = forgeTag("fruits/date");
+		public static final TagKey<Item> PAPAYA = forgeTag("fruits/papaya");
 
 		public static final TagKey<Item> MINER_ALLOW = tag("backpack/allow/miner");
 		public static final TagKey<Item> MINER_REJECT = tag("backpack/reject/miner");

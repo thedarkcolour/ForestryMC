@@ -1029,7 +1029,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerSortingRecipes(Consumer<FinishedRecipe> helper) {
-		Ingredient ing = Ingredient.merge(Lists.newArrayList(Ingredient.of(LepidopterologyItems.CATERPILLAR_GE, ApicultureItems.PROPOLIS.get(EnumPropolis.NORMAL)), Ingredient.of(ForestryTags.Items.FRUITS)));
+		Ingredient ing = Ingredient.merge(Lists.newArrayList(Ingredient.of(LepidopterologyItems.CATERPILLAR_GE, ApicultureItems.PROPOLIS.get(EnumPropolis.NORMAL)), Ingredient.of(ForestryTags.Items.FORESTRY_FRUITS)));
 
 		ShapedRecipeBuilder.shaped(SortingBlocks.FILTER.block(), 2)
 				.define('B', ForestryTags.Items.GEARS_BRONZE)
