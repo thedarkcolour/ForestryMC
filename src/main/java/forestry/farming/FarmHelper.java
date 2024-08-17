@@ -32,35 +32,8 @@ import forestry.core.utils.VecUtil;
 public class FarmHelper {
 	public static final Comparator<ICrop> TOP_DOWN_COMPARATOR = (o1, o2) -> VecUtil.TOP_DOWN_COMPARATOR.compare(o1.getPosition(), o2.getPosition());
 
-	public enum Stage {
-		CULTIVATE, HARVEST;
-
-		public Stage next() {
-			if (this == CULTIVATE) {
-				return HARVEST;
-			} else {
-				return CULTIVATE;
-			}
-		}
-	}
-
-	public static class FarmWorkStatus {
-		public boolean didWork = false;
-		public boolean hasFarmland = false;
-		public boolean hasFertilizer = true;
-		public boolean hasLiquid = true;
-	}
-
 	public static Direction getLayoutDirection(Direction farmSide) {
 		return farmSide.getCounterClockWise();
-	}
-
-	public static Direction getReversedLayoutDirection(Direction farmSide) {
-		return farmSide.getClockWise();
-	}
-
-	private static Direction getOpposite(Direction farmDirection) {
-		return farmDirection.getOpposite();
 	}
 
 	/**
@@ -68,7 +41,7 @@ public class FarmHelper {
 	 */
 	private static BlockPos getFarmMultiblockCorner(BlockPos start, Direction farmSide, Direction layoutDirection, BlockPos minFarmCoord, BlockPos maxFarmCoord) {
 		BlockPos edge = getFarmMultiblockEdge(start, farmSide, maxFarmCoord, minFarmCoord);
-		return getFarmMultiblockEdge(edge, getOpposite(layoutDirection), maxFarmCoord, minFarmCoord);
+		return getFarmMultiblockEdge(edge, layoutDirection.getOpposite(), maxFarmCoord, minFarmCoord);
 	}
 
 	/**

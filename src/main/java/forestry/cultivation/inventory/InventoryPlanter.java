@@ -36,7 +36,7 @@ public class InventoryPlanter extends InventoryPlantation<TilePlanter> implement
 	}
 
 	public boolean plantGermling(IFarmable germling, Player player, BlockPos pos, Direction direction) {
-		int index = FarmHelper.getReversedLayoutDirection(direction).ordinal();
+		int index = getSlotIndex(direction.getOpposite());
 		ItemStack germlingStack = germlingsInventory.getItem(index);
 		if (germlingStack.isEmpty() || !germling.isGermling(germlingStack)) {
 			return false;
@@ -47,5 +47,14 @@ public class InventoryPlanter extends InventoryPlantation<TilePlanter> implement
 			return true;
 		}
 		return false;
+	}
+
+	private static int getSlotIndex(Direction direction) {
+		return switch (direction) {
+			case NORTH -> 0;
+			case EAST -> 1;
+			case SOUTH -> 2;
+			default -> 3;
+		};
 	}
 }

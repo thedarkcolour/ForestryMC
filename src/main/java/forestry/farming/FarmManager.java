@@ -39,8 +39,6 @@ import forestry.core.fluids.StandardTank;
 import forestry.core.fluids.TankManager;
 import forestry.core.network.IStreamable;
 import forestry.cultivation.IFarmHousingInternal;
-import forestry.farming.FarmHelper.FarmWorkStatus;
-import forestry.farming.FarmHelper.Stage;
 import forestry.farming.multiblock.FarmFertilizerManager;
 import forestry.farming.multiblock.FarmHydrationManager;
 
@@ -55,7 +53,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 	private final List<ICrop> pendingCrops = new LinkedList<>();
 	private final Stack<ItemStack> pendingProduce = new Stack<>();
 
-	private Stage stage = Stage.CULTIVATE;
+	private FarmingStage stage = FarmingStage.CULTIVATE;
 
 	private final Set<IFarmListener> farmListeners = new HashSet<>();
 
@@ -141,7 +139,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 			IFarmLogic logic = housing.getFarmLogic(farmSide);
 			List<FarmTarget> farmTargets = targets.get(farmSide);
 
-			if (stage == Stage.CULTIVATE) {
+			if (stage == FarmingStage.CULTIVATE) {
 				for (FarmTarget target : farmTargets) {
 					if (target.getExtent() > 0) {
 						farmWorkStatus.hasFarmland = true;
@@ -159,7 +157,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 				farmWorkStatus.didWork = true;
 			}
 
-			if (stage == Stage.HARVEST) {
+			if (stage == FarmingStage.HARVEST) {
 				Collection<ICrop> harvested = FarmHelper.harvestTargets(level, housing, farmTargets, logic, farmListeners);
 				farmWorkStatus.didWork = !harvested.isEmpty();
 				if (!harvested.isEmpty()) {
@@ -167,7 +165,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 					pendingCrops.sort(FarmHelper.TOP_DOWN_COMPARATOR);
 					harvestProvider = logic;
 				}
-			} else if (stage == Stage.CULTIVATE) {
+			} else if (stage == FarmingStage.CULTIVATE) {
 				cultivateTargets(farmWorkStatus, farmTargets, logic, farmSide);
 			}
 
@@ -176,7 +174,7 @@ public class FarmManager implements INbtReadable, INbtWritable, IStreamable, IEx
 			}
 		}
 
-		if (stage == Stage.CULTIVATE) {
+		if (stage == FarmingStage.CULTIVATE) {
 			errorLogic.setCondition(!farmWorkStatus.hasFarmland, ForestryError.NO_FARMLAND);
 			errorLogic.setCondition(!farmWorkStatus.hasFertilizer, ForestryError.NO_FERTILIZER);
 			errorLogic.setCondition(!farmWorkStatus.hasLiquid, ForestryError.NO_LIQUID_FARM);
