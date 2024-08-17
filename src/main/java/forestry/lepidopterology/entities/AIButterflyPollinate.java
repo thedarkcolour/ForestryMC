@@ -53,7 +53,7 @@ public class AIButterflyPollinate extends AIButterflyInteract {
 				} else if (checkPollinatable.canMateWith(entity.getPollen())) {
 					IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(null, entity.level, rest, ForestryConfig.SERVER.pollinateVanillaLeaves.get());
 					if (realPollinatable != null) {
-						realPollinatable.mateWith(entity.getPollen());
+						realPollinatable.mateWith(entity.getPollen(), entity.getButterfly());
 						entity.setPollen(null);
 					}
 				}

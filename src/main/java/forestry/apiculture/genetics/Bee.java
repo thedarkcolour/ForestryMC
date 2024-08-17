@@ -532,7 +532,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 			IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(housing.getOwner(), level, posBlock, ForestryConfig.SERVER.pollinateVanillaLeaves.get());
 
 			if (realPollinatable != null) {
-				realPollinatable.mateWith(pollen);
+				realPollinatable.mateWith(pollen, this);
 				return true;
 			}
 		}

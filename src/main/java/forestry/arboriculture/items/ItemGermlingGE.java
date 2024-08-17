@@ -109,7 +109,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 		}
 
 		if (!level.isClientSide) {
-			pollinatable.mateWith(tree);
+			pollinatable.mateWith(tree, player);
 
 			BlockUtil.sendDestroyEffects(level, pos, level.getBlockState(pos));
 
