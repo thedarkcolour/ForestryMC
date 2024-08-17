@@ -12,21 +12,9 @@ package forestry.arboriculture.models;
 
 import net.minecraft.resources.ResourceLocation;
 
-import forestry.api.ForestryConstants;
 import forestry.api.client.arboriculture.ILeafSprite;
 
 public class LeafSprite implements ILeafSprite {
-	// Defaults used by Forestry
-	public static final LeafSprite OAK = LeafSprite.create(ForestryConstants.forestry("oak"));
-	public static final LeafSprite BIRCH = LeafSprite.create(ForestryConstants.forestry("birch"));
-	public static final LeafSprite SPRUCE = LeafSprite.create(ForestryConstants.forestry("spruce"));
-	public static final LeafSprite JUNGLE = LeafSprite.create(ForestryConstants.forestry("jungle"));
-	public static final LeafSprite ACACIA = LeafSprite.create(ForestryConstants.forestry("acacia"));
-	public static final LeafSprite MANGROVE = LeafSprite.create(ForestryConstants.forestry("mangrove"));
-	public static final LeafSprite WILLOW = LeafSprite.create(ForestryConstants.forestry("willow"));
-	public static final LeafSprite MAPLE = LeafSprite.create(ForestryConstants.forestry("maple"));
-	public static final LeafSprite PALM = LeafSprite.create(ForestryConstants.forestry("palm"));
-
 	private final ResourceLocation fast;
 	private final ResourceLocation fancy;
 	private final ResourceLocation pollinatedFast;

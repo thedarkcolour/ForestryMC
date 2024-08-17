@@ -11,6 +11,8 @@ import forestry.api.client.IForestryClientApi;
 import forestry.api.client.ITextureManager;
 import forestry.api.client.arboriculture.ITreeClientManager;
 import forestry.api.client.lepidopterology.IButterflyClientManager;
+import forestry.api.client.plugin.IClientHelper;
+import forestry.apiimpl.client.plugin.ClientHelper;
 import forestry.core.render.ForestryTextureManager;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ForestryClientApiImpl implements IForestryClientApi {
 	private final ITextureManager textureManager;
+	private final IClientHelper helper = new ClientHelper();
 	@Nullable
 	private ITreeClientManager treeManager;
 	@Nullable
@@ -54,6 +57,11 @@ public class ForestryClientApiImpl implements IForestryClientApi {
 			throw new IllegalStateException("IButterflyClientManager not initialized yet");
 		}
 		return manager;
+	}
+
+	@Override
+	public IClientHelper getHelper() {
+		return this.helper;
 	}
 
 	@ApiStatus.Internal

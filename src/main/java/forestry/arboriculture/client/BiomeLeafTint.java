@@ -9,8 +9,8 @@ import forestry.api.client.arboriculture.ILeafTint;
 import org.jetbrains.annotations.Nullable;
 
 // Based on the block color for Oak, Jungle, Dark Oak, and Acacia leaves
-public enum BiomeLeafTint implements ILeafTint {
-	INSTANCE;
+public class BiomeLeafTint implements ILeafTint {
+	public static final BiomeLeafTint DEFAULT = new BiomeLeafTint();
 
 	@Override
 	public int get(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
