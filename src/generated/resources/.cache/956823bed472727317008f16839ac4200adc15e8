@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-08T23:53:38.430511	Forestry LootTables
+// 1.19.2	2024-08-16T17:42:34.9368863	Forestry LootTables
 17ff22a46ce5f38489750103f7616ded75593ea5 data/forestry/loot_tables/blocks/acacia_desert_door.json
 990bcd45106e55a592efbafd8f51f643f4e24142 data/forestry/loot_tables/blocks/acacia_desert_fence.json
 475a09dfe06ea7d48697d0c331817750649054b7 data/forestry/loot_tables/blocks/acacia_desert_fence_gate.json
@@ -760,5 +760,5 @@ fa039381f2e0d3452c378a36d889b5be2e0d8643 data/forestry/loot_tables/chests/spawn_
 9970104a8c4c54f9fdedeca1e9eb3d84403794c2 data/forestry/loot_tables/chests/stronghold_crossing/apiculture.json
 fc29dff86fe20c76f415462245c3faadd2f989c2 data/forestry/loot_tables/chests/stronghold_library/apiculture.json
 98dcc1e9e1d9dfd533e4fb15307738eb61991ec9 data/forestry/loot_tables/chests/village_naturalist.json
-791e9b66ed90eb90258b86079119527b417d6edd data/forestry/loot_tables/chests/village_naturalist/apiculture.json
+74e537cfda6776c0709efa63f39e88400333b8b6 data/forestry/loot_tables/chests/village_naturalist/apiculture.json
 932df7f516b52ef5ace660b7e1c4f9ba904d9d28 data/forestry/loot_tables/chests/village_naturalist/arboriculture.json

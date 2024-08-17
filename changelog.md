@@ -3,6 +3,7 @@
   modify the genome of the player's currently held genetic item (bees, saplings, butterflies)
 - Fixed loading of Chinese (simplified) language file (#44)
 - Fixed Apiarist chest menu not displaying queens/princesses/drones in menu (#40)
+- Unused honeycombs are no longer obtainable in survival, from village houses or trades (#42)
 
 ## Forestry 1.0.3
 - Fixed saplings not dropping themselves (#36)

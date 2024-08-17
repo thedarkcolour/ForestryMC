@@ -83,6 +83,7 @@ public final class ForestryItemTagsProvider extends ItemTagsProvider {
 
 		tag(ItemTags.SAPLINGS).add(ArboricultureItems.SAPLING.item());
 		tag(ForestryTags.Items.BEE_COMBS).add(ApicultureItems.BEE_COMBS.itemArray());
+		tag(ForestryTags.Items.VILLAGE_COMBS).add(ApicultureItems.BEE_COMBS.getItems().stream().filter(item -> !item.isUnused()).toArray(Item[]::new));
 		tag(ForestryTags.Items.PROPOLIS).add(ApicultureItems.PROPOLIS.itemArray());
 		tag(ForestryTags.Items.DROP_HONEY).add(ApicultureItems.HONEY_DROPS.itemArray());
 

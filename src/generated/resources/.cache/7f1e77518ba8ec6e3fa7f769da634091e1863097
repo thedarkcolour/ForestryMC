@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-12T21:53:10.6912964	Machine Recipes
+// 1.19.2	2024-08-16T17:11:42.198729	Machine Recipes
 112c37fdf17fd8128a1bf2523a188f3acf0b759b data/forestry/recipes/carpenter/bog_earth.json
 dfdd8578eb3f27d8f71054bb3ddfd7ae0a473a68 data/forestry/recipes/carpenter/carton.json
 483682687e0586864d9ebf5bf004796623178b98 data/forestry/recipes/carpenter/circuits/basic.json
@@ -195,7 +195,6 @@ baf0f029afeaef35a5777b5481ac10d991736920 data/forestry/recipes/carpenter/woven_s
 26540ed8ca93243cbfe56cdc6b498c2080a937fe data/forestry/recipes/centrifuge/dripping_comb.json
 f9b7a4bd0e7b3a47a1115a026fa24e31fdfb0426 data/forestry/recipes/centrifuge/frozen_comb.json
 b77035d29432ff235243153204e8033dccbb9f08 data/forestry/recipes/centrifuge/honey_comb.json
-5caddbc9f8a81b653fd3a461598eded7af44a473 data/forestry/recipes/centrifuge/irradiated_comb.json
 05297ec108817a166b116911e838d80c2a2eddc6 data/forestry/recipes/centrifuge/mellow_comb.json
 4c90340e1319d16045a43bca2a7c3c28e7b2c8cf data/forestry/recipes/centrifuge/mossy_comb.json
 14ca2084784bcd458b886b333456fe1521c89411 data/forestry/recipes/centrifuge/mysterious_comb.json

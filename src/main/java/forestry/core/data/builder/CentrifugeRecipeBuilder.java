@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.core.data.builder;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -47,6 +48,7 @@ public class CentrifugeRecipeBuilder {
 	}
 
 	public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+		Preconditions.checkState(!this.outputs.isEmpty(), "Empty centrifuge recipes are not allowed");
 		consumer.accept(new Result(id, processingTime, input, outputs));
 	}
 

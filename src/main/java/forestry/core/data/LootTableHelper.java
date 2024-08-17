@@ -99,13 +99,7 @@ public class LootTableHelper {
 						.add(EmptyLootItem.emptyItem().setWeight(1))
 				));
 		add(BuiltInLootTables.END_CITY_TREASURE, "apiculture",
-				LootTable.lootTable()/*.withPool(LootPool.lootPool()
-						.name("forestry_apiculture_items")
-						.setRolls(ConstantRange.exactly(1))
-						.add(ItemLootEntry.lootTableItem(ApicultureItems.A.item())
-								.apply(SetCount.setCount(RandomValueRange.between(2, 5))))
-						.add(EmptyLootEntry.emptyItem().setWeight(3))
-				)*/.withPool(LootPool.lootPool()
+				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_bees").setRolls(ConstantValue.exactly(2))
 						.add(beeLoot(ForestryBeeSpecies.STEADFAST)
 								.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
@@ -205,7 +199,7 @@ public class LootTableHelper {
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.name("forestry_apiculture_items")
 						.setRolls(ConstantValue.exactly(4))
-						.add(TagEntry.expandTag(ForestryTags.Items.BEE_COMBS).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4))))
+						.add(TagEntry.expandTag(ForestryTags.Items.VILLAGE_COMBS).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4))))
 						.add(LootItem.lootTableItem(ApicultureItems.SCOOP.item()).setWeight(5))
 						.add(LootItem.lootTableItem(ApicultureItems.SMOKER))
 				).withPool(LootPool.lootPool()
@@ -260,7 +254,6 @@ public class LootTableHelper {
 		public final ResourceLocation defaultLocation;
 		public final String extension;
 		public final LootTable.Builder builder;
-
 
 		public Entry(ResourceLocation defaultLocation, String extension, LootTable.Builder builder) {
 			this.defaultLocation = defaultLocation;

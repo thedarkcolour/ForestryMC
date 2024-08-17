@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-12T23:31:08.5902167	Forestry Item Tags
+// 1.19.2	2024-08-16T17:51:11.0187131	Forestry Item Tags
 79ce8ad03638cd1d93ee2752b4cd0f9665ed396f data/forestry/tags/items/combs.json
 9f5d66e4017fbcabe22c6702e93310cf271fe042 data/forestry/tags/items/crafting_tables.json
 ce1f7b72ce898ae6a000ae70dc79151602ad453c data/forestry/tags/items/drop_honey.json
@@ -6,6 +6,7 @@ c6ef65383ced49aaf1b8ea0350192aed4c882ee5 data/forestry/tags/items/forestry_fruit
 965c11d8202565995d18ff684e26d4a52ed05bb5 data/forestry/tags/items/propolis.json
 cf0c5a0245a3eeb822d88e53776905fa468d455c data/forestry/tags/items/scoops.json
 c0020e6f377758179d2d7f23812e757851ba1ff2 data/forestry/tags/items/stamps.json
+4df7f5327690dcc4e34d2be77033f4d106836b89 data/forestry/tags/items/village_combs.json
 e736c96d74e1d9b8799f108ba1e8b1e2173926fb data/forge/tags/items/chests.json
 997ede0ad811c9479aabe6bd63d0a5b90a75c3e6 data/forge/tags/items/dusts/ash.json
 b3b37726f52692c7053e546168191082359f6c77 data/forge/tags/items/fences.json

@@ -580,10 +580,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.build(consumer, id("centrifuge", "mysterious_comb"));
 		new CentrifugeRecipeBuilder()
 				.setProcessingTime(20)
-				.setInput(Ingredient.of(ApicultureItems.BEE_COMBS.get(EnumHoneyComb.IRRADIATED)))
-				.build(consumer, id("centrifuge", "irradiated_comb"));
-		new CentrifugeRecipeBuilder()
-				.setProcessingTime(20)
 				.setInput(Ingredient.of(ApicultureItems.BEE_COMBS.get(EnumHoneyComb.POWDERY)))
 				.product(0.2f, honeyDrop)
 				.product(0.2f, CoreItems.BEESWAX.stack())

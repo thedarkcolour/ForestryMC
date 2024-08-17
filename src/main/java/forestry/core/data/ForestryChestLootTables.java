@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.ForestryConstants;
 
 public class ForestryChestLootTables extends ChestLoot {
-
 	@Override
 	public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
 		consumer.accept(ForestryConstants.forestry("chests/village_naturalist"), LootTable.lootTable());
@@ -17,5 +16,4 @@ public class ForestryChestLootTables extends ChestLoot {
 			consumer.accept(entry.getLocation(), entry.builder);
 		}
 	}
-
 }

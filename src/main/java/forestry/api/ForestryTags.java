@@ -57,6 +57,7 @@ public class ForestryTags {
 	public static class Items {
 		public static final TagKey<Item> CHARCOAL_BLOCK = forgeTag("storage_blocks/charcoal");
 
+		public static final TagKey<Item> VILLAGE_COMBS = tag("village_combs");
 		public static final TagKey<Item> BEE_COMBS = tag("combs");
 		public static final TagKey<Item> PROPOLIS = tag("propolis");
 		public static final TagKey<Item> DROP_HONEY = tag("drop_honey");

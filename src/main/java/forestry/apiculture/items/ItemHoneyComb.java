@@ -10,48 +10,24 @@
  ******************************************************************************/
 package forestry.apiculture.items;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import forestry.api.core.ItemGroups;
-import forestry.apiculture.features.ApicultureItems;
 import forestry.core.items.ItemForestry;
 import forestry.core.items.definitions.IColoredItem;
 
 public class ItemHoneyComb extends ItemForestry implements IColoredItem {
-
 	private final EnumHoneyComb type;
 
 	public ItemHoneyComb(EnumHoneyComb type) {
-		super((new Item.Properties())
-				.tab(ItemGroups.tabApiculture));
+		super(new Item.Properties().tab(type.isUnused() ? null : ItemGroups.tabApiculture));
 
 		this.type = type;
 	}
 
-	@Nullable
-	public static EnumHoneyComb getRandomCombType(Random random, boolean includeSecret) {
-		List<EnumHoneyComb> validCombs = new ArrayList<>(EnumHoneyComb.VALUES.length);
-		for (int i = 0; i < EnumHoneyComb.VALUES.length; i++) {
-			EnumHoneyComb honeyComb = EnumHoneyComb.get(i);
-			validCombs.add(honeyComb);
-		}
-
-		if (validCombs.isEmpty()) {
-			return null;
-		} else {
-			return validCombs.get(random.nextInt(validCombs.size()));
-		}
-	}
-
-	public static ItemStack getRandomComb(int amount, Random random, boolean includeSecret) {
-		EnumHoneyComb comb = getRandomCombType(random, includeSecret);
-		return comb != null ? ApicultureItems.BEE_COMBS.stack(comb, amount) : ItemStack.EMPTY;
+	public boolean isUnused() {
+		return this.type.isUnused();
 	}
 
 	@Override
