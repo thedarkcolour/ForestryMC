@@ -9,6 +9,7 @@ import forestry.api.farming.IFarmingManager;
 import forestry.api.genetics.IGeneticManager;
 import forestry.api.genetics.alleles.IAlleleManager;
 import forestry.api.genetics.filter.IFilterManager;
+import forestry.api.genetics.pollen.IPollenManager;
 import forestry.api.modules.IModuleManager;
 import forestry.apiculture.hives.HiveManager;
 import forestry.core.circuits.CircuitManager;
@@ -38,6 +39,8 @@ public class ForestryApiImpl implements IForestryApi {
 	private IFilterManager filterManager;
 	@Nullable
 	private ICircuitManager circuitManager;
+	@Nullable
+	private IPollenManager pollenManager;
 
 	@Override
 	public IModuleManager getModuleManager() {
@@ -108,6 +111,15 @@ public class ForestryApiImpl implements IForestryApi {
 		return manager;
 	}
 
+	@Override
+	public IPollenManager getPollenManager() {
+		IPollenManager manager = this.pollenManager;
+		if (manager == null) {
+			throw new IllegalStateException("IPollenManager not initialized yet");
+		}
+		return manager;
+	}
+
 	@ApiStatus.Internal
 	public void setCircuitManager(CircuitManager circuitManager) {
 		this.circuitManager = circuitManager;
@@ -136,5 +148,10 @@ public class ForestryApiImpl implements IForestryApi {
 	@ApiStatus.Internal
 	public void setHiveManager(HiveManager hiveManager) {
 		this.hiveManager = hiveManager;
+	}
+
+	@ApiStatus.Internal
+	public void setPollenManager(IPollenManager pollenManager) {
+		this.pollenManager = pollenManager;
 	}
 }

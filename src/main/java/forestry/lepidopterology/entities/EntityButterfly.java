@@ -54,14 +54,12 @@ import net.minecraftforge.common.IPlantable;
 
 import forestry.api.ForestryTags;
 import forestry.api.IForestryApi;
-import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.genetics.ForestrySpeciesTypes;
-import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
+import forestry.api.genetics.pollen.IPollen;
+import forestry.api.genetics.pollen.IPollenType;
 import forestry.api.lepidopterology.IEntityButterfly;
 import forestry.api.lepidopterology.ILepidopteristTracker;
 import forestry.api.lepidopterology.genetics.ButterflyLifeStage;
@@ -69,7 +67,6 @@ import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.core.config.ForestryConfig;
-import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.ModuleLepidopterology;
@@ -101,7 +98,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	private int exhaustion;
 	private IButterfly contained = IForestryApi.INSTANCE.getGeneticManager().createDefaultIndividual(ForestrySpeciesTypes.BUTTERFLY);
 	@Nullable
-	private IIndividual pollen;
+	private IPollen<?> pollen;
 
 	public int cooldownPollination = 0;
 	public int cooldownEgg = 0;
@@ -161,13 +158,15 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	public void addAdditionalSaveData(CompoundTag nbt) {
 		super.addAdditionalSaveData(nbt);
 
+		// Individual data
 		Tag containedNbt = SpeciesUtil.serializeIndividual(this.contained);
 		if (containedNbt != null) {
 			nbt.put(NBT_BUTTERFLY, containedNbt);
 		}
 
+		// Pollen data
 		if (pollen != null) {
-			Tag pollenNbt = SpeciesUtil.serializeIndividual(this.pollen);
+			Tag pollenNbt = this.pollen.writeNbt();
 			if (pollenNbt != null) {
 				nbt.putString(NBT_POLLEN_TYPE, pollen.getType().id().toString());
 				nbt.put(NBT_POLLEN, pollenNbt);
@@ -190,15 +189,13 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		}
 		setIndividual(butterfly);
 
-		if (nbt.contains(NBT_POLLEN)) {
-			CompoundTag pollenNBT = nbt.getCompound(NBT_POLLEN);
-			ISpeciesType<?, ?> type;
-			if (pollenNBT.contains(NBT_POLLEN_TYPE)) {
-				type = IForestryApi.INSTANCE.getGeneticManager().getSpeciesType(new ResourceLocation(pollenNBT.getString(NBT_POLLEN_TYPE)));
-			} else {
-				type = SpeciesUtil.TREE_TYPE.get();
+		Tag pollenNbt = nbt.get(NBT_POLLEN);
+		if (pollenNbt != null && nbt.contains(NBT_POLLEN_TYPE)) {
+			IPollenType<?> type = IForestryApi.INSTANCE.getPollenManager().getPollenType(new ResourceLocation(nbt.getString(NBT_POLLEN_TYPE)));
+
+			if (type != null) {
+				this.pollen = type.readNbt(pollenNbt);
 			}
-			pollen = SpeciesUtil.deserializeIndividual(type, pollenNBT);
 		}
 
 		EnumButterflyState butterflyState = EnumButterflyState.VALUES[nbt.getByte(NBT_STATE)];
@@ -292,19 +289,7 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 			BlockState blockStateBelow = level.getBlockState(posBelow);
 			Block blockBelow = blockStateBelow.getBlock();
 			if (blockState.is(BlockTags.LEAVES)) {
-				boolean isSamePollen = false;
-
-				if (this.pollen != null) {
-					ICheckPollinatable pollinatable = GeneticsUtil.getCheckPollinatable(level, posBelow);
-					if (pollinatable != null && pollinatable.getPollen().getSpecies().equals(this.pollen.getSpecies())) {
-						isSamePollen = true;
-					}
-				}
-				if (isSamePollen) {
-					weight -= 15.0f;
-				} else {
-					weight += 5.0f;
-				}
+				weight += 5.0f;
 			} else if (blockBelow instanceof FenceBlock) {
 				weight += 1.0f;
 			} else if (blockBelow instanceof WallBlock) {
@@ -342,12 +327,12 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 	/* POLLEN */
 	@Override
 	@Nullable
-	public IIndividual getPollen() {
+	public IPollen<?> getPollen() {
 		return pollen;
 	}
 
 	@Override
-	public void setPollen(@Nullable IIndividual pollen) {
+	public void setPollen(@Nullable IPollen<?> pollen) {
 		this.pollen = pollen;
 	}
 
@@ -475,10 +460,10 @@ public class EntityButterfly extends PathfinderMob implements IEntityButterfly {
 		}
 
 		// Drop pollen if any
-		IIndividual pollen = getPollen();
+		IPollen<?> pollen = this.pollen;
 
 		if (pollen != null) {
-			ItemStack pollenStack = pollen.createStack(TreeLifeStage.POLLEN);
+			ItemStack pollenStack = pollen.createStack();
 			ItemStackUtil.dropItemStackAsEntity(pollenStack, level, getX(), getY(), getZ());
 		}
 	}

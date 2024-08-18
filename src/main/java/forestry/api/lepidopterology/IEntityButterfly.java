@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import net.minecraft.world.entity.PathfinderMob;
 
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.pollen.IPollen;
 import forestry.api.lepidopterology.genetics.IButterfly;
 
 public interface IEntityButterfly {
@@ -25,9 +26,9 @@ public interface IEntityButterfly {
 	PathfinderMob getEntity();
 
 	@Nullable
-	IIndividual getPollen();
+	IPollen<?> getPollen();
 
-	void setPollen(@Nullable IIndividual pollen);
+	void setPollen(@Nullable IPollen<?> pollen);
 
 	boolean canMateWith(IEntityButterfly butterfly);
 

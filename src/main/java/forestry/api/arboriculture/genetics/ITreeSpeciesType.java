@@ -10,7 +10,6 @@ import java.util.Collection;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,12 +20,10 @@ import com.mojang.authlib.GameProfile;
 import forestry.api.arboriculture.IArboristTracker;
 import forestry.api.arboriculture.ILeafTickHandler;
 import forestry.api.arboriculture.ITreeSpecies;
-import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IPollinatableSpeciesType;
 import forestry.api.genetics.ISpeciesType;
 
-public interface ITreeSpeciesType extends ISpeciesType<ITreeSpecies, ITree>, IPollinatableSpeciesType {
+public interface ITreeSpeciesType extends ISpeciesType<ITreeSpecies, ITree> {
 	@Override
 	IArboristTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile);
 

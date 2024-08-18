@@ -11,9 +11,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
-
-import com.mojang.authlib.GameProfile;
 
 import forestry.api.arboriculture.ITreeGenerator;
 import forestry.api.arboriculture.ITreeSpecies;
@@ -27,8 +27,11 @@ import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.plugin.ITreeSpeciesBuilder;
+import forestry.arboriculture.blocks.BlockDefaultLeavesFruit;
+import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.genetics.Tree;
 import forestry.arboriculture.genetics.TreeGrowthHelper;
+import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.genetics.Species;
 
 import org.jetbrains.annotations.Nullable;
@@ -106,6 +109,11 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 	}
 
 	@Override
+	public boolean isFruitLeaf(LevelAccessor level, BlockPos pos) {
+		return level.getBlockState(pos).getBlock() instanceof BlockDefaultLeavesFruit || (level.getBlockEntity(pos) instanceof TileLeaves leaves && leaves.hasFruit());
+	}
+
+	@Override
 	public float getHeightModifier(IGenome genome) {
 		return genome.getActiveValue(TreeChromosomes.HEIGHT);
 	}
@@ -154,13 +162,37 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 	}
 
 	@Override
-	public boolean setLeaves(IGenome genome, LevelAccessor level, @Nullable GameProfile owner, BlockPos pos, RandomSource random) {
-		return getGenerator().setLeaves(genome, level, owner, pos, random);
+	public boolean setLeaves(IGenome genome, LevelAccessor level, BlockPos pos, RandomSource random, boolean convertBlockEntity) {
+		if (convertBlockEntity) {
+			BlockState state = LeavesBlock.updateDistance(ArboricultureBlocks.LEAVES.defaultState(), level, pos);
+			boolean wasFruit = isFruitLeaf(level, pos);
+			boolean placed = level.setBlock(pos, state, 19);
+
+			if (placed) {
+				if (level.getBlockEntity(pos) instanceof TileLeaves leaves) {
+					Tree tree = new Tree(genome);
+					leaves.setTree(tree);
+
+					if (wasFruit) {
+						leaves.setFruit(tree, true);
+						// default fruits are fully ripe
+						leaves.addRipeness(1);
+						leaves.setChanged();
+					}
+				} else {
+					level.setBlock(pos, Blocks.AIR.defaultBlockState(), 19);
+				}
+			}
+
+			return false;
+		} else {
+			return getGenerator().setLeaves(genome, level, pos, random);
+		}
 	}
 
 	@Override
 	public boolean setLogBlock(IGenome genome, LevelAccessor level, BlockPos pos, Direction facing) {
-		return genome.getActiveValue(TreeChromosomes.SPECIES).getGenerator().setLogBlock(genome, level, pos, facing);
+		return getGenerator().setLogBlock(genome, level, pos, facing);
 	}
 
 	@Override

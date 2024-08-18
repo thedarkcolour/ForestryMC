@@ -46,9 +46,9 @@ import forestry.api.core.IError;
 import forestry.api.core.IErrorLogic;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.genetics.pollen.IPollen;
 import forestry.apiculture.network.packets.PacketBeeLogicActive;
 import forestry.core.config.Constants;
 import forestry.core.utils.NetworkUtil;
@@ -513,11 +513,12 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 		}
 	}
 
+	// Not sure if this was intentional, but pollen isn't ever saved to NBT
 	private static class PollenHandler {
 		private static final int MAX_POLLINATION_ATTEMPTS = 20;
 
 		@Nullable
-		private IIndividual pollen;
+		private IPollen<?> pollen;
 		private int attemptedPollinations = 0;
 
 		public void doPollination(IBee queen, IBeeHousing beeHousing, IBeeListener beeListener) {

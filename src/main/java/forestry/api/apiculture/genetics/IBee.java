@@ -24,8 +24,8 @@ import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.IError;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IIndividualLiving;
+import forestry.api.genetics.pollen.IPollen;
 
 /**
  * Other implementations than Forestry's default one are not supported.
@@ -98,9 +98,9 @@ public interface IBee extends IIndividualLiving {
 	BlockPos plantFlowerRandom(IBeeHousing housing, List<BlockState> potentialFlowers);
 
 	@Nullable
-	IIndividual retrievePollen(IBeeHousing housing);
+	IPollen<?> retrievePollen(IBeeHousing housing);
 
-	boolean pollinateRandom(IBeeHousing housing, IIndividual pollen);
+	boolean pollinateRandom(IBeeHousing housing, IPollen<?> pollen);
 
 	Iterator<BlockPos.MutableBlockPos> getAreaIterator(IBeeHousing housing);
 

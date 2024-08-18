@@ -163,6 +163,7 @@ public class ModuleCore extends BlankForestryModule {
 		event.register(Registry.ITEM_REGISTRY, helper -> {
 			PluginManager.registerGenetics();
 			PluginManager.registerFarming();
+			PluginManager.registerPollen();
 		});
 	}
 

@@ -61,6 +61,12 @@ public interface IForestryPlugin {
 	}
 
 	/**
+	 * Called after all species are registered. Register new pollen types here.
+	 */
+	default void registerPollen(IPollenRegistration pollen) {
+	}
+
+	/**
 	 * Called after all species are registered to register client-only resources for species.
 	 *
 	 * @param registrar Accepts a class that handles client registration. Consumer is for maintaining side-safety.

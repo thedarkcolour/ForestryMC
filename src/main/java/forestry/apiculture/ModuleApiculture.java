@@ -53,7 +53,7 @@ public class ModuleApiculture extends BlankForestryModule {
 	public static boolean hivesDamageUnderwater = true;
 	public static boolean hivesDamageOnlyPlayers = false;
 	public static boolean hiveDamageOnAttack = true;
-	public static boolean doSelfPollination = true;
+	public static boolean doSelfPollination = false;
 	public static int maxFlowersSpawnedPerHive = 20;
 
 	@Override

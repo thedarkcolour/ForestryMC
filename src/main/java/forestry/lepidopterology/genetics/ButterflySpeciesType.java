@@ -16,7 +16,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -53,8 +52,8 @@ import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.tiles.TileUtil;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.EntityUtil;
-import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
+import forestry.core.utils.TreeUtil;
 import forestry.lepidopterology.ButterflySpawner;
 import forestry.lepidopterology.ModuleLepidopterology;
 import forestry.lepidopterology.blocks.BlockCocoon;
@@ -108,12 +107,12 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 
 	@Nullable
 	@Override
-	public BlockPos plantCocoon(LevelAccessor level, BlockPos coordinates, @Nullable IButterfly caterpillar, GameProfile owner, int age, boolean createNursery) {
+	public BlockPos plantCocoon(LevelAccessor level, BlockPos coordinates, @Nullable IButterfly caterpillar, int age, boolean createNursery) {
 		if (caterpillar == null) {
 			return null;
 		}
 
-		BlockPos pos = getValidCocoonPos(level, coordinates, owner, createNursery);
+		BlockPos pos = getValidCocoonPos(level, coordinates, createNursery);
 		if (pos == null) {
 			return null;
 		}
@@ -136,20 +135,19 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		}
 
 		cocoon.setCaterpillar(caterpillar);
-		cocoon.getOwnerHandler().setOwner(owner);
 
 		return pos;
 	}
 
 	@Nullable
-	private static BlockPos getValidCocoonPos(LevelAccessor world, BlockPos pos, GameProfile gameProfile, boolean createNursery) {
-		if (isPositionValid(world, pos.below(), gameProfile, createNursery)) {
+	private static BlockPos getValidCocoonPos(LevelAccessor world, BlockPos pos, boolean createNursery) {
+		if (isPositionValid(world, pos.below(), createNursery)) {
 			return pos.below();
 		}
 		for (int tries = 0; tries < 3; tries++) {
 			for (int y = 1; y < world.getRandom().nextInt(5); y++) {
 				BlockPos coordinate = pos.offset(world.getRandom().nextInt(6) - 3, -y, world.getRandom().nextInt(6) - 3);
-				if (isPositionValid(world, coordinate, gameProfile, createNursery)) {
+				if (isPositionValid(world, coordinate, createNursery)) {
 					return coordinate;
 				}
 			}
@@ -158,15 +156,15 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		return null;
 	}
 
-	public static boolean isPositionValid(LevelAccessor world, BlockPos pos, GameProfile gameProfile, boolean createNursery) {
+	public static boolean isPositionValid(LevelAccessor world, BlockPos pos, boolean createNursery) {
 		BlockState blockState = world.getBlockState(pos);
 		if (BlockUtil.canReplace(blockState, world, pos)) {
 			BlockPos nurseryPos = pos.above();
-			IButterflyNursery nursery = GeneticsUtil.getNursery(world, nurseryPos);
+			IButterflyNursery nursery = TreeUtil.getNursery(world, nurseryPos);
 			if (nursery != null) {
 				return true;
-			} else if (createNursery && GeneticsUtil.canCreateNursery(world, nurseryPos)) {
-				nursery = GeneticsUtil.getOrCreateNursery(gameProfile, world, nurseryPos, false);
+			} else if (createNursery && TreeUtil.canCreateNursery(world, nurseryPos)) {
+				nursery = TreeUtil.getOrCreateNursery(world, nurseryPos, false);
 				return nursery != null && nursery.getCaterpillar() == null;
 			}
 		}

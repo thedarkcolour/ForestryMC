@@ -30,12 +30,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.shapes.BitSetDiscreteVoxelShape;
 import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
 
-import com.mojang.authlib.GameProfile;
-
 import forestry.api.arboriculture.ITreeGenData;
+import forestry.api.genetics.IGenome;
 import forestry.arboriculture.blocks.BlockSapling;
-import forestry.arboriculture.tiles.TileTreeContainer;
-import forestry.core.tiles.TileUtil;
 import forestry.core.utils.VecUtil;
 import forestry.core.worldgen.FeatureBase;
 
@@ -49,10 +46,14 @@ public abstract class FeatureArboriculture extends FeatureBase {
 	}
 
 	@Override
-	public boolean place(LevelAccessor world, RandomSource rand, BlockPos pos, boolean forced) {
-		GameProfile owner = getOwner(world, pos);
-		TreeBlockTypeLeaf leaf = new TreeBlockTypeLeaf(tree, owner, rand);
-		TreeBlockTypeLog wood = new TreeBlockTypeLog(tree);
+	public IGenome getDefaultGenome() {
+		return tree.getDefaultGenome();
+	}
+
+	@Override
+	public boolean place(IGenome genome, LevelAccessor world, RandomSource rand, BlockPos pos, boolean forced) {
+		TreeBlockTypeLeaf leaf = new TreeBlockTypeLeaf(tree, genome);
+		TreeBlockTypeLog wood = new TreeBlockTypeLog(tree, genome);
 
 		preGenerate(world, rand, pos);
 
@@ -79,17 +80,7 @@ public abstract class FeatureArboriculture extends FeatureBase {
 		return false;
 	}
 
-	@Nullable
-	private static GameProfile getOwner(LevelAccessor world, BlockPos pos) {
-		TileTreeContainer tile = TileUtil.getTile(world, pos, TileTreeContainer.class);
-		if (tile == null) {
-			return null;
-		}
-		return tile.getOwnerHandler().getOwner();
-	}
-
 	public void preGenerate(LevelAccessor world, RandomSource rand, BlockPos startPos) {
-
 	}
 
 	/**
@@ -106,12 +97,6 @@ public abstract class FeatureArboriculture extends FeatureBase {
 		}
 
 		BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
-
-		/*for(BlockPos blockpos : Lists.newArrayList(decoratedBlocks)) {
-			if (boundingBox.isInside(blockpos)) {
-				voxelshapepart.setFull(blockpos.getX() - boundingBox.x0, blockpos.getY() - boundingBox.y0, blockpos.getZ() - boundingBox.z0, true, true);
-			}
-		}*/
 
 		for (BlockPos blockpos1 : Lists.newArrayList(contour.leavePositions)) {
 			if (boundingBox.isInside(blockpos1)) {

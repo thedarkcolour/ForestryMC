@@ -10,41 +10,28 @@
  ******************************************************************************/
 package forestry.arboriculture.worldgen;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
 
-import com.mojang.authlib.GameProfile;
-
 import forestry.api.arboriculture.ITreeGenData;
+import forestry.api.genetics.IGenome;
 
 public class TreeBlockTypeLeaf implements ITreeBlockType {
 	private final ITreeGenData tree;
-	@Nullable
-	private final GameProfile owner;
-	@Nullable
-	private final RandomSource rand;
+	private final IGenome genome;
 
-	public TreeBlockTypeLeaf(ITreeGenData tree, @Nullable GameProfile owner) {
-		this(tree, owner, null);
-	}
-
-	public TreeBlockTypeLeaf(ITreeGenData tree, @Nullable GameProfile owner, @Nullable RandomSource rand) {
+	public TreeBlockTypeLeaf(ITreeGenData tree, IGenome genome) {
 		this.tree = tree;
-		this.owner = owner;
-		this.rand = rand;
+		this.genome = genome;
 	}
 
 	@Override
 	public void setDirection(Direction facing) {
-
 	}
 
 	@Override
-	public boolean setBlock(LevelAccessor world, BlockPos pos) {
-		return tree.setLeaves(tree.getDefaultGenome(), world, owner, pos, rand == null ? world.getRandom() : rand);
+	public boolean setBlock(LevelAccessor level, BlockPos pos) {
+		return tree.setLeaves(this.genome, level, pos, level.getRandom(), false);
 	}
 }

@@ -12,7 +12,7 @@ package forestry.apiculture;
 
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeListener;
-import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.pollen.IPollen;
 
 public class BeeHousingListener implements IBeeListener {
 	private final IBeeHousing beeHousing;
@@ -36,7 +36,7 @@ public class BeeHousingListener implements IBeeListener {
 	}
 
 	@Override
-	public boolean onPollenRetrieved(IIndividual pollen) {
+	public boolean onPollenRetrieved(IPollen<?> pollen) {
 		for (IBeeListener beeListener : beeHousing.getBeeListeners()) {
 			if (beeListener.onPollenRetrieved(pollen)) {
 				return true;

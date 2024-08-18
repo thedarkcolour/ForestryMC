@@ -14,10 +14,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.serialization.Codec;
 
 import forestry.api.genetics.IBreedingTracker;
-import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpeciesType;
 
 public interface IButterflySpeciesType extends ISpeciesType<IButterflySpecies, IButterfly> {
@@ -32,7 +30,7 @@ public interface IButterflySpeciesType extends ISpeciesType<IButterflySpecies, I
 	Mob spawnButterflyInWorld(Level level, IButterfly butterfly, double x, double y, double z);
 
 	@Nullable
-	BlockPos plantCocoon(LevelAccessor level, BlockPos pos, IButterfly caterpillar, GameProfile owner, int age, boolean createNursery);
+	BlockPos plantCocoon(LevelAccessor level, BlockPos pos, IButterfly caterpillar, int age, boolean createNursery);
 
 	/**
 	 * @return true if passed item is mated.

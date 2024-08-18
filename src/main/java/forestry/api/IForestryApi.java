@@ -10,6 +10,7 @@ import forestry.api.farming.IFarmingManager;
 import forestry.api.genetics.IGeneticManager;
 import forestry.api.genetics.alleles.IAlleleManager;
 import forestry.api.genetics.filter.IFilterManager;
+import forestry.api.genetics.pollen.IPollenManager;
 import forestry.api.modules.IModuleManager;
 import forestry.api.plugin.IGeneticRegistration;
 
@@ -57,4 +58,6 @@ public interface IForestryApi {
 	 * @see forestry.api.plugin.IForestryPlugin#registerCircuits
 	 */
 	ICircuitManager getCircuitManager();
+
+	IPollenManager getPollenManager();
 }

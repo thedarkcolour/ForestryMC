@@ -17,5 +17,5 @@ import net.minecraft.world.level.LevelAccessor;
 public interface ITreeBlockType {
 	void setDirection(Direction facing);
 
-	boolean setBlock(LevelAccessor world, BlockPos pos);
+	boolean setBlock(LevelAccessor level, BlockPos pos);
 }

@@ -10,6 +10,11 @@
   - `forge:fruits/plum` for Plum
   - `forge:fruits/date` for Date
   - `forge:fruits/papaya` for Papaya
+- Replaced ICheckPollinatable and IPollinatable with new IPollenType API.
+  - A pollen type allows Forestry bees, butterflies, and Alveary Sieves to handle non-tree pollen types.
+    To use, register a new IPollenType in `IForestryPlugin#registerPollen`.
+- Fixed bug where "default" variants of Forestry leaves would never be used
+- Fixed bug where fruit ripeness would sometimes not persist
 
 ## Forestry 1.0.4
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to

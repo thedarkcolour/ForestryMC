@@ -12,8 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
-import com.mojang.authlib.GameProfile;
-
 import forestry.api.genetics.IGenome;
 
 public interface ITreeGenData {
@@ -27,7 +25,7 @@ public interface ITreeGenData {
 	@Nullable
 	BlockPos getGrowthPos(IGenome genome, LevelAccessor level, BlockPos pos, int expectedGirth, int expectedHeight);
 
-	boolean setLeaves(IGenome genome, LevelAccessor level, @Nullable GameProfile owner, BlockPos pos, RandomSource random);
+	boolean setLeaves(IGenome genome, LevelAccessor level, BlockPos pos, RandomSource random, boolean convertBlockEntity);
 
 	boolean setLogBlock(IGenome genome, LevelAccessor level, BlockPos pos, Direction facing);
 

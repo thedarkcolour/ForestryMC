@@ -2,8 +2,10 @@ package forestry.api.arboriculture;
 
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.arboriculture.genetics.ITree;
@@ -50,4 +52,13 @@ public interface ITreeSpecies extends ISpecies<ITree>, ITreeGenData {
 	 * @return The chance between 0 and 1 that this tree will spawn in a chunk during world generation. Default is 0.
 	 */
 	float getRarity();
+
+	/**
+	 * Determines if the block at the position is a leaves block with fruit on it.
+	 *
+	 * @param level The world.
+	 * @param pos   The position of the block to check.
+	 * @return {@code true} if this is a leaves block with fruit on it, false otherwise.
+	 */
+	boolean isFruitLeaf(LevelAccessor level, BlockPos pos);
 }

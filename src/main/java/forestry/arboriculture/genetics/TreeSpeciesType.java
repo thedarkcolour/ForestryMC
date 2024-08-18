@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.arboriculture.genetics;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 
@@ -22,7 +21,6 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,11 +48,9 @@ import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IBreedingTrackerHandler;
-import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IMutationManager;
-import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.genetics.gatgets.IDatabasePlugin;
@@ -256,24 +252,6 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 	@Override
 	public IDatabasePlugin getDatabasePlugin() {
 		return TreePlugin.INSTANCE;
-	}
-
-	@Override
-	public ICheckPollinatable createPollinatable(IIndividual individual) {
-		Preconditions.checkArgument(individual instanceof ITree, "individual must be a tree");
-		return new CheckPollinatableTree((ITree) individual);
-	}
-
-	@Nullable
-	@Override
-	public IPollinatable tryConvertToPollinatable(@Nullable GameProfile owner, Level world, BlockPos pos, IIndividual individual) {
-		Preconditions.checkArgument(individual instanceof ITree, "pollen must be an instance of ITree");
-		ITree pollen = (ITree) individual;
-		if (pollen.getSpecies().setLeaves(pollen.getGenome(), world, owner, pos, world.random)) {
-			return TileUtil.getTile(world, pos, IPollinatable.class);
-		} else {
-			return null;
-		}
 	}
 
 	@Nullable

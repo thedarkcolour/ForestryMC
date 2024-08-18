@@ -10,53 +10,31 @@
  ******************************************************************************/
 package forestry.lepidopterology.entities;
 
-import forestry.api.genetics.ICheckPollinatable;
-import forestry.api.genetics.IPollinatable;
-import forestry.core.config.ForestryConfig;
-import forestry.core.utils.GeneticsUtil;
-import forestry.lepidopterology.ModuleLepidopterology;
+import forestry.api.IForestryApi;
+import forestry.api.genetics.pollen.IPollen;
+import forestry.api.genetics.pollen.IPollenManager;
 
 public class AIButterflyPollinate extends AIButterflyInteract {
 	public AIButterflyPollinate(EntityButterfly entity) {
 		super(entity);
 	}
 
-	/**
-	 * Should pollinate?
-	 */
 	@Override
 	protected boolean canInteract() {
-		if (entity.cooldownPollination > 0 || !ModuleLepidopterology.isPollinationAllowed()) {
-			return false;
-		}
-
-		if (rest == null) {
-			return false;
-		}
-
-		ICheckPollinatable checkPollinatable = GeneticsUtil.getCheckPollinatable(entity.level, rest);
-		if (checkPollinatable == null) {
-			return false;
-		}
-
-		return entity.getPollen() == null || checkPollinatable.canMateWith(entity.getPollen());
+		return this.rest != null && IForestryApi.INSTANCE.getPollenManager().canPollinate(entity.level, rest, entity.getButterfly());
 	}
 
 	@Override
 	public void tick() {
 		if (canContinueToUse() && rest != null) {
-			ICheckPollinatable checkPollinatable = GeneticsUtil.getCheckPollinatable(entity.level, rest);
-			if (checkPollinatable != null) {
-				if (entity.getPollen() == null) {
-					entity.setPollen(checkPollinatable.getPollen());
-					entity.changeExhaustion(-entity.getExhaustion());
-				} else if (checkPollinatable.canMateWith(entity.getPollen())) {
-					IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(null, entity.level, rest, ForestryConfig.SERVER.pollinateVanillaLeaves.get());
-					if (realPollinatable != null) {
-						realPollinatable.mateWith(entity.getPollen());
-						entity.setPollen(null);
-					}
-				}
+			IPollenManager pollens = IForestryApi.INSTANCE.getPollenManager();
+			IPollen<?> butterflyPollen = entity.getPollen();
+
+			if (butterflyPollen == null) {
+				entity.setPollen(pollens.getPollen(entity.level, rest, entity.getButterfly()));
+				entity.changeExhaustion(-entity.getExhaustion());
+			} else if (butterflyPollen.tryPollinate(entity.level, rest, entity.getPollen())) {
+				entity.setPollen(null);
 			}
 			setHasInteracted();
 			entity.cooldownPollination = EntityButterfly.COOLDOWNS;

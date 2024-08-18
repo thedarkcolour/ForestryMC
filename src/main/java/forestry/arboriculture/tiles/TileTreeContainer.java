@@ -27,9 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.core.network.IStreamable;
-import forestry.core.owner.IOwnedTile;
-import forestry.core.owner.IOwnerHandler;
-import forestry.core.owner.OwnerHandler;
 import forestry.core.utils.NBTUtilForestry;
 import forestry.core.utils.RenderUtil;
 import forestry.core.utils.SpeciesUtil;
@@ -37,10 +34,9 @@ import forestry.core.utils.SpeciesUtil;
 /**
  * This is the base TE class for any block that needs to contain tree genome information.
  */
-public abstract class TileTreeContainer extends BlockEntity implements IStreamable, IOwnedTile {
+public abstract class TileTreeContainer extends BlockEntity implements IStreamable {
 	@Nullable
 	private ITree containedTree;
-	private final OwnerHandler ownerHandler = new OwnerHandler();
 
 	public TileTreeContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -57,7 +53,6 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 				nbt.put("ContainedTree", serialized);
 			}
 		}
-		this.ownerHandler.write(nbt);
 	}
 
 	@Override
@@ -69,7 +64,6 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 		if (treeNbt != null) {
 			this.containedTree = SpeciesUtil.deserializeIndividual(SpeciesUtil.TREE_TYPE.get(), treeNbt);
 		}
-		this.ownerHandler.read(nbt);
 	}
 
 	@Override
@@ -104,11 +98,6 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 	@Nullable
 	public ITree getTree() {
 		return this.containedTree;
-	}
-
-	@Override
-	public IOwnerHandler getOwnerHandler() {
-		return ownerHandler;
 	}
 
 	/* UPDATING */

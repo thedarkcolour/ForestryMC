@@ -46,13 +46,11 @@ import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IFruitBearer;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.apiculture.ModuleApiculture;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.arboriculture.network.IRipeningPacketReceiver;
 import forestry.arboriculture.network.PacketRipeningUpdate;
@@ -62,7 +60,7 @@ import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.RenderUtil;
 import forestry.core.utils.SpeciesUtil;
 
-public class TileLeaves extends TileTreeContainer implements IPollinatable, IFruitBearer, IButterflyNursery, IRipeningPacketReceiver, IBiomeProvider {
+public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButterflyNursery, IRipeningPacketReceiver, IBiomeProvider {
 	private static final String NBT_RIPENING = "RT";
 	private static final String NBT_DAMAGE = "ENC";
 	private static final String NBT_FRUIT_LEAF = "FL";
@@ -83,7 +81,6 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	private IButterfly caterpillar;
 
 	private boolean isFruitLeaf;
-	private boolean checkFruit = true;
 	private boolean isPollinatedState;
 	private int ripeningTime;
 	private short ripeningPeriod = Short.MAX_VALUE - 1;
@@ -102,10 +99,10 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	public void load(CompoundTag nbt) {
 		super.load(nbt);
 
-		this.ripeningTime = nbt.getShort(NBT_RIPENING);
+		this.ripeningTime = nbt.getInt(NBT_RIPENING);
 		this.damage = nbt.getInt(NBT_DAMAGE);
 		this.isFruitLeaf = nbt.getBoolean(NBT_FRUIT_LEAF);
-		this.checkFruit = !nbt.contains(NBT_FRUIT_LEAF, Tag.TAG_ANY_NUMERIC);
+		boolean checkFruit = !nbt.contains(NBT_FRUIT_LEAF);
 
 		Tag caterpillarNbt = nbt.get(NBT_CATERPILLAR);
 		if (caterpillarNbt != null) {
@@ -116,6 +113,12 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		ITree tree = getTree();
 		if (tree != null) {
 			setTree(tree);
+
+			if (checkFruit) {
+				setFruit(tree, false);
+			} else if (this.isFruitLeaf) {
+				setFruit(tree, true);
+			}
 		}
 	}
 
@@ -123,7 +126,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 	public void saveAdditional(CompoundTag nbt) {
 		super.saveAdditional(nbt);
 
-		nbt.putInt(NBT_RIPENING, getRipeningTime());
+		nbt.putInt(NBT_RIPENING, this.ripeningTime);
 		nbt.putInt(NBT_DAMAGE, damage);
 		nbt.putBoolean(NBT_FRUIT_LEAF, isFruitLeaf);
 
@@ -188,18 +191,27 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		IGenome genome = tree.getGenome();
 		this.species = genome.getActiveValue(TreeChromosomes.SPECIES);
 
-		if (oldTree != null && !tree.equals(oldTree)) {
-			checkFruit = true;
+		// update fruit state if genome changed
+		if (oldTree != null && tree.getSpecies() != oldTree.getSpecies() || (this.level != null && this.level.isClientSide)) {
+			setFruit(tree, false);
 		}
 
-		if (tree.canBearFruit() && checkFruit && level != null && !level.isClientSide) {
+		requestModelDataUpdate();
+		setChanged();
+	}
+
+	// alwaysFruit: if true, random check for fruit chance will always succeed
+	public void setFruit(ITree tree, boolean alwaysFruit) {
+		IGenome genome = tree.getGenome();
+
+		if (tree.canBearFruit() && level != null && !level.isClientSide) {
 			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
 			if (fruitProvider.isFruitLeaf(genome, level, getBlockPos())) {
-				isFruitLeaf = fruitProvider.getFruitChance(genome, level, getBlockPos()) >= level.random.nextFloat();
+				this.isFruitLeaf = alwaysFruit || fruitProvider.getFruitChance(genome, level, getBlockPos()) >= level.random.nextFloat();
 			}
 		}
 
-		if (isFruitLeaf) {
+		if (this.isFruitLeaf) {
 			IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUIT);
 			if (this.level != null && this.level.isClientSide) {
 				this.fruitSprite = fruit.getSprite(genome, this.level, getBlockPos(), getRipeningTime());
@@ -209,9 +221,6 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		} else if (this.level != null && this.level.isClientSide) {
 			this.fruitSprite = null;
 		}
-		requestModelDataUpdate();
-
-		setChanged();
 	}
 
 	/* INFORMATION */
@@ -219,7 +228,6 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		return tree != null && damage > tree.getResilience();
 	}
 
-	@Override
 	public boolean isPollinated() {
 		ITree tree = getTree();
 		return tree != null && !isDestroyed(tree, damage) && tree.getMate() != null;
@@ -269,37 +277,15 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		return ripeningTime;
 	}
 
-	@Override
-	public boolean canMateWith(IIndividual individual) {
-		if (individual instanceof ITree) {
-			ITree tree = getTree();
-			return tree != null && tree.getMate() == null && (ModuleApiculture.doSelfPollination || !tree.getGenome().isSameAlleles(individual.getGenome()));
+	public void setMate(ITree pollen) {
+		getTree().setMate(pollen.getGenome());
+		if (!level.isClientSide) {
+			sendNetworkUpdate();
 		}
-		return false;
-	}
-
-	@Override
-	public void mateWith(IIndividual individual) {
-		if (individual instanceof ITree) {
-			ITree tree = getTree();
-			if (tree == null || level == null) {
-				return;
-			}
-
-			tree.setMate(individual.getGenome());
-			if (!level.isClientSide) {
-				sendNetworkUpdate();
-			}
-		}
-	}
-
-	@Override
-	public ITree getPollen() {
-		return getTree();
 	}
 
 	/* NETWORK */
-	private void sendNetworkUpdate() {
+	public void sendNetworkUpdate() {
 		NetworkUtil.sendNetworkPacket(new PacketTileStream(this), worldPosition, level);
 	}
 
@@ -315,6 +301,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 
 		PacketRipeningUpdate ripeningUpdate = new PacketRipeningUpdate(this);
 		NetworkUtil.sendNetworkPacket(ripeningUpdate, worldPosition, level);
+		setChanged();
 	}
 
 	private static final short hasFruitFlag = 1;
@@ -377,7 +364,6 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 			setTree(tree);
 
 			RenderUtil.markForUpdate(worldPosition);
-			//world.markBlockRangeForRenderUpdate(getPos(), getPos());
 		}
 	}
 
@@ -412,7 +398,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		if (getTree() == null) {
 			return 0f;
 		}
-		return (float) getRipeningTime() / ripeningPeriod;
+		return this.ripeningTime / (float) this.ripeningPeriod;
 	}
 
 	@Override
@@ -427,14 +413,6 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		}
 		this.ripeningTime += this.ripeningPeriod * add;
 		sendNetworkUpdateRipening();
-	}
-
-	@Nullable
-	public String getSpeciesUID() {
-		if (species == null) {
-			return null;
-		}
-		return species.id().toString();
 	}
 
 	/* IBUTTERFLYNURSERY */
@@ -453,7 +431,7 @@ public class TileLeaves extends TileTreeContainer implements IPollinatable, IFru
 		int caterpillarMatureTime = Math.round((float) caterpillarGenome.getActiveValue(ButterflyChromosomes.LIFESPAN) / (caterpillarGenome.getActiveValue(ButterflyChromosomes.FERTILITY) * 2));
 
 		if (maturationTime >= caterpillarMatureTime) {
-			SpeciesUtil.BUTTERFLY_TYPE.get().plantCocoon(level, worldPosition, caterpillar, getOwnerHandler().getOwner(), 0, false);
+			SpeciesUtil.BUTTERFLY_TYPE.get().plantCocoon(level, worldPosition, caterpillar, 0, false);
 			setCaterpillar(null);
 		} else if (!wasDestroyed && isDestroyed(tree, damage)) {
 			sendNetworkUpdate();

@@ -17,6 +17,8 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
+import forestry.api.genetics.IGenome;
+
 public abstract class FeatureBase extends Feature<NoneFeatureConfiguration> {
 	protected FeatureBase() {
 		super(NoneFeatureConfiguration.CODEC);
@@ -24,8 +26,10 @@ public abstract class FeatureBase extends Feature<NoneFeatureConfiguration> {
 
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-		return place(context.level(), context.random(), context.origin(), false);
+		return place(getDefaultGenome(), context.level(), context.random(), context.origin(), false);
 	}
 
-	public abstract boolean place(LevelAccessor world, RandomSource rand, BlockPos pos, boolean forced);
+	public abstract IGenome getDefaultGenome();
+
+	public abstract boolean place(IGenome genome, LevelAccessor world, RandomSource rand, BlockPos pos, boolean forced);
 }

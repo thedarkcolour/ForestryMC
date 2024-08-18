@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import forestry.Forestry;
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
@@ -51,20 +52,18 @@ import forestry.api.core.Product;
 import forestry.api.core.TemperatureType;
 import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
-import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IMutation;
-import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.alleles.AllelePair;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IIntegerChromosome;
+import forestry.api.genetics.pollen.IPollen;
+import forestry.api.genetics.pollen.IPollenManager;
+import forestry.api.genetics.pollen.IPollenType;
 import forestry.core.config.Constants;
-import forestry.core.config.ForestryConfig;
 import forestry.core.genetics.IndividualLiving;
 import forestry.core.genetics.mutations.Mutation;
-import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
 import forestry.core.utils.VecUtil;
 
@@ -464,7 +463,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	/* FLOWERS */
 	@Nullable
 	@Override
-	public IIndividual retrievePollen(IBeeHousing housing) {
+	public IPollen<?> retrievePollen(IBeeHousing housing) {
 		IBeeModifier beeModifier = IForestryApi.INSTANCE.getHiveManager().createBeeHousingModifier(housing);
 
 		int chance = getAdjustedPollination(this.genome, beeModifier);
@@ -472,7 +471,6 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		Level level = housing.getWorldObj();
 		RandomSource random = level.random;
 
-		// Correct speed
 		if (random.nextInt(100) >= chance) {
 			return null;
 		}
@@ -480,13 +478,16 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		Vec3i area = getAdjustedTerritory(genome, beeModifier);
 		Vec3i offset = new Vec3i(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
 		BlockPos housingPos = housing.getCoordinates();
+		IPollenManager pollens = IForestryApi.INSTANCE.getPollenManager();
 
 		for (int i = 0; i < 20; i++) {
 			BlockPos randomPos = VecUtil.sum(housingPos, VecUtil.getRandomPositionInArea(random, area), offset);
 
 			if (level.hasChunkAt(randomPos)) {
-				if (genome.getActiveValue(BeeChromosomes.FLOWER_TYPE).isAcceptableFlower(level, randomPos)) {
-					return GeneticsUtil.getPollen(level, randomPos);
+				IPollen<?> pollen = pollens.getPollen(level, randomPos, this);
+
+				if (pollen != null) {
+					return pollen;
 				}
 			}
 		}
@@ -495,7 +496,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 	}
 
 	@Override
-	public boolean pollinateRandom(IBeeHousing housing, IIndividual pollen) {
+	public boolean pollinateRandom(IBeeHousing housing, IPollen<?> pollen) {
 		IBeeModifier beeModifier = IForestryApi.INSTANCE.getHiveManager().createBeeHousingModifier(housing);
 
 		int chance = getAdjustedPollination(genome, beeModifier);
@@ -511,28 +512,13 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		Vec3i area = getAdjustedTerritory(genome, beeModifier);
 		Vec3i offset = new Vec3i(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
 		BlockPos housingPos = housing.getCoordinates();
+ 		IPollenType<?> type = pollen.getType();
 
 		for (int i = 0; i < 30; i++) {
+			BlockPos randomPos = VecUtil.sum(housingPos, VecUtil.getRandomPositionInArea(random, area), offset);
 
-			BlockPos randomPos = VecUtil.getRandomPositionInArea(random, area);
-			BlockPos posBlock = VecUtil.sum(housingPos, randomPos, offset);
-
-			ICheckPollinatable checkPollinatable = GeneticsUtil.getCheckPollinatable(level, posBlock);
-			if (checkPollinatable == null) {
-				continue;
-			}
-
-			if (!genome.getActiveValue(BeeChromosomes.FLOWER_TYPE).isAcceptableFlower(level, posBlock)) {
-				continue;
-			}
-			if (!checkPollinatable.canMateWith(pollen)) {
-				continue;
-			}
-
-			IPollinatable realPollinatable = GeneticsUtil.getOrCreatePollinatable(housing.getOwner(), level, posBlock, ForestryConfig.SERVER.pollinateVanillaLeaves.get());
-
-			if (realPollinatable != null) {
-				realPollinatable.mateWith(pollen);
+			if (type.tryPollinate(level, randomPos, pollen.castPollen(), this)) {
+				Forestry.LOGGER.debug("Hive {} pollinated at {}", housingPos, randomPos);
 				return true;
 			}
 		}

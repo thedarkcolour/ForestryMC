@@ -38,8 +38,8 @@ import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.EntityUtil;
-import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
+import forestry.core.utils.TreeUtil;
 import forestry.lepidopterology.entities.EntityButterfly;
 import forestry.lepidopterology.features.LepidopterologyEntities;
 
@@ -142,7 +142,7 @@ public class ItemButterflyGE extends ItemGE implements IColoredItem {
 
 		BlockState blockState = level.getBlockState(pos);
 		if (this.stage == ButterflyLifeStage.COCOON) {
-			pos = SpeciesUtil.BUTTERFLY_TYPE.get().plantCocoon(level, pos, flutter, player.getGameProfile(), getAge(stack), true);
+			pos = SpeciesUtil.BUTTERFLY_TYPE.get().plantCocoon(level, pos, flutter, getAge(stack), true);
 			if (pos != null) {
 				BlockUtil.sendPlaceSound(level, pos, blockState);
 
@@ -154,7 +154,7 @@ public class ItemButterflyGE extends ItemGE implements IColoredItem {
 				return InteractionResult.PASS;
 			}
 		} else if (this.stage == ButterflyLifeStage.CATERPILLAR) {
-			IButterflyNursery nursery = GeneticsUtil.getOrCreateNursery(player.getGameProfile(), level, pos, true);
+			IButterflyNursery nursery = TreeUtil.getOrCreateNursery(level, pos, true);
 			if (nursery != null) {
 				if (!nursery.canNurse(flutter)) {
 					return InteractionResult.PASS;

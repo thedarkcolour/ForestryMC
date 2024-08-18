@@ -61,6 +61,8 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureOak::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.OAK))
 				.addVanillaStates(Blocks.OAK_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.OAK).block().getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.OAK).block().getStateDefinition().getPossibleStates())
 				.addVanillaSapling(Items.OAK_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_APPLE);
@@ -73,6 +75,8 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureDarkOak::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.DARK_OAK))
 				.addVanillaStates(Blocks.DARK_OAK_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.DARK_OAK).block().getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.DARK_OAK).block().getStateDefinition().getPossibleStates())
 				.addVanillaSapling(Items.DARK_OAK_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
@@ -86,6 +90,8 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureBirch::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.BIRCH))
 				.addVanillaStates(Blocks.BIRCH_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.BIRCH).block().getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.BIRCH).block().getStateDefinition().getPossibleStates())
 				.addVanillaSapling(Items.BIRCH_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
@@ -226,6 +232,8 @@ public class DefaultTreeSpecies {
 				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.SPRUCE).block().getStateDefinition().getPossibleStates())
 				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.SPRUCE).block().getStateDefinition().getPossibleStates())
 				.addVanillaStates(Blocks.SPRUCE_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.SPRUCE).block().getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.SPRUCE).block().getStateDefinition().getPossibleStates())
 				.addVanillaSapling(Items.SPRUCE_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.SAPLINGS, ForestryAlleles.SAPLINGS_AVERAGE);
@@ -311,6 +319,8 @@ public class DefaultTreeSpecies {
 				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.JUNGLE).block().getStateDefinition().getPossibleStates())
 				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.JUNGLE).block().getStateDefinition().getPossibleStates())
 				.addVanillaStates(Blocks.JUNGLE_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.JUNGLE).block().getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.JUNGLE).block().getStateDefinition().getPossibleStates())
 				.addVanillaSapling(Items.JUNGLE_SAPLING)
 				.setGenome(genome -> {
 					genome.set(TreeChromosomes.FRUIT, ForestryAlleles.FRUIT_COCOA);
@@ -421,6 +431,8 @@ public class DefaultTreeSpecies {
 				.setTreeFeature(FeatureAcaciaVanilla::new)
 				.setDecorativeLeaves(ArboricultureBlocks.LEAVES_DECORATIVE.stack(ForestryLeafType.ACACIA_VANILLA))
 				.addVanillaStates(Blocks.ACACIA_LEAVES.getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT.get(ForestryLeafType.ACACIA_VANILLA).block().getStateDefinition().getPossibleStates())
+				.addVanillaStates(ArboricultureBlocks.LEAVES_DEFAULT_FRUIT.get(ForestryLeafType.ACACIA_VANILLA).block().getStateDefinition().getPossibleStates())
 				.addVanillaSapling(Items.ACACIA_SAPLING)
 				.setAuthority("Binnie");
 

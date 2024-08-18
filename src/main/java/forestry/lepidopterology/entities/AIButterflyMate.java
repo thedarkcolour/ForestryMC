@@ -16,6 +16,7 @@ import java.util.List;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.IButterflyNursery;
 import forestry.core.utils.GeneticsUtil;
+import forestry.core.utils.TreeUtil;
 
 public class AIButterflyMate extends AIButterflyInteract {
 	@Nullable
@@ -56,7 +57,7 @@ public class AIButterflyMate extends AIButterflyInteract {
 					entity.cooldownMate = EntityButterfly.COOLDOWNS;
 				}
 			} else if (rest != null) {
-				IButterflyNursery nursery = GeneticsUtil.getOrCreateNursery(null, entity.level, rest, false);
+				IButterflyNursery nursery = TreeUtil.getOrCreateNursery(entity.level, rest, false);
 				if (nursery != null) {
 					if (nursery.canNurse(entity.getButterfly())) {
 						nursery.setCaterpillar(entity.getButterfly().spawnCaterpillar(nursery));

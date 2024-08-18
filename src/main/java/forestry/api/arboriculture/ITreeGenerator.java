@@ -5,16 +5,12 @@
  ******************************************************************************/
 package forestry.api.arboriculture;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-
-import com.mojang.authlib.GameProfile;
 
 import forestry.api.genetics.IGenome;
 
@@ -26,5 +22,5 @@ public interface ITreeGenerator {
 
 	boolean setLogBlock(IGenome genome, LevelAccessor level, BlockPos pos, Direction facing);
 
-	boolean setLeaves(IGenome genome, LevelAccessor level, @Nullable GameProfile owner, BlockPos pos, RandomSource rand);
+	boolean setLeaves(IGenome genome, LevelAccessor level, BlockPos pos, RandomSource rand);
 }

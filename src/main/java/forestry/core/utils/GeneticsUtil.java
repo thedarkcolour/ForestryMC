@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.core.utils;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -24,25 +23,16 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
-
-import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.common.util.LazyOptional;
 
 import forestry.api.ForestryCapabilities;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.arboriculture.ITreeSpecies;
-import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.core.IArmorNaturalist;
-import forestry.api.genetics.ICheckPollinatable;
-import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.IMutation;
 import forestry.api.genetics.IMutationManager;
-import forestry.api.genetics.IPollinatable;
-import forestry.api.genetics.IPollinatableSpeciesType;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
@@ -108,90 +98,6 @@ public class GeneticsUtil {
 	public static boolean canNurse(IButterfly butterfly, Level world, final BlockPos pos) {
 		IButterflyNursery tile = TileUtil.getTile(world, pos, IButterflyNursery.class);
 		return tile != null && tile.canNurse(butterfly);
-	}
-
-	/**
-	 * Returns an ICheckPollinatable that can be checked but not mated.
-	 * Used to check for pollination traits without altering the world by changing vanilla leaves to forestry ones.
-	 */
-	@Nullable
-	public static ICheckPollinatable getCheckPollinatable(Level world, final BlockPos pos) {
-		IPollinatable tile = TileUtil.getTile(world, pos, IPollinatable.class);
-		if (tile != null) {
-			return tile;
-		}
-
-		IIndividual pollen = GeneticsUtil.getPollen(world, pos);
-		if (pollen != null) {
-			ISpeciesType<?, ?> type = pollen.getType();
-			if (type instanceof IPollinatableSpeciesType speciesRoot) {
-				return speciesRoot.createPollinatable(pollen);
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns an IPollinatable that can be mated. This will convert vanilla leaves to Forestry leaves.
-	 */
-	@Nullable
-	public static IPollinatable getOrCreatePollinatable(@Nullable GameProfile owner, Level world, final BlockPos pos, boolean convertVanilla) {
-		IPollinatable pollinatable = TileUtil.getTile(world, pos, IPollinatable.class);
-		if (pollinatable == null && convertVanilla) {
-			IIndividual pollen = GeneticsUtil.getPollen(world, pos);
-			if (pollen != null) {
-				ISpeciesType<?, ?> root = pollen.getType();
-				if (root instanceof IPollinatableSpeciesType speciesRoot) {
-					pollinatable = speciesRoot.tryConvertToPollinatable(owner, world, pos, pollen);
-				}
-			}
-		}
-		return pollinatable;
-	}
-
-	@Nullable
-	public static IButterflyNursery getOrCreateNursery(@Nullable GameProfile gameProfile, LevelAccessor world, BlockPos pos, boolean convertVanilla) {
-		IButterflyNursery nursery = getNursery(world, pos);
-		if (nursery == null && convertVanilla) {
-			IIndividual pollen = GeneticsUtil.getPollen(world, pos);
-
-			if (pollen instanceof ITree tree) {
-				if (tree.getSpecies().setLeaves(pollen.getGenome(), world, gameProfile, pos, world.getRandom())) {
-					nursery = getNursery(world, pos);
-				}
-			}
-		}
-		return nursery;
-	}
-
-	public static boolean canCreateNursery(LevelAccessor world, BlockPos pos) {
-		IIndividual pollen = GeneticsUtil.getPollen(world, pos);
-		return pollen instanceof ITree;
-	}
-
-	@Nullable
-	public static IButterflyNursery getNursery(LevelAccessor world, BlockPos pos) {
-		return TileUtil.getTile(world, pos, IButterflyNursery.class);
-	}
-
-	/**
-	 * Gets pollen from a location. Does not convert the pollen source to Forestry leaves.
-	 */
-	@Nullable
-	public static IIndividual getPollen(LevelAccessor level, final BlockPos pos) {
-		if (!level.hasChunkAt(pos)) {
-			return null;
-		}
-
-		ICheckPollinatable checkPollinatable = TileUtil.getTile(level, pos, ICheckPollinatable.class);
-		if (checkPollinatable != null) {
-			return checkPollinatable.getPollen();
-		}
-
-		BlockState state = level.getBlockState(pos);
-
-		return SpeciesUtil.TREE_TYPE.get().getVanillaIndividual(state);
 	}
 
 	public static ItemStack convertToGeneticEquivalent(ItemStack foreign) {

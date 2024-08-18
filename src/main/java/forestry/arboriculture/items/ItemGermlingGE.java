@@ -33,18 +33,17 @@ import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.core.ItemGroups;
-import forestry.api.genetics.ICheckPollinatable;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
-import forestry.api.genetics.IPollinatable;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.recipes.IVariableFermentable;
+import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.genetics.ItemGE;
 import forestry.core.items.definitions.IColoredItem;
 import forestry.core.utils.BlockUtil;
-import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
+import forestry.core.utils.TreeUtil;
 
 public class ItemGermlingGE extends ItemGE implements IVariableFermentable, IColoredItem {
 	public ItemGermlingGE(TreeLifeStage type) {
@@ -97,26 +96,28 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 		return InteractionResultHolder.pass(stack);
 	}
 
-	private static InteractionResultHolder<ItemStack> onItemRightClickPollen(ItemStack stack, Level level, Player player, BlockPos pos, ITree tree) {
-		ICheckPollinatable checkPollinatable = GeneticsUtil.getCheckPollinatable(level, pos);
-		if (checkPollinatable == null || !checkPollinatable.canMateWith(tree)) {
+	private static InteractionResultHolder<ItemStack> onItemRightClickPollen(ItemStack stack, Level level, Player player, BlockPos pos, ITree pollen) {
+		if (!TreeUtil.canMate(TreeUtil.getTreeSafe(level, pos), pollen)) {
 			return InteractionResultHolder.fail(stack);
 		}
 
-		IPollinatable pollinatable = GeneticsUtil.getOrCreatePollinatable(player.getGameProfile(), level, pos, true);
-		if (pollinatable == null || !pollinatable.canMateWith(tree)) {
+		TileLeaves leaves = TreeUtil.getOrCreateLeaves(level, pos, true);
+		if (leaves == null || !TreeUtil.canMate(leaves.getTree(), pollen)) {
 			return InteractionResultHolder.fail(stack);
 		}
 
 		if (!level.isClientSide) {
-			pollinatable.mateWith(tree);
+			leaves.setMate(pollen);
 
 			BlockUtil.sendDestroyEffects(level, pos, level.getBlockState(pos));
 
 			if (!player.isCreative()) {
 				stack.shrink(1);
 			}
+
+			return InteractionResultHolder.consume(stack);
 		}
+
 		return InteractionResultHolder.success(stack);
 	}
 

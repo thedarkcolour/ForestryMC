@@ -29,8 +29,8 @@ public class TreeBlockType implements ITreeBlockType {
 	}
 
 	@Override
-	public boolean setBlock(LevelAccessor world, BlockPos pos) {
-		return world.setBlock(pos, blockState, 18);
+	public boolean setBlock(LevelAccessor level, BlockPos pos) {
+		return level.setBlock(pos, blockState, 18);
 	}
 
 	public BlockState getBlockState() {

@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import forestry.api.ForestryConstants;
 import forestry.api.ForestryTags;
@@ -42,6 +41,7 @@ import forestry.api.plugin.IFarmingRegistration;
 import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.IGeneticRegistration;
 import forestry.api.plugin.ILepidopterologyRegistration;
+import forestry.api.plugin.IPollenRegistration;
 import forestry.apiculture.ApicultureFilterRule;
 import forestry.apiculture.ApicultureFilterRuleType;
 import forestry.apiculture.EndFlowerType;
@@ -71,6 +71,7 @@ import forestry.arboriculture.PodFruit;
 import forestry.arboriculture.RipeningFruit;
 import forestry.arboriculture.blocks.ForestryPodType;
 import forestry.arboriculture.genetics.DummyTreeEffect;
+import forestry.arboriculture.genetics.TreePollenType;
 import forestry.arboriculture.genetics.TreeSpeciesType;
 import forestry.core.features.CoreItems;
 import forestry.core.items.ItemFruit;
@@ -369,6 +370,11 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		DefaultFarms.registerFarmTypes(farming);
 
 		farming.registerFertilizer(CoreItems.FERTILIZER_COMPOUND.get(), 500);
+	}
+
+	@Override
+	public void registerPollen(IPollenRegistration pollen) {
+		pollen.registerPollenType(new TreePollenType());
 	}
 
 	@Override

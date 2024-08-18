@@ -36,8 +36,10 @@ import forestry.api.core.IError;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.ITaxon;
+import forestry.api.genetics.pollen.IPollenType;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.plugin.IForestryPlugin;
+import forestry.api.plugin.IPollenRegistration;
 import forestry.apiimpl.ForestryApiImpl;
 import forestry.apiimpl.GeneticManager;
 import forestry.apiimpl.client.ButterflyClientManager;
@@ -48,6 +50,7 @@ import forestry.arboriculture.client.FixedLeafTint;
 import forestry.core.circuits.CircuitLayout;
 import forestry.core.circuits.CircuitManager;
 import forestry.core.errors.ErrorManager;
+import forestry.core.genetics.PollenManager;
 import forestry.core.genetics.alleles.AlleleManager;
 import forestry.core.utils.SpeciesUtil;
 import forestry.farming.FarmingManager;
@@ -228,6 +231,24 @@ public class PluginManager {
 		FarmingManager manager = new FarmingManager(new Object2IntOpenHashMap<>(registration.getFertilizers()), registration.buildFarmTypes());
 
 		((ForestryApiImpl) IForestryApi.INSTANCE).setFarmingManager(manager);
+	}
+
+	public static void registerPollen() {
+		HashMap<ResourceLocation, IPollenType<?>> pollenTypes = new HashMap<>();
+		IPollenRegistration registration = pollen -> {
+			ResourceLocation id = pollen.id();
+			if (pollenTypes.containsKey(id)) {
+				throw new IllegalStateException("A pollen type was already registered with ID " + pollen + ": " + pollenTypes.get(id));
+			} else {
+				pollenTypes.put(id, pollen);
+			}
+		};
+
+		for (IForestryPlugin plugin : LOADED_PLUGINS) {
+			plugin.registerPollen(registration);
+		}
+
+		((ForestryApiImpl) IForestryApi.INSTANCE).setPollenManager(new PollenManager(ImmutableMap.copyOf(pollenTypes)));
 	}
 
 	// Todo remove in 1.20 when FMLCommonSetupEvent throws exceptions again

@@ -14,11 +14,8 @@ import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -35,7 +32,7 @@ public class TreeGenHelper {
 		BlockState blockState = world.getBlockState(pos);
 		if (BlockUtil.canPlaceTree(blockState, world, pos)) {
 			if (gen instanceof FeatureBase) {
-				return ((FeatureBase) gen).place(world, world.getRandom(), pos, true);
+				return ((FeatureBase) gen).place(tree.getDefaultGenome(), world, world.getRandom(), pos, true);
 			} else {
 				return gen.place(new FeaturePlaceContext<>(Optional.empty(), world, ((ServerChunkCache) world.getChunkSource()).getGenerator(), world.getRandom(), pos, FeatureConfiguration.NONE));
 			}

@@ -25,16 +25,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.lepidopterology.genetics.IButterfly;
-import forestry.core.owner.IOwnedTile;
-import forestry.core.owner.IOwnerHandler;
-import forestry.core.owner.OwnerHandler;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.SpeciesUtil;
 import forestry.lepidopterology.blocks.BlockCocoon;
 import forestry.lepidopterology.features.LepidopterologyTiles;
 
-public class TileCocoon extends BlockEntity implements IOwnedTile {
-	private final OwnerHandler ownerHandler = new OwnerHandler();
+public class TileCocoon extends BlockEntity {
 	private int maturationTime;
 	private IButterfly caterpillar = SpeciesUtil.BUTTERFLY_TYPE.get().getDefaultSpecies().createIndividual();
 	private boolean isSolid;
@@ -52,7 +48,6 @@ public class TileCocoon extends BlockEntity implements IOwnedTile {
 		if (compoundNBT.contains("Caterpillar")) {
 			caterpillar = SpeciesUtil.deserializeIndividual(SpeciesUtil.BUTTERFLY_TYPE.get(), compoundNBT.getCompound("Caterpillar"));
 		}
-		this.ownerHandler.read(compoundNBT);
 		this.maturationTime = compoundNBT.getInt("CATMAT");
 		this.isSolid = compoundNBT.getBoolean("isSolid");
 	}
@@ -66,15 +61,8 @@ public class TileCocoon extends BlockEntity implements IOwnedTile {
 			compoundNBT.put("Caterpillar", tag);
 		}
 
-		this.ownerHandler.write(compoundNBT);
-
 		compoundNBT.putInt("CATMAT", this.maturationTime);
 		compoundNBT.putBoolean("isSolid", this.isSolid);
-	}
-
-	@Override
-	public IOwnerHandler getOwnerHandler() {
-		return ownerHandler;
 	}
 
 	public void onBlockTick() {

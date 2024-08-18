@@ -15,13 +15,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 
 import forestry.api.arboriculture.ITreeGenData;
+import forestry.api.genetics.IGenome;
 
 public class TreeBlockTypeLog implements ITreeBlockType {
 	private final ITreeGenData tree;
+	private final IGenome genome;
 	private Direction facing = Direction.UP;
 
-	public TreeBlockTypeLog(ITreeGenData tree) {
+	public TreeBlockTypeLog(ITreeGenData tree, IGenome genome) {
 		this.tree = tree;
+		this.genome = genome;
 	}
 
 	@Override
@@ -30,7 +33,7 @@ public class TreeBlockTypeLog implements ITreeBlockType {
 	}
 
 	@Override
-	public boolean setBlock(LevelAccessor world, BlockPos pos) {
-		return this.tree.setLogBlock(this.tree.getDefaultGenome(), world, pos, this.facing);
+	public boolean setBlock(LevelAccessor level, BlockPos pos) {
+		return this.tree.setLogBlock(this.genome, level, pos, this.facing);
 	}
 }

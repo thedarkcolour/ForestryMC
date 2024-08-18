@@ -32,11 +32,16 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.arboriculture.worldgen.FeatureArboriculture;
+import forestry.core.owner.IOwnedTile;
+import forestry.core.owner.IOwnerHandler;
+import forestry.core.owner.OwnerHandler;
 import forestry.core.utils.SpeciesUtil;
 import forestry.core.worldgen.FeatureBase;
 
-public class TileSapling extends TileTreeContainer {
+public class TileSapling extends TileTreeContainer implements IOwnedTile {
 	public static final ModelProperty<ITreeSpecies> TREE_SPECIES = new ModelProperty<>();
+
+	private final OwnerHandler ownerHandler = new OwnerHandler();
 
 	private int timesTicked = 0;
 
@@ -50,6 +55,7 @@ public class TileSapling extends TileTreeContainer {
 		super.load(nbt);
 
 		timesTicked = nbt.getInt("TT");
+		this.ownerHandler.read(nbt);
 	}
 
 	@Override
@@ -57,6 +63,7 @@ public class TileSapling extends TileTreeContainer {
 		super.saveAdditional(nbt);
 
 		nbt.putInt("TT", timesTicked);
+		this.ownerHandler.write(nbt);
 	}
 
 	@Override
@@ -110,7 +117,7 @@ public class TileSapling extends TileTreeContainer {
 		Feature<NoneFeatureConfiguration> generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), boneMealed);
 		final boolean generated;
 		if (generator instanceof FeatureBase) {
-			generated = ((FeatureBase) generator).place(level, random, getBlockPos(), false);
+			generated = ((FeatureBase) generator).place(tree.getGenome(), level, random, getBlockPos(), false);
 		} else {
 			ServerLevel level = (ServerLevel) this.level;
 			generated = generator.place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), random, getBlockPos(), FeatureConfiguration.NONE));
@@ -130,5 +137,10 @@ public class TileSapling extends TileTreeContainer {
 			return ModelData.EMPTY;
 		}
 		return ModelData.builder().with(TREE_SPECIES, tree.getSpecies()).build();
+	}
+
+	@Override
+	public IOwnerHandler getOwnerHandler() {
+		return this.ownerHandler;
 	}
 }

@@ -18,8 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.apiculture.IBeeListener;
-import forestry.api.arboriculture.genetics.TreeLifeStage;
-import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.pollen.IPollen;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.apiculture.blocks.BlockAlvearyType;
 import forestry.apiculture.gui.ContainerAlvearySieve;
@@ -64,12 +63,12 @@ public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.B
 		}
 
 		@Override
-		public boolean onPollenRetrieved(IIndividual pollen) {
+		public boolean onPollenRetrieved(IPollen<?> pollen) {
 			if (!this.inventory.canStorePollen()) {
 				return false;
 			}
 
-			ItemStack pollenStack = pollen.createStack(TreeLifeStage.POLLEN);
+			ItemStack pollenStack = pollen.createStack();
 			if (!pollenStack.isEmpty()) {
 				this.inventory.storePollenStack(pollenStack);
 				return true;
