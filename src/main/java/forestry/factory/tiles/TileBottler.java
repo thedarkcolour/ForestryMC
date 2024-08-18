@@ -68,7 +68,7 @@ public class TileBottler extends TilePowered implements WorldlyContainer, ILiqui
 	public boolean isFillRecipe;
 
 	public TileBottler(BlockPos pos, BlockState state) {
-		super(FactoryTiles.BOTTLER.tileType(), pos, state, 1100, 4000);
+		super(FactoryTiles.BOTTLER.tileType(), pos, state, 1100, 40000);
 
 		setInternalInventory(new InventoryBottler(this));
 

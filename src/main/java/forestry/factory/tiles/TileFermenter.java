@@ -68,7 +68,7 @@ public class TileFermenter extends TilePowered implements WorldlyContainer, ILiq
 	private int fuelCurrentFerment = 0;
 
 	public TileFermenter(BlockPos pos, BlockState state) {
-		super(FactoryTiles.FERMENTER.tileType(), pos, state, 2000, 8000);
+		super(FactoryTiles.FERMENTER.tileType(), pos, state, 2000, 80000);
 		setEnergyPerWorkCycle(4200);
 		setInternalInventory(new InventoryFermenter(this));
 

@@ -60,7 +60,7 @@ public class TileStill extends TilePowered implements WorldlyContainer, ILiquidT
 	private FluidStack bufferedLiquid = FluidStack.EMPTY;
 
 	public TileStill(BlockPos pos, BlockState state) {
-		super(FactoryTiles.STILL.tileType(), pos, state, 1100, 8000);
+		super(FactoryTiles.STILL.tileType(), pos, state, 1100, 80000);
 		setInternalInventory(new InventoryStill(this));
 
 		this.resourceTank = new FilteredTank(Constants.PROCESSOR_TANK_CAPACITY, true, true).setFilter(FluidRecipeFilter.STILL_INPUT);
