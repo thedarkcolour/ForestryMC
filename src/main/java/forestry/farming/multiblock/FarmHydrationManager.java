@@ -90,7 +90,7 @@ public class FarmHydrationManager implements IFarmLedgerDelegate, INbtWritable, 
 
 	@Override
 	public float getHydrationRainfallModifier() {
-		return Mth.clamp(RAINFALL_MODIFIER_MIN, (float) ticksSinceRainfall / 24000, RAINFALL_MODIFIER_MAX);
+		return Mth.clamp((float) ticksSinceRainfall / 24000, RAINFALL_MODIFIER_MIN, RAINFALL_MODIFIER_MAX);
 	}
 
 	@Override
