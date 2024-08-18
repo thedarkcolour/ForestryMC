@@ -98,12 +98,12 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 
 	private static InteractionResultHolder<ItemStack> onItemRightClickPollen(ItemStack stack, Level level, Player player, BlockPos pos, ITree pollen) {
 		if (!TreeUtil.canMate(TreeUtil.getTreeSafe(level, pos), pollen)) {
-			return InteractionResultHolder.fail(stack);
+			return InteractionResultHolder.pass(stack);
 		}
 
 		TileLeaves leaves = TreeUtil.getOrCreateLeaves(level, pos, true);
 		if (leaves == null || !TreeUtil.canMate(leaves.getTree(), pollen)) {
-			return InteractionResultHolder.fail(stack);
+			return InteractionResultHolder.pass(stack);
 		}
 
 		if (!level.isClientSide) {
@@ -126,7 +126,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 		BlockState hitBlock = worldIn.getBlockState(pos);
 		if (!hitBlock.canBeReplaced(context)) {
 			if (!worldIn.isEmptyBlock(pos.above())) {
-				return InteractionResultHolder.fail(stack);
+				return InteractionResultHolder.pass(stack);
 			}
 			pos = pos.above();
 		}
@@ -139,7 +139,7 @@ public class ItemGermlingGE extends ItemGE implements IVariableFermentable, ICol
 				return InteractionResultHolder.success(stack);
 			}
 		}
-		return InteractionResultHolder.fail(stack);
+		return InteractionResultHolder.pass(stack);
 	}
 
 	@Override

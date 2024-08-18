@@ -19,7 +19,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
@@ -125,27 +125,29 @@ public class ModuleCore extends BlankForestryModule {
 	}
 
 	private static void registerComposts() {
-		Object2FloatMap<ItemLike> composts = ComposterBlock.COMPOSTABLES;
+		// cast avoids stupid typos (IItemLike can be different than Item, then composter will not work)
+		@SuppressWarnings({"unchecked", "rawtypes"})
+		Object2FloatMap<Item> composts = ((Object2FloatMap) ComposterBlock.COMPOSTABLES);
 
 		for (FeatureItem<?> fruit : CoreItems.FRUITS.getFeatures()) {
-			composts.put(fruit, 0.65f);
+			composts.put(fruit.item(), 0.65f);
 		}
-		composts.put(CoreItems.MOULDY_WHEAT, 0.65f);
-		composts.put(CoreItems.DECAYING_WHEAT, 0.65f);
-		composts.put(CoreItems.MULCH, 0.65f);
-		composts.put(CoreItems.ASH, 0.65f);
-		composts.put(CoreItems.WOOD_PULP, 0.65f);
-		composts.put(CoreItems.PEAT, 0.75f);
-		composts.put(CoreItems.COMPOST, 1f);
+		composts.put(CoreItems.MOULDY_WHEAT.item(), 0.65f);
+		composts.put(CoreItems.DECAYING_WHEAT.item(), 0.65f);
+		composts.put(CoreItems.MULCH.item(), 0.65f);
+		composts.put(CoreItems.ASH.item(), 0.65f);
+		composts.put(CoreItems.WOOD_PULP.item(), 0.65f);
+		composts.put(CoreItems.PEAT.item(), 0.75f);
+		composts.put(CoreItems.COMPOST.item(), 1f);
 		for (ItemPollenCluster pollen : ApicultureItems.POLLEN_CLUSTER.getItems()) {
 			composts.put(pollen, 0.3f);
 		}
-		composts.put(ArboricultureItems.SAPLING, 0.3f);
-		composts.put(ArboricultureItems.POLLEN_FERTILE, 0.3f);
+		composts.put(ArboricultureItems.SAPLING.item(), 0.3f);
+		composts.put(ArboricultureItems.POLLEN_FERTILE.item(), 0.3f);
 		for (BlockItem leaves : ArboricultureBlocks.LEAVES_DECORATIVE.getItems()) {
 			composts.put(leaves, 0.3f);
 		}
-		composts.put(LepidopterologyItems.COCOON_GE, 0.3f);
+		composts.put(LepidopterologyItems.COCOON_GE.item(), 0.3f);
 	}
 
 	private static void registerGlobalLootModifiers(RegisterEvent event) {
