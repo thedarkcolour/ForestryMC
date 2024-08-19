@@ -19,6 +19,8 @@
 - Increase energy storage of Bottler, Still, Fermenter by 10x
 - Fixed bug where species would be able to mutate with themselves.
 - Add haploid breeding option
+- Fixed nether biome climates
+- Savannah biomes are now WARM/ARID instead of HOT/ARID, making their climate distinct from the desert biomes.
 
 ## Forestry 1.0.4
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to
