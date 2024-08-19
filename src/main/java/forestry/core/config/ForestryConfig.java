@@ -57,6 +57,7 @@ public class ForestryConfig {
 		// Bees
 		public final ForgeConfigSpec.BooleanValue pollinateVanillaLeaves;
 		public final ForgeConfigSpec.DoubleValue wildHiveSpawnRate;
+		public final ForgeConfigSpec.BooleanValue useHaploidDrones;
 		// Butterflies
 		public final ForgeConfigSpec.IntValue butterflyClusterLimit;
 		public final ForgeConfigSpec.IntValue butterflyClusterWidth;
@@ -89,6 +90,9 @@ public class ForestryConfig {
 			this.wildHiveSpawnRate = builder
 					.comment("The base chance for a wild beehive to spawn naturally.")
 					.defineInRange("wild_hive_spawn_rate", 1.0, 0.0, 1000.0);
+			this.useHaploidDrones = builder
+					.comment("In real life, drone bees are haploid, which means they only carry one set of chromosomes. If this option is enabled, only a drone's active alleles will be used for inheritance, making drones effectively haploid. This CHANGES Forestry's bee breeding mechanics.")
+					.define("use_haploid_drones", false);
 			builder.pop();
 
 			// Farming

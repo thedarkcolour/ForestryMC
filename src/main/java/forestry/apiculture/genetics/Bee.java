@@ -62,6 +62,7 @@ import forestry.api.genetics.pollen.IPollen;
 import forestry.api.genetics.pollen.IPollenManager;
 import forestry.api.genetics.pollen.IPollenType;
 import forestry.core.config.Constants;
+import forestry.core.config.ForestryConfig;
 import forestry.core.genetics.IndividualLiving;
 import forestry.core.genetics.mutations.Mutation;
 import forestry.core.utils.SpeciesUtil;
@@ -427,6 +428,10 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 
 	private IBee createOffspring(IBeeHousing housing, IGenome mate, int generation) {
 		SpeciesUtil.ISpeciesMutator mutator = (p1, p2) -> mutateSpecies(housing, p1, p2);
+
+		if (ForestryConfig.SERVER.useHaploidDrones.get()) {
+			mate = mate.toHaploid();
+		}
 
 		return SpeciesUtil.createOffspring(housing.getWorldObj().random, this.genome, mate, mutator, genome -> {
 			//IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(level);

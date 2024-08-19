@@ -56,6 +56,11 @@ public interface IGenome {
 	IGenome copyWith(Map<IChromosome<?>, IAllele> alleles);
 
 	/**
+	 * @return A copy of this genome where all AllelePairs have the same active/inactive alleles.
+	 */
+	IGenome toHaploid();
+
+	/**
 	 * @return {@code true} if this genome has the same karyotype and alleles as the other genome.
 	 */
 	boolean isSameAlleles(IGenome other);
@@ -140,6 +145,7 @@ public interface IGenome {
 
 	/**
 	 * Note: Use {@link IIndividual#getSpecies} whenever possible.
+	 *
 	 * @return The active species of the individual.
 	 */
 	default <S extends ISpecies<?>> S getActiveSpecies() {
@@ -148,6 +154,7 @@ public interface IGenome {
 
 	/**
 	 * Note: Use {@link IIndividual#getInactiveSpecies} whenever possible.
+	 *
 	 * @return The inactive species of the individual.
 	 */
 	default <S extends ISpecies<?>> S getInactiveSpecies() {

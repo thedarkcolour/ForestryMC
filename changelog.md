@@ -17,6 +17,8 @@
 - Fixed bug where fruit ripeness would sometimes not persist
 - ACTUALLY make saplings and other items usable in the composter (#35)
 - Increase energy storage of Bottler, Still, Fermenter by 10x
+- Fixed bug where species would be able to mutate with themselves.
+- Add haploid breeding option
 
 ## Forestry 1.0.4
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to
