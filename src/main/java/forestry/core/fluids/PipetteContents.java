@@ -13,9 +13,9 @@ package forestry.core.fluids;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -46,7 +46,6 @@ public class PipetteContents {
 	}
 
 	public void addTooltip(List<Component> list) {
-		list.add(contents.getDisplayName().copy()
-				.append(" (" + contents.getAmount() + " mb)"));
+		list.add(contents.getDisplayName().copy().append(" (" + contents.getAmount() + " mb)").withStyle(ChatFormatting.GRAY));
 	}
 }

@@ -177,6 +177,7 @@ public class CoreClientHandler implements IClientModuleHandler {
 		event.register(ClientManager.FORESTRY_ITEM_COLOR, CoreItems.ELECTRON_TUBES.itemArray());
 		event.register(ClientManager.FORESTRY_ITEM_COLOR, CoreItems.CIRCUITBOARDS.itemArray());
 		event.register(ClientManager.FORESTRY_ITEM_COLOR, FluidsItems.CONTAINERS.itemArray());
+		event.register(ClientManager.FORESTRY_ITEM_COLOR, CoreItems.PIPETTE.item());
 		// Apiculture
 		event.register(ClientManager.FORESTRY_ITEM_COLOR, ApicultureBlocks.BEE_COMB.blockArray());
 		event.register(ClientManager.FORESTRY_ITEM_COLOR,

@@ -127,13 +127,12 @@ public class BlockBase<P extends Enum<P> & IBlockType> extends BlockForestry imp
 	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand hand, BlockHitResult hit) {
 		TileBase tile = TileUtil.getTile(worldIn, pos, TileBase.class);
 		if (tile == null) {
-			return InteractionResult.FAIL;
+			return InteractionResult.PASS;
 		}
 		if (TileUtil.isUsableByPlayer(playerIn, tile)) {
-
 			if (!playerIn.isShiftKeyDown()) { //isSneaking
 				if (FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, hit.getDirection())) {
-					return InteractionResult.SUCCESS;
+					return InteractionResult.sidedSuccess(worldIn.isClientSide);
 				}
 			}
 

@@ -1,5 +1,7 @@
 package forestry.core.utils;
 
+import java.awt.Color;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -10,15 +12,19 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidType;
 
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.core.ClientsideCode;
+import forestry.core.fluids.ForestryFluids;
 
 public class RenderUtil {
 	public static void markForUpdate(BlockPos pos) {
@@ -51,5 +57,18 @@ public class RenderUtil {
 		if (!isGui3d) {
 			stack.translate(0.0, 0.0, 0.09375F);
 		}
+	}
+
+	public static int getFluidColor(Fluid fluid) {
+		FluidType attributes = fluid.getFluidType();
+		int color = IClientFluidTypeExtensions.of(attributes).getTintColor();
+		ForestryFluids definition = ForestryFluids.getFluidDefinition(fluid);
+		if (color < 0) {
+			color = Color.BLUE.getRGB();
+			if (definition != null) {
+				color = definition.getParticleColor().getRGB();
+			}
+		}
+		return color;
 	}
 }

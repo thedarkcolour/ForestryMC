@@ -10,6 +10,9 @@
  ******************************************************************************/
 package forestry.core.render;
 
+import java.util.EnumMap;
+import java.util.Locale;
+
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -23,28 +26,15 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidType;
 
-import java.awt.Color;
-import java.util.EnumMap;
-import java.util.Locale;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
 import forestry.api.ForestryConstants;
 import forestry.core.blocks.BlockBase;
-import forestry.core.fluids.ForestryFluids;
 import forestry.core.tiles.IRenderableTile;
 import forestry.core.tiles.TileBase;
-import forestry.core.tiles.TileNaturalistChest;
 import forestry.core.utils.RenderUtil;
 
 public class RenderMachine implements BlockEntityRenderer<TileBase> {
@@ -52,7 +42,7 @@ public class RenderMachine implements BlockEntityRenderer<TileBase> {
 	private static final String BASE_BACK = "baseback";
 	private static final String RESOURCE_TANK = "resourceTank";
 	private static final String PRODUCT_TANK = "productTank";
-	
+
 	private final ModelPart basefront;
 	private final ModelPart baseback;
 	private final ModelPart resourceTank;
@@ -71,7 +61,7 @@ public class RenderMachine implements BlockEntityRenderer<TileBase> {
 		baseback = root.getChild(BASE_BACK);
 		resourceTank = root.getChild(RESOURCE_TANK);
 		productTank = root.getChild(PRODUCT_TANK);
-		
+
 		textureBase = ForestryConstants.forestry(baseTexture + "base.png");
 		textureProductTank = ForestryConstants.forestry(baseTexture + "tank_product_empty.png");
 		textureResourceTank = ForestryConstants.forestry(baseTexture + "tank_resource_empty.png");
@@ -84,20 +74,20 @@ public class RenderMachine implements BlockEntityRenderer<TileBase> {
 			texturesTankLevels.put(tankLevel, ForestryConstants.forestry("textures/block/machine_tank_" + tankLevelString + ".png"));
 		}
 	}
-	
+
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        
-        root.addOrReplaceChild(BASE_FRONT, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(0f, 0f, 0f, 16, 4, 16), PartPose.offset(0, 0, 0));
-        root.addOrReplaceChild(BASE_BACK, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(0f, 0f, 0f, 16, 4, 16), PartPose.offset(0, 12, 0));
-        root.addOrReplaceChild(RESOURCE_TANK, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(0f, 0f, 0f, 12, 16, 6), PartPose.offset(2, 0, 2));
-        root.addOrReplaceChild(PRODUCT_TANK, CubeListBuilder.create().texOffs(0, 0)
-            	.addBox(0f, 0f, 0f, 12, 16, 6), PartPose.offset(2, 0, 8));
-		
+		PartDefinition root = mesh.getRoot();
+
+		root.addOrReplaceChild(BASE_FRONT, CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0f, 0f, 0f, 16, 4, 16), PartPose.offset(0, 0, 0));
+		root.addOrReplaceChild(BASE_BACK, CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0f, 0f, 0f, 16, 4, 16), PartPose.offset(0, 12, 0));
+		root.addOrReplaceChild(RESOURCE_TANK, CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0f, 0f, 0f, 12, 16, 6), PartPose.offset(2, 0, 2));
+		root.addOrReplaceChild(PRODUCT_TANK, CubeListBuilder.create().texOffs(0, 0)
+				.addBox(0f, 0f, 0f, 12, 16, 6), PartPose.offset(2, 0, 8));
+
 		return LayerDefinition.create(mesh, 64, 32);
 	}
 
@@ -109,15 +99,7 @@ public class RenderMachine implements BlockEntityRenderer<TileBase> {
 			return;
 		}
 
-		FluidType attributes = renderInfo.getFluidStack().getFluid().getFluidType();
-		int color = IClientFluidTypeExtensions.of(attributes).getTintColor();
-		ForestryFluids definition = ForestryFluids.getFluidDefinition(renderInfo.getFluidStack().getFluid());
-		if (color < 0) {
-			color = Color.BLUE.getRGB();
-			if (definition != null) {
-				color = definition.getParticleColor().getRGB();
-			}
-		}
+		int color = RenderUtil.getFluidColor(renderInfo.getFluidStack().getFluid());
 		float r = (color >> 16 & 255) / 255f;
 		float g = (color >> 8 & 255) / 255f;
 		float b = (color & 255) / 255f;
