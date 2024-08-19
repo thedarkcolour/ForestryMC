@@ -22,6 +22,7 @@
 - Fixed nether biome climates
 - Savannah biomes are now WARM/ARID instead of HOT/ARID, making their climate distinct from the desert biomes.
 - Fix pipette textures
+- Fix bees not planting flowers (#53)
 
 ## Forestry 1.0.4
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to

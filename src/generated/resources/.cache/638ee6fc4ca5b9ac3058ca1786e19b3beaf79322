@@ -1,10 +1,11 @@
-// 1.19.2	2024-08-12T23:31:08.5722156	Forestry Block Tags
+// 1.19.2	2024-08-19T16:20:48.1355242	Forestry Block Tags
 40fc28555ba86485c2fdf3bc327bb05602bd7cb5 data/forestry/tags/blocks/flowers/cacti.json
 9ec5b3c6e6cf1ca04b004d599f0e1477525d6eaa data/forestry/tags/blocks/flowers/end.json
 3d2b45c6d09b6ad2f7d9e988cae1be42464c3d4f data/forestry/tags/blocks/flowers/gourd.json
 52d9237a861f244e608b27dc2ce2b3f74c0cf16b data/forestry/tags/blocks/flowers/jungle.json
 8dd18b109a989a23dc78465bfd0bb053a040eb67 data/forestry/tags/blocks/flowers/mushrooms.json
 b84c5008081b8b3970cd6f45e95d61eac8932921 data/forestry/tags/blocks/flowers/nether.json
+bd6700108f31975213042e02d5820f5e1795280a data/forestry/tags/blocks/flowers/plantable.json
 a72c613d8786fc7756573ffec9c22f7ed2973d9e data/forestry/tags/blocks/flowers/snow.json
 a72c613d8786fc7756573ffec9c22f7ed2973d9e data/forestry/tags/blocks/flowers/vanilla.json
 9c99444249ea9362072a08ee44c2d01c8ab03176 data/forestry/tags/blocks/flowers/wheat.json
