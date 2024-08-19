@@ -50,8 +50,12 @@ public class MutationManager<S extends ISpecies<?>> implements IMutationManager<
 
 	@Override
 	public ObjectArrayList<IMutation<S>> getCombinations(S firstParent, S secondParent) {
-		List<IMutation<S>> firstMutations = this.mutationsFrom.get(firstParent);
 		ObjectArrayList<IMutation<S>> mutations = new ObjectArrayList<>();
+		if (firstParent == secondParent) {
+			return mutations;
+		}
+
+		List<IMutation<S>> firstMutations = this.mutationsFrom.get(firstParent);
 
 		if (firstMutations == null) {
 			return mutations;

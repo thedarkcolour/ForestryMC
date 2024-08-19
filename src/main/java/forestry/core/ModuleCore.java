@@ -57,6 +57,7 @@ import forestry.core.blocks.TileStreamUpdateTracker;
 import forestry.core.client.CoreClientHandler;
 import forestry.core.climate.ForestryClimateManager;
 import forestry.core.commands.DiagnosticsCommand;
+import forestry.core.commands.DumpCommand;
 import forestry.core.features.CoreItems;
 import forestry.core.loot.ConditionLootModifier;
 import forestry.core.loot.OrganismFunction;
@@ -201,6 +202,7 @@ public class ModuleCore extends BlankForestryModule {
 		LiteralArgumentBuilder<CommandSourceStack> forestryCommand = LiteralArgumentBuilder.literal("forestry");
 
 		forestryCommand.then(DiagnosticsCommand.register());
+		forestryCommand.then(DumpCommand.register());
 
 		for (IForestryModule module : IForestryApi.INSTANCE.getModuleManager().getModulesForMod(ForestryConstants.MOD_ID)) {
 			if (module instanceof BlankForestryModule forestryModule) {
