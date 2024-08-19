@@ -124,6 +124,8 @@ public class ForestryTags {
 		// todo: remove in 1.21 when Neo merges the tags unification PR
 		public static final TagKey<Item> CRAFTING_TABLES = tag("crafting_tables");
 
+		public static final TagKey<Item> BEES = tag("bees");
+
 		private static TagKey<Item> tag(String name) {
 			return ItemTags.create(ForestryConstants.forestry(name));
 		}

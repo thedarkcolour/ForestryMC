@@ -112,6 +112,8 @@ public final class ForestryItemTagsProvider extends ItemTagsProvider {
 				.add(Items.CRAFTING_TABLE);
 
 		tag(ForestryTags.Items.SCOOPS).add(ApicultureItems.SCOOP.item());
+
+		tag(ForestryTags.Items.BEES).add(ApicultureItems.BEE_DRONE.get(), ApicultureItems.BEE_PRINCESS.get(), ApicultureItems.BEE_QUEEN.get(), ApicultureItems.BEE_LARVAE.get());
 	}
 
 	@SafeVarargs
