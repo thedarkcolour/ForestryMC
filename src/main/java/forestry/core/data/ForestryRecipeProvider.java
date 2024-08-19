@@ -630,7 +630,7 @@ public class ForestryRecipeProvider extends RecipeProvider {
 						.unlockedBy("has_tin", has(ForestryTags.Items.INGOTS_TIN))::save)
 				.build(helper, ForestryConstants.forestry("gear_tin"));
 
-		ShapelessRecipeBuilder.shapeless(CoreItems.INGOT_BRONZE)
+		ShapelessRecipeBuilder.shapeless(CoreItems.INGOT_BRONZE, 4)
 				.requires(ForestryTags.Items.INGOTS_TIN)
 				.requires(Items.COPPER_INGOT)
 				.requires(Items.COPPER_INGOT)

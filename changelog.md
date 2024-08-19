@@ -23,6 +23,7 @@
 - Savannah biomes are now WARM/ARID instead of HOT/ARID, making their climate distinct from the desert biomes.
 - Fix pipette textures
 - Fix bees not planting flowers (#53)
+- Fix bronze crafting recipe only producing 1 ingot instead of 4 (#54)
 
 ## Forestry 1.0.4
 - Added modify genome command. Can be used like `/forestry bee modify <chromosome> <allele> <both|dominant|recessive>` to

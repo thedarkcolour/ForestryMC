@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-14T13:42:35.8384244	Forestry Recipes
+// 1.19.2	2024-08-19T16:27:01.4336026	Forestry Recipes
 88dc44fcbf9ee8ce847c012e497174c75c3e4551 data/forestry/recipes/acacia_desert_door.json
 de1f849fde24b43a22d467214e5f81924e788f78 data/forestry/recipes/acacia_desert_fence.json
 659dbe7a9f033985cd1ac4020586c34bc9505f50 data/forestry/recipes/acacia_desert_fence_gate.json
@@ -303,7 +303,7 @@ a8bc202c525a9f90802c5f58c02c30a8a8cbbd12 data/forestry/recipes/habitat_locator.j
 e4886537f6d77b032e7087f6a98e6173cbc2df21 data/forestry/recipes/humus_fertilizer.json
 067e70d3b1213b67ad44998e1aa7b18755af7a30 data/forestry/recipes/hunter_bag.json
 574d8e5950556e4feaf56736489f70946327dc17 data/forestry/recipes/ingot_bronze.json
-7e3c477b46a116d074311d1266c67e2324dc4321 data/forestry/recipes/ingot_bronze_alloying.json
+b1c3f9891cbc5fcc78118d47040f5abf9eba3a3a data/forestry/recipes/ingot_bronze_alloying.json
 8516800c41181bd052913df7b0f2cd30197d4584 data/forestry/recipes/ingot_tin.json
 e72bc0946dfbc8a5a33a19289d915fb9729d0815 data/forestry/recipes/ipe_door.json
 d0883c6c7e93a4699c93ac31e06746ca2a674429 data/forestry/recipes/ipe_fence.json

@@ -1,7 +1,9 @@
 package forestry.modules.features;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,11 +26,19 @@ public class FeatureBlockTable<B extends Block, R extends IBlockSubtype, C exten
 	}
 
 	public Collection<B> getBlocks() {
-		return featureByTypes.values().stream().map(IBlockFeature::block).collect(Collectors.toList());
+		ArrayList<B> blocks = new ArrayList<>(this.featureByTypes.size());
+		for (FeatureBlock<B, BlockItem> feature : featureByTypes.values()) {
+			blocks.add(feature.block());
+		}
+		return blocks;
 	}
 
 	public Collection<BlockItem> getItems() {
-		return featureByTypes.values().stream().map(IBlockFeature::item).collect(Collectors.toList());
+		ArrayList<BlockItem> list = new ArrayList<>();
+		for (FeatureBlock<B, BlockItem> feature : featureByTypes.values()) {
+			list.add(feature.item());
+		}
+		return list;
 	}
 
 	public Collection<B> getRowBlocks(R rowType) {
