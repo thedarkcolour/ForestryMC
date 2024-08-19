@@ -523,7 +523,8 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 			BlockPos randomPos = VecUtil.sum(housingPos, VecUtil.getRandomPositionInArea(random, area), offset);
 
 			if (type.tryPollinate(level, randomPos, pollen.castPollen(), this)) {
-				Forestry.LOGGER.debug("Hive {} pollinated at {}", housingPos, randomPos);
+				// for debugging purposes
+				//Forestry.LOGGER.debug("Hive {} pollinated at {}", housingPos, randomPos);
 				return true;
 			}
 		}
