@@ -1,3 +1,6 @@
+## Forestry 1.0.6
+- Fixed wild beehives not being able to spawn in snowy areas (#56)
+
 ## Forestry 1.0.5
 - Fixed wild beehives not having particle effects
 - Fix biogas engine lava tank accepting any fluid
