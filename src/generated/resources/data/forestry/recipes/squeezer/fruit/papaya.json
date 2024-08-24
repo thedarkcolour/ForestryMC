@@ -1,6 +1,6 @@
 {
   "type": "forestry:squeezer",
-  "chance": 1.0,
+  "chance": 0.1,
   "output": {
     "Amount": 600,
     "FluidName": "forestry:juice"
@@ -11,7 +11,7 @@
   },
   "resources": [
     {
-      "item": "forestry:fruit_papaya"
+      "tag": "forge:fruits/papaya"
     }
   ],
   "time": 10

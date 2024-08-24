@@ -11,7 +11,7 @@
   },
   "resources": [
     {
-      "item": "forestry:fruit_cherry"
+      "tag": "forge:fruits/cherry"
     }
   ],
   "time": 20

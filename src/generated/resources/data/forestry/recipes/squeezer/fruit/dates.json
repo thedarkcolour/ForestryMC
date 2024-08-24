@@ -1,6 +1,6 @@
 {
   "type": "forestry:squeezer",
-  "chance": 1.0,
+  "chance": 0.2,
   "output": {
     "Amount": 50,
     "FluidName": "forestry:juice"
@@ -11,7 +11,7 @@
   },
   "resources": [
     {
-      "item": "forestry:fruit_dates"
+      "tag": "forge:fruits/date"
     }
   ],
   "time": 10

@@ -11,7 +11,7 @@
   },
   "resources": [
     {
-      "item": "forestry:fruit_walnut"
+      "tag": "forge:fruits/walnut"
     }
   ],
   "time": 60

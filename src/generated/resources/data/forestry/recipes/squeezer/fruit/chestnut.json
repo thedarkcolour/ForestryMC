@@ -11,7 +11,7 @@
   },
   "resources": [
     {
-      "item": "forestry:fruit_chestnut"
+      "tag": "forge:fruits/chestnut"
     }
   ],
   "time": 70

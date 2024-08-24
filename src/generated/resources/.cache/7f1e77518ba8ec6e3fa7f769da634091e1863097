@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-16T17:11:42.198729	Machine Recipes
+// 1.19.2	2024-08-24T16:42:56.7302735	Machine Recipes
 112c37fdf17fd8128a1bf2523a188f3acf0b759b data/forestry/recipes/carpenter/bog_earth.json
 dfdd8578eb3f27d8f71054bb3ddfd7ae0a473a68 data/forestry/recipes/carpenter/carton.json
 483682687e0586864d9ebf5bf004796623178b98 data/forestry/recipes/carpenter/circuits/basic.json
@@ -362,13 +362,13 @@ f4b9b7ccfba88f107e64b932354db4ca978acc82 data/forestry/recipes/moistener/mossy_c
 c3f53f8e86dca10cc454f4e01d4dc039dfe1d217 data/forestry/recipes/squeezer/container/can.json
 b627309251fed349a0002deee557cfaf7f139c40 data/forestry/recipes/squeezer/container/capsule.json
 7776736ca1040cb587970b1b4bf1ec9506498072 data/forestry/recipes/squeezer/container/refractory.json
-33adf6ef606c226c84a16cff8c90cb4ef353a3b6 data/forestry/recipes/squeezer/fruit/cherry.json
-e92cf18480a4600f451158d1d1e93b70f3bd3cbe data/forestry/recipes/squeezer/fruit/chestnut.json
-36829e9d597ed11d843da3c261538837bea770bc data/forestry/recipes/squeezer/fruit/dates.json
-473bdfb3c642ccccb38fc2286079b33090b06073 data/forestry/recipes/squeezer/fruit/lemon.json
-d6b7b348c5c1501f743e2872c4ebff7e10e4c88a data/forestry/recipes/squeezer/fruit/papaya.json
-d469ad2496bb4d248c4cdc6524430e5070bd689f data/forestry/recipes/squeezer/fruit/plum.json
-e81e8c3fc87569c55a6d5056b30582cbb76d9a4a data/forestry/recipes/squeezer/fruit/walnut.json
+632e47b5ad353959d8db9b3241c983b51c271e86 data/forestry/recipes/squeezer/fruit/cherry.json
+eb16482fdaf6da2a6b7cb049ec5060505c86d5cb data/forestry/recipes/squeezer/fruit/chestnut.json
+d5fc1d640eb52329a0c6bccb61f95bd672af802d data/forestry/recipes/squeezer/fruit/dates.json
+444e9a43b77f224f74ddbf0a0c30100c6240e46a data/forestry/recipes/squeezer/fruit/lemon.json
+4ab219e61edec73f8ffeb17eb0affd40ff174e7f data/forestry/recipes/squeezer/fruit/papaya.json
+cf3083d4175b604a08e2108551a8658effb241e6 data/forestry/recipes/squeezer/fruit/plum.json
+130d357e9b0b0639ab531f85b17fc70c2022127f data/forestry/recipes/squeezer/fruit/walnut.json
 2da8dafb39d56a15e23dcbcdbffa119bdc2be43c data/forestry/recipes/squeezer/honey_dew.json
 91d5caa48709e16b1f7b280d2907b491c37a9738 data/forestry/recipes/squeezer/honey_drop.json
 770a35cb31f3e754a180f8400c737327db30179a data/forestry/recipes/squeezer/ice.json

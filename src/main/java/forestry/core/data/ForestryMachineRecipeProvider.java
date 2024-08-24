@@ -890,7 +890,7 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.build(consumer, id("fermenter", "wheat"));
 		new FermenterRecipeBuilder()
 				.setResource(Ingredient.of(Tags.Items.CROPS_POTATO))
-				.setFermentationValue(2 * Preference.FERMENTED_WHEAT) // TODO: Its own thing?
+				.setFermentationValue(2 * Preference.FERMENTED_WHEAT)
 				.setModifier(1)
 				.setOutput(ForestryFluids.BIOMASS.getFluid())
 				.setFluidResource(new FluidStack(Fluids.WATER, 1000))
@@ -1009,16 +1009,15 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.setFluidOutput(ForestryFluids.SEED_OIL.getFluid(seedOilAmount))
 				.build(consumer, id("squeezer", "seeds"));
 
-		int appleMulchAmount = Preference.SQUEEZED_MULCH_APPLE;
-		int appleJuiceAmount = Preference.SQUEEZED_LIQUID_APPLE;
-		FluidStack appleJuice = ForestryFluids.JUICE.getFluid(appleJuiceAmount);
+		float mulchMultiplier = Preference.SQUEEZED_MULCH_APPLE;
+		int juiceMultiplier = Preference.SQUEEZED_LIQUID_APPLE;
 
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(10)
 				.setResources(NonNullList.withSize(1, Ingredient.of(Items.APPLE, Items.CARROT)))
-				.setFluidOutput(appleJuice)
+				.setFluidOutput(ForestryFluids.JUICE.getFluid(juiceMultiplier))
 				.setRemnants(CoreItems.MULCH.stack())
-				.setRemnantsChance(appleMulchAmount / 100f)
+				.setRemnantsChance(mulchMultiplier)
 				.build(consumer, id("squeezer", "mulch"));
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(10)
@@ -1038,7 +1037,6 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.build(consumer, id("squeezer", "ice"));
 
 		int seedOilMultiplier = Preference.SQUEEZED_LIQUID_SEED;
-		int juiceMultiplier = Preference.SQUEEZED_LIQUID_APPLE;
 
 		ItemStack mulch = new ItemStack(CoreItems.MULCH);
 		Fluid seedOil = ForestryFluids.SEED_OIL.getFluid();
@@ -1046,52 +1044,52 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(20)
-				.setResources(NonNullList.withSize(1, Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.CHERRY))))
+				.setResources(NonNullList.withSize(1, Ingredient.of(ForestryTags.Items.CHERRY)))
 				.setFluidOutput(new FluidStack(seedOil, seedOilMultiplier * 5))
 				.setRemnants(mulch)
 				.setRemnantsChance(0.05F)
 				.build(consumer, id("squeezer", "fruit", "cherry"));
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(60)
-				.setResources(NonNullList.withSize(1, Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.WALNUT))))
+				.setResources(NonNullList.withSize(1, Ingredient.of(ForestryTags.Items.WALNUT)))
 				.setFluidOutput(new FluidStack(seedOil, seedOilMultiplier * 18))
 				.setRemnants(mulch)
 				.setRemnantsChance(0.05F)
 				.build(consumer, id("squeezer", "fruit", "walnut"));
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(70)
-				.setResources(NonNullList.withSize(1, Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.CHESTNUT))))
+				.setResources(NonNullList.withSize(1, Ingredient.of(ForestryTags.Items.CHESTNUT)))
 				.setFluidOutput(new FluidStack(seedOil, seedOilMultiplier * 22))
 				.setRemnants(mulch)
 				.setRemnantsChance(0.02F)
 				.build(consumer, id("squeezer", "fruit", "chestnut"));
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(10)
-				.setResources(NonNullList.withSize(1, Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.LEMON))))
+				.setResources(NonNullList.withSize(1, Ingredient.of(ForestryTags.Items.LEMON)))
 				.setFluidOutput(new FluidStack(juice, juiceMultiplier * 2))
 				.setRemnants(mulch)
-				.setRemnantsChance(1) // TODO: Fix
+				.setRemnantsChance(mulchMultiplier / 2f)
 				.build(consumer, id("squeezer", "fruit", "lemon"));
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(10)
-				.setResources(NonNullList.withSize(1, Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.PLUM))))
+				.setResources(NonNullList.withSize(1, Ingredient.of(ForestryTags.Items.PLUM)))
 				.setFluidOutput(new FluidStack(juice, juiceMultiplier / 2))
 				.setRemnants(mulch)
-				.setRemnantsChance(1) // TODO: Fix
+				.setRemnantsChance(mulchMultiplier * 3f)
 				.build(consumer, id("squeezer", "fruit", "plum"));
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(10)
-				.setResources(NonNullList.withSize(1, Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.PAPAYA))))
+				.setResources(NonNullList.withSize(1, Ingredient.of(ForestryTags.Items.PAPAYA)))
 				.setFluidOutput(new FluidStack(juice, juiceMultiplier * 3))
 				.setRemnants(mulch)
-				.setRemnantsChance(1) // TODO: Fix
+				.setRemnantsChance(mulchMultiplier / 2f)
 				.build(consumer, id("squeezer", "fruit", "papaya"));
 		new SqueezerRecipeBuilder()
 				.setProcessingTime(10)
-				.setResources(NonNullList.withSize(1, Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.DATES))))
+				.setResources(NonNullList.withSize(1, Ingredient.of(ForestryTags.Items.DATE)))
 				.setFluidOutput(new FluidStack(juice, juiceMultiplier / 4))
 				.setRemnants(mulch)
-				.setRemnantsChance(1) // TODO: Fix
+				.setRemnantsChance(mulchMultiplier)
 				.build(consumer, id("squeezer", "fruit", "dates"));
 	}
 
