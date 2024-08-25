@@ -5,12 +5,15 @@ import com.google.common.collect.Table;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -24,13 +27,17 @@ import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGeneticManager;
 import forestry.api.genetics.IMutation;
 import forestry.api.genetics.ISpeciesType;
+import forestry.modules.features.FeatureItem;
+import forestry.storage.features.BackpackItems;
+import forestry.storage.items.ItemBackpack;
 
 // Used to dump currently registered Forestry data
 public class DumpCommand {
 	public static ArgumentBuilder<CommandSourceStack, ?> register() {
 		return Commands.literal("dump")
 				.then(Commands.literal("mutations").executes(DumpCommand::mutations))
-				.then(Commands.literal("climates").executes(DumpCommand::climates));
+				.then(Commands.literal("climates").executes(DumpCommand::climates))
+				.then(Commands.literal("backpacks").executes(DumpCommand::backpacks));
 	}
 
 	// Dumps all registered mutations
@@ -84,6 +91,41 @@ public class DumpCommand {
 			}
 		}
 		Forestry.LOGGER.debug("Finished listing Forestry climates.");
+
+		return 1;
+	}
+
+	@SuppressWarnings("deprecation")
+	private static int backpacks(CommandContext<CommandSourceStack> ctx) {
+		// is there a reason not to hardcode this?
+		@SuppressWarnings({"unchecked", "rawtypes"})
+		List<FeatureItem<ItemBackpack>> definitions = (List) List.of(
+				BackpackItems.MINER_BACKPACK,
+				BackpackItems.DIGGER_BACKPACK,
+				BackpackItems.FORESTER_BACKPACK,
+				BackpackItems.HUNTER_BACKPACK,
+				BackpackItems.ADVENTURER_BACKPACK,
+				BackpackItems.BUILDER_BACKPACK
+		);
+
+		Forestry.LOGGER.debug("Listing Forestry backpack filters for {} backpack types (excluding Naturalist bags)", definitions.size());
+
+		for (FeatureItem<ItemBackpack> backpack : definitions) {
+			Predicate<ItemStack> filter = backpack.get().getDefinition().getFilter();
+			ArrayList<Item> allowedItems = new ArrayList<>();
+
+			for (Item item : ctx.getSource().registryAccess().registryOrThrow(Registry.ITEM_REGISTRY)) {
+				if (filter.test(new ItemStack(item))) {
+					allowedItems.add(item);
+				}
+			}
+
+			Forestry.LOGGER.debug("The backpack definition {} allows {} items:", backpack.item().builtInRegistryHolder().key().location(), allowedItems.size());
+
+			for (Item allowedItem : allowedItems) {
+				Forestry.LOGGER.debug("  > {}", allowedItem.builtInRegistryHolder().key().location());
+			}
+		}
 
 		return 1;
 	}

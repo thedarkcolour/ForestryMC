@@ -6,6 +6,7 @@
     "#forge:gems",
     "#forge:ingots",
     "#forge:nuggets",
+    "#forge:raw_materials",
     "#minecraft:coals",
     "forestry:bronze_pickaxe",
     "forestry:kit_pickaxe",

@@ -17,7 +17,6 @@ import forestry.api.ForestryTags;
 import forestry.core.features.CoreItems;
 
 public class ForestryBackpackTagProvider extends ItemTagsProvider {
-
 	public ForestryBackpackTagProvider(DataGenerator generator, BlockTagsProvider blockTagsProvider, @Nullable ExistingFileHelper existingFileHelper) {
 		super(generator, blockTagsProvider, ForestryConstants.MOD_ID, existingFileHelper);
 	}
@@ -31,6 +30,7 @@ public class ForestryBackpackTagProvider extends ItemTagsProvider {
 				Tags.Items.GEMS,
 				Tags.Items.INGOTS,
 				Tags.Items.NUGGETS,
+				Tags.Items.RAW_MATERIALS,
 				ItemTags.COALS
 		);
 		tag(ForestryTags.Items.MINER_ALLOW).add(
@@ -67,6 +67,7 @@ public class ForestryBackpackTagProvider extends ItemTagsProvider {
 				ItemTags.SAPLINGS,
 				Tags.Items.CROPS,
 				Tags.Items.SEEDS,
+				ItemTags.FLOWERS,
 				ItemTags.SAPLINGS
 		);
 		tag(ForestryTags.Items.FORESTER_ALLOW).add(
@@ -76,17 +77,11 @@ public class ForestryBackpackTagProvider extends ItemTagsProvider {
 				Items.CACTUS,
 				Items.RED_MUSHROOM,
 				Items.BROWN_MUSHROOM,
-				Items.POPPY, //TODO tag
 				Items.GRASS, //TODO tag
-				Items.SUNFLOWER, //TODO tag
 				Items.PUMPKIN,
 				Items.MELON,
 				Items.GOLDEN_APPLE,
 				Items.NETHER_WART,
-				Items.WHEAT_SEEDS,
-				Items.PUMPKIN_SEEDS,
-				Items.MELON_SEEDS,
-				Items.BEETROOT_SEEDS,
 				Items.BEETROOT,
 				Items.CHORUS_FRUIT,
 				Items.CHORUS_PLANT,
