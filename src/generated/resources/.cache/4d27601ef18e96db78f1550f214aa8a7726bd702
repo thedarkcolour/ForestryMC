@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-14T13:33:56.2972227	Item Models: forestry
+// 1.19.2	2024-08-26T12:07:19.563823	Item Models: forestry
 3c1431dcb893b5f5648a30b08115a67d8f3227b9 assets/forestry/models/item/adventurer_bag.json
 994d21141a5584825744129df0166a56876860ad assets/forestry/models/item/adventurer_bag_woven.json
 3c1431dcb893b5f5648a30b08115a67d8f3227b9 assets/forestry/models/item/apiarist_bag.json
@@ -113,6 +113,7 @@ b3872cfd4532636291087c492f417023e59d43e2 assets/forestry/models/item/crated_sand
 61f7407ee29072d5966d7990733c190754d95469 assets/forestry/models/item/farm_nether_manual.json
 3c1431dcb893b5f5648a30b08115a67d8f3227b9 assets/forestry/models/item/forester_bag.json
 994d21141a5584825744129df0166a56876860ad assets/forestry/models/item/forester_bag_woven.json
+6015012e71c2b48a20ab7121ace5967ebedf6cb5 assets/forestry/models/item/frame_creative.json
 3c1431dcb893b5f5648a30b08115a67d8f3227b9 assets/forestry/models/item/hunter_bag.json
 994d21141a5584825744129df0166a56876860ad assets/forestry/models/item/hunter_bag_woven.json
 3c1431dcb893b5f5648a30b08115a67d8f3227b9 assets/forestry/models/item/lepidopterist_bag.json

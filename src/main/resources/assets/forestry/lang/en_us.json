@@ -463,6 +463,7 @@
   "item.forestry.frame_impregnated": "Impregnated Frame",
   "item.forestry.frame_proven": "Proven Frame",
   "item.forestry.frame_untreated": "Untreated Frame",
+  "item.forestry.frame_creative": "Creative Frame",
   "item.forestry.durability": "Durability: %1$s",
   "item.forestry.uses": "Uses: %1$s",
   "item.forestry.bee.modifier.production": "Production: %.2fx",

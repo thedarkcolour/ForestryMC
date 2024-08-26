@@ -38,7 +38,7 @@ public interface IBeeModifier {
 	 * @param mate          Genome of the bee mate this modifier is called for.
 	 * @param mutation      The mutation that might occur.
 	 * @param currentChance The current mutation chance. Starts at the base chance of the mutation but
-	 *                      may have already been modified by other IBeeModifiers.
+	 *                      may have already been modified by other IBeeModifiers. Between 0f and 100f.
 	 * @return Float used to modify the base mutation chance.
 	 */
 	default float modifyMutationChance(IGenome genome, IGenome mate, IMutation<IBeeSpecies> mutation, float currentChance) {
@@ -52,7 +52,8 @@ public interface IBeeModifier {
 	 * @param mate         Genome of the mate, {@code null} if there this bee is not mated.
 	 * @param currentAging Current amount to age the bee by. Starts at {@code 1} but may have already been
 	 *                     modified by other IBeeModifiers.
-	 * @return The number of age steps to age. This number will be rounded if it is not whole. Default is 1.
+	 * @return The number of age steps to age. This number will be rounded if it is not whole. Default is {@code 1f}.
+	 * To cancel aging, return {@code 0}. To instantly kill the bee, return a negative value.
 	 */
 	default float modifyAging(IGenome genome, @Nullable IGenome mate, float currentAging) {
 		return currentAging;
@@ -74,14 +75,14 @@ public interface IBeeModifier {
 	 * @param genome             Genome of the bee this modifier is called for.
 	 * @param currentPollination Current pollination. Starts out at the value of the bee's active
 	 *                           {@link BeeChromosomes#POLLINATION} allele.
-	 * @return Float modifying the flowering of queens.
+	 * @return The chance between 0 and 100 for a flower to be placed or for pollen to be collected/transferred.
 	 */
 	default float modifyPollination(IGenome genome, float currentPollination) {
 		return currentPollination;
 	}
 
 	/**
-	 * @param genome Genome of the bee this modifier is called for.
+	 * @param genome       Genome of the bee this modifier is called for.
 	 * @param currentDecay Current decay. Starts out at {@code 1f} but may already have been modified by other modifiers.
 	 * @return Float modifying the chance for a swarmer queen to die off.
 	 */

@@ -28,6 +28,10 @@ public interface IIndividualLiving extends IIndividual {
 
 	/**
 	 * Age the individual.
+	 *
+	 * @param level       The world where the individual lives.
+	 * @param ageModifier The amount to age this by. Base amount is {@code 1f}, and higher values should age faster.
+	 *                    {@code 0f} should not age, and negative values should instantly kill this individual.
 	 */
 	void age(Level level, float ageModifier);
 

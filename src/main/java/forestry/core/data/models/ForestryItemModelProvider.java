@@ -36,7 +36,6 @@ import forestry.storage.items.ItemCrated;
 import static forestry.core.data.models.ForestryBlockStateProvider.file;
 
 public class ForestryItemModelProvider extends ItemModelProvider {
-
 	public ForestryItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
 		super(generator, ForestryConstants.MOD_ID, existingFileHelper);
 	}
@@ -72,6 +71,9 @@ public class ForestryItemModelProvider extends ItemModelProvider {
 
 			}
 		}
+
+		// 2d items
+		basicItem(ApicultureItems.FRAME_CREATIVE.get());
 
 		// manual overrides
 		filledCrateModel(CrateItems.CRATED_CACTUS.getName(), mcLoc("block/cactus_side"));

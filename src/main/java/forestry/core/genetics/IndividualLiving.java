@@ -79,8 +79,12 @@ public abstract class IndividualLiving<S extends ISpecies<I>, I extends IIndivid
 
 	@Override
 	public void age(Level level, float lifespanModifier) {
-		if (lifespanModifier < 0.001f) {
+		if (lifespanModifier < 0f) {
 			setHealth(0);
+			return;
+		}
+		// don't age, skip division by zero later down the line
+		if (lifespanModifier == 0f) {
 			return;
 		}
 
