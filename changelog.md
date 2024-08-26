@@ -3,6 +3,7 @@
 - Fix fruit squeezer recipes to use tags + correct mulch rates (#59)
 - Fix Miner's bag not accepting raw ores (#58)
 - Make all biomes in `#minecraft:is_nether` tag marked as having HELLISH climate (#65)
+- The Phantasmal line (Ended, Spectral, Phantasmal) is now actually nocturnal and only works during the night time (unless given the NEVER_SLEEPS allele).
 
 ## Forestry 1.0.5
 - Fixed wild beehives not having particle effects

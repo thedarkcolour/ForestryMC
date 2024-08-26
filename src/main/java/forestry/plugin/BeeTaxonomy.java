@@ -39,7 +39,6 @@ public class BeeTaxonomy {
 					genus.setDefaultChromosome(BeeChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_UP_1);
 					genus.setDefaultChromosome(BeeChromosomes.TERRITORY, ForestryAlleles.TERRITORY_LARGE);
 					genus.setDefaultChromosome(BeeChromosomes.FLOWER_TYPE, ForestryAlleles.FLOWER_TYPE_END);
-					genus.setDefaultChromosome(BeeChromosomes.NEVER_SLEEPS, ForestryAlleles.TRUE);
 					genus.setDefaultChromosome(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_MISANTHROPE);
 				});
 				family.defineSubTaxon(ForestryTaxa.GENUS_FROZEN, genus -> {

@@ -335,12 +335,14 @@ public class DefaultBeeSpecies {
 		apiculture.registerSpecies(ForestryBeeSpecies.ENDED, GENUS_END, SPECIES_ENDED, false, new Color(0xe079fa))
 				.setBody(new Color(0xd9de9e))
 				.setTemperature(TemperatureType.COLD)
+				.setNocturnal(true)
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.MYSTERIOUS), 0.30f);
 
 		// Spectral
 		apiculture.registerSpecies(ForestryBeeSpecies.SPECTRAL, GENUS_END, SPECIES_SPECTRAL, true, new Color(0xa98bed))
 				.setBody(new Color(0xd9de9e))
 				.setTemperature(TemperatureType.COLD)
+				.setNocturnal(true)
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.MYSTERIOUS), 0.50f)
 				.setGenome(genome -> {
 					genome.set(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_REANIMATION);
@@ -353,6 +355,7 @@ public class DefaultBeeSpecies {
 		apiculture.registerSpecies(ForestryBeeSpecies.PHANTASMAL, GENUS_END, SPECIES_PHANTASMAL, false, new Color(0xcc00fa))
 				.setBody(new Color(0xd9de9e))
 				.setTemperature(TemperatureType.COLD)
+				.setNocturnal(true)
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.MYSTERIOUS), 0.40f)
 				.setGenome(genome -> {
 					genome.set(BeeChromosomes.SPEED, ForestryAlleles.SPEED_SLOWEST);
