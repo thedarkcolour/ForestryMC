@@ -30,9 +30,9 @@ public abstract class ContainerBeeHelper {
 		// Frames
 		if (hasFrames) {
 			int slotFrames = InventoryApiary.SLOT_FRAMES_1;
-			container.addSlot(new SlotFiltered(inventory, slotFrames++, 66, 23));
-			container.addSlot(new SlotFiltered(inventory, slotFrames++, 66, 52));
-			container.addSlot(new SlotFiltered(inventory, slotFrames, 66, 81));
+			container.addSlot(new SlotFiltered(inventory, slotFrames++, 66, 23).setStackLimit(1));
+			container.addSlot(new SlotFiltered(inventory, slotFrames++, 66, 52).setStackLimit(1));
+			container.addSlot(new SlotFiltered(inventory, slotFrames, 66, 81).setStackLimit(1));
 		}
 
 		// Product Inventory

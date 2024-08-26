@@ -37,6 +37,11 @@ public class ItemHiveFrame extends ItemForestry implements IHiveFrame {
 	}
 
 	@Override
+	public int getMaxStackSize(ItemStack stack) {
+		return 64;
+	}
+
+	@Override
 	public ItemStack frameUsed(IBeeHousing housing, ItemStack frame, IBee queen, int wear) {
 		if (frame.hurt(wear, housing.getWorldObj().getRandom(), null)) {
 			return ItemStack.EMPTY;
