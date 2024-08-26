@@ -2,6 +2,7 @@ package forestry.core.data;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BiomeTagsProvider;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
 
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -25,10 +26,6 @@ public class ForestryBiomeTagsProvider extends BiomeTagsProvider {
 				.add(Biomes.WINDSWEPT_SAVANNA);
 
 		tag(ForestryTags.Biomes.HELLISH_TEMPERATURE)
-				.add(Biomes.CRIMSON_FOREST)
-				.add(Biomes.WARPED_FOREST)
-				.add(Biomes.BASALT_DELTAS)
-				.add(Biomes.NETHER_WASTES)
-				.add(Biomes.SOUL_SAND_VALLEY);
+				.addTag(BiomeTags.IS_NETHER);
 	}
 }
