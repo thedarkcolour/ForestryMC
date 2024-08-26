@@ -6,6 +6,7 @@
 - The Phantasmal line (Ended, Spectral, Phantasmal) is now actually nocturnal and only works during the night time (unless given the NEVER_SLEEPS allele).
 - Added Creative Frames for debugging Forestry mutations.
 - Hive frames can now stack up to 64.
+- Biomes in the end (tagged as `#minecraft:is_end`) will now use COLD / ARID climate.
 
 ## Forestry 1.0.5
 - Fixed wild beehives not having particle effects
