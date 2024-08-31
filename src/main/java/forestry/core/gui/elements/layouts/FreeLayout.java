@@ -44,7 +44,6 @@ public enum FreeLayout implements Layout {
 			if (size.width < 0 || size.height < 0) {
 				continue;
 			}
-			Layout.checkSize(element, size);
 			if (unboundWidth) {
 				int elementWidth = pos.x + size.width;
 				width = Math.max(elementWidth, width);

@@ -74,7 +74,6 @@ public class FlexLayout implements Layout {
 		//unbound, extent will be calculated from the child elements
 		for (GuiElement element : container.getElements()) {
 			Dimension elementSize = new Dimension(element.getLayoutSize());
-			Layout.checkSize(element, elementSize);
 			int elementExtent = getDirectionExtent(elementSize);
 			int elementOpposite = getOppositeExtent(elementSize);
 			if (elementExtent < 0) {

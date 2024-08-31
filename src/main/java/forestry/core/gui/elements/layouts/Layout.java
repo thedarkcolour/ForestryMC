@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.List;
 
-import forestry.Forestry;
 import forestry.core.gui.elements.Alignment;
 import forestry.core.gui.elements.GuiElement;
 
@@ -31,11 +30,5 @@ public interface Layout {
 
 	static void alignElement(Rectangle parent, Rectangle element, Alignment align) {
 		alignElement(parent, element, align, null);
-	}
-
-	static void checkSize(GuiElement element, Dimension size) {
-		if (size.height == 0 || size.width == 0) {
-			Forestry.LOGGER.info("Found element with zero height or width {}", element);
-		}
 	}
 }
