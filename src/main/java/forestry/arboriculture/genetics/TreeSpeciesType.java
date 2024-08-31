@@ -50,6 +50,7 @@ import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IBreedingTrackerHandler;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.TreeChromosomes;
@@ -131,11 +132,6 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 	@Override
 	public boolean isMember(IIndividual individual) {
 		return individual instanceof ITree;
-	}
-
-	@Override
-	public TreeLifeStage getDefaultStage() {
-		return TreeLifeStage.SAPLING;
 	}
 
 	@Nullable

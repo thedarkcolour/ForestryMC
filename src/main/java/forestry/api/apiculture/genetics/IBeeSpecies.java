@@ -1,31 +1,16 @@
 package forestry.api.apiculture.genetics;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
-import net.minecraft.world.level.block.state.BlockState;
-
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.core.HumidityType;
-import forestry.api.core.IProduct;
+import forestry.api.core.IProductProducer;
+import forestry.api.core.ISpecialtyProducer;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ISpecies;
-import forestry.api.core.Product;
 
-public interface IBeeSpecies extends ISpecies<IBee> {
+public interface IBeeSpecies extends ISpecies<IBee>, IProductProducer, ISpecialtyProducer {
 	@Override
 	IBeeSpeciesType getType();
-
-	/**
-	 * @return The list of possible items that can be produced by this bee.
-	 */
-	List<IProduct> getProducts();
-
-	/**
-	 * @return The list of possible items that this bee can only produce when in a jubilant state.
-	 */
-	List<IProduct> getSpecialties();
 
 	/**
 	 * @return The preferred/ideal temperature for this bee.

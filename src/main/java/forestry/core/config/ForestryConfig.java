@@ -22,11 +22,17 @@ public class ForestryConfig {
 	}
 
 	public static class Client {
+		// Misc
 		public final ForgeConfigSpec.BooleanValue showParticles;
 		public final ForgeConfigSpec.BooleanValue enableHints;
+		// Mail
 		public final ForgeConfigSpec.BooleanValue mailAlertsEnabled;
 		public final ForgeConfigSpec.BooleanValue mailAlertsOnRight;
 		public final ForgeConfigSpec.BooleanValue mailAlertsOnBottom;
+		// JEI Bees
+		public final ForgeConfigSpec.BooleanValue showRequirements;
+		public final ForgeConfigSpec.BooleanValue showSecretMutations;
+		public final ForgeConfigSpec.BooleanValue identifyGenome;
 
 		public Client(ForgeConfigSpec.Builder builder) {
 			this.showParticles = builder
@@ -46,6 +52,18 @@ public class ForestryConfig {
 			this.mailAlertsOnBottom = builder
 					.comment("Whether mail alerts are shown on the bottom of the screen instead of the top.")
 					.define("mail_alerts_on_bottom", false);
+			builder.pop();
+
+			builder.push("jei_bees");
+			this.showRequirements = builder
+					.comment("Set to false to disable display of mutation requirements")
+					.define("show_requirements", true);
+			this.showSecretMutations = builder
+					.comment("Set to false to disable display of secret mutations")
+					.define("show_secret_mutations", true);
+			this.identifyGenome = builder
+					.comment("Set to false to disable showing identified genome in recipes")
+					.define("show_analyzed_tooltip", true);
 			builder.pop();
 		}
 	}

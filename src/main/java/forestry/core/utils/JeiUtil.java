@@ -1,11 +1,12 @@
 package forestry.core.utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +16,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
@@ -40,6 +43,13 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 
 public class JeiUtil {
 	public static final String DESCRIPTION_KEY = "for.jei.description.";
+	// From Ex Deorum: https://github.com/thedarkcolour/ExDeorum/blob/8ea02fd490dbfa106bdfe31af8b7a88f65b2abdc/src/main/java/thedarkcolour/exdeorum/compat/jei/ClientJeiUtil.java#L221
+	static final DecimalFormat FORMATTER = new DecimalFormat();
+
+	static {
+		FORMATTER.setMinimumFractionDigits(0);
+		FORMATTER.setMaximumFractionDigits(3);
+	}
 
 	public static void addDescription(IRecipeRegistration registry, String itemKey, FeatureItem<?>... items) {
 		List<ItemStack> itemStacks = new ArrayList<>();
@@ -137,4 +147,33 @@ public class JeiUtil {
 			registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, stage.getItemForm(), interpreter);
 		}
 	}
+
+	// From JEI Bees
+	public static void drawCenteredMulti(PoseStack stack, Component component, float x, float y, int color) {
+		Font font = Minecraft.getInstance().font;
+		String[] split = component.getString().split(" ");
+
+		for (int i = 0; i < split.length; i++) {
+			String line = split[i];
+			drawCentered(stack, font, line, x, y + i * font.lineHeight, color);
+		}
+	}
+
+	private static void drawCentered(PoseStack stack, Font font, String line, float x, float y, int color) {
+		int width = font.width(line);
+
+		font.draw(stack, line, x - (width / 2f), y, color);
+	}
+	// End of JEI Bees
+
+	// From Ex Deorum
+	// Takes a decimal probability and returns a user-friendly percentage value
+	public static Component formatChance(double probability) {
+		return Component.translatable("for.jei.chance", formatPercentage(probability)).withStyle(ChatFormatting.GRAY);
+	}
+
+	public static String formatPercentage(double probability) {
+		return FORMATTER.format(probability * 100);
+	}
+	// End of Ex Deorum
 }

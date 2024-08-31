@@ -38,6 +38,9 @@ public interface IMutation<S extends ISpecies<?>> {
 	S getResult();
 
 	/**
+	 * Returns the allele pairs of individuals resulting from this mutation. The ordering of the allele pairs matches
+	 * the ordering of their respective chromosomes in the {@link forestry.api.genetics.alleles.IKaryotype} of species type.
+	 *
 	 * @return The list of alleles the resulting individual should have. Usually the default genome of result species.
 	 */
 	ImmutableList<AllelePair<?>> getResultAlleles();
@@ -50,7 +53,7 @@ public interface IMutation<S extends ISpecies<?>> {
 	/**
 	 * @return Collection of localized, human-readable strings describing special mutation conditions, if any.
 	 */
-	Collection<Component> getSpecialConditions();
+	List<Component> getSpecialConditions();
 
 	/**
 	 * @return List of all conditions required for this mutation to occur.

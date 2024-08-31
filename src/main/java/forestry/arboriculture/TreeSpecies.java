@@ -21,6 +21,7 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.core.HumidityType;
+import forestry.api.core.IProduct;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.ILifeStage;
@@ -203,5 +204,15 @@ public class TreeSpecies extends Species<ITreeSpeciesType, ITree> implements ITr
 	@Override
 	public boolean trySpawnFruitBlock(LevelAccessor level, RandomSource rand, BlockPos pos) {
 		return this.defaultGenome.getActiveValue(TreeChromosomes.FRUIT).trySpawnFruitBlock(this.defaultGenome, level, rand, pos);
+	}
+
+	@Override
+	public List<IProduct> getProducts() {
+		return this.defaultGenome.getActiveValue(TreeChromosomes.FRUIT).getProducts();
+	}
+
+	@Override
+	public List<IProduct> getSpecialties() {
+		return this.defaultGenome.getActiveValue(TreeChromosomes.FRUIT).getSpecialty();
 	}
 }

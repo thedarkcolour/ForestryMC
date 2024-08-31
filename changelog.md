@@ -10,6 +10,7 @@
 - Fix Forester's Manual not working on dedicated server (#57, #60)
 - Fix clientside console spam when opening menus using Database widgets (#74)
 - Fix mutation date formatting to be more human-readable (#69)
+- Add JEI support for bee/tree/butterfly mutations and products
 
 ## Forestry 1.0.5
 - Fixed wild beehives not having particle effects

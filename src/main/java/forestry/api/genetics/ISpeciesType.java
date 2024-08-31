@@ -102,6 +102,13 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	ILifeStage getDefaultStage();
 
 	/**
+	 * @return A new item stack with the default species and life stage of this species type.
+	 */
+	default ItemStack createDefaultStack() {
+		return getDefaultSpecies().createStack(getDefaultStage());
+	}
+
+	/**
 	 * @return All known life stages of this species. Used for commands.
 	 */
 	Collection<ILifeStage> getLifeStages();
@@ -115,8 +122,8 @@ public interface ISpeciesType<S extends ISpecies<I>, I extends IIndividual> exte
 	 */
 	IBreedingTracker getBreedingTracker(LevelAccessor level, @Nullable GameProfile profile);
 
-	/** todo is this necessary API?
-	 * The type of the species that will be used at the given position of the mutation recipe in the gui.
+	/**
+	 * The type of the species that will be displayed at the given position of the mutation recipe in the gui.
 	 *
 	 * @param position 0 = first parent, 1 = second parent, 2 = result
 	 */

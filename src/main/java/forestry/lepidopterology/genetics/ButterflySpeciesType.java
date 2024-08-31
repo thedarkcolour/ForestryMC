@@ -33,6 +33,7 @@ import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.alleles.ButterflyChromosomes;
 import forestry.api.genetics.alleles.IKaryotype;
@@ -88,11 +89,6 @@ public class ButterflySpeciesType extends SpeciesType<IButterflySpecies, IButter
 		if (ModuleLepidopterology.spawnButterflysFromLeaves) {
 			SpeciesUtil.TREE_TYPE.get().registerLeafTickHandler(new ButterflySpawner());
 		}
-	}
-
-	@Override
-	public ButterflyLifeStage getDefaultStage() {
-		return ButterflyLifeStage.BUTTERFLY;
 	}
 
 	@Override

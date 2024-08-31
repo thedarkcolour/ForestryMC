@@ -71,4 +71,8 @@ public abstract class ModUtil {
 	public static ResourceLocation getRegistryName(ParticleType<?> o) {
 		return ForgeRegistries.PARTICLE_TYPES.getKey(o);
 	}
+
+	public static ResourceLocation withSuffix(ResourceLocation id, String suffix) {
+		return new ResourceLocation(id.getNamespace(), id.getPath() + suffix);
+	}
 }

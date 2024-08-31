@@ -24,6 +24,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 import forestry.api.core.IProduct;
+import forestry.api.core.IProductProducer;
+import forestry.api.core.ISpecialtyProducer;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.TreeChromosomes;
@@ -32,7 +34,7 @@ import forestry.core.utils.SpeciesUtil;
 /**
  * Provides all information that is needed to spawn a fruit leaves / pod block in the world.
  */
-public interface IFruit extends IRegistryAlleleValue {
+public interface IFruit extends IRegistryAlleleValue, IProductProducer, ISpecialtyProducer {
 	/**
 	 * Returns the color of the fruit spite based on the ripening time of the fruit.
 	 *
@@ -78,18 +80,18 @@ public interface IFruit extends IRegistryAlleleValue {
 	int getRipeningPeriod();
 
 	/**
-	 * A unmodifiable list that contains all products and their associated drop chances.
-	 *
-	 * @return A unmodifiable list that contains all products and their associated drop chances.
-	 */
-	List<IProduct> getProducts();
-
-	/**
 	 * A unmodifiable list that contains all specialties and their associated drop chances.
 	 *
 	 * @return A unmodifiable list that contains all products and their associated drop chances.
+	 * @deprecated Use {@link #getSpecialties} instead.
 	 */
+	@Deprecated
 	List<IProduct> getSpecialty();
+
+	@Override
+	default List<IProduct> getSpecialties() {
+		return getSpecialty();
+	}
 
 	/**
 	 * Returns all drops of this block if you harvest it.

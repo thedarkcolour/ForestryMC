@@ -102,7 +102,7 @@ public class Mutation<S extends ISpecies<?>> implements IMutation<S> {
 	}
 
 	@Override
-	public Collection<Component> getSpecialConditions() {
+	public List<Component> getSpecialConditions() {
 		return this.specialConditions;
 	}
 

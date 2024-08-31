@@ -11,11 +11,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.core.HumidityType;
+import forestry.api.core.IProductProducer;
+import forestry.api.core.ISpecialtyProducer;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.ISpecies;
 
-public interface ITreeSpecies extends ISpecies<ITree>, ITreeGenData {
+public interface ITreeSpecies extends ISpecies<ITree>, ITreeGenData, IProductProducer, ISpecialtyProducer {
 	@Override
 	ITreeSpeciesType getType();
 
