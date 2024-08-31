@@ -42,6 +42,6 @@ public class MutationConditionTimeLimited implements IMutationCondition {
 
 	@Override
 	public Component getDescription() {
-		return Component.translatable("for.mutation.condition.date", start, end);
+		return Component.translatable("for.mutation.condition.date", start.getDisplayName(), end.getDisplayName());
 	}
 }

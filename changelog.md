@@ -9,6 +9,7 @@
 - Biomes in the end (tagged as `#minecraft:is_end`) will now use COLD / ARID climate.
 - Fix Forester's Manual not working on dedicated server (#57, #60)
 - Fix clientside console spam when opening menus using Database widgets (#74)
+- Fix mutation date formatting to be more human-readable (#69)
 
 ## Forestry 1.0.5
 - Fixed wild beehives not having particle effects

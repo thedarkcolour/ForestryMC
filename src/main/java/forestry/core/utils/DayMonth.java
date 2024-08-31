@@ -12,6 +12,8 @@ package forestry.core.utils;
 
 import java.util.Calendar;
 
+import net.minecraft.network.chat.Component;
+
 /**
  * Fed up with Date and Calendar and their shenanigans
  */
@@ -53,5 +55,9 @@ public record DayMonth(int day, int month) {
 		}
 
 		return this.day > other.day;
+	}
+
+	public Component getDisplayName() {
+		return Component.translatable("forestry.date.month." + this.month, this.day);
 	}
 }
