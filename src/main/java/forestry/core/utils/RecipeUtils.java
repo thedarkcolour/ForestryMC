@@ -51,9 +51,8 @@ public class RecipeUtils {
 	 */
 	@Nullable
 	public static RecipeManager getRecipeManager() {
-		// todo check that this works on LAN and joining servers
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		return server == null ? null : server.getRecipeManager();
+		return server == null ? (FMLEnvironment.dist == Dist.CLIENT ? ClientsideCode.getRecipeManager() : null) : server.getRecipeManager();
 	}
 
 	@Nullable
