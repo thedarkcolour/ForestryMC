@@ -386,15 +386,13 @@ public class BeekeepingLogic implements IBeekeepingLogic {
 
 		Collection<ItemStack> spawn;
 
-		if (queen.canSpawn()) {
-			spawn = spawnOffspring(queen, beeHousing);
-			beeListener.onQueenDeath();
-			beeInventory.getQueen().setCount(0);
-		} else {
-			Forestry.LOGGER.warn("Tried to spawn offspring off an unmated queen. Devolving her to a princess.");
-
-			spawn = Collections.singleton(queen.createStack(BeeLifeStage.PRINCESS));
+		if (queen.getMate() == null) {
+			queen.setMate(queen.getGenome());
 		}
+
+		spawn = spawnOffspring(queen, beeHousing);
+		beeListener.onQueenDeath();
+		beeInventory.getQueen().setCount(0);
 		beeInventory.setQueen(ItemStack.EMPTY);
 
 		return spawn;

@@ -55,11 +55,6 @@ public interface IBee extends IIndividualLiving {
 	IEffectData[] doFX(IEffectData[] storedData, IBeeHousing housing);
 
 	/**
-	 * @return true if the bee may spawn offspring
-	 */
-	boolean canSpawn();
-
-	/**
 	 * Determines whether the queen can work.
 	 *
 	 * @param housing the {@link IBeeHousing} the bee currently resides in.
