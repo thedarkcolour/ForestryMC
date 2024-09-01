@@ -1,6 +1,6 @@
 package forestry.apiculture.compat;
 
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import net.minecraft.network.chat.Component;
@@ -76,18 +76,16 @@ class ProductsRecipeCategory implements IRecipeCategory<ProductRecipe> {
 
 		// products
 		if (recipe.products != null) {
-			setProductsList(builder, recipe.products, PRODUCT_SLOTS_X, PRODUCT_SLOTS_Y);
+			setProductsList(builder, recipe.products, PRODUCT_SLOTS_Y);
 		}
 
 		// specialties
 		if (recipe.specialties != null) {
-			setProductsList(builder, recipe.specialties, PRODUCT_SLOTS_X, SPECIALTY_SLOTS_Y);
+			setProductsList(builder, recipe.specialties, SPECIALTY_SLOTS_Y);
 		}
 	}
 
-	private static void setProductsList(IRecipeLayoutBuilder builder, Object2FloatOpenHashMap<ItemStack> productStacks, int slotsX, int slotsY) {
-		int products = productStacks.size();
-
+	private static void setProductsList(IRecipeLayoutBuilder builder, Object2FloatOpenHashMap<ItemStack> productStacks, int slotsY) {
 		IRecipeSlotTooltipCallback callback = (view, tooltip) -> {
 			view.getDisplayedItemStack().ifPresent(stack -> {
 				if (productStacks.containsKey(stack)) {
@@ -96,25 +94,27 @@ class ProductsRecipeCategory implements IRecipeCategory<ProductRecipe> {
 			});
 		};
 
-		if (products <= 3) {
-			Iterator<ItemStack> iterator = productStacks.keySet().iterator();
+		int products = productStacks.size();
 
+		// Sort the products by chance
+		LinkedList<ItemStack> productsList = new LinkedList<>(productStacks.keySet());
+		productsList.sort(Comparator.comparingDouble(productStacks).reversed());
+
+		if (products <= 3) {
 			for (int i = 0; i < products; i++) {
-				builder.addSlot(RecipeIngredientRole.OUTPUT, slotsX + i * 22, slotsY)
-						.addItemStack(iterator.next())
+				builder.addSlot(RecipeIngredientRole.OUTPUT, ProductsRecipeCategory.PRODUCT_SLOTS_X + i * 22, slotsY)
+						.addItemStack(productsList.get(i))
 						.addTooltipCallback(callback);
 			}
 		} else {
-			LinkedList<ItemStack> displayList = new LinkedList<>(productStacks.keySet());
-
 			// Three copies of the product list, each offset by 0, 1, and 2, should look like a scrolling list in JEI
 			for (int i = 0; i < 3; i++) {
-				builder.addSlot(RecipeIngredientRole.OUTPUT, slotsX + i * 22, slotsY)
-						.addItemStacks(displayList)
+				builder.addSlot(RecipeIngredientRole.OUTPUT, ProductsRecipeCategory.PRODUCT_SLOTS_X + i * 22, slotsY)
+						.addItemStacks(productsList)
 						.addTooltipCallback(callback);
 
 				// rotate the list (no need to copy because JEI just iterates once)
-				displayList.addLast(displayList.removeFirst());
+				productsList.addLast(productsList.removeFirst());
 			}
 		}
 	}

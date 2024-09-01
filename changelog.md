@@ -1,3 +1,6 @@
+## Forestry 1.0.7
+- Sort products displayed in JEI by their chances
+
 ## Forestry 1.0.6
 - Fixed wild beehives not being able to spawn in snowy areas (#56)
 - Fix fruit squeezer recipes to use tags + correct mulch rates (#59)
