@@ -4,6 +4,7 @@
 - Fix Apiaries with frames producing more than Alvearies (#79)
 - Fix blocks not dropping their inventories if blown up by Creeper (#52)
 - Fix incorrect implementation of Haploid drone breeding option (#78)
+- Fix creative frames having mixed up tooltips
 
 ## Forestry 1.0.6
 - Fixed wild beehives not being able to spawn in snowy areas (#56)

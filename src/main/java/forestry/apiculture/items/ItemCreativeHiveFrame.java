@@ -64,7 +64,7 @@ public class ItemCreativeHiveFrame extends ItemForestry implements IHiveFrame {
 
 	@Override
 	public IBeeModifier getBeeModifier(ItemStack frame) {
-		return frame.getTag() != null && frame.getTag().contains(NBT_FORCE_MUTATIONS) ? Modifier.BASE_MUTATIONS : Modifier.FORCE_MUTATIONS;
+		return frame.getTag() != null && frame.getTag().contains(NBT_FORCE_MUTATIONS) ? Modifier.FORCE_MUTATIONS : Modifier.BASE_MUTATIONS;
 	}
 
 	private enum Modifier implements IBeeModifier {
