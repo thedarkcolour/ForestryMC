@@ -7,6 +7,7 @@
 - Fix creative frames having mixed up tooltips
 - Fixed species mutations and biome-restricted bee mutations
 - Fixed Fertile bee effect (#72)
+- Fixed snowy hives not spawning in Grove biomes
 
 ## Forestry 1.0.6
 - Fixed wild beehives not being able to spawn in snowy areas (#56)

@@ -65,7 +65,7 @@ public enum HiveDefinition implements IHiveDefinition {
 			return biome.is(BiomeTags.IS_END);
 		}
 	},
-	SNOW(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SNOW).defaultState(), 2.0f, ForestryBeeSpecies.WINTRY, new HiveGenGround(Blocks.DIRT, Blocks.SNOW, Blocks.GRASS_BLOCK)) {
+	SNOW(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SNOW).defaultState(), 2.0f, ForestryBeeSpecies.WINTRY, new HiveGenGround(Blocks.DIRT, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.GRASS_BLOCK)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			BlockPos posAbove = pos.above();
