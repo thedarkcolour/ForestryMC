@@ -74,7 +74,7 @@ public class ItemHiveFrame extends ItemForestry implements IHiveFrame {
 
 		@Override
 		public float modifyProductionSpeed(IGenome genome, float currentSpeed) {
-			return currentSpeed < 10f ? production : 1f;
+			return currentSpeed < 10f ? currentSpeed * production : 1f;
 		}
 
 		@Override

@@ -65,7 +65,7 @@ public interface IBeeModifier {
 	 * @param genome       Genome of the bee this modifier is called for.
 	 * @param currentSpeed Current production speed. Starts at the value of the bee's active
 	 *                     {@link BeeChromosomes#SPEED} allele.
-	 * @return Float modifying the production speed of queens.
+	 * @return Float determining the production speed of queens.
 	 */
 	default float modifyProductionSpeed(IGenome genome, float currentSpeed) {
 		return currentSpeed;
@@ -75,7 +75,7 @@ public interface IBeeModifier {
 	 * @param genome             Genome of the bee this modifier is called for.
 	 * @param currentPollination Current pollination. Starts out at the value of the bee's active
 	 *                           {@link BeeChromosomes#POLLINATION} allele.
-	 * @return The chance between 0 and 100 for a flower to be placed or for pollen to be collected/transferred.
+	 * @return The chance between 0 and 100 (inclusive) for a flower to be placed and for pollen to be collected/transferred.
 	 */
 	default float modifyPollination(IGenome genome, float currentPollination) {
 		return currentPollination;
