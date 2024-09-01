@@ -68,7 +68,9 @@ public class DefaultTreeGenerator implements ITreeGenerator {
 				return false;
 			}
 
-			tileLeaves.setTree(new Tree(genome));
+			Tree tree = new Tree(genome);
+			tileLeaves.setTree(tree);
+			tileLeaves.setFruit(tree, false);
 			return true;
 		}
 	}
