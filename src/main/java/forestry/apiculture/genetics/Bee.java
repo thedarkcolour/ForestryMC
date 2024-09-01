@@ -422,12 +422,10 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 
 	private IBee createOffspring(IBeeHousing housing, IGenome mate, int generation) {
 		SpeciesUtil.ISpeciesMutator mutator = (p1, p2) -> mutateSpecies(housing, p1, p2);
+		// drones are always generation 0
+		boolean haploid = generation == 0 && ForestryConfig.SERVER.useHaploidDrones.get();
 
-		if (ForestryConfig.SERVER.useHaploidDrones.get()) {
-			mate = mate.toHaploid();
-		}
-
-		return SpeciesUtil.createOffspring(housing.getWorldObj().random, this.genome, mate, mutator, genome -> {
+		return SpeciesUtil.createOffspring(housing.getWorldObj().random, this.genome, haploid ? this.genome : mate, mutator, genome -> {
 			//IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(level);
 			return new Bee(genome, Optional.empty(), false, this.maxHealth, this.maxHealth, this.pristine, generation); /*mode.isOffspringPristine(this)*/
 		});
@@ -511,7 +509,7 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		Vec3i area = getAdjustedTerritory(genome, beeModifier);
 		Vec3i offset = new Vec3i(-area.getX() / 2, -area.getY() / 4, -area.getZ() / 2);
 		BlockPos housingPos = housing.getCoordinates();
- 		IPollenType<?> type = pollen.getType();
+		IPollenType<?> type = pollen.getType();
 
 		for (int i = 0; i < 30; i++) {
 			BlockPos randomPos = VecUtil.sum(housingPos, VecUtil.getRandomPositionInArea(random, area), offset);

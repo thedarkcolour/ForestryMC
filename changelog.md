@@ -2,6 +2,8 @@
 - Sort products displayed in JEI by their chances
 - Fix mating behaviour of unmated queens (ex. from Creative Menu)
 - Fix Apiaries with frames producing more than Alvearies (#79)
+- Fix blocks not dropping their inventories if blown up by Creeper (#52)
+- Fix incorrect implementation of Haploid drone breeding option (#78)
 
 ## Forestry 1.0.6
 - Fixed wild beehives not being able to spawn in snowy areas (#56)
