@@ -6,6 +6,7 @@
 - Fix incorrect implementation of Haploid drone breeding option (#78)
 - Fix creative frames having mixed up tooltips
 - Fixed species mutations and biome-restricted bee mutations
+- Fixed Fertile bee effect (#72)
 
 ## Forestry 1.0.6
 - Fixed wild beehives not being able to spawn in snowy areas (#56)

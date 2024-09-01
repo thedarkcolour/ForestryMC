@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.ticks.ScheduledTick;
 
 import net.minecraftforge.common.IPlantable;
 
@@ -61,12 +62,12 @@ public class FertileBeeEffect extends ThrottledBeeEffect {
 		return centrePos + random.nextInt(offset) - offset / 2;
 	}
 
-	private static boolean tryTickColumn(Level world, int x, int z, int maxY, int minY) {
+	private static boolean tryTickColumn(Level level, int x, int z, int maxY, int minY) {
 		for (int y = maxY; y >= minY; --y) {
-			BlockState state = world.getBlockState(new BlockPos(x, y, z));
+			BlockState state = level.getBlockState(new BlockPos(x, y, z));
 			Block block = state.getBlock();
 			if (block.isRandomlyTicking(state) && (block instanceof BonemealableBlock || block instanceof IPlantable)) {
-				// world.getBlockTicks().scheduleTick(new BlockPos(x, y, z), block, 5);
+				level.scheduleTick(new BlockPos(x, y, z), block, 5);
 				return true;
 			}
 		}
