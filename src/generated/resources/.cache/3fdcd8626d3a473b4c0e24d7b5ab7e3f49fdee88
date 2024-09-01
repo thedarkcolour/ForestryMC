@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-19T16:27:01.4336026	Forestry Recipes
+// 1.19.2	2024-08-31T22:40:45.214884	Forestry Recipes
 88dc44fcbf9ee8ce847c012e497174c75c3e4551 data/forestry/recipes/acacia_desert_door.json
 de1f849fde24b43a22d467214e5f81924e788f78 data/forestry/recipes/acacia_desert_fence.json
 659dbe7a9f033985cd1ac4020586c34bc9505f50 data/forestry/recipes/acacia_desert_fence_gate.json
@@ -296,7 +296,6 @@ bde0d1322c57ec96071fd330753a9993a57d1603 data/forestry/recipes/greenheart_planks
 4c62e7e8ed9f2f3cfa04188117eb2d5c92205f9b data/forestry/recipes/greenheart_slab.json
 7385fd8a0edc2bf2148a47272598211efe21d641 data/forestry/recipes/greenheart_stairs.json
 73ad2c94cc8529d6b3c4d5ed33ef0a65b2845fb0 data/forestry/recipes/greenheart_wood.json
-a8bc202c525a9f90802c5f58c02c30a8a8cbbd12 data/forestry/recipes/habitat_locator.json
 7b37e9736e015551d2c34cf0a0a34d7717dca64b data/forestry/recipes/honeyed_slice.json
 2240458c2161db7f8249f295e54a1bf0493471c4 data/forestry/recipes/honey_pot.json
 5c43fe19c7f58f356d72efd6361e9c722c23e739 data/forestry/recipes/humus_compost.json

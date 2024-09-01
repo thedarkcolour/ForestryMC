@@ -149,26 +149,6 @@ public class ForestryTags {
 		public static final TagKey<Biome> HOT_TEMPERATURE = tag("temperature/hot");
 		public static final TagKey<Biome> HELLISH_TEMPERATURE = tag("temperature/hellish");
 
-		// Used instead of the old BiomeCategory enum
-		public static final TagKey<Biome> TAIGA_CATEGORY = tag("category/taiga");
-		public static final TagKey<Biome> EXTREME_HILLS_CATEGORY = tag("category/extreme_hills");
-		public static final TagKey<Biome> JUNGLE_CATEGORY = tag("category/jungle");
-		public static final TagKey<Biome> MESA_CATEGORY = tag("category/mesa");
-		public static final TagKey<Biome> PLAINS_CATEGORY = tag("category/plains");
-		public static final TagKey<Biome> SAVANNA_CATEGORY = tag("category/savanna");
-		public static final TagKey<Biome> ICY_CATEGORY = tag("category/icy");
-		public static final TagKey<Biome> THE_END_CATEGORY = tag("category/the_end");
-		public static final TagKey<Biome> BEACH_CATEGORY = tag("category/beach");
-		public static final TagKey<Biome> FOREST_CATEGORY = tag("category/forest");
-		public static final TagKey<Biome> OCEAN_CATEGORY = tag("category/ocean");
-		public static final TagKey<Biome> DESERT_CATEGORY = tag("category/desert");
-		public static final TagKey<Biome> RIVER_CATEGORY = tag("category/river");
-		public static final TagKey<Biome> SWAMP_CATEGORY = tag("category/swamp");
-		public static final TagKey<Biome> MUSHROOM_CATEGORY = tag("category/mushroom");
-		public static final TagKey<Biome> NETHER_CATEGORY = tag("category/nether");
-		public static final TagKey<Biome> UNDERGROUND_CATEGORY = tag("category/underground");
-		public static final TagKey<Biome> MOUNTAIN_CATEGORY = tag("category/mountain");
-
 		private static TagKey<Biome> tag(String path) {
 			return TagKey.create(Registry.BIOME_REGISTRY, ForestryConstants.forestry(path));
 		}

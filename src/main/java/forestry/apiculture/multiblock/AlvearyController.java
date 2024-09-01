@@ -18,6 +18,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -29,7 +30,6 @@ import com.mojang.authlib.GameProfile;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.ForestryTags;
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.IBeeHousingInventory;
 import forestry.api.apiculture.IBeeListener;
@@ -327,7 +327,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	@Override
 	public TemperatureType temperature() {
 		IBeeModifier beeModifier = IForestryApi.INSTANCE.getHiveManager().createBeeHousingModifier(this);
-		if (beeModifier.isHellish() || getBiome().is(ForestryTags.Biomes.NETHER_CATEGORY)) {
+		if (beeModifier.isHellish() || getBiome().is(BiomeTags.IS_NETHER)) {
 			if (this.temperatureSteps >= 0) {
 				return TemperatureType.HELLISH;
 			}

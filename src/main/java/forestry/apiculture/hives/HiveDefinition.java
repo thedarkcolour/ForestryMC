@@ -17,6 +17,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -24,7 +25,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import forestry.api.ForestryTags;
 import forestry.api.apiculture.ForestryBeeSpecies;
 import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.hives.IHiveDefinition;
@@ -62,7 +62,7 @@ public enum HiveDefinition implements IHiveDefinition {
 	END(ApicultureBlocks.BEEHIVE.get(BlockHiveType.END).defaultState(), 2.0f, ForestryBeeSpecies.ENDED, new HiveGenGround(Blocks.END_STONE, Blocks.END_STONE_BRICKS)) {
 		@Override
 		public boolean isGoodBiome(Holder<Biome> biome) {
-			return biome.is(ForestryTags.Biomes.THE_END_CATEGORY);
+			return biome.is(BiomeTags.IS_END);
 		}
 	},
 	SNOW(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SNOW).defaultState(), 2.0f, ForestryBeeSpecies.WINTRY, new HiveGenGround(Blocks.DIRT, Blocks.SNOW, Blocks.GRASS_BLOCK)) {
@@ -119,7 +119,7 @@ public enum HiveDefinition implements IHiveDefinition {
 
 	@Override
 	public boolean isGoodBiome(Holder<Biome> biome) {
-		return !biome.is(ForestryTags.Biomes.NETHER_CATEGORY);
+		return !biome.is(BiomeTags.IS_NETHER);
 	}
 
 	@Override

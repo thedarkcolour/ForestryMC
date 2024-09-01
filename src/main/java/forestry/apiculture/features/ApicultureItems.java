@@ -12,9 +12,8 @@ import forestry.apiculture.items.EnumPropolis;
 import forestry.apiculture.items.ItemAmbrosia;
 import forestry.apiculture.items.ItemArmorApiarist;
 import forestry.apiculture.items.ItemBeeGE;
-import forestry.apiculture.items.ItemHabitatLocator;
-import forestry.apiculture.items.ItemHiveFrame;
 import forestry.apiculture.items.ItemCreativeHiveFrame;
+import forestry.apiculture.items.ItemHiveFrame;
 import forestry.apiculture.items.ItemHoneyComb;
 import forestry.apiculture.items.ItemPollenCluster;
 import forestry.apiculture.items.ItemPropolis;
@@ -39,8 +38,6 @@ public class ApicultureItems {
 	public static final FeatureItem<ItemBeeGE> BEE_DRONE = REGISTRY.item(() -> new ItemBeeGE(BeeLifeStage.DRONE), "bee_drone_ge");
 	public static final FeatureItem<ItemBeeGE> BEE_PRINCESS = REGISTRY.item(() -> new ItemBeeGE(BeeLifeStage.PRINCESS), "bee_princess_ge");
 	public static final FeatureItem<ItemBeeGE> BEE_LARVAE = REGISTRY.item(() -> new ItemBeeGE(BeeLifeStage.LARVAE), "bee_larvae_ge");
-
-	public static final FeatureItem<ItemHabitatLocator> HABITAT_LOCATOR = REGISTRY.item(ItemHabitatLocator::new, "habitat_locator");
 
 	// / COMB FRAMES
 	public static final FeatureItem<ItemHiveFrame> FRAME_UNTREATED = REGISTRY.item(() -> new ItemHiveFrame(80, 0.9f), "frame_untreated");

@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.time.Month;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import forestry.api.ForestryTags;
+import net.minecraftforge.common.Tags;
+
 import forestry.api.apiculture.ForestryBeeSpecies;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
@@ -182,7 +184,7 @@ public class DefaultBeeSpecies {
 				})
 				.addMutations(mutations -> {
 					mutations.add(ForestryBeeSpecies.STEADFAST, ForestryBeeSpecies.VALIANT, 6)
-							.restrictBiomeType(ForestryTags.Biomes.FOREST_CATEGORY);
+							.restrictBiomeType(BiomeTags.IS_FOREST);
 				})
 				.setGlint(true);
 
@@ -202,7 +204,7 @@ public class DefaultBeeSpecies {
 
 					for (ResourceLocation parent : parents) {
 						mutations.add(ForestryBeeSpecies.CULTIVATED, parent, 60)
-								.restrictBiomeType(ForestryTags.Biomes.NETHER_CATEGORY);
+								.restrictBiomeType(BiomeTags.IS_NETHER);
 					}
 				});
 
@@ -223,7 +225,7 @@ public class DefaultBeeSpecies {
 
 					for (ResourceLocation parent : parents) {
 						mutations.add(ForestryBeeSpecies.SINISTER, parent, 40)
-								.restrictBiomeType(ForestryTags.Biomes.NETHER_CATEGORY);
+								.restrictBiomeType(BiomeTags.IS_NETHER);
 					}
 				});
 
@@ -241,7 +243,7 @@ public class DefaultBeeSpecies {
 				})
 				.addMutations(mutations -> {
 					mutations.add(ForestryBeeSpecies.SINISTER, ForestryBeeSpecies.FIENDISH, 25)
-							.restrictBiomeType(ForestryTags.Biomes.NETHER_CATEGORY);
+							.restrictBiomeType(BiomeTags.IS_NETHER);
 				})
 				.setGlint(true);
 
@@ -554,7 +556,7 @@ public class DefaultBeeSpecies {
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.WHEATEN), 0.20f)
 				.addMutations(mutations -> {
 					mutations.add(ForestryBeeSpecies.MEADOWS, ForestryBeeSpecies.DILIGENT, 12)
-							.restrictBiomeType(ForestryTags.Biomes.PLAINS_CATEGORY);
+							.restrictBiomeType(Tags.Biomes.IS_PLAINS);
 				});
 
 		// Farmerly
@@ -566,7 +568,7 @@ public class DefaultBeeSpecies {
 				})
 				.addMutations(mutations -> {
 					mutations.add(ForestryBeeSpecies.RURAL, ForestryBeeSpecies.UNWEARY, 10)
-							.restrictBiomeType(ForestryTags.Biomes.PLAINS_CATEGORY);
+							.restrictBiomeType(Tags.Biomes.IS_PLAINS);
 				})
 				.setAuthority("MysteriousAges");
 
@@ -582,7 +584,7 @@ public class DefaultBeeSpecies {
 				})
 				.addMutations(mutations -> {
 					mutations.add(ForestryBeeSpecies.FARMERLY, ForestryBeeSpecies.INDUSTRIOUS, 6)
-							.restrictBiomeType(ForestryTags.Biomes.PLAINS_CATEGORY);
+							.restrictBiomeType(Tags.Biomes.IS_PLAINS);
 				})
 				.setGlint(true)
 				.setAuthority("MysteriousAges");

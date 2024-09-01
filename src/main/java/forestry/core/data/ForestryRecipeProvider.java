@@ -257,11 +257,6 @@ public class ForestryRecipeProvider extends RecipeProvider {
 				.pattern("###").pattern("#S#").pattern("###")
 				.unlockedBy("has_impregnated_stick", has(CoreItems.STICK_IMPREGNATED)).save(helper);
 
-		ShapedRecipeBuilder.shaped(ApicultureItems.HABITAT_LOCATOR)
-				.define('X', ForestryTags.Items.INGOTS_BRONZE)
-				.define('#', Tags.Items.DUSTS_REDSTONE)
-				.pattern(" X ").pattern("X#X").pattern(" X ")
-				.unlockedBy("has_bronze", has(ForestryTags.Items.INGOTS_BRONZE)).save(helper);
 		ShapedRecipeBuilder.shaped(CoreItems.CRAFTING_MATERIALS.get(EnumCraftingMaterial.PULSATING_MESH))
 				.define('#', ApicultureItems.PROPOLIS.get(EnumPropolis.PULSATING))
 				.pattern("# #").pattern(" # ").pattern("# #")

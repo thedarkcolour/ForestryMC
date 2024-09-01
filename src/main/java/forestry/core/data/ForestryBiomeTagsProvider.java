@@ -19,18 +19,16 @@ public class ForestryBiomeTagsProvider extends BiomeTagsProvider {
 
 	@Override
 	protected void addTags() {
+		// Climates
 		tag(ForestryTags.Biomes.COLD_TEMPERATURE)
 				.addTag(BiomeTags.IS_END);
-
 		tag(ForestryTags.Biomes.WARM_TEMPERATURE)
 				.add(Biomes.WOODED_BADLANDS)
 				.add(Biomes.SAVANNA)
 				.add(Biomes.SAVANNA_PLATEAU)
 				.add(Biomes.WINDSWEPT_SAVANNA);
-
 		tag(ForestryTags.Biomes.HELLISH_TEMPERATURE)
 				.addTag(BiomeTags.IS_NETHER);
-
 		tag(ForestryTags.Biomes.ARID_HUMIDITY)
 				.addTag(BiomeTags.IS_END);
 	}

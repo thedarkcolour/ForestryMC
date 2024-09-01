@@ -31,7 +31,6 @@ import forestry.apiculture.gui.GuiAlvearyHygroregulator;
 import forestry.apiculture.gui.GuiAlvearySieve;
 import forestry.apiculture.gui.GuiAlvearySwarmer;
 import forestry.apiculture.gui.GuiBeeHousing;
-import forestry.apiculture.gui.GuiHabitatLocator;
 import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.particles.BeeExploreParticle;
 import forestry.apiculture.particles.BeeRoundTripParticle;
@@ -55,7 +54,6 @@ public class ApicultureClientHandler implements IClientModuleHandler {
 			MenuScreens.register(ApicultureMenuTypes.ALVEARY_SIEVE.menuType(), GuiAlvearySieve::new);
 			MenuScreens.register(ApicultureMenuTypes.ALVEARY_SWARMER.menuType(), GuiAlvearySwarmer::new);
 			MenuScreens.register(ApicultureMenuTypes.BEE_HOUSING.menuType(), GuiBeeHousing<ContainerBeeHousing>::new);
-			MenuScreens.register(ApicultureMenuTypes.HABITAT_LOCATOR.menuType(), GuiHabitatLocator::new);
 		});
 	}
 

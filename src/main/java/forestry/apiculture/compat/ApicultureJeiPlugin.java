@@ -77,10 +77,7 @@ public class ApicultureJeiPlugin implements IModPlugin {
 				ApicultureItems.APIARIST_LEGS
 		);
 
-		JeiUtil.addDescription(registry,
-				ApicultureItems.HABITAT_LOCATOR,
-				ApicultureItems.SCOOP
-		);
+		JeiUtil.addDescription(registry, ApicultureItems.SCOOP);
 
 		for (MutationsRecipeCategory category : mutationsCategories) {
 			registry.addRecipes(category.getRecipeType(), category.speciesType.getMutations().getAllMutations().stream().map(MutationRecipe::new).toList());
