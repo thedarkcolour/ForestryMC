@@ -128,7 +128,7 @@ public class SpeciesUtil {
 				mutationBoost = Math.min(ForestryConfig.SERVER.maxResearchMutationBoostPercent.get().floatValue(), mutationBoost);
 				chance += mutationBoost;
 			}
-			if (chance > level.random.nextFloat() * 100) {
+			if (chance > level.random.nextFloat()) {
 				if (tracker != null) {
 					tracker.registerMutation(mutation);
 				}
