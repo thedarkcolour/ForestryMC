@@ -45,18 +45,18 @@ public class HiveGenGround implements IHiveGen {
 	@Override
 	public BlockPos getPosForHive(WorldGenLevel level, int posX, int posZ) {
 		// get to the ground
-		final BlockPos topPos = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, new BlockPos(posX, 0, posZ));
-		if (topPos.getY() == 0) {
+		int groundY = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, posX, posZ);
+		int minBuildHeight = level.getMinBuildHeight();
+		if (groundY == minBuildHeight) {
 			return null;
 		}
 
-		final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		pos.set(topPos);
+		final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(posX, groundY, posZ);
 
 		BlockState blockState = level.getBlockState(pos);
 		while (IHiveGen.isTreeBlock(blockState) || canReplace(blockState, level, pos)) {
 			pos.move(Direction.DOWN);
-			if (pos.getY() <= 0) {
+			if (pos.getY() <= minBuildHeight) {
 				return null;
 			}
 			blockState = level.getBlockState(pos);

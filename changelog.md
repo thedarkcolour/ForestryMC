@@ -9,6 +9,7 @@
 - Fixed Fertile bee effect (#72)
 - Fixed snowy hives not spawning in Grove biomes
 - Fix fruits not spawning on tree leaves of non-default genome saplings (#82)
+- Fix hives not spawning below y=0 (affects some custom/superflat worlds)
 
 ## Forestry 1.0.6
 - Fixed wild beehives not being able to spawn in snowy areas (#56)

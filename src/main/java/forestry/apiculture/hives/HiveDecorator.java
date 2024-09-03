@@ -22,6 +22,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
+import forestry.Forestry;
 import forestry.api.IForestryApi;
 import forestry.api.apiculture.hives.IHive;
 import forestry.api.core.HumidityType;
@@ -42,7 +43,10 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 			return false;
 		}
 
+		//Forestry.LOGGER.debug("Attempting to place hive {} at pos {}", hive, hivePos);
+
 		if (!hive.canReplace(world, hivePos)) {
+			//Forestry.LOGGER.debug("Failed to place hive: could not replace block {}", world.getBlockState(hivePos));
 			return false;
 		}
 
@@ -53,6 +57,7 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 		}
 
 		if (!hive.isValidLocation(world, hivePos)) {
+			//Forestry.LOGGER.debug("Failed to place hive: could not place block at {}", hivePos);
 			return false;
 		}
 
@@ -93,7 +98,6 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 		ObjectArrayList<IHive> hives = new ObjectArrayList<>(IForestryApi.INSTANCE.getHiveManager().getHives());
 		int numTries = (int) Math.ceil(hives.size() / 2f);
 		double baseChance = ForestryConfig.SERVER.wildHiveSpawnRate.get() * hives.size() / 8;
-		// todo shouldn't this check temperature too?
 		hives.removeIf(hive -> !hive.isGoodBiome(biome) || !hive.isGoodHumidity(humidity) || !hive.isGoodTemperature(temperature));
 		Util.shuffle(hives, rand);
 
