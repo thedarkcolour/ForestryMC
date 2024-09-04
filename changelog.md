@@ -1,3 +1,6 @@
+## Forestry 1.0.8
+- Remove bottler recipes from JEI
+
 ## Forestry 1.0.7
 - Sort products displayed in JEI by their chances
 - Fix mating behaviour of unmated queens (ex. from Creative Menu)

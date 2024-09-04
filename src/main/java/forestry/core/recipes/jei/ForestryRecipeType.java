@@ -10,11 +10,9 @@ import forestry.api.recipes.IMoistenerRecipe;
 import forestry.api.recipes.ISqueezerRecipe;
 import forestry.api.recipes.IStillRecipe;
 import forestry.factory.MachineUIDs;
-import forestry.factory.recipes.jei.bottler.BottlerRecipe;
 import mezz.jei.api.recipe.RecipeType;
 
 public class ForestryRecipeType {
-	public static final RecipeType<BottlerRecipe> BOTTLER = create(MachineUIDs.BOTTLER, BottlerRecipe.class);
 	public static final RecipeType<ICarpenterRecipe> CARPENTER = create(MachineUIDs.CARPENTER, ICarpenterRecipe.class);
 	public static final RecipeType<ICentrifugeRecipe> CENTRIFUGE = create(MachineUIDs.CENTRIFUGE, ICentrifugeRecipe.class);
 	public static final RecipeType<IFabricatorRecipe> FABRICATOR = create(MachineUIDs.FABRICATOR, IFabricatorRecipe.class);

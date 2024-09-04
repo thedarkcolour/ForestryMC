@@ -2168,6 +2168,7 @@
   "for.jei.description.miner_bag": "Extra inventory that automatically picks up ores and valuable mining-related item.",
   "for.jei.description.apiarist_bag": "Extra inventory that automatically picks up bees.",
   "for.jei.description.lepidopterist_bag": "Extra inventory that automatically picks up butterflies.",
+  "for.jei.description.bottler": "Used to empty and fill containers with fluids.",
   "_comment": "###################",
   "_comment": "JEI Recipes",
   "_comment": "###################",
