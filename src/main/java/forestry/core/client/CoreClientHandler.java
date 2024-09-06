@@ -10,13 +10,29 @@
  ******************************************************************************/
 package forestry.core.client;
 
+import java.awt.Color;
+import java.util.OptionalDouble;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.Vec3;
+
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -24,6 +40,7 @@ import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -32,9 +49,11 @@ import forestry.api.client.IClientModuleHandler;
 import forestry.api.client.IForestryClientApi;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.apiculture.features.ApicultureItems;
+import forestry.apiculture.tiles.TileHive;
 import forestry.apiimpl.plugin.PluginManager;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.ArboricultureItems;
+import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.circuits.GuiSolderingIron;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
@@ -63,6 +82,7 @@ import forestry.core.render.RenderMachine;
 import forestry.core.render.RenderMill;
 import forestry.core.render.RenderNaturalistChest;
 import forestry.core.utils.GeneticsUtil;
+import forestry.core.utils.RenderUtil;
 import forestry.energy.features.EnergyTiles;
 import forestry.factory.features.FactoryTiles;
 import forestry.lepidopterology.features.LepidopterologyItems;
@@ -72,6 +92,17 @@ import forestry.storage.features.CrateItems;
 
 public class CoreClientHandler implements IClientModuleHandler {
 	public static BlockEntityWithoutLevelRenderer bewlr;
+	// Copied from RenderStateShard.java (just LINES but with NO_DEPTH_TEST)
+	public static final RenderType RENDER_TYPE_LINES_XRAY = RenderType.create("lines_xray", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 256, false, false, RenderType.CompositeState.builder()
+			.setShaderState(RenderStateShard.RENDERTYPE_LINES_SHADER)
+			.setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
+			.setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+			.setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+			.setOutputState(RenderStateShard.OUTLINE_TARGET)
+			.setWriteMaskState(RenderStateShard.COLOR_WRITE)
+			.setCullState(RenderStateShard.NO_CULL)
+			.setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
+			.createCompositeState(false));
 
 	@Override
 	public void registerEvents(IEventBus modBus) {
@@ -84,7 +115,7 @@ public class CoreClientHandler implements IClientModuleHandler {
 		modBus.addListener(CoreClientHandler::registerReloadListeners);
 		modBus.addListener(CoreClientHandler::registerBlockColors);
 		modBus.addListener(CoreClientHandler::registerItemColors);
-		//modBus.addListener(CoreClientHandler::onClientTick);
+		MinecraftForge.EVENT_BUS.addListener(CoreClientHandler::onClientTick);
 	}
 
 	private static void onClientSetup(FMLClientSetupEvent event) {
@@ -235,13 +266,57 @@ public class CoreClientHandler implements IClientModuleHandler {
 	}
 
 	private static void onClientTick(RenderLevelStageEvent event) {
-		if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+		if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
 			Minecraft minecraft = Minecraft.getInstance();
 			Player player = minecraft.player;
 
 			if (player != null) {
 				if (GeneticsUtil.hasNaturalistEye(player)) {
+					// Draw lines around pollinated leaves and wild hives
+					PoseStack stack = event.getPoseStack();
 
+					Vec3 cameraPos = event.getCamera().getPosition();
+
+					RENDER_TYPE_LINES_XRAY.clearRenderState();
+					RENDER_TYPE_LINES_XRAY.setupRenderState();
+
+					MultiBufferSource.BufferSource buffers = minecraft.renderBuffers().bufferSource();
+					VertexConsumer lines = buffers.getBuffer(RENDER_TYPE_LINES_XRAY);
+
+					int renderDistance = minecraft.options.renderDistance().get();
+					BlockPos playerPos = minecraft.player.blockPosition();
+					ChunkPos playerChunkPos = new ChunkPos(playerPos);
+
+					Color color = RenderUtil.getRainbowColor(minecraft.level.getGameTime(), event.getPartialTick());
+
+					float r = color.getRed() / 255f;
+					float g = color.getGreen() / 255f;
+					float b = color.getBlue() / 255f;
+
+					// Iterate through all chunks in render distance
+					for (int chunkX = playerChunkPos.x - renderDistance; chunkX <= playerChunkPos.x + renderDistance; chunkX++) {
+						for (int chunkZ = playerChunkPos.z - renderDistance; chunkZ <= playerChunkPos.z + renderDistance; chunkZ++) {
+							LevelChunk chunk = minecraft.level.getChunk(chunkX, chunkZ);
+
+							// Get all block entities in the chunk
+							for (BlockEntity be : chunk.getBlockEntities().values()) {
+								if (be instanceof TileHive || (be instanceof TileLeaves leaves && leaves.isPollinated())) {
+									BlockPos pos = be.getBlockPos();
+
+									stack.pushPose();
+									// Translate the matrix stack to avoid floating point precision errors
+									stack.translate(pos.getX() - cameraPos.x, pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z);
+
+									// render at origin (inflate slightly to avoid weirdness with selection box)
+									LevelRenderer.renderLineBox(stack, lines, -0.001, -0.001, -0.001, 1.001, 1.001, 1.001, r, g, b, 1.0F);
+
+									stack.popPose();
+								}
+							}
+						}
+					}
+
+					buffers.endBatch();
 				}
 			}
 		}
