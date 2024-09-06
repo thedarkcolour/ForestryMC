@@ -6,7 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import forestry.api.ForestryTags;
 import forestry.api.apiculture.IFlowerType;
@@ -33,7 +35,16 @@ public class FlowerType implements IFlowerType {
 			for (BlockState state : nearbyFlowers) {
 				if (state.is(ForestryTags.Blocks.PLANTABLE_FLOWERS)) {
 					if (state.canSurvive(level, pos)) {
-						return level.setBlockAndUpdate(pos, state);
+						if (state.hasProperty(DoublePlantBlock.HALF)) {
+							BlockPos topPos = pos.above();
+
+							if (level.isEmptyBlock(topPos)) {
+								return level.setBlockAndUpdate(pos, state.setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER))
+										&& level.setBlockAndUpdate(topPos, state.setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER));
+							}
+						} else {
+							return level.setBlockAndUpdate(pos, state);
+						}
 					}
 				}
 			}

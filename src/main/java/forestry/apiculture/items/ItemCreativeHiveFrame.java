@@ -5,11 +5,11 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
@@ -30,7 +30,7 @@ public class ItemCreativeHiveFrame extends ItemForestry implements IHiveFrame {
 	public static final String NBT_FORCE_MUTATIONS = "force_mutations";
 
 	public ItemCreativeHiveFrame() {
-		super(new Item.Properties().tab(ItemGroups.tabApiculture));
+		super(new Item.Properties().tab(ItemGroups.tabApiculture).rarity(Rarity.EPIC));
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ItemCreativeHiveFrame extends ItemForestry implements IHiveFrame {
 		tooltip.add(Component.translatable("item.forestry.bee.modifier.production", Modifier.PRODUCTION));
 		tooltip.add(Component.translatable("item.forestry.bee.modifier.genetic.decay", Modifier.GENETIC_DECAY));
 
-		if (stack.getTag() != null && stack.getTag().contains(NBT_FORCE_MUTATIONS)) {
+		if (hasForceMutations(stack)) {
 			tooltip.add(Component.literal("Maximum mutation chances").withStyle(ChatFormatting.LIGHT_PURPLE));
 		} else {
 			tooltip.add(Component.literal("Base mutation chances").withStyle(ChatFormatting.GRAY));
@@ -64,7 +64,11 @@ public class ItemCreativeHiveFrame extends ItemForestry implements IHiveFrame {
 
 	@Override
 	public IBeeModifier getBeeModifier(ItemStack frame) {
-		return frame.getTag() != null && frame.getTag().contains(NBT_FORCE_MUTATIONS) ? Modifier.FORCE_MUTATIONS : Modifier.BASE_MUTATIONS;
+		return hasForceMutations(frame) ? Modifier.FORCE_MUTATIONS : Modifier.BASE_MUTATIONS;
+	}
+
+	public static boolean hasForceMutations(ItemStack stack) {
+		return stack.getTag() != null && stack.getTag().contains(NBT_FORCE_MUTATIONS);
 	}
 
 	private enum Modifier implements IBeeModifier {

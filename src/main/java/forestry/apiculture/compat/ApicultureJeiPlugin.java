@@ -13,6 +13,7 @@ import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.modules.ForestryModuleIds;
 import forestry.apiculture.features.ApicultureItems;
+import forestry.apiculture.items.ItemCreativeHiveFrame;
 import forestry.core.utils.JeiUtil;
 import forestry.core.utils.SpeciesUtil;
 
@@ -60,6 +61,8 @@ public class ApicultureJeiPlugin implements IModPlugin {
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registry) {
 		JeiUtil.registerItemSubtypes(registry, BeeChromosomes.SPECIES, SpeciesUtil.BEE_TYPE.get());
+		// show both creative frames in JEI
+		registry.registerSubtypeInterpreter(ApicultureItems.FRAME_CREATIVE.item(), (stack, context) -> String.valueOf(ItemCreativeHiveFrame.hasForceMutations(stack)));
 	}
 
 	@Override

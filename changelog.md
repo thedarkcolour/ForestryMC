@@ -1,6 +1,8 @@
 ## Forestry 1.0.8
 - Remove bottler recipes from JEI
 - Fix spectacles to show pollinated leaves and wild hives (#14)
+- Fix double flower bee placement (#81)
+- Creative hive frames now show in JEI and have epic rarity
 
 ## Forestry 1.0.7
 - Sort products displayed in JEI by their chances
