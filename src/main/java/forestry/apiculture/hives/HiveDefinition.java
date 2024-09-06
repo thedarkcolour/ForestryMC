@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import forestry.api.ForestryTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -37,6 +39,7 @@ import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.apiculture.blocks.BlockHiveType;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.core.utils.SpeciesUtil;
+import net.minecraftforge.common.Tags;
 
 // todo this should be data driven
 public enum HiveDefinition implements IHiveDefinition {
@@ -45,14 +48,26 @@ public enum HiveDefinition implements IHiveDefinition {
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, flowerStates);
 		}
+
+		@Override
+		public boolean isGoodBiome(Holder<Biome> biome) {
+			//TODO: Forest bees now have slight cold tolerance. This tag restricts them to the warmer side. Should they require deciduous trees? investigate its not excluding the wrong biomes
+			return super.isGoodBiome(biome) && !biome.is(Tags.Biomes.IS_SNOWY);
+		}
 	},
-	MEADOWS(ApicultureBlocks.BEEHIVE.get(BlockHiveType.MEADOWS).defaultState(), 1.0f, ForestryBeeSpecies.MEADOWS, new HiveGenGround(Blocks.DIRT, Blocks.GRASS_BLOCK)) {
+	MEADOWS(ApicultureBlocks.BEEHIVE.get(BlockHiveType.MEADOWS).defaultState(), 1.0f, ForestryBeeSpecies.MEADOWS, new HiveGenGroundTag(BlockTags.DIRT)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, flowerStates);
 		}
+
+		@Override
+		public boolean isGoodBiome(Holder<Biome> biome) {
+			//TODO: find a good way to exclude meadows bee from forested areas. This tag seems to contain temperate forests. Sometimes they still generate in plain old forests for some reason but are rarer
+			return super.isGoodBiome(biome) && !biome.is(BiomeTags.IS_FOREST);
+		}
 	},
-	DESERT(ApicultureBlocks.BEEHIVE.get(BlockHiveType.DESERT).defaultState(), 1.0f, ForestryBeeSpecies.MODEST, new HiveGenGround(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.SAND, Blocks.SANDSTONE)) {
+	DESERT(ApicultureBlocks.BEEHIVE.get(BlockHiveType.DESERT).defaultState(), 1.0f, ForestryBeeSpecies.MODEST, new HiveGenGroundTag(ForestryTags.Blocks.MODEST_BEE_GROUND)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, cactusStates);
@@ -65,7 +80,7 @@ public enum HiveDefinition implements IHiveDefinition {
 			return biome.is(BiomeTags.IS_END);
 		}
 	},
-	SNOW(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SNOW).defaultState(), 2.0f, ForestryBeeSpecies.WINTRY, new HiveGenGround(Blocks.DIRT, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.GRASS_BLOCK)) {
+	SNOW(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SNOW).defaultState(), 2.0f, ForestryBeeSpecies.WINTRY, new HiveGenGroundTag(ForestryTags.Blocks.WINTRY_BEE_GROUND)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			BlockPos posAbove = pos.above();
@@ -76,10 +91,23 @@ public enum HiveDefinition implements IHiveDefinition {
 			postGenFlowers(world, rand, pos, flowerStates);
 		}
 	},
-	SWAMP(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SWAMP).defaultState(), 2.0f, ForestryBeeSpecies.MARSHY, new HiveGenGround(Blocks.DIRT, Blocks.GRASS_BLOCK)) {
+	SWAMP(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SWAMP).defaultState(), 2.0f, ForestryBeeSpecies.MARSHY, new HiveGenGroundTag(BlockTags.DIRT)) {
 		@Override
 		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
 			postGenFlowers(world, rand, pos, mushroomStates);
+		}
+
+		@Override
+		public boolean isGoodBiome(Holder<Biome> biome) {
+			//No swamp bees bellow freezing
+			return super.isGoodBiome(biome) && !biome.is(Tags.Biomes.IS_SNOWY);
+		}
+	},
+	SAVANNA(ApicultureBlocks.BEEHIVE.get(BlockHiveType.SAVANNA).defaultState(), 1.0f, ForestryBeeSpecies.SAVANNA, new HiveGenGroundTag(BlockTags.DIRT)){
+		@Override
+		public void postGen(WorldGenLevel world, RandomSource rand, BlockPos pos) {
+			//TODO: generate pumpkins in dry biomes and melons in normal ones
+			//postGenFlowers(world,rand,pos,flowerStates);
 		}
 	};
 

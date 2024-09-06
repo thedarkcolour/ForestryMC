@@ -10,11 +10,16 @@
  ******************************************************************************/
 package forestry.core;
 
+import forestry.apiculture.features.ApicultureEffects;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -54,6 +59,26 @@ public class EventHandlerCore {
 		if (entity instanceof Villager villager) {
 			if (villager.getVillagerData().getProfession().equals(ApicultureVillagers.PROF_BEEKEEPER.get())) {
 				villager.goalSelector.addGoal(6, new ApiaristAI(villager, 0.6));
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void doHakunaDamageReduction(LivingAttackEvent event){
+		if(event.getEntity().hasEffect(ApicultureEffects.HAKUNA_MATATA.get())){
+			event.setCanceled(true);
+			if(event.getAmount()>5){
+				event.getEntity().removeEffect(ApicultureEffects.HAKUNA_MATATA.get());
+				event.getEntity().addEffect(new MobEffectInstance(ApicultureEffects.MATATA.get(), (int) (300* event.getAmount())));
+				event.getEntity().playSound(SoundEvents.WITHER_BREAK_BLOCK);
+				if(event.getSource().getEntity() instanceof LivingEntity attacker){
+					//no to no worries when attacking
+					if(attacker.hasEffect(ApicultureEffects.HAKUNA_MATATA.get())){
+						attacker.removeEffect(ApicultureEffects.HAKUNA_MATATA.get());
+						attacker.addEffect(new MobEffectInstance(ApicultureEffects.MATATA.get(), (int) (300*event.getAmount())));
+						attacker.playSound(SoundEvents.WITHER_BREAK_BLOCK);
+					}
+				}
 			}
 		}
 	}

@@ -94,6 +94,7 @@ public class ForestryTaxa {
 	public static final String GENUS_FESTIVE = "festapis";
 	public static final String GENUS_AGRARIAN = "rustapis";
 	public static final String GENUS_BOGGY = "paludapis";
+	public static final String GENUS_SAVANNA = "afrapis";
 	public static final String GENUS_MONASTIC = "monapis";
 	// Tree Genera
 	public static final String GENUS_DIOSPYROS = "diospyros";
@@ -198,6 +199,9 @@ public class ForestryTaxa {
 	public static final String SPECIES_MARSHY = "adorasti";
 	public static final String SPECIES_MIRY = "humidium";
 	public static final String SPECIES_BOGGY = "paluster";
+	public static final String SPECIES_SAVANNA = "scutellata";
+	public static final String SPECIES_ARGIL = "argillata";
+	public static final String SPECIES_PRIDE = "rafikii";
 	public static final String SPECIES_MONASTIC = "monachus";
 	public static final String SPECIES_SECLUDED = "contractus";
 	public static final String SPECIES_HERMITIC = "anachoreta";

@@ -31,5 +31,6 @@ public class ForestryBiomeTagsProvider extends BiomeTagsProvider {
 				.addTag(BiomeTags.IS_NETHER);
 		tag(ForestryTags.Biomes.ARID_HUMIDITY)
 				.addTag(BiomeTags.IS_END);
+		tag(ForestryTags.Biomes.SHATTERED_SAVANNA).add(Biomes.WINDSWEPT_SAVANNA);
 	}
 }

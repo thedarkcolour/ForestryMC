@@ -145,7 +145,7 @@ public class SpeciesUtil {
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static <I extends IIndividual> I createOffspring(RandomSource rand, IGenome self, IGenome mate, ISpeciesMutator mutator, Function<IGenome, I> individualFactory) {
+	public static <I extends IIndividual> I createOffspring(RandomSource rand, IGenome self, IGenome mate, ISpeciesMutator mutator, Function<IGenome, I> individualFactory, boolean makeHaploid) {
 		IKaryotype karyotype = self.getKaryotype();
 		IGenomeBuilder genome = karyotype.createGenomeBuilder();
 		ImmutableList<AllelePair<?>> parent1 = self.getAllelePairs();
@@ -153,23 +153,30 @@ public class SpeciesUtil {
 
 		// Check for mutation. Replace one of the parents with the mutation
 		// template if mutation occurred.
-		ImmutableList<AllelePair<?>> mutated1 = mutator.mutateSpecies(self, mate);
-		if (mutated1 != null) {
-			parent1 = mutated1;
-		}
-		ImmutableList<AllelePair<?>> mutated2 = mutator.mutateSpecies(mate, self);
-		if (mutated2 != null) {
-			parent2 = mutated2;
+		// Haploid drones cant mutate as they only have 1 parent
+		if(!makeHaploid) {
+			ImmutableList<AllelePair<?>> mutated1 = mutator.mutateSpecies(self, mate);
+			if (mutated1 != null) {
+				parent1 = mutated1;
+			}
+			ImmutableList<AllelePair<?>> mutated2 = mutator.mutateSpecies(mate, self);
+			if (mutated2 != null) {
+				parent2 = mutated2;
+			}
 		}
 		ImmutableList<IChromosome<?>> chromosomes = karyotype.getChromosomes();
 		for (int i = 0; i < chromosomes.size(); i++) {
 			IChromosome<?> chromosome = chromosomes.get(i);
 			// unchecked due to generics being a pain
 			AllelePair parent = parent1.get(i);
-			genome.setUnchecked(chromosome, parent.inheritOther(rand, parent2.get(i)));
+			genome.setUnchecked(chromosome, makeHaploid? parent.inheritHaploid(rand) : parent.inheritOther(rand, parent2.get(i)));
 		}
 
 		return individualFactory.apply(genome.build());
+	}
+
+	public static <I extends IIndividual> I createOffspring(RandomSource rand, IGenome self, IGenome mate, ISpeciesMutator mutator, Function<IGenome, I> individualFactory) {
+		return createOffspring(rand,self,mate,mutator,individualFactory,false);
 	}
 
 	@FunctionalInterface

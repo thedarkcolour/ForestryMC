@@ -47,6 +47,9 @@ public class ForestryTags {
 		// Flowers that can grow around hives
 		public static final TagKey<Block> PLANTABLE_FLOWERS = tag("flowers/plantable");
 
+		public static final TagKey<Block> MODEST_BEE_GROUND = tag("hive_grounds/modest");
+		public static final TagKey<Block> WINTRY_BEE_GROUND = tag("hive_grounds/wintry");
+
 		private static TagKey<Block> tag(String name) {
 			return BlockTags.create(ForestryConstants.forestry(name));
 		}
@@ -148,6 +151,8 @@ public class ForestryTags {
 		public static final TagKey<Biome> WARM_TEMPERATURE = tag("temperature/warm");
 		public static final TagKey<Biome> HOT_TEMPERATURE = tag("temperature/hot");
 		public static final TagKey<Biome> HELLISH_TEMPERATURE = tag("temperature/hellish");
+
+		public static final TagKey<Biome> SHATTERED_SAVANNA = tag("special/shattered_savanna");
 
 		private static TagKey<Biome> tag(String path) {
 			return TagKey.create(Registry.BIOME_REGISTRY, ForestryConstants.forestry(path));

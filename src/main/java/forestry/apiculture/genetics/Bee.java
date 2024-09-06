@@ -201,7 +201,9 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		}
 
 		// Check for the sky, except if in hell
-		if (!world.dimensionType().hasCeiling()) {
+		// Whats the chance that a mod dimension will set its sky light to 0 rather than make it always night?
+		// I dont think its worth the extra processing to check every block above rather than rely on the cached value
+		if (!world.dimensionType().hasCeiling() && !(world.dimension()==Level.END)) {
 			if (!housing.canBlockSeeTheSky() && !canWorkUnderground(beeModifier)) {
 				errorStates.add(ForestryError.NO_SKY);
 			}
@@ -425,10 +427,10 @@ public class Bee extends IndividualLiving<IBeeSpecies, IBee, IBeeSpeciesType> im
 		// drones are always generation 0
 		boolean haploid = generation == 0 && ForestryConfig.SERVER.useHaploidDrones.get();
 
-		return SpeciesUtil.createOffspring(housing.getWorldObj().random, this.genome, haploid ? this.genome : mate, mutator, genome -> {
+		return SpeciesUtil.createOffspring(housing.getWorldObj().random, this.genome, mate, mutator, genome -> {
 			//IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(level);
 			return new Bee(genome, Optional.empty(), false, this.maxHealth, this.maxHealth, this.pristine, generation); /*mode.isOffspringPristine(this)*/
-		});
+		},haploid);
 	}
 
 	@Nullable
