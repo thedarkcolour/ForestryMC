@@ -14,6 +14,7 @@ package forestry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 
 import net.minecraftforge.fml.ModList;
@@ -48,5 +49,7 @@ public class Forestry {
 		PluginManager.registerErrors();
 
 		ForestryConfig.register(ModLoadingContext.get());
+
+		ForgeMod.enableMilkFluid();
 	}
 }

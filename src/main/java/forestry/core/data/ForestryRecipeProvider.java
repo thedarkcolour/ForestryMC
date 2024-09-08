@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
@@ -100,7 +101,6 @@ import forestry.worktable.features.WorktableBlocks;
 import static forestry.core.data.models.ForestryBlockStateProvider.path;
 
 public class ForestryRecipeProvider extends RecipeProvider {
-
 	public ForestryRecipeProvider(DataGenerator generator) {
 		super(generator);
 	}
@@ -951,12 +951,8 @@ public class ForestryRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerFluidsRecipes(Consumer<FinishedRecipe> helper) {
-		ForestryFluids milk = ForestryFluids.MILK;
 		for (EnumContainerType containerType : EnumContainerType.values()) {
-			/*if (menuType == EnumContainerType.JAR || menuType == EnumContainerType.GLASS) {
-				continue;
-			}*/
-			ItemStack filled = getContainer(containerType, milk);
+			ItemStack filled = getContainer(containerType, ForgeMod.MILK.get());
 			ShapedRecipeBuilder.shaped(Items.CAKE)
 					.define('A', StrictNBTIngredient.of(filled))
 					.define('B', Items.SUGAR)

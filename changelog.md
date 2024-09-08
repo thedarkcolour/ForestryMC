@@ -1,4 +1,4 @@
-## Forestry 1.0.8
+## Forestry 1.0.8 (Breaking change, backup your worlds)
 - Remove bottler recipes from JEI
 - Fix spectacles to show pollinated leaves and wild hives (#14)
 - Fix double flower bee placement (#81)
@@ -11,6 +11,8 @@
 - Set default humidity tolerance of Meadows bees to `TOLERANCE_DOWN_1` to work in the NORMAL / DRY climate, thanks to EnderiumSmith
 - Cultivated line can now also be bred using Valiant, Savanna, and Ended, thanks to EnderiumSmith
 - Added tags for configuring valid spawn blocks for Snowy and Desert hives.
+- Fix zh_cn.json, thanks to Obsoletes
+- Remove milk fluid (#46)
 
 ## Forestry 1.0.7
 - Sort products displayed in JEI by their chances

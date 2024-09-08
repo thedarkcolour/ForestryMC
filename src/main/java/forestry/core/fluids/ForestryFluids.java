@@ -28,6 +28,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fluids.FluidStack;
 
 import forestry.api.ForestryConstants;
@@ -75,17 +76,6 @@ public enum ForestryFluids {
 			.particleColor(new Color(168, 201, 114))
 			.drinkProperties(2, 0.2f, 32)
 	),
-	// TODO remove in 1.20
-	MILK(properties -> properties
-			.particleColor(new Color(255, 255, 255))
-			.density(1030)
-			.viscosity(3000)
-	) {
-		@Override
-		protected boolean hasBucket() {
-			return false;
-		}
-	},
 	SEED_OIL(properties -> properties
 			.particleColor(new Color(255, 255, 168))
 			.density(885)
@@ -107,9 +97,6 @@ public enum ForestryFluids {
 		for (ForestryFluids fluidDefinition : ForestryFluids.values()) {
 			tagToFluid.put(ForestryConstants.forestry(fluidDefinition.feature.getName()), fluidDefinition);
 		}
-
-		// todo Milk fluid in 1.20
-		//ForgeMod.enableMilkFluid();
 	}
 
 	private final ResourceLocation tag;

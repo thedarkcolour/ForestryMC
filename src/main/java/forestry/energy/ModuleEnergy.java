@@ -7,6 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import net.minecraftforge.common.ForgeMod;
+
 import forestry.api.client.IClientModuleHandler;
 import forestry.api.fuels.EngineBronzeFuel;
 import forestry.api.fuels.EngineCopperFuel;
@@ -41,7 +43,7 @@ public class ModuleEnergy extends BlankForestryModule {
 		FuelManager.biogasEngineFuel.put(Fluids.WATER, new EngineBronzeFuel(Fluids.WATER,
 				Constants.ENGINE_FUEL_VALUE_WATER, Constants.ENGINE_CYCLE_DURATION_WATER, 3));
 
-		Fluid milk = ForestryFluids.MILK.getFluid();
+		Fluid milk = ForgeMod.MILK.get();
 		FuelManager.biogasEngineFuel.put(milk, new EngineBronzeFuel(milk,
 				Constants.ENGINE_FUEL_VALUE_MILK, Constants.ENGINE_CYCLE_DURATION_MILK, 3));
 
