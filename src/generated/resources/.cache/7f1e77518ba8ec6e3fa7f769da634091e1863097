@@ -1,4 +1,4 @@
-// 1.19.2	2024-08-24T16:42:56.7302735	Machine Recipes
+// 1.19.2	2024-09-06T06:59:04.831973712	Machine Recipes
 112c37fdf17fd8128a1bf2523a188f3acf0b759b data/forestry/recipes/carpenter/bog_earth.json
 dfdd8578eb3f27d8f71054bb3ddfd7ae0a473a68 data/forestry/recipes/carpenter/carton.json
 483682687e0586864d9ebf5bf004796623178b98 data/forestry/recipes/carpenter/circuits/basic.json
@@ -8,13 +8,13 @@ fdd98c8f1a975985b67c799d723394366c40899f data/forestry/recipes/carpenter/circuit
 8ee86e5ef70676f6607975601c465d684177a965 data/forestry/recipes/carpenter/crates/empty.json
 2f56c6071d0ad96d35701d716f4838203c782bcc data/forestry/recipes/carpenter/crates/pack/forestry/apatite.json
 45cf29eb7e02e7c0896091dbf24a33ee678ef215 data/forestry/recipes/carpenter/crates/pack/forestry/ash.json
-e4d6d79ceeca25fa6a8e8cd37f8c82ef4828cbc6 data/forestry/recipes/carpenter/crates/pack/forestry/beeswax.json
 818c288ddbd7217eede04d287b54ac8c92814af2 data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_cocoa.json
 312363b29e49bc0692fd63c3c2fd5249b453ca3e data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_darkened.json
 cc091e14c9ea4e0a11dcead6a416ad04a067cacc data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_dripping.json
 0a724589c6cbe38c59ce378603c66b00bd09e023 data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_frozen.json
 aeea8fe46c1811c0644c81641aaf5d3c2391d3dd data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_honey.json
 390b403c58357ab31e04cb09b3ed3c4e6527dfa1 data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_irradiated.json
+ed035afaefa170e182c68cf768553b2801299484 data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_kaolin.json
 803830ba1ec471185cb220712869321e8ec3477c data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_mellow.json
 0a99ad8a25a46bca1360046f67476f898e62ce4d data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_mossy.json
 9d28070c81ed99d331406e7bb3e0b5ac12df7923 data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_mysterious.json
@@ -26,6 +26,7 @@ b690db18e7b80f2eb46e733a6e8f9cdfb00f3fa7 data/forestry/recipes/carpenter/crates/
 16e5ccadf443dbb06cb6de9900883d7e4a5f2f99 data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_simmering.json
 29818502985066d31d61284ebbcdcaff8027738c data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_stringy.json
 8678b8460151374e9ec41562304e6af49e14d16d data/forestry/recipes/carpenter/crates/pack/forestry/bee_comb_wheaten.json
+e4d6d79ceeca25fa6a8e8cd37f8c82ef4828cbc6 data/forestry/recipes/carpenter/crates/pack/forestry/beeswax.json
 6741b5b09427cc4ffa4fe214450b588f8be5c4ed data/forestry/recipes/carpenter/crates/pack/forestry/bog_earth.json
 1e09ef60d8f41ddf04e8484124f8637989bc9218 data/forestry/recipes/carpenter/crates/pack/forestry/fertilizer_compound.json
 ecf555b42136aa9600e72ee560a51e692391b5f9 data/forestry/recipes/carpenter/crates/pack/forestry/honeydew.json
@@ -69,17 +70,17 @@ b290e28b96d5ab8eec943f36fd55a821c81008ce data/forestry/recipes/carpenter/crates/
 c0903ae30067e772ae55a6b858e288fef243ad3d data/forestry/recipes/carpenter/crates/pack/minecraft/jungle_sapling.json
 25747d02e8c8d57750549002f5f1d72ce9870db4 data/forestry/recipes/carpenter/crates/pack/minecraft/lapis_lazuli.json
 f1e0201daa4fcb37f96fc3528dca1450f9fd3131 data/forestry/recipes/carpenter/crates/pack/minecraft/mycelium.json
-aa94f90ce151d6cf702210a77b9896a80a826bda data/forestry/recipes/carpenter/crates/pack/minecraft/netherrack.json
 2d58839952a4dafdcb0acc8a89ccb7b63672d64d data/forestry/recipes/carpenter/crates/pack/minecraft/nether_bricks.json
 e5406a974d938ff5d179f8c15f9ea9f4710e7fe1 data/forestry/recipes/carpenter/crates/pack/minecraft/nether_wart.json
+aa94f90ce151d6cf702210a77b9896a80a826bda data/forestry/recipes/carpenter/crates/pack/minecraft/netherrack.json
 a6d901aceab516e2e8060687d6914bba0cfc070d data/forestry/recipes/carpenter/crates/pack/minecraft/oak_log.json
 696630dbd06958aa95cc76cf06e4c664dbfd7eeb data/forestry/recipes/carpenter/crates/pack/minecraft/oak_sapling.json
 0c65e84f8b7733320b2f102dba5c6df9a9882120 data/forestry/recipes/carpenter/crates/pack/minecraft/obsidian.json
 d60a13f640ba4cf2295e05d10241c6605015918a data/forestry/recipes/carpenter/crates/pack/minecraft/potato.json
 ac631fdcab5f49c81f4be2a25e4a0a178df826bb data/forestry/recipes/carpenter/crates/pack/minecraft/prismarine.json
 b7a0da13f48cec810554b15de644e7a31fab5c37 data/forestry/recipes/carpenter/crates/pack/minecraft/prismarine_bricks.json
-14bd4a8fb00f432a004f21ee1ee5a5f6fe122de8 data/forestry/recipes/carpenter/crates/pack/minecraft/redstone.json
 85ba89404e2b29a1d3178500788f02557de9bc40 data/forestry/recipes/carpenter/crates/pack/minecraft/red_sand.json
+14bd4a8fb00f432a004f21ee1ee5a5f6fe122de8 data/forestry/recipes/carpenter/crates/pack/minecraft/redstone.json
 7235727b03ce7a04331e542b9f31e40c0198920d data/forestry/recipes/carpenter/crates/pack/minecraft/sand.json
 55cc5999b33bb52264b64ee1c86715227854b926 data/forestry/recipes/carpenter/crates/pack/minecraft/sandstone.json
 ee927e735426d572ae66b0f1820e09484f616b60 data/forestry/recipes/carpenter/crates/pack/minecraft/soul_sand.json
@@ -91,13 +92,13 @@ ee927e735426d572ae66b0f1820e09484f616b60 data/forestry/recipes/carpenter/crates/
 e3ede4a5be22a05af8a78706a45ecf70b7ac9fc9 data/forestry/recipes/carpenter/crates/pack/minecraft/wheat_seeds.json
 49fd2859575f8b4d04a1091a80deba0dc7c97e0d data/forestry/recipes/carpenter/crates/unpack/forestry/apatite.json
 ad5d7836e09332827998326c5eb469033952ac01 data/forestry/recipes/carpenter/crates/unpack/forestry/ash.json
-9a339f7b5092369c30a3cc7436e976658c448077 data/forestry/recipes/carpenter/crates/unpack/forestry/beeswax.json
 083921c2e1ad5dfb6025995a5d6234ebb63cc6fb data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_cocoa.json
 67d862cabd9ab9f834ff6c08b659ff591ace6e32 data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_darkened.json
 537854d6f936a9b49dc543b159c94f943a42ede4 data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_dripping.json
 27fb23423221b146fec1d55e21062b4f9fabcc90 data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_frozen.json
 8050d2dd5f7a9e53a86a5c7dad8f08bbfd405f4b data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_honey.json
 d4a818066c3fda9bea326c70eb4e68922211db88 data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_irradiated.json
+5b4e72bdf79a97486264cf5ffdbc5c4a330454b6 data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_kaolin.json
 52264da7a57e2218f3b81ab45270fae6f468f86f data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_mellow.json
 5764cb6bf1a04f16e244e17bef028e19d0a2a798 data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_mossy.json
 66331913d4cdbf5414a42db3810edba781768313 data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_mysterious.json
@@ -109,6 +110,7 @@ b63de4bdd24bbbffa70e99fbd6e67c1c25bb424b data/forestry/recipes/carpenter/crates/
 71e17e0bf3ad64d889ae8ba4e4a3ea36df85226a data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_simmering.json
 371846821d1e0c29635704c59932cc5af16459aa data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_stringy.json
 aceda74153264737d36d3830558a3913a3beb636 data/forestry/recipes/carpenter/crates/unpack/forestry/bee_comb_wheaten.json
+9a339f7b5092369c30a3cc7436e976658c448077 data/forestry/recipes/carpenter/crates/unpack/forestry/beeswax.json
 b0006f2a4d4a5bf8ff9f8edcffd263d3ef074566 data/forestry/recipes/carpenter/crates/unpack/forestry/bog_earth.json
 bfb72a359ac9f5920a79c0a7ceb307744294a988 data/forestry/recipes/carpenter/crates/unpack/forestry/fertilizer_compound.json
 c28fcccfe08157fa14198c84a8612df7a1156926 data/forestry/recipes/carpenter/crates/unpack/forestry/honeydew.json
@@ -152,17 +154,17 @@ a1a0f187768e90fe77297a029372fec1163c0248 data/forestry/recipes/carpenter/crates/
 b5e9c463a225b3d87383687c6fb96c854e5e5935 data/forestry/recipes/carpenter/crates/unpack/minecraft/jungle_sapling.json
 fce3500cd2d21a247de98092c3669d0f173fcaa0 data/forestry/recipes/carpenter/crates/unpack/minecraft/lapis_lazuli.json
 05d1688ddef579e700ff623a278e0d5ca9ad8940 data/forestry/recipes/carpenter/crates/unpack/minecraft/mycelium.json
-87b1a3a4b3924f7afe2d0f2cbd1d7bc5baf10af5 data/forestry/recipes/carpenter/crates/unpack/minecraft/netherrack.json
 7b6c2328a44eba8fbb6b2191f8c5e1aff9d911e3 data/forestry/recipes/carpenter/crates/unpack/minecraft/nether_bricks.json
 bc06bd7051702fc4f6d1b2e561f6affdc1c9a1c4 data/forestry/recipes/carpenter/crates/unpack/minecraft/nether_wart.json
+87b1a3a4b3924f7afe2d0f2cbd1d7bc5baf10af5 data/forestry/recipes/carpenter/crates/unpack/minecraft/netherrack.json
 17bf2977e09672add868625fc1d7878dba7b42c5 data/forestry/recipes/carpenter/crates/unpack/minecraft/oak_log.json
 1754baebf00a42f697fad7589e4f5eae692909ff data/forestry/recipes/carpenter/crates/unpack/minecraft/oak_sapling.json
 e0ade65a47f7d09049d2d5ac89c2f2f036f281d1 data/forestry/recipes/carpenter/crates/unpack/minecraft/obsidian.json
 fac5234f918a7e0c0a2b110b8a86c7bc284d3b12 data/forestry/recipes/carpenter/crates/unpack/minecraft/potato.json
 919fd329f4b83d459294d85406c060aa927a96d9 data/forestry/recipes/carpenter/crates/unpack/minecraft/prismarine.json
 2af06aa6c59d2ce1ffaf9ca22be463e3186fa14e data/forestry/recipes/carpenter/crates/unpack/minecraft/prismarine_bricks.json
-80793b4e0bf9691c6d6ee8145619db029752e187 data/forestry/recipes/carpenter/crates/unpack/minecraft/redstone.json
 d18c4fe8cab92b6f79ebe2a0de9bd9b7735f5ec4 data/forestry/recipes/carpenter/crates/unpack/minecraft/red_sand.json
+80793b4e0bf9691c6d6ee8145619db029752e187 data/forestry/recipes/carpenter/crates/unpack/minecraft/redstone.json
 5f0036b91da620940660c8527a665f5cbb9565db data/forestry/recipes/carpenter/crates/unpack/minecraft/sand.json
 97329466a5f6e7cb60c9d4a0ac362808bc884c9f data/forestry/recipes/carpenter/crates/unpack/minecraft/sandstone.json
 adc377db86f18e62434fd508bcbb1ca2c4f21e7a data/forestry/recipes/carpenter/crates/unpack/minecraft/soul_sand.json
@@ -195,6 +197,7 @@ baf0f029afeaef35a5777b5481ac10d991736920 data/forestry/recipes/carpenter/woven_s
 26540ed8ca93243cbfe56cdc6b498c2080a937fe data/forestry/recipes/centrifuge/dripping_comb.json
 f9b7a4bd0e7b3a47a1115a026fa24e31fdfb0426 data/forestry/recipes/centrifuge/frozen_comb.json
 b77035d29432ff235243153204e8033dccbb9f08 data/forestry/recipes/centrifuge/honey_comb.json
+ee2b21e66c2523f10bac5df819bc22f066284d8c data/forestry/recipes/centrifuge/kaolin_comb.json
 05297ec108817a166b116911e838d80c2a2eddc6 data/forestry/recipes/centrifuge/mellow_comb.json
 4c90340e1319d16045a43bca2a7c3c28e7b2c8cf data/forestry/recipes/centrifuge/mossy_comb.json
 14ca2084784bcd458b886b333456fe1521c89411 data/forestry/recipes/centrifuge/mysterious_comb.json

@@ -63,6 +63,10 @@ public class PotionBeeEffect extends ThrottledBeeEffect {
 				continue;
 			}
 
+			if (!secondaryEntityCheck(entity)) {
+				continue;
+			}
+
 			int dur = this.duration;
 			if (potion.getCategory() == MobEffectCategory.HARMFUL) {
 				// Entities are not attacked if they wear a full set of apiarist's armor.
@@ -78,15 +82,20 @@ public class PotionBeeEffect extends ThrottledBeeEffect {
 				}
 			} else {
 				// don't apply positive effects to mobs
-				if (entity instanceof Enemy) {
+				// but apply neutral ones
+				if (potion.getCategory() == MobEffectCategory.BENEFICIAL && entity instanceof Enemy) {
 					continue;
 				}
 			}
 
-			entity.addEffect(new MobEffectInstance(potion, dur, 0));
+			entity.addEffect(new MobEffectInstance(potion, dur, 0, true, true));
 		}
 
 		return storedData;
+	}
+
+	public boolean secondaryEntityCheck(LivingEntity entity) {
+		return true;
 	}
 
 	@Override

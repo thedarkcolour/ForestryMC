@@ -63,7 +63,6 @@ import forestry.core.features.CoreBlocks;
 import forestry.core.features.CoreItems;
 import forestry.core.features.FluidsItems;
 import forestry.core.fluids.ForestryFluids;
-import forestry.core.items.ItemFruit;
 import forestry.core.items.definitions.EnumContainerType;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
@@ -598,6 +597,12 @@ public class ForestryMachineRecipeProvider extends RecipeProvider {
 				.product(1.0f, CoreItems.BEESWAX.stack())
 				.product(0.9f, honeyDrop)
 				.build(consumer, id("centrifuge", "mossy_comb"));
+		new CentrifugeRecipeBuilder()
+				.setProcessingTime(20)
+				.setInput(Ingredient.of(ApicultureItems.BEE_COMBS.get(EnumHoneyComb.KAOLIN)))
+				.product(1.0f, new ItemStack(Items.CLAY_BALL))
+				.product(0.9f, honeyDrop)
+				.build(consumer, id("centrifuge", "kaolin_comb"));
 		new CentrifugeRecipeBuilder()
 				.setProcessingTime(20)
 				.setInput(Ingredient.of(ApicultureItems.BEE_COMBS.get(EnumHoneyComb.MELLOW)))

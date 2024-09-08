@@ -46,6 +46,7 @@ import forestry.apiculture.ApicultureFilterRule;
 import forestry.apiculture.ApicultureFilterRuleType;
 import forestry.apiculture.EndFlowerType;
 import forestry.apiculture.FlowerType;
+import forestry.apiculture.features.ApicultureEffects;
 import forestry.apiculture.features.ApicultureItems;
 import forestry.apiculture.genetics.BeeSpeciesType;
 import forestry.apiculture.genetics.effects.AggressiveBeeEffect;
@@ -59,9 +60,11 @@ import forestry.apiculture.genetics.effects.HeroicBeeEffect;
 import forestry.apiculture.genetics.effects.IgnitionBeeEffect;
 import forestry.apiculture.genetics.effects.MisanthropeBeeEffect;
 import forestry.apiculture.genetics.effects.PotionBeeEffect;
+import forestry.apiculture.genetics.effects.PotionBeeEffectExclusive;
 import forestry.apiculture.genetics.effects.RadioactiveBeeEffect;
 import forestry.apiculture.genetics.effects.RepulsionBeeEffect;
 import forestry.apiculture.genetics.effects.ResurrectionBeeEffect;
+import forestry.apiculture.genetics.effects.SifterBeeEffect;
 import forestry.apiculture.genetics.effects.SnowingBeeEffect;
 import forestry.apiculture.hives.HiveDefinition;
 import forestry.apiculture.items.EnumHoneyComb;
@@ -225,6 +228,10 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 				.addDrop(0.80, ForestryBeeSpecies.MARSHY, mossyComb, 0.4f)
 				.addDrop(0.03, ForestryBeeSpecies.VALIANT, mossyComb);
 
+		apiculture.registerHive(ForestryBeeSpecies.SAVANNA, HiveDefinition.SAVANNA)
+				.addDrop(0.80, ForestryBeeSpecies.SAVANNA, parchedComb, 0.7f)
+				.addDrop(0.03, ForestryBeeSpecies.VALIANT, parchedComb);
+
 
 		// Common village bees
 		apiculture.addVillageBee(ForestryBeeSpecies.FOREST, false);
@@ -233,6 +240,7 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		apiculture.addVillageBee(ForestryBeeSpecies.MARSHY, false);
 		apiculture.addVillageBee(ForestryBeeSpecies.WINTRY, false);
 		apiculture.addVillageBee(ForestryBeeSpecies.TROPICAL, false);
+		apiculture.addVillageBee(ForestryBeeSpecies.SAVANNA, false);
 
 		// Rare village bees
 		apiculture.addVillageBee(ForestryBeeSpecies.FOREST, true, Map.of(BeeChromosomes.TOLERATES_RAIN, ForestryAlleles.TRUE));
@@ -270,6 +278,8 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 		apiculture.registerBeeEffect(ForestryBeeEffects.REPULSION, new RepulsionBeeEffect());
 		apiculture.registerBeeEffect(ForestryBeeEffects.FERTILE, new FertileBeeEffect());
 		apiculture.registerBeeEffect(ForestryBeeEffects.MYCOPHILIC, new FungificationBeeEffect());
+		apiculture.registerBeeEffect(ForestryBeeEffects.SIFTER, new SifterBeeEffect());
+		apiculture.registerBeeEffect(ForestryBeeEffects.HAKUNA_MATATA, new PotionBeeEffectExclusive(false, ApicultureEffects.HAKUNA_MATATA.get(), 20 * 60 * 3, 100, 1.0f, ApicultureEffects.MATATA.get()));
 
 		apiculture.registerSwarmerMaterial(ApicultureItems.ROYAL_JELLY.get(), 0.01f);
 	}

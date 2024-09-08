@@ -28,5 +28,6 @@ public class ForestryBeeEffects {
 	public static final ResourceLocation FERTILE = ForestryConstants.forestry("bee_effect_fertile");
 	public static final ResourceLocation MYCOPHILIC = ForestryConstants.forestry("bee_effect_mycophilic");
 	public static final ResourceLocation PATRIOTIC = ForestryConstants.forestry("bee_effect_patriotic");
-
+	public static final ResourceLocation SIFTER = ForestryConstants.forestry("bee_effect_sifter");
+	public static final ResourceLocation HAKUNA_MATATA = ForestryConstants.forestry("bee_effect_hakuna_matata");
 }

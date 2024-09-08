@@ -87,6 +87,11 @@
             "items": [
               "forestry:bee_comb_mellow"
             ]
+          },
+          {
+            "items": [
+              "forestry:bee_comb_kaolin"
+            ]
           }
         ]
       },
