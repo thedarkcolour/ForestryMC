@@ -56,11 +56,6 @@ public interface IGenome {
 	IGenome copyWith(Map<IChromosome<?>, IAllele> alleles);
 
 	/**
-	 * @return A copy of this genome where all AllelePairs have the same active/inactive alleles.
-	 */
-	IGenome toHaploid();
-
-	/**
 	 * @return {@code true} if this genome has the same karyotype and alleles as the other genome.
 	 */
 	boolean isSameAlleles(IGenome other);

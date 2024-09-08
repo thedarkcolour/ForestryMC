@@ -107,24 +107,6 @@ public final class Genome implements IGenome {
 	}
 
 	@Override
-	public IGenome toHaploid() {
-		IKaryotype karyotype = this.karyotype;
-		ImmutableMap.Builder<IChromosome<?>, AllelePair<?>> map = ImmutableMap.builderWithExpectedSize(karyotype.size());
-
-		for (Map.Entry<IChromosome<?>, AllelePair<?>> entry : this.chromosomes.entrySet()) {
-			AllelePair<?> pair = entry.getValue();
-
-			if (pair.isSameAlleles()) {
-				map.put(entry.getKey(), pair);
-			} else {
-				map.put(entry.getKey(), AllelePair.both(pair.active()));
-			}
-		}
-
-		return new Genome(karyotype, map.build());
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;

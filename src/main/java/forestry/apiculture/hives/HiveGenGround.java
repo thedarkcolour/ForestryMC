@@ -24,6 +24,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import forestry.api.apiculture.hives.IHiveGen;
 import forestry.core.utils.BlockUtil;
 
+// todo replace with HiveGenGroundTag
 public class HiveGenGround implements IHiveGen {
 	private final Set<Material> groundMaterials = new HashSet<>();
 

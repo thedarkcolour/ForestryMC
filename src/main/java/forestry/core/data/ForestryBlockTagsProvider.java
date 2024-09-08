@@ -192,6 +192,10 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 				.add(Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM)
 				.add(Blocks.FERN)
 				.add(Blocks.CRIMSON_FUNGUS, Blocks.WARPED_FUNGUS, Blocks.WARPED_ROOTS, Blocks.CRIMSON_ROOTS);
+
+		//why is there no tag for cactus plantable, but there is for dead bush?
+		tag(ForestryTags.Blocks.MODEST_BEE_GROUND).addTag(BlockTags.SAND).addTag(BlockTags.TERRACOTTA);
+		tag(ForestryTags.Blocks.WINTRY_BEE_GROUND).addTag(BlockTags.DIRT).addTag(BlockTags.SNOW);
 	}
 
 	@SafeVarargs

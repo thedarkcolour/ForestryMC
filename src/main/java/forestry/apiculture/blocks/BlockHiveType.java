@@ -17,6 +17,7 @@ public enum BlockHiveType implements IBlockSubtype {
 	END(ForestryBeeSpecies.ENDED),
 	SNOW(ForestryBeeSpecies.WINTRY),
 	SWAMP(ForestryBeeSpecies.MARSHY),
+	SAVANNA(ForestryBeeSpecies.SAVANNA),
 	SWARM(ForestryConstants.forestry("none"));
 
 	public static final BlockHiveType[] VALUES = values();

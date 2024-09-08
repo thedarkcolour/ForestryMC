@@ -10,6 +10,7 @@ import net.minecraft.world.item.Items;
 
 import net.minecraftforge.common.Tags;
 
+import forestry.api.ForestryTags;
 import forestry.api.apiculture.ForestryBeeSpecies;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
@@ -31,7 +32,7 @@ import static forestry.apiculture.features.ApicultureItems.POLLEN_CLUSTER;
 public class DefaultBeeSpecies {
 	@SuppressWarnings("CodeBlock2Expr")
 	public static void register(IApicultureRegistration apiculture) {
-		ResourceLocation[] overworldHiveBees = new ResourceLocation[]{ForestryBeeSpecies.FOREST, ForestryBeeSpecies.MARSHY, ForestryBeeSpecies.MEADOWS, ForestryBeeSpecies.MODEST, ForestryBeeSpecies.TROPICAL, ForestryBeeSpecies.WINTRY};
+		ResourceLocation[] overworldHiveBees = new ResourceLocation[]{ForestryBeeSpecies.FOREST, ForestryBeeSpecies.MARSHY, ForestryBeeSpecies.MEADOWS, ForestryBeeSpecies.MODEST, ForestryBeeSpecies.SAVANNA, ForestryBeeSpecies.TROPICAL, ForestryBeeSpecies.VALIANT, ForestryBeeSpecies.WINTRY, ForestryBeeSpecies.ENDED};
 
 		// Forest
 		apiculture.registerSpecies(ForestryBeeSpecies.FOREST, GENUS_HONEY, SPECIES_FOREST, true, new Color(0x19d0ec))
@@ -39,6 +40,7 @@ public class DefaultBeeSpecies {
 				.setGenome(genome -> {
 					genome.set(BeeChromosomes.POLLINATION, ForestryAlleles.POLLINATION_SLOWER);
 					genome.set(BeeChromosomes.FERTILITY, ForestryAlleles.FERTILITY_3);
+					genome.set(BeeChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_DOWN_1);
 				});
 
 		// Meadows
@@ -46,6 +48,7 @@ public class DefaultBeeSpecies {
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.HONEY), 0.30f)
 				.setGenome(genome -> {
 					genome.set(BeeChromosomes.POLLINATION, ForestryAlleles.POLLINATION_SLOWER);
+					genome.set(BeeChromosomes.HUMIDITY_TOLERANCE, ForestryAlleles.TOLERANCE_DOWN_1);
 				});
 
 		// Common
@@ -627,6 +630,61 @@ public class DefaultBeeSpecies {
 							.restrictHumidity(HumidityType.DAMP);
 				})
 				.setAuthority("MysteriousAges");
+
+		// Savanna
+		apiculture.registerSpecies(ForestryBeeSpecies.SAVANNA, GENUS_SAVANNA, SPECIES_SAVANNA, true, new Color(0xfdaa48))
+				.setBody(new Color(255, 123, 22))
+				.setTemperature(TemperatureType.WARM)
+				.setHumidity(HumidityType.ARID)
+				.addProduct(BEE_COMBS.stack(EnumHoneyComb.PARCHED), 0.20f)
+				.addSpecialty(new ItemStack(Items.RED_SAND), 0.10f)
+				.setGenome(genome -> {
+					genome.set(BeeChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORT);
+					genome.set(BeeChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
+					genome.set(BeeChromosomes.TERRITORY, ForestryAlleles.TERRITORY_LARGE);
+					genome.set(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_AGGRESSIVE);
+				})
+				.setAuthority("EnderiumSmith");
+
+		// Argil
+		apiculture.registerSpecies(ForestryBeeSpecies.ARGIL, GENUS_SAVANNA, SPECIES_ARGIL, true, new Color(0x96afd2))
+				.setBody(new Color(255, 123, 22))
+				.setTemperature(TemperatureType.WARM)
+				.setHumidity(HumidityType.ARID)
+				.addProduct(BEE_COMBS.stack(EnumHoneyComb.KAOLIN), 0.30f)
+				.addSpecialty(new ItemStack(Items.RED_SAND), 0.15f)
+				.setGenome(genome -> {
+					genome.set(BeeChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORT);
+					genome.set(BeeChromosomes.SPEED, ForestryAlleles.SPEED_SLOW);
+					genome.set(BeeChromosomes.TERRITORY, ForestryAlleles.TERRITORY_LARGE);
+					genome.set(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_SIFTER);
+				})
+				.addMutations(mutations -> {
+					mutations.add(ForestryBeeSpecies.SAVANNA, ForestryBeeSpecies.DILIGENT, 15)
+							.restrictTemperature(TemperatureType.WARM, TemperatureType.HOT)
+							.restrictHumidity(HumidityType.ARID);
+				})
+				.setAuthority("EnderiumSmith");
+
+		// Pride
+		apiculture.registerSpecies(ForestryBeeSpecies.PRIDE, GENUS_SAVANNA, SPECIES_PRIDE, true, new Color(0x650021))
+				.setBody(new Color(255, 123, 22))
+				.setTemperature(TemperatureType.WARM)
+				.setHumidity(HumidityType.ARID)
+				.addProduct(BEE_COMBS.stack(EnumHoneyComb.KAOLIN), 0.20f)
+				.addSpecialty(BEE_COMBS.stack(EnumHoneyComb.MELLOW), 0.10f)
+				.setGenome(genome -> {
+					genome.set(BeeChromosomes.LIFESPAN, ForestryAlleles.LIFESPAN_SHORTENED);
+					genome.set(BeeChromosomes.SPEED, ForestryAlleles.SPEED_SLOWER);
+					genome.set(BeeChromosomes.TERRITORY, ForestryAlleles.TERRITORY_LARGER);
+					genome.set(BeeChromosomes.EFFECT, ForestryAlleles.EFFECT_HAKUNA_MATATA);
+				})
+				.addMutations(mutations -> {
+					mutations.add(ForestryBeeSpecies.SAVANNA, ForestryBeeSpecies.ARGIL, 9)
+							.restrictBiomeType(ForestryTags.Biomes.SHATTERED_SAVANNA);
+				})
+				.setGlint(true)
+				.setAuthority("EnderiumSmith");
 
 		// Monastic (Only obtainable from villagers)
 		apiculture.registerSpecies(ForestryBeeSpecies.MONASTIC, GENUS_MONASTIC, SPECIES_MONASTIC, false, new Color(0x42371c))

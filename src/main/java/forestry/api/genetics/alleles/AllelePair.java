@@ -47,6 +47,11 @@ public record AllelePair<A extends IAllele>(A active, A inactive) {
 		}
 	}
 
+	public AllelePair<A> inheritHaploid(RandomSource rand) {
+		A choice = rand.nextBoolean() ? this.active() : this.inactive();
+		return AllelePair.create(choice, choice);
+	}
+
 	/**
 	 * @return {@code true} if the active allele is the same as the inactive allele.
 	 */

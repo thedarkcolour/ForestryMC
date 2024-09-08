@@ -1,23 +1,37 @@
 package forestry.core.features;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
+
 import forestry.api.core.ItemGroups;
 import forestry.api.modules.ForestryModuleIds;
-import forestry.core.items.*;
-import forestry.core.items.definitions.ToolTier;
-import net.minecraft.world.item.Item;
-
+import forestry.apiculture.items.ItemBeesWax;
 import forestry.core.circuits.EnumCircuitBoardType;
 import forestry.core.circuits.ItemCircuitBoard;
 import forestry.core.genetics.ItemResearchNote;
+import forestry.core.items.ForestersManualItem;
+import forestry.core.items.HasRemnants;
+import forestry.core.items.ItemAlyzer;
+import forestry.core.items.ItemAssemblyKit;
+import forestry.core.items.ItemCraftingMaterial;
+import forestry.core.items.ItemElectronTube;
+import forestry.core.items.ItemFertilizer;
+import forestry.core.items.ItemForestry;
+import forestry.core.items.ItemFruit;
+import forestry.core.items.ItemPipette;
+import forestry.core.items.ItemProperties;
+import forestry.core.items.ItemSolderingIron;
+import forestry.core.items.ItemSpectacles;
+import forestry.core.items.ItemWrench;
 import forestry.core.items.definitions.EnumCraftingMaterial;
 import forestry.core.items.definitions.EnumElectronTube;
+import forestry.core.items.definitions.ToolTier;
 import forestry.modules.features.FeatureItem;
 import forestry.modules.features.FeatureItemGroup;
 import forestry.modules.features.FeatureProvider;
 import forestry.modules.features.IFeatureRegistry;
 import forestry.modules.features.ModFeatureRegistry;
-import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.ShovelItem;
 
 @FeatureProvider
 public class CoreItems {
@@ -92,7 +106,7 @@ public class CoreItems {
 	public static final FeatureItemGroup<ItemCraftingMaterial, EnumCraftingMaterial> CRAFTING_MATERIALS = REGISTRY.itemGroup(ItemCraftingMaterial::new, EnumCraftingMaterial.VALUES).create();
 	public static final FeatureItem<ItemForestry> STICK_IMPREGNATED = REGISTRY.item(ItemForestry::new, "impregnated_stick");
 	public static final FeatureItem<ItemForestry> WOOD_PULP = REGISTRY.item(ItemForestry::new, "wood_pulp");
-	public static final FeatureItem<ItemForestry> BEESWAX = REGISTRY.item(ItemForestry::new, "beeswax");
+	public static final FeatureItem<ItemForestry> BEESWAX = REGISTRY.item(ItemBeesWax::new, "beeswax");
 	public static final FeatureItem<ItemForestry> REFRACTORY_WAX = REGISTRY.item(ItemForestry::new, "refractory_wax");
 	public static final FeatureItemGroup<ItemFruit, ItemFruit.EnumFruit> FRUITS = REGISTRY.itemGroup(ItemFruit::new, "fruit", ItemFruit.EnumFruit.values());
 }

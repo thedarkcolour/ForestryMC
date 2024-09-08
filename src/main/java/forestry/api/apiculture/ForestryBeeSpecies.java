@@ -50,6 +50,9 @@ public class ForestryBeeSpecies {
 	public static final ResourceLocation MARSHY = forestry("bee_marshy");
 	public static final ResourceLocation MIRY = forestry("bee_miry");
 	public static final ResourceLocation BOGGY = forestry("bee_boggy");
+	public static final ResourceLocation SAVANNA = forestry("bee_savanna");
+	public static final ResourceLocation ARGIL = forestry("bee_argil");
+	public static final ResourceLocation PRIDE = forestry("bee_pride");
 	public static final ResourceLocation MONASTIC = forestry("bee_monastic");
 	public static final ResourceLocation SECLUDED = forestry("bee_secluded");
 	public static final ResourceLocation HERMITIC = forestry("bee_hermitic");

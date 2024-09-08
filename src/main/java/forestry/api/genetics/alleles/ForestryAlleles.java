@@ -137,6 +137,8 @@ public class ForestryAlleles {
 	public static final IRegistryAllele<IBeeEffect> EFFECT_REPULSION = REGISTRY.registryAllele(ForestryBeeEffects.REPULSION, BeeChromosomes.EFFECT);
 	public static final IRegistryAllele<IBeeEffect> EFFECT_FERTILE = REGISTRY.registryAllele(ForestryBeeEffects.FERTILE, BeeChromosomes.EFFECT);
 	public static final IRegistryAllele<IBeeEffect> EFFECT_MYCOPHILIC = REGISTRY.registryAllele(ForestryBeeEffects.MYCOPHILIC, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_SIFTER = REGISTRY.registryAllele(ForestryBeeEffects.SIFTER, BeeChromosomes.EFFECT);
+	public static final IRegistryAllele<IBeeEffect> EFFECT_HAKUNA_MATATA = REGISTRY.registryAllele(ForestryBeeEffects.HAKUNA_MATATA, BeeChromosomes.EFFECT);
 	//public static final IRegistryAllele<IBeeEffect> EFFECT_PATRIOTIC = Todos.todo();
 
 	// Speed
