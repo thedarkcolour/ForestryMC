@@ -3,6 +3,14 @@
 - Fix spectacles to show pollinated leaves and wild hives (#14)
 - Fix double flower bee placement (#81)
 - Creative hive frames now show in JEI and have epic rarity
+- Added the Savanna bee line to replace Modest bees in the Savanna biomes, thanks to EnderiumSmith (#76)
+- Finally fixed haploid mode, thanks to EnderiumSmith (#78)
+- Fixed end sky always being obstructed, thanks to EnderiumSmith (#71)
+- Forestry Beeswax can now be used to wax copper blocks, like Vanilla's honeycomb, thanks to EnderiumSmith
+- Set default temperature tolerance of Forest bees to `TOLERANCE_DOWN_1` to facilitate breeding with Wintry, thanks to EnderiumSmith
+- Set default humidity tolerance of Meadows bees to `TOLERANCE_DOWN_1` to work in the NORMAL / DRY climate, thanks to EnderiumSmith
+- Cultivated line can now also be bred using Valiant, Savanna, and Ended, thanks to EnderiumSmith
+- Added tags for configuring valid spawn blocks for Snowy and Desert hives.
 
 ## Forestry 1.0.7
 - Sort products displayed in JEI by their chances
