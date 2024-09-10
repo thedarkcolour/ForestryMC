@@ -1,8 +1,5 @@
 {
   "parent": "forestry:item/mirror_hands",
-  "textures": {
-    "layer0": "forestry:item/bees/default/larvae.outline",
-    "layer1": "forestry:item/bees/default/larvae.body",
-    "layer2": "forestry:item/bees/default/larvae.body2"
-  }
+  "stage": "larvae",
+  "loader": "forestry:bee_ge"
 }

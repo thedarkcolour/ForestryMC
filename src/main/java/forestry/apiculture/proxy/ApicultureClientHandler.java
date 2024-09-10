@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -31,6 +32,7 @@ import forestry.apiculture.gui.GuiAlvearyHygroregulator;
 import forestry.apiculture.gui.GuiAlvearySieve;
 import forestry.apiculture.gui.GuiAlvearySwarmer;
 import forestry.apiculture.gui.GuiBeeHousing;
+import forestry.apiculture.models.ModelBee;
 import forestry.apiculture.particles.ApicultureParticles;
 import forestry.apiculture.particles.BeeExploreParticle;
 import forestry.apiculture.particles.BeeRoundTripParticle;
@@ -43,6 +45,7 @@ public class ApicultureClientHandler implements IClientModuleHandler {
 		modBus.addListener(ApicultureClientHandler::setupClient);
 		modBus.addListener(ApicultureClientHandler::registerParticleFactory);
 		modBus.addListener(ApicultureClientHandler::handleSprites);
+		modBus.addListener(ApicultureClientHandler::registerModelLoaders);
 	}
 
 	private static void setupClient(FMLClientSetupEvent event) {
@@ -70,5 +73,9 @@ public class ApicultureClientHandler implements IClientModuleHandler {
 				ParticleSnow.sprites[i] = map.getSprite(new ResourceLocation("forestry:particle/snow." + (i + 1)));
 			}
 		}
+	}
+
+	private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
+		event.register("bee_ge", new ModelBee.Loader());
 	}
 }

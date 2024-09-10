@@ -2,6 +2,7 @@ package forestry.api.client;
 
 import java.util.ServiceLoader;
 
+import forestry.api.client.apiculture.IBeeClientManager;
 import forestry.api.client.arboriculture.ITreeClientManager;
 import forestry.api.client.lepidopterology.IButterflyClientManager;
 import forestry.api.client.plugin.IClientHelper;
@@ -14,13 +15,15 @@ public interface IForestryClientApi {
 
 	ITextureManager getTextureManager();
 
+	IBeeClientManager getBeeManager();
+
 	ITreeClientManager getTreeManager();
 
 	IButterflyClientManager getButterflyManager();
 
 	/**
-	 * @since 1.0.5
 	 * @return The IClientHelper containing methods to create instances of Forestry's client objects.
+	 * @since 1.0.5
 	 */
 	IClientHelper getHelper();
 }

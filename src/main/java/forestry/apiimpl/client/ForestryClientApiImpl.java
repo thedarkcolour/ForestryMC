@@ -9,6 +9,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import forestry.api.client.IForestryClientApi;
 import forestry.api.client.ITextureManager;
+import forestry.api.client.apiculture.IBeeClientManager;
 import forestry.api.client.arboriculture.ITreeClientManager;
 import forestry.api.client.lepidopterology.IButterflyClientManager;
 import forestry.api.client.plugin.IClientHelper;
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 public class ForestryClientApiImpl implements IForestryClientApi {
 	private final ITextureManager textureManager;
 	private final IClientHelper helper = new ClientHelper();
+	@Nullable
+	private IBeeClientManager beeManager;
 	@Nullable
 	private ITreeClientManager treeManager;
 	@Nullable
@@ -39,6 +42,14 @@ public class ForestryClientApiImpl implements IForestryClientApi {
 	@Override
 	public ITextureManager getTextureManager() {
 		return this.textureManager;
+	}
+
+	public IBeeClientManager getBeeManager() {
+		IBeeClientManager manager = this.beeManager;
+		if (manager == null) {
+			throw new IllegalStateException("IBeeClientManager not initialized yet");
+		}
+		return manager;
 	}
 
 	@Override
@@ -71,5 +82,9 @@ public class ForestryClientApiImpl implements IForestryClientApi {
 
 	public void setButterflyManager(IButterflyClientManager butterflyManager) {
 		this.butterflyManager = butterflyManager;
+	}
+
+	public void setBeeManager(BeeClientManager beeManager) {
+		this.beeManager = beeManager;
 	}
 }

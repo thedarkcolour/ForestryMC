@@ -22,9 +22,4 @@ public interface ILifeStage extends StringRepresentable {
 	 * @return The item form of this life stage. Every life stage is associated with an item form.
 	 */
 	Item getItemForm();
-
-	/**
-	 * @return The ordinal used for reading/writing to NBT.
-	 */
-	int ordinal();
 }

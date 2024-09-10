@@ -4,6 +4,9 @@ import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
 
+import forestry.api.ForestryConstants;
+import forestry.api.apiculture.ForestryBeeSpecies;
+import forestry.api.apiculture.genetics.BeeLifeStage;
 import forestry.api.arboriculture.ForestryTreeSpecies;
 import forestry.api.client.arboriculture.ForestryLeafSprites;
 import forestry.api.client.plugin.IClientRegistration;
@@ -12,8 +15,16 @@ import forestry.arboriculture.client.BiomeLeafTint;
 public class DefaultForestryClientRegistration implements Consumer<IClientRegistration> {
 	@Override
 	public void accept(IClientRegistration client) {
+		registerApiculture(client);
 		registerArboriculture(client);
 		registerLepidopterology(client);
+	}
+
+	private static void registerApiculture(IClientRegistration client) {
+		client.setDefaultBeeModel(BeeLifeStage.DRONE, ForestryConstants.forestry("item/bee_drone_default"));
+		client.setDefaultBeeModel(BeeLifeStage.PRINCESS, ForestryConstants.forestry("item/bee_princess_default"));
+		client.setDefaultBeeModel(BeeLifeStage.QUEEN, ForestryConstants.forestry("item/bee_queen_default"));
+		client.setDefaultBeeModel(BeeLifeStage.LARVAE, ForestryConstants.forestry("item/bee_larvae_default"));
 	}
 
 	private static void registerArboriculture(IClientRegistration client) {

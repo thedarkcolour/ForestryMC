@@ -79,6 +79,6 @@ public class ArboricultureClientHandler implements IClientModuleHandler {
 	}
 
 	private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
-		event.register("sapling_ge", SaplingModelLoader.INSTANCE);
+		event.register("sapling_ge", new SaplingModelLoader());
 	}
 }

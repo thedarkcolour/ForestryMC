@@ -1,6 +1,8 @@
 package forestry.apiimpl.client.plugin;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -9,8 +11,13 @@ import com.mojang.datafixers.util.Pair;
 import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.client.arboriculture.ILeafTint;
 import forestry.api.client.plugin.IClientRegistration;
+import forestry.api.genetics.ILifeStage;
 
 public class ClientRegistration implements IClientRegistration {
+	// ID -> (life stage -> bee model)
+	private final IdentityHashMap<ILifeStage, Map<ResourceLocation, ResourceLocation>> beeModels = new IdentityHashMap<>();
+	// life stage -> bee model
+	private final IdentityHashMap<ILifeStage, ResourceLocation> defaultBeeModels = new IdentityHashMap<>();
 	// ID -> (butterfly item texture, entity texture)
 	private final HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> butterflyTextures = new HashMap<>();
 	// ID -> (sapling block model, item model)
@@ -19,6 +26,16 @@ public class ClientRegistration implements IClientRegistration {
 	private final HashMap<ResourceLocation, ILeafSprite> leafSprites = new HashMap<>();
 	// ID -> leaf tints
 	private final HashMap<ResourceLocation, ILeafTint> leafTints = new HashMap<>();
+
+	@Override
+	public void setDefaultBeeModel(ILifeStage stage, ResourceLocation modelLocation) {
+		this.defaultBeeModels.put(stage, modelLocation);
+	}
+
+	@Override
+	public void setCustomBeeModel(ResourceLocation speciesId, ILifeStage stage, ResourceLocation model) {
+		this.beeModels.computeIfAbsent(stage, k -> new HashMap<>()).put(speciesId, model);
+	}
 
 	@Override
 	public void setSaplingModel(ResourceLocation speciesId, ResourceLocation blockModel, ResourceLocation itemModel) {
@@ -40,6 +57,10 @@ public class ClientRegistration implements IClientRegistration {
 		this.butterflyTextures.put(speciesId, Pair.of(itemTexture, entityTexture));
 	}
 
+	public Map<ILifeStage, Map<ResourceLocation, ResourceLocation>> getBeeModels() {
+		return this.beeModels;
+	}
+
 	public HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> getSaplingModels() {
 		return this.saplingModels;
 	}
@@ -54,5 +75,9 @@ public class ClientRegistration implements IClientRegistration {
 
 	public HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> getButterflyTextures() {
 		return this.butterflyTextures;
+	}
+
+	public ResourceLocation getDefaultBeeModel(ILifeStage stage) {
+		return this.defaultBeeModels.get(stage);
 	}
 }

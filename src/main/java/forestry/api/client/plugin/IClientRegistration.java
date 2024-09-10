@@ -4,11 +4,31 @@ import net.minecraft.resources.ResourceLocation;
 
 import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.client.arboriculture.ILeafTint;
+import forestry.api.genetics.ILifeStage;
 
 /**
  * Handles client registration for Forestry plugins.
  */
 public interface IClientRegistration {
+	/**
+	 * Registers a default model for bees of a given life stage. Used by base Forestry to configure default bee models.
+	 * If your plugin adds a new {@link ILifeStage} to the bee species type, you must call this method so that default
+	 * models are available for other addons that utilize bee models.
+	 *
+	 * @param stage         The life stage to set the default model for.
+	 * @param modelLocation The location of the model to use.
+	 */
+	void setDefaultBeeModel(ILifeStage stage, ResourceLocation modelLocation);
+
+	/**
+	 * Registers a custom model for the given bee species when at the given life stage.
+	 *
+	 * @param speciesId The ID of the bee species to register a custom model for.
+	 * @param stage     The block model for the sapling.
+	 * @param model     The location of the item model for the bee species when at the given life stage.
+	 */
+	void setCustomBeeModel(ResourceLocation speciesId, ILifeStage stage, ResourceLocation model);
+
 	/**
 	 * Registers the block and item models for a tree species's saplings. If you do not call this, Forestry will
 	 * use {@code "<namespace>:block/sapling/<id without tree_>"} and {@code "<namespace>:item/sapling/<id without tree_>"} as defaults.

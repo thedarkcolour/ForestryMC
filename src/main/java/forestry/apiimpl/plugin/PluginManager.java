@@ -25,6 +25,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import forestry.Forestry;
 import forestry.api.IForestryApi;
+import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.circuits.CircuitHolder;
 import forestry.api.circuits.ICircuit;
@@ -33,6 +34,7 @@ import forestry.api.client.IForestryClientApi;
 import forestry.api.client.arboriculture.ILeafSprite;
 import forestry.api.client.arboriculture.ILeafTint;
 import forestry.api.core.IError;
+import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.ISpeciesType;
 import forestry.api.genetics.ITaxon;
@@ -42,6 +44,7 @@ import forestry.api.plugin.IForestryPlugin;
 import forestry.api.plugin.IPollenRegistration;
 import forestry.apiimpl.ForestryApiImpl;
 import forestry.apiimpl.GeneticManager;
+import forestry.apiimpl.client.BeeClientManager;
 import forestry.apiimpl.client.ButterflyClientManager;
 import forestry.apiimpl.client.ForestryClientApiImpl;
 import forestry.apiimpl.client.TreeClientManager;
@@ -272,11 +275,34 @@ public class PluginManager {
 			plugin.registerClient(consumer -> consumer.accept(registration));
 		}
 
+		// Bees
+		List<IBeeSpecies> beeSpecies = SpeciesUtil.getAllBeeSpecies();
+		IdentityHashMap<ILifeStage, Map<IBeeSpecies, ResourceLocation>> beeModels = new IdentityHashMap<>();
+
+		for (ILifeStage stage : SpeciesUtil.BEE_TYPE.get().getLifeStages()) {
+			Map<ResourceLocation, ResourceLocation> locationsByStage = registration.getBeeModels().getOrDefault(stage, Map.of());
+			Map<IBeeSpecies, ResourceLocation> modelsByStage = new IdentityHashMap<>(locationsByStage.size());
+
+			for (IBeeSpecies species : beeSpecies) {
+				ResourceLocation modelLocation = locationsByStage.get(species.id());
+
+				if (modelLocation == null) {
+					// use default model location
+					modelLocation = Objects.requireNonNull(registration.getDefaultBeeModel(stage), "IClientRegistration.setDefaultBeeModel has not been called for life stage " + stage.getSerializedName() + ", unable to resolve bee default model");
+				}
+
+				modelsByStage.put(species, modelLocation);
+			}
+
+			beeModels.put(stage, modelsByStage);
+		}
+		((ForestryClientApiImpl) IForestryClientApi.INSTANCE).setBeeManager(new BeeClientManager(beeModels));
+
 		// Trees
 		HashMap<ResourceLocation, ILeafSprite> spritesById = registration.getLeafSprites();
 		HashMap<ResourceLocation, ILeafTint> tintsById = registration.getTints();
 		HashMap<ResourceLocation, Pair<ResourceLocation, ResourceLocation>> modelsById = registration.getSaplingModels();
-		List<ITreeSpecies> treeSpecies = SpeciesUtil.TREE_TYPE.get().getAllSpecies();
+		List<ITreeSpecies> treeSpecies = SpeciesUtil.getAllTreeSpecies();
 		// Copy everything over to identity maps to minimize Map.get overhead during rendering
 		IdentityHashMap<ITreeSpecies, ILeafSprite> sprites = new IdentityHashMap<>(treeSpecies.size());
 		IdentityHashMap<ITreeSpecies, ILeafTint> tints = new IdentityHashMap<>(treeSpecies.size());
