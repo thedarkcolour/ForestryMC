@@ -3,11 +3,9 @@ package forestry.core.gui;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -22,7 +20,7 @@ import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.inventory.watchers.ISlotChangeWatcher;
 import forestry.core.tiles.ITitled;
 
-public abstract class GuiAnalyzerProvider<C extends AbstractContainerMenu> extends GuiForestryTitled<C> implements IGeneticAnalyzerProvider, ISlotChangeWatcher {
+public abstract class GuiAnalyzerProvider<C extends AbstractContainerMenu & IContainerAnalyzerProvider> extends GuiForestryTitled<C> implements IGeneticAnalyzerProvider, ISlotChangeWatcher {
 	/* Attributes - Constants */
 	protected static final Drawable SELECTED_COMB_SLOT = new Drawable(GeneticAnalyzer.TEXTURE, 163, 0, 22, 22);
 	protected static final Drawable TOGGLE_BUTTON = new Drawable(GeneticAnalyzer.TEXTURE, 35, 166, 18, 20);
@@ -59,7 +57,7 @@ public abstract class GuiAnalyzerProvider<C extends AbstractContainerMenu> exten
 	}
 
 	public GuiAnalyzerProvider(String texture, C container, Inventory inv, ITitled titled, int buttonX, int buttonY, int screenDistance, boolean hasBorder, int slots, int firstSlot) {
-		super(texture, container, inv, Component.translatable(titled.getUnlocalizedTitle()));
+		super(texture, container, inv, titled.getTitle());
 		this.buttonX = buttonX;
 		this.buttonY = buttonY;
 		this.screenDistance = screenDistance;
@@ -69,15 +67,10 @@ public abstract class GuiAnalyzerProvider<C extends AbstractContainerMenu> exten
 		this.analyzer = GuiElementFactory.INSTANCE.createAnalyzer(window, -189 - screenDistance, 0, hasBorder, this);
 		updateVisibility();
 
-		SlotAnalyzer analyzerSlot = null;
-		if (container instanceof IContainerAnalyzerProvider containerAnalyzer) {
-			Slot slot = containerAnalyzer.getAnalyzerSlot();
-			if (slot instanceof SlotAnalyzer) {
-				((SlotAnalyzer) slot).setVisibleCallback(analyzer::isVisible);
-				analyzerSlot = (SlotAnalyzer) slot;
-			}
+		if (container.getAnalyzerSlot() instanceof SlotAnalyzer analyzerSlot) {
+			analyzerSlot.setVisibleCallback(analyzer::isVisible);
+			this.slotAnalyzer = analyzerSlot;
 		}
-		this.slotAnalyzer = analyzerSlot;
 		slotDirty = true;
 	}
 
@@ -102,7 +95,7 @@ public abstract class GuiAnalyzerProvider<C extends AbstractContainerMenu> exten
 		}
 		window.init(leftPos, topPos + (imageHeight - 166) / 2);
 
-		addRenderableWidget(new GuiToggleButton(leftPos + buttonX, topPos + buttonY, 18, 20, TOGGLE_BUTTON, new Handler())).visible = ((IContainerAnalyzerProvider) menu).getAnalyzerSlot() != null;
+		addRenderableWidget(new GuiToggleButton(leftPos + buttonX, topPos + buttonY, 18, 20, TOGGLE_BUTTON, new Handler())).visible = menu.getAnalyzerSlot() != null;
 		dirty = true;
 
 		slotDirty = true;

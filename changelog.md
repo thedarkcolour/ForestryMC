@@ -1,5 +1,6 @@
 ## Forestry 1.0.9
 - Added API for using custom bee species textures. (#30)
+- Add Analyzer widget to the Alveary GUI (#66)
 
 ## Forestry 1.0.8 (Breaking change, backup your worlds)
 - Remove bottler recipes from JEI

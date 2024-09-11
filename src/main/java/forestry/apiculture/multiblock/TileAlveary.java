@@ -167,8 +167,8 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 	}
 
 	@Override
-	public String getUnlocalizedTitle() {
-		return unlocalizedTitle;
+	public Component getTitle() {
+		return Component.translatable(this.unlocalizedTitle);
 	}
 
 	/* IStreamableGui */
@@ -190,6 +190,6 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 
 	@Override
 	public Component getDisplayName() {
-		return Component.translatable(this.getUnlocalizedTitle());
+		return getTitle();
 	}
 }

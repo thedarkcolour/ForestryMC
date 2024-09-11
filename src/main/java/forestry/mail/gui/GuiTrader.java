@@ -10,8 +10,8 @@
  ******************************************************************************/
 package forestry.mail.gui;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -32,7 +32,7 @@ public class GuiTrader extends GuiForestry<ContainerTrader> {
 
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY) {
-		Component name = Component.translatable(tile.getUnlocalizedTitle());
+		Component name = tile.getTitle();
 		this.minecraft.font.draw(transform, name, textLayout.getCenteredOffset(name), 6, ColourProperties.INSTANCE.get("gui.mail.text"));
 
 		Component receive = Component.translatable("for.gui.mail.receive");

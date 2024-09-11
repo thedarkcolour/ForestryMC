@@ -10,17 +10,16 @@
  ******************************************************************************/
 package forestry.factory.gui;
 
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.core.config.Constants;
 import forestry.core.gui.GuiForestryTitled;
 import forestry.core.gui.widgets.TankWidget;
 import forestry.core.render.ColourProperties;
-import forestry.core.utils.Translator;
 import forestry.factory.tiles.TileBottler;
 
 public class GuiBottler extends GuiForestryTitled<ContainerBottler> {
@@ -51,7 +50,7 @@ public class GuiBottler extends GuiForestryTitled<ContainerBottler> {
 		}
 		transform.popPose();
 
-		Component name = Component.translatable(tile.getUnlocalizedTitle());
+		Component name = tile.getTitle();
 		textLayout.line = 5;
 		textLayout.drawCenteredLine(transform, name, 0, ColourProperties.INSTANCE.get("gui.title"));
 		bindTexture(textureFile);

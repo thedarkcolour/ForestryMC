@@ -14,7 +14,6 @@ import com.google.common.base.Preconditions;
 
 import javax.annotation.Nullable;
 
-import forestry.core.blocks.TileStreamUpdateTracker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -40,12 +39,13 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import forestry.api.core.IErrorLogic;
 import forestry.api.core.IErrorLogicSource;
 import forestry.api.core.ILocationProvider;
+import forestry.api.util.TickHelper;
+import forestry.core.blocks.TileStreamUpdateTracker;
 import forestry.core.errors.ErrorLogic;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.NBTUtilForestry;
-import forestry.api.util.TickHelper;
 
 public abstract class TileForestry extends BlockEntity implements IStreamable, IErrorLogicSource, WorldlyContainer, IFilterSlotDelegate, ITitled, ILocationProvider, MenuProvider {
 	private final ErrorLogic errorHandler = new ErrorLogic();
@@ -164,8 +164,8 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 	 * Gets the tile's unlocalized name, based on the block at the location of this entity (client-only).
 	 */
 	@Override
-	public String getUnlocalizedTitle() {
-		return getBlockState().getBlock().getDescriptionId();
+	public Component getTitle() {
+		return Component.translatable(getBlockState().getBlock().getDescriptionId());
 	}
 
 	/* INVENTORY BASICS */
@@ -283,6 +283,6 @@ public abstract class TileForestry extends BlockEntity implements IStreamable, I
 
 	@Override
 	public Component getDisplayName() {
-		return Component.translatable(this.getUnlocalizedTitle());
+		return getTitle();
 	}
 }

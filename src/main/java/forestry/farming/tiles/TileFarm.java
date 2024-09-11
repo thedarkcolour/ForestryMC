@@ -106,8 +106,8 @@ public abstract class TileFarm extends MultiblockTileEntityForestry<MultiblockLo
 
 	/* ITitled */
 	@Override
-	public String getUnlocalizedTitle() {
-		return "for.gui.farm.title";
+	public Component getTitle() {
+		return Component.translatable("for.gui.farm.title");
 	}
 
 	@Override
@@ -117,6 +117,6 @@ public abstract class TileFarm extends MultiblockTileEntityForestry<MultiblockLo
 
 	@Override
 	public Component getDisplayName() {
-		return Component.translatable(this.getUnlocalizedTitle());
+		return getTitle();
 	}
 }
