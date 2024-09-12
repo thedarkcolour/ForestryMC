@@ -43,19 +43,18 @@ import forestry.api.multiblock.IAlvearyComponent;
 import forestry.api.multiblock.IMultiblockComponent;
 import forestry.apiculture.AlvearyBeeModifier;
 import forestry.apiculture.InventoryBeeHousing;
-import forestry.core.climate.ClimateProvider;
-import forestry.core.climate.FakeClimateProvider;
 import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.multiblock.IMultiblockControllerInternal;
 import forestry.core.multiblock.MultiblockValidationException;
 import forestry.core.multiblock.RectangularMultiblockControllerBase;
 import forestry.core.render.ParticleRender;
+import forestry.core.utils.NetworkUtil;
 
 public class AlvearyController extends RectangularMultiblockControllerBase implements IAlvearyControllerInternal, IClimateControlled {
 	private final InventoryBeeHousing inventory;
 	private final IBeekeepingLogic beekeepingLogic;
-	private final IClimateProvider climate;
+	private IClimateProvider climate = IForestryApi.INSTANCE.getClimateManager().createDummyClimateProvider();
 
 	private byte temperatureSteps;
 	private byte humiditySteps;
@@ -74,8 +73,6 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 		this.inventory = new InventoryBeeHousing(9);
 		this.beekeepingLogic = IForestryApi.INSTANCE.getHiveManager().createBeekeepingLogic(this);
 
-		BlockPos referenceCoord = getReferenceCoord();
-		this.climate = referenceCoord == null ? FakeClimateProvider.INSTANCE : new ClimateProvider(this.level, referenceCoord);
 		this.beeModifiers.add(new AlvearyBeeModifier());
 	}
 
@@ -160,6 +157,13 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	}
 
 	@Override
+	protected void onMachineAssembled() {
+		super.onMachineAssembled();
+
+		IForestryApi.INSTANCE.getClimateManager().createClimateProvider(this.level, getCenterCoord());
+	}
+
+	@Override
 	protected void isMachineWhole() throws MultiblockValidationException {
 		super.isMachineWhole();
 
@@ -235,6 +239,11 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 		// climate blocks will increase climate every tick and must go before the canWork check
 		for (IAlvearyComponent.Climatiser climatiser : this.climatisers) {
 			climatiser.changeClimate(tickCount, this);
+		}
+
+		// every 64 ticks, update the climate state in case of changed biome or climate (& is faster than modulus)
+		if ((level.getGameTime() & 63L) == 0L) {
+			this.climate = IForestryApi.INSTANCE.getClimateManager().createClimateProvider(level, getCenterCoord());
 		}
 
 		return canWork;
@@ -333,7 +342,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 			}
 		}
 
-		return IForestryApi.INSTANCE.getClimateManager().getTemperature(getBiome()).up(this.temperatureSteps);
+		return this.climate.temperature().up(this.temperatureSteps);
 	}
 
 	@Override
@@ -388,6 +397,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	@Override
 	public void writeGuiData(FriendlyByteBuf data) {
 		data.writeVarInt(this.beekeepingLogic.getBeeProgressPercent());
+		NetworkUtil.writeClimateState(data, temperature(), humidity());
 		data.writeByte(this.temperatureSteps);
 		data.writeByte(this.humiditySteps);
 	}
@@ -395,6 +405,7 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	@Override
 	public void readGuiData(FriendlyByteBuf data) {
 		this.breedingProgressPercent = data.readVarInt();
+		this.climate = NetworkUtil.readClimateState(data);
 		this.temperatureSteps = data.readByte();
 		this.humiditySteps = data.readByte();
 	}

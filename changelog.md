@@ -1,6 +1,9 @@
 ## Forestry 1.0.9
 - Added API for using custom bee species textures. (#30)
 - Add Analyzer widget to the Alveary GUI (#66)
+- Fixes hives at Taiga villages ignoring the climate
+- Fixes inaccurate climate information in GUIs after leaving/rejoining the server/dimension (#73)
+- Fixes apiaries not reacting to changes in climate as a result of the biome changing
 
 ## Forestry 1.0.8 (Breaking change, backup your worlds)
 - Remove bottler recipes from JEI

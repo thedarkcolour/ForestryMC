@@ -48,6 +48,17 @@ public interface IClimateManager {
 
 	/**
 	 * @return Create a climate provider.
+	 * @deprecated Use {@link #createClimateProvider} instead.
 	 */
-	IClimateProvider getDefaultClimate(LevelReader level, BlockPos pos);
+	@Deprecated
+	default IClimateProvider getDefaultClimate(LevelReader level, BlockPos pos) {
+		return createClimateProvider(level, pos);
+	}
+
+	/**
+	 * @return A climate provider that always returns NORMAL / NORMAL.
+	 */
+	IClimateProvider createDummyClimateProvider();
+
+	IClimateProvider createClimateProvider(LevelReader level, BlockPos pos);
 }

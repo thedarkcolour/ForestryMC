@@ -45,8 +45,13 @@ public class ForestryClimateManager implements IClimateManager {
 	}
 
 	@Override
-	public IClimateProvider getDefaultClimate(LevelReader world, BlockPos pos) {
+	public IClimateProvider createClimateProvider(LevelReader world, BlockPos pos) {
 		return new ClimateProvider(world, pos);
+	}
+
+	@Override
+	public IClimateProvider createDummyClimateProvider() {
+		return FakeClimateProvider.INSTANCE;
 	}
 
 	@Override

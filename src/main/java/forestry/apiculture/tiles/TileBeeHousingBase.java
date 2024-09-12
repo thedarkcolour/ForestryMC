@@ -32,20 +32,19 @@ import forestry.api.climate.IClimateProvider;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.apiculture.gui.IGuiBeeHousingDelegate;
-import forestry.core.climate.ClimateProvider;
-import forestry.core.climate.FakeClimateProvider;
 import forestry.core.network.IStreamableGui;
 import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.owner.OwnerHandler;
 import forestry.core.render.ParticleRender;
 import forestry.core.tiles.TileBase;
+import forestry.core.utils.NetworkUtil;
 
 public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing, IOwnedTile, IClimateProvider, IGuiBeeHousingDelegate, IStreamableGui {
 	private final String hintKey;
 	private final OwnerHandler ownerHandler = new OwnerHandler();
 	private final IBeekeepingLogic beeLogic;
-	protected IClimateProvider climate = FakeClimateProvider.INSTANCE;
+	protected IClimateProvider climate = IForestryApi.INSTANCE.getClimateManager().createDummyClimateProvider();
 
 	// CLIENT
 	private int breedingProgressPercent = 0;
@@ -59,7 +58,7 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 	@Override
 	public void setLevel(Level level) {
 		super.setLevel(level);
-		this.climate = new ClimateProvider(level, this.worldPosition);
+		this.climate = IForestryApi.INSTANCE.getClimateManager().createClimateProvider(level, this.worldPosition);
 	}
 
 	@Override
@@ -152,6 +151,11 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 		if (beeLogic.canWork()) {
 			beeLogic.doWork();
 		}
+
+		// every 64 ticks, update the climate state in case of changed biome or climate (& is faster than modulus)
+		if ((level.getGameTime() & 63L) == 0L) {
+			this.climate = IForestryApi.INSTANCE.getClimateManager().createClimateProvider(level, pos);
+		}
 	}
 
 	@Override
@@ -162,11 +166,13 @@ public abstract class TileBeeHousingBase extends TileBase implements IBeeHousing
 	@Override
 	public void writeGuiData(FriendlyByteBuf data) {
 		data.writeVarInt(beeLogic.getBeeProgressPercent());
+		NetworkUtil.writeClimateState(data, this.climate);
 	}
 
 	@Override
 	public void readGuiData(FriendlyByteBuf data) {
 		breedingProgressPercent = data.readVarInt();
+		this.climate = NetworkUtil.readClimateState(data);
 	}
 
 	// / IBEEHOUSING

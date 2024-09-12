@@ -32,7 +32,9 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import forestry.api.IForestryApi;
 import forestry.api.climate.ClimateState;
+import forestry.api.climate.IClimateProvider;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 import forestry.api.modules.IForestryPacketClient;
@@ -160,7 +162,7 @@ public class NetworkUtil {
 		}
 	}
 
-	public static void writeClimateState(FriendlyByteBuf buffer, @Nullable ClimateState climateState) {
+	public static void writeClimateState(FriendlyByteBuf buffer, @Nullable IClimateProvider climateState) {
 		if (climateState != null) {
 			buffer.writeBoolean(true);
 			buffer.writeByte(climateState.temperature().ordinal());
@@ -170,12 +172,17 @@ public class NetworkUtil {
 		}
 	}
 
-	@Nullable
-	public static ClimateState readClimateState(FriendlyByteBuf buffer) {
+	public static void writeClimateState(FriendlyByteBuf buffer, TemperatureType temperature, HumidityType humidity) {
+		buffer.writeBoolean(true);
+		buffer.writeByte(temperature.ordinal());
+		buffer.writeByte(humidity.ordinal());
+	}
+
+	public static IClimateProvider readClimateState(FriendlyByteBuf buffer) {
 		if (buffer.readBoolean()) {
 			return new ClimateState(TemperatureType.VALUES.get(buffer.readByte()), HumidityType.VALUES.get(buffer.readByte()));
 		} else {
-			return null;
+			return IForestryApi.INSTANCE.getClimateManager().createDummyClimateProvider();
 		}
 	}
 

@@ -21,7 +21,6 @@ import forestry.api.climate.IClimateProvider;
 import forestry.api.core.HumidityType;
 import forestry.api.core.TemperatureType;
 
-// todo do any mods change biomes in the world?
 public class ClimateProvider implements IClimateProvider, IBiomeProvider {
 	private final Holder<Biome> biome;
 
