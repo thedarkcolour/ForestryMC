@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -69,6 +70,8 @@ import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SpeciesUtil;
 import forestry.api.util.TickHelper;
 
+import org.jetbrains.annotations.ApiStatus;
+
 public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IBeeHousing {
 	private static final DamageSource damageSourceBeeHive = new DamageSourceForestry("bee.hive");
 
@@ -85,13 +88,20 @@ public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IB
 	private boolean angry = false;
 	private int calmTime;
 
-	public TileHive(BlockPos pos, BlockState state) {
-		super(ApicultureTiles.HIVE.tileType(), pos, state);
+	// For addons
+	public TileHive(BlockEntityType<? extends TileHive> tileType, BlockPos pos, BlockState state) {
+		super(tileType, pos, state);
 
 		this.inventory = new HiveBeeHousingInventory(this);
 		this.beeLogic = new WorldgenBeekeepingLogic(this);
 		this.errorLogic = IForestryApi.INSTANCE.getErrorManager().createErrorLogic();
 		this.beeTargetPredicate = new BeeTargetPredicate(this);
+	}
+
+	// For Forestry only
+	@ApiStatus.Internal
+	public TileHive(BlockPos pos, BlockState state) {
+		this(ApicultureTiles.HIVE.tileType(), pos, state);
 	}
 
 	public void tick(Level level) {
