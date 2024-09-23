@@ -112,7 +112,7 @@ public class TileAlvearyHygroregulator extends TileAlveary implements Container,
 
 		if (compoundNBT.contains("CurrentLiquid")) {
 			FluidStack liquid = FluidStack.loadFluidStackFromNBT(compoundNBT.getCompound("CurrentLiquid"));
-			currentRecipe = RecipeUtils.getHygroRegulatorRecipe(level.getRecipeManager(), liquid);
+			currentRecipe = RecipeUtils.getHygroRegulatorRecipe(RecipeUtils.getRecipeManager(), liquid);
 		}
 	}
 

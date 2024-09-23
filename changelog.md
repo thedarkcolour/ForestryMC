@@ -8,6 +8,7 @@
 - Fix fruits not dropping from tree leaves on decay (#61)
 - Fix leaves with non-default genomes not dropping any saplings (#83)
 - Fix pod fruits not dropping when their supporting trunk is destroyed
+- Fix Alveary Hygroregulator corrupting Alveary inventories (#91)
 
 ## Forestry 1.0.8 (Breaking change, backup your worlds)
 - Remove bottler recipes from JEI
