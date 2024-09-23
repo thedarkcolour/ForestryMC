@@ -22,8 +22,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
 import forestry.api.arboriculture.genetics.IFruit;
+import forestry.api.arboriculture.genetics.ITreeSpeciesType;
 import forestry.api.core.IProduct;
 import forestry.api.genetics.IGenome;
+import forestry.api.genetics.alleles.TreeChromosomes;
+import forestry.core.utils.SpeciesUtil;
 
 public class DummyFruit implements IFruit {
 	private final boolean dominant;
@@ -38,7 +41,7 @@ public class DummyFruit implements IFruit {
 	}
 
 	@Override
-	public List<ItemStack> getFruits(IGenome genome, Level level, BlockPos pos, int ripeningTime) {
+	public List<ItemStack> getFruits(IGenome genome, Level level, int ripeningTime) {
 		return List.of();
 	}
 
@@ -63,8 +66,18 @@ public class DummyFruit implements IFruit {
 	}
 
 	@Override
-	public boolean isFruitLeaf(IGenome genome, LevelAccessor level, BlockPos pos) {
+	public boolean isFruitLeaf() {
 		return false;
+	}
+
+	@Override
+	public float getFruitChance(IGenome genome, LevelAccessor level) {
+		ITreeSpeciesType treeRoot = SpeciesUtil.TREE_TYPE.get();
+		if (treeRoot == null) {
+			return 0f;
+		}
+		//float yieldModifier = treeRoot.getTreekeepingMode(level).getYieldModifier(genome, 1.0F);
+		return genome.getActiveValue(TreeChromosomes.YIELD) * 2.5F;// * yieldModifier;
 	}
 
 	@Override

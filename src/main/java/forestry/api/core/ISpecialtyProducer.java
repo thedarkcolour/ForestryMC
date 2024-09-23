@@ -8,7 +8,7 @@ import java.util.List;
  */
 public interface ISpecialtyProducer {
 	/**
-	 * @return The list of possible items that this bee can only produce when in a jubilant state.
+	 * @return The list of possible items that this producer can only produce when in a jubilant state.
 	 */
 	List<IProduct> getSpecialties();
 }

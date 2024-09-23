@@ -75,6 +75,7 @@ public class ForestryBlockLootTables extends BlockLoot {
 		registerLootTable(CoreBlocks.PEAT, (block) -> LootTable.lootTable().withPool(LootPool.lootPool().add(LootItem.lootTableItem(Blocks.DIRT))).withPool(LootPool.lootPool().apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))).add(LootItem.lootTableItem(CoreItems.PEAT.item()))));
 		registerDropping(CoreBlocks.HUMUS, Blocks.DIRT);
 
+		// todo fix all of these
 		registerEmptyTables(ArboricultureBlocks.PODS); // Handled by internal logic
 		registerEmptyTables(ArboricultureBlocks.SAPLING_GE); // Handled by internal logic
 		registerEmptyTables(ArboricultureBlocks.LEAVES);  // Handled by internal logic
@@ -88,7 +89,6 @@ public class ForestryBlockLootTables extends BlockLoot {
 		registerLootTable(CoreBlocks.DEEPSLATE_TIN_ORE, block -> createOreDrop(block, CoreItems.RAW_TIN.item()));
 
 		dropSelf(CoreBlocks.RAW_TIN_BLOCK.block());
-		//TODO: Hives
 
 		Set<ResourceLocation> visited = Sets.newHashSet();
 		ModFeatureRegistry forestryRegistry = ModFeatureRegistry.getRegistries().get(ForestryConstants.MOD_ID);

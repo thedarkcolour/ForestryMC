@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface IProductProducer {
 	/**
-	 * @return The list of possible items that can be produced by this bee.
+	 * @return The list of possible items that can be produced by this producer.
 	 */
 	List<IProduct> getProducts();
 }

@@ -12,6 +12,9 @@ package forestry.arboriculture.blocks;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -28,6 +31,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.HitResult;
 
 import forestry.arboriculture.tiles.TileFruitPod;
@@ -68,19 +73,20 @@ public class BlockFruitPod extends CocoaBlock implements EntityBlock {
 			return;
 		}
 
-		tile.onBlockTick(world, pos, state, rand);
+		tile.onBlockTick(rand);
 	}
 
 	@Override
-	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
-		if (!level.isClientSide && blockEntity instanceof TileFruitPod tile) {
-			// todo replace with loot table
-			for (ItemStack drop : tile.getDrops()) {
-				ItemStackUtil.dropItemStackAsEntity(drop, level, pos);
-			}
+	public List<ItemStack> getDrops(BlockState pState, LootContext.Builder context) {
+		BlockPos pos = BlockUtil.getPos(context);
+
+		if (context.getLevel().getBlockEntity(pos) instanceof TileFruitPod pod) {
+			return pod.getDrops();
+		} else if (context.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof TileFruitPod pod) {
+			return pod.getDrops();
 		}
 
-		super.playerDestroy(level, player, pos, state, blockEntity, itemStack);
+		return List.of();
 	}
 
 	@Override

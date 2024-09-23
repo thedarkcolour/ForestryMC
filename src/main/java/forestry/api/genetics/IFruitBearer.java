@@ -11,8 +11,6 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Can be implemented by tile entities which can bear fruit.
- *
- * @author SirSengir
  */
 public interface IFruitBearer {
 	/**
@@ -24,7 +22,7 @@ public interface IFruitBearer {
 	 * Picks the fruits of this tile, resetting it to unripe fruits.
 	 *
 	 * @param tool Tool used in picking the fruits. May be empty.
-	 * @return Picked fruits.
+	 * @return Picked fruits. The returned list is immutable.
 	 */
 	List<ItemStack> pickFruit(ItemStack tool);
 

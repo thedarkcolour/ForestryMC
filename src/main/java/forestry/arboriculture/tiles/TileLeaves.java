@@ -204,10 +204,10 @@ public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButt
 	public void setFruit(ITree tree, boolean alwaysFruit) {
 		IGenome genome = tree.getGenome();
 
-		if (tree.canBearFruit() && level != null && !level.isClientSide) {
+		if (tree.hasFruitLeaves() && level != null && !level.isClientSide) {
 			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
-			if (fruitProvider.isFruitLeaf(genome, level, getBlockPos())) {
-				this.isFruitLeaf = alwaysFruit || fruitProvider.getFruitChance(genome, level, getBlockPos()) >= level.random.nextFloat();
+			if (fruitProvider.isFruitLeaf()) {
+				this.isFruitLeaf = alwaysFruit || fruitProvider.getFruitChance(genome, level) >= level.random.nextFloat();
 			}
 		}
 
@@ -381,10 +381,10 @@ public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButt
 	public List<ItemStack> pickFruit(ItemStack tool) {
 		ITree tree = getTree();
 		if (tree == null || !hasFruit()) {
-			return NonNullList.create();
+			return List.of();
 		}
 
-		List<ItemStack> produceStacks = tree.produceStacks(level, getBlockPos(), getRipeningTime());
+		List<ItemStack> produceStacks = tree.produceStacks(this.level, this.worldPosition, getRipeningTime());
 		ripeningTime = 0;
 		sendNetworkUpdateRipening();
 		return produceStacks;

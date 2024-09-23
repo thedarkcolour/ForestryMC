@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -73,14 +72,11 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 	}
 
 	@Override
-	protected void getLeafDrop(NonNullList<ItemStack> drops, Level world, @Nullable GameProfile playerProfile, BlockPos pos, float saplingModifier, int fortune, LootContext.Builder builder) {
-		ITree tree = getTree(world, pos);
-		if (tree == null) {
-			return;
-		}
+	protected void getLeafDrop(List<ItemStack> drops, Level level, @Nullable BlockPos pos, @Nullable GameProfile profile, float saplingModifier, int fortune, LootContext.Builder context) {
+		ITree tree = this.type.getIndividual();
 
 		// Add saplings
-		List<ITree> saplings = tree.getSaplings(world, playerProfile, pos, saplingModifier);
+		List<ITree> saplings = tree.getSaplings(level, pos, profile, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
 				drops.add(sapling.createStack(TreeLifeStage.SAPLING));
@@ -90,8 +86,8 @@ public class BlockDefaultLeavesFruit extends BlockAbstractLeaves {
 		// Add fruits
 		IGenome genome = tree.getGenome();
 		IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
-		if (fruitProvider.isFruitLeaf(genome, world, pos)) {
-			List<ItemStack> produceStacks = tree.produceStacks(world, pos, Integer.MAX_VALUE);
+		if (fruitProvider.isFruitLeaf()) {
+			List<ItemStack> produceStacks = tree.produceStacks(level, pos, Integer.MAX_VALUE);
 			drops.addAll(produceStacks);
 		}
 	}

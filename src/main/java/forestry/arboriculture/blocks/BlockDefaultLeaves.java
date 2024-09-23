@@ -3,24 +3,23 @@ package forestry.arboriculture.blocks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
 
 import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import forestry.api.client.IForestryClientApi;
-import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.api.arboriculture.genetics.TreeLifeStage;
+import forestry.api.client.IForestryClientApi;
 import forestry.core.utils.SpeciesUtil;
 
 /**
@@ -43,14 +42,11 @@ public class BlockDefaultLeaves extends BlockAbstractLeaves {
 	}
 
 	@Override
-	protected void getLeafDrop(NonNullList<ItemStack> drops, Level world, @Nullable GameProfile playerProfile, BlockPos pos, float saplingModifier, int fortune, LootContext.Builder builder) {
-		ITree tree = getTree(world, pos);
-		if (tree == null) {
-			return;
-		}
+	protected void getLeafDrop(List<ItemStack> drops, Level level, @Nullable BlockPos pos, @Nullable GameProfile profile, float saplingModifier, int fortune, LootContext.Builder context) {
+		ITree tree = this.type.getIndividual();
 
 		// Add saplings
-		List<ITree> saplings = tree.getSaplings(world, playerProfile, pos, saplingModifier);
+		List<ITree> saplings = tree.getSaplings(level, pos, profile, saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
 				drops.add(SpeciesUtil.TREE_TYPE.get().createStack(sapling, TreeLifeStage.SAPLING));
@@ -60,12 +56,12 @@ public class BlockDefaultLeaves extends BlockAbstractLeaves {
 
 	@Override
 	protected ITree getTree(BlockGetter world, BlockPos pos) {
-		return type.getIndividual();
+		return this.type.getIndividual();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public int colorMultiplier(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
-		return IForestryClientApi.INSTANCE.getTreeManager().getTint(type.getIndividual().getSpecies()).get(level, pos);
+		return IForestryClientApi.INSTANCE.getTreeManager().getTint(this.type.getIndividual().getSpecies()).get(level, pos);
 	}
 }

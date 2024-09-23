@@ -12,6 +12,8 @@ package forestry.core.tiles;
 
 import javax.annotation.Nullable;
 
+import java.util.function.Consumer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -21,8 +23,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -32,7 +32,6 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 public abstract class TileUtil {
-
 	public static boolean isUsableByPlayer(Player player, BlockEntity tile) {
 		BlockPos pos = tile.getBlockPos();
 		Level world = tile.getLevel();
@@ -66,16 +65,6 @@ public abstract class TileUtil {
 	}
 
 	@Nullable
-	public static <T> T getTile(LootContext.Builder builder, Class<T> tileClass) {
-		BlockEntity tileEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-		if (tileClass.isInstance(tileEntity)) {
-			return tileClass.cast(tileEntity);
-		} else {
-			return null;
-		}
-	}
-
-	@Nullable
 	public static <T> T getTile(BlockEntity tileEntity, Class<T> tileClass) {
 		if (tileClass.isInstance(tileEntity)) {
 			return tileClass.cast(tileEntity);
@@ -84,47 +73,10 @@ public abstract class TileUtil {
 		}
 	}
 
-	public interface ITileGetResult<T, R> {
-		@Nullable
-		R getResult(T tile);
-	}
-
-	/**
-	 * Performs an {@link ITileGetResult} on a tile if the tile exists.
-	 */
-	@Nullable
-	public static <T, R> R getResultFromTile(LevelReader world, BlockPos pos, Class<T> tileClass, ITileGetResult<T, R> tileGetResult) {
+	public static <T> void actOnTile(LevelReader world, BlockPos pos, Class<T> tileClass, Consumer<T> tileAction) {
 		T tile = getTile(world, pos, tileClass);
 		if (tile != null) {
-			return tileGetResult.getResult(tile);
-		}
-		return null;
-	}
-
-	/**
-	 * Performs an {@link ITileGetResult} on a tile if the tile exists.
-	 */
-	@Nullable
-	public static <T, R> R getResultFromTile(BlockEntity tileEntity, Class<T> tileClass, ITileGetResult<T, R> tileGetResult) {
-		T tile = getTile(tileEntity, tileClass);
-		if (tile != null) {
-			return tileGetResult.getResult(tile);
-		}
-		return null;
-	}
-
-	@FunctionalInterface
-	public interface ITileAction<T> {
-		void actOnTile(T tile);
-	}
-
-	/**
-	 * Performs an {@link ITileAction} on a tile if the tile exists.
-	 */
-	public static <T> void actOnTile(LevelReader world, BlockPos pos, Class<T> tileClass, ITileAction<T> tileAction) {
-		T tile = getTile(world, pos, tileClass);
-		if (tile != null) {
-			tileAction.actOnTile(tile);
+			tileAction.accept(tile);
 		}
 	}
 

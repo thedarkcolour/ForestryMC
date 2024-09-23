@@ -29,7 +29,6 @@ import forestry.api.core.ISpecialtyProducer;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.alleles.IRegistryAlleleValue;
 import forestry.api.genetics.alleles.TreeChromosomes;
-import forestry.core.utils.SpeciesUtil;
 
 /**
  * Provides all information that is needed to spawn a fruit leaves / pod block in the world.
@@ -51,28 +50,18 @@ public interface IFruit extends IRegistryAlleleValue, IProductProducer, ISpecial
 	/**
 	 * Determines if fruit block of this provider is considered a leaf block.
 	 *
-	 * @param genome The genome of the tree of the pod / leaves block.
-	 * @param level  The world in that the pod / leaves block is located.
-	 * @param pos    The position of the pod / leaves block.
 	 * @return True if this provider provides a fruit leaf for the given genome at the given position.
 	 */
-	boolean isFruitLeaf(IGenome genome, LevelAccessor level, BlockPos pos);
+	boolean isFruitLeaf();
 
 	/**
-	 * The chance that this leaves contains fruits or the chance that a pod block spawns.
+	 * The chance that a tree leaf will spawn with fruits or the chance that a pod fruit spawns.
 	 *
 	 * @param genome The genome of the tree of the pod / leaves block.
-	 * @param level
-	 * @return The chance that this leaves contains fruits or the chance that a pod block spawns.
+	 * @param level  The world where this is happening.
+	 * @return The chance that leaves spawns with fruits or the chance that a pod block spawns.
 	 */
-	default float getFruitChance(IGenome genome, LevelAccessor level, BlockPos pos) {
-		ITreeSpeciesType treeRoot = SpeciesUtil.TREE_TYPE.get();
-		if (treeRoot == null) {
-			return 0.0F;
-		}
-		//float yieldModifier = treeRoot.getTreekeepingMode(level).getYieldModifier(genome, 1.0F);
-		return genome.getActiveValue(TreeChromosomes.YIELD) * 2.5F;// * yieldModifier;
-	}
+	float getFruitChance(IGenome genome, LevelAccessor level);
 
 	/**
 	 * @return How many successful ripening block ticks a fruit needs to be ripe.
@@ -97,9 +86,9 @@ public interface IFruit extends IRegistryAlleleValue, IProductProducer, ISpecial
 	 * Returns all drops of this block if you harvest it.
 	 *
 	 * @param genome       The genome of the tree of the leaves / pod.
-	 * @param ripeningTime The repining time of the block. From 0 to {@link #getRipeningPeriod()}.
+	 * @param ripeningTime The ripening time of the block. From 0 to {@link #getRipeningPeriod}.
 	 */
-	List<ItemStack> getFruits(IGenome genome, Level level, BlockPos pos, int ripeningTime);
+	List<ItemStack> getFruits(IGenome genome, Level level, int ripeningTime);
 
 	/**
 	 * @param ripeningTime Elapsed ripening time for the fruit.

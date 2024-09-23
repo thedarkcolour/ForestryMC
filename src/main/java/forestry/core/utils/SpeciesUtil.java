@@ -116,7 +116,7 @@ public class SpeciesUtil {
 
 		ISpeciesType<S, ?> speciesType = parent1.getActiveSpecies().getType().cast();
 		IBreedingTracker tracker = profile == null ? null : speciesType.getBreedingTracker(level, profile);
-		IClimateProvider climate = IForestryApi.INSTANCE.getClimateManager().getDefaultClimate(level, pos);
+		IClimateProvider climate = IForestryApi.INSTANCE.getClimateManager().createClimateProvider(level, pos);
 
 		for (IMutation<S> mutation : speciesType.getMutations().getCombinationsShuffled(firstParent, secondParent, level.random)) {
 			float chance = chanceGetter.getChance(mutation, level, pos, firstGenome, secondGenome, climate);

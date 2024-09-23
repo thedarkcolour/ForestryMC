@@ -2,6 +2,7 @@ package forestry.arboriculture.blocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -39,7 +42,6 @@ import forestry.core.utils.SpeciesUtil;
 /**
  * Parent class for shared behavior between {@link BlockDefaultLeaves} and {@link BlockForestryLeaves}
  */
-//TODO merge some leaf blocks, do we really need 4 block classes ?
 public abstract class BlockAbstractLeaves extends LeavesBlock implements IColoredBlock {
 	public static final int FOLIAGE_COLOR_INDEX = 0;
 	public static final int FRUIT_COLOR_INDEX = 2;
@@ -63,7 +65,6 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		// creative menu shows BlockDecorativeLeaves instead of these
 	}
 
-	//TODO: Default leaves translation ?
 	@Override
 	public String getDescriptionId() {
 		return "block.forestry.leaves";// Use the same for all leaves, so the default leaves don't have an other name than the pollinated ones
@@ -138,5 +139,18 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 		}
 	}
 
-	protected abstract void getLeafDrop(NonNullList<ItemStack> drops, Level world, @Nullable GameProfile playerProfile, BlockPos pos, float saplingModifier, int fortune, LootContext.Builder builder);
+	protected abstract void getLeafDrop(List<ItemStack> drops, Level level, BlockPos pos, @Nullable GameProfile profile, float saplingModifier, int fortune, LootContext.Builder context);
+
+	@Override
+	public List<ItemStack> getDrops(BlockState pState, LootContext.Builder context) {
+		ArrayList<ItemStack> drops = new ArrayList<>();
+		GameProfile profile = null;
+		if (context.getOptionalParameter(LootContextParams.THIS_ENTITY) instanceof Player player) {
+			profile = player.getGameProfile();
+		}
+		ItemStack tool = context.getOptionalParameter(LootContextParams.TOOL);
+		BlockPos pos = BlockUtil.getPos(context);
+		getLeafDrop(drops, context.getLevel(), pos, profile, 1f, tool != null ? tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE) : 0, context);
+		return drops;
+	}
 }

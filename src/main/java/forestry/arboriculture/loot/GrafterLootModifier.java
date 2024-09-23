@@ -89,7 +89,7 @@ public class GrafterLootModifier extends LootModifier {
 		if (item instanceof IToolGrafter) {
 			saplingModifier = ((IToolGrafter) item).getSaplingModifier(harvestingTool, world, player, pos);
 		}
-		List<ITree> saplings = tree.getSaplings(world, player.getGameProfile(), pos, saplingModifier);
+		List<ITree> saplings = tree.getSaplings(world, pos, player.getGameProfile(), saplingModifier);
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
 				generatedLoot.add(sapling.createStack(TreeLifeStage.SAPLING));
@@ -101,7 +101,7 @@ public class GrafterLootModifier extends LootModifier {
 		if (state.getBlock() instanceof BlockDefaultLeavesFruit) {
 			IGenome genome = tree.getGenome();
 			IFruit fruitProvider = genome.getActiveValue(TreeChromosomes.FRUIT);
-			if (fruitProvider.isFruitLeaf(genome, world, pos)) {
+			if (fruitProvider.isFruitLeaf()) {
 				generatedLoot.addAll(tree.produceStacks(world, pos, Integer.MAX_VALUE));
 			}
 		}

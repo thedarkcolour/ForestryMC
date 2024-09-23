@@ -45,7 +45,7 @@ public class PodFruit extends Fruit {
 
 	@Override
 	public boolean trySpawnFruitBlock(IGenome genome, LevelAccessor world, RandomSource rand, BlockPos pos) {
-		if (rand.nextFloat() > getFruitChance(genome, world, pos)) {
+		if (rand.nextFloat() > getFruitChance(genome, world)) {
 			return false;
 		}
 

@@ -15,7 +15,6 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
 
 import net.minecraftforge.client.event.TextureStitchEvent;
 
@@ -49,7 +48,7 @@ public class RipeningFruit extends Fruit {
 	}
 
 	@Override
-	public boolean isFruitLeaf(IGenome genome, LevelAccessor level, BlockPos pos) {
+	public boolean isFruitLeaf() {
 		return true;
 	}
 

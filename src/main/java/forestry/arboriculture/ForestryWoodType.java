@@ -5,13 +5,13 @@
  ******************************************************************************/
 package forestry.arboriculture;
 
+import java.util.Locale;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Locale;
 
 import com.mojang.authlib.GameProfile;
 
@@ -93,7 +93,7 @@ public enum ForestryWoodType implements IWoodType {
 		IFruit fruit = genome.getActiveValue(TreeChromosomes.FRUIT);
 		BlockState defaultLeaves;
 		FeatureBlockGroup<? extends Block, ForestryLeafType> leavesGroup;
-		if (fruit.isFruitLeaf(genome, level, pos) && rand.nextFloat() <= fruit.getFruitChance(genome, level, pos)) {
+		if (fruit.isFruitLeaf() && rand.nextFloat() <= fruit.getFruitChance(genome, level)) {
 			leavesGroup = ArboricultureBlocks.LEAVES_DEFAULT_FRUIT;
 		} else {
 			leavesGroup = ArboricultureBlocks.LEAVES_DEFAULT;

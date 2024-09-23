@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -84,19 +83,18 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 	}
 
 	@Override
-	protected void getLeafDrop(NonNullList<ItemStack> drops, Level world, @Nullable GameProfile playerProfile, BlockPos pos, float saplingModifier, int fortune, LootContext.Builder builder) {
-		TileLeaves tile = TileUtil.getTile(builder, TileLeaves.class);
-		if (tile == null) {
+	protected void getLeafDrop(List<ItemStack> drops, Level level, @Nullable BlockPos pos, @Nullable GameProfile profile, float saplingModifier, int fortune, LootContext.Builder context) {
+		if (!(level.getBlockEntity(pos) instanceof TileLeaves leaves)) {
 			return;
 		}
 
-		ITree tree = tile.getTree();
+		ITree tree = leaves.getTree();
 		if (tree == null) {
 			return;
 		}
 
 		// Add saplings
-		List<ITree> saplings = tree.getSaplings(world, playerProfile, pos, saplingModifier);
+		List<ITree> saplings = tree.getSaplings(level, pos, profile, saplingModifier);
 
 		for (ITree sapling : saplings) {
 			if (sapling != null) {
@@ -105,8 +103,8 @@ public class BlockForestryLeaves extends BlockAbstractLeaves implements Bonemeal
 		}
 
 		// Add fruits
-		if (tile.hasFruit()) {
-			drops.addAll(tree.produceStacks(world, pos, tile.getRipeningTime()));
+		if (leaves.hasFruit()) {
+			drops.addAll(tree.produceStacks(level, pos, leaves.getRipeningTime()));
 		}
 	}
 

@@ -135,7 +135,7 @@ public class Tree extends Individual<ITreeSpecies, ITree, ITreeSpeciesType> impl
 
 	/* REPRODUCTION */
 	@Override
-	public List<ITree> getSaplings(Level level, @Nullable GameProfile playerProfile, BlockPos pos, float modifier) {
+	public List<ITree> getSaplings(Level level, BlockPos pos, @Nullable GameProfile playerProfile, float modifier) {
 		List<ITree> prod = new ArrayList<>();
 
 		float chance = genome.getActiveValue(TreeChromosomes.SAPLINGS) * modifier;
@@ -159,9 +159,8 @@ public class Tree extends Individual<ITreeSpecies, ITree, ITreeSpeciesType> impl
 
 	/* PRODUCTION */
 	@Override
-	public boolean canBearFruit() {
-		//species.getDefaultGenome().getActiveAllele(TreeChromosomes.FRUITS) != ForestryAlleles.FRUIT_NONE;
-		return true;
+	public boolean hasFruitLeaves() {
+		return this.genome.getActiveValue(TreeChromosomes.FRUIT).isFruitLeaf();
 	}
 
 	@Override
@@ -176,6 +175,6 @@ public class Tree extends Individual<ITreeSpecies, ITree, ITreeSpeciesType> impl
 
 	@Override
 	public List<ItemStack> produceStacks(Level level, BlockPos pos, int ripeningTime) {
-		return this.genome.getActiveValue(TreeChromosomes.FRUIT).getFruits(this.genome, level, pos, ripeningTime);
+		return this.genome.getActiveValue(TreeChromosomes.FRUIT).getFruits(this.genome, level, ripeningTime);
 	}
 }

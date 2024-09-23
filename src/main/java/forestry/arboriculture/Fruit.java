@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,7 +23,7 @@ public class Fruit extends DummyFruit {
 	}
 
 	@Override
-	public List<ItemStack> getFruits(@Nullable IGenome genome, Level level, BlockPos pos, int ripeningTime) {
+	public List<ItemStack> getFruits(@Nullable IGenome genome, Level level, int ripeningTime) {
 		RandomSource rand = level.random;
 
 		if (ripeningTime >= this.ripeningPeriod) {

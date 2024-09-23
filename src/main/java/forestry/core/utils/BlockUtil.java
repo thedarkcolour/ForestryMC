@@ -31,6 +31,9 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 
 import forestry.core.tiles.TileUtil;
 
@@ -164,5 +167,10 @@ public abstract class BlockUtil {
 	public static void sendPlaceSound(Level level, BlockPos pos, BlockState state) {
 		var soundType = state.getSoundType();
 		level.playSound(null, pos, soundType.getPlaceSound(), SoundSource.BLOCKS, (soundType.volume + 1.0f) / 2.0f, soundType.pitch * 0.8f);
+	}
+
+	public static BlockPos getPos(LootContext.Builder context) {
+		Vec3 origin = context.getOptionalParameter(LootContextParams.ORIGIN);
+		return origin != null ? new BlockPos(origin) : BlockPos.ZERO;
 	}
 }

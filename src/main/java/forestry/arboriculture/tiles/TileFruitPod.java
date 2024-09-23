@@ -21,7 +21,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -116,7 +115,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	}
 
 	/* UPDATING */
-	public void onBlockTick(Level world, BlockPos pos, BlockState state, RandomSource rand) {
+	public void onBlockTick(RandomSource rand) {
 		if (canMature() && rand.nextFloat() <= yield) {
 			addRipeness(0.5f);
 		}
@@ -150,7 +149,7 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 	}
 
 	public List<ItemStack> getDrops() {
-		return this.fruit == null ? List.of() : this.fruit.getFruits(this.genome, this.level, getBlockPos(), this.maturity);
+		return this.fruit == null ? List.of() : this.fruit.getFruits(this.genome, this.level, this.maturity);
 	}
 
 	/* NETWORK */
