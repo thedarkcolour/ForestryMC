@@ -101,6 +101,12 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		textLayout.drawRow(transform, chromosomeName, activeName, inactiveName, ColourProperties.INSTANCE.get("gui.screen"), getColorCoding(active.dominant()), getColorCoding(inactive.dominant()));
 	}
 
+	public final void drawHaploidChromosomeRow(PoseStack transform, Component chromosomeName, IIndividual individual, IChromosome<?> chromosome) {
+		IAllele active = individual.getGenome().getActiveAllele(chromosome);
+		MutableComponent activeName = chromosome.getDisplayName(active.cast());
+		textLayout.drawRow(transform, chromosomeName, activeName, ColourProperties.INSTANCE.get("gui.screen"), getColorCoding(active.dominant()));
+	}
+
 	public <S extends ISpecies<?>> void drawSpeciesRow(PoseStack transform, Component text0, IIndividual individual, IRegistryChromosome<S> chromosome) {
 		AllelePair<IValueAllele<S>> species = individual.getGenome().getAllelePair(chromosome);
 
@@ -109,6 +115,7 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 
 		IValueAllele<S> activeSpecies = species.active();
 		IValueAllele<S> inactiveSpecies = species.inactive();
+
 		Map<ISpecies<?>, ItemStack> iconStacks = activeSpecies.value().getType().getAlyzerPlugin().getIconStacks();
 
 		// todo fix Icon Stacks being empty for butterflies
@@ -121,6 +128,21 @@ public class GuiAlyzer extends GuiForestry<ContainerAlyzer> {
 		drawSplitLine(transform, primaryName, textLayout.column1, columnwidth, individual, chromosome, false);
 		drawSplitLine(transform, secondaryName, textLayout.column2, columnwidth, individual, chromosome, true);
 
+		textLayout.newLine();
+	}
+
+	public <S extends ISpecies<?>> void drawHaploidSpeciesRow(PoseStack transform, Component text0, IIndividual individual, IRegistryChromosome<S> chromosome) {
+		AllelePair<IValueAllele<S>> species = individual.getGenome().getAllelePair(chromosome);
+
+		textLayout.drawLine(transform, text0, textLayout.column0);
+		int columnwidth = textLayout.column2 - textLayout.column1 - 2;
+
+		IValueAllele<S> activeSpecies = species.active();
+		Map<ISpecies<?>, ItemStack> iconStacks = activeSpecies.value().getType().getAlyzerPlugin().getIconStacks();
+		// todo fix Icon Stacks being empty for butterflies
+		GuiUtil.drawItemStack(transform, this, iconStacks.get(activeSpecies.value()), leftPos + textLayout.column1 + columnwidth - 20, topPos + 10);
+		Component primaryName = chromosome.getDisplayName(activeSpecies);
+		drawSplitLine(transform, primaryName, textLayout.column1, columnwidth, individual, chromosome, false);
 		textLayout.newLine();
 	}
 

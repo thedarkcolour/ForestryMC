@@ -73,6 +73,11 @@ public class TextLayoutHelper {
 		drawLine(transform, text2, column2, colour2);
 	}
 
+	public void drawRow(PoseStack transform, Component text0, Component text1, int colour0, int colour1){
+		drawLine(transform, text0, column0, colour0);
+		drawLine(transform, text1, column1, colour1);
+	}
+
 	public void drawLine(PoseStack transform, Component text, int x) {
 		drawLine(transform, text, x, defaultFontColor);
 	}
