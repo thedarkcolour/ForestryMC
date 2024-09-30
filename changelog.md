@@ -1,3 +1,7 @@
+## Forestry 1.0.10
+- Fixed Grafter for Forestry trees (#95)
+- Fixed ru_ru, thanks to Quarkrus (#93)
+
 ## Forestry 1.0.9
 - Added API for using custom bee species textures. (#30)
 - Add Analyzer widget to the Alveary GUI (#66)

@@ -142,8 +142,8 @@ public abstract class BlockAbstractLeaves extends LeavesBlock implements IColore
 	protected abstract void getLeafDrop(List<ItemStack> drops, Level level, BlockPos pos, @Nullable GameProfile profile, float saplingModifier, int fortune, LootContext.Builder context);
 
 	@Override
-	public List<ItemStack> getDrops(BlockState pState, LootContext.Builder context) {
-		ArrayList<ItemStack> drops = new ArrayList<>();
+	public List<ItemStack> getDrops(BlockState state, LootContext.Builder context) {
+		ArrayList<ItemStack> drops = new ArrayList<>(super.getDrops(state, context));
 		GameProfile profile = null;
 		if (context.getOptionalParameter(LootContextParams.THIS_ENTITY) instanceof Player player) {
 			profile = player.getGameProfile();
