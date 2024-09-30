@@ -92,7 +92,7 @@ public class TileSapling extends TileTreeContainer implements IOwnedTile {
 
 		Feature<NoneFeatureConfiguration> generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), true);
 		if (generator instanceof FeatureArboriculture arboricultureGenerator) {
-			arboricultureGenerator.preGenerate(level, rand, getBlockPos());
+			arboricultureGenerator.preGenerate(getTree().getGenome(), level, rand, getBlockPos());
 			return arboricultureGenerator.getValidGrowthPos(level, getBlockPos()) != null;
 		} else {
 			return true;
@@ -116,8 +116,8 @@ public class TileSapling extends TileTreeContainer implements IOwnedTile {
 
 		Feature<NoneFeatureConfiguration> generator = tree.getTreeGenerator((ServerLevel) level, getBlockPos(), boneMealed);
 		final boolean generated;
-		if (generator instanceof FeatureBase) {
-			generated = ((FeatureBase) generator).place(tree.getGenome(), level, random, getBlockPos(), false);
+		if (generator instanceof FeatureBase base) {
+			generated = base.place(tree.getGenome(), level, random, getBlockPos(), false);
 		} else {
 			ServerLevel level = (ServerLevel) this.level;
 			generated = generator.place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), random, getBlockPos(), FeatureConfiguration.NONE));

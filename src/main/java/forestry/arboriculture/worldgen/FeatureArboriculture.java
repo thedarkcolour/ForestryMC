@@ -55,7 +55,7 @@ public abstract class FeatureArboriculture extends FeatureBase {
 		TreeBlockTypeLeaf leaf = new TreeBlockTypeLeaf(tree, genome);
 		TreeBlockTypeLog wood = new TreeBlockTypeLog(tree, genome);
 
-		preGenerate(world, rand, pos);
+		preGenerate(genome, world, rand, pos);
 
 		BlockPos genPos;
 		if (forced) {
@@ -80,7 +80,7 @@ public abstract class FeatureArboriculture extends FeatureBase {
 		return false;
 	}
 
-	public void preGenerate(LevelAccessor world, RandomSource rand, BlockPos startPos) {
+	public void preGenerate(IGenome genome, LevelAccessor world, RandomSource rand, BlockPos startPos) {
 	}
 
 	/**

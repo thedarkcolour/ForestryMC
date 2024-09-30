@@ -11,7 +11,6 @@
 package forestry.arboriculture.worldgen;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
@@ -19,6 +18,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
 import forestry.api.arboriculture.ITreeGenData;
+import forestry.api.genetics.IGenome;
 import forestry.core.worldgen.FeatureHelper;
 
 public abstract class FeatureTree extends FeatureArboriculture {
@@ -66,10 +66,9 @@ public abstract class FeatureTree extends FeatureArboriculture {
 	}
 
 	@Override
-	public final void preGenerate(LevelAccessor world, RandomSource rand, BlockPos startPos) {
-		super.preGenerate(world, rand, startPos);
-		height = determineHeight(world, rand, baseHeight, heightVariation);
-		girth = tree.getGirth(tree.getDefaultGenome());
+	public final void preGenerate(IGenome genome, LevelAccessor world, RandomSource rand, BlockPos startPos) {
+		this.height = determineHeight(world, rand, this.baseHeight, this.heightVariation);
+		this.girth = this.tree.getGirth(genome);
 	}
 
 	protected int modifyByHeight(LevelAccessor world, int val, int min, int max) {
