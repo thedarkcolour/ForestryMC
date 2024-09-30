@@ -52,7 +52,9 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 
 		Holder<Biome> biome = world.getBiome(hivePos);
 		TemperatureType temperature = IForestryApi.INSTANCE.getClimateManager().getTemperature(biome);
-		if (!hive.isGoodTemperature(temperature)) {
+		HumidityType humidity = IForestryApi.INSTANCE.getClimateManager().getHumidity(biome);
+		//Check if the biome is valid
+		if (!hive.isGoodBiome(biome) || !hive.isGoodTemperature(temperature) || !hive.isGoodHumidity(humidity)) {
 			return false;
 		}
 
@@ -91,14 +93,14 @@ public class HiveDecorator extends Feature<NoneFeatureConfiguration> {
 		RandomSource rand = context.random();
 		BlockPos pos = context.origin();
 
-		Holder<Biome> biome = level.getBiome(pos);
+		/*Holder<Biome> biome = level.getBiome(pos);
 		HumidityType humidity = IForestryApi.INSTANCE.getClimateManager().getHumidity(biome);
-		TemperatureType temperature = IForestryApi.INSTANCE.getClimateManager().getTemperature(biome);
+		TemperatureType temperature = IForestryApi.INSTANCE.getClimateManager().getTemperature(biome);*/
 
 		ObjectArrayList<IHive> hives = new ObjectArrayList<>(IForestryApi.INSTANCE.getHiveManager().getHives());
 		int numTries = (int) Math.ceil(hives.size() / 2f);
 		double baseChance = ForestryConfig.SERVER.wildHiveSpawnRate.get() * hives.size() / 8;
-		hives.removeIf(hive -> !hive.isGoodBiome(biome) || !hive.isGoodHumidity(humidity) || !hive.isGoodTemperature(temperature));
+		//hives.removeIf(hive -> !hive.isGoodBiome(biome) || !hive.isGoodHumidity(humidity) || !hive.isGoodTemperature(temperature));
 		Util.shuffle(hives, rand);
 
 		for (int tries = 0; tries < numTries; tries++) {

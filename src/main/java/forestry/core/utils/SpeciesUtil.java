@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
+import forestry.api.genetics.alleles.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -32,12 +33,6 @@ import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.IMutation;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.ISpeciesType;
-import forestry.api.genetics.alleles.AllelePair;
-import forestry.api.genetics.alleles.ForestryAlleles;
-import forestry.api.genetics.alleles.IChromosome;
-import forestry.api.genetics.alleles.IKaryotype;
-import forestry.api.genetics.alleles.IRegistryAllele;
-import forestry.api.genetics.alleles.IRegistryChromosome;
 import forestry.api.lepidopterology.genetics.IButterflySpecies;
 import forestry.api.lepidopterology.genetics.IButterflySpeciesType;
 import forestry.api.plugin.IGenomeBuilder;
@@ -150,6 +145,8 @@ public class SpeciesUtil {
 		IGenomeBuilder genome = karyotype.createGenomeBuilder();
 		ImmutableList<AllelePair<?>> parent1 = self.getAllelePairs();
 		ImmutableList<AllelePair<?>> parent2 = mate.getAllelePairs();
+		boolean didMutate1=false;
+		boolean didMutate2=false;
 
 		// Check for mutation. Replace one of the parents with the mutation
 		// template if mutation occurred.
@@ -158,18 +155,31 @@ public class SpeciesUtil {
 			ImmutableList<AllelePair<?>> mutated1 = mutator.mutateSpecies(self, mate);
 			if (mutated1 != null) {
 				parent1 = mutated1;
+				didMutate1 = true;
 			}
 			ImmutableList<AllelePair<?>> mutated2 = mutator.mutateSpecies(mate, self);
 			if (mutated2 != null) {
 				parent2 = mutated2;
+				didMutate2 = true;
 			}
 		}
 		ImmutableList<IChromosome<?>> chromosomes = karyotype.getChromosomes();
 		for (int i = 0; i < chromosomes.size(); i++) {
 			IChromosome<?> chromosome = chromosomes.get(i);
 			// unchecked due to generics being a pain
-			AllelePair parent = parent1.get(i);
-			genome.setUnchecked(chromosome, makeHaploid ? parent.inheritHaploid(rand) : parent.inheritOther(rand, parent2.get(i)));
+			AllelePair allele1 = parent1.get(i);
+			AllelePair allele2 = parent2.get(i);
+			//TODO: make secondary a field in IChromosome
+			if(!makeHaploid && isChromosomeSecondary(chromosome)){
+				// Mutation Template is homozygous so only need to check active
+				if(didMutate1 && isAlleleDefault(allele1.active())){
+					allele1=self.getAllelePair(chromosome);
+				}
+				if(didMutate2 && isAlleleDefault(allele2.active())){
+					allele2=mate.getAllelePair(chromosome);
+				}
+			}
+			genome.setUnchecked(chromosome, makeHaploid ? allele1.inheritHaploid(rand) : allele1.inheritOther(rand, allele2));
 		}
 
 		return individualFactory.apply(genome.build());
@@ -183,5 +193,14 @@ public class SpeciesUtil {
 	public interface ISpeciesMutator {
 		@Nullable
 		ImmutableList<AllelePair<?>> mutateSpecies(IGenome p1, IGenome p2);
+	}
+
+	public static boolean isChromosomeSecondary(IChromosome<?> chromosome){
+		return chromosome==BeeChromosomes.TEMPERATURE_TOLERANCE||chromosome==BeeChromosomes.HUMIDITY_TOLERANCE||
+				chromosome==BeeChromosomes.NEVER_SLEEPS||chromosome==BeeChromosomes.CAVE_DWELLING||chromosome==BeeChromosomes.TOLERATES_RAIN;
+	}
+
+	public static boolean isAlleleDefault(IAllele allele){
+		return allele==ForestryAlleles.FALSE||allele==ForestryAlleles.TOLERANCE_NONE;
 	}
 }

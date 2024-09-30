@@ -632,8 +632,7 @@ public class DefaultBeeSpecies {
 				.setAuthority("MysteriousAges");
 
 		// Savanna
-		apiculture.registerSpecies(ForestryBeeSpecies.SAVANNA, GENUS_SAVANNA, SPECIES_SAVANNA, true, new Color(0xfdaa48))
-				.setBody(new Color(255, 123, 22))
+		apiculture.registerSpecies(ForestryBeeSpecies.SAVANNA, GENUS_SAVANNA, SPECIES_SAVANNA, true, new Color(0xb04e0f))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.ARID)
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.PARCHED), 0.20f)
@@ -648,7 +647,6 @@ public class DefaultBeeSpecies {
 
 		// Argil
 		apiculture.registerSpecies(ForestryBeeSpecies.ARGIL, GENUS_SAVANNA, SPECIES_ARGIL, true, new Color(0x96afd2))
-				.setBody(new Color(255, 123, 22))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.ARID)
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.KAOLIN), 0.30f)
@@ -668,7 +666,6 @@ public class DefaultBeeSpecies {
 
 		// Pride
 		apiculture.registerSpecies(ForestryBeeSpecies.PRIDE, GENUS_SAVANNA, SPECIES_PRIDE, true, new Color(0x650021))
-				.setBody(new Color(255, 123, 22))
 				.setTemperature(TemperatureType.WARM)
 				.setHumidity(HumidityType.ARID)
 				.addProduct(BEE_COMBS.stack(EnumHoneyComb.KAOLIN), 0.20f)

@@ -3,6 +3,8 @@ package forestry.apiculture.genetics;
 import java.util.List;
 import java.util.Map;
 
+import forestry.core.config.ForestryConfig;
+import forestry.core.render.ColourProperties;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -40,42 +42,78 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
 			IIndividualHandlerItem.ifPresent(stack, (individual, stage) -> {
 				if (individual instanceof IBee bee) {
-					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
+					if(ForestryConfig.SERVER.useHaploidDrones.get() && stage==BeeLifeStage.DRONE){
+						TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
-					textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
+						textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
 
-					textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
-					textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);
+						textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
 
-					textLayout.newLine();
-					textLayout.newLine();
+						textLayout.newLine();
+						textLayout.newLine();
 
-					guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), bee, BeeChromosomes.SPECIES);
-					textLayout.newLine();
+						guiAlyzer.drawHaploidSpeciesRow(transform, Component.translatable("for.gui.species"), bee, BeeChromosomes.SPECIES);
+						textLayout.newLine();
 
-					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.lifespan"), bee, BeeChromosomes.LIFESPAN);
-					textLayout.newLine();
-					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.speed"), bee, BeeChromosomes.SPEED);
-					textLayout.newLine();
-					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.pollination"), bee, BeeChromosomes.POLLINATION);
-					textLayout.newLine();
-					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.flowers"), bee, BeeChromosomes.FLOWER_TYPE);
-					textLayout.newLine();
+						guiAlyzer.drawHaploidChromosomeRow(transform, Component.translatable("for.gui.lifespan"), bee, BeeChromosomes.LIFESPAN);
+						textLayout.newLine();
+						guiAlyzer.drawHaploidChromosomeRow(transform, Component.translatable("for.gui.speed"), bee, BeeChromosomes.SPEED);
+						textLayout.newLine();
+						guiAlyzer.drawHaploidChromosomeRow(transform, Component.translatable("for.gui.pollination"), bee, BeeChromosomes.POLLINATION);
+						textLayout.newLine();
+						guiAlyzer.drawHaploidChromosomeRow(transform, Component.translatable("for.gui.flowers"), bee, BeeChromosomes.FLOWER_TYPE);
+						textLayout.newLine();
 
-					textLayout.drawLine(transform, Component.translatable("for.gui.fertility"), GuiAlyzer.COLUMN_0);
-					IIntegerAllele primaryFertility = bee.getGenome().getActiveAllele(BeeChromosomes.FERTILITY);
-					IIntegerAllele secondaryFertility = bee.getGenome().getInactiveAllele(BeeChromosomes.FERTILITY);
-					guiAlyzer.drawFertilityInfo(transform, primaryFertility.value(), GuiAlyzer.COLUMN_1, guiAlyzer.getColorCoding(primaryFertility.dominant()), 0);
-					guiAlyzer.drawFertilityInfo(transform, secondaryFertility.value(), GuiAlyzer.COLUMN_2, guiAlyzer.getColorCoding(secondaryFertility.dominant()), 0);
-					textLayout.newLine();
+						textLayout.drawLine(transform, Component.translatable("for.gui.fertility"), GuiAlyzer.COLUMN_0);
+						IIntegerAllele primaryFertility = bee.getGenome().getActiveAllele(BeeChromosomes.FERTILITY);
+						guiAlyzer.drawFertilityInfo(transform, primaryFertility.value(), GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(primaryFertility.dominant()), 0);
+						textLayout.newLine();
 
-					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.area"), bee, BeeChromosomes.TERRITORY);
-					textLayout.newLine();
+						guiAlyzer.drawHaploidChromosomeRow(transform, Component.translatable("for.gui.area"), bee, BeeChromosomes.TERRITORY);
+						textLayout.newLine();
 
-					guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.effect"), bee, BeeChromosomes.EFFECT);
-					textLayout.newLine();
+						guiAlyzer.drawHaploidChromosomeRow(transform, Component.translatable("for.gui.effect"), bee, BeeChromosomes.EFFECT);
+						textLayout.newLine();
 
-					textLayout.endPage(transform);
+						textLayout.endPage(transform);
+					}else {
+						TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
+
+						textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
+						textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);
+
+						textLayout.newLine();
+						textLayout.newLine();
+
+						guiAlyzer.drawSpeciesRow(transform, Component.translatable("for.gui.species"), bee, BeeChromosomes.SPECIES);
+						textLayout.newLine();
+
+						guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.lifespan"), bee, BeeChromosomes.LIFESPAN);
+						textLayout.newLine();
+						guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.speed"), bee, BeeChromosomes.SPEED);
+						textLayout.newLine();
+						guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.pollination"), bee, BeeChromosomes.POLLINATION);
+						textLayout.newLine();
+						guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.flowers"), bee, BeeChromosomes.FLOWER_TYPE);
+						textLayout.newLine();
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.fertility"), GuiAlyzer.COLUMN_0);
+						IIntegerAllele primaryFertility = bee.getGenome().getActiveAllele(BeeChromosomes.FERTILITY);
+						IIntegerAllele secondaryFertility = bee.getGenome().getInactiveAllele(BeeChromosomes.FERTILITY);
+						guiAlyzer.drawFertilityInfo(transform, primaryFertility.value(), GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(primaryFertility.dominant()), 0);
+						guiAlyzer.drawFertilityInfo(transform, secondaryFertility.value(), GuiAlyzer.COLUMN_2, GuiAlyzer.getColorCoding(secondaryFertility.dominant()), 0);
+						textLayout.newLine();
+
+						guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.area"), bee, BeeChromosomes.TERRITORY);
+						textLayout.newLine();
+
+						guiAlyzer.drawChromosomeRow(transform, Component.translatable("for.gui.effect"), bee, BeeChromosomes.EFFECT);
+						textLayout.newLine();
+
+						textLayout.endPage(transform);
+					}
 				}
 			});
 		}
@@ -86,102 +124,182 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
 			IIndividualHandlerItem.ifPresent(stack, (individual, type) -> {
 				if (individual instanceof IBee bee) {
-					IGenome genome = bee.getGenome();
-					IBeeSpecies primaryAllele = genome.getActiveValue(BeeChromosomes.SPECIES);
-					IBeeSpecies secondaryAllele = genome.getInactiveValue(BeeChromosomes.SPECIES);
+					if(ForestryConfig.SERVER.useHaploidDrones.get() && type == BeeLifeStage.DRONE){
+						IGenome genome = bee.getGenome();
+						IBeeSpecies primaryAllele = genome.getActiveValue(BeeChromosomes.SPECIES);
+						IBeeSpecies secondaryAllele = genome.getInactiveValue(BeeChromosomes.SPECIES);
 
-					TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
+						TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
-					textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
+						textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
 
-					textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
-					textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);
+						textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
 
-					textLayout.newLine();
+						textLayout.newLine();
 
-					guiAlyzer.drawRow(transform, Component.translatable("for.gui.climate"), ClimateHelper.toDisplay(primaryAllele.getTemperature()),
-							ClimateHelper.toDisplay(secondaryAllele.getTemperature()), bee, BeeChromosomes.SPECIES);
+						textLayout.drawRow(transform, Component.translatable("for.gui.climate"), ClimateHelper.toDisplay(primaryAllele.getTemperature()),
+								ColourProperties.INSTANCE.get("gui.screen"), GuiAlyzer.getColorCoding(individual.getGenome().getActiveAllele(BeeChromosomes.SPECIES).dominant()));
 
-					textLayout.newLine();
+						textLayout.newLine();
 
-					IValueAllele<ToleranceType> tempToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
-					IValueAllele<ToleranceType> tempToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
-					textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
-					guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceActive, GuiAlyzer.COLUMN_1);
-					guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceInactive, GuiAlyzer.COLUMN_2);
+						IValueAllele<ToleranceType> tempToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
+						textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
+						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceActive, GuiAlyzer.COLUMN_1);
 
-					textLayout.newLine(16);
+						textLayout.newLine(16);
 
-					guiAlyzer.drawRow(transform, Component.translatable("for.gui.humidity"), ClimateHelper.toDisplay(primaryAllele.getHumidity()),
-							ClimateHelper.toDisplay(secondaryAllele.getHumidity()), bee, BeeChromosomes.SPECIES);
+						textLayout.drawRow(transform, Component.translatable("for.gui.humidity"), ClimateHelper.toDisplay(primaryAllele.getTemperature()),
+								ColourProperties.INSTANCE.get("gui.screen"), GuiAlyzer.getColorCoding(individual.getGenome().getActiveAllele(BeeChromosomes.SPECIES).dominant()));
 
-					textLayout.newLine();
+						textLayout.newLine();
 
-					IValueAllele<ToleranceType> humidToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
-					IValueAllele<ToleranceType> humidToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
-					textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
-					guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceActive, GuiAlyzer.COLUMN_1);
-					guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceInactive, GuiAlyzer.COLUMN_2);
+						IValueAllele<ToleranceType> humidToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
+						textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
+						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceActive, GuiAlyzer.COLUMN_1);
 
-					textLayout.newLine(16);
+						textLayout.newLine(16);
 
-					Component yes = Component.translatable("for.yes");
-					Component no = Component.translatable("for.no");
+						Component yes = Component.translatable("for.yes");
+						Component no = Component.translatable("for.no");
 
-					Component diurnal0, diurnal1, nocturnal0, nocturnal1;
-					if (genome.getActiveValue(BeeChromosomes.NEVER_SLEEPS)) {
-						nocturnal0 = diurnal0 = yes;
-					} else {
-						nocturnal0 = primaryAllele.isNocturnal() ? yes : no;
-						diurnal0 = !primaryAllele.isNocturnal() ? yes : no;
-					}
-					if (genome.getInactiveValue(BeeChromosomes.NEVER_SLEEPS)) {
-						nocturnal1 = diurnal1 = yes;
-					} else {
-						nocturnal1 = secondaryAllele.isNocturnal() ? yes : no;
-						diurnal1 = !secondaryAllele.isNocturnal() ? yes : no;
-					}
-
-					textLayout.drawLine(transform, Component.translatable("for.gui.diurnal"), GuiAlyzer.COLUMN_0);
-					textLayout.drawLine(transform, diurnal0, GuiAlyzer.COLUMN_1, guiAlyzer.getColorCoding(false));
-					textLayout.drawLine(transform, diurnal1, GuiAlyzer.COLUMN_2, guiAlyzer.getColorCoding(false));
-					textLayout.newLineCompressed();
-
-					textLayout.drawLine(transform, Component.translatable("for.gui.nocturnal"), GuiAlyzer.COLUMN_0);
-					textLayout.drawLine(transform, nocturnal0, GuiAlyzer.COLUMN_1, guiAlyzer.getColorCoding(false));
-					textLayout.drawLine(transform, nocturnal1, GuiAlyzer.COLUMN_2, guiAlyzer.getColorCoding(false));
-					textLayout.newLineCompressed();
-
-					Component primary = genome.getActiveValue(BeeChromosomes.TOLERATES_RAIN) ? yes : no;
-					Component secondary = genome.getInactiveValue(BeeChromosomes.TOLERATES_RAIN) ? yes : no;
-
-					guiAlyzer.drawRow(transform, Component.translatable("for.gui.flyer"), primary, secondary, bee, BeeChromosomes.TOLERATES_RAIN);
-
-					textLayout.newLineCompressed();
-
-					primary = genome.getActiveValue(BeeChromosomes.CAVE_DWELLING) ? yes : no;
-					secondary = genome.getInactiveValue(BeeChromosomes.CAVE_DWELLING) ? yes : no;
-
-					guiAlyzer.drawRow(transform, Component.translatable("for.gui.cave"), primary, secondary, bee, BeeChromosomes.CAVE_DWELLING);
-
-					textLayout.newLine();
-
-					if (type == BeeLifeStage.PRINCESS || type == BeeLifeStage.QUEEN) {
-						String displayTextKey = "for.bees.stock.pristine";
-						if (!bee.isPristine()) {
-							displayTextKey = "for.bees.stock.ignoble";
+						Component diurnal0, diurnal1, nocturnal0, nocturnal1;
+						if (genome.getActiveValue(BeeChromosomes.NEVER_SLEEPS)) {
+							nocturnal0 = diurnal0 = yes;
+						} else {
+							nocturnal0 = primaryAllele.isNocturnal() ? yes : no;
+							diurnal0 = !primaryAllele.isNocturnal() ? yes : no;
 						}
-						Component displayText = Component.translatable(displayTextKey);
-						textLayout.drawCenteredLine(transform, displayText, 8, 208, guiAlyzer.getFontColor().get("gui.beealyzer.binomial"));
-					}
+						if (genome.getInactiveValue(BeeChromosomes.NEVER_SLEEPS)) {
+							nocturnal1 = diurnal1 = yes;
+						} else {
+							nocturnal1 = secondaryAllele.isNocturnal() ? yes : no;
+							diurnal1 = !secondaryAllele.isNocturnal() ? yes : no;
+						}
 
-					if (bee.getGeneration() >= 0) {
+						textLayout.drawLine(transform, Component.translatable("for.gui.diurnal"), GuiAlyzer.COLUMN_0);
+						textLayout.drawLine(transform, diurnal0, GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(false));
 						textLayout.newLineCompressed();
-						Component displayText = Component.translatable("for.gui.beealyzer.generations", bee.getGeneration());
-						textLayout.drawCenteredLine(transform, displayText, 8, 208, guiAlyzer.getFontColor().get("gui.beealyzer.binomial"));
-					}
 
-					textLayout.endPage(transform);
+						textLayout.drawLine(transform, Component.translatable("for.gui.nocturnal"), GuiAlyzer.COLUMN_0);
+						textLayout.drawLine(transform, nocturnal0, GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(false));
+						textLayout.newLineCompressed();
+
+						Component primary = genome.getActiveValue(BeeChromosomes.TOLERATES_RAIN) ? yes : no;
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.flyer"), GuiAlyzer.COLUMN_0);
+						textLayout.drawLine(transform, primary, GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(false));
+						textLayout.newLineCompressed();
+
+						primary = genome.getActiveValue(BeeChromosomes.CAVE_DWELLING) ? yes : no;
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.cave"), GuiAlyzer.COLUMN_0);
+						textLayout.drawLine(transform, primary, GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(false));
+
+						textLayout.newLine();
+
+						textLayout.endPage(transform);
+					}else {
+						IGenome genome = bee.getGenome();
+						IBeeSpecies primaryAllele = genome.getActiveValue(BeeChromosomes.SPECIES);
+						IBeeSpecies secondaryAllele = genome.getInactiveValue(BeeChromosomes.SPECIES);
+
+						TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
+
+						textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.active"), GuiAlyzer.COLUMN_1);
+						textLayout.drawLine(transform, Component.translatable("for.gui.inactive"), GuiAlyzer.COLUMN_2);
+
+						textLayout.newLine();
+
+						guiAlyzer.drawRow(transform, Component.translatable("for.gui.climate"), ClimateHelper.toDisplay(primaryAllele.getTemperature()),
+								ClimateHelper.toDisplay(secondaryAllele.getTemperature()), bee, BeeChromosomes.SPECIES);
+
+						textLayout.newLine();
+
+						IValueAllele<ToleranceType> tempToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
+						IValueAllele<ToleranceType> tempToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
+						textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
+						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceActive, GuiAlyzer.COLUMN_1);
+						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceInactive, GuiAlyzer.COLUMN_2);
+
+						textLayout.newLine(16);
+
+						guiAlyzer.drawRow(transform, Component.translatable("for.gui.humidity"), ClimateHelper.toDisplay(primaryAllele.getHumidity()),
+								ClimateHelper.toDisplay(secondaryAllele.getHumidity()), bee, BeeChromosomes.SPECIES);
+
+						textLayout.newLine();
+
+						IValueAllele<ToleranceType> humidToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
+						IValueAllele<ToleranceType> humidToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
+						textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
+						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceActive, GuiAlyzer.COLUMN_1);
+						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceInactive, GuiAlyzer.COLUMN_2);
+
+						textLayout.newLine(16);
+
+						Component yes = Component.translatable("for.yes");
+						Component no = Component.translatable("for.no");
+
+						Component diurnal0, diurnal1, nocturnal0, nocturnal1;
+						if (genome.getActiveValue(BeeChromosomes.NEVER_SLEEPS)) {
+							nocturnal0 = diurnal0 = yes;
+						} else {
+							nocturnal0 = primaryAllele.isNocturnal() ? yes : no;
+							diurnal0 = !primaryAllele.isNocturnal() ? yes : no;
+						}
+						if (genome.getInactiveValue(BeeChromosomes.NEVER_SLEEPS)) {
+							nocturnal1 = diurnal1 = yes;
+						} else {
+							nocturnal1 = secondaryAllele.isNocturnal() ? yes : no;
+							diurnal1 = !secondaryAllele.isNocturnal() ? yes : no;
+						}
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.diurnal"), GuiAlyzer.COLUMN_0);
+						textLayout.drawLine(transform, diurnal0, GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(false));
+						textLayout.drawLine(transform, diurnal1, GuiAlyzer.COLUMN_2, GuiAlyzer.getColorCoding(false));
+						textLayout.newLineCompressed();
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.nocturnal"), GuiAlyzer.COLUMN_0);
+						textLayout.drawLine(transform, nocturnal0, GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(false));
+						textLayout.drawLine(transform, nocturnal1, GuiAlyzer.COLUMN_2, GuiAlyzer.getColorCoding(false));
+						textLayout.newLineCompressed();
+
+						Component primary = genome.getActiveValue(BeeChromosomes.TOLERATES_RAIN) ? yes : no;
+						Component secondary = genome.getInactiveValue(BeeChromosomes.TOLERATES_RAIN) ? yes : no;
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.flyer"), GuiAlyzer.COLUMN_0);
+						textLayout.drawLine(transform, primary, GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(false));
+						textLayout.drawLine(transform, secondary, GuiAlyzer.COLUMN_2, GuiAlyzer.getColorCoding(false));
+
+						textLayout.newLineCompressed();
+
+						primary = genome.getActiveValue(BeeChromosomes.CAVE_DWELLING) ? yes : no;
+						secondary = genome.getInactiveValue(BeeChromosomes.CAVE_DWELLING) ? yes : no;
+
+						textLayout.drawLine(transform, Component.translatable("for.gui.cave"), GuiAlyzer.COLUMN_0);
+						textLayout.drawLine(transform, primary, GuiAlyzer.COLUMN_1, GuiAlyzer.getColorCoding(false));
+						textLayout.drawLine(transform, secondary, GuiAlyzer.COLUMN_2, GuiAlyzer.getColorCoding(false));
+
+						textLayout.newLine();
+
+						if (type == BeeLifeStage.PRINCESS || type == BeeLifeStage.QUEEN) {
+							String displayTextKey = "for.bees.stock.pristine";
+							if (!bee.isPristine()) {
+								displayTextKey = "for.bees.stock.ignoble";
+							}
+							Component displayText = Component.translatable(displayTextKey);
+							textLayout.drawCenteredLine(transform, displayText, 8, 208, guiAlyzer.getFontColor().get("gui.beealyzer.binomial"));
+						}
+
+						if (bee.getGeneration() > 0) {
+							textLayout.newLineCompressed();
+							Component displayText = Component.translatable("for.gui.beealyzer.generations", bee.getGeneration());
+							textLayout.drawCenteredLine(transform, displayText, 8, 208, guiAlyzer.getFontColor().get("gui.beealyzer.binomial"));
+						}
+
+						textLayout.endPage(transform);
+					}
 				}
 			});
 		}
