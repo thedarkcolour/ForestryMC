@@ -3,8 +3,6 @@ package forestry.apiculture.genetics;
 import java.util.List;
 import java.util.Map;
 
-import forestry.core.config.ForestryConfig;
-import forestry.core.render.ColourProperties;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -18,16 +16,18 @@ import forestry.api.core.ToleranceType;
 import forestry.api.genetics.ClimateHelper;
 import forestry.api.genetics.IAlyzerPlugin;
 import forestry.api.genetics.IGenome;
-import forestry.api.genetics.capability.IIndividualHandlerItem;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.BeeChromosomes;
 import forestry.api.genetics.alleles.IIntegerAllele;
 import forestry.api.genetics.alleles.IValueAllele;
+import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.core.config.ForestryConfig;
 import forestry.core.gui.GuiAlyzer;
 import forestry.core.gui.GuiForestry;
 import forestry.core.gui.TextLayoutHelper;
 import forestry.core.gui.widgets.ItemStackWidget;
 import forestry.core.gui.widgets.WidgetManager;
+import forestry.core.render.ColourProperties;
 import forestry.core.utils.GeneticsUtil;
 import forestry.core.utils.SpeciesUtil;
 
@@ -42,7 +42,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
 			IIndividualHandlerItem.ifPresent(stack, (individual, stage) -> {
 				if (individual instanceof IBee bee) {
-					if(ForestryConfig.SERVER.useHaploidDrones.get() && stage==BeeLifeStage.DRONE){
+					if (ForestryConfig.SERVER.useHaploidDrones.get() && stage == BeeLifeStage.DRONE) {
 						TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
 						textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
@@ -76,7 +76,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 						textLayout.newLine();
 
 						textLayout.endPage(transform);
-					}else {
+					} else {
 						TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
 						textLayout.startPage(transform, GuiAlyzer.COLUMN_0, GuiAlyzer.COLUMN_1, GuiAlyzer.COLUMN_2);
@@ -124,10 +124,9 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 		if (gui instanceof GuiAlyzer guiAlyzer) {
 			IIndividualHandlerItem.ifPresent(stack, (individual, type) -> {
 				if (individual instanceof IBee bee) {
-					if(ForestryConfig.SERVER.useHaploidDrones.get() && type == BeeLifeStage.DRONE){
+					if (ForestryConfig.SERVER.useHaploidDrones.get() && type == BeeLifeStage.DRONE) {
 						IGenome genome = bee.getGenome();
 						IBeeSpecies primaryAllele = genome.getActiveValue(BeeChromosomes.SPECIES);
-						IBeeSpecies secondaryAllele = genome.getInactiveValue(BeeChromosomes.SPECIES);
 
 						TextLayoutHelper textLayout = guiAlyzer.getTextLayout();
 
@@ -138,42 +137,36 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 						textLayout.newLine();
 
 						textLayout.drawRow(transform, Component.translatable("for.gui.climate"), ClimateHelper.toDisplay(primaryAllele.getTemperature()),
-								ColourProperties.INSTANCE.get("gui.screen"), GuiAlyzer.getColorCoding(individual.getGenome().getActiveAllele(BeeChromosomes.SPECIES).dominant()));
+								ColourProperties.INSTANCE.get("gui.screen"), GuiAlyzer.getColorCoding(genome.getActiveAllele(BeeChromosomes.SPECIES).dominant()));
 
 						textLayout.newLine();
 
-						IValueAllele<ToleranceType> tempToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
+						IValueAllele<ToleranceType> tempToleranceActive = genome.getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
 						textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
 						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceActive, GuiAlyzer.COLUMN_1);
 
 						textLayout.newLine(16);
 
-						textLayout.drawRow(transform, Component.translatable("for.gui.humidity"), ClimateHelper.toDisplay(primaryAllele.getTemperature()),
+						textLayout.drawRow(transform, Component.translatable("for.gui.humidity"), ClimateHelper.toDisplay(primaryAllele.getHumidity()),
 								ColourProperties.INSTANCE.get("gui.screen"), GuiAlyzer.getColorCoding(individual.getGenome().getActiveAllele(BeeChromosomes.SPECIES).dominant()));
 
 						textLayout.newLine();
 
-						IValueAllele<ToleranceType> humidToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
+						IValueAllele<ToleranceType> humidToleranceActive = genome.getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
 						textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
-						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceActive, GuiAlyzer.COLUMN_1);
+						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.HUMIDITY_TOLERANCE, humidToleranceActive, GuiAlyzer.COLUMN_1);
 
 						textLayout.newLine(16);
 
 						Component yes = Component.translatable("for.yes");
 						Component no = Component.translatable("for.no");
 
-						Component diurnal0, diurnal1, nocturnal0, nocturnal1;
+						Component diurnal0, nocturnal0;
 						if (genome.getActiveValue(BeeChromosomes.NEVER_SLEEPS)) {
 							nocturnal0 = diurnal0 = yes;
 						} else {
 							nocturnal0 = primaryAllele.isNocturnal() ? yes : no;
 							diurnal0 = !primaryAllele.isNocturnal() ? yes : no;
-						}
-						if (genome.getInactiveValue(BeeChromosomes.NEVER_SLEEPS)) {
-							nocturnal1 = diurnal1 = yes;
-						} else {
-							nocturnal1 = secondaryAllele.isNocturnal() ? yes : no;
-							diurnal1 = !secondaryAllele.isNocturnal() ? yes : no;
 						}
 
 						textLayout.drawLine(transform, Component.translatable("for.gui.diurnal"), GuiAlyzer.COLUMN_0);
@@ -198,7 +191,7 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 						textLayout.newLine();
 
 						textLayout.endPage(transform);
-					}else {
+					} else {
 						IGenome genome = bee.getGenome();
 						IBeeSpecies primaryAllele = genome.getActiveValue(BeeChromosomes.SPECIES);
 						IBeeSpecies secondaryAllele = genome.getInactiveValue(BeeChromosomes.SPECIES);
@@ -217,8 +210,8 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 
 						textLayout.newLine();
 
-						IValueAllele<ToleranceType> tempToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
-						IValueAllele<ToleranceType> tempToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
+						IValueAllele<ToleranceType> tempToleranceActive = genome.getActiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
+						IValueAllele<ToleranceType> tempToleranceInactive = genome.getInactiveAllele(BeeChromosomes.TEMPERATURE_TOLERANCE);
 						textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
 						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceActive, GuiAlyzer.COLUMN_1);
 						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, tempToleranceInactive, GuiAlyzer.COLUMN_2);
@@ -230,8 +223,8 @@ public enum BeeAlyzerPlugin implements IAlyzerPlugin {
 
 						textLayout.newLine();
 
-						IValueAllele<ToleranceType> humidToleranceActive = bee.getGenome().getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
-						IValueAllele<ToleranceType> humidToleranceInactive = bee.getGenome().getInactiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
+						IValueAllele<ToleranceType> humidToleranceActive = genome.getActiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
+						IValueAllele<ToleranceType> humidToleranceInactive = genome.getInactiveAllele(BeeChromosomes.HUMIDITY_TOLERANCE);
 						textLayout.drawLine(transform, Component.literal("  ").append(Component.translatable("for.gui.tolerance")), GuiAlyzer.COLUMN_0);
 						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceActive, GuiAlyzer.COLUMN_1);
 						guiAlyzer.drawToleranceInfo(transform, BeeChromosomes.TEMPERATURE_TOLERANCE, humidToleranceInactive, GuiAlyzer.COLUMN_2);

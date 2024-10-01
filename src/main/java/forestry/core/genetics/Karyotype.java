@@ -7,8 +7,11 @@ import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -32,14 +35,16 @@ public class Karyotype implements IKaryotype {
 	private final IRegistryChromosome<? extends ISpecies<?>> speciesChromosome;
 	private final ImmutableMap<IChromosome<?>, ? extends IAllele> defaultAlleles;
 	private final ResourceLocation defaultSpecies;
+	private final Set<IChromosome<?>> weaklyInheritedChromosomes;
 	private final Codec<IGenome> genomeCodec;
 
 	// Used in Karyotype.Builder
-	public Karyotype(ImmutableMap<IChromosome<?>, ImmutableSet<? extends IAllele>> chromosomes, ImmutableMap<IChromosome<?>, ? extends IAllele> defaultAlleles, ResourceLocation defaultSpecies) {
+	public Karyotype(ImmutableMap<IChromosome<?>, ImmutableSet<? extends IAllele>> chromosomes, ImmutableMap<IChromosome<?>, ? extends IAllele> defaultAlleles, ResourceLocation defaultSpecies, Set<IChromosome<?>> weaklyInheritedChromosomes) {
 		this.chromosomes = chromosomes;
 		this.speciesChromosome = (IRegistryChromosome<? extends ISpecies<?>>) chromosomes.keySet().asList().get(0);
 		this.defaultAlleles = defaultAlleles;
 		this.defaultSpecies = defaultSpecies;
+		this.weaklyInheritedChromosomes = weaklyInheritedChromosomes;
 
 		Keyable chromosomesKeyable = Keyable.forStrings(() -> this.chromosomes.keySet().stream().map(chromosome -> chromosome.id().toString()));
 		this.genomeCodec = Codec.simpleMap(IForestryApi.INSTANCE.getAlleleManager().chromosomeCodec(), AllelePair.CODEC, chromosomesKeyable)
@@ -95,6 +100,11 @@ public class Karyotype implements IKaryotype {
 			throw new IllegalArgumentException("Chromosome is not valid");
 		}
 		return allele;
+	}
+
+	@Override
+	public boolean isWeaklyInherited(IChromosome<?> chromosome) {
+		return this.weaklyInheritedChromosomes.contains(chromosome);
 	}
 
 	@SuppressWarnings({"DataFlowIssue", "unchecked"})
@@ -164,6 +174,7 @@ public class Karyotype implements IKaryotype {
 
 			ImmutableMap.Builder<IChromosome<?>, ImmutableSet<? extends IAllele>> permittedAlleles = ImmutableMap.builderWithExpectedSize(this.chromosomes.size() + 1);
 			ImmutableMap.Builder<IChromosome<?>, IAllele> defaultAlleles = ImmutableMap.builderWithExpectedSize(this.chromosomes.size() + 1);
+			Set<IChromosome<?>> weaklyInheritedChromosomes = Collections.newSetFromMap(new IdentityHashMap<>());
 
 			// Species chromosome goes first
 			permittedAlleles.put(this.speciesChromosome, ImmutableSet.of());
@@ -179,8 +190,13 @@ public class Karyotype implements IKaryotype {
 				}
 				permittedAlleles.put(chromosome, permitted);
 				defaultAlleles.put(chromosome, builder.defaultAllele);
+
+				if (builder.weaklyInherited) {
+					weaklyInheritedChromosomes.add(chromosome);
+				}
 			}
-			return new Karyotype(permittedAlleles.build(), defaultAlleles.build(), this.defaultSpeciesId);
+
+			return new Karyotype(permittedAlleles.build(), defaultAlleles.build(), this.defaultSpeciesId, weaklyInheritedChromosomes);
 		}
 	}
 }

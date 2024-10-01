@@ -12,6 +12,7 @@ public class ChromosomeBuilder<A extends IAllele> implements IChromosomeBuilder<
 	final IChromosome<A> chromosome;
 	final ImmutableSet.Builder<A> alleles;
 	A defaultAllele;
+	boolean weaklyInherited;
 
 	public ChromosomeBuilder(IChromosome<A> chromosome) {
 		this.chromosome = chromosome;
@@ -30,7 +31,9 @@ public class ChromosomeBuilder<A extends IAllele> implements IChromosomeBuilder<
 		return this;
 	}
 
-	public IChromosome<A> getChromosome() {
-		return this.chromosome;
+	@Override
+	public IChromosomeBuilder<A> setWeaklyInherited(boolean weaklyInherited) {
+		this.weaklyInherited = weaklyInherited;
+		return this;
 	}
 }

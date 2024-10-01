@@ -106,12 +106,17 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 					karyotype.set(BeeChromosomes.FERTILITY, ForestryAlleles.FERTILITY_2)
 							.addAlleles(ForestryAlleles.DEFAULT_BEE_FERTILITIES);
 					karyotype.set(BeeChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_NONE)
-							.addAlleles(ForestryAlleles.DEFAULT_TEMPERATURE_TOLERANCES);
+							.addAlleles(ForestryAlleles.DEFAULT_TEMPERATURE_TOLERANCES)
+							.setWeaklyInherited(true);
 					karyotype.set(BeeChromosomes.HUMIDITY_TOLERANCE, ForestryAlleles.TOLERANCE_NONE)
-							.addAlleles(ForestryAlleles.DEFAULT_HUMIDITY_TOLERANCES);
-					karyotype.set(BeeChromosomes.NEVER_SLEEPS, false);
-					karyotype.set(BeeChromosomes.CAVE_DWELLING, false);
-					karyotype.set(BeeChromosomes.TOLERATES_RAIN, false);
+							.addAlleles(ForestryAlleles.DEFAULT_HUMIDITY_TOLERANCES)
+							.setWeaklyInherited(true);
+					karyotype.set(BeeChromosomes.NEVER_SLEEPS, false)
+							.setWeaklyInherited(true);
+					karyotype.set(BeeChromosomes.CAVE_DWELLING, false)
+							.setWeaklyInherited(true);
+					karyotype.set(BeeChromosomes.TOLERATES_RAIN, false)
+							.setWeaklyInherited(true);
 					karyotype.set(BeeChromosomes.FLOWER_TYPE, ForestryAlleles.FLOWER_TYPE_VANILLA);
 					karyotype.set(BeeChromosomes.TERRITORY, ForestryAlleles.TERRITORY_AVERAGE)
 							.addAlleles(ForestryAlleles.DEFAULT_TERRITORIES);
@@ -160,11 +165,15 @@ public class DefaultForestryPlugin implements IForestryPlugin {
 					karyotype.set(ButterflyChromosomes.FERTILITY, ForestryAlleles.FERTILITY_3)
 							.addAlleles(ForestryAlleles.DEFAULT_BUTTERFLY_FERTILITIES);
 					karyotype.set(ButterflyChromosomes.TEMPERATURE_TOLERANCE, ForestryAlleles.TOLERANCE_NONE)
-							.addAlleles(ForestryAlleles.DEFAULT_TEMPERATURE_TOLERANCES);
+							.addAlleles(ForestryAlleles.DEFAULT_TEMPERATURE_TOLERANCES)
+							.setWeaklyInherited(true);
 					karyotype.set(ButterflyChromosomes.HUMIDITY_TOLERANCE, ForestryAlleles.TOLERANCE_NONE)
-							.addAlleles(ForestryAlleles.DEFAULT_HUMIDITY_TOLERANCES);
-					karyotype.set(ButterflyChromosomes.NEVER_SLEEPS, false);
-					karyotype.set(ButterflyChromosomes.TOLERATES_RAIN, false);
+							.addAlleles(ForestryAlleles.DEFAULT_HUMIDITY_TOLERANCES)
+							.setWeaklyInherited(true);
+					karyotype.set(ButterflyChromosomes.NEVER_SLEEPS, false)
+							.setWeaklyInherited(true);
+					karyotype.set(ButterflyChromosomes.TOLERATES_RAIN, false)
+							.setWeaklyInherited(true);
 					karyotype.set(ButterflyChromosomes.FIREPROOF, false);
 					karyotype.set(ButterflyChromosomes.FLOWER_TYPE, ForestryAlleles.FLOWER_TYPE_VANILLA);
 					karyotype.set(ButterflyChromosomes.EFFECT, ForestryAlleles.BUTTERFLY_EFFECT_NONE);

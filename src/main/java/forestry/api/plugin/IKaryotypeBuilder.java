@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import forestry.api.genetics.ISpecies;
 import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.IAllele;
+import forestry.api.genetics.alleles.IBooleanAllele;
 import forestry.api.genetics.alleles.IBooleanChromosome;
 import forestry.api.genetics.alleles.IChromosome;
 import forestry.api.genetics.alleles.IRegistryChromosome;
@@ -35,8 +36,8 @@ public interface IKaryotypeBuilder {
 	/**
 	 * Overload of {@link #set(IRegistryChromosome, ResourceLocation)} for default booleans.
 	 */
-	default void set(IBooleanChromosome chromosome, boolean defaultAllele) {
-		set(chromosome, defaultAllele ? ForestryAlleles.TRUE : ForestryAlleles.FALSE)
+	default IChromosomeBuilder<IBooleanAllele> set(IBooleanChromosome chromosome, boolean defaultAllele) {
+		return set(chromosome, defaultAllele ? ForestryAlleles.TRUE : ForestryAlleles.FALSE)
 				.addAlleles(ForestryAlleles.DEFAULT_BOOLEANS);
 	}
 
