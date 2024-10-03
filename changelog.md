@@ -2,6 +2,10 @@
 - Fixed Grafter for Forestry trees (#95)
 - Fixed ru_ru, thanks to Quarkrus (#93)
 - Fixed non-default Girths not working with genetically modified saplings (#96)
+- Fix analyzer display for Haploid drones, thanks to EnderiumSmith (#94)
+- Implement weakly inherited chromosomes for temperature & humidity tolerances and other traits, thanks to EnderiumSmith (#94)
+- Fix hive generation, thanks to EnderiumSmith (#94)
+- Fix Mycophilic effect replacing Tall grass instead of Grass Blocks
 
 ## Forestry 1.0.9
 - Added API for using custom bee species textures. (#30)

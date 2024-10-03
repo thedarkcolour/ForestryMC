@@ -87,7 +87,7 @@ public class FungificationBeeEffect extends ThrottledBeeEffect {
 
 	private static boolean convertToMycelium(Level world, BlockState blockState, BlockPos pos) {
 		Block block = blockState.getBlock();
-		if (block == Blocks.GRASS || block == Blocks.DIRT && world.canSeeSkyFromBelowWater(pos)) {
+		if (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT && world.canSeeSkyFromBelowWater(pos)) {
 			world.setBlockAndUpdate(pos, Blocks.MYCELIUM.defaultBlockState());
 			return true;
 		}
