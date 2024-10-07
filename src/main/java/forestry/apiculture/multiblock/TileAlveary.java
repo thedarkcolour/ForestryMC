@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -55,12 +56,19 @@ import forestry.core.owner.IOwnedTile;
 import forestry.core.owner.IOwnerHandler;
 import forestry.core.tiles.ITitled;
 
-public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlveary> implements IBeeHousing, IAlvearyComponent, IOwnedTile, IStreamableGui, ITitled, IClimateProvider {
-	private final String unlocalizedTitle;
+public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlveary> implements IBeeHousing, IAlvearyComponent<MultiblockLogicAlveary>, IOwnedTile, IStreamableGui, ITitled, IClimateProvider {
+	private final String translationKey;
 
+	// For Forestry only
 	public TileAlveary(BlockAlvearyType type, BlockPos pos, BlockState state) {
-		super(type.getTileType().tileType(), pos, state, new MultiblockLogicAlveary());
-		this.unlocalizedTitle = ApicultureBlocks.ALVEARY.get(type).getTranslationKey();
+		this(type.getTileType().tileType(), ApicultureBlocks.ALVEARY.get(type).getTranslationKey(), pos, state);
+	}
+
+	// For addons
+	public TileAlveary(BlockEntityType<?> type, String translationKey, BlockPos pos, BlockState state) {
+		super(type, pos, state, new MultiblockLogicAlveary());
+
+		this.translationKey = translationKey;
 	}
 
 	@Override
@@ -168,7 +176,7 @@ public class TileAlveary extends MultiblockTileEntityForestry<MultiblockLogicAlv
 
 	@Override
 	public Component getTitle() {
-		return Component.translatable(this.unlocalizedTitle);
+		return Component.translatable(this.translationKey);
 	}
 
 	/* IStreamableGui */

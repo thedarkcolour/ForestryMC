@@ -31,7 +31,7 @@ import forestry.energy.EnergyTransferMode;
 import forestry.energy.ForestryEnergyStorage;
 
 // Used by Heater and Fan, which increase and decrease Temperature, respectively
-public abstract class TileAlvearyClimatiser extends TileAlveary implements IActivatable, IAlvearyComponent.Climatiser {
+public abstract class TileAlvearyClimatiser extends TileAlveary implements IActivatable, IAlvearyComponent.Climatiser<MultiblockLogicAlveary> {
 	private static final int TICKS_PER_CYCLE = 1;
 	private static final int FE_PER_OPERATION = 50;
 

@@ -26,7 +26,7 @@ import forestry.apiculture.inventory.InventoryAlvearySieve;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.inventory.watchers.ISlotPickupWatcher;
 
-public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.BeeListener {
+public class TileAlvearySieve extends TileAlveary implements IAlvearyComponent.BeeListener<MultiblockLogicAlveary> {
 	private final IBeeListener beeListener;
 	private final InventoryAlvearySieve inventory;
 

@@ -20,7 +20,7 @@ import forestry.api.genetics.IMutation;
 import forestry.api.multiblock.IAlvearyComponent;
 import forestry.apiculture.blocks.BlockAlvearyType;
 
-public class TileAlvearyStabiliser extends TileAlveary implements IAlvearyComponent.BeeModifier {
+public class TileAlvearyStabiliser extends TileAlveary implements IAlvearyComponent.BeeModifier<MultiblockLogicAlveary> {
 	private static final IBeeModifier MODIFIER = new IBeeModifier() {
 		@Override
 		public float modifyMutationChance(IGenome genome, IGenome mate, IMutation<IBeeSpecies> mutation, float currentChance) {

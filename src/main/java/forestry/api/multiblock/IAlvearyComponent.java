@@ -24,21 +24,21 @@ public interface IAlvearyComponent<T extends IMultiblockLogicAlveary> extends IM
 	/**
 	 * Implemented by alveary parts to apply a beeListener to the completed structure.
 	 */
-	interface BeeListener extends IAlvearyComponent {
+	interface BeeListener<T extends IMultiblockLogicAlveary> extends IAlvearyComponent<T> {
 		IBeeListener getBeeListener();
 	}
 
 	/**
 	 * Implemented by alveary parts to apply a beeModifier to the completed structure.
 	 */
-	interface BeeModifier extends IAlvearyComponent {
+	interface BeeModifier<T extends IMultiblockLogicAlveary> extends IAlvearyComponent<T> {
 		IBeeModifier getBeeModifier();
 	}
 
 	/**
 	 * Implemented by alveary parts to apply a climate change to the completed structure.
 	 */
-	interface Climatiser extends IAlvearyComponent {
+	interface Climatiser<T extends IMultiblockLogicAlveary> extends IAlvearyComponent<T> {
 		/**
 		 * Called every tick by the alveary.
 		 *
@@ -51,7 +51,7 @@ public interface IAlvearyComponent<T extends IMultiblockLogicAlveary> extends IM
 	/**
 	 * Implemented by alveary parts to receive ticks from the completed structure.
 	 */
-	interface Active extends IAlvearyComponent {
+	interface Active<T extends IMultiblockLogicAlveary> extends IAlvearyComponent<T> {
 		void updateServer(int tickCount);
 
 		void updateClient(int tickCount);
