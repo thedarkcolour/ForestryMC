@@ -1,55 +1,20 @@
 plugins {
-	id 'net.minecraftforge.gradle' version '6.+'
-	id 'idea'
-	id "maven-publish"
-	id "com.matthewprenger.cursegradle" version "1.4.0"
-	id "com.modrinth.minotaur" version "2.8.7"
-	id "org.parchmentmc.librarian.forgegradle" version "1.+"
+	id('net.minecraftforge.gradle') version '6.+'
+	id('idea')
+	id("maven-publish")
+	id('com.modrinth.minotaur') version '2.+'
+	id('com.matthewprenger.cursegradle') version '1.4.0'
+	id('org.parchmentmc.librarian.forgegradle') version "1.+"
 }
 
-group = "com.thedarkcolour.forestry"
+group = "thedarkcolour.forestry"
 version = "1.0.10"
-archivesBaseName = "forestry-$minecraftVersion"
+base.archivesName = "forestry-$minecraftVersion"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-repositories {
-	maven {
-		name = "JEI"
-		url = "https://dvs1.progwml6.com/files/maven"
-		content { includeGroup "mezz.jei" }
-	}
-	maven {
-		name = "Patchouli"
-		url = "https://maven.blamejared.com/"
-	}
-	maven {
-		url "https://cursemaven.com"
-		content {
-			includeGroup "curse.maven"
-		}
-	}
-}
-
-dependencies {
-	minecraft "net.minecraftforge:forge:$minecraftVersion-$forgeVersion"
-
-	compileOnly fg.deobf("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion")
-	compileOnly fg.deobf("mezz.jei:jei-$minecraftVersion-forge-api:$jeiVersion")
-	runtimeOnly fg.deobf("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion")
-
-	compileOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouliVersion:api")
-	runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouliVersion")
-
-	runtimeOnly fg.deobf("curse.maven:spit-it-out-857141:4888738")
-	runtimeOnly fg.deobf("curse.maven:cyanide-541676:4126944")
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
 minecraft {
 	mappings channel: 'parchment', version: "$mappingsVersion-$minecraftVersion"
-
 	accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
 
 	runs {
@@ -81,6 +46,41 @@ minecraft {
 		}
 	}
 }
+
+repositories {
+	maven {
+		name = "JEI"
+		url = "https://dvs1.progwml6.com/files/maven"
+		content { includeGroup "mezz.jei" }
+	}
+	maven {
+		name = "Patchouli"
+		url = "https://maven.blamejared.com/"
+	}
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
+}
+
+dependencies {
+	minecraft "net.minecraftforge:forge:$minecraftVersion-$forgeVersion"
+
+	// JEI OPTIONAL
+	compileOnly fg.deobf("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion")
+	compileOnly fg.deobf("mezz.jei:jei-$minecraftVersion-forge-api:$jeiVersion")
+	runtimeOnly fg.deobf("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion")
+	// PATCHOULI REQUIRED
+	compileOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouliVersion:api")
+	runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouliVersion")
+
+	runtimeOnly fg.deobf("curse.maven:spit-it-out-857141:4888738")
+	runtimeOnly fg.deobf("curse.maven:cyanide-541676:4126944")
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 def replaceProperties = [
 		"version": project.version,
@@ -115,6 +115,17 @@ jar {
 				"Implementation-Vendor"   : "SirSengir",
 				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 		])
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = "UTF-8"
+}
+
+idea {
+	module {
+		downloadSources = true
+		downloadJavadoc = true
 	}
 }
 
@@ -197,30 +208,23 @@ publishing {
 	}
 }
 
-////////////////
-// CurseForge
-if (System.getenv("CURSEFORGE")) {
+if (System.getenv("CURSEFORGE_TOKEN")) {
 	curseforge {
-		apiKey = System.getenv("CURSEFORGE")
+		apiKey = System.getenv("CURSEFORGE_TOKEN")
 
 		project {
-			id = project.curseforge_project
+			id = project.curseforgeId
 			changelogType = "markdown"
-			changelog = "View changelog at [the release page](https://github.com/ForestryMC/ForestryMC/releases/tag/${version})"
+			changelog = getChangelog(version)
 
-			if (version.contains("alpha")) {
-				releaseType = "alpha"
-			} else if (version.contains("beta")) {
-				releaseType = "beta"
-			} else {
-				releaseType = "release"
-			}
+			releaseType = "release"
 
-			addGameVersion project.minecraftVersion
-			addGameVersion "Forge"
+			addGameVersion(project.minecraftVersion)
+			addGameVersion("Forge")
+			addGameVersion("Java 17")
 
 			mainArtifact(jar.archiveFile) {
-				displayName = "${project.version}"
+				displayName = "Forestry: Community Edition ${project.version}"
 				relations {
 					optionalDependency 'jei'
 					requiredDependency 'patchouli'
@@ -230,43 +234,49 @@ if (System.getenv("CURSEFORGE")) {
 	}
 }
 
-////////////////
-// Modrinth
 modrinth {
-    token.set(System.getenv("MODRINTH"))
-    projectId.set(project.modrinth_project)
-    changelog.set("View changelog at [the release page](https://github.com/ForestryMC/ForestryMC/releases/tag/${version})")
-    versionNumber.set(project.version)
+	token = System.getenv("MODRINTH_TOKEN")
+    projectId = project.modrinthId
+	versionName = "Forestry: Community Edition $version"
+	versionNumber = version.toString()
+	gameVersions = [minecraftVersion]
+	loaders = ["forge"]
+	changelog = getChangelog(project.version)
 
-    if (version.contains("alpha")) {
-        versionType.set("alpha")
-    } else if (version.contains("beta")) {
-        versionType.set("beta")
-    } else {
-        versionType.set("release")
-    }
+	uploadFile = jar
+	additionalFiles.add(sourcesJar)
+	additionalFiles.add(apiJar)
+	additionalFiles.add(javadocJar)
 
-    uploadFile.set(jar)
-    gameVersions.add(minecraftVersion)
-	loaders.add("forge")
-
-    dependencies {
-        optional.project("jei")
+	dependencies {
+		optional.project("jei")
 		required.project("patchouli")
-    }
-}
-
-tasks.modrinth.onlyIf {
-    System.getenv("MODRINTH")
-}
-
-tasks.withType(JavaCompile).configureEach {
-	options.encoding = "UTF-8"
-}
-
-idea {
-	module {
-		downloadSources = true
-		downloadJavadoc = true
 	}
 }
+
+static def getChangelog(Object version) {
+	version = version.toString()
+
+	def file = new File('changelog.md')
+	if (!file.exists()) {
+		return "Changelog file not found"
+	}
+
+	// Relies on the changelog block being "##blahblahblah_VERSION" where _ is a space
+	def content = file.text.normalize().split("##.* ")
+
+	for (final def chunk in content) {
+		if (chunk.isEmpty()) continue
+
+		def lineTerminatorIndex = chunk.findIndexOf { c -> c == '\n' || c == '\r' }
+		def versionString = chunk.substring(0, lineTerminatorIndex)
+
+		if (versionString == version) {
+			return "## Ex Deorum $version\n" + chunk.substring(lineTerminatorIndex + 1)
+		}
+	}
+
+	// Fallback in case this fails
+	return "Ex Deorum Update ${version}"
+}
+

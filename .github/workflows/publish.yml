@@ -1,50 +1,34 @@
-name: Publish
+name: Release for 1.20.1
 
 on:
-  release:
-    types:
-      - published
-
-permissions:
-  contents: write
+  push:
+    branches: [ 'dev/1.19.x' ]
+  workflow_dispatch:
 
 jobs:
-  publish:
-    runs-on: ubuntu-20.04
+  release:
+    name: Publish release JAR for Forestry
+    runs-on: ubuntu-latest
+    if: "startsWith(github.event.head_commit.message, '[Release]')"
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 17
-      - name: Find Minecraft version
-        id: version
-        run: |
-          grep 'minecraft_version' gradle.properties > /tmp/minecraft_version
-          source /tmp/minecraft_version
-          echo ::set-output name=MINECRAFT_VERSION::$minecraft_version
-      - name: Generate data
-        run: ./gradlew downloadAssets runData --max-workers 1
+          distribution: 'microsoft'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Upload to CurseForge
+        run: ./gradlew curseforge
         env:
-          FORESTRY_VERSION: ${{ github.event.release.tag_name }}
-      - name: Build
-        run: ./gradlew build --max-workers 1
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+
+      - name: Upload to Modrinth
+        run: ./gradlew modrinth
         env:
-          FORESTRY_VERSION: ${{ github.event.release.tag_name }}
-      - name: Upload Release Artifact
-        uses: softprops/action-gh-release@v1
-        with:
-          files: build/libs/forestry-${{ steps.version.outputs.MINECRAFT_VERSION }}-${{ github.event.release.tag_name }}.jar
-          tag_name: ${{ github.event.release.tag_name }}
-      - name: Upload to external sites
-        run: ./gradlew publishAllPublicationsToModmavenRepository curseforge modrinth --max-workers 1
-        env:
-          FORESTRY_VERSION: ${{ github.event.release.tag_name }}
-          MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
-          MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
-          CURSEFORGE: ${{ secrets.CURSEFORGE }}
-          MODRINTH: ${{ secrets.MODRINTH }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
