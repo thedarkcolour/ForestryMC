@@ -17,20 +17,16 @@ import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemStack;
 
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import forestry.api.core.tooltips.IToolTipProvider;
 import forestry.api.core.tooltips.ToolTip;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiUtil {
 	public static void drawItemStack(PoseStack transform, GuiForestry<?> gui, ItemStack stack, int xPos, int yPos) {
 		drawItemStack(transform, gui.getFontRenderer(), stack, xPos, yPos);
@@ -47,21 +43,18 @@ public class GuiUtil {
 		RenderSystem.applyModelViewMatrix();
 	}
 
-	//TODO hopefully this is client side...
-	public static void drawToolTips(PoseStack transform, IGuiSizable gui, @Nullable IToolTipProvider provider, ToolTip toolTips, int mouseX, int mouseY) {
+	public static <S extends Screen & IGuiSizable> void drawToolTips(PoseStack transform, S screen, @Nullable IToolTipProvider provider, ToolTip toolTips, int mouseX, int mouseY) {
 		if (!toolTips.isEmpty()) {
 			transform.pushPose();
 			if (provider == null || provider.isRelativeToGui()) {
-				transform.translate(-gui.getGuiLeft(), -gui.getGuiTop(), 0);
+				transform.translate(-screen.getGuiLeft(), -screen.getGuiTop(), 0);
 			}
-			Window window = Minecraft.getInstance().getWindow();    //TODO - more resolution stuff to check
-			gui.renderTooltip(transform, toolTips.getLines(), Optional.empty(), mouseX, mouseY);
-			//GuiUtils.drawHoveringText(transform, toolTips.getLines(), mouseX, mouseY, window.getGuiScaledWidth(), window.getGuiScaledHeight(), -1, gui.getGameInstance().font);
+			screen.renderTooltip(transform, toolTips.getLines(), Optional.empty(), mouseX, mouseY);
 			transform.popPose();
 		}
 	}
 
-	public static void drawToolTips(PoseStack transform, IGuiSizable gui, Collection<?> objects, int mouseX, int mouseY) {
+	public static <S extends Screen & IGuiSizable> void drawToolTips(PoseStack transform, S screen, Collection<?> objects, int mouseX, int mouseY) {
 		for (Object obj : objects) {
 			if (!(obj instanceof IToolTipProvider provider)) {
 				continue;
@@ -72,8 +65,8 @@ public class GuiUtil {
 			int mX = mouseX;
 			int mY = mouseY;
 			if (provider.isRelativeToGui()) {
-				mX -= gui.getGuiLeft();
-				mY -= gui.getGuiTop();
+				mX -= screen.getGuiLeft();
+				mY -= screen.getGuiTop();
 			}
 			ToolTip tips = provider.getToolTip(mX, mY);
 			if (tips == null) {
@@ -83,7 +76,7 @@ public class GuiUtil {
 			tips.onTick(mouseOver);
 			if (mouseOver && tips.isReady()) {
 				tips.refresh();
-				drawToolTips(transform, gui, provider, tips, mouseX, mouseY);
+				drawToolTips(transform, screen, provider, tips, mouseX, mouseY);
 			}
 		}
 	}

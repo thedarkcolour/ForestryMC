@@ -77,7 +77,6 @@ import forestry.core.utils.ModUtil;
 import forestry.cultivation.blocks.BlockPlanter;
 import forestry.cultivation.blocks.BlockTypePlanter;
 import forestry.cultivation.features.CultivationBlocks;
-import forestry.database.features.DatabaseBlocks;
 import forestry.energy.blocks.EngineBlockType;
 import forestry.energy.features.EnergyBlocks;
 import forestry.factory.blocks.BlockTypeFactoryPlain;
@@ -128,7 +127,6 @@ public class ForestryRecipeProvider extends RecipeProvider {
 		registerCoreRecipes(consumer);
 		registerBookRecipes(consumer);
 		registerCultivationRecipes(consumer);
-		registerDatabaseRecipes(consumer);
 		registerFactoryRecipes(consumer);
 		registerFarmingRecipes(consumer);
 		registerFluidsRecipes(consumer);
@@ -820,33 +818,6 @@ public class ForestryRecipeProvider extends RecipeProvider {
 					.requires(manual)
 					.unlockedBy("has_manual", has(manual))
 					.save(helper, ForestryConstants.forestry(ModUtil.getRegistryName(managed).getPath() + "_from_manual"));
-		}
-	}
-
-	private void registerDatabaseRecipes(Consumer<FinishedRecipe> helper) {
-		//TODO create FallbackIngredient implementation
-		Collection<? extends Block> features = CoreBlocks.NATURALIST_CHEST.getBlocks();
-		List<Ingredient> possibleSpecials = Lists.newArrayList(Ingredient.of(ApicultureItems.ROYAL_JELLY.item()), Ingredient.of(CoreItems.FRUITS.get(ItemFruit.EnumFruit.PLUM).item()), Ingredient.of(Tags.Items.CHESTS_WOODEN));
-		Ingredient possibleSpecial = Ingredient.merge(possibleSpecials);
-
-		for (Block featureBlock1 : features) {
-			for (Block featureBlock2 : features) {
-				if (featureBlock1 == featureBlock2) {
-					continue;
-				}
-
-				ShapedRecipeBuilder.shaped(DatabaseBlocks.DATABASE.block())
-						.define('#', CoreItems.PORTABLE_ALYZER)
-						.define('C', possibleSpecial)
-						.define('S', featureBlock1)
-						.define('F', featureBlock2)
-						.define('W', ItemTags.PLANKS)
-						.define('I', ForestryTags.Items.INGOTS_BRONZE)
-						.define('Y', CoreItems.STURDY_CASING)
-						.pattern("I#I").pattern("FYS").pattern("WCW")
-						.unlockedBy("has_casing", has(CoreItems.STURDY_CASING))
-						.save(helper, ForestryConstants.forestry("database_" + path(featureBlock1) + "_" + path(featureBlock2)));
-			}
 		}
 	}
 

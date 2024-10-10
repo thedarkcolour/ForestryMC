@@ -10,130 +10,49 @@
  ******************************************************************************/
 package forestry.core.gui.buttons;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import forestry.api.ForestryConstants;
-import forestry.api.core.tooltips.IToolTipProvider;
-import forestry.api.core.tooltips.ToolTip;
 import forestry.core.config.Constants;
 
-public class GuiBetterButton extends Button implements IToolTipProvider {
+public class GuiBetterButton extends Button {
 	public static final ResourceLocation TEXTURE = ForestryConstants.forestry(Constants.TEXTURE_PATH_GUI + "/buttons.png");
 
-	protected IButtonTextureSet texture;
-	@Nullable
-	private ToolTip toolTip;
-	private boolean useTexWidth = false;
+	protected final IButtonTextureSet texture;
 
 	public GuiBetterButton(int x, int y, IButtonTextureSet texture, OnPress handler) {
 		super(x, y, texture.getWidth(), texture.getHeight(), Component.empty(), handler);
 		this.texture = texture;
-		useTexWidth = true;
-	}
-
-
-	public GuiBetterButton setTexture(IButtonTextureSet texture) {
-		this.texture = texture;
-		width = texture.getWidth();
-		height = texture.getHeight();
-		return this;
-	}
-
-	public GuiBetterButton setUseTextureWidth() {
-		useTexWidth = true;
-		return this;
-	}
-
-	public GuiBetterButton setGuiWidth(int width) {
-		this.width = width;
-		useTexWidth = false;
-		return this;
-	}
-
-	public GuiBetterButton setLabel(String label) {
-		this.setMessage(Component.literal(label));
-		return this;
 	}
 
 	@Override
-	public int getWidth() {
-		return width;
-	}
+	public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+		// VANILLA COPY EXCEPT FOR TEXTURE AND COORDINATES
+		int xOffset = this.texture.getX();
+		int yOffset = this.texture.getY();
+		int h = this.height;
+		int w = this.width;
 
-	@Override
-	public int getHeight() {
-		return texture.getHeight();
-	}
-
-	public int getTextColor(boolean mouseOver) {
-		if (!active) {
-			return 0xffa0a0a0;
-		} else if (mouseOver) {
-			return 0xffffa0;
-		} else {
-			return 0xe0e0e0;
-		}
-	}
-
-	public boolean isMouseOverButton(double mouseX, double mouseY) {
-		return mouseX >= x && mouseY >= y && mouseX < x + getWidth() && mouseY < y + getHeight();
-	}
-
-	@Override
-	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks) {
-		if (!visible) {
-			return;
-		}
+		Minecraft minecraft = Minecraft.getInstance();
+		Font font = minecraft.font;
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		int xOffset = texture.getX();
-		int yOffset = texture.getY();
-		int h = texture.getHeight();
-		int w = texture.getWidth();
-		isHovered = isMouseOverButton(mouseX, mouseY);
-		int hoverState = getYImage(isHovered);
-		if (useTexWidth) {
-			blit(transform, x, y, xOffset, yOffset + hoverState * h, w, h);
-		} else {
-			blit(transform, x, y, xOffset, yOffset + hoverState * h, width / 2, h);
-			blit(transform, x + width / 2, y, xOffset + w - width / 2, yOffset + hoverState * h, width / 2, h);
-		}
-		Component text = getMessage();
-		if (Minecraft.getInstance().font.width(text) > 0) {
-			renderButton(transform, mouseX, mouseY, partialTicks);
-			drawCenteredString(transform, Minecraft.getInstance().font, getMessage(), x + getWidth() / 2, y + (h - 8) / 2, getTextColor(isHovered));
-		}
-	}
-
-	@Override
-	public ToolTip getToolTip(int mouseX, int mouseY) {
-		return toolTip;
-	}
-
-	public void setToolTip(ToolTip tips) {
-		this.toolTip = tips;
-	}
-
-	@Override
-	public boolean isToolTipVisible() {
-		return visible;
-	}
-
-	@Override
-	public boolean isMouseOver(double mouseX, double mouseY) {
-		return isMouseOverButton(mouseX, mouseY);
-	}
-
-	@Override
-	public boolean isHovering(double mouseX, double mouseY) {
-		return isMouseOver(mouseX, mouseY);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+		int i = this.getYImage(this.isHoveredOrFocused());
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.enableDepthTest();
+		blit(pPoseStack, x, y, xOffset, yOffset + i * h, w, h);
+		int j = getFGColor();
+		drawCenteredString(pPoseStack, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 	}
 }

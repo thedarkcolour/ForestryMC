@@ -34,8 +34,8 @@ public class GuiAlveary extends GuiAnalyzerProvider<ContainerAlveary> {
 	}
 
 	@Override
-	protected void renderBg(PoseStack transform, float partialTicks, int mouseY, int mouseX) {
-		super.renderBg(transform, partialTicks, mouseY, mouseX);
+	protected void renderBg(PoseStack transform, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(transform, partialTicks, mouseX, mouseY);
 
 		IAlvearyControllerInternal alvearyController = tile.getMultiblockLogic().getController();
 		drawHealthMeter(transform, leftPos + 20, topPos + 37, alvearyController.getHealthScaled(46), EnumTankLevel.rateTankLevel(alvearyController.getHealthScaled(100)));

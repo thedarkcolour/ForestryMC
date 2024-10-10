@@ -14,10 +14,10 @@ import forestry.core.gui.slots.SlotAnalyzer;
 import forestry.core.gui.slots.SlotLockable;
 import forestry.core.inventory.ItemInventoryAlyzer;
 import forestry.core.utils.GeneticsUtil;
-import forestry.database.inventory.InventoryDatabaseAnalyzer;
 
 public class ContainerAnalyzerProviderHelper {
-	/* Attributes - Final*/
+	private static final int SLOT_ENERGY = 0;
+
 	private final Player player;
 	private final ContainerForestry container;
 	@Nullable
@@ -80,7 +80,7 @@ public class ContainerAnalyzerProviderHelper {
 		final ItemStack finalSpecimen = specimen;
 		IIndividualHandlerItem.ifPresent(specimen, individual -> {
 			if (!individual.isAnalyzed()) {
-				ItemStack energyStack = alyzerInventory.getItem(InventoryDatabaseAnalyzer.SLOT_ENERGY);
+				ItemStack energyStack = alyzerInventory.getItem(SLOT_ENERGY);
 				if (!ItemInventoryAlyzer.isAlyzingFuel(energyStack)) {
 					return;
 				}
@@ -94,7 +94,7 @@ public class ContainerAnalyzerProviderHelper {
 					individual.saveToStack(finalSpecimen);
 
 					// Decrease energy
-					alyzerInventory.removeItem(InventoryDatabaseAnalyzer.SLOT_ENERGY, 1);
+					alyzerInventory.removeItem(SLOT_ENERGY, 1);
 				}
 			}
 		});

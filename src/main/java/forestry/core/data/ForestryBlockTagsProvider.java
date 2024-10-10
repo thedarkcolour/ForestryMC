@@ -24,7 +24,6 @@ import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.CharcoalBlocks;
 import forestry.core.blocks.EnumResourceType;
 import forestry.core.features.CoreBlocks;
-import forestry.database.features.DatabaseBlocks;
 import forestry.energy.features.EnergyBlocks;
 import forestry.factory.features.FactoryBlocks;
 import forestry.farming.blocks.BlockFarm;
@@ -62,8 +61,7 @@ public final class ForestryBlockTagsProvider extends BlockTagsProvider {
 				.add(CoreBlocks.DEEPSLATE_TIN_ORE.block())
 				.add(CoreBlocks.RAW_TIN_BLOCK.block())
 				.add(CharcoalBlocks.CHARCOAL.block())
-				.add(EnergyBlocks.ENGINES.blockArray())
-				.add(DatabaseBlocks.DATABASE.block());
+				.add(EnergyBlocks.ENGINES.blockArray());
 
 		for (BlockFarm block : FarmingBlocks.FARM.getBlocks()) {
 			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);

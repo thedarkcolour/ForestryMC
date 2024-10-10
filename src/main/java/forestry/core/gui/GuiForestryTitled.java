@@ -19,7 +19,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import forestry.core.render.ColourProperties;
 
 public abstract class GuiForestryTitled<C extends AbstractContainerMenu> extends GuiForestry<C> {
-
 	protected GuiForestryTitled(String texture, C container, Inventory inv, Component title) {
 		super(texture, container, inv, title);
 	}
