@@ -27,12 +27,6 @@ import forestry.core.ClientsideCode;
 import forestry.core.fluids.ForestryFluids;
 
 public class RenderUtil {
-	public static void markForUpdate(BlockPos pos) {
-		if (FMLEnvironment.dist == Dist.CLIENT) {
-			ClientsideCode.markForUpdate(pos);
-		}
-	}
-
 	// requires external push/pop
 	public static void rotateByHorizontalDirection(PoseStack stack, Direction facing) {
 		if (facing != Direction.SOUTH) {

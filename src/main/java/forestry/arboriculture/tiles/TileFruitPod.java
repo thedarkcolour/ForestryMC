@@ -34,10 +34,10 @@ import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.genetics.alleles.IValueAllele;
 import forestry.api.genetics.alleles.TreeChromosomes;
 import forestry.arboriculture.features.ArboricultureTiles;
+import forestry.core.ClientsideCode;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.BlockUtil;
 import forestry.core.utils.NBTUtilForestry;
-import forestry.core.utils.RenderUtil;
 import forestry.core.utils.SpeciesUtil;
 
 public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamable {
@@ -81,9 +81,9 @@ public class TileFruitPod extends BlockEntity implements IFruitBearer, IStreamab
 		if (data.readBoolean()) {
 			IValueAllele<?> stored = IForestryApi.INSTANCE.getAlleleManager().getAllele(data.readResourceLocation()).cast();
 
-			if (stored.value() instanceof IFruit fruit) {
-				this.fruit = fruit;
-				RenderUtil.markForUpdate(getBlockPos());
+			if (stored.value() instanceof IFruit newFruit) {
+				this.fruit = newFruit;
+				ClientsideCode.markForUpdate(this.worldPosition);
 			}
 		}
 	}

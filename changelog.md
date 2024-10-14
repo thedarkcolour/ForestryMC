@@ -1,3 +1,6 @@
+## Forestry 1.0.11
+- Fixed world generation crash with fruit pods (#102)
+
 ## Forestry 1.0.10
 - Fixed Grafter for Forestry trees (#95)
 - Fixed ru_ru, thanks to Quarkrus (#93)

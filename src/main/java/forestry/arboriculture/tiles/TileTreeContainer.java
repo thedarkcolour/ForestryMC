@@ -26,9 +26,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import forestry.api.arboriculture.genetics.ITree;
+import forestry.core.ClientsideCode;
 import forestry.core.network.IStreamable;
 import forestry.core.utils.NBTUtilForestry;
-import forestry.core.utils.RenderUtil;
 import forestry.core.utils.SpeciesUtil;
 
 /**
@@ -90,8 +90,10 @@ public abstract class TileTreeContainer extends BlockEntity implements IStreamab
 	/* CONTAINED TREE */
 	public void setTree(ITree tree) {
 		this.containedTree = tree;
+
 		if (level != null && level.isClientSide) {
-			RenderUtil.markForUpdate(getBlockPos());
+			ClientsideCode.markForUpdate(this.worldPosition);
+			;
 		}
 	}
 

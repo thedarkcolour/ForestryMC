@@ -42,7 +42,6 @@ import forestry.api.arboriculture.ITreeSpecies;
 import forestry.api.arboriculture.genetics.IFruit;
 import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.arboriculture.genetics.ITreeSpeciesType;
-import forestry.api.arboriculture.genetics.TreeLifeStage;
 import forestry.api.core.IProduct;
 import forestry.api.genetics.ForestrySpeciesTypes;
 import forestry.api.genetics.IAlyzerPlugin;
@@ -50,7 +49,6 @@ import forestry.api.genetics.IBreedingTracker;
 import forestry.api.genetics.IBreedingTrackerHandler;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.ILifeStage;
 import forestry.api.genetics.IMutationManager;
 import forestry.api.genetics.alleles.IKaryotype;
 import forestry.api.genetics.alleles.TreeChromosomes;
@@ -65,6 +63,7 @@ import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.tiles.TileFruitPod;
 import forestry.arboriculture.tiles.TileSapling;
 import forestry.arboriculture.tiles.TileTreeContainer;
+import forestry.core.ClientsideCode;
 import forestry.core.genetics.SpeciesType;
 import forestry.core.genetics.root.BreedingTrackerManager;
 import forestry.core.tiles.TileUtil;
@@ -195,7 +194,9 @@ public class TreeSpeciesType extends SpeciesType<ITreeSpecies, ITree> implements
 
 					if (pod != null) {
 						pod.setProperties(genome, fruit, yield);
-						RenderUtil.markForUpdate(pos);
+						if (level.isClientSide()) {
+							ClientsideCode.markForUpdate(pos);
+						}
 						return true;
 					} else {
 						level.setBlock(pos, Blocks.AIR.defaultBlockState(), 18);

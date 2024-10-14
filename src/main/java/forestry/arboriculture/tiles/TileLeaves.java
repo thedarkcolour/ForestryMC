@@ -16,7 +16,6 @@ import java.util.Map;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -54,10 +53,10 @@ import forestry.api.lepidopterology.genetics.IButterfly;
 import forestry.arboriculture.features.ArboricultureTiles;
 import forestry.arboriculture.network.IRipeningPacketReceiver;
 import forestry.arboriculture.network.PacketRipeningUpdate;
+import forestry.core.ClientsideCode;
 import forestry.core.network.packets.PacketTileStream;
 import forestry.core.utils.ColourUtil;
 import forestry.core.utils.NetworkUtil;
-import forestry.core.utils.RenderUtil;
 import forestry.core.utils.SpeciesUtil;
 
 public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButterflyNursery, IRipeningPacketReceiver, IBiomeProvider {
@@ -363,7 +362,7 @@ public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButt
 
 			setTree(tree);
 
-			RenderUtil.markForUpdate(worldPosition);
+			ClientsideCode.markForUpdate(this.worldPosition);
 		}
 	}
 
@@ -373,7 +372,7 @@ public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButt
 			return;
 		}
 		colourFruits = newColourFruits;
-		RenderUtil.markForUpdate(worldPosition);
+		ClientsideCode.markForUpdate(this.worldPosition);
 	}
 
 	/* IFRUITBEARER */
