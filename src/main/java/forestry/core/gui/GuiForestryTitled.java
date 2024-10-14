@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.core.gui;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.network.chat.Component;
@@ -20,6 +21,11 @@ import forestry.core.render.ColourProperties;
 
 public abstract class GuiForestryTitled<C extends AbstractContainerMenu> extends GuiForestry<C> {
 	protected GuiForestryTitled(String texture, C container, Inventory inv, Component title) {
+		super(texture, container, inv, title);
+	}
+
+	// For Forestry addons
+	protected GuiForestryTitled(ResourceLocation texture, C container, Inventory inv, Component title) {
 		super(texture, container, inv, title);
 	}
 
