@@ -38,6 +38,8 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 	// Ticks
 	private static final Random rand = new Random();
 	private int tickCount = rand.nextInt(256);
+	@Nullable
+	private BlockPos destroyedCoord = null;
 
 	// Disassembled -> Assembled; Assembled -> Disassembled OR Paused; Paused -> Assembled
 	protected enum AssemblyState {
@@ -247,6 +249,7 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			this.onMachinePaused();
 		}
 
+		BlockPos oldReference = this.referenceCoord;
 		// Strip out this part
 		onDetachBlock(part);
 		if (!connectedParts.remove(part)) {
@@ -259,6 +262,8 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 		if (connectedParts.isEmpty()) {
 			// Destroy/unregister
 			MultiblockRegistry.addDeadController(this.level, this);
+			// Save last known reference position so drops can be spawned
+			this.destroyedCoord = oldReference;
 			return;
 		}
 
@@ -276,14 +281,6 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 			return null;
 		}
 		return lastValidationException.getMessage();
-	}
-
-	@Override
-	public BlockPos getLastValidationErrorPosition() {
-		if (lastValidationException == null) {
-			return null;
-		}
-		return lastValidationException.getPosition();
 	}
 
 	@Override
@@ -864,5 +861,10 @@ public abstract class MultiblockControllerBase implements IMultiblockControllerI
 
 	private static boolean isInvalid(IMultiblockComponent part) {
 		return part instanceof BlockEntity && ((BlockEntity) part).isRemoved();
+	}
+
+	@Nullable
+	public BlockPos getDestroyedCoord() {
+		return this.destroyedCoord;
 	}
 }

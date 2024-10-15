@@ -36,12 +36,18 @@ public interface IMultiblockController {
 	@Nullable
 	String getLastValidationError();
 
-	// used in old MultiblockEventHandlerClient.java
-	@Nullable
-	BlockPos getLastValidationErrorPosition();
-
 	/**
 	 * @return all the multiblock components attached to this controller
 	 */
 	Collection<IMultiblockComponent> getComponents();
+
+	/**
+	 * Called when all blocks in this multiblock are destroyed and no new reference position can be found.
+	 * This method is typically used to drop stored items.
+	 *
+	 * @param lastPos The last block position in this multiblock before being destroyed. Any stored items should
+	 *                be dropped at this position.
+	 */
+	default void onDestroyed(BlockPos lastPos) {
+	}
 }

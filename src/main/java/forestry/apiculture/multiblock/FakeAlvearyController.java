@@ -101,6 +101,12 @@ public enum FakeAlvearyController implements FakeMultiblockController, IAlvearyC
 		return 0;
 	}
 
+	@Nullable
+	@Override
+	public BlockPos getDestroyedCoord() {
+		return null;
+	}
+
 	@Override
 	public String getUnlocalizedType() {
 		return "for.multiblock.alveary.type";

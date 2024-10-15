@@ -2,6 +2,7 @@
 - Fixed world generation crash with fruit pods (#102)
 - Fixed incorrect translation of ru_ru.json (#101)
 - Add additional constructor to GuiForestryTitled that accepts ResourceLocation
+- Fix Alvearies and Multifarms not dropping their inventories when destroyed (#100)
 
 ## Forestry 1.0.10
 - Fixed Grafter for Forestry trees (#95)

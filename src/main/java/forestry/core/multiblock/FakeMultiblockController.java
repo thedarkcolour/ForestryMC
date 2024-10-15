@@ -10,7 +10,6 @@
  ******************************************************************************/
 package forestry.core.multiblock;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -120,12 +119,6 @@ public interface FakeMultiblockController extends IMultiblockControllerInternal,
 
 	@Override
 	default String getLastValidationError() {
-		return null;
-	}
-
-	@Nullable
-	@Override
-	default BlockPos getLastValidationErrorPosition() {
 		return null;
 	}
 

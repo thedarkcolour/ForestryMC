@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -166,6 +167,12 @@ public class FarmController extends RectangularMultiblockControllerBase implemen
 	protected void onMachineDisassembled() {
 		super.onMachineDisassembled();
 		manager.clearTargets();
+	}
+
+	@Override
+	public void onDestroyed(BlockPos lastPos) {
+		Containers.dropContents(this.level, lastPos, this.inventory);
+		Containers.dropContents(this.level, lastPos, this.sockets);
 	}
 
 	@Override

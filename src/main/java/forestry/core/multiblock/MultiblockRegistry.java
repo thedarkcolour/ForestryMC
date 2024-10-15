@@ -127,7 +127,6 @@ public class MultiblockRegistry {
 	}
 
 	/// *** PRIVATE HELPERS *** ///
-	//TODO refactor to getOrDefault
 	private static MultiblockWorldRegistry getOrCreateRegistry(Level world) {
 		if (registries.containsKey(world)) {
 			return registries.get(world);

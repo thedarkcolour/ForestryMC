@@ -7,10 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkSource;
 
 import forestry.Forestry;
@@ -251,6 +251,10 @@ public class MultiblockWorldRegistry {
 				}
 
 				// THIS IS THE ONLY PLACE WHERE CONTROLLERS ARE UNREGISTERED.
+				BlockPos destroyedCoord = controller.getDestroyedCoord();
+				if (destroyedCoord != null) {
+					controller.onDestroyed(destroyedCoord);
+				}
 				this.controllers.remove(controller);
 			}
 
@@ -447,7 +451,9 @@ public class MultiblockWorldRegistry {
 	}
 
 	private void addAllOrphanedPartsThreadsafe(Collection<? extends IMultiblockComponent> parts) {
-		if (parts.isEmpty()) return;
+		if (parts.isEmpty()) {
+			return;
+		}
 		synchronized (orphanedPartsMutex) {
 			orphanedParts.addAll(parts);
 		}

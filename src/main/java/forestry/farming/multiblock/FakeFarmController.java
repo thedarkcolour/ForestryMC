@@ -10,6 +10,7 @@
  ******************************************************************************/
 package forestry.farming.multiblock;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +156,12 @@ public enum FakeFarmController implements FakeMultiblockController, IFarmControl
 	@Override
 	public ITankManager getTankManager() {
 		return FakeTankManager.instance;
+	}
+
+	@Nullable
+	@Override
+	public BlockPos getDestroyedCoord() {
+		return null;
 	}
 
 	@Override

@@ -13,8 +13,8 @@ package forestry.core.multiblock;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import forestry.api.climate.IClimateProvider;
@@ -89,6 +89,9 @@ public interface IMultiblockControllerInternal extends IMultiblockController, IN
 	 */
 	@Nullable
 	BlockPos getReferenceCoord();
+
+	@Nullable
+	BlockPos getDestroyedCoord();
 
 	/**
 	 * Force this multiblock to recalculate its minimum and maximum coordinates

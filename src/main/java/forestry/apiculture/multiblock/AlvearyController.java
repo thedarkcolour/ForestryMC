@@ -20,6 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.Containers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
@@ -157,10 +158,15 @@ public class AlvearyController extends RectangularMultiblockControllerBase imple
 	}
 
 	@Override
+	public void onDestroyed(BlockPos lastPos) {
+		Containers.dropContents(this.level, lastPos, this.inventory);
+	}
+
+	@Override
 	protected void onMachineAssembled() {
 		super.onMachineAssembled();
 
-		IForestryApi.INSTANCE.getClimateManager().createClimateProvider(this.level, getCenterCoord());
+		this.climate = IForestryApi.INSTANCE.getClimateManager().createClimateProvider(this.level, getCenterCoord());
 	}
 
 	@Override
