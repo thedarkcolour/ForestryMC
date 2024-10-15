@@ -53,8 +53,10 @@ import forestry.api.apiculture.genetics.IBeeSpecies;
 import forestry.api.apiculture.hives.IHiveTile;
 import forestry.api.core.HumidityType;
 import forestry.api.core.IErrorLogic;
+import forestry.api.core.ISpectacleBlock;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.capability.IIndividualHandlerItem;
+import forestry.api.util.TickHelper;
 import forestry.apiculture.ModuleApiculture;
 import forestry.apiculture.WorldgenBeekeepingLogic;
 import forestry.apiculture.blocks.BlockBeeHive;
@@ -68,11 +70,10 @@ import forestry.core.utils.InventoryUtil;
 import forestry.core.utils.ItemStackUtil;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SpeciesUtil;
-import forestry.api.util.TickHelper;
 
 import org.jetbrains.annotations.ApiStatus;
 
-public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IBeeHousing {
+public class TileHive extends BlockEntity implements IHiveTile, IActivatable, IBeeHousing, ISpectacleBlock {
 	private static final DamageSource damageSourceBeeHive = new DamageSourceForestry("bee.hive");
 
 	private final InventoryAdapter contained = new InventoryAdapter(2, "Contained");

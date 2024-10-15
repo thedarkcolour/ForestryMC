@@ -3,6 +3,7 @@
 - Fixed incorrect translation of ru_ru.json (#101)
 - Add additional constructor to GuiForestryTitled that accepts ResourceLocation
 - Fix Alvearies and Multifarms not dropping their inventories when destroyed (#100)
+- Add ISpectacleBlock API so that addon mods can have their blocks highlighted by players wearing spectacles
 
 ## Forestry 1.0.10
 - Fixed Grafter for Forestry trees (#95)

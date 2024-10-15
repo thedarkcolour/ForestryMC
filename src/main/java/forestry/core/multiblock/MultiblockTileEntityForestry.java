@@ -30,6 +30,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraftforge.network.NetworkHooks;
 
 import forestry.api.core.ILocationProvider;
+import forestry.api.core.ISpectacleBlock;
 import forestry.api.multiblock.IMultiblockLogic;
 import forestry.api.multiblock.MultiblockTileEntityBase;
 import forestry.core.config.Constants;
@@ -37,7 +38,7 @@ import forestry.core.inventory.FakeInventoryAdapter;
 import forestry.core.inventory.IInventoryAdapter;
 import forestry.core.tiles.IFilterSlotDelegate;
 
-public abstract class MultiblockTileEntityForestry<T extends IMultiblockLogic> extends MultiblockTileEntityBase<T> implements WorldlyContainer, IFilterSlotDelegate, ILocationProvider, MenuProvider {
+public abstract class MultiblockTileEntityForestry<T extends IMultiblockLogic> extends MultiblockTileEntityBase<T> implements WorldlyContainer, IFilterSlotDelegate, ILocationProvider, MenuProvider, ISpectacleBlock {
 	@Nullable
 	private GameProfile owner;
 
@@ -188,9 +189,13 @@ public abstract class MultiblockTileEntityForestry<T extends IMultiblockLogic> e
 		this.owner = owner;
 	}
 
-
 	@Override
 	public void clearContent() {
 		getInternalInventory().clearContent();
+	}
+
+	@Override
+	public boolean isHighlighted(Player player) {
+		return player.isCreative() && getMultiblockLogic().getController() instanceof IMultiblockControllerInternal internal && this.worldPosition.equals(internal.getReferenceCoord());
 	}
 }

@@ -21,6 +21,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -40,6 +41,7 @@ import forestry.api.arboriculture.genetics.ITree;
 import forestry.api.client.IForestryClientApi;
 import forestry.api.climate.IBiomeProvider;
 import forestry.api.core.HumidityType;
+import forestry.api.core.ISpectacleBlock;
 import forestry.api.core.TemperatureType;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IFruitBearer;
@@ -59,7 +61,7 @@ import forestry.core.utils.ColourUtil;
 import forestry.core.utils.NetworkUtil;
 import forestry.core.utils.SpeciesUtil;
 
-public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButterflyNursery, IRipeningPacketReceiver, IBiomeProvider {
+public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButterflyNursery, IRipeningPacketReceiver, IBiomeProvider, ISpectacleBlock {
 	private static final String NBT_RIPENING = "RT";
 	private static final String NBT_DAMAGE = "ENC";
 	private static final String NBT_FRUIT_LEAF = "FL";
@@ -484,5 +486,10 @@ public class TileLeaves extends TileTreeContainer implements IFruitBearer, IButt
 	@Override
 	public Level getWorldObj() {
 		return level;
+	}
+
+	@Override
+	public boolean isHighlighted(Player player) {
+		return isPollinated();
 	}
 }

@@ -47,13 +47,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import forestry.api.client.IClientModuleHandler;
 import forestry.api.client.IForestryClientApi;
+import forestry.api.core.ISpectacleBlock;
 import forestry.apiculture.features.ApicultureBlocks;
 import forestry.apiculture.features.ApicultureItems;
-import forestry.apiculture.tiles.TileHive;
 import forestry.apiimpl.plugin.PluginManager;
 import forestry.arboriculture.features.ArboricultureBlocks;
 import forestry.arboriculture.features.ArboricultureItems;
-import forestry.arboriculture.tiles.TileLeaves;
 import forestry.core.circuits.GuiSolderingIron;
 import forestry.core.config.Constants;
 import forestry.core.features.CoreBlocks;
@@ -300,7 +299,7 @@ public class CoreClientHandler implements IClientModuleHandler {
 
 							// Get all block entities in the chunk
 							for (BlockEntity be : chunk.getBlockEntities().values()) {
-								if (be instanceof TileHive || (be instanceof TileLeaves leaves && leaves.isPollinated())) {
+								if (be instanceof ISpectacleBlock naturalist && naturalist.isHighlighted(player)) {
 									BlockPos pos = be.getBlockPos();
 
 									stack.pushPose();
